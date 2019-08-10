@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[28,)" # Forge version
+issueTrackerURL="http://github.com/svenhjol/Strange/issues"
+displayURL="http://github.com/svenhjol/Strange"
+#logoFile="examplemod.png"
+#credits="Credits"
+authors="svenhjol"
+
+[[mods]]
+    modId="strange"
+    version="${version}" #mandatory
+    displayName="Strange"
+    description='''
+    Charm, but Stranger.
+    '''
+
+[[dependencies.strange]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[28,)" #mandatory
+    ordering="NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    side="BOTH" # Side this dependency is applied on - BOTH, CLIENT or SERVER
+
+[[dependencies.strange]] #optional
+    modId="charm" #mandatory
+    mandatory=true #mandatory
+    versionRange="[1.3,)" #mandatory
+    ordering="AFTER" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    side="BOTH" # Side this dependency is applied on - BOTH, CLIENT or SERVER
