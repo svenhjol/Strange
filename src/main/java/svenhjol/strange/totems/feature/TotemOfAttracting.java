@@ -33,7 +33,7 @@ public class TotemOfAttracting extends Feature
 
         range = builder
             .comment("Drops within this range of the player will be automatically picked up.")
-            .define("Attraction range", 6);
+            .define("Attraction range", 10);
     }
 
     @Override
