@@ -48,10 +48,11 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-//    deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
-//    runtime "mcp.mobius.waila:Hwyla:${waila_version}_${mc_version}"
-//    runtime "mezz.jei:${jei_version}"
-    compile "svenhjol.charm:Charm:1.14.4-1.3.2"
+//    compile fg.deobf("mcp.mobius.waila:Hwyla:${waila_version}")
+//    compile fg.deobf("mezz.jei:${jei_version}")
+//    compile fg.deobf("vazkii.arl:AutoRegLib:${arl_version}")
+//    compile fg.deobf("vazkii.quark:Quark:${quark_version}")
+    compile fg.deobf("svenhjol.charm:Charm:${charm_version}")
 }
 
 repositories {
@@ -67,6 +68,11 @@ repositories {
     maven { // for HWYLA
         name 'Mobius'
         url "https://tehnut.info/maven"
+    }
+
+    maven { // for AutoRegLib and Quark
+        name "blamejared"
+        url "http://maven.blamejared.com/"
     }
 
     flatDir {
