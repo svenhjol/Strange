@@ -19,7 +19,8 @@ public class TotemOfShieldingItem extends MesonItem
             .maxStackSize(1)
             .maxDamage(TotemOfShielding.maxHealth.get())
         );
-        setRegistryName(new ResourceLocation(Strange.MOD_ID, "totem_of_shielding"));
+
+        register(new ResourceLocation(Strange.MOD_ID, "totem_of_shielding"));
     }
 
     @Override

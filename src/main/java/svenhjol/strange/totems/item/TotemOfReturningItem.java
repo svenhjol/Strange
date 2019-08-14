@@ -27,7 +27,8 @@ public class TotemOfReturningItem extends MesonItem
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
         );
-        setRegistryName(new ResourceLocation(Strange.MOD_ID, "totem_of_returning"));
+
+        register(new ResourceLocation(Strange.MOD_ID, "totem_of_returning"));
     }
 
     @Override

@@ -18,6 +18,7 @@ public class TotemOfAttractingItem extends MesonItem
             .maxStackSize(1)
             .maxDamage(TotemOfAttracting.maxHealth.get())
         );
-        setRegistryName(new ResourceLocation(Strange.MOD_ID, "totem_of_attracting"));
+
+        register(new ResourceLocation(Strange.MOD_ID, "totem_of_attracting"));
     }
 }

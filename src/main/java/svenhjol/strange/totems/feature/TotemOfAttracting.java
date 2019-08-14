@@ -2,7 +2,6 @@ package svenhjol.strange.totems.feature;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -10,7 +9,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.IForgeRegistry;
 import svenhjol.meson.Feature;
 import svenhjol.strange.totems.item.TotemOfAttractingItem;
 
@@ -49,6 +47,7 @@ public class TotemOfAttracting extends Feature
     {
         if (event.phase == TickEvent.Phase.START
             && event.side.isServer()
+            && event.player.world.getGameTime() % 5 == 0
             && event.player.getHeldItemOffhand().getItem() == item
         ) {
             int r = range.get();
@@ -82,11 +81,5 @@ public class TotemOfAttracting extends Feature
     public boolean hasSubscriptions()
     {
         return true;
-    }
-
-    @Override
-    public void onRegisterItems(IForgeRegistry<Item> registry)
-    {
-        registry.register(item);
     }
 }
