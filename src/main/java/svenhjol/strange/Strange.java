@@ -1,24 +1,23 @@
 package svenhjol.strange;
 
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import svenhjol.meson.Feature;
+import svenhjol.meson.iface.IMesonSidedProxy;
+import svenhjol.strange.base.ClientProxy;
+import svenhjol.strange.base.CommonProxy;
 import svenhjol.strange.base.StrangeLoader;
-import svenhjol.strange.totems.StrangeTotems;
 
 @Mod(Strange.MOD_ID)
 public class Strange
 {
     public static final String MOD_ID = "strange";
+    public static StrangeLoader loader;
+    public static IMesonSidedProxy proxy = DistExecutor.runForDist(
+        () -> ClientProxy::new, () -> CommonProxy::new);
 
     public Strange()
     {
-        StrangeLoader.INSTANCE.registerLoader(Strange.MOD_ID).setup(
-            new StrangeTotems()
-        );
-    }
-
-    public static boolean hasFeature(Class<? extends Feature> feature)
-    {
-        return StrangeLoader.INSTANCE.enabledFeatures.containsKey(feature);
+        loader = new StrangeLoader();
+        proxy.init();
     }
 }
