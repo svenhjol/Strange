@@ -4,23 +4,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
 import svenhjol.meson.MesonItem;
-import svenhjol.strange.Strange;
-import svenhjol.strange.totems.feature.TotemOfShielding;
+import svenhjol.meson.MesonModule;
+import svenhjol.strange.totems.module.TotemOfShielding;
 
 public class TotemOfShieldingItem extends MesonItem
 {
-    public TotemOfShieldingItem()
+    public TotemOfShieldingItem(MesonModule module)
     {
-        super(new Item.Properties()
+        super(module, "totem_of_shielding", new Item.Properties()
             .group(ItemGroup.COMBAT)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
-            .maxDamage(TotemOfShielding.maxHealth.get())
+            .maxDamage(TotemOfShielding.durability)
         );
-
-        register(new ResourceLocation(Strange.MOD_ID, "totem_of_shielding"));
     }
 
     @Override

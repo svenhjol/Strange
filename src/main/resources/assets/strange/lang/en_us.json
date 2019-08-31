@@ -1,4 +1,15 @@
 {
+  "gui.charm.scrolls.accept": "Accept",
+  "gui.charm.scrolls.close": "Not now",
+  "gui.charm.scrolls.decline": "Decline",
+
+  "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
+
+  "item.strange.scroll_tier_1": "Scroll (Tier 1)",
+  "item.strange.scroll_tier_2": "Scroll (Tier 2)",
+  "item.strange.scroll_tier_3": "Scroll (Tier 3)",
+  "item.strange.scroll_tier_4": "Scroll (Tier 4)",
+  "item.strange.scroll_tier_5": "Scroll (Tier 5)",
   "item.strange.totem_of_attracting": "Totem of Attracting",
   "item.strange.totem_of_returning": "Totem of Returning",
   "item.strange.totem_of_shielding": "Totem of Shielding"

@@ -1,4 +1,4 @@
-package svenhjol.strange.totems.feature;
+package svenhjol.strange.totems.module;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -6,40 +6,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import svenhjol.meson.Feature;
+import svenhjol.meson.MesonModule;
+import svenhjol.meson.iface.Config;
+import svenhjol.meson.iface.Module;
+import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.totems.item.TotemOfAttractingItem;
 
 import java.util.List;
 
-public class TotemOfAttracting extends Feature
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
+public class TotemOfAttracting extends MesonModule
 {
     public static TotemOfAttractingItem item;
-    public static ForgeConfigSpec.ConfigValue<Integer> maxHealth;
-    public static ForgeConfigSpec.ConfigValue<Integer> range;
 
-    @Override
-    public void configure()
-    {
-        super.configure();
+    @Config(name = "Durability", description = "Durability of the Totem.")
+    public static int durability = 100;
 
-        maxHealth = builder
-            .comment("Durability of the Totem.")
-            .define("Maximum Health", 100);
-
-        range = builder
-            .comment("Drops within this range of the player will be automatically picked up.")
-            .define("Attraction range", 10);
-    }
+    @Config(name = "Attraction range", description = "Drops within this range of the player will be automatically picked up.")
+    public static int range = 10;
 
     @Override
     public void init()
     {
-        super.init();
-
-        item = new TotemOfAttractingItem();
+        item = new TotemOfAttractingItem(this);
     }
 
     @SubscribeEvent
@@ -50,7 +42,7 @@ public class TotemOfAttracting extends Feature
             && event.player.world.getGameTime() % 5 == 0
             && event.player.getHeldItemOffhand().getItem() == item
         ) {
-            int r = range.get();
+            int r = range;
             double x = event.player.posX;
             double y = event.player.posY;
             double z = event.player.posZ;
@@ -75,11 +67,5 @@ public class TotemOfAttracting extends Feature
                 }
             }
         }
-    }
-
-    @Override
-    public boolean hasSubscriptions()
-    {
-        return true;
     }
 }

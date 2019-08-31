@@ -5,13 +5,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
+import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
-import svenhjol.strange.Strange;
 
 public class TotemOfReturningItem extends MesonItem
 {
@@ -20,15 +23,13 @@ public class TotemOfReturningItem extends MesonItem
 
     /* @todo Tooltip information */
 
-    public TotemOfReturningItem()
+    public TotemOfReturningItem(MesonModule module)
     {
-        super(new Item.Properties()
+        super(module, "totem_of_returning", new Item.Properties()
             .group(ItemGroup.TRANSPORTATION)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
         );
-
-        register(new ResourceLocation(Strange.MOD_ID, "totem_of_returning"));
     }
 
     @Override

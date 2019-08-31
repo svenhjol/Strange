@@ -1,41 +1,34 @@
-package svenhjol.strange.totems.feature;
+package svenhjol.strange.totems.module;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import svenhjol.meson.Feature;
+import svenhjol.meson.MesonModule;
+import svenhjol.meson.iface.Config;
+import svenhjol.meson.iface.Module;
+import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
-public class TotemOfShielding extends Feature
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
+public class TotemOfShielding extends MesonModule
 {
-    public static ForgeConfigSpec.ConfigValue<Integer> maxHealth;
-    public static ForgeConfigSpec.ConfigValue<Double> damageMultiplier;
     public static TotemOfShieldingItem item;
 
-    @Override
-    public void configure()
-    {
-        super.configure();
+    @Config(name = "Durability", description = "Durability of the Totem.")
+    public static int durability = 100;
 
-        maxHealth = builder
-            .comment("Durability of the Totem.")
-            .define("Maximum Health", 100);
-
-        damageMultiplier = builder
-            .comment("The received player damage is multiplied by this amount before being transferred to the Totem.")
-            .define("Damage multiplier", 0.75D);
-    }
+    @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the Totem." )
+    public static double damageMultiplier;
 
     @Override
     public void init()
     {
-        super.init();
-        item = new TotemOfShieldingItem();
+        item = new TotemOfShieldingItem(this);
     }
 
     @SubscribeEvent
@@ -48,7 +41,7 @@ public class TotemOfShielding extends Feature
             ItemStack held = player.getHeldItemOffhand();
 
             if (held.getItem() instanceof TotemOfShieldingItem) {
-                double damage = event.getAmount() * damageMultiplier.get();
+                double damage = event.getAmount() * damageMultiplier;
                 boolean dead = held.attemptDamageItem((int)Math.ceil(damage), player.world.rand, (ServerPlayerEntity)player);
 
                 if (dead) {
@@ -61,11 +54,5 @@ public class TotemOfShielding extends Feature
                 event.setCanceled(true);
             }
         }
-    }
-
-    @Override
-    public boolean hasSubscriptions()
-    {
-        return true;
     }
 }
