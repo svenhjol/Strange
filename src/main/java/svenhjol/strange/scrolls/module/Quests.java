@@ -47,7 +47,6 @@ public class Quests extends MesonModule
     @Override
     public void init()
     {
-        // TODO all quest class types
         handlers.add(new GatheringHandler());
         handlers.add(new HuntingHandler());
 

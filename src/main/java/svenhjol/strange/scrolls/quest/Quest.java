@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public class Quest implements IQuest
 {
-    public static final String SELLER = "seller";
-    public static final String PURCHASED = "purchased";
-    public static final String QUEST_ID = "questId";
-    public static final String QUEST_TYPE = "questType";
-    public static final String DESCRIPTION = "description";
-    public static final String CRITERIA = "criteria";
-    public static final String TIER = "tier";
+    private static final String SELLER = "seller";
+    private static final String PURCHASED = "purchased";
+    private static final String QUEST_ID = "questId";
+    private static final String QUEST_TYPE = "questType";
+    private static final String DESCRIPTION = "description";
+    private static final String CRITERIA = "criteria";
+    private static final String TIER = "tier";
 
     private String questId = "";
     private String seller = "";
@@ -36,15 +36,6 @@ public class Quest implements IQuest
     public CompoundNBT toNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-//        String criteria = "";
-//
-//        try {
-//            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-//            CompressedStreamTools.writeCompressed( this.criteria, out );
-//            criteria = javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
-//        } catch (Exception e) {
-//            Meson.log("toNBT serialization failed", e);
-//        }
 
         tag.putString(QUEST_ID, questId);
         tag.putString(SELLER, seller);
@@ -67,13 +58,6 @@ public class Quest implements IQuest
         purchased = tag.getLong(PURCHASED);
         criteria = tag.getCompound(CRITERIA);
         tier = tag.getInt(TIER);
-
-//        try {
-//            final byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( tag.getString(CRITERIA) );
-//            this.criteria = CompressedStreamTools.readCompressed( new ByteArrayInputStream( byteData ) );
-//        } catch (Exception e) {
-//            Meson.log("fromNBT unserialization failed", e);
-//        }
     }
 
     @Override
@@ -124,8 +108,7 @@ public class Quest implements IQuest
         try {
             return QuestType.valueOf(questType);
         } catch (Exception e) {
-            // bad, the quest is broken
-            return QuestType.Gathering;
+            return QuestType.Gathering; // bad, the quest is broken
         }
     }
 
@@ -145,8 +128,7 @@ public class Quest implements IQuest
     public UUID getSeller()
     {
         if (seller.isEmpty()) {
-            // bad, the quest is broken
-            return Scrollkeepers.ANY_SELLER;
+            return Scrollkeepers.ANY_SELLER; // bad, the quest is broken
         }
         return UUID.fromString(seller);
     }

@@ -32,9 +32,7 @@ public class QuestEvents
     public void onAttachCaps(AttachCapabilitiesEvent<Entity> event)
     {
         if (!(event.getObject() instanceof PlayerEntity)) return;
-
-        // Attach the capability and provider to Forge's player capabilities. Provider has the implementation.
-        event.addCapability(Quests.QUESTS_CAP_ID, new QuestsProvider());
+        event.addCapability(Quests.QUESTS_CAP_ID, new QuestsProvider()); // Attach cap and provider to Forge's player capabilities. Provider has the implementation.
     }
 
     @SubscribeEvent
@@ -57,7 +55,6 @@ public class QuestEvents
     public void onPlayerDeath(PlayerEvent.Clone event)
     {
         if (!event.isWasDeath()) return;
-
         IQuestsCapability oldCap = Quests.getCapability(event.getOriginal());
         IQuestsCapability newCap = Quests.getCapability(event.getEntityPlayer());
         newCap.readNBT(oldCap.writeNBT());
