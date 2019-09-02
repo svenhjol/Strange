@@ -25,6 +25,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import svenhjol.meson.Meson;
@@ -90,7 +91,9 @@ public class Scrollkeepers extends MesonModule
 
             List<UUID> sellers = new ArrayList<>();
             QuestClient.currentQuests.forEach(quest -> {
-                sellers.add(quest.getSeller());
+                if (quest.getCriteria().isCompleted()) {
+                    sellers.add(quest.getSeller());
+                }
             });
 
             int range = 10;
@@ -125,9 +128,12 @@ public class Scrollkeepers extends MesonModule
         }
     }
 
-    @Override
-    public void registerTrades(Int2ObjectMap<List<ITrade>> trades, VillagerProfession profession)
+    @SubscribeEvent
+    public void onVillagerTrades(VillagerTradesEvent event)
     {
+        Int2ObjectMap<List<ITrade>> trades = event.getTrades();
+        VillagerProfession profession = event.getType();
+
         if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(SCROLLKEEPER)) return;
 
         trades.get(1).add(new ScrollForEmeralds(1));
@@ -158,6 +164,7 @@ public class Scrollkeepers extends MesonModule
 
         for (IQuest quest : cap.getCurrentQuests(player)) {
             UUID seller = quest.getSeller();
+            if (!quest.getCriteria().isCompleted()) continue;
             if (!sellers.containsKey(seller)) sellers.put(seller, new ArrayList<>());
             sellers.get(seller).add(quest);
         }
@@ -191,7 +198,7 @@ public class Scrollkeepers extends MesonModule
             }
 
             villager.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.75F, 1.0F);
-            Quests.updateQuests(player);
+            Quests.update(player);
             return true;
         }
 

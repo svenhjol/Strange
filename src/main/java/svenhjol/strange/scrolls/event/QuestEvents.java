@@ -3,14 +3,12 @@ package svenhjol.strange.scrolls.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.handler.PacketHandler;
@@ -20,6 +18,7 @@ import svenhjol.strange.scrolls.client.QuestBadgeGui;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.message.RequestCurrentQuests;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.IQuest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,29 +97,33 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onItemPickup(PlayerEvent.ItemPickupEvent event)
+    public void onItemPickup(EntityItemPickupEvent event)
     {
-        if (event.getPlayer() != null) {
-            PlayerEntity player = event.getPlayer();
-            ItemStack stack = event.getStack();
+        PlayerEntity player = event.getEntityPlayer();
+        if (player != null) {
+            List<IQuest> quests = Quests.getCurrent(player);
+            boolean responded = false;
 
-            Quests.getCapability(player).getCurrentQuests(player)
-                .forEach(q -> Quests.handlers.forEach(h -> h.pickupItem(q, player, stack)));
+            for (IQuest quest : quests) {
+                responded = quest.respondTo(event) || responded;
+            }
+
+            if (responded) Quests.update(player);
         }
     }
 
-    @SubscribeEvent
-    public void onMobKilled(LivingDeathEvent event)
-    {
-        if (!(event.getEntity() instanceof PlayerEntity)
-            && event.getSource().getTrueSource() instanceof PlayerEntity
-            && event.getEntityLiving() != null
-        ) {
-            PlayerEntity player = (PlayerEntity)event.getSource().getTrueSource();
-            LivingEntity mob = event.getEntityLiving();
-
-            Quests.getCapability(player).getCurrentQuests(player)
-                .forEach(q -> Quests.handlers.forEach(h -> h.killMob(q, player, mob)));
-        }
-    }
+//    @SubscribeEvent
+//    public void onMobKilled(LivingDeathEvent event)
+//    {
+//        if (!(event.getEntity() instanceof PlayerEntity)
+//            && event.getSource().getTrueSource() instanceof PlayerEntity
+//            && event.getEntityLiving() != null
+//        ) {
+//            PlayerEntity player = (PlayerEntity)event.getSource().getTrueSource();
+//            LivingEntity mob = event.getEntityLiving();
+//
+////            Quests.getCapability(player).getCurrentQuests(player)
+////                .forEach(q -> Quests.handlers.forEach(h -> h.killMob(event, q)));
+//        }
+//    }
 }

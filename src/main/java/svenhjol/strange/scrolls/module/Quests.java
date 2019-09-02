@@ -22,11 +22,8 @@ import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.event.QuestEvents;
 import svenhjol.strange.scrolls.message.RequestCurrentQuests;
 import svenhjol.strange.scrolls.message.SendCurrentQuests;
-import svenhjol.strange.scrolls.quest.GatheringHandler;
-import svenhjol.strange.scrolls.quest.HuntingHandler;
-import svenhjol.strange.scrolls.quest.IQuestHandler;
+import svenhjol.strange.scrolls.quest.IQuest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -34,8 +31,6 @@ import java.util.Random;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
 public class Quests extends MesonModule
 {
-    public static List<IQuestHandler> handlers = new ArrayList<>();
-
     @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once.")
     public static int max = 3;
 
@@ -43,13 +38,9 @@ public class Quests extends MesonModule
     public static Capability<IQuestsCapability> QUESTS = null;
 
     public static ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
-
     @Override
     public void init()
     {
-        handlers.add(new GatheringHandler());
-        handlers.add(new HuntingHandler());
-
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestCurrentQuests.class, RequestCurrentQuests::encode, RequestCurrentQuests::decode, RequestCurrentQuests.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, SendCurrentQuests.class, SendCurrentQuests::encode, SendCurrentQuests::decode, SendCurrentQuests.Handler::handle);
     }
@@ -66,7 +57,12 @@ public class Quests extends MesonModule
         return player.getCapability(QUESTS, null).orElse(new DummyCapability());
     }
 
-    public static void updateQuests(PlayerEntity player)
+    public static List<IQuest> getCurrent(PlayerEntity player)
+    {
+        return getCapability(player).getCurrentQuests(player);
+    }
+
+    public static void update(PlayerEntity player)
     {
         IQuestsCapability cap = Quests.getCapability(player);
         PacketHandler.sendTo(new SendCurrentQuests(cap.getCurrentQuests(player)), (ServerPlayerEntity)player);

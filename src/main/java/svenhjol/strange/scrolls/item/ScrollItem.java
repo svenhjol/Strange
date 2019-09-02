@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -16,8 +15,9 @@ import svenhjol.strange.scrolls.client.screen.ScrollScreen;
 import svenhjol.strange.scrolls.module.Quests.QuestType;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
+import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.action.Pickup;
 
-import java.util.Random;
 import java.util.UUID;
 
 public class ScrollItem extends MesonItem
@@ -47,7 +47,6 @@ public class ScrollItem extends MesonItem
             if (!worldIn.isRemote) {
                 Minecraft mc = Minecraft.getInstance();
 
-                // TODO some sided nonsense
                 writeExtendedQuestData(stack);
                 mc.deferTask(() -> mc.displayGuiScreen(new ScrollScreen(playerIn, stack)));
             }
@@ -82,30 +81,22 @@ public class ScrollItem extends MesonItem
     {
         IQuest quest = new Quest();
         quest.fromNBT( getTag(stack) );
+
         quest.setDescription(new StringTextComponent("Description here!"));
 
-        // TODO handlers
-//        if (quest.getType().equals(QuestType.Gathering)) {
-            CompoundNBT gather = new CompoundNBT();
+        Action<Pickup> getCoal = Action.factory(Pickup.class, quest);
+        getCoal.getDelegate()
+            .setStack(new ItemStack(Items.COAL))
+            .setCount(10);
 
-            ItemStack in1 = new ItemStack(Items.COAL, new Random().nextInt(60) + 1);
-            ItemStack in2 = new ItemStack(Items.COBBLESTONE, new Random().nextInt(60) + 1);
-            ItemStack out = new ItemStack(Items.DIAMOND, new Random().nextInt(60) + 1);
-            ItemStack out2 = new ItemStack(Items.PUMPKIN, new Random().nextInt(60) + 1);
+        Action<Pickup> getEmeralds = Action.factory(Pickup.class, quest);
+        getEmeralds.getDelegate()
+            .setStack(new ItemStack(Items.EMERALD))
+            .setCount(1);
 
-            ListNBT input = new ListNBT();
-            input.add(in1.serializeNBT());
-            input.add(in2.serializeNBT());
-
-            ListNBT output = new ListNBT();
-            output.add(out.serializeNBT());
-            output.add(out2.serializeNBT());
-
-            gather.put("input", input);
-            gather.put("output", output);
-
-            quest.setCriteria(gather);
-//        }
+        quest.getCriteria()
+            .addAction(getCoal)
+            .addAction(getEmeralds);
 
         putTag(stack, quest.toNBT());
     }

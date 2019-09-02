@@ -3,9 +3,11 @@ package svenhjol.strange.scrolls.quest;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.module.Quests.QuestType;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
+import svenhjol.strange.scrolls.quest.action.Action;
 
 import java.util.UUID;
 
@@ -23,7 +25,7 @@ public class Quest implements IQuest
     private String seller = "";
     private String questType = "";
     private String description = "";
-    private CompoundNBT criteria = new CompoundNBT();
+    private Criteria criteria = new Criteria(this);
     private long purchased;
     private int tier;
 
@@ -41,11 +43,23 @@ public class Quest implements IQuest
         tag.putString(SELLER, seller);
         tag.putString(QUEST_TYPE, questType);
         tag.putString(DESCRIPTION, description);
-        tag.put(CRITERIA, criteria);
+        tag.put(CRITERIA, criteria.toNBT());
         tag.putLong(PURCHASED, purchased);
         tag.putInt(TIER, tier);
 
         return tag;
+    }
+
+    @Override
+    public boolean respondTo(Event event)
+    {
+        boolean responded = false;
+
+        for (Action action : this.criteria.getActions()) {
+            responded = action.respondTo(event) || responded;
+        }
+
+        return responded;
     }
 
     @Override
@@ -56,8 +70,10 @@ public class Quest implements IQuest
         questType = tag.getString(QUEST_TYPE);
         description = tag.getString(DESCRIPTION);
         purchased = tag.getLong(PURCHASED);
-        criteria = tag.getCompound(CRITERIA);
         tier = tag.getInt(TIER);
+
+        criteria = new Criteria(this);
+        criteria.fromNBT(tag.getCompound(CRITERIA));
     }
 
     @Override
@@ -91,7 +107,7 @@ public class Quest implements IQuest
     }
 
     @Override
-    public void setCriteria(CompoundNBT criteria)
+    public void setCriteria(Criteria criteria)
     {
         this.criteria = criteria;
     }
@@ -119,7 +135,7 @@ public class Quest implements IQuest
     }
 
     @Override
-    public CompoundNBT getCriteria()
+    public Criteria getCriteria()
     {
         return criteria;
     }

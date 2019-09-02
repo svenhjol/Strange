@@ -7,12 +7,15 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.StringTextComponent;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.action.Pickup;
+
+import java.util.List;
 
 public class ScrollScreen extends Screen implements IRenderable
 {
@@ -48,7 +51,7 @@ public class ScrollScreen extends Screen implements IRenderable
     {
         String str = "R";
 
-        CompoundNBT reqs = this.quest.getCriteria();
+        Criteria criteria = this.quest.getCriteria();
 
 
 //        ItemStack output = ItemStack.read(reqs.getCompound("output"));
@@ -62,28 +65,32 @@ public class ScrollScreen extends Screen implements IRenderable
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
 
-        ListNBT inputs = (ListNBT)reqs.get("input");
-        ListNBT outputs = (ListNBT)reqs.get("output");
+
+        List<Action<Pickup>> pickups = criteria.getActions(Pickup.class);
 
         this.drawCenteredString(this.font, "Super Awesome Mission", this.width / 2, 60, 16777215);
 
-        if (inputs != null) {
+        if (!pickups.isEmpty()) {
             this.drawRightAlignedString(this.font, "I want:", (this.width / 2) - 40, 85, 16777215);
-            for (int i = 0; i < inputs.size(); i++) {
-                ItemStack stack = ItemStack.read((CompoundNBT) inputs.get(i));
+            for (int i = 0; i < pickups.size(); i++) {
+                Pickup del = pickups.get(i).getDelegate();
+
+                ItemStack stack = del.getStack();
+                int count = del.getCount();
+
                 this.itemRenderer.renderItemIntoGUI(stack, (this.width / 2) + (i * 50), 80);
-                this.drawString(this.font, " x" + stack.getCount(), (this.width / 2) + (i * 50) + 14, 85, 16777215);
+                this.drawString(this.font, " x" + count, (this.width / 2) + (i * 50) + 14, 85, 16777215);
             }
         }
 
-        if (outputs != null) {
-            this.drawRightAlignedString(this.font, "You get:", (this.width / 2) - 40, 105, 16777215);
-            for (int i = 0; i < outputs.size(); i++) {
-                ItemStack stack = ItemStack.read((CompoundNBT) outputs.get(i));
-                this.itemRenderer.renderItemIntoGUI(stack, (this.width / 2) + (i * 50), 100);
-                this.drawString(this.font, " x" + stack.getCount(), (this.width / 2) + (i * 50) + 14, 105, 16777215);
-            }
-        }
+//        if (outputs != null) {
+//            this.drawRightAlignedString(this.font, "You get:", (this.width / 2) - 40, 105, 16777215);
+//            for (int i = 0; i < outputs.size(); i++) {
+//                ItemStack stack = ItemStack.read((CompoundNBT) outputs.get(i));
+//                this.itemRenderer.renderItemIntoGUI(stack, (this.width / 2) + (i * 50), 100);
+//                this.drawString(this.font, " x" + stack.getCount(), (this.width / 2) + (i * 50) + 14, 105, 16777215);
+//            }
+//        }
 
 //        this.drawCenteredString(this.font, str, this.width / 2, 70, 16777215);
 
