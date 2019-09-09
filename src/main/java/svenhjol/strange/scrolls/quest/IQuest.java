@@ -2,15 +2,12 @@ package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.module.Quests.QuestType;
 
 import java.util.UUID;
 
 public interface IQuest
 {
     String getId();
-
-    QuestType getType();
 
     String getDescription();
 
@@ -33,8 +30,6 @@ public interface IQuest
     void setTitle(String title);
 
     void setDescription(String description);
-
-    void setType(QuestType type);
 
     void setSeller(UUID sellerId);
 

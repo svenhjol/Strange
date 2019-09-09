@@ -2,25 +2,28 @@ package svenhjol.strange.scrolls.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import svenhjol.meson.Meson;
+import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.base.message.RequestShowQuest;
 import svenhjol.strange.scrolls.quest.IQuest;
 
 public class QuestBadgeGui extends AbstractGui
 {
     private int x0, x1, y0, y1;
     private IQuest quest;
+    private Minecraft mc;
 
-    public QuestBadgeGui(IQuest quest, Minecraft mc, int x, int y)
+    public QuestBadgeGui(IQuest quest, int x, int y)
     {
         this.quest = quest;
+        this.mc = Minecraft.getInstance();
 
         x0 = 10;
         x1 = 110;
         y0 = y;
-        y1 = y + 20;
+        y1 = y + 24;
 
         AbstractGui.fill(x0, y0, x1, y1, 0x44000000);
-        drawCenteredString(mc.fontRenderer, quest.getType().toString(), 60, y + 6, 0xffffff);
+        drawCenteredString(mc.fontRenderer, quest.getTitle(), 60, y + 6, 0xFFFFFF);
 
         // progress
         float completion = quest.getCriteria().getCompletion();
@@ -39,6 +42,6 @@ public class QuestBadgeGui extends AbstractGui
 
     public void onLeftClick()
     {
-        Meson.log(quest);
+        PacketHandler.sendToServer(new RequestShowQuest(quest.getId()));
     }
 }

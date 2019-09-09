@@ -1,7 +1,9 @@
 package svenhjol.strange.scrolls.module;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,7 +13,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.IMesonEnum;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -20,12 +21,12 @@ import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
+import svenhjol.strange.scrolls.client.screen.QuestScreen;
 import svenhjol.strange.scrolls.event.QuestEvents;
 import svenhjol.strange.scrolls.quest.IQuest;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
 public class Quests extends MesonModule
@@ -55,24 +56,26 @@ public class Quests extends MesonModule
         return getCapability(player).getCurrentQuests(player);
     }
 
+    public static Optional<IQuest> getCurrentQuestById(PlayerEntity player, String id)
+    {
+        return Quests.getCurrent(player).stream()
+            .filter(q -> q.getId().equals(id))
+            .findFirst();
+    }
+
     public static void update(PlayerEntity player)
     {
         IQuestsCapability cap = Quests.getCapability(player);
         PacketHandler.sendTo(new SendCurrentQuests(cap.getCurrentQuests(player)), (ServerPlayerEntity)player);
     }
 
-    public enum QuestType implements IMesonEnum
+    public static void showQuestScreen(PlayerEntity player, IQuest quest)
     {
-        Gathering,
-        Hunting,
-        Raiding,
-        Exploring;
+        Minecraft.getInstance().displayGuiScreen(new QuestScreen(player, quest));
+    }
 
-        // TODO might be possible to move this to Meson?
-        public static QuestType random()
-        {
-            List<QuestType> vals = Arrays.asList(values());
-            return vals.get(new Random().nextInt(vals.size()));
-        }
+    public static void showQuestScreen(PlayerEntity player, ItemStack stack)
+    {
+        Minecraft.getInstance().displayGuiScreen(new QuestScreen(player, stack));
     }
 }

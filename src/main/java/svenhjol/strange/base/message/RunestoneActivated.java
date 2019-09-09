@@ -17,19 +17,19 @@ public class RunestoneActivated implements IMesonMessage
         this.pos = pos;
     }
 
-    public static void encode(svenhjol.strange.base.message.RunestoneActivated msg, PacketBuffer buf)
+    public static void encode(RunestoneActivated msg, PacketBuffer buf)
     {
         buf.writeLong(msg.pos.toLong());
     }
 
-    public static svenhjol.strange.base.message.RunestoneActivated decode(PacketBuffer buf)
+    public static RunestoneActivated decode(PacketBuffer buf)
     {
-        return new svenhjol.strange.base.message.RunestoneActivated(BlockPos.fromLong(buf.readLong()));
+        return new RunestoneActivated(BlockPos.fromLong(buf.readLong()));
     }
 
     public static class Handler
     {
-        public static void handle(final svenhjol.strange.base.message.RunestoneActivated msg, Supplier <NetworkEvent.Context> ctx)
+        public static void handle(final RunestoneActivated msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> Runestones.effectActivate(msg.pos));
             ctx.get().setPacketHandled(true);

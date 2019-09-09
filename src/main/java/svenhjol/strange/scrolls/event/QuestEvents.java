@@ -8,8 +8,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
@@ -23,6 +25,7 @@ import svenhjol.strange.scrolls.quest.IQuest;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class QuestEvents
 {
     private List<QuestBadgeGui> questBadges = new ArrayList<>();
@@ -65,16 +68,17 @@ public class QuestEvents
     {
         Minecraft mc = Minecraft.getInstance();
         if (mc.currentScreen instanceof InventoryScreen) {
-            if (QuestClient.lastQuery + 20 < mc.world.getGameTime()) {
+            if (QuestClient.lastQuery + 40 < mc.world.getGameTime()) {
                 PacketHandler.sendToServer(new RequestCurrentQuests());
             }
 
+            // TODO should not collide with potion effects
             int xPos = mc.mainWindow.getScaledWidth() - 122 - 22;
-            int yPos = (mc.mainWindow.getScaledHeight() / 2) - (166 / 2);
+            int yPos = (mc.mainWindow.getScaledHeight() / 2) - (166 / 2) + 50;
 
             questBadges.clear();
             for (int i = 0; i < QuestClient.currentQuests.size(); i++) {
-                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), mc, xPos, yPos + (i * 30)));
+                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos, yPos + (i * 36)));
             }
         }
     }
@@ -101,29 +105,32 @@ public class QuestEvents
     {
         PlayerEntity player = event.getPlayer();
         if (player != null) {
-            List<IQuest> quests = Quests.getCurrent(player);
-            boolean responded = false;
-
-            for (IQuest quest : quests) {
-                responded = quest.respondTo(event) || responded;
-            }
-
-            if (responded) Quests.update(player);
+            respondToEvent(player, event);
         }
     }
 
-//    @SubscribeEvent
-//    public void onMobKilled(LivingDeathEvent event)
-//    {
-//        if (!(event.getEntity() instanceof PlayerEntity)
-//            && event.getSource().getTrueSource() instanceof PlayerEntity
-//            && event.getEntityLiving() != null
-//        ) {
-//            PlayerEntity player = (PlayerEntity)event.getSource().getTrueSource();
-//            LivingEntity mob = event.getEntityLiving();
-//
-////            Quests.getCapability(player).getCurrentQuests(player)
-////                .forEach(q -> Quests.handlers.forEach(h -> h.killMob(event, q)));
-//        }
-//    }
+    @SubscribeEvent
+    public void onMobKilled(LivingDeathEvent event)
+    {
+        if (!(event.getEntity() instanceof PlayerEntity)
+            && event.getSource().getTrueSource() instanceof PlayerEntity
+            && event.getEntityLiving() != null
+        ) {
+            PlayerEntity player = (PlayerEntity)event.getSource().getTrueSource();
+            respondToEvent(player, event);
+        }
+    }
+
+    private boolean respondToEvent(PlayerEntity player, Event event)
+    {
+        List<IQuest> quests = Quests.getCurrent(player);
+        boolean responded = false;
+
+        for (IQuest quest : quests) {
+            responded = quest.respondTo(event) || responded;
+        }
+
+        if (responded) Quests.update(player);
+        return responded;
+    }
 }

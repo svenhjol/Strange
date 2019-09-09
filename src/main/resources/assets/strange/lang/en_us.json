@@ -1,7 +1,8 @@
 {
-  "gui.charm.scrolls.accept": "Accept",
-  "gui.charm.scrolls.close": "Not now",
-  "gui.charm.scrolls.decline": "Decline",
+  "gui.charm.scrolls.accept": "Accept Quest",
+  "gui.charm.scrolls.close": "Close Window",
+  "gui.charm.scrolls.decline": "Decline Quest",
+  "gui.charm.scrolls.quit": "Quit Quest",
 
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
 

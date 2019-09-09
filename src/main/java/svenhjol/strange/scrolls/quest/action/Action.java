@@ -94,6 +94,7 @@ public class Action<T extends IActionDelegate>
 
     public enum Type implements IMesonEnum
     {
-        Gather
+        Gather,
+        Hunt
     }
 }

@@ -3,7 +3,6 @@ package svenhjol.strange.scrolls.quest;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.scrolls.module.Quests.QuestType;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.action.Action;
 
@@ -14,7 +13,6 @@ public class Quest implements IQuest
     private static final String SELLER = "seller";
     private static final String PURCHASED = "purchased";
     private static final String QUEST_ID = "questId";
-    private static final String QUEST_TYPE = "questType";
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String CRITERIA = "criteria";
@@ -22,7 +20,6 @@ public class Quest implements IQuest
 
     private String questId = "";
     private String seller = "";
-    private String questType = "";
     private String title = "";
     private String description = "";
     private Criteria criteria = new Criteria(this);
@@ -41,7 +38,6 @@ public class Quest implements IQuest
 
         tag.putString(QUEST_ID, questId);
         tag.putString(SELLER, seller);
-        tag.putString(QUEST_TYPE, questType);
         tag.putString(DESCRIPTION, description);
         tag.put(CRITERIA, criteria.toNBT());
         tag.putLong(PURCHASED, purchased);
@@ -67,7 +63,6 @@ public class Quest implements IQuest
     {
         questId = tag.getString(QUEST_ID);
         seller = tag.getString(SELLER);
-        questType = tag.getString(QUEST_TYPE);
         title = tag.getString(TITLE);
         description = tag.getString(DESCRIPTION);
         purchased = tag.getLong(PURCHASED);
@@ -96,12 +91,6 @@ public class Quest implements IQuest
     }
 
     @Override
-    public void setType(QuestType type)
-    {
-        this.questType = type.toString();
-    }
-
-    @Override
     public void setSeller(UUID sellerId)
     {
         this.seller = sellerId.toString();
@@ -123,16 +112,6 @@ public class Quest implements IQuest
     public String getId()
     {
         return questId;
-    }
-
-    @Override
-    public QuestType getType()
-    {
-        try {
-            return QuestType.valueOf(questType);
-        } catch (Exception e) {
-            return QuestType.Gathering; // bad, the quest is broken
-        }
     }
 
     @Override

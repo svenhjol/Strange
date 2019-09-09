@@ -38,9 +38,8 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.module.Quests.QuestType;
 import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.generator.QuestGenerator;
+import svenhjol.strange.scrolls.quest.generator.Generator;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -250,7 +249,8 @@ public class Scrollkeepers extends MesonModule
             ItemStack in1 = new ItemStack(Items.EMERALD, 3 + (rand.nextInt(tier * 3)));
             ItemStack out = new ItemStack(Scrolls.tiers.get(tier), 1);
 
-            IQuest quest = QuestGenerator.generate(QuestType.Gathering, tier, merchant.getUniqueID(), rand);
+            IQuest quest = Generator.generate(tier, rand);
+            quest.setSeller(merchant.getUniqueID());
             if (quest == null) return null;
 
             ScrollItem.putTag(out, quest.toNBT());

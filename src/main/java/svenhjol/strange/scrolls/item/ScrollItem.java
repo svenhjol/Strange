@@ -1,6 +1,5 @@
 package svenhjol.strange.scrolls.item;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -11,10 +10,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.scrolls.client.screen.ScrollScreen;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
 
@@ -42,10 +40,8 @@ public class ScrollItem extends MesonItem
             result = ActionResultType.FAIL;
         } else {
 
-            Meson.log(worldIn);
             if (!worldIn.isRemote) {
-                Minecraft mc = Minecraft.getInstance();
-                mc.displayGuiScreen(new ScrollScreen(playerIn, stack));
+                Quests.showQuestScreen(playerIn, stack);
             }
 
             // TODO flicker when opening another gui

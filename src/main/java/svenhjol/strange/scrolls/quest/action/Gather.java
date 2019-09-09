@@ -36,6 +36,7 @@ public class Gather implements IActionDelegate
     public boolean respondTo(Event event)
     {
         if (isCompleted()) return false;
+        if (collected >= count) return false;
 
         if (event instanceof EntityItemPickupEvent) {
             EntityItemPickupEvent pickupEvent = (EntityItemPickupEvent)event;
@@ -45,6 +46,7 @@ public class Gather implements IActionDelegate
 
             PlayerEntity player = pickupEvent.getPlayer();
             World world = pickupEvent.getPlayer().world;
+
             collected += pickedUp.getCount();
 
             world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
