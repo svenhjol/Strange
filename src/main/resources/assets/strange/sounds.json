@@ -1,4 +1,16 @@
 {
+  "quest_action_complete": {
+    "category": "players",
+    "sounds": [
+      "strange:quest_action_complete"
+    ]
+  },
+  "quest_action_count": {
+    "category": "players",
+    "sounds": [
+      "strange:quest_action_count"
+    ]
+  },
   "runestone_travel": {
     "category": "players",
     "sounds": [

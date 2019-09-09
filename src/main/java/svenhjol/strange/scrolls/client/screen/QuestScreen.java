@@ -74,10 +74,10 @@ public class QuestScreen extends Screen implements IRenderable
         Criteria criteria = quest.getCriteria();
 
         if (!criteria.getActions(Gather.class).isEmpty()) {
-            new GatherQuestPanel(quest, 100, (width / 2) - 160,85);
+            new GatherQuestPanel(quest, 90, (width / 2) - 160,85);
         }
         if (!criteria.getActions(Hunt.class).isEmpty()) {
-            new HuntQuestPanel(quest, 100, (width / 2) + 60, 85);
+            new HuntQuestPanel(quest, 90, (width / 2) + 60, 85);
         }
 
         GlStateManager.popMatrix();

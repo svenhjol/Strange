@@ -27,6 +27,8 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RunestoneActivated.class, RunestoneActivated::encode, RunestoneActivated::decode, RunestoneActivated.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestShowQuest.class, RequestShowQuest::encode, RequestShowQuest::decode, RequestShowQuest.Handler::handle);
 
+        RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COMPLETE);
+        RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COUNT);
         RegistryHandler.registerSound(StrangeSounds.RUNESTONE_TRAVEL);
     }
 }

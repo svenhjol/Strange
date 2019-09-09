@@ -6,8 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -56,8 +54,11 @@ public class Hunt implements IActionDelegate
 
             this.killed++;
 
-            // TODO proper sound
-            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 0.3F, 1.0F);
+            if (isCompleted()) {
+                Action.playActionCompleteSound(player);
+            } else {
+                Action.playActionCountSound(player);
+            }
 
             Meson.log("Killed " + killedRes + " and now there is " + this.killed);
             return true;

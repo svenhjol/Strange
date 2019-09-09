@@ -16,8 +16,8 @@ public class HuntGenerator implements IGenerator
         if (tier == 1) {
             Map<ResourceLocation, Integer> targets = new HashMap<>();
             targets.put(new ResourceLocation("spider"), 10);
-            targets.put(new ResourceLocation("zombie"), 20);
-            targets.put(new ResourceLocation("skeleton"), 20);
+            targets.put(new ResourceLocation("zombie"), 10);
+            targets.put(new ResourceLocation("skeleton"), 10);
 
             int max = rand.nextInt(2) + 1;
             for (int i = 0; i < max; i++) {

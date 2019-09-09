@@ -4,8 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -47,10 +45,17 @@ public class Gather implements IActionDelegate
             PlayerEntity player = pickupEvent.getPlayer();
             World world = pickupEvent.getPlayer().world;
 
+            int x = player.getPosition().getX();
+            int y = player.getPosition().getY();
+            int z = player.getPosition().getZ();
+
             collected += pickedUp.getCount();
 
-            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 0.3F, 1.0F);
+            if (isCompleted()) {
+                Action.playActionCompleteSound(player);
+            } else {
+                Action.playActionCountSound(player);
+            }
 
             pickupEvent.getItem().remove();
             pickupEvent.setResult(Event.Result.DENY);

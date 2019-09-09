@@ -1,8 +1,11 @@
 package svenhjol.strange.scrolls.quest.action;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.iface.IMesonEnum;
+import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.scrolls.quest.IActionDelegate;
 import svenhjol.strange.scrolls.quest.IQuest;
 
@@ -90,6 +93,16 @@ public class Action<T extends IActionDelegate>
     {
         this.type = Type.valueOf(tag.getString(TYPE));
         this.delegate.fromNBT(tag.get(DATA));
+    }
+
+    public static void playActionCompleteSound(PlayerEntity player)
+    {
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+    }
+
+    public static void playActionCountSound(PlayerEntity player)
+    {
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 
     public enum Type implements IMesonEnum
