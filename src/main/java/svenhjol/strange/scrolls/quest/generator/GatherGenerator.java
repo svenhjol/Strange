@@ -31,7 +31,7 @@ public class GatherGenerator implements IGenerator
                 Action<svenhjol.strange.scrolls.quest.action.Gather> action = Action.factory(svenhjol.strange.scrolls.quest.action.Gather.class, quest);
                 action.getDelegate()
                     .setStack(new ItemStack(item))
-                    .setCount(count * rand.nextInt(2) + 1);
+                    .setCount(count);
 
                 quest.getCriteria().addAction(action);
             }
