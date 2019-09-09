@@ -36,7 +36,7 @@ public class Time implements IConditionDelegate
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
             if (qe.getQuest().getId().equals(this.quest.getId())) {
-                this.start = qe.getPlayer().world.getGameTime();
+                setStart(qe.getPlayer().world.getGameTime());
             }
         }
 

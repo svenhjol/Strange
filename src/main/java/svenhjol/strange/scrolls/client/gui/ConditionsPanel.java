@@ -33,9 +33,9 @@ public class ConditionsPanel extends BasePanel
                     final String minsStr = String.valueOf(mins);
                     final String secsStr = (secs < 10 ? "0" : "") + secs;
 
-                    out = minsStr + ":" + secsStr + " left";
+                    out = "Complete within " + minsStr + ":" + secsStr;
                 } else {
-                    out = remaining + " seconds left";
+                    out = "Complete within " + remaining + " seconds";
                 }
                 this.drawString(fonts, out, mid - 60, y, primaryTextColor);
             }
