@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.client;
+package svenhjol.strange.scrolls.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -21,6 +21,15 @@ public class QuestBadgeGui extends AbstractGui
 
         AbstractGui.fill(x0, y0, x1, y1, 0x44000000);
         drawCenteredString(mc.fontRenderer, quest.getType().toString(), 60, y + 6, 0xffffff);
+
+        // progress
+        float completion = quest.getCriteria().getCompletion();
+        boolean isComplete = quest.getCriteria().isCompleted();
+
+        int color = isComplete ? 0x8800FF00 : 0x88FFFF00;
+
+        AbstractGui.fill(x0, y1-3, x1, y1, 0x88333333);
+        AbstractGui.fill(x0, y1-3, x0 + (int)completion, y1, color);
     }
 
     public boolean isInBox(double x, double y)

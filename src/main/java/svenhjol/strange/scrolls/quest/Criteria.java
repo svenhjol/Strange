@@ -73,4 +73,17 @@ public class Criteria
     {
         return actions.stream().allMatch(Action::isCompleted);
     }
+
+    public float getCompletion()
+    {
+        float complete = 0.0F;
+
+        for (Action<?> action : actions) {
+            complete += action.getDelegate().getCompletion();
+        }
+
+        if (complete == 0.0F) return 0.0F;
+        float res = complete / (actions.size() * 100) * 100;
+        return res;
+    }
 }

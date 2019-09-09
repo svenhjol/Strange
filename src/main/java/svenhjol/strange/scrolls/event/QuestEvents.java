@@ -14,9 +14,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsProvider;
-import svenhjol.strange.scrolls.client.QuestBadgeGui;
+import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 import svenhjol.strange.scrolls.client.QuestClient;
-import svenhjol.strange.scrolls.message.RequestCurrentQuests;
+import svenhjol.strange.base.message.RequestCurrentQuests;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.IQuest;
 
@@ -37,16 +37,16 @@ public class QuestEvents
     @SubscribeEvent
     public void onPlayerSave(PlayerEvent.SaveToFile event)
     {
-        event.getEntityPlayer().getEntityData().put(
+        event.getPlayer().getPersistantData().put(
             Quests.QUESTS_CAP_ID.toString(),
-            Quests.getCapability(event.getEntityPlayer()).writeNBT());
+            Quests.getCapability(event.getPlayer()).writeNBT());
     }
 
     @SubscribeEvent
     public void onPlayerLoad(PlayerEvent.LoadFromFile event)
     {
-        Quests.getCapability(event.getEntityPlayer()).readNBT(
-            event.getEntityPlayer().getEntityData()
+        Quests.getCapability(event.getPlayer()).readNBT(
+            event.getPlayer().getPersistantData()
                 .get(Quests.QUESTS_CAP_ID.toString()));
     }
 
@@ -55,7 +55,7 @@ public class QuestEvents
     {
         if (!event.isWasDeath()) return;
         IQuestsCapability oldCap = Quests.getCapability(event.getOriginal());
-        IQuestsCapability newCap = Quests.getCapability(event.getEntityPlayer());
+        IQuestsCapability newCap = Quests.getCapability(event.getPlayer());
         newCap.readNBT(oldCap.writeNBT());
     }
 
@@ -99,7 +99,7 @@ public class QuestEvents
     @SubscribeEvent
     public void onItemPickup(EntityItemPickupEvent event)
     {
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         if (player != null) {
             List<IQuest> quests = Quests.getCurrent(player);
             boolean responded = false;

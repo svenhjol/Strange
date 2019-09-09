@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.message;
+package svenhjol.strange.base.message;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;

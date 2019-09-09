@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.message;
+package svenhjol.strange.base.message;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;

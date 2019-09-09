@@ -15,7 +15,7 @@ import svenhjol.strange.scrolls.quest.IActionDelegate;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Pickup implements IActionDelegate
+public class Gather implements IActionDelegate
 {
     private Action action;
     private ItemStack stack;
@@ -29,7 +29,7 @@ public class Pickup implements IActionDelegate
     @Override
     public Action.Type getType()
     {
-        return Action.Type.Pickup;
+        return Action.Type.Gather;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Pickup implements IActionDelegate
             pickupEvent.setResult(Event.Result.DENY);
             pickupEvent.setCanceled(true);
 
-            Meson.log("Collected " + stack + " and now there is " + collected);
+            Meson.log("Gathered " + stack + " and now there is " + collected);
             return true;
         }
         return false;
@@ -64,6 +64,15 @@ public class Pickup implements IActionDelegate
     public boolean isCompleted()
     {
         return count <= collected;
+    }
+
+    @Override
+    public float getCompletion()
+    {
+        int collected = Math.min(this.collected, this.count);
+        if (collected == 0 || count == 0) return 0;
+        float result = ((float)collected / (float)count) * 100;
+        return result;
     }
 
     @Override
@@ -91,13 +100,13 @@ public class Pickup implements IActionDelegate
         this.collected = data.getInt(COLLECTED);
     }
 
-    public Pickup setCount(int count)
+    public Gather setCount(int count)
     {
         this.count = count;
         return this;
     }
 
-    public Pickup setStack(ItemStack stack)
+    public Gather setStack(ItemStack stack)
     {
         this.stack = stack;
         return this;

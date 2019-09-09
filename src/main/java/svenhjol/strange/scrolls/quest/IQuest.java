@@ -1,7 +1,6 @@
 package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.module.Quests.QuestType;
 
@@ -13,7 +12,9 @@ public interface IQuest
 
     QuestType getType();
 
-    ITextComponent getDescription();
+    String getDescription();
+
+    String getTitle();
 
     Criteria getCriteria();
 
@@ -29,7 +30,9 @@ public interface IQuest
 
     void setId(String id);
 
-    void setDescription(ITextComponent description);
+    void setTitle(String title);
+
+    void setDescription(String description);
 
     void setType(QuestType type);
 

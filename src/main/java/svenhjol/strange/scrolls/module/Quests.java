@@ -15,13 +15,12 @@ import svenhjol.meson.iface.IMesonEnum;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.message.SendCurrentQuests;
 import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.event.QuestEvents;
-import svenhjol.strange.scrolls.message.RequestCurrentQuests;
-import svenhjol.strange.scrolls.message.SendCurrentQuests;
 import svenhjol.strange.scrolls.quest.IQuest;
 
 import java.util.Arrays;
@@ -38,12 +37,6 @@ public class Quests extends MesonModule
     public static Capability<IQuestsCapability> QUESTS = null;
 
     public static ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
-    @Override
-    public void init()
-    {
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestCurrentQuests.class, RequestCurrentQuests::encode, RequestCurrentQuests::decode, RequestCurrentQuests.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, SendCurrentQuests.class, SendCurrentQuests::encode, SendCurrentQuests::decode, SendCurrentQuests.Handler::handle);
-    }
 
     @Override
     public void setup(FMLCommonSetupEvent event)

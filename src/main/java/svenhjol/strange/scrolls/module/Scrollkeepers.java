@@ -17,6 +17,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,6 +40,7 @@ import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.module.Quests.QuestType;
 import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.generator.QuestGenerator;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -248,7 +250,11 @@ public class Scrollkeepers extends MesonModule
             ItemStack in1 = new ItemStack(Items.EMERALD, 3 + (rand.nextInt(tier * 3)));
             ItemStack out = new ItemStack(Scrolls.tiers.get(tier), 1);
 
-            ScrollItem.createQuest(out, tier, QuestType.random(), merchant.world.getGameTime(), merchant.getUniqueID());
+            IQuest quest = QuestGenerator.generate(QuestType.Gathering, tier, merchant.getUniqueID(), rand);
+            if (quest == null) return null;
+
+            ScrollItem.putTag(out, quest.toNBT());
+            out.setDisplayName(new StringTextComponent(quest.getTitle()));
             return new MerchantOffer(in1, out, 1, 0, 0.2F);
         }
     }

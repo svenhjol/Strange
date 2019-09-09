@@ -1,86 +1,132 @@
 package svenhjol.strange.travelrunes.module;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.placement.FrequencyConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.helper.ClientHelper;
+import svenhjol.meson.helper.SoundHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.travelrunes.block.BaseRunestoneBlock;
-import svenhjol.strange.travelrunes.block.EndRunestoneBlock;
-import svenhjol.strange.travelrunes.block.NetherRunestoneBlock;
-import svenhjol.strange.travelrunes.block.StoneRunestoneBlock;
-import svenhjol.strange.travelrunes.feature.StoneCircleFeature;
+import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.message.RunestoneActivated;
+import svenhjol.strange.travelrunes.block.RunestoneBlock;
 
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_RUNES, hasSubscriptions = true)
 public class Runestones extends MesonModule
 {
-    public static int inner = 100000;
-    public static int outer = 20000000;
-
-    public static BaseRunestoneBlock stone;
-    public static BaseRunestoneBlock nether;
-    public static BaseRunestoneBlock end;
+    public static RunestoneBlock runestone;
+    public static List<Destination> destinations = new ArrayList<>();
 
     private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
-    private List<Destination> destinations = new ArrayList<>();
+
+    // TODO configurable
+    public static int inner = 100000;
+    public static int outer = 20000000;
 
     @Override
     public void init()
     {
-        stone = new StoneRunestoneBlock(this);
-        nether = new NetherRunestoneBlock(this);
-        end = new EndRunestoneBlock(this);
+        runestone = new RunestoneBlock(this);
     }
 
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
-        StoneCircleFeature feature = new StoneCircleFeature(NoFeatureConfig::deserialize);
-        GenerationStage.Decoration stage = GenerationStage.Decoration.TOP_LAYER_MODIFICATION;
-        ConfiguredFeature<?> decoration = Biome.createDecoratedFeature(feature, IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_HEIGHTMAP_DOUBLE, new FrequencyConfig(1));
-
-        Registry.BIOME.stream().forEach(biome -> {
-            biome.addFeature(stage, decoration);
-        });
+        int dist = 100;
 
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
-        destinations.add((world, pos, rand) -> world.getSpawnPoint());
-        destinations.add((world, pos, rand) -> world.getSpawnPoint());
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Temple", getInnerPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getInnerPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getOuterPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getOuterPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Temple", getOuterPos(rand), 100, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getOuterPos(rand), 100, true));
+
+        if (Strange.loader.hasModule(StoneCircles.class)) {
+            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getInnerPos(rand), dist, true));
+        } else {
+            destinations.add((world, pos, rand) -> world.getSpawnPoint());
+        }
+
+        // TODO don't use magic strings
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getInnerPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getInnerPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getOuterPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getOuterPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getOuterPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getOuterPos(rand), dist, true));
+
+        if (Strange.loader.hasModule(StoneCircles.class)) {
+            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getOuterPos(rand), dist, true));
+        } else {
+            destinations.add((world, pos, rand) -> world.getSpawnPoint());
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void effectActivate(BlockPos pos)
+    {
+        ClientWorld world = ClientHelper.getClientWorld();
+
+        double spread = 0.75D;
+        for (int i = 0; i < 10; i++) {
+            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 1.5D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
+        }
+        SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
+    }
+
+    public static int getRuneType(IWorld world)
+    {
+        DimensionType type = world.getDimension().getType();
+
+        if (type == DimensionType.THE_END) {
+            return 2;
+        } else if (type == DimensionType.THE_NETHER) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static int getRuneValue(IWorld world, BlockPos pos, Random rand)
+    {
+        WorldBorder border = world.getWorldBorder();
+        double dist = border.getClosestDistance(pos.getX(), pos.getZ()); // TODO destinations based on proximity to border
+        return rand.nextInt(destinations.size());
+    }
+
+    public static BlockState getRune(IWorld world, BlockPos pos, Random rand)
+    {
+        return runestone.getDefaultState()
+            .with(RunestoneBlock.TYPE, getRuneType(world))
+            .with(RunestoneBlock.RUNE, getRuneValue(world, pos, rand));
     }
 
     private BlockPos getInnerPos(Random rand)
@@ -128,49 +174,58 @@ public class Runestones extends MesonModule
 
             if (player == null) return;
 
-            if (world.getBlockState(pos).getBlock() instanceof BaseRunestoneBlock) {
-                // prepare teleport
-                playerTeleport.put(player.getUniqueID(), pos);
+            if (world.getBlockState(pos).getBlock() instanceof RunestoneBlock) {
+                event.setCanceled(true);
+                event.getEntity().remove();
+
+                playerTeleport.put(player.getUniqueID(), pos); // prepare teleport, tick handles it
+                PacketHandler.sendTo(new RunestoneActivated(pos), (ServerPlayerEntity)player);
             }
         }
     }
 
     @SubscribeEvent
-    public void onTeleport(EnderTeleportEvent event)
+    public void onPlayerTick(PlayerTickEvent event)
     {
-        if (!event.getEntity().world.isRemote
-            && event.getEntityLiving() instanceof PlayerEntity
-            && playerTeleport.containsKey(event.getEntityLiving().getUniqueID())
+        if (event.phase == Phase.END
+            && !event.player.world.isRemote
+            && event.player.world.getGameTime() % 5 == 0
+            && !playerTeleport.isEmpty()
+            && playerTeleport.containsKey(event.player.getUniqueID())
         ) {
-            World world = event.getEntity().world;
-            PlayerEntity player = (PlayerEntity) event.getEntity();
+            World world = event.player.world;
+            PlayerEntity player = event.player;
             UUID id = player.getUniqueID();
             BlockPos pos = playerTeleport.get(id);
 
             teleport(world, player, pos);
 
             playerTeleport.remove(id);
-            event.setCanceled(true);
         }
     }
 
     private void teleport(World world, PlayerEntity player, BlockPos pos)
     {
         BlockState state = world.getBlockState(pos);
-        if (!(state.getBlock() instanceof BaseRunestoneBlock)) return;
-        int rune = state.get(BaseRunestoneBlock.RUNE);
-
-        Random rand = world.rand;
-        rand.setSeed(pos.toLong());
-        BlockPos dest = addRandomOffset(destinations.get(rune).get(world, pos, rand), rand, 20); // TODO null
+        if (!(state.getBlock() instanceof RunestoneBlock)) return;
+        int rune = state.get(RunestoneBlock.RUNE);
 
         if (world.dimension.getType() != DimensionType.OVERWORLD) {
             player.changeDimension(DimensionType.OVERWORLD);
         }
+
+        Random rand = world.rand;
+        rand.setSeed(pos.toLong());
+        BlockPos destPos = destinations.get(rune).get(world, pos, rand);
+
+        // TODO really lame
+        if (destPos == null) destPos = world.getSpawnPoint();
+
+        BlockPos dest = addRandomOffset(destPos, rand, 20);
+
         ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
         BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
         player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
-
     }
 
     public interface Destination

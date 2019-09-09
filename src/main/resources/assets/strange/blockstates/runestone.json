@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "rune=0,type=0": { "model": "strange:block/runestone_stone_0" },
+    "rune=1,type=0": { "model": "strange:block/runestone_stone_1" },
+    "rune=2,type=0": { "model": "strange:block/runestone_stone_2" },
+    "rune=3,type=0": { "model": "strange:block/runestone_stone_3" },
+    "rune=4,type=0": { "model": "strange:block/runestone_stone_4" },
+    "rune=5,type=0": { "model": "strange:block/runestone_stone_5" },
+    "rune=6,type=0": { "model": "strange:block/runestone_stone_6" },
+    "rune=7,type=0": { "model": "strange:block/runestone_stone_7" },
+    "rune=8,type=0": { "model": "strange:block/runestone_stone_8" },
+    "rune=9,type=0": { "model": "strange:block/runestone_stone_9" },
+    "rune=10,type=0": { "model": "strange:block/runestone_stone_10" },
+    "rune=11,type=0": { "model": "strange:block/runestone_stone_11" }
+  }
+}

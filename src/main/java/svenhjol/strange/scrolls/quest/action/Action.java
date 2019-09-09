@@ -2,7 +2,6 @@ package svenhjol.strange.scrolls.quest.action;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonEnum;
 import svenhjol.strange.scrolls.quest.IActionDelegate;
 import svenhjol.strange.scrolls.quest.IQuest;
@@ -47,13 +46,11 @@ public class Action<T extends IActionDelegate>
 
     public static <T extends IActionDelegate> Action<T> factory(CompoundNBT tag, IQuest quest)
     {
-        Type type = Type.valueOf(tag.getString(TYPE));
-
         try {
+            Type type = Type.valueOf(tag.getString(TYPE));
             String className = PREFIX + type.getCapitalizedName();
 
             // noinspection unchecked
-            Meson.log(className);
             Class<T> clazz = (Class<T>) Class.forName(className);
             Action<T> action = factory(clazz, quest);
 
@@ -97,6 +94,6 @@ public class Action<T extends IActionDelegate>
 
     public enum Type implements IMesonEnum
     {
-        Pickup
+        Gather
     }
 }

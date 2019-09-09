@@ -1,8 +1,6 @@
 package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.module.Quests.QuestType;
@@ -17,6 +15,7 @@ public class Quest implements IQuest
     private static final String PURCHASED = "purchased";
     private static final String QUEST_ID = "questId";
     private static final String QUEST_TYPE = "questType";
+    private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String CRITERIA = "criteria";
     private static final String TIER = "tier";
@@ -24,6 +23,7 @@ public class Quest implements IQuest
     private String questId = "";
     private String seller = "";
     private String questType = "";
+    private String title = "";
     private String description = "";
     private Criteria criteria = new Criteria(this);
     private long purchased;
@@ -68,6 +68,7 @@ public class Quest implements IQuest
         questId = tag.getString(QUEST_ID);
         seller = tag.getString(SELLER);
         questType = tag.getString(QUEST_TYPE);
+        title = tag.getString(TITLE);
         description = tag.getString(DESCRIPTION);
         purchased = tag.getLong(PURCHASED);
         tier = tag.getInt(TIER);
@@ -83,9 +84,15 @@ public class Quest implements IQuest
     }
 
     @Override
-    public void setDescription(ITextComponent description)
+    public void setTitle(String title)
     {
-        this.description = description.toString();
+        this.title = title;
+    }
+
+    @Override
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     @Override
@@ -129,9 +136,15 @@ public class Quest implements IQuest
     }
 
     @Override
-    public ITextComponent getDescription()
+    public String getDescription()
     {
-        return new StringTextComponent(description);
+        return description;
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return this.title;
     }
 
     @Override

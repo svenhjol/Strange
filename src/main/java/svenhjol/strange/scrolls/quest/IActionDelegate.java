@@ -13,6 +13,8 @@ public interface IActionDelegate
 
     boolean isCompleted();
 
+    float getCompletion();
+
     CompoundNBT toNBT();
 
     void setAction(Action action);
