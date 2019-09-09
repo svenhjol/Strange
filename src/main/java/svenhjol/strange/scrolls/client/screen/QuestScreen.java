@@ -8,10 +8,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.MinecraftForge;
+import svenhjol.strange.scrolls.client.gui.ConditionsPanel;
 import svenhjol.strange.scrolls.client.gui.GatherQuestPanel;
 import svenhjol.strange.scrolls.client.gui.HuntQuestPanel;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.action.Gather;
@@ -63,21 +65,26 @@ public class QuestScreen extends Screen implements IRenderable
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
+        int mid = (width / 2);
+
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), (width / 2), 40, 0xFFFFFF);
+        this.drawCenteredString(this.font, this.title.getFormattedText(), mid, 40, 0xFFFFFF);
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
 
-        this.drawCenteredString(this.font, quest.getDescription(), (width / 2), 60, 0xFFFFFF);
+        this.drawCenteredString(this.font, quest.getDescription(), mid, 60, 0xFFFFFF);
 
         Criteria criteria = quest.getCriteria();
 
         if (!criteria.getActions(Gather.class).isEmpty()) {
-            new GatherQuestPanel(quest, 90, (width / 2) - 160,85);
+            new GatherQuestPanel(quest, mid - 160, 85, 90);
         }
         if (!criteria.getActions(Hunt.class).isEmpty()) {
-            new HuntQuestPanel(quest, 90, (width / 2) + 60, 85);
+            new HuntQuestPanel(quest, mid + 60, 85, 90);
+        }
+        if (!criteria.getConditions().isEmpty()) {
+            new ConditionsPanel(quest, mid, 145, width);
         }
 
         GlStateManager.popMatrix();
@@ -86,9 +93,8 @@ public class QuestScreen extends Screen implements IRenderable
 
     private void accept()
     {
-        // TODO message to play accept sound
         if (stack != null) {
-            Quests.getCapability(player).acceptQuest(player, quest);
+            MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest));
             stack.shrink(1);
         }
         this.close();
@@ -96,11 +102,10 @@ public class QuestScreen extends Screen implements IRenderable
 
     private void decline()
     {
-        // TODO message to play decline sound
         if (stack != null) {
             stack.shrink(1);
         } else {
-            Quests.getCapability(player).removeQuest(player, quest);
+            MinecraftForge.EVENT_BUS.post(new QuestEvent.Decline(player, quest));
         }
         this.close();
     }

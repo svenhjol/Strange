@@ -2,7 +2,6 @@ package svenhjol.strange.scrolls.module;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,12 +10,10 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.message.SendCurrentQuests;
 import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
@@ -65,8 +62,7 @@ public class Quests extends MesonModule
 
     public static void update(PlayerEntity player)
     {
-        IQuestsCapability cap = Quests.getCapability(player);
-        PacketHandler.sendTo(new SendCurrentQuests(cap.getCurrentQuests(player)), (ServerPlayerEntity)player);
+        Quests.getCapability(player).updateCurrentQuests(player);
     }
 
     public static void showQuestScreen(PlayerEntity player, IQuest quest)

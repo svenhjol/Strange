@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.generator;
 
+import net.minecraft.world.World;
 import svenhjol.strange.scrolls.quest.IGenerator;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
@@ -11,7 +12,7 @@ public class Generator
 {
     private static final String PREFIX = "svenhjol.strange.scrolls.quest.generator.";
 
-    public static IQuest generate(int tier, Random rand)
+    public static IQuest generate(World world, int tier)
     {
         IQuest quest = new Quest();
         quest.setTier(tier);
@@ -29,7 +30,7 @@ public class Generator
             generators.put(type, factory(type));
         }
 
-        generators.forEach((type, gen) -> gen.generate(quest, tier, rand));
+        generators.forEach((type, gen) -> gen.generate(world, quest, tier));
 
         return quest;
     }

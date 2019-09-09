@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import svenhjol.strange.scrolls.quest.IQuest;
 
-public abstract class BaseQuestPanel extends AbstractGui
+public abstract class BasePanel extends AbstractGui
 {
     protected IQuest quest;
     protected int width;
@@ -19,8 +19,9 @@ public abstract class BaseQuestPanel extends AbstractGui
     protected TextureManager textures;
     protected int primaryTextColor = 0xFFFFFF;
     protected int secondaryTextColor = 0xAAAAAA;
+    protected int pad = 8;
 
-    public BaseQuestPanel(IQuest quest, int width)
+    public BasePanel(IQuest quest, int width)
     {
         this.quest = quest;
         this.width = width;
@@ -28,6 +29,12 @@ public abstract class BaseQuestPanel extends AbstractGui
         this.fonts = mc.fontRenderer;
         this.items = mc.getItemRenderer();
         this.textures = mc.getTextureManager();
+    }
+
+    public void drawBackground(int x0, int x1, int y0, int y1)
+    {
+        // draw background rect
+        AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
     }
 
     public void renderIcon(ResourceLocation icon, int x, int y, int offset)

@@ -3,21 +3,19 @@ package svenhjol.strange.scrolls.quest;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.condition.Condition;
 
-public interface IActionDelegate
+public interface IConditionDelegate
 {
-    Action.Type getType();
+    boolean isSatisfied();
 
     boolean respondTo(Event event);
 
-    boolean isCompleted();
-
-    float getCompletion();
+    Condition.Type getType();
 
     CompoundNBT toNBT();
 
-    void setQuest(IQuest quest);
-
     void fromNBT(INBT nbt);
+
+    void setQuest(IQuest quest);
 }

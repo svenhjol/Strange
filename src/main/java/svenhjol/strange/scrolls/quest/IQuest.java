@@ -2,6 +2,7 @@ package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
+import svenhjol.meson.iface.IMesonEnum;
 
 import java.util.UUID;
 
@@ -23,6 +24,8 @@ public interface IQuest
 
     boolean respondTo(Event event);
 
+    State getState();
+
     void fromNBT(CompoundNBT tag);
 
     void setId(String id);
@@ -36,4 +39,24 @@ public interface IQuest
     void setTier(int tier);
 
     void setCriteria(Criteria criteria);
+
+    void setState(State state);
+
+    enum State implements IMesonEnum
+    {
+        NotStarted,
+        Started,
+        Failed,
+        Completed;
+
+        // TODO move this to IMesonEnum
+        public static State valueOrDefault(String name, State def) {
+            try {
+                if (name == null || name.isEmpty()) return def;
+                return State.valueOf(name);
+            } catch (Exception e) {
+                return def;
+            }
+        }
+    }
 }

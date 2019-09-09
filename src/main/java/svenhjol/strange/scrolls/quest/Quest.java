@@ -5,7 +5,9 @@ import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.condition.Condition;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Quest implements IQuest
@@ -15,6 +17,7 @@ public class Quest implements IQuest
     private static final String QUEST_ID = "questId";
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
+    private static final String STATE = "state";
     private static final String CRITERIA = "criteria";
     private static final String TIER = "tier";
 
@@ -23,6 +26,7 @@ public class Quest implements IQuest
     private String title = "";
     private String description = "";
     private Criteria criteria = new Criteria(this);
+    private State state = State.NotStarted;
     private long purchased;
     private int tier;
 
@@ -36,26 +40,16 @@ public class Quest implements IQuest
     {
         CompoundNBT tag = new CompoundNBT();
 
+        tag.putInt(TIER, tier);
         tag.putString(QUEST_ID, questId);
         tag.putString(SELLER, seller);
+        tag.putString(TITLE, title);
         tag.putString(DESCRIPTION, description);
-        tag.put(CRITERIA, criteria.toNBT());
+        tag.putString(STATE, state.toString());
         tag.putLong(PURCHASED, purchased);
-        tag.putInt(TIER, tier);
+        tag.put(CRITERIA, criteria.toNBT());
 
         return tag;
-    }
-
-    @Override
-    public boolean respondTo(Event event)
-    {
-        boolean responded = false;
-
-        for (Action action : this.criteria.getActions()) {
-            responded = action.respondTo(event) || responded;
-        }
-
-        return responded;
     }
 
     @Override
@@ -66,10 +60,36 @@ public class Quest implements IQuest
         title = tag.getString(TITLE);
         description = tag.getString(DESCRIPTION);
         purchased = tag.getLong(PURCHASED);
+        state = State.valueOrDefault(tag.getString(STATE), State.NotStarted);
         tier = tag.getInt(TIER);
 
         criteria = new Criteria(this);
         criteria.fromNBT(tag.getCompound(CRITERIA));
+    }
+
+    @Override
+    public boolean respondTo(Event event)
+    {
+        boolean responded = false;
+
+        final List<Condition<?>> conditions = this.criteria.getConditions();
+        final List<Action<?>> actions = this.criteria.getActions();
+
+        for (Condition condition : conditions) {
+            responded = condition.respondTo(event) || responded;
+        }
+
+        for (Action action : actions) {
+            responded = action.respondTo(event) || responded;
+        }
+
+        return responded;
+    }
+
+    @Override
+    public State getState()
+    {
+        return state;
     }
 
     @Override
@@ -109,6 +129,12 @@ public class Quest implements IQuest
     }
 
     @Override
+    public void setState(State state)
+    {
+        this.state = state;
+    }
+
+    @Override
     public String getId()
     {
         return questId;
@@ -136,7 +162,7 @@ public class Quest implements IQuest
     public UUID getSeller()
     {
         if (seller.isEmpty()) {
-            return Scrollkeepers.ANY_SELLER; // bad, the quest is broken
+            return Scrollkeepers.ANY_SELLER;
         }
         return UUID.fromString(seller);
     }

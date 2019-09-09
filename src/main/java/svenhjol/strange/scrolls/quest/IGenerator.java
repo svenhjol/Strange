@@ -1,8 +1,8 @@
 package svenhjol.strange.scrolls.quest;
 
-import java.util.Random;
+import net.minecraft.world.World;
 
 public interface IGenerator
 {
-    IQuest generate(IQuest quest, int tier, Random rand);
+    IQuest generate(World world, IQuest quest, int tier);
 }

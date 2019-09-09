@@ -14,6 +14,8 @@ public interface IQuestsCapability
 
     List<IQuest> getCurrentQuests(PlayerEntity player);
 
+    void updateCurrentQuests(PlayerEntity player);
+
     void readNBT(INBT tag);
 
     INBT writeNBT();

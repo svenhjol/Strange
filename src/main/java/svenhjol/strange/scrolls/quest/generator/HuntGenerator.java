@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.quest.generator;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import svenhjol.strange.scrolls.quest.IGenerator;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.action.Action;
@@ -11,7 +12,7 @@ import java.util.*;
 public class HuntGenerator implements IGenerator
 {
     @Override
-    public IQuest generate(IQuest quest, int tier, Random rand)
+    public IQuest generate(World world, IQuest quest, int tier)
     {
         if (tier == 1) {
             Map<ResourceLocation, Integer> targets = new HashMap<>();
@@ -19,10 +20,10 @@ public class HuntGenerator implements IGenerator
             targets.put(new ResourceLocation("zombie"), 10);
             targets.put(new ResourceLocation("skeleton"), 10);
 
-            int max = rand.nextInt(2) + 1;
+            int max = world.rand.nextInt(2) + 1;
             for (int i = 0; i < max; i++) {
                 List<ResourceLocation> keys = new ArrayList<>(targets.keySet());
-                ResourceLocation target = keys.get(rand.nextInt(keys.size()));
+                ResourceLocation target = keys.get(world.rand.nextInt(keys.size()));
                 int count = targets.get(target);
 
                 Action<Hunt> action = Action.factory(Hunt.class, quest);

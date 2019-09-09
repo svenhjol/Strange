@@ -27,6 +27,12 @@ public final class DummyCapability implements IQuestsCapability
     }
 
     @Override
+    public void updateCurrentQuests(PlayerEntity player)
+    {
+        // no op
+    }
+
+    @Override
     public void readNBT(INBT tag)
     {
         // no op

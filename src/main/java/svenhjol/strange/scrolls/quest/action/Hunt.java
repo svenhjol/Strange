@@ -11,11 +11,12 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.quest.IActionDelegate;
+import svenhjol.strange.scrolls.quest.IQuest;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Hunt implements IActionDelegate
 {
-    private Action action;
+    private IQuest quest;
     private ResourceLocation target;
     private int count;
     private int killed;
@@ -92,9 +93,9 @@ public class Hunt implements IActionDelegate
     }
 
     @Override
-    public void setAction(Action action)
+    public void setQuest(IQuest quest)
     {
-        this.action = action;
+        this.quest = quest;
     }
 
     @Override

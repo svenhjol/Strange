@@ -22,6 +22,7 @@ import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -37,6 +38,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.generator.Generator;
@@ -123,7 +125,7 @@ public class Scrollkeepers extends MesonModule
             && ((VillagerEntity)event.getTarget()).getVillagerData().getProfession() == profession
         ) {
             VillagerEntity villager = (VillagerEntity)event.getTarget();
-            PlayerEntity player = event.getEntityPlayer();
+            PlayerEntity player = event.getPlayer();
             boolean result = completeVillagerQuest(player, villager);
             // TODO reward
         }
@@ -184,7 +186,7 @@ public class Scrollkeepers extends MesonModule
             int highestTier = 0;
             for (IQuest quest : completableQuests) {
                 highestTier = Math.max(highestTier, quest.getTier());
-                cap.removeQuest(player, quest);
+                MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
 
             VillagerData data = villager.getVillagerData();
@@ -249,7 +251,7 @@ public class Scrollkeepers extends MesonModule
             ItemStack in1 = new ItemStack(Items.EMERALD, 3 + (rand.nextInt(tier * 3)));
             ItemStack out = new ItemStack(Scrolls.tiers.get(tier), 1);
 
-            IQuest quest = Generator.generate(tier, rand);
+            IQuest quest = Generator.generate(merchant.world, tier);
             quest.setSeller(merchant.getUniqueID());
             if (quest == null) return null;
 

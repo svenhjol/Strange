@@ -1,9 +1,12 @@
 package svenhjol.strange.scrolls.capability;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.base.message.SendCurrentQuests;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
@@ -24,18 +27,26 @@ public class QuestsCapability implements IQuestsCapability
             && currentQuests.size() <= Quests.max
         ) {
             currentQuests.add(quest);
+            updateCurrentQuests(player);
         }
     }
 
     public void removeQuest(PlayerEntity player, IQuest quest)
     {
         currentQuests.removeIf(q -> q.getId().equals(quest.getId()));
+        updateCurrentQuests(player);
     }
 
     @Override
     public List<IQuest> getCurrentQuests(PlayerEntity player)
     {
         return currentQuests;
+    }
+
+    @Override
+    public void updateCurrentQuests(PlayerEntity player)
+    {
+            PacketHandler.sendTo(new SendCurrentQuests(getCurrentQuests(player)), (ServerPlayerEntity)player);
     }
 
     @Override

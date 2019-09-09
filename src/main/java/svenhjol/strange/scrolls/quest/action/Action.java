@@ -9,6 +9,8 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.scrolls.quest.IActionDelegate;
 import svenhjol.strange.scrolls.quest.IQuest;
 
+import javax.annotation.Nullable;
+
 public class Action<T extends IActionDelegate>
 {
     private static final String TYPE = "type";
@@ -24,6 +26,14 @@ public class Action<T extends IActionDelegate>
         this.quest = quest;
         this.delegate = delegate;
         this.type = delegate.getType();
+        this.delegate.setQuest(quest);
+    }
+
+    @Nullable
+    public Action.Type getType()
+    {
+        if (delegate == null) return null;
+        return delegate.getType();
     }
 
     public boolean respondTo(Event event)
@@ -77,7 +87,7 @@ public class Action<T extends IActionDelegate>
 
     public boolean isCompleted()
     {
-        if (delegate == null) return false;
+        if (delegate == null) return true;
         return delegate.isCompleted();
     }
 

@@ -9,13 +9,14 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.quest.IActionDelegate;
+import svenhjol.strange.scrolls.quest.IQuest;
 
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Gather implements IActionDelegate
 {
-    private Action action;
+    private IQuest quest;
     private ItemStack stack;
     private int count;
     private int collected;
@@ -64,6 +65,7 @@ public class Gather implements IActionDelegate
             Meson.log("Gathered " + stack + " and now there is " + collected);
             return true;
         }
+
         return false;
     }
 
@@ -91,13 +93,6 @@ public class Gather implements IActionDelegate
         tag.putInt(COUNT, count);
         return tag;
     }
-
-    @Override
-    public void setAction(Action action)
-    {
-        this.action = action;
-    }
-
     @Override
     public void fromNBT(INBT nbt)
     {
@@ -105,6 +100,12 @@ public class Gather implements IActionDelegate
         this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
         this.count = data.getInt(COUNT);
         this.collected = data.getInt(COLLECTED);
+    }
+
+    @Override
+    public void setQuest(IQuest quest)
+    {
+        this.quest = quest;
     }
 
     public Gather setCount(int count)
