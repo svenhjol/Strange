@@ -34,10 +34,7 @@ public class HuntQuestPanel extends BasePanel
 
             // draw remaining count and item icon
             this.drawRightAlignedString(fonts, String.valueOf(remaining), mid - 30, y, primaryTextColor);
-//                items.renderItemIntoGUI(stack, mid - 14, y - 5);
-
             EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
-
             this.drawString(fonts, entity.getName().getFormattedText(), mid + 4, y, primaryTextColor);
         }
     }
