@@ -8,14 +8,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
-import svenhjol.strange.scrolls.quest.IActionDelegate;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Gather implements IActionDelegate
+public class Gather implements ICondition
 {
+    public final static String ID = "Gather";
+
     private IQuest quest;
     private ItemStack stack;
     private int count;
@@ -26,9 +29,15 @@ public class Gather implements IActionDelegate
     private final String COLLECTED = "collected";
 
     @Override
-    public Action.Type getType()
+    public String getType()
     {
-        return Action.Type.Gather;
+        return "action";
+    }
+
+    @Override
+    public String getId()
+    {
+        return ID;
     }
 
     @Override
@@ -46,21 +55,27 @@ public class Gather implements IActionDelegate
             PlayerEntity player = pickupEvent.getPlayer();
             World world = pickupEvent.getPlayer().world;
 
-            int x = player.getPosition().getX();
-            int y = player.getPosition().getY();
-            int z = player.getPosition().getZ();
+            int count = pickedUp.getCount();
+            int remaining = getRemaining();
 
-            collected += pickedUp.getCount();
-
-            if (isCompleted()) {
-                Action.playActionCompleteSound(player);
+            if (count > remaining) {
+                // set the count to the remainder
+                pickedUp.setCount(count - remaining);
+                count = remaining;
             } else {
-                Action.playActionCountSound(player);
+                // cancel the event, don't pick up any items
+                pickupEvent.getItem().remove();
+                pickupEvent.setResult(Event.Result.DENY);
+                pickupEvent.setCanceled(true);
             }
 
-            pickupEvent.getItem().remove();
-            pickupEvent.setResult(Event.Result.DENY);
-            pickupEvent.setCanceled(true);
+            collected += count;
+
+            if (isCompleted()) {
+                Quests.playActionCompleteSound(player);
+            } else {
+                Quests.playActionCountSound(player);
+            }
 
             Meson.log("Gathered " + stack + " and now there is " + collected);
             return true;
@@ -128,6 +143,11 @@ public class Gather implements IActionDelegate
     public int getCount()
     {
         return this.count;
+    }
+
+    public int getRemaining()
+    {
+        return count - collected;
     }
 
     public ItemStack getStack()

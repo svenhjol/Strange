@@ -23,8 +23,8 @@ import svenhjol.strange.scrolls.capability.QuestsProvider;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.IQuest.State;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest.State;
 
 import java.util.ArrayList;
 import java.util.List;

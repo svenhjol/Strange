@@ -2,7 +2,7 @@ package svenhjol.strange.scrolls.capability;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 

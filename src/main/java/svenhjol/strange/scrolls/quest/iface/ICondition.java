@@ -1,17 +1,20 @@
-package svenhjol.strange.scrolls.quest;
+package svenhjol.strange.scrolls.quest.iface;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.quest.condition.Condition;
 
-public interface IConditionDelegate
+public interface ICondition
 {
-    boolean isSatisfied();
+    String getId();
+
+    String getType();
 
     boolean respondTo(Event event);
 
-    Condition.Type getType();
+    boolean isCompleted();
+
+    float getCompletion();
 
     CompoundNBT toNBT();
 

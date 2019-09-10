@@ -8,7 +8,7 @@ import net.minecraft.nbt.ListNBT;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.base.message.SendCurrentQuests;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
 
 import java.util.ArrayList;

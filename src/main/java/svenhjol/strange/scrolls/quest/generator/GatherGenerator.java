@@ -4,12 +4,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.World;
-import svenhjol.strange.scrolls.quest.IGenerator;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.action.Gather;
-import svenhjol.strange.scrolls.quest.condition.Condition;
-import svenhjol.strange.scrolls.quest.condition.Time;
+import svenhjol.strange.scrolls.quest.iface.IGenerator;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
+import svenhjol.strange.scrolls.quest.limit.Time;
+import svenhjol.strange.scrolls.quest.reward.XP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class GatherGenerator implements IGenerator
                 Item item = keys.get(world.rand.nextInt(keys.size()));
                 int count = items.get(item);
 
-                Action<Gather> action = Action.factory(Gather.class, quest);
+                Condition<Gather> action = Condition.factory(Gather.class, quest);
                 action.getDelegate()
                     .setStack(new ItemStack(item))
                     .setCount(count);
@@ -43,11 +43,16 @@ public class GatherGenerator implements IGenerator
                 quest.getCriteria().addAction(action);
             }
 
-            Condition<Time> condition = Condition.factory(Time.class, quest);
-            condition.getDelegate()
-                .setLimit(1000);
+            Condition<Time> limit = Condition.factory(Time.class, quest);
+            limit.getDelegate()
+                .setLimit(6000);
 
-            quest.getCriteria().addCondition(condition);
+            quest.getCriteria().addLimit(limit);
+
+            Condition<XP> xp = Condition.factory(XP.class, quest);
+            xp.getDelegate().setAmount(1000);
+
+            quest.getCriteria().addReward(xp);
         }
 
         return quest;

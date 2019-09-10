@@ -3,19 +3,20 @@ package svenhjol.strange.scrolls.client.gui;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.client.QuestIcons;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 
-public class HuntQuestPanel extends BasePanel
+public class HuntPanel extends BasePanel
 {
-    public HuntQuestPanel(IQuest quest, int mid, int y, int width)
+    public HuntPanel(IQuest quest, int mid, int y, int width)
     {
         super(quest, width);
 
-        List<Action<Hunt>> actions = quest.getCriteria().getActions(Hunt.class);
+        List<Condition<Hunt>> actions = quest.getCriteria().getActions(Hunt.class);
 
         if (actions.isEmpty()) return;
         drawBackground(mid - width, mid + width, y, y + 16 + (actions.size() * 16) + pad);
@@ -35,7 +36,11 @@ public class HuntQuestPanel extends BasePanel
             // draw remaining count and item icon
             this.drawRightAlignedString(fonts, String.valueOf(remaining), mid - 30, y, primaryTextColor);
             EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
+            blitItemIcon(mid - 72, y, "iron_sword");
             this.drawString(fonts, entity.getName().getFormattedText(), mid + 4, y, primaryTextColor);
+
+            // show tick if complete
+            if (remaining == 0) blitIcon(mid - 8, y, QuestIcons.ICON_TICK);
         }
     }
 }

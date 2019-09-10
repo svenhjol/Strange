@@ -40,8 +40,8 @@ import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.generator.Generator;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
+import svenhjol.strange.scrolls.quest.Generator;
 
 import javax.annotation.Nullable;
 import java.util.*;

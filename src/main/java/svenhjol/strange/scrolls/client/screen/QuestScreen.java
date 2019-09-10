@@ -9,15 +9,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
-import svenhjol.strange.scrolls.client.gui.ConditionsPanel;
-import svenhjol.strange.scrolls.client.gui.GatherQuestPanel;
-import svenhjol.strange.scrolls.client.gui.HuntQuestPanel;
+import svenhjol.strange.scrolls.client.gui.GatherPanel;
+import svenhjol.strange.scrolls.client.gui.HuntPanel;
+import svenhjol.strange.scrolls.client.gui.LimitsPanel;
+import svenhjol.strange.scrolls.client.gui.RewardsPanel;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.IQuest;
 import svenhjol.strange.scrolls.quest.action.Gather;
 import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestScreen extends Screen implements IRenderable
 {
@@ -76,15 +77,19 @@ public class QuestScreen extends Screen implements IRenderable
         this.drawCenteredString(this.font, quest.getDescription(), mid, 60, 0xFFFFFF);
 
         Criteria criteria = quest.getCriteria();
+        int panelWidth = 85;
 
         if (!criteria.getActions(Gather.class).isEmpty()) {
-            new GatherQuestPanel(quest, mid - 160, 85, 90);
+            new GatherPanel(quest, width / 4, 85, panelWidth);
         }
         if (!criteria.getActions(Hunt.class).isEmpty()) {
-            new HuntQuestPanel(quest, mid + 60, 85, 90);
+            new HuntPanel(quest, 3 * (width / 4), 85, panelWidth);
         }
-        if (!criteria.getConditions().isEmpty()) {
-            new ConditionsPanel(quest, mid, 145, width);
+        if (!criteria.getLimits().isEmpty()) {
+            new LimitsPanel(quest, width / 4, 145, panelWidth);
+        }
+        if (!criteria.getRewards().isEmpty()) {
+            new RewardsPanel(quest, 3 * (width / 4), 145, panelWidth);
         }
 
         GlStateManager.popMatrix();

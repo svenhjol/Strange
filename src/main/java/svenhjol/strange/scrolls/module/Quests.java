@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -14,13 +15,14 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.client.screen.QuestScreen;
 import svenhjol.strange.scrolls.event.QuestEvents;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,5 +75,15 @@ public class Quests extends MesonModule
     public static void showQuestScreen(PlayerEntity player, ItemStack stack)
     {
         Minecraft.getInstance().displayGuiScreen(new QuestScreen(player, stack));
+    }
+
+    public static void playActionCompleteSound(PlayerEntity player)
+    {
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+    }
+
+    public static void playActionCountSound(PlayerEntity player)
+    {
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 }

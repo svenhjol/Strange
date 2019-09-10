@@ -1,6 +1,6 @@
 package svenhjol.strange.scrolls.client;
 
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.quest;
+package svenhjol.strange.scrolls.quest.iface;
 
 import net.minecraft.world.World;
 

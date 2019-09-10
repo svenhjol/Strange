@@ -7,7 +7,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.client.QuestIcons;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public abstract class BasePanel extends AbstractGui
 {
@@ -37,10 +38,20 @@ public abstract class BasePanel extends AbstractGui
         AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
     }
 
-    public void renderIcon(ResourceLocation icon, int x, int y, int offset)
+    public void blitIcon(int x, int y, int[] icon)
     {
+        int w = QuestIcons.ICON_WIDTH;
+        int h = QuestIcons.ICON_HEIGHT;
+
+        textures.bindTexture(QuestIcons.ICONS);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        textures.bindTexture(icon);
-        AbstractGui.blit(x, y, offset, 0.0F, 0.0F, 18, 18, 128, 128);
+        blit(x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
+    }
+
+    public void blitItemIcon(int x, int y, String name)
+    {
+        textures.bindTexture(new ResourceLocation( "textures/item/" + name + ".png"));
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        blit(x, y, 0, 0, 16, 16);
     }
 }

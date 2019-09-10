@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.quest.condition;
+package svenhjol.strange.scrolls.quest.limit;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,12 +8,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.quest.IConditionDelegate;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.condition.Condition.Type;
+import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public class Time implements IConditionDelegate
+public class Time implements ICondition
 {
+    public final static String ID = "Time";
+
     private IQuest quest;
     private long start;
     private long lastTime;
@@ -24,10 +25,16 @@ public class Time implements IConditionDelegate
     private final String LAST_TIME = "lastTime";
 
     @Override
-    public boolean isSatisfied()
+    public boolean isCompleted()
     {
         if (start == 0 || lastTime == 0 || limit == 0) return true;
         return lastTime - start < limit;
+    }
+
+    @Override
+    public float getCompletion()
+    {
+        return 0;
     }
 
     @Override
@@ -57,9 +64,15 @@ public class Time implements IConditionDelegate
     }
 
     @Override
-    public Type getType()
+    public String getType()
     {
-        return Type.Time;
+        return "limit";
+    }
+
+    @Override
+    public String getId()
+    {
+        return ID;
     }
 
     @Override

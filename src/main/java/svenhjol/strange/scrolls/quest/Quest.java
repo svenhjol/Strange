@@ -4,8 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
-import svenhjol.strange.scrolls.quest.action.Action;
-import svenhjol.strange.scrolls.quest.condition.Condition;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,16 +71,23 @@ public class Quest implements IQuest
     {
         boolean responded = false;
 
-        final List<Condition<?>> conditions = this.criteria.getConditions();
-        final List<Action<?>> actions = this.criteria.getActions();
+        final List<Condition<?>> limits = this.criteria.getLimits();
+        final List<Condition<?>> actions = this.criteria.getActions();
+        final List<Condition<?>> rewards = this.criteria.getRewards();
 
-        for (Condition condition : conditions) {
-            responded = condition.respondTo(event) || responded;
+        for (Condition limit : limits) {
+            responded = limit.respondTo(event) || responded;
         }
 
-        for (Action action : actions) {
+        for (Condition action : actions) {
             responded = action.respondTo(event) || responded;
         }
+
+        for (Condition reward : rewards) {
+            responded = reward.respondTo(event) || responded;
+        }
+
+
 
         return responded;
     }

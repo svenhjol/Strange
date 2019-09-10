@@ -10,12 +10,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
-import svenhjol.strange.scrolls.quest.IActionDelegate;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Hunt implements IActionDelegate
+public class Hunt implements ICondition
 {
+    public final static String ID = "Hunt";
+
     private IQuest quest;
     private ResourceLocation target;
     private int count;
@@ -26,9 +29,15 @@ public class Hunt implements IActionDelegate
     private final String KILLED = "killed";
 
     @Override
-    public Action.Type getType()
+    public String getType()
     {
-        return Action.Type.Hunt;
+        return "action";
+    }
+
+    @Override
+    public String getId()
+    {
+        return ID;
     }
 
     @Override
@@ -56,9 +65,9 @@ public class Hunt implements IActionDelegate
             this.killed++;
 
             if (isCompleted()) {
-                Action.playActionCompleteSound(player);
+                Quests.playActionCompleteSound(player);
             } else {
-                Action.playActionCountSound(player);
+                Quests.playActionCountSound(player);
             }
 
             Meson.log("Killed " + killedRes + " and now there is " + this.killed);

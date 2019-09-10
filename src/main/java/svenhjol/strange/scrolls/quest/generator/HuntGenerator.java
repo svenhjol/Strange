@@ -2,10 +2,10 @@ package svenhjol.strange.scrolls.quest.generator;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import svenhjol.strange.scrolls.quest.IGenerator;
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.action.Action;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.iface.IGenerator;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.*;
 
@@ -21,17 +21,21 @@ public class HuntGenerator implements IGenerator
             targets.put(new ResourceLocation("skeleton"), 10);
 
             int max = world.rand.nextInt(2) + 1;
-            for (int i = 0; i < max; i++) {
-                List<ResourceLocation> keys = new ArrayList<>(targets.keySet());
-                ResourceLocation target = keys.get(world.rand.nextInt(keys.size()));
-                int count = targets.get(target);
+            List keys = new ArrayList<>(targets.keySet());
+            Collections.shuffle(keys);
 
-                Action<Hunt> action = Action.factory(Hunt.class, quest);
+            int i = 0;
+            for (Object key : keys) {
+                ResourceLocation target = (ResourceLocation)key;
+                int count = (int)(targets.get(target) * (1.0F + (world.rand.nextFloat())));
+
+                Condition<Hunt> action = Condition.factory(Hunt.class, quest);
                 action.getDelegate()
                     .setTarget(target)
                     .setCount(count);
 
                 quest.getCriteria().addAction(action);
+                if (++i >= max) break;
             }
         }
 

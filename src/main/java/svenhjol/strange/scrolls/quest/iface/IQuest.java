@@ -1,8 +1,9 @@
-package svenhjol.strange.scrolls.quest;
+package svenhjol.strange.scrolls.quest.iface;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.iface.IMesonEnum;
+import svenhjol.strange.scrolls.quest.Criteria;
 
 import java.util.UUID;
 

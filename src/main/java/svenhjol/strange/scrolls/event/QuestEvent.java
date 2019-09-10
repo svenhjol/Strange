@@ -2,7 +2,7 @@ package svenhjol.strange.scrolls.event;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestEvent extends Event
 {

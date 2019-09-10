@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.base.message.RequestShowQuest;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestBadgeGui extends AbstractGui
 {

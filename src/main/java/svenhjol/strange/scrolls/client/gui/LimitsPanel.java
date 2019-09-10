@@ -1,27 +1,27 @@
 package svenhjol.strange.scrolls.client.gui;
 
-import svenhjol.strange.scrolls.quest.IQuest;
-import svenhjol.strange.scrolls.quest.condition.Condition;
-import svenhjol.strange.scrolls.quest.condition.Time;
+import svenhjol.strange.scrolls.quest.Condition;
+import svenhjol.strange.scrolls.quest.limit.Time;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 
-public class ConditionsPanel extends BasePanel
+public class LimitsPanel extends BasePanel
 {
-    public ConditionsPanel(IQuest quest, int mid, int y, int width)
+    public LimitsPanel(IQuest quest, int mid, int y, int width)
     {
         super(quest, width);
 
-        final List<Condition<?>> conditions = quest.getCriteria().getConditions();
+        final List<Condition<?>> limits = quest.getCriteria().getLimits();
 
-        if (conditions.isEmpty()) return;
-        drawBackground(mid - (width / 2) + 10, mid + (width / 2) - 10, y, y + 30);
+        if (limits.isEmpty()) return;
+        drawBackground(mid - width, mid + width, y, y + 30);
         y += pad;
 
-        for (Condition<?> condition : conditions) {
-            if (condition.getDelegate() instanceof Time) {
+        for (Condition<?> limit : limits) {
+            if (limit.getDelegate() instanceof Time) {
                 // render time row
-                Time time = (Time)condition.getDelegate();
+                Time time = (Time)limit.getDelegate();
                 String out = "";
 
                 final long remaining = (time.getRemaining() / 20);
@@ -37,6 +37,8 @@ public class ConditionsPanel extends BasePanel
                 } else {
                     out = "Complete within " + remaining + " seconds";
                 }
+
+                blitItemIcon(mid - 72, y, "compass_13");
                 this.drawString(fonts, out, mid - 60, y, primaryTextColor);
             }
         }

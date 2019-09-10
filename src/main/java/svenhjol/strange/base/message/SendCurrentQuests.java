@@ -8,7 +8,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.scrolls.client.QuestClient;
-import svenhjol.strange.scrolls.quest.IQuest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
 
 import java.io.ByteArrayInputStream;
