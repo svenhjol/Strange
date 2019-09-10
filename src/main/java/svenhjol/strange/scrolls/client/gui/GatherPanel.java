@@ -14,7 +14,7 @@ public class GatherPanel extends BasePanel
     {
         super(quest, width);
 
-        List<Condition<Gather>> toGather = quest.getCriteria().getActions(Gather.class);
+        List<Condition<Gather>> toGather = quest.getCriteria().getConditions(Gather.class);
 
         if (toGather.isEmpty()) return;
         drawBackground(mid - width, mid + width, y, y + 16 + (toGather.size() * 16) + pad);

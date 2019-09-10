@@ -2,7 +2,6 @@ package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.world.World;
 import svenhjol.strange.scrolls.quest.action.Gather;
-import svenhjol.strange.scrolls.quest.action.Hunt;
 import svenhjol.strange.scrolls.quest.iface.IGenerator;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -14,13 +13,23 @@ public class Generator
 
     public static IQuest generate(World world, int tier)
     {
+//        try {
+//            final IResource resource = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(Strange.MOD_ID, "quests/tier1/quest1.json"));
+//            Reader reader = new InputStreamReader(resource.getInputStream());
+//            final Object json = new Gson().fromJson(reader, Object.class);
+//
+//
+//        } catch (Exception e) {
+//            Meson.log("Could not load quest", e);
+//        }
+
         IQuest quest = new Quest();
         quest.setTier(tier);
         quest.setTitle("Level " + tier + " Quest");
         quest.setDescription("Level " + tier + " is super exciting");
 
         // TODO don't hardcode, select based on tier
-        List<String> types = new ArrayList<>(Arrays.asList(Gather.ID, Hunt.ID));
+        List<String> types = new ArrayList<>(Arrays.asList(Gather.ID));
 
         // create generators for each type
         Map<String, IGenerator> generators = new HashMap<>();

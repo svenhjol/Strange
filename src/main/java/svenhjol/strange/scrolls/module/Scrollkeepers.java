@@ -40,8 +40,8 @@ import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -94,7 +94,7 @@ public class Scrollkeepers extends MesonModule
 
             List<UUID> sellers = new ArrayList<>();
             QuestClient.currentQuests.forEach(quest -> {
-                if (quest.getCriteria().isCompleted()) {
+                if (quest.getCriteria().isSatisfied()) {
                     sellers.add(quest.getSeller());
                 }
             });
@@ -167,7 +167,7 @@ public class Scrollkeepers extends MesonModule
 
         for (IQuest quest : cap.getCurrentQuests(player)) {
             UUID seller = quest.getSeller();
-            if (!quest.getCriteria().isCompleted()) continue;
+            if (!quest.getCriteria().isSatisfied()) continue;
             if (!sellers.containsKey(seller)) sellers.put(seller, new ArrayList<>());
             sellers.get(seller).add(quest);
         }

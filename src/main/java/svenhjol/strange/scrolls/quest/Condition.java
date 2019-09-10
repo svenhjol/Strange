@@ -57,10 +57,10 @@ public class Condition<T extends ICondition>
         this.quest = quest;
     }
 
-    public boolean isCompleted()
+    public boolean isSatisfied()
     {
         if (delegate == null) return true;
-        return delegate.isCompleted();
+        return delegate.isSatisfied();
     }
 
     public CompoundNBT toNBT()

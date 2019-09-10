@@ -46,7 +46,7 @@ public class StoneCircleStructure extends Structure<StoneCircleConfig>
     @Override
     public String getStructureName()
     {
-        return StoneCircles.NAME;
+        return "Stone_Circle";
     }
 
     @Override

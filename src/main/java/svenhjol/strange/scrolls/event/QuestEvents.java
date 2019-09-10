@@ -45,24 +45,24 @@ public class QuestEvents
     @SubscribeEvent
     public void onQuestComplete(QuestEvent.Complete event)
     {
-        Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
         respondToEvent(event.getPlayer(), event);
+        Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
     @SubscribeEvent
     public void onQuestDecline(QuestEvent.Decline event)
     {
-        Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
         respondToEvent(event.getPlayer(), event);
+        Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
     @SubscribeEvent
     public void onQuestFail(QuestEvent.Fail event)
     {
         final PlayerEntity player = event.getPlayer();
+        respondToEvent(event.getPlayer(), event);
         player.sendStatusMessage(new StringTextComponent("YOU SUCK AT THIS"), true);
         Quests.getCapability(player).removeQuest(player, event.getQuest());
-        respondToEvent(event.getPlayer(), event);
     }
 
     @SubscribeEvent

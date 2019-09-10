@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -31,7 +32,7 @@ public class Gather implements ICondition
     @Override
     public String getType()
     {
-        return "action";
+        return Criteria.ACTION;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Gather implements ICondition
     @Override
     public boolean respondTo(Event event)
     {
-        if (isCompleted()) return false;
+        if (isSatisfied()) return false;
         if (collected >= count) return false;
 
         if (event instanceof EntityItemPickupEvent) {
@@ -71,7 +72,7 @@ public class Gather implements ICondition
 
             collected += count;
 
-            if (isCompleted()) {
+            if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
             } else {
                 Quests.playActionCountSound(player);
@@ -85,9 +86,15 @@ public class Gather implements ICondition
     }
 
     @Override
-    public boolean isCompleted()
+    public boolean isSatisfied()
     {
         return count <= collected;
+    }
+
+    @Override
+    public boolean isCompletable()
+    {
+        return true;
     }
 
     @Override

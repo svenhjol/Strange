@@ -16,7 +16,7 @@ public class HuntPanel extends BasePanel
     {
         super(quest, width);
 
-        List<Condition<Hunt>> actions = quest.getCriteria().getActions(Hunt.class);
+        List<Condition<Hunt>> actions = quest.getCriteria().getConditions(Hunt.class);
 
         if (actions.isEmpty()) return;
         drawBackground(mid - width, mid + width, y, y + 16 + (actions.size() * 16) + pad);

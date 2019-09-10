@@ -50,7 +50,7 @@ public abstract class BasePanel extends AbstractGui
 
     public void blitItemIcon(int x, int y, String name)
     {
-        textures.bindTexture(new ResourceLocation( "textures/item/" + name + ".png"));
+        textures.bindTexture(new ResourceLocation( "minecraft", "textures/item/" + name + ".png"));
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(x, y, 0, 0, 16, 16);
     }

@@ -27,7 +27,7 @@ public class QuestBadgeGui extends AbstractGui
 
         // progress
         float completion = quest.getCriteria().getCompletion();
-        boolean isComplete = quest.getCriteria().isCompleted();
+        boolean isComplete = quest.getCriteria().isSatisfied();
 
         int color = isComplete ? 0x8800FF00 : 0x88FFFF00;
 

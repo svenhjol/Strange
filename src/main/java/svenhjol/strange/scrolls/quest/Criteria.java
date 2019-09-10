@@ -13,14 +13,13 @@ import java.util.stream.Collectors;
 @SuppressWarnings("UnusedReturnValue")
 public class Criteria
 {
-    private static final String REWARDS = "rewards";
-    private static final String ACTIONS = "actions";
-    private static final String LIMITS = "limits";
+    public static final String LIMIT = "limit";
+    public static final String ACTION = "action";
+    public static final String REWARD = "reward";
 
-    private List<Condition<?>> actions = new ArrayList<>();
-    private List<Condition<?>> limits = new ArrayList<>();
-    private List<Condition<?>> rewards = new ArrayList<>();
+    private static final String CONDITIONS = "conditions";
 
+    private List<Condition<?>> conditions = new ArrayList<>();
     private IQuest quest;
 
     public Criteria(IQuest quest)
@@ -31,137 +30,73 @@ public class Criteria
     public CompoundNBT toNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-        ListNBT actions = new ListNBT();
-        ListNBT limits = new ListNBT();
-        ListNBT rewards = new ListNBT();
+        ListNBT conditions = new ListNBT();
 
-        for (Condition action : this.actions) {
-            actions.add(action.toNBT());
-        }
-        for (Condition limit : this.limits) {
-            limits.add(limit.toNBT());
-        }
-        for (Condition reward : this.rewards) {
-            rewards.add(reward.toNBT());
+        for (Condition condition : this.conditions) {
+            conditions.add(condition.toNBT());
         }
 
-        tag.put(ACTIONS, actions);
-        tag.put(LIMITS, limits);
-        tag.put(REWARDS, rewards);
+        tag.put(CONDITIONS, conditions);
         return tag;
     }
 
     public void fromNBT(CompoundNBT tag)
     {
-        ListNBT actions = (ListNBT)tag.get(ACTIONS);
-        ListNBT limits = (ListNBT)tag.get(LIMITS);
-        ListNBT rewards = (ListNBT)tag.get(REWARDS);
+        ListNBT conditions = (ListNBT)tag.get(CONDITIONS);
 
-        this.actions.clear();
-        this.limits.clear();
+        this.conditions.clear();
 
-        for (INBT nbt : actions) {
-            this.actions.add(Condition.factory( (CompoundNBT)nbt, quest) );
-        }
-        for (INBT nbt : limits) {
-            this.limits.add(Condition.factory( (CompoundNBT)nbt, quest) );
-        }
-        for (INBT nbt : rewards) {
-            this.rewards.add(Condition.factory( (CompoundNBT)nbt, quest) );
+        for (INBT nbt : conditions) {
+            this.conditions.add(Condition.factory( (CompoundNBT)nbt, quest) );
         }
     }
 
-    public Criteria addAction(Condition action)
+    public Criteria addCondition(Condition condition)
     {
-        this.actions.add(action);
+        this.conditions.add(condition);
         return this;
     }
 
-    public List<Condition<?>> getActions()
+    public List<Condition<?>> getConditions()
     {
-        return actions;
+        return conditions;
     }
 
-    public <T extends ICondition> List<Condition<T>> getActions(Class<T> clazz)
+    public <T extends ICondition> List<Condition<T>> getConditions(Class<T> clazz)
     {
         // noinspection unchecked
-        return actions.stream()
-            .filter(a -> clazz.isInstance(a.getDelegate()))
-            .map(a -> (Condition<T>) a)
-            .collect(Collectors.toList());
-    }
-
-    public Criteria addReward(Condition reward)
-    {
-        this.rewards.add(reward);
-        return this;
-    }
-
-    public List<Condition<?>> getRewards()
-    {
-        return rewards;
-    }
-
-    public <T extends ICondition> List<Condition<T>> getRewards(Class<T> clazz)
-    {
-        // noinspection unchecked
-        return rewards.stream()
-            .filter(r -> clazz.isInstance(r.getDelegate()))
-            .map(r -> (Condition<T>) r)
-            .collect(Collectors.toList());
-    }
-
-    public Criteria addLimit(Condition limit)
-    {
-        // limits overwrite
-        int overwrite = -1;
-
-        for (int i = 0; i < this.limits.size(); i++) {
-            final String existingType = this.limits.get(i).getType();
-            final String checkType = limit.getType();
-
-            if (existingType == null || checkType == null) continue;
-            if (existingType.equals(checkType)) overwrite = i;
-        }
-
-        if (overwrite >= 0) {
-            this.limits.set(overwrite, limit);
-        } else {
-            this.limits.add(limit);
-        }
-
-        return this;
-    }
-
-    public List<Condition<?>> getLimits()
-    {
-        return limits;
-    }
-
-    public <T extends ICondition> List<Condition<T>> getLimits(Class<T> clazz)
-    {
-        // noinspection unchecked
-        return limits.stream()
+        return conditions.stream()
             .filter(c -> clazz.isInstance(c.getDelegate()))
             .map(c -> (Condition<T>) c)
             .collect(Collectors.toList());
     }
 
-    public boolean isCompleted()
+    public List<Condition<ICondition>> getConditions(String type)
     {
-        return actions.stream().allMatch(Condition::isCompleted);
+        // noinspection unchecked
+        return conditions.stream()
+            .filter(c -> c.getType().equals(type))
+            .map(c -> (Condition<ICondition>) c)
+            .collect(Collectors.toList());
+    }
+
+    public boolean isSatisfied()
+    {
+        return conditions.stream().allMatch(Condition::isSatisfied);
     }
 
     public float getCompletion()
     {
         float complete = 0.0F;
 
-        for (Condition<?> action : actions) {
-            complete += action.getDelegate().getCompletion();
+        for (Condition<?> condition : conditions) {
+            if (condition.getDelegate().isCompletable()) {
+                complete += condition.getDelegate().getCompletion();
+            }
         }
 
         if (complete == 0.0F) return 0.0F;
-        float res = complete / (actions.size() * 100) * 100;
+        float res = complete / (conditions.size() * 100) * 100;
         return res;
     }
 }

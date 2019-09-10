@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.client.gui;
 
 import svenhjol.strange.scrolls.quest.Condition;
+import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.limit.Time;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -12,13 +13,13 @@ public class LimitsPanel extends BasePanel
     {
         super(quest, width);
 
-        final List<Condition<?>> limits = quest.getCriteria().getLimits();
-
+        final List<Condition<ICondition>> limits = quest.getCriteria().getConditions("limit");
         if (limits.isEmpty()) return;
+
         drawBackground(mid - width, mid + width, y, y + 30);
         y += pad;
 
-        for (Condition<?> limit : limits) {
+        for (Condition limit : limits) {
             if (limit.getDelegate() instanceof Time) {
                 // render time row
                 Time time = (Time)limit.getDelegate();
@@ -38,7 +39,7 @@ public class LimitsPanel extends BasePanel
                     out = "Complete within " + remaining + " seconds";
                 }
 
-                blitItemIcon(mid - 72, y, "compass_13");
+                blitItemIcon(mid - 72, y, "clock_13");
                 this.drawString(fonts, out, mid - 60, y, primaryTextColor);
             }
         }

@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
+import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -25,10 +26,16 @@ public class Time implements ICondition
     private final String LAST_TIME = "lastTime";
 
     @Override
-    public boolean isCompleted()
+    public boolean isSatisfied()
     {
         if (start == 0 || lastTime == 0 || limit == 0) return true;
         return lastTime - start < limit;
+    }
+
+    @Override
+    public boolean isCompletable()
+    {
+        return false;
     }
 
     @Override
@@ -66,7 +73,7 @@ public class Time implements ICondition
     @Override
     public String getType()
     {
-        return "limit";
+        return Criteria.LIMIT;
     }
 
     @Override

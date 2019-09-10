@@ -46,7 +46,7 @@ public class QuestsCapability implements IQuestsCapability
     @Override
     public void updateCurrentQuests(PlayerEntity player)
     {
-            PacketHandler.sendTo(new SendCurrentQuests(getCurrentQuests(player)), (ServerPlayerEntity)player);
+        PacketHandler.sendTo(new SendCurrentQuests(getCurrentQuests(player)), (ServerPlayerEntity)player);
     }
 
     @Override

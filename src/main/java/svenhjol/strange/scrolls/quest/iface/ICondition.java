@@ -12,7 +12,9 @@ public interface ICondition
 
     boolean respondTo(Event event);
 
-    boolean isCompleted();
+    boolean isSatisfied();
+
+    boolean isCompletable();
 
     float getCompletion();
 

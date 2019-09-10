@@ -1,6 +1,7 @@
 package svenhjol.strange.totems.item;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -11,10 +12,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.meson.helper.PlayerHelper;
 
 public class TotemOfReturningItem extends MesonItem
 {
@@ -57,7 +59,14 @@ public class TotemOfReturningItem extends MesonItem
         }
 
         // teleport the player
-        PlayerHelper.teleportPlayer(player, pos, dim);
+
+        if (!world.isRemote) {
+            ((ServerPlayerEntity) player).teleport((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
+            BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, pos);
+            player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
+        }
+
+//        PlayerHelper.teleportPlayer(player, pos, dim);
         stack.shrink(1);
         world.playSound(player, pos, SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8f, 1.0f);
         return super.onItemRightClick(world, player, hand);

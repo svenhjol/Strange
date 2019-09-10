@@ -129,14 +129,14 @@ public class Runestones extends MesonModule
             .with(RunestoneBlock.RUNE, getRuneValue(world, pos, rand));
     }
 
-    private BlockPos getInnerPos(Random rand)
+    public static BlockPos getInnerPos(Random rand)
     {
         int x = rand.nextInt(inner * 2) - inner;
         int z = rand.nextInt(inner * 2) - inner;
         return new BlockPos(x, 0, z);
     }
 
-    private BlockPos getOuterPos(Random rand)
+    public static BlockPos getOuterPos(Random rand)
     {
         int x = rand.nextInt(outer * 2) - outer;
         int z = rand.nextInt(outer * 2) - outer;

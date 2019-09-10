@@ -26,7 +26,7 @@ import java.util.Objects;
 public class StoneCircles extends MesonModule
 {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
-    public static final String NAME = "Stone_Circle";
+    public static final String NAME = "stone_circle";
     public static Structure<StoneCircleConfig> structure;
 
     @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating in a chunk.")
@@ -58,7 +58,7 @@ public class StoneCircles extends MesonModule
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
         // TODO Add to Meson RegistryHandler
-        Registry.register(Registry.FEATURE, ID.toString(), structure);
+        Registry.register(Registry.FEATURE, "stone_circle", structure);
         RegistryHandler.addRegisterable(structure, ID);
 
         configBiomes.forEach(biomeName -> {
@@ -66,12 +66,14 @@ public class StoneCircles extends MesonModule
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-        validBiomes.forEach(biome -> {
-            biome.addStructure(structure, new StoneCircleConfig((float)chance));
-
+        Registry.BIOME.forEach(biome -> {
             biome.addFeature(
                 GenerationStage.Decoration.SURFACE_STRUCTURES,
                 Biome.createDecoratedFeature(structure, new StoneCircleConfig((float)chance), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+        });
+
+        validBiomes.forEach(biome -> {
+            biome.addStructure(structure, new StoneCircleConfig((float)chance));
         });
     }
 }

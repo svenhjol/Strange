@@ -71,23 +71,11 @@ public class Quest implements IQuest
     {
         boolean responded = false;
 
-        final List<Condition<?>> limits = this.criteria.getLimits();
-        final List<Condition<?>> actions = this.criteria.getActions();
-        final List<Condition<?>> rewards = this.criteria.getRewards();
+        final List<Condition<?>> conditions = this.criteria.getConditions();
 
-        for (Condition limit : limits) {
-            responded = limit.respondTo(event) || responded;
+        for (Condition condition : conditions) {
+            responded = condition.respondTo(event) || responded;
         }
-
-        for (Condition action : actions) {
-            responded = action.respondTo(event) || responded;
-        }
-
-        for (Condition reward : rewards) {
-            responded = reward.respondTo(event) || responded;
-        }
-
-
 
         return responded;
     }

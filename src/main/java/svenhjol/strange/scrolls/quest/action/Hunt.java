@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -31,7 +32,7 @@ public class Hunt implements ICondition
     @Override
     public String getType()
     {
-        return "action";
+        return Criteria.ACTION;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Hunt implements ICondition
     @Override
     public boolean respondTo(Event event)
     {
-        if (isCompleted()) return false;
+        if (isSatisfied()) return false;
         if (killed >= count) return false;
 
         if (event instanceof LivingDeathEvent) {
@@ -64,7 +65,7 @@ public class Hunt implements ICondition
 
             this.killed++;
 
-            if (isCompleted()) {
+            if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
             } else {
                 Quests.playActionCountSound(player);
@@ -77,9 +78,15 @@ public class Hunt implements ICondition
     }
 
     @Override
-    public boolean isCompleted()
+    public boolean isSatisfied()
     {
         return count <= killed;
+    }
+
+    @Override
+    public boolean isCompletable()
+    {
+        return true;
     }
 
     @Override

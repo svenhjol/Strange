@@ -16,9 +16,9 @@ public class HuntGenerator implements IGenerator
     {
         if (tier == 1) {
             Map<ResourceLocation, Integer> targets = new HashMap<>();
-            targets.put(new ResourceLocation("spider"), 10);
-            targets.put(new ResourceLocation("zombie"), 10);
-            targets.put(new ResourceLocation("skeleton"), 10);
+            targets.put(new ResourceLocation("spider"), 1);
+            targets.put(new ResourceLocation("zombie"), 1);
+            targets.put(new ResourceLocation("skeleton"), 1);
 
             int max = world.rand.nextInt(2) + 1;
             List keys = new ArrayList<>(targets.keySet());
@@ -34,7 +34,7 @@ public class HuntGenerator implements IGenerator
                     .setTarget(target)
                     .setCount(count);
 
-                quest.getCriteria().addAction(action);
+                quest.getCriteria().addCondition(action);
                 if (++i >= max) break;
             }
         }

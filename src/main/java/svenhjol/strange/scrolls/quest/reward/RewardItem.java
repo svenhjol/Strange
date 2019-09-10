@@ -1,23 +1,24 @@
 package svenhjol.strange.scrolls.quest.reward;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public class XP implements ICondition
+import java.util.Objects;
+
+public class RewardItem implements ICondition
 {
-    public final static String ID = "XP";
-    private final String AMOUNT = "amount";
+    public final static String ID = "RewardItem";
+    private final String STACK = "stack";
 
     private IQuest quest;
-    private int amount;
+    private ItemStack stack;
 
     @Override
     public String getId()
@@ -37,9 +38,7 @@ public class XP implements ICondition
         if (event instanceof QuestEvent.Complete) {
             QuestEvent qe = (QuestEvent.Complete)event;
             final PlayerEntity player = qe.getPlayer();
-            player.giveExperiencePoints(this.getAmount());
-            player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
+            player.addItemStackToInventory(this.getStack());
             return true;
         }
 
@@ -68,7 +67,7 @@ public class XP implements ICondition
     public CompoundNBT toNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt(AMOUNT, amount);
+        tag.put(STACK, stack.serializeNBT());
         return tag;
     }
 
@@ -76,7 +75,7 @@ public class XP implements ICondition
     public void fromNBT(INBT nbt)
     {
         CompoundNBT data = (CompoundNBT)nbt;
-        this.amount = data.getInt(AMOUNT);
+        this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
     }
 
     @Override
@@ -85,13 +84,13 @@ public class XP implements ICondition
         this.quest = quest;
     }
 
-    public int getAmount()
+    public ItemStack getStack()
     {
-        return amount;
+        return stack;
     }
 
-    public void setAmount(int amount)
+    public void setStack(ItemStack stack)
     {
-        this.amount = amount;
+        this.stack = stack;
     }
 }
