@@ -15,8 +15,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -28,7 +26,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ClientHelper;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.SoundHelper;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -210,9 +210,9 @@ public class Runestones extends MesonModule
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
 
-        if (world.dimension.getType() != DimensionType.OVERWORLD) {
-            player.changeDimension(DimensionType.OVERWORLD);
-        }
+//        if (world.dimension.getType() != DimensionType.OVERWORLD) {
+//            player.changeDimension(DimensionType.OVERWORLD);
+//        }
 
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
@@ -223,9 +223,11 @@ public class Runestones extends MesonModule
 
         BlockPos dest = addRandomOffset(destPos, rand, 20);
 
-        ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
-        BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
-        player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
+        PlayerHelper.teleportPlayer(player, dest, WorldHelper.getDimensionId(world));
+
+//        ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
+//        BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
+//        player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
     }
 
     public interface Destination
