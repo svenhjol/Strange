@@ -39,11 +39,10 @@ public class StoneCircles extends MesonModule
         Objects.requireNonNull(Biomes.DESERT.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.DESERT_LAKES.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.BEACH.getRegistryName()).getPath(),
+        Objects.requireNonNull(Biomes.SAVANNA.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.SNOWY_TUNDRA.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.SNOWY_BEACH.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.SWAMP.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SNOWY_MOUNTAINS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.MOUNTAINS.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.END_BARRENS.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.END_HIGHLANDS.getRegistryName()).getPath(),
         Objects.requireNonNull(Biomes.END_MIDLANDS.getRegistryName()).getPath(),
@@ -57,9 +56,14 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-        // TODO Add to Meson RegistryHandler
-        Registry.register(Registry.FEATURE, "stone_circle", structure);
-        RegistryHandler.addRegisterable(structure, ID);
+//        Registry.register(Registry.FEATURE, "stone_circle", structure);
+//        RegistryHandler.addRegisterable(structure, ID);
+
+        RegistryHandler.registerStructure(structure, ID, null);
+
+        // TODO add to Meson structure registry
+        Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
+//        RegistryHandler.addRegisterable(, new ResourceLocation(Strange.MOD_ID, "SCP"));
 
         configBiomes.forEach(biomeName -> {
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
