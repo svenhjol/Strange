@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -102,18 +103,22 @@ public class QuestEvents
     public void onBackgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.currentScreen instanceof InventoryScreen) {
-            if (QuestClient.lastQuery + 40 < mc.world.getGameTime()) {
+        int delayTicks = 40;
+
+        if (mc.currentScreen instanceof InventoryScreen
+            || mc.currentScreen instanceof CreativeScreen
+        ) {
+            if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
                 PacketHandler.sendToServer(new RequestCurrentQuests());
             }
 
             // TODO should not collide with potion effects
-            int xPos = mc.mainWindow.getScaledWidth() - 122 - 22;
-            int yPos = (mc.mainWindow.getScaledHeight() / 2) - (166 / 2) + 70;
+            int xPos = mc.mainWindow.getScaledWidth() / Quests.max;
+            int yPos = (mc.mainWindow.getScaledHeight() / 4);
 
             questBadges.clear();
             for (int i = 0; i < QuestClient.currentQuests.size(); i++) {
-                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos, yPos + (i * 36)));
+                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos + (i * 150), yPos));
             }
         }
     }

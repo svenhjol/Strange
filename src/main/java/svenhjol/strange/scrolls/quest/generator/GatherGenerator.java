@@ -6,7 +6,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.action.Gather;
@@ -64,7 +63,7 @@ public class GatherGenerator implements IGenerator
         quest.getCriteria().addCondition(rewardXp);
 
         // add a totem that links to a stone circle
-        if (Strange.loader.hasModule(TotemOfReturning.class)) {
+        if (!world.isRemote && Strange.loader.hasModule(TotemOfReturning.class)) {
             ItemStack totem = new ItemStack(TotemOfReturning.item);
             final BlockPos circlePos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world.rand), 1000, true);
 
@@ -74,9 +73,6 @@ public class GatherGenerator implements IGenerator
                 Condition<RewardItem> rewardItem = Condition.factory(RewardItem.class, quest);
                 rewardItem.getDelegate().setStack(totem);
                 quest.getCriteria().addCondition(rewardItem);
-            } else {
-                Meson.log(world);
-                Meson.log("wft");
             }
         }
 

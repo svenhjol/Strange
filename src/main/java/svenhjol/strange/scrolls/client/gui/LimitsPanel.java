@@ -1,5 +1,7 @@
 package svenhjol.strange.scrolls.client.gui;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.limit.Time;
@@ -11,13 +13,16 @@ public class LimitsPanel extends BasePanel
 {
     public LimitsPanel(IQuest quest, int mid, int y, int width)
     {
-        super(quest, width);
+        super(quest, mid, width);
 
         final List<Condition<ICondition>> limits = quest.getCriteria().getConditions("limit");
         if (limits.isEmpty()) return;
 
-        drawBackground(mid - width, mid + width, y, y + 30);
-        y += pad;
+        y += pad; // space above title
+
+        // draw title
+        drawCenteredTitle("Conditions", y);
+        y += 18; // space between title and item list
 
         for (Condition limit : limits) {
             if (limit.getDelegate() instanceof Time) {
@@ -39,8 +44,8 @@ public class LimitsPanel extends BasePanel
                     out = "Complete within " + remaining + " seconds";
                 }
 
-                blitItemIcon(mid - 72, y, "clock_13");
-                this.drawString(fonts, out, mid - 60, y, primaryTextColor);
+                blitItemIcon(new ItemStack(Items.CLOCK), mid - 60, y - 5);
+                this.drawString(fonts, out, mid - 40, y, primaryTextColor);
             }
         }
     }

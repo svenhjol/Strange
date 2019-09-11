@@ -71,12 +71,12 @@ public class Criteria
             .collect(Collectors.toList());
     }
 
-    public List<Condition<ICondition>> getConditions(String type)
+    public <T extends ICondition> List<Condition<T>> getConditions(String type)
     {
         // noinspection unchecked
         return conditions.stream()
             .filter(c -> c.getType().equals(type))
-            .map(c -> (Condition<ICondition>) c)
+            .map(c -> (Condition<T>) c)
             .collect(Collectors.toList());
     }
 
@@ -88,15 +88,17 @@ public class Criteria
     public float getCompletion()
     {
         float complete = 0.0F;
+        int completable = 0;
 
         for (Condition<?> condition : conditions) {
             if (condition.getDelegate().isCompletable()) {
+                completable++;
                 complete += condition.getDelegate().getCompletion();
             }
         }
 
         if (complete == 0.0F) return 0.0F;
-        float res = complete / (conditions.size() * 100) * 100;
+        float res = complete / (completable * 100) * 100;
         return res;
     }
 }

@@ -23,7 +23,7 @@ public class QuestBadgeGui extends AbstractGui
         y1 = y + 24;
 
         AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
-        drawCenteredString(mc.fontRenderer, quest.getId(), 60, y + 6, 0xFFFFFF);
+        drawCenteredString(mc.fontRenderer, quest.getTitle(), 60, y + 6, 0xFFFFFF);
 
         // progress
         float completion = quest.getCriteria().getCompletion();

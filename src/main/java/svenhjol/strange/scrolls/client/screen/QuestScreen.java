@@ -9,16 +9,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
-import svenhjol.strange.scrolls.client.gui.GatherPanel;
-import svenhjol.strange.scrolls.client.gui.HuntPanel;
+import svenhjol.strange.scrolls.client.gui.ActionsPanel;
 import svenhjol.strange.scrolls.client.gui.LimitsPanel;
 import svenhjol.strange.scrolls.client.gui.RewardsPanel;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.action.Gather;
-import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestScreen extends Screen implements IRenderable
 {
@@ -46,15 +48,7 @@ public class QuestScreen extends Screen implements IRenderable
     protected void init()
     {
         //this.minecraft.keyboardListener.enableRepeatEvents(true);
-
-        if (stack != null) {
-            this.addButton(new Button((width / 2) - 140, (height / 4) + 120, 80, 20, I18n.format("gui.charm.scrolls.decline"), (button) -> this.decline()));
-            this.addButton(new Button((width / 2) - 40, (height / 4) + 120, 80, 20, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
-            this.addButton(new Button((width / 2) + 60, (height / 4) + 120, 80, 20, I18n.format("gui.charm.scrolls.accept"), (button) -> this.accept()));
-        } else {
-            this.addButton(new Button((width / 2) - 100, (height / 4) + 120, 80, 20, I18n.format("gui.charm.scrolls.quit"), (button) -> this.decline()));
-            this.addButton(new Button((width / 2) + 20, (height / 4) + 120, 80, 20, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
-        }
+        renderButtons();
     }
 
     @Override
@@ -69,31 +63,104 @@ public class QuestScreen extends Screen implements IRenderable
         int mid = (width / 2);
 
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), mid, 40, 0xFFFFFF);
+        this.drawCenteredString(this.font, this.title.getFormattedText(), mid, 18, 0xFFFFFF);
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
 
-        this.drawCenteredString(this.font, quest.getDescription(), mid, 60, 0xFFFFFF);
+        this.drawCenteredString(this.font, quest.getDescription(), mid, 36, 0xFFFFFF);
 
         Criteria criteria = quest.getCriteria();
-        int panelWidth = 85;
+        final List<Condition<ICondition>> actions = criteria.getConditions(Criteria.ACTION);
+        final List<Condition<ICondition>> limits = criteria.getConditions(Criteria.LIMIT);
+        final List<Condition<ICondition>> rewards = criteria.getConditions(Criteria.REWARD);
 
-        if (!criteria.getConditions(Gather.class).isEmpty()) {
-            new GatherPanel(quest, width / 4, 85, panelWidth);
+        List<String> actionIds = new ArrayList<>();
+        for (Condition<ICondition> action : actions) {
+            if (!actionIds.contains(action.getId())) actionIds.add(action.getId());
         }
-        if (!criteria.getConditions(Hunt.class).isEmpty()) {
-            new HuntPanel(quest, 3 * (width / 4), 85, panelWidth);
+
+        int panelY = 64;
+        int panelMid;
+        int panelWidth;
+
+        for (int i = 0; i < actionIds.size(); i++) {
+            int ii = (i * 2) + 1;
+            panelMid = ii * (width / (ii + 1));
+            panelWidth = width / ii;
+            new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
         }
-        if (!criteria.getConditions(Criteria.LIMIT).isEmpty()) {
-            new LimitsPanel(quest, width / 4, 145, panelWidth);
+//
+//        switch (actionIds.size()) {
+//            case 1:
+//                panelMid = width / 2;
+//                panelWidth = width / 1;
+//                new ActionsPanel(quest, actionIds.get(0), panelMid, panelY, panelWidth);
+//
+//                for (int i = 0; i < actionIds.size(); i++) {
+//                    int ii = (i * 2) + 1;
+//                    panelMid = ii * (width / ii + 1);
+//                    panelWidth = width / ii;
+//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
+//                }
+//                break;
+//
+//            case 2:
+//                for (int i = 0; i < actionIds.size(); i++) {
+//                    panelMid = ((i * 2) + 1) * (width / 4);
+//                    panelWidth = width / 2;
+//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
+//                }
+//                break;
+//
+//            case 3:
+//                for (int i = 0; i < actionIds.size(); i++) {
+//                    panelMid = ((i * 2) + 1) * (width / 6);
+//                    panelWidth = width / 3;
+//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
+//                }
+//                break;
+//        }
+
+//
+//        if (actionIds.size() == 2) {
+//            int panelWidth = 85;
+//            int midLeft = width / 4;
+//            int midRight = 3 * midLeft;
+//
+//            actionIds.forEach(type -> {
+//                // TODO panels
+//            });
+//        }
+
+        boolean splitLimitsAndRewards = false;
+        if (limits.size() > 0 && rewards.size() > 0) {
+            splitLimitsAndRewards = true;
         }
-        if (!criteria.getConditions(Criteria.REWARD).isEmpty()) {
-            new RewardsPanel(quest, 3 * (width / 4), 145, panelWidth);
+
+        if (splitLimitsAndRewards) {
+            new LimitsPanel(quest, width / 4, 145, 85);
+            new RewardsPanel(quest, 3 * (width / 4), 145, 85);
         }
 
         GlStateManager.popMatrix();
         super.render(mouseX, mouseY, partialTicks);
+    }
+
+    public void renderButtons()
+    {
+        int y = (height / 4) + 160;
+        int w = 80;
+        int h = 20;
+
+        if (stack != null) {
+            this.addButton(new Button((width / 2) - 140, y, w, h, I18n.format("gui.charm.scrolls.decline"), (button) -> this.decline()));
+            this.addButton(new Button((width / 2) - 40, y, w, h, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
+            this.addButton(new Button((width / 2) + 60, y, w, h, I18n.format("gui.charm.scrolls.accept"), (button) -> this.accept()));
+        } else {
+            this.addButton(new Button((width / 2) - 100, y, w, h, I18n.format("gui.charm.scrolls.quit"), (button) -> this.decline()));
+            this.addButton(new Button((width / 2) + 20, y, w, h, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
+        }
     }
 
     private void accept()
