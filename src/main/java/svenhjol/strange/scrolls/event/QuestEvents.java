@@ -165,6 +165,7 @@ public class QuestEvents
     public void onPlayerTick(PlayerTickEvent event)
     {
         if (event.phase == Phase.END
+            && event.player != null
             && event.player.world.getGameTime() % 10 == 0
         ) {
             respondToEvent(event.player, event);
