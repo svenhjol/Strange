@@ -63,6 +63,7 @@ public class StoneCircles extends MesonModule
 
         // TODO add to Meson structure registry
         Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
+        Registry.register(Registry.STRUCTURE_PIECE, "scup", StoneCircleStructure.SCUP);
 //        RegistryHandler.addRegisterable(, new ResourceLocation(Strange.MOD_ID, "SCP"));
 
         configBiomes.forEach(biomeName -> {
