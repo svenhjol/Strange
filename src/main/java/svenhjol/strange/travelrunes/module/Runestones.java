@@ -1,6 +1,7 @@
 package svenhjol.strange.travelrunes.module;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,11 +11,13 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -26,7 +29,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ClientHelper;
-import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.SoundHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.Module;
@@ -61,16 +63,15 @@ public class Runestones extends MesonModule
     {
         int dist = 100;
 
+        // first dest is always spawnpoint
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
-
         if (Strange.loader.hasModule(StoneCircles.class)) {
             destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getInnerPos(rand), dist, true));
         } else {
             destinations.add((world, pos, rand) -> world.getSpawnPoint());
         }
 
-        // TODO don't use magic strings
         destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(rand), dist, true));
         destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(rand), dist, true));
         destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getInnerPos(rand), dist, true));
@@ -102,7 +103,7 @@ public class Runestones extends MesonModule
         SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
     }
 
-    public static int getRuneType(IWorld world)
+    public static int getRunestoneType(IWorld world)
     {
         DimensionType type = world.getDimension().getType();
 
@@ -115,18 +116,27 @@ public class Runestones extends MesonModule
         }
     }
 
-    public static int getRuneValue(IWorld world, BlockPos pos, Random rand)
+    public static int getRunestoneValue(IWorld world, BlockPos pos, Random rand)
     {
-        WorldBorder border = world.getWorldBorder();
-        double dist = border.getClosestDistance(pos.getX(), pos.getZ()); // TODO destinations based on proximity to border
-        return rand.nextInt(destinations.size());
+        final int destSize = destinations.size();
+        for (int i = 0; i < destSize; i++) {
+            if (rand.nextFloat() < 0.2F) return i;
+        }
+        return 0;
     }
 
-    public static BlockState getRune(IWorld world, BlockPos pos, Random rand)
+    public static BlockState getRunestoneBlock(IWorld world, BlockPos pos, Random rand)
     {
         return runestone.getDefaultState()
-            .with(RunestoneBlock.TYPE, getRuneType(world))
-            .with(RunestoneBlock.RUNE, getRuneValue(world, pos, rand));
+            .with(RunestoneBlock.TYPE, getRunestoneType(world))
+            .with(RunestoneBlock.RUNE, getRunestoneValue(world, pos, rand));
+    }
+
+    public static BlockState getRunestoneBlock(IWorld world, int runeValue)
+    {
+        return runestone.getDefaultState()
+            .with(RunestoneBlock.TYPE, getRunestoneType(world))
+            .with(RunestoneBlock.RUNE, runeValue);
     }
 
     public static BlockPos getInnerPos(Random rand)
@@ -210,24 +220,46 @@ public class Runestones extends MesonModule
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
 
-//        if (world.dimension.getType() != DimensionType.OVERWORLD) {
-//            player.changeDimension(DimensionType.OVERWORLD);
-//        }
-
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
+
         BlockPos destPos = destinations.get(rune).get(world, pos, rand);
 
         // TODO really lame
         if (destPos == null) destPos = world.getSpawnPoint();
 
-        BlockPos dest = addRandomOffset(destPos, rand, 20);
+        BlockPos dest = addRandomOffset(destPos, rand, 8);
+//        PlayerHelper.teleportPlayer(player, dest, WorldHelper.getDimensionId(world));
 
-        PlayerHelper.teleportPlayer(player, dest, WorldHelper.getDimensionId(world));
+        int dim = WorldHelper.getDimensionId(world);
 
-//        ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
+        if (player.dimension.getId() != dim && !world.isRemote && !player.isPassenger() && !player.isBeingRidden() && player.isNonBoss()) {
+            DimensionType dimension = DimensionType.getById(dim);
+            if (dimension != null) {
+                player.changeDimension(dimension);
+            }
+        }
+
+        ChunkPos chunkpos = new ChunkPos(new BlockPos(dest.getX(), dest.getY(), dest.getZ()));
+        ((ServerWorld)world).getChunkProvider().func_217228_a(TicketType.POST_TELEPORT, chunkpos, 1, player.getEntityId());
+
+        Minecraft.getInstance().deferTask(() -> {
+
+            ((ServerPlayerEntity)player).teleport((ServerWorld)world, (double)dest.getX(), (double)dest.getY(), (double)dest.getZ(), player.rotationYaw, player.rotationPitch);
+            for (int y = world.getHeight(); y > 0; y--) {
+                BlockPos pp = new BlockPos(dest.getX(), y, dest.getZ());
+                if (world.getBlockState(pp).isAir()
+                    && !world.getBlockState(pp.down()).isAir()
+                ) {
+                    player.setPositionAndUpdate((double)pp.getX(), y, (double)pp.getZ());
+                    break;
+                }
+            }
+        });
+
+
 //        BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
-//        player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
+//        player.setPositionAndUpdate((double)updateDest.getX(), (double)(updateDest.getY() + 1), (double)updateDest.getZ());
     }
 
     public interface Destination
