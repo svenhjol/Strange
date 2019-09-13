@@ -16,6 +16,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.travelrunes.structure.StoneCircleConfig;
 import svenhjol.strange.travelrunes.structure.StoneCircleStructure;
+import svenhjol.strange.travelrunes.structure.UndergroundStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class StoneCircles extends MesonModule
 
         // TODO add to Meson structure registry
         Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
-        Registry.register(Registry.STRUCTURE_PIECE, "scup", StoneCircleStructure.SCUP);
+        Registry.register(Registry.STRUCTURE_PIECE, "scup", UndergroundStructure.SCUP);
 //        RegistryHandler.addRegisterable(, new ResourceLocation(Strange.MOD_ID, "SCP"));
 
         configBiomes.forEach(biomeName -> {
