@@ -8,9 +8,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
+import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Time implements ICondition
 {
@@ -129,5 +134,20 @@ public class Time implements ICondition
         if (this.start == 0) return this.limit;
 
         return this.limit - (this.lastTime - this.start);
+    }
+
+    @Override
+    public List<Condition<Time>> fromDefinition(Definition definition)
+    {
+        List<Condition<Time>> out = new ArrayList<>();
+
+        int timeLimit = definition.timeLimit;
+        if (timeLimit == 0) return out;
+
+        Condition<Time> limit = Condition.factory(Time.class, quest);
+        limit.getDelegate().setLimit(timeLimit * 60 * 20);
+
+        out.add(limit);
+        return out;
     }
 }

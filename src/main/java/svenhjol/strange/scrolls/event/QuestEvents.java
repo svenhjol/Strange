@@ -3,9 +3,12 @@ package svenhjol.strange.scrolls.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -15,19 +18,25 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.base.message.RequestCurrentQuests;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsProvider;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
+import svenhjol.strange.scrolls.client.toast.QuestToast.Type;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.iface.IQuest.State;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -39,6 +48,7 @@ public class QuestEvents
     public void onQuestAccept(QuestEvent.Accept event)
     {
         event.getQuest().setState(State.Started);
+        Quests.toast(event.getQuest(), Type.General, I18n.format("quest.strange.accepted"));
         Quests.getCapability(event.getPlayer()).acceptQuest(event.getPlayer(), event.getQuest());
         respondToEvent(event.getPlayer(), event);
     }
@@ -47,6 +57,7 @@ public class QuestEvents
     public void onQuestComplete(QuestEvent.Complete event)
     {
         respondToEvent(event.getPlayer(), event);
+        Quests.toast(event.getQuest(), Type.Success, I18n.format("quest.strange.completed"));
         Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
@@ -54,6 +65,7 @@ public class QuestEvents
     public void onQuestDecline(QuestEvent.Decline event)
     {
         respondToEvent(event.getPlayer(), event);
+        Quests.toast(event.getQuest(), Type.General, I18n.format("quest.strange.declined"));
         Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
@@ -62,7 +74,7 @@ public class QuestEvents
     {
         final PlayerEntity player = event.getPlayer();
         respondToEvent(event.getPlayer(), event);
-        player.sendStatusMessage(new StringTextComponent("YOU SUCK AT THIS"), true);
+        Quests.toast(event.getQuest(), Type.Failed, I18n.format("quest.strange.failed"));
         Quests.getCapability(player).removeQuest(player, event.getQuest());
     }
 
@@ -76,7 +88,7 @@ public class QuestEvents
     @SubscribeEvent
     public void onPlayerSave(PlayerEvent.SaveToFile event)
     {
-        event.getPlayer().getPersistantData().put(
+        event.getPlayer().getPersistentData().put(
             Quests.QUESTS_CAP_ID.toString(),
             Quests.getCapability(event.getPlayer()).writeNBT());
     }
@@ -85,7 +97,7 @@ public class QuestEvents
     public void onPlayerLoad(PlayerEvent.LoadFromFile event)
     {
         Quests.getCapability(event.getPlayer()).readNBT(
-            event.getPlayer().getPersistantData()
+            event.getPlayer().getPersistentData()
                 .get(Quests.QUESTS_CAP_ID.toString()));
     }
 
@@ -112,13 +124,16 @@ public class QuestEvents
                 PacketHandler.sendToServer(new RequestCurrentQuests());
             }
 
-            // TODO should not collide with potion effects
-            int xPos = mc.mainWindow.getScaledWidth() / Quests.max;
-            int yPos = (mc.mainWindow.getScaledHeight() / 4);
+            int w = QuestBadgeGui.WIDTH;
+            int numQuests = QuestClient.currentQuests.size();
+            if (numQuests == 0) return;
+
+            int xPos = ((mc.mainWindow.getScaledWidth() / 2) / numQuests) - (w / 2);
+            int yPos = (mc.mainWindow.getScaledHeight() / 4) - 50;
 
             questBadges.clear();
-            for (int i = 0; i < QuestClient.currentQuests.size(); i++) {
-                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos + (i * 150), yPos));
+            for (int i = 0; i < numQuests; i++) {
+                questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos + (i * (w + 10)), yPos));
             }
         }
     }
@@ -169,6 +184,27 @@ public class QuestEvents
             && event.player.world.getGameTime() % 10 == 0
         ) {
             respondToEvent(event.player, event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event)
+    {
+        IResourceManager rm = Minecraft.getInstance().getResourceManager();
+
+        try {
+            for (int tier = 1; tier < 4; tier++) {
+                Quests.available.put(tier, new ArrayList<>());
+                Collection<ResourceLocation> resources = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
+
+                for (ResourceLocation res : resources) {
+                    IResource resource = rm.getResource(res);
+                    Definition definition = Generator.INSTANCE.deserialize(resource);
+                    Quests.available.get(tier).add(definition);
+                }
+            }
+        } catch (Exception e) {
+            Meson.warn("Could not load quests", e);
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
-public class Criteria
+public class Criteria<T extends ICondition>
 {
     public static final String LIMIT = "limit";
     public static final String ACTION = "action";
@@ -42,12 +42,14 @@ public class Criteria
 
     public void fromNBT(CompoundNBT tag)
     {
-        ListNBT conditions = (ListNBT)tag.get(CONDITIONS);
+        ListNBT tagConditions = (ListNBT)tag.get(CONDITIONS);
 
         this.conditions.clear();
 
-        for (INBT nbt : conditions) {
-            this.conditions.add(Condition.factory( (CompoundNBT)nbt, quest) );
+        if (tagConditions != null) {
+            for (INBT nbt : tagConditions) {
+                this.conditions.add(Condition.factory((CompoundNBT) nbt, quest));
+            }
         }
     }
 

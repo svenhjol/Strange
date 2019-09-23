@@ -154,12 +154,12 @@ public class QuestScreen extends Screen implements IRenderable
         int h = 20;
 
         if (stack != null) {
-            this.addButton(new Button((width / 2) - 140, y, w, h, I18n.format("gui.charm.scrolls.decline"), (button) -> this.decline()));
-            this.addButton(new Button((width / 2) - 40, y, w, h, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
-            this.addButton(new Button((width / 2) + 60, y, w, h, I18n.format("gui.charm.scrolls.accept"), (button) -> this.accept()));
+            this.addButton(new Button((width / 2) - 140, y, w, h, I18n.format("gui.strange.scrolls.decline"), (button) -> this.decline()));
+            this.addButton(new Button((width / 2) - 40, y, w, h, I18n.format("gui.strange.scrolls.close"), (button) -> this.close()));
+            this.addButton(new Button((width / 2) + 60, y, w, h, I18n.format("gui.strange.scrolls.accept"), (button) -> this.accept()));
         } else {
-            this.addButton(new Button((width / 2) - 100, y, w, h, I18n.format("gui.charm.scrolls.quit"), (button) -> this.decline()));
-            this.addButton(new Button((width / 2) + 20, y, w, h, I18n.format("gui.charm.scrolls.close"), (button) -> this.close()));
+            this.addButton(new Button((width / 2) - 100, y, w, h, I18n.format("gui.strange.scrolls.quit"), (button) -> this.decline()));
+            this.addButton(new Button((width / 2) + 20, y, w, h, I18n.format("gui.strange.scrolls.close"), (button) -> this.close()));
         }
     }
 

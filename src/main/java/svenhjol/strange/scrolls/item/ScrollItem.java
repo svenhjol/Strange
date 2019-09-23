@@ -9,16 +9,18 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class ScrollItem extends MesonItem
 {
     private int tier;
+    private static final String QUEST = "quest";
 
     public ScrollItem(MesonModule module, int tier)
     {
@@ -41,6 +43,14 @@ public class ScrollItem extends MesonItem
         } else {
 
             if (!worldIn.isRemote) {
+
+                // if not populated yet, generate a quest and set the stack name
+                if (!hasPopulatedQuest(stack)) {
+                    IQuest quest = Quests.generate(getQuest(stack), worldIn);
+                    putQuest(stack, quest);
+                    stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
+                }
+
                 Quests.showQuestScreen(playerIn, stack);
             }
 
@@ -63,6 +73,17 @@ public class ScrollItem extends MesonItem
         return quest;
     }
 
+    public static void putQuest(ItemStack stack, IQuest quest)
+    {
+        putTag(stack, quest.toNBT());
+    }
+
+    public static boolean hasPopulatedQuest(ItemStack stack)
+    {
+        IQuest quest = getQuest(stack);
+        return !quest.getCriteria().getConditions().isEmpty();
+    }
+
     public static CompoundNBT getTag(ItemStack stack)
     {
         if (!isValidScroll(stack)) return new CompoundNBT();
@@ -71,7 +92,7 @@ public class ScrollItem extends MesonItem
         if (tag == null) {
             tag = new CompoundNBT();
         }
-        return (CompoundNBT)tag.get("quest");
+        return (CompoundNBT)tag.get(QUEST);
     }
 
     public static CompoundNBT putTag(ItemStack stack, CompoundNBT data)
@@ -81,7 +102,7 @@ public class ScrollItem extends MesonItem
             tag = new CompoundNBT();
         }
 
-        tag.put("quest", data);
+        tag.put(QUEST, data);
         stack.setTag(tag);
         return tag;
     }

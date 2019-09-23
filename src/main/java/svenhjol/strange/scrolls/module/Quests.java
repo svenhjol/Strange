@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -21,10 +22,15 @@ import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.client.screen.QuestScreen;
+import svenhjol.strange.scrolls.client.toast.QuestToast;
 import svenhjol.strange.scrolls.event.QuestEvents;
+import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
@@ -37,6 +43,8 @@ public class Quests extends MesonModule
     public static Capability<IQuestsCapability> QUESTS = null;
 
     public static ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
+
+    public static Map<Integer, List<Definition>> available = new HashMap<>();
 
     @Override
     public void setup(FMLCommonSetupEvent event)
@@ -62,6 +70,16 @@ public class Quests extends MesonModule
             .findFirst();
     }
 
+    public static IQuest generate(IQuest quest, World world)
+    {
+        int tier = quest.getTier();
+        if (tier < 1) {
+            throw new RuntimeException("Quest is missing a tier");
+        }
+
+        return Generator.INSTANCE.generate(world, tier);
+    }
+
     public static void update(PlayerEntity player)
     {
         Quests.getCapability(player).updateCurrentQuests(player);
@@ -85,5 +103,10 @@ public class Quests extends MesonModule
     public static void playActionCountSound(PlayerEntity player)
     {
         player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
+    }
+
+    public static void toast(IQuest quest, QuestToast.Type type, String title)
+    {
+        Minecraft.getInstance().getToastGui().add(new QuestToast(quest, type, title, quest.getTitle()));
     }
 }

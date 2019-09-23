@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,7 +40,7 @@ import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;
@@ -51,6 +51,8 @@ public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
     public static final String ANONYMOUS = "3-1-4-1-5";
+    public static final int MAX_LEVEL = 3;
+
     public static UUID ANY_SELLER = UUID.fromString(Scrollkeepers.ANONYMOUS);
     public static VillagerProfession profession;
 
@@ -63,13 +65,12 @@ public class Scrollkeepers extends MesonModule
     }
 
     @SubscribeEvent
-    public void onVillagerSpawn(EntityJoinWorldEvent event)
+    public void onVillagerSpawn(BabyEntitySpawnEvent event)
     {
         if (!event.isCanceled()
-            && !event.getWorld().isRemote
-            && event.getEntity() instanceof VillagerEntity
+            && event.getChild() instanceof VillagerEntity
         ) {
-            VillagerEntity villager = (VillagerEntity)event.getEntity();
+            VillagerEntity villager = (VillagerEntity)event.getChild();
             VillagerData data = villager.getVillagerData();
             if (data.getProfession() == VillagerProfession.NONE) {
                 villager.setVillagerData(data.withProfession(profession));
@@ -100,9 +101,9 @@ public class Scrollkeepers extends MesonModule
             });
 
             int range = 10;
-            double x = event.player.posX;
-            double y = event.player.posY;
-            double z = event.player.posZ;
+            double x = player.posX;
+            double y = player.posY;
+            double z = player.posZ;
 
             List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(
                 x - range, y - range, z - range, x + range, y + range, z + range));
@@ -126,8 +127,7 @@ public class Scrollkeepers extends MesonModule
         ) {
             VillagerEntity villager = (VillagerEntity)event.getTarget();
             PlayerEntity player = event.getPlayer();
-            boolean result = completeVillagerQuest(player, villager);
-            // TODO reward
+            handInQuest(player, villager);
         }
     }
 
@@ -142,8 +142,6 @@ public class Scrollkeepers extends MesonModule
         trades.get(1).add(new ScrollForEmeralds(1));
         trades.get(2).add(new ScrollForEmeralds(2));
         trades.get(3).add(new ScrollForEmeralds(3));
-        trades.get(4).add(new ScrollForEmeralds(4));
-        trades.get(5).add(new ScrollForEmeralds(5));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -158,7 +156,7 @@ public class Scrollkeepers extends MesonModule
         }
     }
 
-    private boolean completeVillagerQuest(PlayerEntity player, VillagerEntity villager)
+    private boolean handInQuest(PlayerEntity player, VillagerEntity villager)
     {
         Map<UUID, List<IQuest>> sellers = new HashMap<>();
         IQuestsCapability cap = Quests.getCapability(player);
@@ -182,25 +180,42 @@ public class Scrollkeepers extends MesonModule
         }
 
         if (!completableQuests.isEmpty()) {
+
+            VillagerData data = villager.getVillagerData();
+            int villagerXp = villager.getXp();
+            int villagerLevel = data.getLevel();
+            boolean levelUp = false;
+
             // complete all completable quests and get the highest quest tier to level up the villager
             int highestTier = 0;
             for (IQuest quest : completableQuests) {
-                highestTier = Math.max(highestTier, quest.getTier());
+                int questTier = quest.getTier();
+                highestTier = Math.max(highestTier, questTier);
+
+                if (questTier == villagerLevel) {
+                    int newXp = villagerXp + (questTier * 4);
+                    villager.setXp(newXp);
+                    int l = VillagerData.func_221127_c(newXp);
+                    levelUp = l > villagerLevel;
+                    Meson.log(newXp, l, villagerLevel);
+                }
                 MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
 
-            VillagerData data = villager.getVillagerData();
-            int level = data.getLevel();
+            if (levelUp && villagerLevel < MAX_LEVEL) {
+//                // level up the villager
+//                int newLevel = villagerLevel + 1;
+//                villager.setVillagerData(data.withLevel(newLevel));
+//                villager.populateTradeData();
+//                postLevelUp(player, villager, newLevel);
+//                villager.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.75F, 1.0F);
 
-            if (level <= highestTier && level < 5) {
-                // level up the villager
-                int newLevel = level + 1;
-                villager.setVillagerData(data.withLevel(newLevel));
-                villager.populateTradeData();
-                postLevelUp(player, villager, newLevel);
+                if (player.world.rand.nextFloat() < 0.1 + (villagerLevel * 0.15)) {
+                    EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
+                    player.addPotionEffect(badOmen);
+                }
             }
 
-            villager.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.75F, 1.0F);
             Quests.update(player);
             return true;
         }
@@ -214,18 +229,6 @@ public class Scrollkeepers extends MesonModule
         villager.setShakeHeadTicks(40);
         if (!villager.world.isRemote) {
             villager.playSound(SoundEvents.ENTITY_VILLAGER_NO, 1.0F, getPitch(villager));
-        }
-    }
-
-    private void postLevelUp(PlayerEntity player, VillagerEntity villager, int newLevel)
-    {
-        boolean doRaid = player.world.rand.nextFloat() < (newLevel / 9.0F);
-        villager.playSound(SoundEvents.ENTITY_VILLAGER_CELEBRATE, 1.0F, getPitch(villager));
-
-        if (doRaid) {
-            villager.playSound(SoundEvents.ENTITY_VILLAGER_NO, 1.0F, getPitch(villager));
-            EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, newLevel-1, false, false, true);
-            player.addPotionEffect(badOmen);
         }
     }
 
@@ -248,15 +251,17 @@ public class Scrollkeepers extends MesonModule
         @Override
         public MerchantOffer getOffer(Entity merchant, Random rand)
         {
-            ItemStack in1 = new ItemStack(Items.EMERALD, 3 + (rand.nextInt(tier * 3)));
+            ItemStack in1 = new ItemStack(Items.EMERALD, 1 + (rand.nextInt(tier * 2)));
             ItemStack out = new ItemStack(Scrolls.tiers.get(tier), 1);
 
-            IQuest quest = Generator.generate(merchant.world, tier);
+            IQuest quest = new Quest();
+            quest.setTier(tier);
+
             quest.setSeller(merchant.getUniqueID());
             if (quest == null) return null;
 
             ScrollItem.putTag(out, quest.toNBT());
-            out.setDisplayName(new StringTextComponent(quest.getTitle()));
+            out.setDisplayName(new StringTextComponent("Level " + tier + " Scroll"));
             return new MerchantOffer(in1, out, 1, 0, 0.2F);
         }
     }

@@ -1,18 +1,26 @@
 package svenhjol.strange.scrolls.quest.action;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.meson.Meson;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
+import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.ICondition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -55,6 +63,7 @@ public class Gather implements ICondition
 
             PlayerEntity player = pickupEvent.getPlayer();
             World world = pickupEvent.getPlayer().world;
+            String notify;
 
             int count = pickedUp.getCount();
             int remaining = getRemaining();
@@ -63,11 +72,13 @@ public class Gather implements ICondition
                 // set the count to the remainder
                 pickedUp.setCount(count - remaining);
                 count = remaining;
+                notify = "You have collected all the " + stack.getItem().getName().getString() + " required for the quest.";
             } else {
                 // cancel the event, don't pick up any items
                 pickupEvent.getItem().remove();
                 pickupEvent.setResult(Event.Result.DENY);
                 pickupEvent.setCanceled(true);
+                notify = "Collect " + remaining + " more " + stack.getItem().getName().getString() + ".";
             }
 
             collected += count;
@@ -78,7 +89,7 @@ public class Gather implements ICondition
                 Quests.playActionCountSound(player);
             }
 
-            Meson.log("Gathered " + stack + " and now there is " + collected);
+            player.sendStatusMessage(new StringTextComponent(notify), true);
             return true;
         }
 
@@ -115,6 +126,7 @@ public class Gather implements ICondition
         tag.putInt(COUNT, count);
         return tag;
     }
+
     @Override
     public void fromNBT(INBT nbt)
     {
@@ -160,5 +172,24 @@ public class Gather implements ICondition
     public ItemStack getStack()
     {
         return this.stack;
+    }
+
+    public List<Condition<Gather>> fromDefinition(Definition definition)
+    {
+        List<Condition<Gather>> out = new ArrayList<>();
+        Map<String, String> def = definition.getGather();
+
+        for (String key : def.keySet()) {
+            ResourceLocation res = new ResourceLocation(key);
+            Item item = ForgeRegistries.ITEMS.getValue(res);
+            if (item == null) continue;
+            int count = definition.parseCount(def.get(key));
+
+            Condition<Gather> condition = Condition.factory(Gather.class, quest);
+            condition.getDelegate().setStack(new ItemStack(item)).setCount(count);
+            out.add(condition);
+        }
+
+        return out;
     }
 }

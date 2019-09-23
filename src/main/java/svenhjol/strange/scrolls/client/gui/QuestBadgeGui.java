@@ -11,19 +11,21 @@ public class QuestBadgeGui extends AbstractGui
     private int x0, x1, y0, y1;
     private IQuest quest;
     private Minecraft mc;
+    public static int WIDTH = 100;
+    public static int HEIGHT = 24;
 
     public QuestBadgeGui(IQuest quest, int x, int y)
     {
         this.quest = quest;
         this.mc = Minecraft.getInstance();
 
-        x0 = 10;
-        x1 = 110;
+        x0 = x;
+        x1 = x + WIDTH;
         y0 = y;
-        y1 = y + 24;
+        y1 = y + HEIGHT;
 
         AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
-        drawCenteredString(mc.fontRenderer, quest.getTitle(), 60, y + 6, 0xFFFFFF);
+        drawCenteredString(mc.fontRenderer, quest.getTitle(), x + 50, y + 6, 0xFFFFFF);
 
         // progress
         float completion = quest.getCriteria().getCompletion();
