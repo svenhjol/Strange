@@ -1,0 +1,13 @@
+{
+  "tier": 1,
+  "title": "Zombie-nation",
+  "description": "Kill zombies for great justice",
+  "xp": 100,
+  "timeLimit": 10,
+  "hunt": {
+    "minecraft:zombie": "2"
+  },
+  "rewardItems": {
+    "minecraft:emerald": "1"
+  }
+}

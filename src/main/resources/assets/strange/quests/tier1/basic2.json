@@ -1,0 +1,14 @@
+{
+  "tier": 1,
+  "title": "Another basic quest",
+  "description": "Even more exciting things",
+  "xp": 200,
+  "timeLimit": 10,
+  "gather": {
+    "minecraft:lapis_lazuli": "3",
+    "minecraft:redstone": "3"
+  },
+  "rewardItems": {
+    "minecraft:emerald": "3"
+  }
+}

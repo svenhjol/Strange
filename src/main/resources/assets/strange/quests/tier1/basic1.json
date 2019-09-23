@@ -1,0 +1,14 @@
+{
+  "tier": 1,
+  "title": "A basic quest",
+  "description": "This is an exciting quest that Sven loaded for testing",
+  "xp": 100,
+  "timeLimit": 7,
+  "gather": {
+    "minecraft:coal": "2"
+  },
+  "rewardItems": {
+    "minecraft:emerald": "1",
+    "minecraft:coal": "4"
+  }
+}

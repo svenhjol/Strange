@@ -1,0 +1,15 @@
+{
+  "tier": 1,
+  "title": "Skellington",
+  "description": "Arsebiscuits",
+  "xp": 1200,
+  "hunt": {
+    "minecraft:skeleton": "2"
+  },
+  "gather": {
+    "minecraft:bone": "2"
+  },
+  "rewardItems": {
+    "minecraft:diamond": "2"
+  }
+}
