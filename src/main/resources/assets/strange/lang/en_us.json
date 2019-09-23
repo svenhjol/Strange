@@ -1,17 +1,20 @@
 {
-  "gui.charm.scrolls.accept": "Accept Quest",
-  "gui.charm.scrolls.close": "Close Window",
-  "gui.charm.scrolls.decline": "Decline Quest",
-  "gui.charm.scrolls.quit": "Quit Quest",
+  "gui.strange.scrolls.accept": "Accept Quest",
+  "gui.strange.scrolls.close": "Close Window",
+  "gui.strange.scrolls.decline": "Decline Quest",
+  "gui.strange.scrolls.quit": "Quit Quest",
 
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
 
   "item.strange.scroll_tier_1": "Scroll (Tier 1)",
   "item.strange.scroll_tier_2": "Scroll (Tier 2)",
   "item.strange.scroll_tier_3": "Scroll (Tier 3)",
-  "item.strange.scroll_tier_4": "Scroll (Tier 4)",
-  "item.strange.scroll_tier_5": "Scroll (Tier 5)",
   "item.strange.totem_of_attracting": "Totem of Attracting",
   "item.strange.totem_of_returning": "Totem of Returning",
-  "item.strange.totem_of_shielding": "Totem of Shielding"
+  "item.strange.totem_of_shielding": "Totem of Shielding",
+
+  "quest.strange.accepted": "Quest accepted",
+  "quest.strange.completed": "Quest completed",
+  "quest.strange.declined": "Quest declined",
+  "quest.strange.failed": "Quest failed"
 }
