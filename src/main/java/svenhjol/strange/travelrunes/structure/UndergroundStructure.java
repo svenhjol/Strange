@@ -22,10 +22,6 @@ public class UndergroundStructure
     public static IStructurePieceType SCUP = UndergroundPiece::new;
     public static Map<PieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
 
-    private static final ResourceLocation LIBRARY = new ResourceLocation(Strange.MOD_ID, "stone_circle/library1");
-    private static final ResourceLocation CORRIDOR = new ResourceLocation(Strange.MOD_ID, "stone_circle/corridor1");
-    private static final ResourceLocation CRYPT = new ResourceLocation(Strange.MOD_ID, "stone_circle/crypt1");
-
     public static final int CORRIDOR_X = 5;
     public static final int CORRIDOR_Z = 11;
     public static final int JUNCTION_X = 9;
@@ -46,9 +42,18 @@ public class UndergroundStructure
         this.components = components;
         this.templates = templates;
 
-        pieceTypes.put(Junction, new ArrayList<>(Arrays.asList(LIBRARY)));
-        pieceTypes.put(Corridor, new ArrayList<>(Arrays.asList(CORRIDOR)));
-        pieceTypes.put(Large, new ArrayList<>(Arrays.asList(CRYPT)));
+        pieceTypes.put(Junction, new ArrayList<>(Arrays.asList(
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/junction1"),
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/junction2")
+        )));
+        pieceTypes.put(Corridor, new ArrayList<>(Arrays.asList(
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/corridor1"),
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/corridor2")
+        )));
+        pieceTypes.put(Large, new ArrayList<>(Arrays.asList(
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/large1"),
+            new ResourceLocation(Strange.MOD_ID, "stone_circle/large2")
+        )));
     }
 
     public void generate(BlockPos startPos)

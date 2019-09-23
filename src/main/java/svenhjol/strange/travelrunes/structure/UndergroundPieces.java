@@ -1,6 +1,8 @@
 package svenhjol.strange.travelrunes.structure;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LanternBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.IllusionerEntity;
@@ -118,9 +120,12 @@ public class UndergroundPieces
         @Override
         protected void handleDataMarker(String data, BlockPos pos, IWorld world, Random rand, MutableBoundingBox bb)
         {
-            if (data.equals("chest")) {
+            BlockState state = Blocks.AIR.getDefaultState();
+
+            if (data.equals("chest1") || data.equals("chest2") || data.equals("chest3") || data.equals("chest4")) {
                 // TODO do things
-                world.setBlockState(pos, Blocks.CHEST.getDefaultState(), 2);
+                state = Blocks.CHEST.getDefaultState();
+
             } else if (data.equals("mob1")) {
                 // TODO do things
                 IllusionerEntity illusioner = (IllusionerEntity) EntityType.ILLUSIONER.create(world.getWorld());
@@ -128,8 +133,30 @@ public class UndergroundPieces
                 illusioner.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
                 illusioner.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
                 world.addEntity(illusioner);
-                world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+
+            } else if (data.equals("erosion")) {
+                if (rand.nextFloat() > 0.2F) {
+                    state = Blocks.STONE_BRICKS.getDefaultState();
+                }
+
+            } else if (data.equals("skull1")) {
+                float f = rand.nextFloat();
+                if (f < 0.05F) {
+                    state = Blocks.WITHER_SKELETON_SKULL.getDefaultState();
+                } else if (f < 0.1F) {
+                    state = Blocks.ZOMBIE_HEAD.getDefaultState();
+                } else if (f < 0.5F) {
+                    state = Blocks.SKELETON_SKULL.getDefaultState();
+                }
+
+            } else if (data.equals("lantern_hanging")) {
+                float f = rand.nextFloat();
+                if (f < 0.3F) {
+                    state = Blocks.LANTERN.getDefaultState().with(LanternBlock.HANGING, true);
+                }
             }
+
+            world.setBlockState(pos, state, 2);
         }
     }
 }

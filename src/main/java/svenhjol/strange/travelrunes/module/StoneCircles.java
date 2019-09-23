@@ -60,7 +60,7 @@ public class StoneCircles extends MesonModule
 //        Registry.register(Registry.FEATURE, "stone_circle", structure);
 //        RegistryHandler.addRegisterable(structure, ID);
 
-        RegistryHandler.registerStructure(structure, ID, null);
+        RegistryHandler.registerStructure(structure, ID);
 
         // TODO add to Meson structure registry
         Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
