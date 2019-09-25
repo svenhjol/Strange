@@ -1,10 +1,12 @@
-package svenhjol.strange.scrolls.client.gui;
+package svenhjol.strange.scrolls.quest.panel;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
-import svenhjol.strange.scrolls.quest.limit.Time;
+import svenhjol.strange.scrolls.quest.Criteria;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
+import svenhjol.strange.scrolls.quest.condition.Time;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
@@ -15,21 +17,20 @@ public class LimitsPanel extends BasePanel
     {
         super(quest, mid, width);
 
-        final List<Condition<ICondition>> limits = quest.getCriteria().getConditions("limit");
+        final List<Condition<IDelegate>> limits = quest.getCriteria().getConditions(Criteria.LIMIT);
         if (limits.isEmpty()) return;
 
         y += pad; // space above title
 
         // draw title
-        drawCenteredTitle("Conditions", y);
-        y += 18; // space between title and item list
+        drawCenteredTitle(I18n.format("gui.strange.quests.conditions"), y);
 
         for (Condition limit : limits) {
-            if (limit.getDelegate() instanceof Time) {
-                // render time row
-                Time time = (Time)limit.getDelegate();
-                String out = "";
+            y += 18; // space between title and item list
 
+            if (limit.getDelegate() instanceof Time) {
+                Time time = (Time)limit.getDelegate();
+                String out;
                 final long remaining = (time.getRemaining() / 20);
 
                 if (remaining > 60) {
@@ -38,14 +39,13 @@ public class LimitsPanel extends BasePanel
 
                     final String minsStr = String.valueOf(mins);
                     final String secsStr = (secs < 10 ? "0" : "") + secs;
-
-                    out = "Complete within " + minsStr + ":" + secsStr;
+                    out = I18n.format("gui.strange.quests.complete_within_time", minsStr, secsStr);
                 } else {
-                    out = "Complete within " + remaining + " seconds";
+                    out = I18n.format("gui.strange.quests.complete_within_seconds", remaining);
                 }
 
                 blitItemIcon(new ItemStack(Items.CLOCK), mid - 60, y - 5);
-                this.drawString(fonts, out, mid - 40, y, primaryTextColor);
+                this.drawString(fonts, out, mid - 36, y, primaryTextColor);
             }
         }
     }

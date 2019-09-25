@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.quest.action;
+package svenhjol.strange.scrolls.quest.condition;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -11,18 +11,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.Generator;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Hunt implements ICondition
+public class Hunt implements IDelegate
 {
     public final static String ID = "Hunt";
 
@@ -100,8 +94,7 @@ public class Hunt implements ICondition
     {
         int collected = Math.min(this.killed, this.count);
         if (collected == 0 || count == 0) return 0;
-        float result = ((float)collected / (float)count) * 100;
-        return result;
+        return ((float)collected / (float)count) * 100;
     }
 
     @Override
@@ -154,22 +147,5 @@ public class Hunt implements ICondition
     public ResourceLocation getTarget()
     {
         return this.target;
-    }
-
-    public List<Condition<Hunt>> fromDefinition(Generator.Definition definition)
-    {
-        List<Condition<Hunt>> out = new ArrayList<>();
-        Map<String, String> def = definition.getHunt();
-
-        for (String key : def.keySet()) {
-            ResourceLocation target = new ResourceLocation(key);
-            int count = definition.parseCount(def.get(key));
-
-            Condition<Hunt> condition = Condition.factory(Hunt.class, quest);
-            condition.getDelegate().setTarget(target).setCount(count);
-            out.add(condition);
-        }
-
-        return out;
     }
 }

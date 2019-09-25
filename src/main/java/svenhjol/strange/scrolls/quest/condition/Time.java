@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.quest.limit;
+package svenhjol.strange.scrolls.quest.condition;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,16 +8,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.Generator.Definition;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Time implements ICondition
+@SuppressWarnings({"unused", "UnusedReturnValue"})
+public class Time implements IDelegate
 {
     public final static String ID = "Time";
 
@@ -65,9 +61,7 @@ public class Time implements ICondition
 
             // check and fail the quest if the time is below zero
             if (getRemaining() <= 0) {
-                Minecraft.getInstance().deferTask(() -> {
-                    MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest));
-                });
+                Minecraft.getInstance().deferTask(() -> MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest)));
             }
             return true;
         }
@@ -134,20 +128,5 @@ public class Time implements ICondition
         if (this.start == 0) return this.limit;
 
         return this.limit - (this.lastTime - this.start);
-    }
-
-    @Override
-    public List<Condition<Time>> fromDefinition(Definition definition)
-    {
-        List<Condition<Time>> out = new ArrayList<>();
-
-        int timeLimit = definition.timeLimit;
-        if (timeLimit == 0) return out;
-
-        Condition<Time> limit = Condition.factory(Time.class, quest);
-        limit.getDelegate().setLimit(timeLimit * 60 * 20);
-
-        out.add(limit);
-        return out;
     }
 }

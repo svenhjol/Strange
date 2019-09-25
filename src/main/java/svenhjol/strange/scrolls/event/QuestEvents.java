@@ -30,7 +30,6 @@ import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 import svenhjol.strange.scrolls.client.toast.QuestToast.Type;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.iface.IQuest.State;
@@ -117,9 +116,7 @@ public class QuestEvents
         Minecraft mc = Minecraft.getInstance();
         int delayTicks = 40;
 
-        if (mc.currentScreen instanceof InventoryScreen
-            || mc.currentScreen instanceof CreativeScreen
-        ) {
+        if (isValidQuestBadgeScreen(mc)) {
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
                 PacketHandler.sendToServer(new RequestCurrentQuests());
             }
@@ -143,7 +140,7 @@ public class QuestEvents
     public void onMouseClicked(GuiScreenEvent.MouseClickedEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.currentScreen instanceof InventoryScreen) {
+        if (isValidQuestBadgeScreen(mc)) {
             double x = event.getMouseX();
             double y = event.getMouseY();
 
@@ -199,7 +196,7 @@ public class QuestEvents
 
                 for (ResourceLocation res : resources) {
                     IResource resource = rm.getResource(res);
-                    Definition definition = Generator.INSTANCE.deserialize(resource);
+                    Definition definition = Definition.deserialize(resource);
                     Quests.available.get(tier).add(definition);
                 }
             }
@@ -208,7 +205,7 @@ public class QuestEvents
         }
     }
 
-    private boolean respondToEvent(PlayerEntity player, Event event)
+    private void respondToEvent(PlayerEntity player, Event event)
     {
         List<IQuest> quests = Quests.getCurrent(player);
         boolean responded = false;
@@ -218,6 +215,10 @@ public class QuestEvents
         }
 
         if (responded) Quests.update(player);
-        return responded;
+    }
+
+    private boolean isValidQuestBadgeScreen(Minecraft mc)
+    {
+        return mc.currentScreen instanceof InventoryScreen || mc.currentScreen instanceof CreativeScreen;
     }
 }

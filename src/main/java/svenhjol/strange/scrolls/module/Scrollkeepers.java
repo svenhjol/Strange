@@ -2,6 +2,8 @@ package svenhjol.strange.scrolls.module;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.VillagerData;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -15,8 +17,8 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
@@ -25,7 +27,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -59,26 +60,17 @@ public class Scrollkeepers extends MesonModule
     @Override
     public void init()
     {
-        profession = new VillagerProfession(SCROLLKEEPER, PointOfInterestType.UNEMPLOYED, ImmutableSet.of(), ImmutableSet.of());
+        ImmutableSet<BlockState> states = ImmutableSet.copyOf(Scrolls.block.getStateContainer().getValidStates());
+        PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, null, 1);
+
+        // TODO move to Meson
+        Registry.POINT_OF_INTEREST_TYPE.register(new ResourceLocation(SCROLLKEEPER), type);
+        RegistryHandler.addRegisterable(type, new ResourceLocation(SCROLLKEEPER));
+        PointOfInterestType.func_221052_a(type); // SO FUCKING SHIT
+
+        profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of());
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
         RegistryHandler.registerVillager(profession, res);
-    }
-
-    @SubscribeEvent
-    public void onVillagerSpawn(BabyEntitySpawnEvent event)
-    {
-        if (!event.isCanceled()
-            && event.getChild() instanceof VillagerEntity
-        ) {
-            VillagerEntity villager = (VillagerEntity)event.getChild();
-            VillagerData data = villager.getVillagerData();
-            if (data.getProfession() == VillagerProfession.NONE) {
-                villager.setVillagerData(data.withProfession(profession));
-                villager.setXp(1);
-                villager.populateTradeData(); // a hack
-                Meson.debug("New scrollkeeper");
-            }
-        }
     }
 
     @SubscribeEvent
@@ -139,9 +131,12 @@ public class Scrollkeepers extends MesonModule
 
         if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(SCROLLKEEPER)) return;
 
-        trades.get(1).add(new ScrollForEmeralds(1));
-        trades.get(2).add(new ScrollForEmeralds(2));
-        trades.get(3).add(new ScrollForEmeralds(3));
+        // add tiered scrolls for each villager trade level
+        for (int tier = 1; tier < Scrolls.MAX_TIERS; tier++) {
+            for (int j = 0; j < 3; j++) {
+                trades.get(tier).add(new ScrollForEmeralds(tier));
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -156,7 +151,7 @@ public class Scrollkeepers extends MesonModule
         }
     }
 
-    private boolean handInQuest(PlayerEntity player, VillagerEntity villager)
+    private void handInQuest(PlayerEntity player, VillagerEntity villager)
     {
         Map<UUID, List<IQuest>> sellers = new HashMap<>();
         IQuestsCapability cap = Quests.getCapability(player);
@@ -170,11 +165,12 @@ public class Scrollkeepers extends MesonModule
             sellers.get(seller).add(quest);
         }
 
-        if (sellers.isEmpty()) return false;
+        if (sellers.isEmpty()) return;
 
         if (sellers.containsKey(ANY_SELLER)) {
             completableQuests.addAll(sellers.get(ANY_SELLER));
         }
+
         if (sellers.containsKey(villagerId)) {
             completableQuests.addAll(sellers.get(villagerId));
         }
@@ -195,21 +191,15 @@ public class Scrollkeepers extends MesonModule
                 if (questTier == villagerLevel) {
                     int newXp = villagerXp + (questTier * 4);
                     villager.setXp(newXp);
-                    int l = VillagerData.func_221127_c(newXp);
-                    levelUp = l > villagerLevel;
-                    Meson.log(newXp, l, villagerLevel);
+                    int newLevel = VillagerData.func_221127_c(newXp);
+                    levelUp = newLevel > villagerLevel;
+                    Meson.log(newXp, newLevel, villagerLevel);
                 }
+
                 MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
 
             if (levelUp && villagerLevel < MAX_LEVEL) {
-//                // level up the villager
-//                int newLevel = villagerLevel + 1;
-//                villager.setVillagerData(data.withLevel(newLevel));
-//                villager.populateTradeData();
-//                postLevelUp(player, villager, newLevel);
-//                villager.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.75F, 1.0F);
-
                 if (player.world.rand.nextFloat() < 0.1 + (villagerLevel * 0.15)) {
                     EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
                     player.addPotionEffect(badOmen);
@@ -217,31 +207,12 @@ public class Scrollkeepers extends MesonModule
             }
 
             Quests.update(player);
-            return true;
         }
-
-//        disagree(villager);
-        return false;
-    }
-
-    private void disagree(VillagerEntity villager)
-    {
-        villager.setShakeHeadTicks(40);
-        if (!villager.world.isRemote) {
-            villager.playSound(SoundEvents.ENTITY_VILLAGER_NO, 1.0F, getPitch(villager));
-        }
-    }
-
-    private float getPitch(VillagerEntity villager)
-    {
-        Random rand = villager.world.rand;
-        return villager.isChild() ? (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.5F : (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F;
     }
 
     static class ScrollForEmeralds implements ITrade
     {
         private final int tier;
-
         public ScrollForEmeralds(int tier)
         {
             this.tier = tier;
@@ -256,13 +227,11 @@ public class Scrollkeepers extends MesonModule
 
             IQuest quest = new Quest();
             quest.setTier(tier);
-
             quest.setSeller(merchant.getUniqueID());
-            if (quest == null) return null;
 
             ScrollItem.putTag(out, quest.toNBT());
-            out.setDisplayName(new StringTextComponent("Level " + tier + " Scroll"));
-            return new MerchantOffer(in1, out, 1, 0, 0.2F);
+            out.setDisplayName(new StringTextComponent(I18n.format("item.strange.scroll_tier", tier)));
+            return new MerchantOffer(in1, out, 3, 0, 0.2F);
         }
     }
 }

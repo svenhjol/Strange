@@ -71,7 +71,7 @@ public class Quest implements IQuest
     {
         boolean responded = false;
 
-        final List<Condition<?>> conditions = this.criteria.getConditions();
+        final List<Condition> conditions = this.criteria.getConditions();
 
         for (Condition condition : conditions) {
             responded = condition.respondTo(event) || responded;
@@ -155,9 +155,7 @@ public class Quest implements IQuest
     @Override
     public UUID getSeller()
     {
-        if (seller.isEmpty()) {
-            return Scrollkeepers.ANY_SELLER;
-        }
+        if (seller.isEmpty()) return Scrollkeepers.ANY_SELLER;
         return UUID.fromString(seller);
     }
 

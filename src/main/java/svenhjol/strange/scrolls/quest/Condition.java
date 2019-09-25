@@ -2,15 +2,15 @@ package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public class Condition<T extends ICondition>
+public class Condition<T extends IDelegate>
 {
     private static final String TYPE = "type";
     private static final String ID = "id";
     private static final String DATA = "data";
-    private static final String PREFIX = "svenhjol.strange.scrolls.quest.";
+    private static final String PREFIX = "svenhjol.strange.scrolls.quest.condition";
 
     protected IQuest quest;
     private String type;
@@ -79,7 +79,7 @@ public class Condition<T extends ICondition>
         this.delegate.fromNBT(tag.get(DATA));
     }
 
-    public static <T extends ICondition> Condition<T> factory(Class<T> clazz, IQuest quest)
+    public static <T extends IDelegate> Condition<T> factory(Class<T> clazz, IQuest quest)
     {
         try {
             T delegate = clazz.getConstructor().newInstance();
@@ -89,12 +89,11 @@ public class Condition<T extends ICondition>
         }
     }
 
-    public static <T extends ICondition> Condition<T> factory(CompoundNBT tag, IQuest quest)
+    public static <T extends IDelegate> Condition<T> factory(CompoundNBT tag, IQuest quest)
     {
         try {
-            String type = tag.getString(TYPE);
             String id = tag.getString(ID);
-            String className = PREFIX + type + "." + id;
+            String className = PREFIX + "." + id;
 
             // noinspection unchecked
             Class<T> clazz = (Class<T>) Class.forName(className);

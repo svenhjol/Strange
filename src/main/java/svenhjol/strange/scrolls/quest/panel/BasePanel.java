@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.client.gui;
+package svenhjol.strange.scrolls.quest.panel;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -19,6 +19,7 @@ public abstract class BasePanel extends AbstractGui
     protected TextureManager textures;
     protected int primaryTextColor = 0xFFFFFF;
     protected int secondaryTextColor = 0xAAAAAA;
+    protected int titleColor = 0xFFFF00;
     protected int pad = 8;
     protected int width;
     protected int mid;
@@ -42,7 +43,7 @@ public abstract class BasePanel extends AbstractGui
 
     public void drawCenteredTitle(String title, int y)
     {
-        this.drawCenteredString(fonts, title, mid, y, primaryTextColor);
+        this.drawCenteredString(fonts, title, mid, y, titleColor);
     }
 
     public void blitIcon(int[] icon, int x, int y)

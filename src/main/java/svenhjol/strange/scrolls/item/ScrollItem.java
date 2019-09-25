@@ -45,9 +45,19 @@ public class ScrollItem extends MesonItem
             if (!worldIn.isRemote) {
 
                 // if not populated yet, generate a quest and set the stack name
-                if (!hasPopulatedQuest(stack)) {
-                    IQuest quest = Quests.generate(getQuest(stack), worldIn);
+                if (!hasTag(stack)) {
+
+                    // there isn't a quest, make one
+                    int tier = getTierFromScroll(stack);
+                    if (tier < 1) return new ActionResult<>(ActionResultType.FAIL, stack);
+
+                    IQuest quest = new Quest();
+                    quest.setTier(tier);
                     putQuest(stack, quest);
+                }
+
+                if (!hasPopulatedQuest(stack)) {
+                    putQuest(stack, Quests.generate(worldIn, getQuest(stack)));
                     stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
                 }
 
@@ -82,6 +92,27 @@ public class ScrollItem extends MesonItem
     {
         IQuest quest = getQuest(stack);
         return !quest.getCriteria().getConditions().isEmpty();
+    }
+
+    public static int getTierFromScroll(ItemStack stack)
+    {
+        if (hasTag(stack)) {
+            IQuest quest = getQuest(stack);
+            if (quest.getTier() > 0) return quest.getTier();
+        }
+
+        String path = stack.getItem().getRegistryName().getPath();
+        if (!path.isEmpty()) {
+            String[] split = path.split("_");
+            return Integer.parseInt(split[2]);
+        }
+
+        return 0;
+    }
+
+    public static boolean hasTag(ItemStack stack)
+    {
+        return stack.hasTag() && stack.getTag().contains(QUEST);
     }
 
     public static CompoundNBT getTag(ItemStack stack)

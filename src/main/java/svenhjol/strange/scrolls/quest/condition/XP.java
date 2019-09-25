@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.quest.reward;
+package svenhjol.strange.scrolls.quest.condition;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -7,16 +7,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.Generator.Definition;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class XP implements ICondition
+public class XP implements IDelegate
 {
     public final static String ID = "XP";
     private final String AMOUNT = "amount";
@@ -44,7 +39,6 @@ public class XP implements ICondition
             final PlayerEntity player = qe.getPlayer();
             player.giveExperiencePoints(this.getAmount());
             player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
             return true;
         }
 
@@ -98,19 +92,5 @@ public class XP implements ICondition
     public void setAmount(int amount)
     {
         this.amount = amount;
-    }
-
-    @Override
-    public List<Condition<XP>> fromDefinition(Definition definition)
-    {
-        List<Condition<XP>> out = new ArrayList<>();
-        int xp = definition.xp;
-        if (xp == 0) return out;
-
-        Condition<XP> reward = Condition.factory(XP.class, quest);
-        reward.getDelegate().setAmount(xp);
-
-        out.add(reward);
-        return out;
     }
 }

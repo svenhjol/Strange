@@ -4,12 +4,27 @@
   "gui.strange.scrolls.decline": "Decline Quest",
   "gui.strange.scrolls.quit": "Quit Quest",
 
+  "gui.strange.quests.gather": "Pickup items",
+  "gui.strange.quests.hunt": "Kill mobs",
+  "gui.strange.quests.conditions": "Conditions",
+  "gui.strange.quests.rewards": "Rewards",
+  "gui.strange.quests.complete_within_time": "Complete within %s:%s",
+  "gui.strange.quests.complete_within_seconds": "Complete within %s seconds",
+  "gui.strange.quests.experience": "%s experience",
+
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
 
-  "item.strange.scroll_tier_1": "Scroll (Tier 1)",
-  "item.strange.scroll_tier_2": "Scroll (Tier 2)",
-  "item.strange.scroll_tier_3": "Scroll (Tier 3)",
+  "block.strange.writing_desk": "Writing Desk",
+
+  "item.strange.scroll_tier": "Tier %s Scroll",
+  "item.strange.scroll_tier_1": "Tier 1 Scroll",
+  "item.strange.scroll_tier_2": "Tier 2 Scroll",
+  "item.strange.scroll_tier_3": "Tier 3 Scroll",
   "item.strange.totem_of_attracting": "Totem of Attracting",
+  "item.strange.totem_of_extracting": "Totem of Extracting",
+  "item.strange.totem_of_flying": "Totem of Flying",
+  "item.strange.totem_of_holding": "Totem of Holding",
+  "item.strange.totem_of_preserving": "Totem of Preserving",
   "item.strange.totem_of_returning": "Totem of Returning",
   "item.strange.totem_of_shielding": "Totem of Shielding",
 

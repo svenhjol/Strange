@@ -1,5 +1,6 @@
-package svenhjol.strange.scrolls.client.gui;
+package svenhjol.strange.scrolls.quest.panel;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -7,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.action.Gather;
-import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.condition.Gather;
+import svenhjol.strange.scrolls.quest.condition.Hunt;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
@@ -40,14 +41,13 @@ public class ActionsPanel extends BasePanel
         public GatherPanel(IQuest quest, int mid, int y, int width)
         {
             super(quest, mid, width);
-
             List<Condition<Gather>> toGather = quest.getCriteria().getConditions(Gather.class);
             if (toGather.isEmpty()) return;
 
             y += pad; // space above title
 
             // draw title
-            drawCenteredTitle("Pickup items", y);
+            drawCenteredTitle(I18n.format("gui.strange.quests.gather"), y);
             y += 16; // space between title and item list
 
             for (int i = 0; i < toGather.size(); i++) {
@@ -58,12 +58,11 @@ public class ActionsPanel extends BasePanel
                 int remaining = gather.getRemaining();
 
                 // draw remaining count and item icon
-                this.drawRightAlignedString(fonts, String.valueOf(remaining), mid - 30, y, primaryTextColor);
-                items.renderItemIntoGUI(stack, mid - 14, y - 5);
-                this.drawString(fonts, stack.getDisplayName().getString(), mid + 4, y, primaryTextColor);
+                blitItemIcon(stack, mid - 60, y - 5);
+                this.drawString(fonts, remaining + " " + stack.getDisplayName().getString(), mid - 36, y, primaryTextColor);
 
                 // show tick if complete
-                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 24, y - 1);
+                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
             }
         }
     }
@@ -80,7 +79,7 @@ public class ActionsPanel extends BasePanel
             y += pad; // space above title
 
             // draw title
-            drawCenteredTitle("Kill mobs", y);
+            drawCenteredTitle(I18n.format("gui.strange.quests.hunt"), y);
             y += 16; // space between title and item list
 
             for (int i = 0; i < actions.size(); i++) {
@@ -89,15 +88,14 @@ public class ActionsPanel extends BasePanel
                 Hunt hunt = actions.get(i).getDelegate();
                 ResourceLocation target = hunt.getTarget();
                 int remaining = hunt.getCount() - hunt.getKilled();
+                EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
 
                 // draw remaining count and item icon
-                this.drawRightAlignedString(fonts, String.valueOf(remaining), mid - 30, y, primaryTextColor);
-                EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
-                blitItemIcon(new ItemStack(Items.IRON_SWORD), mid - 72, y);
-                this.drawString(fonts, entity.getName().getFormattedText(), mid + 4, y, primaryTextColor);
+                blitItemIcon(new ItemStack(Items.IRON_SWORD), mid - 60, y - 5);
+                this.drawString(fonts, remaining + " " + entity.getName().getFormattedText(), mid - 36, y, primaryTextColor);
 
                 // show tick if complete
-                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 8, y - 1);
+                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
             }
         }
     }

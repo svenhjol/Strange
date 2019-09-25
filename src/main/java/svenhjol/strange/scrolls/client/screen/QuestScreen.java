@@ -9,14 +9,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
-import svenhjol.strange.scrolls.client.gui.ActionsPanel;
-import svenhjol.strange.scrolls.client.gui.LimitsPanel;
-import svenhjol.strange.scrolls.client.gui.RewardsPanel;
+import svenhjol.strange.scrolls.quest.panel.ActionsPanel;
+import svenhjol.strange.scrolls.quest.panel.LimitsPanel;
+import svenhjol.strange.scrolls.quest.panel.RewardsPanel;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class QuestScreen extends Screen implements IRenderable
 
     public QuestScreen(PlayerEntity player, ItemStack stack)
     {
-        super(new StringTextComponent("Quest"));
+        super(new StringTextComponent(ScrollItem.getQuest(stack).getTitle()));
         this.player = player;
         this.stack = stack;
         this.quest = ScrollItem.getQuest(stack.copy());
@@ -38,7 +38,7 @@ public class QuestScreen extends Screen implements IRenderable
 
     public QuestScreen(PlayerEntity player, IQuest quest)
     {
-        super(new StringTextComponent("Quest"));
+        super(new StringTextComponent(quest.getTitle()));
         this.player = player;
         this.quest = quest;
         this.stack = null;
@@ -71,12 +71,12 @@ public class QuestScreen extends Screen implements IRenderable
         this.drawCenteredString(this.font, quest.getDescription(), mid, 36, 0xFFFFFF);
 
         Criteria criteria = quest.getCriteria();
-        final List<Condition<ICondition>> actions = criteria.getConditions(Criteria.ACTION);
-        final List<Condition<ICondition>> limits = criteria.getConditions(Criteria.LIMIT);
-        final List<Condition<ICondition>> rewards = criteria.getConditions(Criteria.REWARD);
+        final List<Condition<IDelegate>> actions = criteria.getConditions(Criteria.ACTION);
+        final List<Condition<IDelegate>> limits = criteria.getConditions(Criteria.LIMIT);
+        final List<Condition<IDelegate>> rewards = criteria.getConditions(Criteria.REWARD);
 
         List<String> actionIds = new ArrayList<>();
-        for (Condition<ICondition> action : actions) {
+        for (Condition<IDelegate> action : actions) {
             if (!actionIds.contains(action.getId())) actionIds.add(action.getId());
         }
 
@@ -86,7 +86,7 @@ public class QuestScreen extends Screen implements IRenderable
 
         for (int i = 0; i < actionIds.size(); i++) {
             int ii = (i * 2) + 1;
-            panelMid = ii * (width / (ii + 1));
+            panelMid = (ii * (width / (actionIds.size() * 2)));
             panelWidth = width / ii;
             new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
         }
@@ -184,6 +184,8 @@ public class QuestScreen extends Screen implements IRenderable
 
     private void close()
     {
-        this.minecraft.displayGuiScreen(null);
+        if (this.minecraft != null) {
+            this.minecraft.displayGuiScreen(null);
+        }
     }
 }

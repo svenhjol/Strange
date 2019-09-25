@@ -70,14 +70,9 @@ public class Quests extends MesonModule
             .findFirst();
     }
 
-    public static IQuest generate(IQuest quest, World world)
+    public static IQuest generate(World world, IQuest quest)
     {
-        int tier = quest.getTier();
-        if (tier < 1) {
-            throw new RuntimeException("Quest is missing a tier");
-        }
-
-        return Generator.INSTANCE.generate(world, tier);
+        return Generator.INSTANCE.generate(world, quest);
     }
 
     public static void update(PlayerEntity player)

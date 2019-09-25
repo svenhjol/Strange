@@ -1,30 +1,22 @@
-package svenhjol.strange.scrolls.quest.action;
+package svenhjol.strange.scrolls.quest.condition;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
-import svenhjol.strange.scrolls.quest.Generator.Definition;
-import svenhjol.strange.scrolls.quest.iface.ICondition;
+import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Gather implements ICondition
+public class Gather implements IDelegate
 {
     public final static String ID = "Gather";
 
@@ -113,8 +105,7 @@ public class Gather implements ICondition
     {
         int collected = Math.min(this.collected, this.count);
         if (collected == 0 || count == 0) return 0;
-        float result = ((float)collected / (float)count) * 100;
-        return result;
+        return ((float)collected / (float)count) * 100;
     }
 
     @Override
@@ -172,24 +163,5 @@ public class Gather implements ICondition
     public ItemStack getStack()
     {
         return this.stack;
-    }
-
-    public List<Condition<Gather>> fromDefinition(Definition definition)
-    {
-        List<Condition<Gather>> out = new ArrayList<>();
-        Map<String, String> def = definition.getGather();
-
-        for (String key : def.keySet()) {
-            ResourceLocation res = new ResourceLocation(key);
-            Item item = ForgeRegistries.ITEMS.getValue(res);
-            if (item == null) continue;
-            int count = definition.parseCount(def.get(key));
-
-            Condition<Gather> condition = Condition.factory(Gather.class, quest);
-            condition.getDelegate().setStack(new ItemStack(item)).setCount(count);
-            out.add(condition);
-        }
-
-        return out;
     }
 }

@@ -43,7 +43,7 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_RUNES, hasSubscriptions = true)
 public class Runestones extends MesonModule
 {
-    public static RunestoneBlock runestone;
+    public static RunestoneBlock block;
     public static List<Destination> destinations = new ArrayList<>();
 
     private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
@@ -55,7 +55,7 @@ public class Runestones extends MesonModule
     @Override
     public void init()
     {
-        runestone = new RunestoneBlock(this);
+        block = new RunestoneBlock(this);
     }
 
     @Override
@@ -127,14 +127,14 @@ public class Runestones extends MesonModule
 
     public static BlockState getRunestoneBlock(IWorld world, BlockPos pos, Random rand)
     {
-        return runestone.getDefaultState()
+        return block.getDefaultState()
             .with(RunestoneBlock.TYPE, getRunestoneType(world))
             .with(RunestoneBlock.RUNE, getRunestoneValue(world, pos, rand));
     }
 
     public static BlockState getRunestoneBlock(IWorld world, int runeValue)
     {
-        return runestone.getDefaultState()
+        return block.getDefaultState()
             .with(RunestoneBlock.TYPE, getRunestoneType(world))
             .with(RunestoneBlock.RUNE, runeValue);
     }

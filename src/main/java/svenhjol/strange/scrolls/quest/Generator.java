@@ -3,30 +3,19 @@ package svenhjol.strange.scrolls.quest;
 import com.google.gson.Gson;
 import net.minecraft.resources.IResource;
 import net.minecraft.world.World;
+import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.quest.action.Gather;
-import svenhjol.strange.scrolls.quest.action.Hunt;
+import svenhjol.strange.scrolls.quest.generator.*;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
-import svenhjol.strange.scrolls.quest.limit.Time;
-import svenhjol.strange.scrolls.quest.reward.RewardItem;
-import svenhjol.strange.scrolls.quest.reward.XP;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Generator
 {
     public static Generator INSTANCE = new Generator();
-
-    public IQuest generate(World world, Definition definition)
-    {
-        return generate(world, definition, null);
-    }
 
     public IQuest generate(World world, Definition definition, @Nullable IQuest quest)
     {
@@ -36,13 +25,23 @@ public class Generator
         quest.setTitle(definition.getTitle());
         quest.setDescription(definition.getDescription());
 
-        Criteria criteria = quest.getCriteria();
+        // initialise generators
+        List<Class<?>> generators = new ArrayList<>(Arrays.asList(
+            GatherGenerator.class,
+            HuntGenerator.class,
+            RewardItemGenerator.class,
+            TimeGenerator.class,
+            XPGenerator.class
+        ));
 
-        (new Gather()).fromDefinition(definition).forEach(criteria::addCondition);
-        (new Hunt()).fromDefinition(definition).forEach(criteria::addCondition);
-        (new RewardItem(world)).fromDefinition(definition).forEach(criteria::addCondition);
-        (new Time()).fromDefinition(definition).forEach(criteria::addCondition);
-        (new XP()).fromDefinition(definition).forEach(criteria::addCondition);
+        for (Class<?> clazz : generators) {
+            try {
+                BaseGenerator gen = (BaseGenerator) clazz.getConstructor(World.class, IQuest.class, Definition.class).newInstance(world, quest, definition);
+                gen.generate();
+            } catch (Exception e) {
+                Meson.warn("Could not initialize generator " + clazz + ", skipping");
+            }
+        }
 
         return quest;
     }
@@ -53,20 +52,13 @@ public class Generator
         Definition definition = definitions.get(world.rand.nextInt(definitions.size()));
 
         try {
-            return generate(world, definition);
-
+            return generate(world, definition, quest);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Definition deserialize(IResource resource)
-    {
-        Reader reader = new InputStreamReader(resource.getInputStream());
-        return new Gson().fromJson(reader, Definition.class);
-    }
-
-    public class Definition
+    public static class Definition
     {
         public int tier;
         public String title;
@@ -117,6 +109,12 @@ public class Generator
             } else {
                 return Integer.parseInt(countDef);
             }
+        }
+
+        public static Definition deserialize(IResource resource)
+        {
+            Reader reader = new InputStreamReader(resource.getInputStream());
+            return new Gson().fromJson(reader, Definition.class);
         }
     }
 }
