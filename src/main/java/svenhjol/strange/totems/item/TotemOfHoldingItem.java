@@ -1,22 +1,21 @@
 package svenhjol.strange.totems.item;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.totems.module.TotemOfAttracting;
+import svenhjol.strange.totems.module.TotemOfHolding;
 
-public class TotemOfAttractingItem extends MesonItem
+public class TotemOfHoldingItem extends MesonItem
 {
-    public TotemOfAttractingItem(MesonModule module)
+    public TotemOfHoldingItem(MesonModule module)
     {
-        super(module, "totem_of_attracting", new Item.Properties()
+        super(module, "totem_of_holding", new Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
-            .maxDamage(TotemOfAttracting.durability)
+            .maxDamage(TotemOfHolding.durability)
         );
     }
 

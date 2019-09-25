@@ -20,7 +20,7 @@ public class TotemOfShielding extends MesonModule
     public static TotemOfShieldingItem item;
 
     @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 100;
+    public static int durability = 120;
 
     @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the Totem." )
     public static double damageMultiplier;

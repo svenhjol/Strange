@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,6 +16,9 @@ import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.strange.base.StrangeHelper;
+
+import javax.annotation.Nullable;
 
 public class TotemOfReturningItem extends MesonItem
 {
@@ -46,6 +48,8 @@ public class TotemOfReturningItem extends MesonItem
         ItemStack stack = player.getHeldItem(hand);
         BlockPos pos = getPos(stack); // the position to teleport to
         int dim = getDim(stack); // the dimension to teleport to
+        ItemStack held = player.getHeldItem(hand);
+
 
         // if shift is held, or entry isn't set, then bind this totem to current location and exit
         if (pos == null || player.isSneaking()) {
@@ -59,19 +63,18 @@ public class TotemOfReturningItem extends MesonItem
         }
 
         // teleport the player
-
         if (!world.isRemote) {
             ((ServerPlayerEntity) player).teleport((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
             BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, pos);
             player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
         }
 
-//        PlayerHelper.teleportPlayer(player, pos, dim);
-        stack.shrink(1);
-        world.playSound(player, pos, SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8f, 1.0f);
+        StrangeHelper.destroyTotem(player, held);
+
         return super.onItemRightClick(world, player, hand);
     }
 
+    @Nullable
     public static BlockPos getPos(ItemStack stack)
     {
         long pos = ItemNBTHelper.getLong(stack, POS, 0);

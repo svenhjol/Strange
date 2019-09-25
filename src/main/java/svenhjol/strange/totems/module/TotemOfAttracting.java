@@ -1,21 +1,31 @@
 package svenhjol.strange.totems.module;
 
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeHelper;
 import svenhjol.strange.totems.item.TotemOfAttractingItem;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
 public class TotemOfAttracting extends MesonModule
@@ -35,19 +45,21 @@ public class TotemOfAttracting extends MesonModule
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    public void onPlayerTick(PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.START
             && event.side.isServer()
             && event.player.world.getGameTime() % 5 == 0
-            && event.player.getHeldItemOffhand().getItem() == item
+            && (event.player.getHeldItemMainhand().getItem() == item
+            || event.player.getHeldItemOffhand().getItem() == item)
         ) {
+            PlayerEntity player = event.player;
             int r = range;
-            double x = event.player.posX;
-            double y = event.player.posY;
-            double z = event.player.posZ;
+            double x = player.posX;
+            double y = player.posY;
+            double z = player.posZ;
 
-            List<ItemEntity> items = event.player.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(
+            List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(
                 x - r, y - r, z - r, x + r, y + r, z + r));
 
             if (!items.isEmpty()) {
@@ -56,15 +68,38 @@ public class TotemOfAttracting extends MesonModule
                     item.setPosition(x, y, z);
                 }
 
-                if (event.player.world.rand.nextInt(20) == 0) {
-                    ItemStack held = event.player.getHeldItemOffhand();
-                    boolean dead = held.attemptDamageItem(1, event.player.world.rand, (ServerPlayerEntity)event.player);
+                if (player.world.rand.nextFloat() < 0.2F) {
+                    for (Hand hand : Hand.values()) {
+                        ItemStack held = player.getHeldItem(hand);
+                        boolean dead = held.attemptDamageItem(1, player.world.rand, (ServerPlayerEntity) player);
 
-                    if (dead) {
-                        held.shrink(1);
-                        event.player.world.playSound(null, event.player.posX, event.player.posY, event.player.posZ, SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+                        if (dead) {
+                            StrangeHelper.destroyTotem(player, held);
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityUpdate(LivingUpdateEvent event)
+    {
+        if (event.getEntityLiving().world.getGameTime() % 10 == 0
+            && event.getEntityLiving() instanceof MobEntity
+            && event.getEntityLiving() instanceof CreatureEntity
+            && ((MobEntity)event.getEntityLiving()).getNavigator() instanceof GroundPathNavigator
+        ) {
+            MobEntity entity = (MobEntity)event.getEntityLiving();
+            List<PrioritizedGoal> goals = entity.goalSelector.getRunningGoals().collect(Collectors.toList());
+
+            if (goals.isEmpty()) return;
+            int size = goals.size();
+
+            PrioritizedGoal goal = goals.get(size - 1);
+
+            if (!(goal.getGoal() instanceof TemptGoal)) {
+                entity.goalSelector.addGoal(size, new TemptGoal((CreatureEntity)entity, 1.25D, Ingredient.fromItems(item), false));
             }
         }
     }

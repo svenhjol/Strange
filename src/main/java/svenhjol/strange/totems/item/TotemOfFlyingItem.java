@@ -6,17 +6,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.totems.module.TotemOfAttracting;
+import svenhjol.strange.totems.module.TotemOfFlying;
 
-public class TotemOfAttractingItem extends MesonItem
+public class TotemOfFlyingItem extends MesonItem
 {
-    public TotemOfAttractingItem(MesonModule module)
+    public TotemOfFlyingItem(MesonModule module)
     {
-        super(module, "totem_of_attracting", new Item.Properties()
-            .group(ItemGroup.MISC)
+        super(module, "totem_of_flying", new Item.Properties()
+            .group(ItemGroup.TRANSPORTATION)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
-            .maxDamage(TotemOfAttracting.durability)
+            .maxDamage(TotemOfFlying.durability)
         );
     }
 
