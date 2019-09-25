@@ -4,6 +4,9 @@
   "description": "Even more exciting things",
   "xp": 200,
   "timeLimit": 10,
+  "hunt": {
+    "minecraft:skeleton": "1"
+  },
   "gather": {
     "minecraft:lapis_lazuli": "3",
     "minecraft:redstone": "3"

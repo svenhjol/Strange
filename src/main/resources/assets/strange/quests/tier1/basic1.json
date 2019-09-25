@@ -4,11 +4,14 @@
   "description": "This is an exciting quest that Sven loaded for testing",
   "xp": 100,
   "timeLimit": 7,
+  "hunt": {
+    "minecraft:skeleton": "1"
+  },
   "gather": {
     "minecraft:coal": "2"
   },
   "rewardItems": {
-    "minecraft:emerald": "1",
+    "minecraft:emerald": "4",
     "minecraft:coal": "4"
   }
 }
