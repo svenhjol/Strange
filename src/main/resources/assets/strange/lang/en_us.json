@@ -31,5 +31,9 @@
   "quest.strange.accepted": "Quest accepted",
   "quest.strange.completed": "Quest completed",
   "quest.strange.declined": "Quest declined",
-  "quest.strange.failed": "Quest failed"
+  "quest.strange.failed": "Quest failed",
+
+  "totem.strange.holding_item": "Holding one item",
+  "totem.strange.holding_items": "Holding %s items",
+  "totem.strange.preserving": "Preserving %s XP"
 }

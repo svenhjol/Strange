@@ -64,7 +64,7 @@ public class TotemOfAttracting extends MesonModule
 
             if (!items.isEmpty()) {
                 for (ItemEntity item : items) {
-                    if (item.getItem().isEmpty() || item.removed) continue;
+                    if (item.getItem().isEmpty() || item.isAlive()) continue;
                     item.setPosition(x, y, z);
                 }
 

@@ -1,5 +1,6 @@
 package svenhjol.strange.totems.item;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -61,7 +62,7 @@ public class TotemOfPreservingItem extends MesonItem
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
     {
-        strings.add(new StringTextComponent("Preserving " + getXp(stack) + " XP"));
+        strings.add(new StringTextComponent(I18n.format("totem.strange.preserving", getXp(stack))));
         super.addInformation(stack, world, strings, flag);
     }
 }

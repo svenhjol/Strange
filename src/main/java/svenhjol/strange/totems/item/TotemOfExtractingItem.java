@@ -38,6 +38,12 @@ public class TotemOfExtractingItem extends MesonItem
         return getPos(stack) != null;
     }
 
+    public static void clearTags(ItemStack stack)
+    {
+        stack.removeChildTag(POS);
+        stack.removeChildTag(DIM);
+    }
+
     @Nullable
     public static BlockPos getPos(ItemStack stack)
     {
@@ -48,12 +54,6 @@ public class TotemOfExtractingItem extends MesonItem
     public static int getDim(ItemStack stack)
     {
         return ItemNBTHelper.getInt(stack, DIM, 0);
-    }
-
-    public static void clearTags(ItemStack stack)
-    {
-        stack.removeChildTag(POS);
-        stack.removeChildTag(DIM);
     }
 
     public static void setPos(ItemStack stack, BlockPos pos)

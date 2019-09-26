@@ -1,10 +1,15 @@
 package svenhjol.strange.totems.module;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -37,13 +42,13 @@ public class TotemOfExtracting extends MesonModule
     public static int durability = 120;
 
     @Config(name = "Block extraction damage", description = "Damage taken when extracting normal blocks")
-    public static int blockDamage = 6;
+    public static int blockDamage = 4;
 
     @Config(name = "Tile extraction damage", description = "Damage taken when extracting tile entities (like chests)")
     public static int tileDamage = 16;
 
     @Config(name = "Heavy extraction damage", description = "Damage taken when extracing 'heavy' blocks (configurable blocks)")
-    public static int heavyDamage = 30;
+    public static int heavyDamage = 32;
 
     @Config(name = "Heavy extraction blocks", description = "Extracting these blocks causes heavy damage to the totem.")
     public static List<String> heavy = new ArrayList<>(Arrays.asList(
@@ -54,7 +59,8 @@ public class TotemOfExtracting extends MesonModule
     public static List<String> singleUse = new ArrayList<>(Arrays.asList(
         "minecraft:obsidian",
         "minecraft:end_portal_frame",
-        "minecraft:end_portal"
+        "minecraft:end_portal",
+        "minecraft:spawner"
     ));
 
     @Config(name = "Immovable blocks", description = "Blocks that cannot be extracted with the totem.")
@@ -75,80 +81,132 @@ public class TotemOfExtracting extends MesonModule
         if (player == null) return;
 
         World world = event.getWorld();
-        BlockPos pos = event.getPos();
-
-        ItemStack held = player.getHeldItem(event.getHand());
-        BlockPos boundPos = TotemOfExtractingItem.getPos(held);
-
         int dim = WorldHelper.getDimensionId(world);
+        ItemStack held = player.getHeldItem(event.getHand());
+
+        BlockPos srcPos = TotemOfExtractingItem.getPos(held);
+        BlockPos destPos = event.getPos();
 
         if (player.isSneaking()) {
 
             // check blacklist
-            BlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(destPos);
             String name = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
 
             if (blacklist.contains(name)) {
                 if (world.isRemote) {
-                    effectUnbinding(pos);
+                    effectUnbinding(destPos);
                     player.playSound(SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, 1.0F, 1.0F);
                 }
             } else {
-                TotemOfExtractingItem.setPos(held, pos);
+                TotemOfExtractingItem.setPos(held, destPos);
                 TotemOfExtractingItem.setDim(held, dim);
                 if (world.isRemote) {
-                    effectBinding(pos);
+                    effectBinding(destPos);
                     player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
                 }
             }
 
         } else {
 
-            if (boundPos == null) return;
+            if (srcPos == null) return; // not bound, just return
+            boolean destroyed = false;
 
-            // if the totem is bound, move the block to the new position
-            BlockState boundState = world.getBlockState(boundPos);
-            String boundName = Objects.requireNonNull(boundState.getBlock().getRegistryName()).toString();
-            BlockPos posUp = pos.up();
+            BlockState srcState = world.getBlockState(srcPos);
+            String srcName = Objects.requireNonNull(srcState.getBlock().getRegistryName()).toString();
+
 
             // check fail conditions
             if (dim != TotemOfExtractingItem.getDim(held)
-                || blacklist.contains(boundName)
+                || blacklist.contains(srcName)
+                || event.getFace() == null
             ) {
                 player.playSound(SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, 1.0F, 1.0F);
                 return;
             }
 
-            TileEntity boundTile = world.getTileEntity(boundPos);
-            world.setBlockState(posUp, boundState, 2);
+            destPos = destPos.offset(event.getFace(), 1);
 
-            if (boundTile != null) {
-                CompoundNBT tag = boundTile.serializeNBT();
-                TileEntity tile = TileEntity.create(tag);
-                if (tile != null) {
-                    tile.setPos(posUp);
-                    tile.validate();
+            // check for types, exceptions
+            if (srcState.getProperties().contains(ChestBlock.TYPE)) {
+                srcState = srcState.with(ChestBlock.TYPE, ChestType.SINGLE);
+            }
+            if (srcState.getProperties().contains(HorizontalBlock.HORIZONTAL_FACING)) {
+                srcState = srcState.with(HorizontalBlock.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite());
+            }
+            if (srcState.getProperties().contains(BlockStateProperties.HALF)) {
+                destroyed = true;
+            }
 
-                    world.setTileEntity(pos, tile);
-                    tile.updateContainingBlockInfo();
+            world.setBlockState(destPos, srcState, 2); // set the state at the new position
 
-//                    world.notifyBlockUpdate(pos, boundState, boundState, 2);
+
+            TileEntity destTile = null;
+            Block srcBlock = srcState.getBlock();
+
+            // handle source block having tile entity (chest, etc)
+            if (srcState.hasTileEntity()) {
+
+                TileEntity srcTile = world.getTileEntity(srcPos); // get the TE from the source block
+                world.removeTileEntity(srcPos); // remove TE from original position
+
+                if (srcTile != null) {
+                    CompoundNBT tag = srcTile.serializeNBT();
+                    destTile = TileEntity.create(tag);
+
+                    if (destTile != null) {
+                        destTile.setPos(destPos);
+                        destTile.validate();
+                    }
                 }
             }
 
-            world.removeTileEntity(boundPos);
-            world.removeBlock(boundPos, false);
+            BlockState destState = world.getBlockState(destPos);
+            world.removeBlock(srcPos, false);
+
+            if (destTile != null) {
+//                destTile = world.getTileEntity(destPos);
+
+                if (!srcBlock.isValidPosition(destState, world, destPos)) {
+                    world.setBlockState(destPos, destState, 2);
+                    world.setTileEntity(destPos, destTile);
+                    Block.spawnDrops(destState, world, destPos, destTile);
+                    world.removeBlock(destPos, true);
+                    destroyed = true;
+                }
+
+                if (!destroyed) {
+                    world.setBlockState(destPos, destState);
+                    world.setTileEntity(destPos, destTile);
+                }
+            }
+
+            if (!destroyed) {
+                world.setBlockState(destPos, srcState, 2);
+                if (world.getTileEntity(destPos) != null) {
+                    world.setBlockState(destPos, srcState, 0); // ?
+                }
+
+                if (destTile != null && !world.isRemote) {
+                    world.setTileEntity(destPos, destTile);
+                    destTile.updateContainingBlockInfo();
+                }
+                world.notifyNeighborsOfStateChange(destPos, srcBlock);
+            }
 
             if (world.isRemote) {
-                effectTransfer(boundPos, posUp);
+                effectTransfer(srcPos, destPos);
             }
 
             // do totem damage/destruction
             int damageAmount;
-            if (boundTile != null) {
-                damageAmount = tileDamage;
-            } else if (singleUse.contains(boundName)) {
+
+            if (player.isCreative()) {
+                damageAmount = 0;
+            } else if (singleUse.contains(srcName)) {
                 damageAmount = held.getMaxDamage();
+            } else if (destTile != null) {
+                damageAmount = tileDamage;
             } else {
                 damageAmount = blockDamage;
             }
@@ -174,9 +232,9 @@ public class TotemOfExtracting extends MesonModule
     {
         double spread = 0.7D;
         for (int i = 0; i < 8; i++) {
-            double px = src.getX() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = src.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = src.getY() + 0.5D + (Math.random() - 0.5D) * spread;
-            double pz = src.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            double pz = src.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             ClientHelper.getClientWorld().addParticle(ParticleTypes.CLOUD, px, py, pz, 0.0D, 0.08D, 0.0D);
         }
     }
@@ -186,9 +244,9 @@ public class TotemOfExtracting extends MesonModule
     {
         double spread = 0.7D;
         for (int i = 0; i < 8; i++) {
-            double px = src.getX() + 0.25D + (Math.random() - 0.5D) * spread;
-            double py = src.getY() + 0.25D + (Math.random() - 0.5D) * spread;
-            double pz = src.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = src.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = src.getY() + 0.5D + (Math.random() - 0.5D) * spread;
+            double pz = src.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             ClientHelper.getClientWorld().addParticle(ParticleTypes.LARGE_SMOKE, px, py, pz, 0.0D, 0.08D, 0.0D);
         }
     }

@@ -31,6 +31,9 @@ public class TotemOfFlying extends MesonModule
     @Config(name = "Durability", description = "Durability of the Totem.")
     public static int durability = 120;
 
+    @Config(name = "Chance of damage", description = "Chance (out of 1.0) of damaging the totem every quarter tick while using it.")
+    public static double damageChance = 0.15D;
+
     @Override
     public void init()
     {
@@ -56,7 +59,7 @@ public class TotemOfFlying extends MesonModule
 
                 if (player.abilities.isFlying) {
 
-                    if (!player.world.isRemote && player.world.rand.nextFloat() < 0.15F) {
+                    if (!player.world.isRemote && player.world.rand.nextDouble() < damageChance) {
                         for (Hand hand : Hand.values()) {
                             ItemStack held = player.getHeldItem(hand);
                             if (held.getItem() != item) continue;
@@ -108,10 +111,10 @@ public class TotemOfFlying extends MesonModule
     {
         double spread = 0.6D;
         for (int i = 0; i < 8; i++) {
-            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() - 0.4D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
-            ClientHelper.getClientWorld().addParticle(ParticleTypes.CLOUD, px, py, pz, 0.0D, 0.3D, 0.0D);
+            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+            ClientHelper.getClientWorld().addParticle(ParticleTypes.CLOUD, px, py, pz, 0.0D, 0.1D, 0.0D);
         }
     }
 
@@ -120,10 +123,10 @@ public class TotemOfFlying extends MesonModule
     {
         double spread = 1.5D;
         for (int i = 0; i < 8; i++) {
-            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.25D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
-            ClientHelper.getClientWorld().addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.3D, 0.0D);
+            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+            ClientHelper.getClientWorld().addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.1D, 0.0D);
         }
     }
 }

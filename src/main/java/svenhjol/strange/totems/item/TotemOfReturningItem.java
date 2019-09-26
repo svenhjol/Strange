@@ -1,5 +1,7 @@
 package svenhjol.strange.totems.item;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -10,6 +12,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -19,13 +23,12 @@ import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.strange.base.StrangeHelper;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class TotemOfReturningItem extends MesonItem
 {
     private static final String POS = "pos";
     private static final String DIM = "dim";
-
-    /* @todo Tooltip information */
 
     public TotemOfReturningItem(MesonModule module)
     {
@@ -94,5 +97,19 @@ public class TotemOfReturningItem extends MesonItem
     public static void setDim(ItemStack stack, int dim)
     {
         ItemNBTHelper.setInt(stack, DIM, dim);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
+    {
+        int dim = getDim(stack);
+        BlockPos pos = getPos(stack);
+        if (pos != null) {
+            String x = String.valueOf(pos.getX());
+            String y = String.valueOf(pos.getY());
+            String z = String.valueOf(pos.getZ());
+            strings.add(new StringTextComponent(x + " " + y + " " + z + ". " + I18n.format("charm.dimension") + " " + dim));
+        }
+        super.addInformation(stack, world, strings, flag);
     }
 }
