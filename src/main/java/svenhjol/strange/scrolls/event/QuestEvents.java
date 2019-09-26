@@ -179,6 +179,7 @@ public class QuestEvents
         if (event.phase == Phase.END
             && event.player != null
             && event.player.world.getGameTime() % 10 == 0
+            && event.player.isAlive()
         ) {
             respondToEvent(event.player, event);
         }
@@ -207,6 +208,8 @@ public class QuestEvents
 
     private void respondToEvent(PlayerEntity player, Event event)
     {
+        if (player == null || !player.isAlive()) return;
+
         List<IQuest> quests = Quests.getCurrent(player);
         boolean responded = false;
 
