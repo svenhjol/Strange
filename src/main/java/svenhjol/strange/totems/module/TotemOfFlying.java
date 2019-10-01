@@ -19,8 +19,8 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeHelper;
-import svenhjol.strange.base.message.DamageTotemOfFlying;
+import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.message.UpdateTotemMessage;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
@@ -29,10 +29,10 @@ public class TotemOfFlying extends MesonModule
     public static TotemOfFlyingItem item;
 
     @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 120;
+    public static int durability = 128;
 
-    @Config(name = "Chance of damage", description = "Chance (out of 1.0) of damaging the totem every quarter tick while using it.")
-    public static double damageChance = 0.15D;
+    @Config(name = "Chance of damage", description = "Chance (out of 1.0) of damaging the totem every while using it (every 5 ticks).")
+    public static double damageChance = 0.1D;
 
     @Override
     public void init()
@@ -63,11 +63,12 @@ public class TotemOfFlying extends MesonModule
                         for (Hand hand : Hand.values()) {
                             ItemStack held = player.getHeldItem(hand);
                             if (held.getItem() != item) continue;
-                            PacketHandler.sendTo(new DamageTotemOfFlying(playerPos), (ServerPlayerEntity) player);
-                            int damage = StrangeHelper.damageTotem(player, held, 1);
+                            PacketHandler.sendTo(new UpdateTotemMessage(UpdateTotemMessage.DAMAGE, playerPos), (ServerPlayerEntity) player);
+                            int damage = TotemHelper.damage(player, held, 1);
 
                             if (damage > held.getMaxDamage()) {
-                                StrangeHelper.destroyTotem(player, held);
+                                PacketHandler.sendTo(new UpdateTotemMessage(UpdateTotemMessage.DESTROY, playerPos), (ServerPlayerEntity) player);
+                                TotemHelper.destroy(player, held);
                                 disableFlight(player);
                                 return;
                             }
@@ -115,18 +116,6 @@ public class TotemOfFlying extends MesonModule
             double py = pos.getY() - 0.4D + (Math.random() - 0.5D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             ClientHelper.getClientWorld().addParticle(ParticleTypes.CLOUD, px, py, pz, 0.0D, 0.1D, 0.0D);
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void effectDamageTotem(BlockPos pos)
-    {
-        double spread = 1.5D;
-        for (int i = 0; i < 8; i++) {
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ClientHelper.getClientWorld().addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.1D, 0.0D);
         }
     }
 }

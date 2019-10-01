@@ -20,7 +20,8 @@ import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.UtilHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -53,15 +54,14 @@ public class TotemOfReturningItem extends MesonItem
         int dim = getDim(stack); // the dimension to teleport to
         ItemStack held = player.getHeldItem(hand);
 
-
-        // if shift is held, or entry isn't set, then bind this totem to current location and exit
-        if (pos == null || player.isSneaking()) {
+        // bind this totem to current location and exit
+        if (player.isSneaking()) {
             BlockPos playerPos = player.getPosition();
             int playerDim = player.dimension.getId();
             setPos(stack, playerPos);
             setDim(stack, playerDim);
 
-            player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 0.8f);
+            player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
             return super.onItemRightClick(world, player, hand);
         }
 
@@ -72,7 +72,7 @@ public class TotemOfReturningItem extends MesonItem
             player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
         }
 
-        StrangeHelper.destroyTotem(player, held);
+        TotemHelper.destroy(player, held);
 
         return super.onItemRightClick(world, player, hand);
     }
@@ -102,13 +102,11 @@ public class TotemOfReturningItem extends MesonItem
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
     {
-        int dim = getDim(stack);
         BlockPos pos = getPos(stack);
         if (pos != null) {
-            String x = String.valueOf(pos.getX());
-            String y = String.valueOf(pos.getY());
-            String z = String.valueOf(pos.getZ());
-            strings.add(new StringTextComponent(x + " " + y + " " + z + ". " + I18n.format("charm.dimension") + " " + dim));
+            String strDim = String.valueOf(getDim(stack));
+            String strPos = UtilHelper.formatBlockPos(pos);
+            strings.add(new StringTextComponent(I18n.format("totem.strange.returning", strPos, strDim)));
         }
         super.addInformation(stack, world, strings, flag);
     }

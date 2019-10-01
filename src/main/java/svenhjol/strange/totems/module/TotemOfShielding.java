@@ -10,7 +10,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
@@ -18,10 +18,10 @@ public class TotemOfShielding extends MesonModule
 {
     public static TotemOfShieldingItem item;
 
-    @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 120;
+    @Config(name = "Durability", description = "Durability of the totem.")
+    public static int durability = 128;
 
-    @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the Totem." )
+    @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the totem." )
     public static double damageMultiplier = 0.5D;
 
     @Override
@@ -43,8 +43,8 @@ public class TotemOfShielding extends MesonModule
 
                 if (held.getItem() instanceof TotemOfShieldingItem) {
                     double damageAmount = event.getAmount() * damageMultiplier;
-                    int damage = StrangeHelper.damageTotem(player, held, (int) Math.ceil(damageAmount));
-                    if (damage > held.getMaxDamage()) StrangeHelper.destroyTotem(player, held);
+                    int damage = TotemHelper.damage(player, held, (int) Math.ceil(damageAmount));
+                    if (damage > held.getMaxDamage()) TotemHelper.destroy(player, held);
                     event.setCanceled(true);
                     return;
                 }

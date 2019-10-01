@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,7 +47,7 @@ public class TotemOfHoldingItem extends MesonItem
     {
         ItemStack held = player.getHeldItem(hand);
         CompoundNBT items = getItems(held);
-        StrangeHelper.destroyTotem(player, held);
+        TotemHelper.destroy(player, held);
 
         for (int i = 0; i < items.size(); i++) {
             INBT itemTag = items.get(String.valueOf(i));
@@ -97,6 +97,4 @@ public class TotemOfHoldingItem extends MesonItem
 
         super.addInformation(stack, world, strings, flag);
     }
-
-
 }

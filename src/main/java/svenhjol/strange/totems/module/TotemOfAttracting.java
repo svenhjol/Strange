@@ -6,12 +6,12 @@ import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -21,7 +21,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
 import svenhjol.strange.totems.item.TotemOfAttractingItem;
 
 import java.util.List;
@@ -33,10 +33,13 @@ public class TotemOfAttracting extends MesonModule
     public static TotemOfAttractingItem item;
 
     @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 100;
+    public static int durability = 128;
 
     @Config(name = "Attraction range", description = "Drops within this range of the player will be automatically picked up.")
     public static int range = 10;
+
+    @Config(name = "Chance of damage", description = "Chance (out of 1.0) of damaging the totem while using it (every 5 ticks).")
+    public static double damageChance = 0.1D;
 
     @Override
     public void init()
@@ -54,12 +57,13 @@ public class TotemOfAttracting extends MesonModule
             || event.player.getHeldItemOffhand().getItem() == item)
         ) {
             PlayerEntity player = event.player;
+            World world = player.world;
             int r = range;
             double x = player.posX;
             double y = player.posY;
             double z = player.posZ;
 
-            List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(
+            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(
                 x - r, y - r, z - r, x + r, y + r, z + r));
 
             if (!items.isEmpty()) {
@@ -68,13 +72,16 @@ public class TotemOfAttracting extends MesonModule
                     item.setPosition(x, y, z);
                 }
 
-                if (player.world.rand.nextFloat() < 0.2F) {
+                if (!world.isRemote
+                    && (!player.isCreative() || !player.isSpectator())
+                    && world.rand.nextFloat() < 0.2F
+                ) {
                     for (Hand hand : Hand.values()) {
                         ItemStack held = player.getHeldItem(hand);
-                        boolean dead = held.attemptDamageItem(1, player.world.rand, (ServerPlayerEntity) player);
+                        int damage = TotemHelper.damage(player, held, 1);
 
-                        if (dead) {
-                            StrangeHelper.destroyTotem(player, held);
+                        if (damage > held.getMaxDamage()) {
+                            TotemHelper.destroy(player, held);
                         }
                     }
                 }
@@ -85,7 +92,7 @@ public class TotemOfAttracting extends MesonModule
     @SubscribeEvent
     public void onEntityUpdate(LivingUpdateEvent event)
     {
-        if (event.getEntityLiving().world.getGameTime() % 10 == 0
+        if (event.getEntityLiving().world.getGameTime() % 20 == 0
             && event.getEntityLiving() instanceof MobEntity
             && event.getEntityLiving() instanceof CreatureEntity
             && ((MobEntity)event.getEntityLiving()).getNavigator() instanceof GroundPathNavigator

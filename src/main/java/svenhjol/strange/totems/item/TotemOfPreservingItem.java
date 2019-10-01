@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,7 +44,7 @@ public class TotemOfPreservingItem extends MesonItem
     {
         ItemStack held = player.getHeldItem(hand);
         player.giveExperiencePoints(getXp(held));
-        StrangeHelper.destroyTotem(player, held);
+        TotemHelper.destroy(player, held);
         return new ActionResult<>(ActionResultType.SUCCESS, held);
     }
 

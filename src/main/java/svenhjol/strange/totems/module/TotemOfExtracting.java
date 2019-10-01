@@ -25,7 +25,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeHelper;
+import svenhjol.strange.base.TotemHelper;
 import svenhjol.strange.totems.item.TotemOfExtractingItem;
 
 import java.util.ArrayList;
@@ -39,33 +39,34 @@ public class TotemOfExtracting extends MesonModule
     public static TotemOfExtractingItem item;
 
     @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 120;
+    public static int durability = 128;
 
     @Config(name = "Block extraction damage", description = "Damage taken when extracting normal blocks")
     public static int blockDamage = 4;
 
     @Config(name = "Tile extraction damage", description = "Damage taken when extracting tile entities (like chests)")
-    public static int tileDamage = 16;
+    public static int tileDamage = 8;
 
     @Config(name = "Heavy extraction damage", description = "Damage taken when extracing 'heavy' blocks (configurable blocks)")
-    public static int heavyDamage = 32;
+    public static int heavyDamage = 16;
 
     @Config(name = "Heavy extraction blocks", description = "Extracting these blocks causes heavy damage to the totem.")
     public static List<String> heavy = new ArrayList<>(Arrays.asList(
-        "minecraft:dragon_egg"
+        "minecraft:dragon_egg",
+        "minecraft:obsidian"
     ));
 
     @Config(name = "Single use blocks", description = "Extracting these blocks instantly destroys the totem.")
     public static List<String> singleUse = new ArrayList<>(Arrays.asList(
-        "minecraft:obsidian",
-        "minecraft:end_portal_frame",
-        "minecraft:end_portal",
         "minecraft:spawner"
     ));
 
     @Config(name = "Immovable blocks", description = "Blocks that cannot be extracted with the totem.")
     public static List<String> blacklist = new ArrayList<>(Arrays.asList(
-        "minecraft:bedrock"
+        "minecraft:bedrock",
+        "minecraft:portal",
+        "minecraft:end_portal_frame",
+        "minecraft:end_portal"
     ));
 
     @Override
@@ -80,10 +81,11 @@ public class TotemOfExtracting extends MesonModule
         PlayerEntity player = event.getPlayer();
         if (player == null) return;
 
+        ItemStack held = player.getHeldItem(event.getHand());
+        if (!(held.getItem() instanceof TotemOfExtractingItem)) return;
+
         World world = event.getWorld();
         int dim = WorldHelper.getDimensionId(world);
-        ItemStack held = player.getHeldItem(event.getHand());
-
         BlockPos srcPos = TotemOfExtractingItem.getPos(held);
         BlockPos destPos = event.getPos();
 
@@ -91,16 +93,20 @@ public class TotemOfExtracting extends MesonModule
 
             // check blacklist
             BlockState state = world.getBlockState(destPos);
-            String name = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
+            String srcName = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
+            String niceName = state.getBlock().getNameTextComponent().getString();
 
-            if (blacklist.contains(name)) {
+            if (blacklist.contains(srcName)) {
                 if (world.isRemote) {
                     effectUnbinding(destPos);
                     player.playSound(SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, 1.0F, 1.0F);
                 }
             } else {
+                // bind data to the itemstack
                 TotemOfExtractingItem.setPos(held, destPos);
                 TotemOfExtractingItem.setDim(held, dim);
+                TotemOfExtractingItem.setBlockName(held, niceName);
+
                 if (world.isRemote) {
                     effectBinding(destPos);
                     player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
@@ -115,7 +121,6 @@ public class TotemOfExtracting extends MesonModule
             BlockState srcState = world.getBlockState(srcPos);
             String srcName = Objects.requireNonNull(srcState.getBlock().getRegistryName()).toString();
 
-
             // check fail conditions
             if (dim != TotemOfExtractingItem.getDim(held)
                 || blacklist.contains(srcName)
@@ -127,26 +132,24 @@ public class TotemOfExtracting extends MesonModule
 
             destPos = destPos.offset(event.getFace(), 1);
 
-            // check for types, exceptions
+            // check for exceptions, modify state accordingly
             if (srcState.getProperties().contains(ChestBlock.TYPE)) {
                 srcState = srcState.with(ChestBlock.TYPE, ChestType.SINGLE);
             }
             if (srcState.getProperties().contains(HorizontalBlock.HORIZONTAL_FACING)) {
                 srcState = srcState.with(HorizontalBlock.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite());
             }
-            if (srcState.getProperties().contains(BlockStateProperties.HALF)) {
+            if (!isValidState(srcState)) {
                 destroyed = true;
             }
 
             world.setBlockState(destPos, srcState, 2); // set the state at the new position
-
 
             TileEntity destTile = null;
             Block srcBlock = srcState.getBlock();
 
             // handle source block having tile entity (chest, etc)
             if (srcState.hasTileEntity()) {
-
                 TileEntity srcTile = world.getTileEntity(srcPos); // get the TE from the source block
                 world.removeTileEntity(srcPos); // remove TE from original position
 
@@ -165,8 +168,6 @@ public class TotemOfExtracting extends MesonModule
             world.removeBlock(srcPos, false);
 
             if (destTile != null) {
-//                destTile = world.getTileEntity(destPos);
-
                 if (!srcBlock.isValidPosition(destState, world, destPos)) {
                     world.setBlockState(destPos, destState, 2);
                     world.setTileEntity(destPos, destTile);
@@ -199,25 +200,34 @@ public class TotemOfExtracting extends MesonModule
             }
 
             // do totem damage/destruction
-            int damageAmount;
+            int amount;
 
             if (player.isCreative()) {
-                damageAmount = 0;
+                amount = 0;
             } else if (singleUse.contains(srcName)) {
-                damageAmount = held.getMaxDamage();
+                amount = held.getMaxDamage();
+            } else if (heavy.contains(srcName)) {
+                amount = heavyDamage;
             } else if (destTile != null) {
-                damageAmount = tileDamage;
+                amount = tileDamage;
             } else {
-                damageAmount = blockDamage;
+                amount = blockDamage;
             }
 
-            int damage = StrangeHelper.damageTotem(player, held, damageAmount);
-            if (damage > held.getMaxDamage()) {
-                StrangeHelper.destroyTotem(player, held);
+            if (TotemHelper.damage(player, held, amount) > held.getMaxDamage()) {
+                TotemHelper.destroy(player, held);
             } else {
                 TotemOfExtractingItem.clearTags(held);
             }
         }
+    }
+
+    private boolean isValidState(BlockState state)
+    {
+        boolean invalid = state.getProperties().contains(BlockStateProperties.HALF)
+            || state.getProperties().contains(BlockStateProperties.BED_PART);
+
+        return !invalid;
     }
 
     @OnlyIn(Dist.CLIENT)
