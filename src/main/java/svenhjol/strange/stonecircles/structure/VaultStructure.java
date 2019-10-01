@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.structure;
+package svenhjol.strange.stonecircles.structure;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -9,15 +9,15 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
-import svenhjol.strange.travelrunes.structure.UndergroundPieces.PieceType;
-import svenhjol.strange.travelrunes.structure.UndergroundPieces.UndergroundPiece;
+import svenhjol.strange.stonecircles.structure.VaultPieces.PieceType;
+import svenhjol.strange.stonecircles.structure.VaultPieces.UndergroundPiece;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static svenhjol.strange.travelrunes.structure.UndergroundPieces.PieceType.*;
+import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
 
-public class UndergroundStructure
+public class VaultStructure
 {
     public static IStructurePieceType SCUP = UndergroundPiece::new;
     public static Map<PieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
@@ -35,7 +35,7 @@ public class UndergroundStructure
     public TemplateManager templates;
     public List<StructurePiece> components;
 
-    public UndergroundStructure(TemplateManager templates, List<StructurePiece> components, Biome biome, Random rand)
+    public VaultStructure(TemplateManager templates, List<StructurePiece> components, Biome biome, Random rand)
     {
         this.biome = biome;
         this.rand = rand;
@@ -43,28 +43,38 @@ public class UndergroundStructure
         this.templates = templates;
 
         pieceTypes.put(Junction, new ArrayList<>(Arrays.asList(
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/junction1"),
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/junction2")
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction1"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction2"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction3"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction4"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction5"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/junction6")
         )));
         pieceTypes.put(Corridor, new ArrayList<>(Arrays.asList(
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/corridor1"),
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/corridor2")
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor1"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor2"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor3"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor4"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor5"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/corridor6")
         )));
         pieceTypes.put(Large, new ArrayList<>(Arrays.asList(
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/large1"),
-            new ResourceLocation(Strange.MOD_ID, "stone_circle/large2")
+            new ResourceLocation(Strange.MOD_ID, "vaults/large1"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/large2"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/large3"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/large4"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/large5"),
+            new ResourceLocation(Strange.MOD_ID, "vaults/large6")
         )));
     }
 
     public void generate(BlockPos startPos)
     {
-        UndergroundPiece centre = new UndergroundPiece(templates, getRandomTemplate(Junction), startPos, Rotation.NONE);
-
-        if (startPos.getY() == 0 || startPos.getY() > 32) {
+        if (startPos.getY() == 0 || startPos.getY() > 48) {
             startPos = new BlockPos(startPos.getX(), 32, startPos.getZ());
         }
 
-        generate(centre, startPos, 0, Direction.byHorizontalIndex(rand.nextInt(4) + 2));
+        generate(Junction, startPos, 0, Direction.byHorizontalIndex(rand.nextInt(4) + 2), Rotation.NONE);
     }
 
     public ResourceLocation getRandomTemplate(PieceType type)
@@ -73,23 +83,26 @@ public class UndergroundStructure
         return templates.get(this.rand.nextInt(templates.size()));
     }
 
-    public void generate(UndergroundPiece centre, BlockPos pos, int depth, @Nullable Direction from)
+    public void generate(PieceType pieceType, BlockPos pos, int depth, @Nullable Direction from, @Nullable Rotation rotation)
     {
-        components.add(centre);
         depth++;
+
+        if (rotation == null) rotation = Rotation.NONE;
+        UndergroundPiece centre = new UndergroundPiece(templates, getRandomTemplate(pieceType), pos, rotation);
+
+        components.add(centre);
 
         for (Direction direction : Direction.values()) {
             if (from != null && direction == from.getOpposite()) continue; // don't generate in the direction came from
-            float chance = (1 / (float)depth) * (direction == from ? 0.95F : 0.7F);
+            float chance = (1.9F / (float)depth) * (direction == from ? 0.95F : 0.7F);
             float f = rand.nextFloat();
-//            float chance = 1.0F;
             if (f > chance || depth >= maxDepth) continue;
 
             int nextX, nextZ;
             PieceType nextType;
             BlockPos nextPos = null;
 
-            if (f < 0.14F) {
+            if (f < 0.12F) {
                 nextX = LARGE_X;
                 nextZ = LARGE_Z;
                 nextType = Large;
@@ -100,33 +113,27 @@ public class UndergroundStructure
             }
 
             if (direction == Direction.NORTH) {
-                makeCorridor(pos.add((centre.x - CORRIDOR_X) / 2, 0, -CORRIDOR_Z), Rotation.NONE); // 2, 0, -11
-//                pos = pos.add(-((nextX - CORRIDOR_X) / 2), 0, -nextZ); // -2, 0, -9
+                makeCorridor(pos.add((centre.x - CORRIDOR_X) / 2, 0, -CORRIDOR_Z), Rotation.NONE);
                 nextPos = pos.add(-((nextX - centre.x) / 2), 0, -(CORRIDOR_Z + nextZ));
-                // LARGE: pos = pos.add(-6, 0, -17)
             } else if (direction == Direction.SOUTH) {
-//                pos = pos.add((centre.x - CORRIDOR_X) / 2, 0, centre.z); // 2, 0, 9
                 makeCorridor(pos.add((centre.x - CORRIDOR_X) / 2, 0, centre.z), Rotation.NONE);
-//                pos = pos.add(-((nextX - CORRIDOR_X) / 2), 0, CORRIDOR_Z); // -2, 0, 11
                 nextPos = pos.add(-((nextX - centre.x) / 2), 0, centre.z + CORRIDOR_Z);
             } else if (direction == Direction.EAST) {
-//                pos = pos.add(centre.x, 0, (centre.z - CORRIDOR_X) + 2); // 9, 0, 6
                 makeCorridor(pos.add(centre.x, 0, ((centre.z - CORRIDOR_X) / 2) + 4), Rotation.COUNTERCLOCKWISE_90);
-//                pos = pos.add(CORRIDOR_Z, 0, -((nextZ - CORRIDOR_X) + 2)); //11, 0, -6
                 nextPos = pos.add(CORRIDOR_Z + centre.x, 0, -((nextZ - centre.x) / 2));
             }
-//            } else if (direction == Direction.WEST) {
-////                pos = pos.add(-CORRIDOR_Z, 0, (centre.z - CORRIDOR_X) + 2); // -11, 0, 6
-//                makeCorridor(pos.add(-CORRIDOR_Z, 0, (centre.z - CORRIDOR_X) + 2), Rotation.COUNTERCLOCKWISE_90);
-//                nextPos = pos.add(-CORRIDOR_Z + nextX, 0, centre.z - nextZ); // -9, 0, -6
+//            } else if (f < 0.4F && direction == Direction.WEST) {
+//                makeCorridor(pos.add(-CORRIDOR_Z, 0, ((centre.z - CORRIDOR_X) / 2) + 4), Rotation.COUNTERCLOCKWISE_90);
+//                nextPos = pos.add(-CORRIDOR_Z - nextX, 0, -((nextZ - centre.x) / 2));
 //            }
 
             if (nextPos != null) {
-                UndergroundPiece next = new UndergroundPiece(templates, getRandomTemplate(nextType), nextPos, Rotation.NONE);
-                generate(next, nextPos, depth, direction);
+                if (nextType == Large && rand.nextFloat() < 0.35F) {
+                    nextPos = nextPos.add(0, -7, 0);
+                }
+                generate(nextType, nextPos, depth, direction, Rotation.NONE);
             }
         }
-
     }
 
     public void makeCorridor(BlockPos pos, Rotation rotation)
