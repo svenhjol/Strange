@@ -19,13 +19,14 @@ public class StrangeLoader extends MesonLoader
     {
         super.setup(event);
 
+        // messages
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestCurrentQuests.class, RequestCurrentQuests::encode, RequestCurrentQuests::decode, RequestCurrentQuests.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, SendCurrentQuests.class, SendCurrentQuests::encode, SendCurrentQuests::decode, SendCurrentQuests.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RunestoneActivated.class, RunestoneActivated::encode, RunestoneActivated::decode, RunestoneActivated.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestShowQuest.class, RequestShowQuest::encode, RequestShowQuest::decode, RequestShowQuest.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, DamageTotemOfFlying.class, DamageTotemOfFlying::encode, DamageTotemOfFlying::decode, DamageTotemOfFlying.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateTotemMessage.class, UpdateTotemMessage::encode, UpdateTotemMessage::decode, UpdateTotemMessage.Handler::handle);
 
-
+        // sounds
         RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COMPLETE);
         RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COUNT);
         RegistryHandler.registerSound(StrangeSounds.RUNESTONE_TRAVEL);
