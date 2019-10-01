@@ -13,8 +13,8 @@ import svenhjol.strange.scrolls.quest.condition.RewardItem;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
-import svenhjol.strange.travelrunes.module.Runestones;
-import svenhjol.strange.travelrunes.module.StoneCircles;
+import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
