@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.structure;
+package svenhjol.strange.stonecircles.structure;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.Dynamic;

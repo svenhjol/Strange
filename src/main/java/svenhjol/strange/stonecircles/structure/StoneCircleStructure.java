@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.structure;
+package svenhjol.strange.stonecircles.structure;
 
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
@@ -17,8 +17,8 @@ import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
-import svenhjol.strange.travelrunes.module.Runestones;
-import svenhjol.strange.travelrunes.module.StoneCircles;
+import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +98,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             components.add(new StoneCirclePiece(this.rand, pos));
 
             // create underground structure beneath the circle
-            UndergroundStructure underground = new UndergroundStructure(templates, components, biomeIn, rand);
+            VaultStructure underground = new VaultStructure(templates, components, biomeIn, rand);
             underground.generate(pos);
 
             this.recalculateStructureSize();

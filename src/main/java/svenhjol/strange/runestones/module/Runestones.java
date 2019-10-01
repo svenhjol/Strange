@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.module;
+package svenhjol.strange.runestones.module;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -36,11 +36,12 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.message.RunestoneActivated;
-import svenhjol.strange.travelrunes.block.RunestoneBlock;
+import svenhjol.strange.runestones.block.RunestoneBlock;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_RUNES, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class Runestones extends MesonModule
 {
     public static RunestoneBlock block;

@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.module;
+package svenhjol.strange.stonecircles.module;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -14,16 +14,16 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.travelrunes.structure.StoneCircleConfig;
-import svenhjol.strange.travelrunes.structure.StoneCircleStructure;
-import svenhjol.strange.travelrunes.structure.UndergroundStructure;
+import svenhjol.strange.base.UtilHelper;
+import svenhjol.strange.stonecircles.structure.StoneCircleConfig;
+import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
+import svenhjol.strange.stonecircles.structure.VaultStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_RUNES)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.STONE_CIRCLES)
 public class StoneCircles extends MesonModule
 {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
@@ -31,23 +31,23 @@ public class StoneCircles extends MesonModule
     public static Structure<StoneCircleConfig> structure;
 
     @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating in a chunk.")
-    public static double chance = 0.005D;
+    public static double chance = 0.01D;
 
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
-    public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
-        Objects.requireNonNull(Biomes.PLAINS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SUNFLOWER_PLAINS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.DESERT.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.DESERT_LAKES.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.BEACH.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SAVANNA.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SNOWY_TUNDRA.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SNOWY_BEACH.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.SWAMP.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.END_BARRENS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.END_HIGHLANDS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.END_MIDLANDS.getRegistryName()).getPath(),
-        Objects.requireNonNull(Biomes.NETHER.getRegistryName()).getPath()
+    public static List<String> biomesConfig = new ArrayList<>(Arrays.asList(
+        UtilHelper.getBiomeName(Biomes.PLAINS),
+        UtilHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
+        UtilHelper.getBiomeName(Biomes.DESERT),
+        UtilHelper.getBiomeName(Biomes.DESERT_LAKES),
+        UtilHelper.getBiomeName(Biomes.BEACH),
+        UtilHelper.getBiomeName(Biomes.SAVANNA),
+        UtilHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
+        UtilHelper.getBiomeName(Biomes.SNOWY_BEACH),
+        UtilHelper.getBiomeName(Biomes.SWAMP),
+        UtilHelper.getBiomeName(Biomes.END_BARRENS),
+        UtilHelper.getBiomeName(Biomes.END_HIGHLANDS),
+        UtilHelper.getBiomeName(Biomes.END_MIDLANDS),
+        UtilHelper.getBiomeName(Biomes.NETHER)
     ));
 
     public static List<Biome> validBiomes = new ArrayList<>();
@@ -57,17 +57,15 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-//        Registry.register(Registry.FEATURE, "stone_circle", structure);
-//        RegistryHandler.addRegisterable(structure, ID);
-
+        // TODO check that this registers the stone_circle name properly
+        Registry.register(Registry.FEATURE, "stone_circle", structure);
         RegistryHandler.registerStructure(structure, ID);
 
-        // TODO add to Meson structure registry
+        // TODO add structure pieces to Meson registry
         Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
-        Registry.register(Registry.STRUCTURE_PIECE, "scup", UndergroundStructure.SCUP);
-//        RegistryHandler.addRegisterable(, new ResourceLocation(Strange.MOD_ID, "SCP"));
+        Registry.register(Registry.STRUCTURE_PIECE, "scup", VaultStructure.SCUP);
 
-        configBiomes.forEach(biomeName -> {
+        biomesConfig.forEach(biomeName -> {
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });

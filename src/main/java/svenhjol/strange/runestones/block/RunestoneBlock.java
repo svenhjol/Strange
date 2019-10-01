@@ -1,4 +1,4 @@
-package svenhjol.strange.travelrunes.block;
+package svenhjol.strange.runestones.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
