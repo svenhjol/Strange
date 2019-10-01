@@ -4,7 +4,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
-import svenhjol.strange.travelrunes.module.Runestones;
+import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.function.Supplier;
 
