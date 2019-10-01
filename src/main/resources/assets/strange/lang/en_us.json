@@ -1,4 +1,7 @@
 {
+  "filled_map.village": "Village map",
+  "filled_map.stone_circle": "Stone Circle map",
+
   "gui.strange.scrolls.accept": "Accept Quest",
   "gui.strange.scrolls.close": "Close Window",
   "gui.strange.scrolls.decline": "Decline Quest",
@@ -35,5 +38,7 @@
 
   "totem.strange.holding_item": "Holding one item",
   "totem.strange.holding_items": "Holding %s items",
-  "totem.strange.preserving": "Preserving %s XP"
+  "totem.strange.preserving": "Preserving %s XP",
+  "totem.strange.extracting": "%s at %s",
+  "totem.strange.returning": "%s in dimension %s"
 }
