@@ -3,7 +3,6 @@ package svenhjol.strange.totems.module;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IllusionerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +10,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -27,7 +27,7 @@ import java.util.Optional;
 public class IllusionersDropTotems extends MesonModule
 {
     @Config(name = "Drop chance",
-        description = "Chance (out of 1.0) of an Illusioner dropping a Totem when killed by the player."
+        description = "Chance (out of 1.0) of an Illusioner dropping a totem when killed by the player."
     )
     public static double chance = 1.0D;
 
@@ -42,7 +42,7 @@ public class IllusionersDropTotems extends MesonModule
     public static List<Item> totems = new ArrayList<>();
 
     @Override
-    public void init()
+    public void setup(FMLCommonSetupEvent event)
     {
         totemsConfig.forEach(name -> {
             Optional<Item> itemValue = Registry.ITEM.getValue(new ResourceLocation(name));
@@ -56,7 +56,6 @@ public class IllusionersDropTotems extends MesonModule
     {
         if (!event.getEntityLiving().world.isRemote
             && event.getEntityLiving() instanceof IllusionerEntity
-            && event.getSource().getTrueSource() instanceof PlayerEntity
             && (double)event.getEntityLiving().world.rand.nextFloat() <= chance
         ) {
             if (totems.isEmpty()) return;
