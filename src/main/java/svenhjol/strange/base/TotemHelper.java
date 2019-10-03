@@ -41,6 +41,21 @@ public class TotemHelper
     }
 
     @OnlyIn(Dist.CLIENT)
+    public static void effectActivateTotem(BlockPos pos)
+    {
+        PlayerEntity player = ClientHelper.getClientPlayer();
+        player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.25F);
+
+        double spread = 1.5D;
+        for (int i = 0; i < 8; i++) {
+            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+            ClientHelper.getClientWorld().addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.0D, 0.1D, 0.0D);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public static void effectDamageTotem(BlockPos pos)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();
