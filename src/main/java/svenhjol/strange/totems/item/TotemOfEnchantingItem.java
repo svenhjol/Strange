@@ -20,13 +20,13 @@ import svenhjol.strange.base.TotemHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TotemOfPreservingItem extends MesonItem
+public class TotemOfEnchantingItem extends MesonItem
 {
     private static final String XP = "xp";
 
-    public TotemOfPreservingItem(MesonModule module)
+    public TotemOfEnchantingItem(MesonModule module)
     {
-        super(module, "totem_of_preserving", new Properties()
+        super(module, "totem_of_enchanting", new Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
@@ -62,7 +62,7 @@ public class TotemOfPreservingItem extends MesonItem
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
     {
-        strings.add(new StringTextComponent(I18n.format("totem.strange.preserving", getXp(stack))));
+        strings.add(new StringTextComponent(I18n.format("totem.strange.enchanting", getXp(stack))));
         super.addInformation(stack, world, strings, flag);
     }
 }

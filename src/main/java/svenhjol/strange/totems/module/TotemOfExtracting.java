@@ -79,7 +79,7 @@ public class TotemOfExtracting extends MesonModule
     public void onRightClick(RightClickBlock event)
     {
         PlayerEntity player = event.getPlayer();
-        if (player == null) return;
+        if (player == null || !player.isAlive()) return;
 
         ItemStack held = player.getHeldItem(event.getHand());
         if (!(held.getItem() instanceof TotemOfExtractingItem)) return;

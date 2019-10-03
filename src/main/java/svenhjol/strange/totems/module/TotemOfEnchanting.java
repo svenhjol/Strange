@@ -11,17 +11,17 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.totems.item.TotemOfPreservingItem;
+import svenhjol.strange.totems.item.TotemOfEnchantingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfPreserving extends MesonModule
+public class TotemOfEnchanting extends MesonModule
 {
-    public static TotemOfPreservingItem item;
+    public static TotemOfEnchantingItem item;
 
     @Override
     public void init()
     {
-        item = new TotemOfPreservingItem(this);
+        item = new TotemOfEnchantingItem(this);
     }
 
     @SubscribeEvent
@@ -33,7 +33,7 @@ public class TotemOfPreserving extends MesonModule
             ExperienceOrbEntity orb = event.getOrb();
             for (Hand hand : Hand.values()) {
                 if (player.getHeldItem(hand).getItem() == item) {
-                    TotemOfPreservingItem.addXp(player.getHeldItem(hand), orb.getXpValue());
+                    TotemOfEnchantingItem.addXp(player.getHeldItem(hand), orb.getXpValue());
                     player.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 1.0F, 1.25F);
                     break;
                 }
