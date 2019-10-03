@@ -119,6 +119,7 @@ public class QuestEvents
         if (isValidQuestBadgeScreen(mc)) {
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
                 PacketHandler.sendToServer(new RequestCurrentQuests());
+                QuestClient.lastQuery = mc.world.getGameTime();
             }
 
             int w = QuestBadgeGui.WIDTH;
