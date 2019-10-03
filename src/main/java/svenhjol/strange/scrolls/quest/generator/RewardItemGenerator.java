@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.generator;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -67,11 +68,11 @@ public class RewardItemGenerator extends BaseGenerator
             case TOTEM_DISTANT_STONE_CIRCLE:
                 if (world == null) return null;
                 ItemStack totem = new ItemStack(TotemOfReturning.item);
-                final BlockPos circlePos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world.rand), 1000, true);
+                final BlockPos circlePos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world, world.rand), 1000, true);
 
                 if (circlePos != null) {
                     TotemOfReturningItem.setPos(totem, circlePos.add(0, 1, 0));
-                    totem.setDisplayName(new StringTextComponent("Distant Stone Circle"));
+                    totem.setDisplayName(new StringTextComponent(I18n.format("item.strange.quest_reward_totem")));
                 }
 
                 return totem;
