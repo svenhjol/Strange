@@ -6,6 +6,7 @@ import svenhjol.strange.Strange;
 
 public class StrangeSounds
 {
+    public static final SoundEvent ATTRACTED = createSound("attracted");
     public static final SoundEvent QUEST_ACTION_COMPLETE = createSound("quest_action_complete");
     public static final SoundEvent QUEST_ACTION_COUNT = createSound("quest_action_count");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");

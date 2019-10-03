@@ -1,4 +1,10 @@
 {
+  "attracted": {
+    "category": "blocks",
+    "sounds": [
+      "strange:attracted"
+    ]
+  },
   "quest_action_complete": {
     "category": "players",
     "sounds": [
