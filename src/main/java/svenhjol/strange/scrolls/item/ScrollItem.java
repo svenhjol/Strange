@@ -49,7 +49,7 @@ public class ScrollItem extends MesonItem
 
                     // there isn't a quest, make one
                     int tier = getTierFromScroll(stack);
-                    if (tier < 1) return new ActionResult<>(ActionResultType.FAIL, stack);
+                    if (tier < 1) tier = 1;
 
                     IQuest quest = new Quest();
                     quest.setTier(tier);
