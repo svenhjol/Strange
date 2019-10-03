@@ -1,6 +1,5 @@
 package svenhjol.strange.base.message;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
@@ -8,8 +7,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.scrolls.client.QuestClient;
-import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
+import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -95,7 +94,6 @@ public class SendCurrentQuests implements IMesonMessage
         {
             ctx.get().enqueueWork(() -> {
                 QuestClient.currentQuests = msg.quests;
-                QuestClient.lastQuery = Minecraft.getInstance().world.getGameTime();
             });
             ctx.get().setPacketHandled(true);
         }
