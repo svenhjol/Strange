@@ -31,7 +31,17 @@ public class StoneCircles extends MesonModule
     public static Structure<StoneCircleConfig> structure;
 
     @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating in a chunk.")
-    public static double chance = 0.01D;
+    public static double stoneCircleChance = 0.2D;
+
+    @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
+    public static double vaultChance = 0.33D;
+
+    @Config(name = "Vault generation size", description = "Maximum number of rooms generated in any vault corridor.")
+    public static int vaultSize = 6;
+
+    @Config(name = "Outer stone circles only", description = "If true, vaults will only generate under stone circles in 'outer lands'.\n" +
+        "This has no effect if the Outerlands module is disabled.")
+    public static boolean outerOnly = true;
 
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> biomesConfig = new ArrayList<>(Arrays.asList(
@@ -58,7 +68,7 @@ public class StoneCircles extends MesonModule
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
         // TODO check that this registers the stone_circle name properly
-        Registry.register(Registry.FEATURE, "stone_circle", structure);
+        Registry.register(Registry.FEATURE, NAME, structure);
         RegistryHandler.registerStructure(structure, ID);
 
         // TODO add structure pieces to Meson registry
@@ -73,11 +83,11 @@ public class StoneCircles extends MesonModule
         Registry.BIOME.forEach(biome -> {
             biome.addFeature(
                 GenerationStage.Decoration.SURFACE_STRUCTURES,
-                Biome.createDecoratedFeature(structure, new StoneCircleConfig((float)chance), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+                Biome.createDecoratedFeature(structure, new StoneCircleConfig((float) stoneCircleChance), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
         });
 
         validBiomes.forEach(biome -> {
-            biome.addStructure(structure, new StoneCircleConfig((float)chance));
+            biome.addStructure(structure, new StoneCircleConfig((float) stoneCircleChance));
         });
     }
 }
