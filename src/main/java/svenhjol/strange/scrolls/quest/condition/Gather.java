@@ -60,7 +60,7 @@ public class Gather implements IDelegate
             int count = pickedUp.getCount();
             int remaining = getRemaining();
 
-            if (count > remaining) {
+            if (count > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
                 pickedUp.setCount(count - remaining);
                 count = remaining;
@@ -70,7 +70,7 @@ public class Gather implements IDelegate
                 pickupEvent.getItem().remove();
                 pickupEvent.setResult(Event.Result.DENY);
                 pickupEvent.setCanceled(true);
-                notify = "Collect " + remaining + " more " + stack.getItem().getName().getString() + ".";
+                notify = "Collect " + (remaining - 1) + " more " + stack.getItem().getName().getString() + ".";
             }
 
             collected += count;
