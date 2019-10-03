@@ -34,6 +34,12 @@ public class TotemOfEnchantingItem extends MesonItem
     }
 
     @Override
+    public boolean hasEffect(ItemStack stack)
+    {
+        return TotemOfEnchantingItem.getXp(stack) > 0;
+    }
+
+    @Override
     public boolean isEnchantable(ItemStack stack)
     {
         return false;
@@ -43,15 +49,31 @@ public class TotemOfEnchantingItem extends MesonItem
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
         ItemStack held = player.getHeldItem(hand);
-        player.giveExperiencePoints(getXp(held));
-        TotemHelper.destroy(player, held);
-        return new ActionResult<>(ActionResultType.SUCCESS, held);
+        if (player.isSneaking()) {
+            int xp = player.experienceTotal;
+            setXp(held, xp);
+            player.giveExperiencePoints(-xp);
+
+            if (world.isRemote) {
+                TotemHelper.effectActivateTotem(player.getPosition());
+            }
+
+            return new ActionResult<>(ActionResultType.SUCCESS, held);
+        } else {
+            int xp = getXp(held);
+            if (xp > 0) {
+                player.giveExperiencePoints(xp);
+                TotemHelper.destroy(player, held);
+                return new ActionResult<>(ActionResultType.SUCCESS, held);
+            }
+        }
+
+        return super.onItemRightClick(world, player, hand);
     }
 
-    public static void addXp(ItemStack stack, int amount)
+    public static void setXp(ItemStack stack, int amount)
     {
-        int xp = getXp(stack);
-        ItemNBTHelper.setInt(stack, XP, xp + amount);
+        ItemNBTHelper.setInt(stack, XP, amount);
     }
 
     public static int getXp(ItemStack stack)

@@ -1,17 +1,24 @@
 package svenhjol.strange.totems.module;
 
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.charm.Charm;
+import svenhjol.charm.tweaks.module.NoAnvilMinimumXp;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.totems.item.TotemOfEnchantingItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
 public class TotemOfEnchanting extends MesonModule
@@ -25,21 +32,54 @@ public class TotemOfEnchanting extends MesonModule
     }
 
     @SubscribeEvent
-    public void onPlayerPickupXp(PlayerPickupXpEvent event)
+    public void onAnvilUpdate(AnvilUpdateEvent event)
     {
-        if (event.getPlayer().getHeldItemMainhand().getItem() == item
-            || event.getPlayer().getHeldItemOffhand().getItem() == item) {
-            PlayerEntity player = event.getPlayer();
-            ExperienceOrbEntity orb = event.getOrb();
-            for (Hand hand : Hand.values()) {
-                if (player.getHeldItem(hand).getItem() == item) {
-                    TotemOfEnchantingItem.addXp(player.getHeldItem(hand), orb.getXpValue());
-                    player.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 1.0F, 1.25F);
-                    break;
-                }
-            }
-            orb.remove();
-            event.setCanceled(true);
+        ItemStack left = event.getLeft();
+        ItemStack right = event.getRight();
+        ItemStack out;
+
+        int baseCost = Charm.loader.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
+
+        if (left.isEmpty() || right.isEmpty()) return;
+        if (right.getItem() != item) return;
+
+        ListNBT leftTags = left.getEnchantmentTagList();
+        if (leftTags.isEmpty()) return;
+
+        Map<Enchantment, Integer> inEnchants = EnchantmentHelper.getEnchantments(left);
+        List<Enchantment> eligible = new ArrayList<>();
+
+        for (Map.Entry<Enchantment, Integer> entry : inEnchants.entrySet()) {
+            Enchantment ench = entry.getKey();
+            if (ench == null) continue;
+            if (ench.getMaxLevel() <= 1) continue;
+
+            int level = entry.getValue();
+            if (level >= ench.getMaxLevel()) continue;
+
+            eligible.add(ench);
         }
+        if (eligible.isEmpty()) return;
+
+        Random rand = new Random();
+        rand.setSeed(eligible.hashCode());
+
+        Enchantment ench = eligible.get(rand.nextInt(eligible.size()));
+        Map<Enchantment, Integer> outEnchants = EnchantmentHelper.getEnchantments(left);
+        int level = outEnchants.get(ench);
+        outEnchants.put(ench, level + 1);
+
+        out = left.copy();
+        EnchantmentHelper.setEnchantments(outEnchants, out);
+
+        // set the display name on the returned item
+        String name = event.getName();
+        if (!name.isEmpty()) {
+            out.setDisplayName(new StringTextComponent(name));
+        }
+
+        event.setCost(baseCost);
+        event.setMaterialCost(1);
+        event.setOutput(out);
     }
 }
