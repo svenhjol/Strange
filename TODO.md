@@ -33,3 +33,4 @@
 
 ## Totems
 * [X] Distant scrollkeepers buy and sell Totems
+* [ ] Add a tag so that villagers will buy any totem?
