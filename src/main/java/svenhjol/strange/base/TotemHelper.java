@@ -11,6 +11,16 @@ import svenhjol.meson.helper.ClientHelper;
 
 public class TotemHelper
 {
+    public static boolean damageOrDestroy(PlayerEntity player, ItemStack totem, int amount)
+    {
+        int damage = damage(player, totem, amount);
+        if (damage > totem.getMaxDamage()) {
+            destroy(player, totem);
+            return true;
+        }
+        return false;
+    }
+
     public static void destroy(PlayerEntity player, ItemStack totem)
     {
         totem.shrink(1);
@@ -20,6 +30,8 @@ public class TotemHelper
 
     public static int damage(PlayerEntity player, ItemStack totem, int amount)
     {
+        if (player.isSpectator() || player.isCreative()) return 0;
+
         int damage = totem.getDamage() + amount;
         totem.setDamage(damage);
 
