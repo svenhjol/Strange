@@ -36,6 +36,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.message.RunestoneActivated;
+import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 
@@ -46,12 +47,7 @@ public class Runestones extends MesonModule
 {
     public static RunestoneBlock block;
     public static List<Destination> destinations = new ArrayList<>();
-
     private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
-
-    // TODO configurable
-    public static int inner = 100000;
-    public static int outer = 20000000;
 
     @Override
     public void init()
@@ -68,40 +64,25 @@ public class Runestones extends MesonModule
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
         destinations.add((world, pos, rand) -> world.getSpawnPoint());
         if (Strange.loader.hasModule(StoneCircles.class)) {
-            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getInnerPos(rand), dist, true));
+            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getInnerPos(world, rand), dist, true));
         } else {
             destinations.add((world, pos, rand) -> world.getSpawnPoint());
         }
 
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getInnerPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getInnerPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getOuterPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getOuterPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getOuterPos(rand), dist, true));
-        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getOuterPos(rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getInnerPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getInnerPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getOuterPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getOuterPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getOuterPos(world, rand), dist, true));
+        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getOuterPos(world, rand), dist, true));
 
         if (Strange.loader.hasModule(StoneCircles.class)) {
-            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getOuterPos(rand), dist, true));
+            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getOuterPos(world, rand), dist, true));
         } else {
             destinations.add((world, pos, rand) -> world.getSpawnPoint());
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void effectActivate(BlockPos pos)
-    {
-        ClientWorld world = ClientHelper.getClientWorld();
-
-        double spread = 0.75D;
-        for (int i = 0; i < 10; i++) {
-            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 1.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
-            world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
-        }
-        SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
     }
 
     public static int getRunestoneType(IWorld world)
@@ -140,22 +121,28 @@ public class Runestones extends MesonModule
             .with(RunestoneBlock.RUNE, runeValue);
     }
 
-    public static BlockPos getInnerPos(Random rand)
+    public static BlockPos getInnerPos(World world, Random rand)
     {
-        int x = rand.nextInt(inner * 2) - inner;
-        int z = rand.nextInt(inner * 2) - inner;
-        return new BlockPos(x, 0, z);
+        if (Strange.loader.hasModule(Outerlands.class)) {
+            return Outerlands.getInnerPos(world, rand);
+        } else {
+            int max = 10000;
+            int x = rand.nextInt(max * 2) - max;
+            int z = rand.nextInt(max * 2) - max;
+            return new BlockPos(x, 0, z);
+        }
     }
 
-    public static BlockPos getOuterPos(Random rand)
+    public static BlockPos getOuterPos(World world, Random rand)
     {
-        int x = rand.nextInt(outer * 2) - outer;
-        int z = rand.nextInt(outer * 2) - outer;
-
-        x += rand.nextFloat() < 0.5 ? inner : -inner;
-        z += rand.nextFloat() < 0.5 ? inner : -inner;
-
-        return new BlockPos(x, 0, z);
+        if (Strange.loader.hasModule(Outerlands.class)) {
+            return Outerlands.getOuterPos(world, rand);
+        } else {
+            int max = 100000;
+            int x = rand.nextInt(max * 2) - max;
+            int z = rand.nextInt(max * 2) - max;
+            return new BlockPos(x, 0, z);
+        }
     }
 
     private BlockPos addRandomOffset(BlockPos pos, Random rand, int max)
@@ -258,9 +245,23 @@ public class Runestones extends MesonModule
             }
         });
 
-
 //        BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
 //        player.setPositionAndUpdate((double)updateDest.getX(), (double)(updateDest.getY() + 1), (double)updateDest.getZ());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void effectActivate(BlockPos pos)
+    {
+        ClientWorld world = ClientHelper.getClientWorld();
+
+        double spread = 0.75D;
+        for (int i = 0; i < 10; i++) {
+            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 1.5D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
+        }
+        SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
     }
 
     public interface Destination
