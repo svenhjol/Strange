@@ -31,9 +31,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -52,10 +52,13 @@ public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
     public static final String ANONYMOUS = "3-1-4-1-5";
-    public static final int MAX_LEVEL = 3;
-
     public static UUID ANY_SELLER = UUID.fromString(Scrollkeepers.ANONYMOUS);
     public static VillagerProfession profession;
+    public static int interestRange = 16;
+
+    @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
+        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.")
+    public static double badOmenChance = 0.02D;
 
     @Override
     public void init()
@@ -92,13 +95,12 @@ public class Scrollkeepers extends MesonModule
                 }
             });
 
-            int range = 10;
             double x = player.posX;
             double y = player.posY;
             double z = player.posZ;
 
             List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(
-                x - range, y - range, z - range, x + range, y + range, z + range));
+                x - interestRange, y - interestRange, z - interestRange, x + interestRange, y + interestRange, z + interestRange));
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == profession) {
@@ -147,7 +149,7 @@ public class Scrollkeepers extends MesonModule
             double px = villager.getPosition().getX() + 0.25D + (Math.random() - 0.5D) * spread;
             double py = villager.getPosition().getY() + 2.25D + (Math.random() - 0.5D) * spread;
             double pz = villager.getPosition().getZ() + 0.25D + (Math.random() - 0.5D) * spread;
-            villager.world.addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0.2D, 0.2D, 0.12D);
+            villager.world.addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0, 0, 0.12D);
         }
     }
 
@@ -157,6 +159,7 @@ public class Scrollkeepers extends MesonModule
         IQuestsCapability cap = Quests.getCapability(player);
         UUID villagerId = villager.getUniqueID();
         List<IQuest> completableQuests = new ArrayList<>();
+        World world = player.world;
 
         for (IQuest quest : cap.getCurrentQuests(player)) {
             UUID seller = quest.getSeller();
@@ -180,7 +183,6 @@ public class Scrollkeepers extends MesonModule
             VillagerData data = villager.getVillagerData();
             int villagerXp = villager.getXp();
             int villagerLevel = data.getLevel();
-            boolean levelUp = false;
 
             // complete all completable quests and get the highest quest tier to level up the villager
             int highestTier = 0;
@@ -188,22 +190,17 @@ public class Scrollkeepers extends MesonModule
                 int questTier = quest.getTier();
                 highestTier = Math.max(highestTier, questTier);
 
-                if (questTier == villagerLevel) {
-                    int newXp = villagerXp + (questTier * 4);
+                if (questTier >= villagerLevel) {
+                    int newXp = villagerXp + (questTier * (3 + questTier));
                     villager.setXp(newXp);
-                    int newLevel = VillagerData.func_221127_c(newXp);
-                    levelUp = newLevel > villagerLevel;
-                    Meson.log(newXp, newLevel, villagerLevel);
                 }
-
                 MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
 
-            if (levelUp && villagerLevel < MAX_LEVEL) {
-                if (player.world.rand.nextFloat() < 0.1 + (villagerLevel * 0.15)) {
-                    EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
-                    player.addPotionEffect(badOmen);
-                }
+            // apply bad omen effect according to villager level
+            if (badOmenChance > 0 && world.rand.nextFloat() < (badOmenChance + ((villagerLevel-1) * badOmenChance))) {
+                EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
+                player.addPotionEffect(badOmen);
             }
 
             Quests.update(player);
@@ -230,8 +227,8 @@ public class Scrollkeepers extends MesonModule
             quest.setSeller(merchant.getUniqueID());
 
             ScrollItem.putTag(out, quest.toNBT());
-            out.setDisplayName(new StringTextComponent(I18n.format("item.strange.scroll_tier", tier)));
-            return new MerchantOffer(in1, out, 3, 0, 0.2F);
+            out.setDisplayName(new StringTextComponent(I18n.format("item.strange.scroll_tier_" + tier)));
+            return new MerchantOffer(in1, out, 8, 0, 0.2F);
         }
     }
 }
