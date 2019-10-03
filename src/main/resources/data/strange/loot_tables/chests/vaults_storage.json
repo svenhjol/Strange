@@ -2,7 +2,7 @@
   "type": "minecraft:barrel",
   "pools": [
     {
-      "rolls": 2,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -130,7 +130,7 @@
       ]
     },
     {
-      "rolls": 2,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -238,7 +238,7 @@
       ]
     },
     {
-      "rolls": 2,
+      "rolls": 1,
       "entries": [
         {
           "name": "minecraft:redstone",
@@ -305,16 +305,11 @@
           "name": "minecraft:lead",
           "type": "minecraft:item",
           "weight": 5
-        },
-        {
-          "name": "strange:totem_of_attracting",
-          "type": "minecraft:item",
-          "weight": 2
         }
       ]
     },
     {
-      "rolls": 2,
+      "rolls": 1,
       "entries": [
         {
           "name": "minecraft:dirt",

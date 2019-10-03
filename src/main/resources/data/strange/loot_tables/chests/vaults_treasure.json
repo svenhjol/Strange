@@ -5,10 +5,45 @@
       "rolls": 1,
       "entries": [
         {
+          "name": "strange:totem_of_returning",
           "type": "minecraft:item",
-          "weight": 10,
-          "name": "strange:totem_of_returning"
+          "weight": 10
         },
+        {
+          "name": "strange:totem_of_attracting",
+          "type": "minecraft:item",
+          "weight": 10
+        },
+        {
+          "name": "strange:totem_of_shielding",
+          "type": "minecraft:item",
+          "weight": 10
+        },
+        {
+          "name": "strange:totem_of_extracting",
+          "type": "minecraft:item",
+          "weight": 7
+        },
+        {
+          "name": "strange:totem_of_enchanting",
+          "type": "minecraft:item",
+          "weight": 7
+        },
+        {
+          "name": "strange:totem_of_flying",
+          "type": "minecraft:item",
+          "weight": 7
+        },
+        {
+          "name": "strange:totem_of_holding",
+          "type": "minecraft:item",
+          "weight": 7
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "name": "minecraft:map",
           "type": "minecraft:item",
@@ -106,11 +141,6 @@
     {
       "rolls": 1,
       "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 7,
-          "name": "strange:totem_of_extracting"
-        },
         {
           "name": "minecraft:redstone",
           "type": "minecraft:item",
@@ -229,11 +259,6 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "weight": 10,
-          "name": "strange:totem_of_shielding"
-        },
-        {
           "name": "minecraft:shield",
           "type": "minecraft:item",
           "weight": 15
@@ -312,22 +337,12 @@
               "treasure": true
             }
           ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "name": "minecraft:enchanted_golden_apple"
         }
       ]
     },
     {
       "rolls": 1,
       "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 7,
-          "name": "strange:totem_of_preserving"
-        },
         {
           "name": "minecraft:experience_bottle",
           "type": "minecraft:item",
@@ -383,17 +398,17 @@
               }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:enchanted_golden_apple"
         }
       ]
     },
     {
       "rolls": 1,
       "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "name": "strange:totem_of_attracting"
-        },
         {
           "name": "minecraft:apple",
           "type": "minecraft:item",
@@ -427,11 +442,6 @@
     {
       "rolls": 1,
       "entries": [
-        {
-          "name": "strange:totem_of_flying",
-          "type": "minecraft:item",
-          "weight": 7
-        },
         {
           "name": "minecraft:rotten_flesh",
           "type": "minecraft:item",
