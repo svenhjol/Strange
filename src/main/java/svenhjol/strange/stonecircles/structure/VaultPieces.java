@@ -24,6 +24,7 @@ import svenhjol.charm.decoration.module.AllTheBarrels;
 import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.charm.decoration.module.Crates;
 import svenhjol.charm.decoration.module.GoldLanterns;
+import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
@@ -160,12 +161,18 @@ public class VaultPieces
                 mob.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
                 world.addEntity(mob);
 
-            } else if (data.equals("erosion")) {
+            } else if (data.contains("erosion")) {
 
-                if (f < 0.2F) {
-                    state = Blocks.STONE_BRICKS.getDefaultState();
-                } else if (f < 0.4F) {
-                    state = Blocks.CRACKED_STONE_BRICKS.getDefaultState();
+                if (data.contains("wood")) {
+                    if (f < 0.5F) {
+                        state = Blocks.OAK_PLANKS.getDefaultState();
+                    }
+                } else {
+                    if (f < 0.3F) {
+                        state = Blocks.STONE_BRICKS.getDefaultState();
+                    } else if (f < 0.5F) {
+                        state = Blocks.CRACKED_STONE_BRICKS.getDefaultState();
+                    }
                 }
 
             } else if (data.contains("lantern")) {
@@ -225,11 +232,17 @@ public class VaultPieces
 
             } else if (data.equals("bookshelf")) {
 
-                if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.33F) {
+                if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.2F) {
                     state = ((Block)BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState();
 
                     world.setBlockState(pos, state, 2);
                     LockableLootTileEntity.setLootTable(world, rand, pos, StrangeLoot.CHESTS_VAULT_BOOKSHELVES);
+
+                    TileEntity tile = world.getTileEntity(pos);
+                    if (tile != null) {
+                        ((BookshelfChestTileEntity)tile).fillWithLoot(null);
+                    }
+
                     return;
 
                 } else {

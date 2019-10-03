@@ -9,6 +9,7 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.stonecircles.structure.VaultPieces.PieceType;
 import svenhjol.strange.stonecircles.structure.VaultPieces.UndergroundPiece;
 
@@ -29,7 +30,7 @@ public class VaultStructure
     public static final int LARGE_X = 17;
     public static final int LARGE_Z = 17;
 
-    public int maxDepth = 6;
+    public int maxIterations = StoneCircles.vaultSize;
     public Biome biome;
     public Random rand;
     public TemplateManager templates;
@@ -71,7 +72,7 @@ public class VaultStructure
     public void generate(BlockPos startPos)
     {
         if (startPos.getY() == 0 || startPos.getY() > 48) {
-            startPos = new BlockPos(startPos.getX(), 32, startPos.getZ());
+            startPos = new BlockPos(startPos.getX(), this.rand.nextInt(12) + 24, startPos.getZ());
         }
 
         generate(Junction, startPos, 0, Direction.byHorizontalIndex(rand.nextInt(4) + 2), Rotation.NONE);
@@ -83,9 +84,9 @@ public class VaultStructure
         return templates.get(this.rand.nextInt(templates.size()));
     }
 
-    public void generate(PieceType pieceType, BlockPos pos, int depth, @Nullable Direction from, @Nullable Rotation rotation)
+    public void generate(PieceType pieceType, BlockPos pos, int iterations, @Nullable Direction from, @Nullable Rotation rotation)
     {
-        depth++;
+        iterations++;
 
         if (rotation == null) rotation = Rotation.NONE;
         UndergroundPiece centre = new UndergroundPiece(templates, getRandomTemplate(pieceType), pos, rotation);
@@ -94,9 +95,9 @@ public class VaultStructure
 
         for (Direction direction : Direction.values()) {
             if (from != null && direction == from.getOpposite()) continue; // don't generate in the direction came from
-            float chance = (1.9F / (float)depth) * (direction == from ? 0.95F : 0.7F);
+            float chance = (1.9F / (float)iterations) * (direction == from ? 0.95F : 0.7F);
             float f = rand.nextFloat();
-            if (f > chance || depth >= maxDepth) continue;
+            if (f > chance || iterations >= maxIterations) continue;
 
             int nextX, nextZ;
             PieceType nextType;
@@ -131,7 +132,7 @@ public class VaultStructure
                 if (nextType == Large && rand.nextFloat() < 0.35F) {
                     nextPos = nextPos.add(0, -7, 0);
                 }
-                generate(nextType, nextPos, depth, direction, Rotation.NONE);
+                generate(nextType, nextPos, iterations, direction, Rotation.NONE);
             }
         }
     }

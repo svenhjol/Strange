@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
+import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 
@@ -28,9 +29,10 @@ import java.util.function.Function;
 
 public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 {
-    private static int tries = 64;
+    public static final int SEED_MODIFIER = 247474720;
+    public static final int TRIES = 64;
+    public static final String STRUCTURE_NAME = "Stone_Circle";
     public static IStructurePieceType SCP = StoneCirclePiece::new;
-
 
     public StoneCircleStructure(Function<Dynamic<?>, ? extends StoneCircleConfig> config)
     {
@@ -40,7 +42,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
     @Override
     public String getStructureName()
     {
-        return "Stone_Circle";
+        return STRUCTURE_NAME;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             rand.setSeed((long)(px ^ pz << 4) ^ gen.getSeed());
             rand.nextInt();
 
-            if (rand.nextInt(2) > 0) return false;
+//            if (rand.nextInt(2) > 0) return false;
 
             Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
             return gen.hasStructure(biome, StoneCircles.structure);
@@ -73,7 +75,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
     @Override
     protected int getSeedModifier()
     {
-        return 247474720;
+        return SEED_MODIFIER;
     }
 
     @Override
@@ -97,12 +99,20 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             // add the stone circle
             components.add(new StoneCirclePiece(this.rand, pos));
 
-            // create underground structure beneath the circle
-            VaultStructure underground = new VaultStructure(templates, components, biomeIn, rand);
-            underground.generate(pos);
+            // create vaults beneath the circle
+            if (isValidPosition(pos) && this.rand.nextFloat() < StoneCircles.vaultChance) {
+                VaultStructure vaults = new VaultStructure(templates, components, biomeIn, rand);
+                vaults.generate(pos);
+            }
 
             this.recalculateStructureSize();
         }
+    }
+
+    private static boolean isValidPosition(BlockPos pos)
+    {
+        if (!Strange.loader.hasModule(Outerlands.class) || !StoneCircles.outerOnly) return true;
+        return Strange.loader.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos);
     }
 
     public static class StoneCirclePiece extends ScatteredStructurePiece
@@ -133,13 +143,11 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 config.columnVariation = 4;
                 config.blocks = new ArrayList<>(Arrays.asList(
                     Blocks.NETHER_BRICKS.getDefaultState(),
-                    Blocks.RED_NETHER_BRICKS.getDefaultState(),
-                    Blocks.COAL_BLOCK.getDefaultState(),
-                    Blocks.OBSIDIAN.getDefaultState()
+                    Blocks.RED_NETHER_BRICKS.getDefaultState()
                 ));
 
                 for (int i = 20; i < 100; i++) {
-                    for (int ii = 1; ii < tries; ii++) {
+                    for (int ii = 1; ii < TRIES; ii++) {
                         pos = new MutableBlockPos(this.boundingBox.minX, i, this.boundingBox.minZ);
                         surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                         surfacePosDown = surfacePos.down();
@@ -162,7 +170,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     Blocks.OBSIDIAN.getDefaultState()
                 ));
 
-                for (int ii = 1; ii < tries; ii++) {
+                for (int ii = 1; ii < TRIES; ii++) {
                     pos = new MutableBlockPos(this.boundingBox.minX, y, this.boundingBox.minZ);
                     surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                     surfacePosDown = surfacePos.down();
@@ -186,7 +194,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     Blocks.MOSSY_COBBLESTONE.getDefaultState()
                 ));
 
-                for (int ii = 1; ii < tries; ii++) {
+                for (int ii = 1; ii < TRIES; ii++) {
                     pos = new MutableBlockPos(this.boundingBox.minX, y, this.boundingBox.minZ);
                     surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                     surfacePosDown = surfacePos.down();
