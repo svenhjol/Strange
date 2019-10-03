@@ -62,6 +62,8 @@ public class QuestScreen extends Screen implements IRenderable
     {
         int mid = (width / 2);
 
+        if (this.minecraft == null || this.minecraft.world == null) return;
+
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), mid, 18, 0xFFFFFF);
 
