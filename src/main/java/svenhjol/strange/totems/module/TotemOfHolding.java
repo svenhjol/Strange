@@ -25,6 +25,9 @@ public class TotemOfHolding extends MesonModule
 {
     public static TotemOfHoldingItem item;
 
+    @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.")
+    public static boolean saveItems = true;
+
     @Config(name = "No despawn", description = "The totem will never despawn.")
     public static boolean noDespawn = true;
 
@@ -40,6 +43,7 @@ public class TotemOfHolding extends MesonModule
     @SubscribeEvent
     public void onPlayerDrops(LivingDropsEvent event)
     {
+        if (!saveItems) return;
         DamageSource source = event.getSource();
 
         Collection<ItemEntity> drops = event.getDrops();

@@ -65,6 +65,13 @@ public class TotemOfReturningItem extends MesonItem
             return super.onItemRightClick(world, player, hand);
         }
 
+        teleport(world, player, pos, held);
+
+        return super.onItemRightClick(world, player, hand);
+    }
+
+    public static void teleport(World world, PlayerEntity player, BlockPos pos, ItemStack stack)
+    {
         // teleport the player
         if (!world.isRemote) {
             ((ServerPlayerEntity) player).teleport((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
@@ -72,9 +79,7 @@ public class TotemOfReturningItem extends MesonItem
             player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
         }
 
-        TotemHelper.destroy(player, held);
-
-        return super.onItemRightClick(world, player, hand);
+        TotemHelper.destroy(player, stack);
     }
 
     @Nullable

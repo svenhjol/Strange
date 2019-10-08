@@ -43,8 +43,7 @@ public class TotemOfShielding extends MesonModule
 
                 if (held.getItem() instanceof TotemOfShieldingItem) {
                     double damageAmount = event.getAmount() * damageMultiplier;
-                    int damage = TotemHelper.damage(player, held, (int) Math.ceil(damageAmount));
-                    if (damage > held.getMaxDamage()) TotemHelper.destroy(player, held);
+                    TotemHelper.damageOrDestroy(player, held, (int) Math.ceil(damageAmount));
                     event.setCanceled(true);
                     return;
                 }
