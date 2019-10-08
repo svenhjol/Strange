@@ -10,6 +10,7 @@ import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -33,7 +34,7 @@ public class SendCurrentQuests implements IMesonMessage
             try {
                 final ByteArrayOutputStream out = new ByteArrayOutputStream();
                 CompressedStreamTools.writeCompressed( quest.toNBT(), out );
-                String str = javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
+                String str = DatatypeConverter.printBase64Binary( out.toByteArray() );
                 compressed.add(str);
             } catch (Exception e) {
                 Meson.log("Failed to compress quest", e);
@@ -45,7 +46,7 @@ public class SendCurrentQuests implements IMesonMessage
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             ObjectOutputStream so = new ObjectOutputStream(out);
             so.writeObject(compressed);
-            serialized = javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
+            serialized = DatatypeConverter.printBase64Binary( out.toByteArray() );
             so.close();
         } catch (Exception e) {
             Meson.log("Failed to output quests stream", e);
@@ -63,7 +64,7 @@ public class SendCurrentQuests implements IMesonMessage
         List<IQuest> quests = new ArrayList<>();
 
         try {
-            final byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( buf.readString() );
+            final byte[] byteData = DatatypeConverter.parseBase64Binary( buf.readString() );
             ByteArrayInputStream bi = new ByteArrayInputStream(byteData);
             ObjectInputStream si = new ObjectInputStream(bi);
             compressed = (List<String>)si.readObject();
@@ -74,7 +75,7 @@ public class SendCurrentQuests implements IMesonMessage
 
         for (String s : compressed) {
             try {
-                final byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary(s);
+                final byte[] byteData = DatatypeConverter.parseBase64Binary(s);
                 CompoundNBT nbt = CompressedStreamTools.readCompressed( new ByteArrayInputStream( byteData ) );
 
                 Quest quest = new Quest();
