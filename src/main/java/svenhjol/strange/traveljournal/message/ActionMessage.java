@@ -16,6 +16,7 @@ import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -137,7 +138,9 @@ public class ActionMessage implements IMesonMessage
 
         private static void takeScreenshot(String id, String title, BlockPos pos, Hand hand, PlayerEntity player)
         {
-            PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.SCREENSHOT, id, title, pos, hand), (ServerPlayerEntity)player);
+            TravelJournal.addToQueue(player.world.getGameTime(), player, (p) -> {
+                PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.SCREENSHOT, id, title, pos, hand), (ServerPlayerEntity)player);
+            });
         }
 
         @Nullable
