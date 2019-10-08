@@ -49,6 +49,6 @@ public class Outerlands extends MesonModule
 
     public static boolean isOuterPos(BlockPos pos)
     {
-        return pos.getX() > distance || pos.getZ() > distance;
+        return Math.abs(pos.getX()) > distance || Math.abs(pos.getZ()) > distance;
     }
 }
