@@ -20,11 +20,11 @@ import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.*;
 import net.minecraftforge.common.DungeonHooks;
 import svenhjol.charm.Charm;
+import svenhjol.charm.decoration.block.BookshelfChestBlock;
 import svenhjol.charm.decoration.module.AllTheBarrels;
 import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.charm.decoration.module.Crates;
 import svenhjol.charm.decoration.module.GoldLanterns;
-import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
@@ -51,7 +51,7 @@ public class VaultPieces
         sizes.put(Large, new int[]{17, 15, 17});
     }
 
-    public static class UndergroundPiece extends TemplateStructurePiece
+    public static class VaultPiece extends TemplateStructurePiece
     {
         private final ResourceLocation templateName;
         private float integrity;
@@ -60,7 +60,7 @@ public class VaultPieces
         public int y;
         public int z;
 
-        public UndergroundPiece(TemplateManager templates, ResourceLocation template, BlockPos pos, Rotation rotation)
+        public VaultPiece(TemplateManager templates, ResourceLocation template, BlockPos pos, Rotation rotation)
         {
             super(SCUP, 0);
 
@@ -71,7 +71,7 @@ public class VaultPieces
             this.setup(templates);
         }
 
-        public UndergroundPiece(TemplateManager templates, CompoundNBT tag)
+        public VaultPiece(TemplateManager templates, CompoundNBT tag)
         {
             super(SCUP, tag);
 
@@ -233,20 +233,21 @@ public class VaultPieces
             } else if (data.equals("bookshelf")) {
 
                 if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.2F) {
-                    state = ((Block)BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState();
+                    state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
+                        .with(BookshelfChestBlock.SLOTS, 9);
 
                     world.setBlockState(pos, state, 2);
                     LockableLootTileEntity.setLootTable(world, rand, pos, StrangeLoot.CHESTS_VAULT_BOOKSHELVES);
-
-                    TileEntity tile = world.getTileEntity(pos);
-                    if (tile != null) {
-                        ((BookshelfChestTileEntity)tile).fillWithLoot(null);
-                    }
-
                     return;
 
                 } else {
                     state = Blocks.BOOKSHELF.getDefaultState();
+                }
+
+            } else if (data.equals("bars")) {
+
+                if (f < 0.8F) {
+                    state = Blocks.IRON_BARS.getDefaultState();
                 }
 
             } else if (data.equals("vines")) {
