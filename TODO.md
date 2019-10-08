@@ -22,7 +22,7 @@
   * decoration (NESW)
 * [X] Loot tables
 * [X] Illusioners drop totems
-* [ ] Fix issues with structures
+* [X] Fix issues with structures
   * Too many chests, should be max two per room
   * Bookcases don't render texture properly
   * More bookshelves in library rooms, fix weighting
@@ -33,4 +33,6 @@
 
 ## Totems
 * [X] Distant scrollkeepers buy and sell Totems
-* [ ] Add a tag so that villagers will buy any totem?
+
+## Charm
+* Homing enchantment being applied to things other than hoes

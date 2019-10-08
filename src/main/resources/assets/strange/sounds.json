@@ -22,5 +22,11 @@
     "sounds": [
       "strange:runestone_travel"
     ]
+  },
+  "screenshot": {
+    "category": "players",
+    "sounds": [
+      "strange:screenshot"
+    ]
   }
 }
