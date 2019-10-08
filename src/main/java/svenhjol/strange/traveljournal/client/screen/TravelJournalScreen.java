@@ -42,14 +42,14 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     public TravelJournalScreen(PlayerEntity player, Hand hand)
     {
         super(I18n.format("item.strange.travel_journal"), player, hand);
+
+        this.page = TravelJournalItem.getPage(stack);
+        this.journalEntries = TravelJournalItem.getEntries(stack);
     }
 
     @Override
     protected void init()
     {
-        this.page = TravelJournalItem.getPage(stack);
-        journalEntries = TravelJournalItem.getEntries(stack);
-
         renderButtons();
         refreshData();
 
@@ -199,7 +199,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     protected void renderUpdate(int mouseX, int mouseY, float partialTicks)
     {
-
         super.render(mouseX, mouseY, partialTicks);
     }
 
@@ -213,6 +212,12 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_entry"), (button) -> this.add()));
         this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.close"), (button) -> this.close()));
     }
+
+//    @Override
+//    public void resize(Minecraft mc, int width, int height)
+//    {
+//
+//    }
 
     private void add()
     {
