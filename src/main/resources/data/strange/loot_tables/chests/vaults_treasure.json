@@ -388,7 +388,7 @@
         {
           "name": "minecraft:golden_apple",
           "type": "minecraft:item",
-          "weight": 10,
+          "weight": 8,
           "functions": [
             {
               "function": "minecraft:set_count",

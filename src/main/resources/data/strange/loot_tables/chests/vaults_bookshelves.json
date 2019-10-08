@@ -2,21 +2,37 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 1,
+      "rolls": 7,
       "entries": [
         {
           "name": "minecraft:book",
           "type": "minecraft:item",
-          "weight": 15,
+          "weight": 15
+        },
+        {
+          "name": "minecraft:book",
+          "type": "minecraft:item",
+          "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1.0,
-                "max": 4.0
-              }
+              "function": "minecraft:enchant_randomly"
             }
           ]
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "name": "minecraft:book",
+          "type": "minecraft:item",
+          "weight": 15
+        },
+        {
+          "name": "minecraft:writable_book",
+          "type": "minecraft:item",
+          "weight": 15
         },
         {
           "name": "minecraft:book",
@@ -27,11 +43,6 @@
               "function": "minecraft:enchant_randomly"
             }
           ]
-        },
-        {
-          "name": "minecraft:writable_book",
-          "type": "minecraft:item",
-          "weight": 5
         },
         {
           "name": "minecraft:book",
