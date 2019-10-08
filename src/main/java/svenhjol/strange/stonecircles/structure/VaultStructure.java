@@ -11,7 +11,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.stonecircles.structure.VaultPieces.PieceType;
-import svenhjol.strange.stonecircles.structure.VaultPieces.UndergroundPiece;
+import svenhjol.strange.stonecircles.structure.VaultPieces.VaultPiece;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -20,7 +20,7 @@ import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
 
 public class VaultStructure
 {
-    public static IStructurePieceType SCUP = UndergroundPiece::new;
+    public static IStructurePieceType SCUP = VaultPiece::new;
     public static Map<PieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
 
     public static final int CORRIDOR_X = 5;
@@ -89,7 +89,7 @@ public class VaultStructure
         iterations++;
 
         if (rotation == null) rotation = Rotation.NONE;
-        UndergroundPiece centre = new UndergroundPiece(templates, getRandomTemplate(pieceType), pos, rotation);
+        VaultPieces.VaultPiece centre = new VaultPiece(templates, getRandomTemplate(pieceType), pos, rotation);
 
         components.add(centre);
 
@@ -139,7 +139,7 @@ public class VaultStructure
 
     public void makeCorridor(BlockPos pos, Rotation rotation)
     {
-        UndergroundPiece corridor = new UndergroundPiece(templates, getRandomTemplate(Corridor), pos, rotation);
+        VaultPiece corridor = new VaultPiece(templates, getRandomTemplate(Corridor), pos, rotation);
         components.add(corridor);
     }
 }
