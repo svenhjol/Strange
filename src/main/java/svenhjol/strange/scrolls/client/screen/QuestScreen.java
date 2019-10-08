@@ -47,7 +47,7 @@ public class QuestScreen extends Screen implements IRenderable
     @Override
     protected void init()
     {
-        //this.minecraft.keyboardListener.enableRepeatEvents(true);
+        super.init();
         renderButtons();
     }
 
