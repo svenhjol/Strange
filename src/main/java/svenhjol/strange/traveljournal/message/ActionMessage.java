@@ -46,13 +46,21 @@ public class ActionMessage implements IMesonMessage
 
     public ActionMessage(int action, String id, Hand hand, int color, int dim, @Nullable BlockPos pos, @Nullable String name)
     {
-        this.id = id;
-        this.action = action;
-        this.hand = hand;
+        this(action, id, hand);
         this.pos = pos;
         this.dim = dim;
         this.color = color;
         this.name = name == null ? "" : name;
+    }
+
+    public ActionMessage(int action, String id, Hand hand, CompoundNBT entry)
+    {
+        this(action, id, hand);
+        long longPos = entry.getLong(TravelJournalItem.POS);
+        this.pos = longPos != 0 ? BlockPos.fromLong(longPos) : null;
+        this.name = entry.getString(TravelJournalItem.NAME);
+        this.dim = entry.getInt(TravelJournalItem.DIM);
+        this.color = entry.getInt(TravelJournalItem.COLOR);
     }
 
     public static void encode(ActionMessage msg, PacketBuffer buf)
