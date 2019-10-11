@@ -16,6 +16,9 @@
   "gui.strange.travel_journal.new_entry": "New Entry",
   "gui.strange.travel_journal.new_screenshot": "New Screenshot",
   "gui.strange.travel_journal.close": "Close Journal",
+  "gui.strange.travel_journal.cancel": "Cancel",
+  "gui.strange.travel_journal.save": "Save Changes",
+  "gui.strange.travel_journal.back": "Back to Journal",
   "gui.strange.travel_journal.title": "Travel Journal has %s entries",
   "gui.strange.travel_journal.page": "Page %s",
 
