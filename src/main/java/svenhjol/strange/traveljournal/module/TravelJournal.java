@@ -37,7 +37,7 @@ public class TravelJournal extends MesonModule
 
             while (i.hasNext()) {
                 Long l = i.next();
-                if (time - l > 20) {
+                if (time - l > 10) {
                     for (Map.Entry<PlayerEntity, Consumer<PlayerEntity>> entry : queue.get(l).entrySet()) {
                         PlayerEntity player = entry.getKey();
                         Consumer<PlayerEntity> run = entry.getValue();
