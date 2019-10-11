@@ -100,20 +100,17 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
                 takeScreenshot(id, hand);
             }));
         }
-        this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.close"), (button) -> this.journal()));
+        this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.back"), (button) -> this.back()));
     }
 
     public static void takeScreenshot(String id, Hand hand)
     {
-        Minecraft.getInstance().deferTask(() -> {
-            PacketHandler.sendToServer(new ActionMessage(ActionMessage.SCREENSHOT, id, hand));
-        });
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.SCREENSHOT, id, hand));
     }
 
     public static File getScreenshot(String id)
     {
-        File file = new File(new File(Minecraft.getInstance().gameDir, "screenshots"), id);
-        return file;
+        return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), id);
     }
 
     private boolean hasScreenshot()
@@ -121,7 +118,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         return file != null && file.exists();
     }
 
-    private void journal()
+    private void back()
     {
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }

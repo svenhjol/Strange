@@ -45,6 +45,8 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
         this.page = TravelJournalItem.getPage(stack);
         this.journalEntries = TravelJournalItem.getEntries(stack);
+
+        startUpdateCheck();
     }
 
     @Override
@@ -92,14 +94,8 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.renderBackground();
-        this.setFocused(null);
         this.renderBackgroundTexture();
         this.checkServerUpdates();
-
-        if (updating != null) {
-            renderUpdate(mouseX, mouseY, partialTicks);
-            return;
-        }
 
         int mid = this.width / 2;
         int fontColor = 0x000000;
@@ -151,8 +147,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
             // update button
             this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> {
-                redraw();
-                updating = entry;
+                update(id, entry);
             }));
             buttonOffsetX += buttonSpacing;
 
@@ -163,7 +158,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             // screenshot button
             if (hasScreenshot || atPosition) {
                 this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> {
-                    if (!hasScreenshot && atPosition) takeScreenshot(id, name);
+//                    if (!hasScreenshot && atPosition) takeScreenshot(id, name);
                     showScreenshot(id, name, pos);
                 }));
                 buttonOffsetX += buttonSpacing;
@@ -181,24 +176,19 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         if (ids.size() > perPage) {
             this.font.drawString(I18n.format("gui.strange.travel_journal.page", page), x + 90, 157, 0xB4B0A8);
             if (page > 1) {
-                this.addButton(new ImageButton(x + 130, 152, 20, 18, 120, 0, 19, BUTTONS, (r) -> {
+                this.addButton(new ImageButton(x + 130, 152, 20, 18, 140, 0, 19, BUTTONS, (r) -> {
                     updatePageOnServer(--page);
                     redraw();
                 }));
             }
             if (page * perPage < ids.size()) {
-                this.addButton(new ImageButton(x + 150, 152, 20, 18, 100, 0, 19, BUTTONS, (r) -> {
+                this.addButton(new ImageButton(x + 150, 152, 20, 18, 120, 0, 19, BUTTONS, (r) -> {
                     updatePageOnServer(++page);
                     redraw();
                 }));
             }
         }
 
-        super.render(mouseX, mouseY, partialTicks);
-    }
-
-    protected void renderUpdate(int mouseX, int mouseY, float partialTicks)
-    {
         super.render(mouseX, mouseY, partialTicks);
     }
 
@@ -212,12 +202,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_entry"), (button) -> this.add()));
         this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.close"), (button) -> this.close()));
     }
-
-//    @Override
-//    public void resize(Minecraft mc, int width, int height)
-//    {
-//
-//    }
 
     private void add()
     {
@@ -243,16 +227,16 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         startUpdateCheck();
     }
 
-    private void update(String id)
+    private void update(String id, CompoundNBT entry)
     {
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.UPDATE, id, hand));
-        startUpdateCheck();
+        this.close();
+        mc.displayGuiScreen(new UpdateEntryScreen(id, entry, player, hand));
     }
 
     private void delete(String id)
     {
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.DELETE, id, hand));
         startUpdateCheck();
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.DELETE, id, hand));
     }
 
     private void teleport(String id)
