@@ -21,6 +21,9 @@ import javax.annotation.Nullable;
 
 public class TravelJournalItem extends MesonItem
 {
+    public static final int MAX_NAME_LENGTH = 24;
+    public static final int SCREENSHOT_DISTANCE = 10;
+
     public static final String ENTRIES = "entries";
     public static final String POS = "pos";
     public static final String DIM = "dim";

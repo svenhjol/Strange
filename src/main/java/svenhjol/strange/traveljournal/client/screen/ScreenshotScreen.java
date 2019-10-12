@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ActionMessage;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
 
     public ScreenshotScreen(String id, String title, BlockPos pos, PlayerEntity player, Hand hand)
     {
-        super("Screenshot", player, hand);
+        super(title, player, hand);
         this.id = id;
         this.title = title;
         this.pos = pos;
@@ -39,9 +40,9 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     @Override
     protected void init()
     {
+        super.init();
         if (!mc.world.isRemote) return;
         file = getScreenshot(id);
-        renderButtons();
     }
 
     @Override
@@ -76,10 +77,6 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
                 mc.textureManager.bindTexture(res);
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(1.0F, 0.66F, 1.0F);
-
-                int width = tex.getTextureData().getWidth();
-                int height = tex.getTextureData().getHeight();
-
                 this.blit(((this.width - 256) / 2) + 13, 36, 0, 0, 230, 200);
                 GlStateManager.popMatrix();
             }
@@ -93,14 +90,16 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         int y = (height / 4) + 160;
         int w = 100;
         int h = 20;
+        int buttonOffsetX = -50;
 
-        if (WorldHelper.getDistanceSq(player.getPosition(), pos) < 10) {
+        if (WorldHelper.getDistanceSq(player.getPosition(), pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
             this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> {
                 this.close();
                 takeScreenshot(id, hand);
             }));
+            buttonOffsetX = 10;
         }
-        this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.back"), (button) -> this.back()));
+        this.addButton(new Button((width / 2) + buttonOffsetX, y, w, h, I18n.format("gui.strange.travel_journal.back"), (button) -> this.back()));
     }
 
     public static void takeScreenshot(String id, Hand hand)

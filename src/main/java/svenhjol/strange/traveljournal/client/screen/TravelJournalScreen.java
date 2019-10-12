@@ -30,32 +30,22 @@ import java.util.TreeMap;
 
 public class TravelJournalScreen extends BaseTravelJournalScreen
 {
+    public static int PER_PAGE = 3;
+
     protected Map<String, CompoundNBT> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
     protected List<String> hasScreenshots = new ArrayList<>();
     protected CompoundNBT journalEntries = new CompoundNBT();
     protected boolean hasTotem = false;
-    protected long checkForUpdates = 0;
-    protected int page = 1;
-    protected CompoundNBT updating = null;
+    protected int page;
 
     public TravelJournalScreen(PlayerEntity player, Hand hand)
     {
         super(I18n.format("item.strange.travel_journal"), player, hand);
-
         this.page = TravelJournalItem.getPage(stack);
         this.journalEntries = TravelJournalItem.getEntries(stack);
 
         startUpdateCheck();
-    }
-
-    @Override
-    protected void init()
-    {
-        renderButtons();
-        refreshData();
-
-        //this.minecraft.keyboardListener.enableRepeatEvents(true);
     }
 
     @Override
@@ -93,16 +83,14 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground();
-        this.renderBackgroundTexture();
-        this.checkServerUpdates();
+        renderBackground();
+        renderBackgroundTexture();
+        checkServerUpdates(mc -> journalEntries = ClientEntriesMessage.Handler.entries);
 
         int mid = this.width / 2;
-        int fontColor = 0x000000;
-        int p = page - 1;
-        int perPage = 3;
         int x = mid - 80;
         int y = 20;
+        int p = page - 1;
         int buttonSpacing = 21;
         int titleSpacing = 6;
         int rowHeight = 39;
@@ -113,42 +101,38 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         int buttonX = 2;
         int buttonY = 20;
 
-        this.font.drawString(I18n.format("gui.strange.travel_journal.title", ids.size()), x + titleX, titleY, fontColor);
-        y += titleSpacing; // spacing
+        this.font.drawString(I18n.format("gui.strange.travel_journal.title", ids.size()), x + titleX, titleY, TEXT_COLOR);
+        y += titleSpacing;
 
         List<String> sublist;
         int size = ids.size();
-        if (ids.size() > perPage) {
-            if (p * perPage >= size || p * perPage < 0) { // the actual fuck
+        if (ids.size() > PER_PAGE) {
+            if (p * PER_PAGE >= size || p * PER_PAGE < 0) { // out of range, reset
                 page = 1;
                 p = 0;
             }
-            int max = Math.min(p * perPage + perPage, size);
-            sublist = ids.subList(p * perPage, max);
+            int max = Math.min(p * PER_PAGE + PER_PAGE, size);
+            sublist = ids.subList(p * PER_PAGE, max);
         } else {
             sublist = ids;
         }
 
-
         for (String id : sublist) {
             int buttonOffsetX = buttonX;
             CompoundNBT entry = sortedEntries.get(id);
-
             String name = entry.getString(TravelJournalItem.NAME);
             long posLong = entry.getLong(TravelJournalItem.POS);
-            final BlockPos pos = posLong != 0 ? BlockPos.fromLong(posLong) : null;
+            BlockPos pos = posLong != 0 ? BlockPos.fromLong(posLong) : null;
             int color = entry.getInt(TravelJournalItem.COLOR);
 
             boolean hasScreenshot = hasScreenshots.contains(id);
-            boolean atPosition = pos != null && WorldHelper.getDistanceSq(player.getPosition(), pos) < 10;
+            boolean atPosition = pos != null && WorldHelper.getDistanceSq(player.getPosition(), pos) < TravelJournalItem.SCREENSHOT_DISTANCE;
 
             // draw row
             this.font.drawString(name, x + textX, y + textY, color);
 
             // update button
-            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> {
-                update(id, entry);
-            }));
+            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(id, entry)));
             buttonOffsetX += buttonSpacing;
 
             // delete button
@@ -157,10 +141,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
             // screenshot button
             if (hasScreenshot || atPosition) {
-                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> {
-//                    if (!hasScreenshot && atPosition) takeScreenshot(id, name);
-                    showScreenshot(id, name, pos);
-                }));
+                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> screenshot(id, name, pos)));
                 buttonOffsetX += buttonSpacing;
             }
 
@@ -173,17 +154,17 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             y += rowHeight;
         }
 
-        if (ids.size() > perPage) {
-            this.font.drawString(I18n.format("gui.strange.travel_journal.page", page), x + 90, 157, 0xB4B0A8);
+        if (ids.size() > PER_PAGE) {
+            this.font.drawString(I18n.format("gui.strange.travel_journal.page", page), x + 90, 157, SUB_COLOR);
             if (page > 1) {
                 this.addButton(new ImageButton(x + 130, 152, 20, 18, 140, 0, 19, BUTTONS, (r) -> {
-                    updatePageOnServer(--page);
+                    updateServerPage(--page);
                     redraw();
                 }));
             }
-            if (page * perPage < ids.size()) {
+            if (page * PER_PAGE < ids.size()) {
                 this.addButton(new ImageButton(x + 150, 152, 20, 18, 120, 0, 19, BUTTONS, (r) -> {
-                    updatePageOnServer(++page);
+                    updateServerPage(++page);
                     redraw();
                 }));
             }
@@ -205,23 +186,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void add()
     {
-//        NativeImage screenshot = ScreenShotHelper.createScreenshot(win.getFramebufferWidth() / 6, win.getFramebufferHeight() / 6, mc.getFramebuffer());
-//        int[] arr = screenshot.makePixelArray();
-//
-//
-//        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//        ObjectOutputStream out = new ObjectOutputStream(bs);
-//        out.writeObject(arr);
-//        out.flush();
-//        out.close();
-//
-//        byte[] bytes = bs.toByteArray();
-//
-//        ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
-//        Deflater compressor = new Deflater(Deflater.BEST_COMPRESSION, true);
-//        DeflaterOutputStream ds = new DeflaterOutputStream(bs2, compressor);
-//        ds.write(bytes);
-//        ds.close();
         String id = Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(8);
         PacketHandler.sendToServer(new ActionMessage(ActionMessage.ADD, id, hand, 0, WorldHelper.getDimensionId(player.world), player.getPosition(), null));
         startUpdateCheck();
@@ -229,7 +193,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void update(String id, CompoundNBT entry)
     {
-        this.close();
         mc.displayGuiScreen(new UpdateEntryScreen(id, entry, player, hand));
     }
 
@@ -245,42 +208,13 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         PacketHandler.sendToServer(new ActionMessage(ActionMessage.TELEPORT, id, hand));
     }
 
-    private void showScreenshot(String id, String title, BlockPos pos)
+    private void screenshot(String id, String title, BlockPos pos)
     {
-        this.close();
         mc.displayGuiScreen(new ScreenshotScreen(id, title, pos, player, hand));
     }
 
-    private void takeScreenshot(String id, String title)
-    {
-        this.close();
-        ScreenshotScreen.takeScreenshot(id, hand);
-    }
-
-    private void updatePageOnServer(int page)
+    private void updateServerPage(int page)
     {
         PacketHandler.sendToServer(new MetaMessage(MetaMessage.SETPAGE, hand, page));
-    }
-
-    private void startUpdateCheck()
-    {
-        checkForUpdates = mc.world.getGameTime();
-    }
-
-    private void checkServerUpdates()
-    {
-        if (checkForUpdates > 0) {
-            if (ClientEntriesMessage.Handler.updated) {
-                journalEntries = ClientEntriesMessage.Handler.entries;
-                ClientEntriesMessage.Handler.clearUpdates();
-                checkForUpdates = 0;
-                refreshData();
-                redraw();
-            } else if (mc.world.getGameTime() - checkForUpdates > 60) {
-                checkForUpdates = 0;
-                refreshData();
-                redraw();
-            }
-        }
     }
 }

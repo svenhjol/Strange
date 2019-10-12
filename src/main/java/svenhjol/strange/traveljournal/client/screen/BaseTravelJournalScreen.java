@@ -11,6 +11,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import svenhjol.strange.Strange;
+import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
 
 import java.util.function.Consumer;
 
@@ -20,11 +21,15 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     protected Hand hand;
     protected ItemStack stack;
     protected Minecraft mc;
+    protected long checkForUpdates = 0;
 
-    protected static final int BGWIDTH = 256;
-    protected static final int BGHEIGHT = 192;
-    protected static final ResourceLocation BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/travel_journal.png");
-    protected static final ResourceLocation BUTTONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/gui_buttons.png");
+    public static final int TEXT_COLOR = 0x000000;
+    public static final int SUB_COLOR = 0xB4B0A8;
+    public static final int BGWIDTH = 256;
+    public static final int BGHEIGHT = 192;
+    public static final int UPDATE_TIMEOUT = 5;
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/travel_journal.png");
+    public static final ResourceLocation BUTTONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/gui_buttons.png");
 
     public BaseTravelJournalScreen(String title, PlayerEntity player, Hand hand)
     {
@@ -34,6 +39,13 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
         this.stack = player.getHeldItem(hand);
         this.mc = Minecraft.getInstance();
         this.passEvents = true;
+    }
+
+    @Override
+    protected void init()
+    {
+        redraw();
+        refreshData();
     }
 
     @Override
@@ -86,6 +98,25 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     protected void refreshData()
     {
         // no op
+    }
+
+    protected void startUpdateCheck()
+    {
+        checkForUpdates = mc.world.getGameTime();
+    }
+
+    protected void checkServerUpdates(Consumer<Minecraft> onUpdate)
+    {
+        if (checkForUpdates > 0) {
+            if (ClientEntriesMessage.Handler.updated) {
+                onUpdate.accept(mc);
+                checkForUpdates = 0;
+                ClientEntriesMessage.Handler.clearUpdates();
+                this.init();
+            } else if (mc.world.getGameTime() - checkForUpdates > (UPDATE_TIMEOUT * 20)) {
+                checkForUpdates = 0;
+            }
+        }
     }
 
     @Override
