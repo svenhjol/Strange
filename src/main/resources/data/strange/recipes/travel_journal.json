@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:writable_book"
+    },
+    {
+      "tag": "forge:compasses"
+    }
+  ],
+  "result": {
+    "item": "strange:travel_journal"
+  },
+  "conditions": [
+    {
+      "type": "strange:module_enabled",
+      "module": "travel_journal"
+    }
+  ]
+}
