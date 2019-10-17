@@ -273,7 +273,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             }
 
             if (generatedWithRune) {
-                Meson.log("Generated with rune " + pos);
+                Meson.debug("Generated with rune " + pos);
             }
 
             return generated;
