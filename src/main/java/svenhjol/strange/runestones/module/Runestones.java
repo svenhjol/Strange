@@ -3,11 +3,13 @@ package svenhjol.strange.runestones.module;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -20,9 +22,14 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -38,6 +45,7 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.message.RunestoneActivated;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
+import svenhjol.strange.runestones.capability.*;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.*;
@@ -49,6 +57,11 @@ public class Runestones extends MesonModule
     public static List<Destination> destinations = new ArrayList<>();
     private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
 
+    @CapabilityInject(IRunestonesCapability.class)
+    public static Capability<IRunestonesCapability> RUNESTONES = null;
+
+    public static ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
+
     @Override
     public void init()
     {
@@ -58,6 +71,9 @@ public class Runestones extends MesonModule
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
+        // register cap, cap storage and implementation
+        CapabilityManager.INSTANCE.register(IRunestonesCapability.class, new RunestonesStorage(), RunestonesCapability::new);
+
         int dist = 100;
 
         // first dest is always spawnpoint
@@ -83,6 +99,11 @@ public class Runestones extends MesonModule
         } else {
             destinations.add((world, pos, rand) -> world.getSpawnPoint());
         }
+    }
+
+    public static IRunestonesCapability getCapability(PlayerEntity player)
+    {
+        return player.getCapability(RUNESTONES, null).orElse(new DummyCapability());
     }
 
     public static int getRunestoneType(IWorld world)
@@ -175,7 +196,6 @@ public class Runestones extends MesonModule
             if (world.getBlockState(pos).getBlock() instanceof RunestoneBlock) {
                 event.setCanceled(true);
                 event.getEntity().remove();
-
                 playerTeleport.put(player.getUniqueID(), pos); // prepare teleport, tick handles it
                 PacketHandler.sendTo(new RunestoneActivated(pos), (ServerPlayerEntity)player);
             }
@@ -202,11 +222,48 @@ public class Runestones extends MesonModule
         }
     }
 
+    @SubscribeEvent
+    public void onAttachCaps(AttachCapabilitiesEvent<Entity> event)
+    {
+        if (!(event.getObject() instanceof PlayerEntity)) return;
+        event.addCapability(Runestones.RUNESTONES_CAP_ID, new RunestonesProvider());
+    }
+
+    @SubscribeEvent
+    public void onPlayerSave(PlayerEvent.SaveToFile event)
+    {
+        event.getPlayer().getPersistentData().put(
+            Runestones.RUNESTONES_CAP_ID.toString(),
+            Runestones.getCapability(event.getPlayer()).writeNBT()
+        );
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoad(PlayerEvent.LoadFromFile event)
+    {
+        Runestones.getCapability(event.getPlayer()).readNBT(
+            event.getPlayer().getPersistentData()
+                .get(Runestones.RUNESTONES_CAP_ID.toString())
+        );
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(PlayerEvent.Clone event)
+    {
+        if (!event.isWasDeath()) return;
+        IRunestonesCapability oldCap = Runestones.getCapability(event.getOriginal());
+        IRunestonesCapability newCap = Runestones.getCapability(event.getPlayer());
+        newCap.readNBT(oldCap.writeNBT());
+    }
+
     private void teleport(World world, PlayerEntity player, BlockPos pos)
     {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
+
+        // TODO discoverRuneType(rune)
+        Runestones.getCapability(player).discoverType(rune);
 
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
@@ -240,6 +297,10 @@ public class Runestones extends MesonModule
                     && !world.getBlockState(pp.down()).isAir()
                 ) {
                     player.setPositionAndUpdate((double)pp.getX(), y, (double)pp.getZ());
+
+                    // TODO recordDestination(pos, dest)
+                    Runestones.getCapability(player).recordDestination(pos, dest);
+
                     break;
                 }
             }
