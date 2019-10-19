@@ -126,7 +126,7 @@ public class QuestEvents
             int numQuests = QuestClient.currentQuests.size();
             if (numQuests == 0) return;
 
-            int xPos = ((mc.mainWindow.getScaledWidth() / 2) / numQuests) - (w / 2);
+            int xPos = (mc.mainWindow.getScaledWidth() / 2) - (numQuests*w/2);
             int yPos = (mc.mainWindow.getScaledHeight() / 4) - 50;
 
             questBadges.clear();
