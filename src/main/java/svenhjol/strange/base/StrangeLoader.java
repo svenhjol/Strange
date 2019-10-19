@@ -6,6 +6,7 @@ import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.message.*;
+import svenhjol.strange.runestones.message.ClientInteractMessage;
 import svenhjol.strange.traveljournal.message.ActionMessage;
 import svenhjol.strange.traveljournal.message.ClientActionMessage;
 import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
@@ -26,7 +27,7 @@ public class StrangeLoader extends MesonLoader
         // messages
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestCurrentQuests.class, RequestCurrentQuests::encode, RequestCurrentQuests::decode, RequestCurrentQuests.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, SendCurrentQuests.class, SendCurrentQuests::encode, SendCurrentQuests::decode, SendCurrentQuests.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RunestoneActivated.class, RunestoneActivated::encode, RunestoneActivated::decode, RunestoneActivated.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientInteractMessage.class, ClientInteractMessage::encode, ClientInteractMessage::decode, ClientInteractMessage.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestShowQuest.class, RequestShowQuest::encode, RequestShowQuest::decode, RequestShowQuest.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateTotemMessage.class, UpdateTotemMessage::encode, UpdateTotemMessage::decode, UpdateTotemMessage.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateFlying.class, UpdateFlying::encode, UpdateFlying::decode, UpdateFlying.Handler::handle);
