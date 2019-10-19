@@ -11,10 +11,8 @@ import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -207,18 +205,38 @@ public class Runestones extends MesonModule
     {
         if (event.phase == Phase.END
             && !event.player.world.isRemote
-            && event.player.world.getGameTime() % 5 == 0
-            && !playerTeleport.isEmpty()
-            && playerTeleport.containsKey(event.player.getUniqueID())
+            && event.player.world.getGameTime() % 10 == 0
         ) {
-            World world = event.player.world;
-            PlayerEntity player = event.player;
-            UUID id = player.getUniqueID();
-            BlockPos pos = playerTeleport.get(id);
+            int len = 6;
+            Vec3d vec3d = event.player.getEyePosition(1.0F);
+            Vec3d vec3d1 = event.player.getLook(1.0F);
+            Vec3d vec3d2 = vec3d.add(vec3d1.x * len, vec3d1.y * len, vec3d1.z * len);
+            BlockRayTraceResult result = event.player.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, event.player));
 
-            teleport(world, player, pos);
+            if (result.getPos() != null) {
+                BlockState lookedAt = event.player.world.getBlockState(result.getPos());
+                if (lookedAt.getBlock() == Runestones.block) {
+                    IRunestonesCapability cap = Runestones.getCapability(event.player);
+                    if (cap.getDiscoveredTypes().contains(lookedAt.get(RunestoneBlock.RUNE))) {
+                        event.player.sendStatusMessage(new StringTextComponent("I know this rune!"), true);
+                    }
+                }
+            }
 
-            playerTeleport.remove(id);
+
+            // do teleport if queued
+            if (!playerTeleport.isEmpty()
+                && playerTeleport.containsKey(event.player.getUniqueID())) {
+
+                World world = event.player.world;
+                PlayerEntity player = event.player;
+                UUID id = player.getUniqueID();
+                BlockPos pos = playerTeleport.get(id);
+
+                teleport(world, player, pos);
+
+                playerTeleport.remove(id);
+            }
         }
     }
 
@@ -262,7 +280,6 @@ public class Runestones extends MesonModule
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
 
-        // TODO discoverRuneType(rune)
         Runestones.getCapability(player).discoverType(rune);
 
         Random rand = world.rand;
@@ -290,15 +307,13 @@ public class Runestones extends MesonModule
 
         Minecraft.getInstance().deferTask(() -> {
 
-            ((ServerPlayerEntity)player).teleport((ServerWorld)world, (double)dest.getX(), (double)dest.getY(), (double)dest.getZ(), player.rotationYaw, player.rotationPitch);
+            ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
             for (int y = world.getHeight(); y > 0; y--) {
                 BlockPos pp = new BlockPos(dest.getX(), y, dest.getZ());
                 if (world.getBlockState(pp).isAir()
                     && !world.getBlockState(pp.down()).isAir()
                 ) {
-                    player.setPositionAndUpdate((double)pp.getX(), y, (double)pp.getZ());
-
-                    // TODO recordDestination(pos, dest)
+                    player.setPositionAndUpdate(pp.getX(), y, pp.getZ());
                     Runestones.getCapability(player).recordDestination(pos, dest);
 
                     break;
