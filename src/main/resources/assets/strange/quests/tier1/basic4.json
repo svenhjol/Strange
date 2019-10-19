@@ -1,0 +1,14 @@
+{
+  "tier": 1,
+  "title": "A basic crafting quest",
+  "description": "This is an exciting quest that Squigglesworth VII loaded for crafting",
+  "xp": 100,
+  "timeLimit": 7,
+  "craft": {
+    "strange:writing_desk": "1"
+  },
+  "rewardItems": {
+    "minecraft:emerald": "4",
+    "minecraft:coal": "4"
+  }
+}
