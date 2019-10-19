@@ -31,7 +31,7 @@ public class Quest implements IQuest
 
     public Quest()
     {
-        this.setId(RandomStringUtils.randomAlphabetic(10));
+        this.generateId();
     }
 
     @Override
@@ -64,6 +64,12 @@ public class Quest implements IQuest
 
         criteria = new Criteria(this);
         criteria.fromNBT(tag.getCompound(CRITERIA));
+    }
+
+    @Override
+    public void generateId()
+    {
+        this.setId(RandomStringUtils.randomAlphabetic(10));
     }
 
     @Override

@@ -29,6 +29,8 @@ public interface IQuest
 
     void fromNBT(CompoundNBT tag);
 
+    void generateId();
+
     void setId(String id);
 
     void setTitle(String title);
