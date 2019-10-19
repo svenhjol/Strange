@@ -218,7 +218,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
             List<Integer> availableRunes = new ArrayList<>();
             if (runestonesEnabled) {
-                for (int i = 0; i < Runestones.destinations.size(); i++) {
+                for (int i = 0; i < Runestones.dests.size(); i++) {
                     availableRunes.add(i);
                 }
             }
