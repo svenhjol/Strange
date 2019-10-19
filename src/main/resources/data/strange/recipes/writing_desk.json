@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "@@",
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "@": {
+      "item": "minecraft:writable_book"
+    }
+  },
+  "result": {
+    "item": "strange:writing_desk"
+  },
+  "conditions": [
+    {
+      "type": "strange:module_enabled",
+      "module": "scrollkeepers"
+    }
+  ]
+}
