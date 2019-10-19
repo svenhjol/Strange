@@ -54,5 +54,19 @@
   "totem.strange.holding_items": "Holding %s items",
   "totem.strange.enchanting": "Preserving %s XP",
   "totem.strange.extracting": "%s at %s",
-  "totem.strange.returning": "%s in dimension %s"
+  "totem.strange.returning": "%s in dimension %s",
+
+  "runestone.strange.rune_connects": "This rune connects to %s",
+  "runestone.strange.rune_travelled": "This rune connects to %s (%s, %s)",
+  "runestone.strange.spawn_point": "your spawn point",
+  "runestone.strange.stone_circle": "a stone circle",
+  "runestone.strange.village": "a village",
+  "runestone.strange.desert_pyramid": "a desert temple",
+  "runestone.strange.jungle_pyramid": "a jungle temple",
+  "runestone.strange.ocean_ruin": "an ocean ruin",
+  "runestone.strange.outer_stone_circle": "a distant stone circle",
+  "runestone.strange.outer_village": "a distant village",
+  "runestone.strange.outer_desert_pyramid": "a distant desert temple",
+  "runestone.strange.outer_jungle_pyramid": "a distant jungle temple",
+  "runestone.strange.outer_ocean_ruin": "a distant ocean ruin"
 }
