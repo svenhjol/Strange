@@ -28,6 +28,7 @@ public class Generator
         // initialise generators
         List<Class<?>> generators = new ArrayList<>(Arrays.asList(
             GatherGenerator.class,
+            CraftGenerator.class,
             HuntGenerator.class,
             RewardItemGenerator.class,
             TimeGenerator.class,
@@ -64,6 +65,7 @@ public class Generator
         public String title;
         public String description;
         public Map<String, String> gather = new HashMap<>();
+        public Map<String, String> craft = new HashMap<>();
         public Map<String, String> hunt = new HashMap<>();
         public Map<String, String> rewardItems = new HashMap<>();
         public int xp;
@@ -87,6 +89,11 @@ public class Generator
         public Map<String, String> getGather()
         {
             return gather == null ? new HashMap<>() : gather;
+        }
+
+        public Map<String, String> getCraft()
+        {
+            return craft == null ? new HashMap<>() : craft;
         }
 
         public Map<String, String> getHunt()

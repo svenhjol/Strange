@@ -18,6 +18,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -161,6 +162,17 @@ public class QuestEvents
             respondToEvent(player, event);
         }
     }
+
+    @SubscribeEvent
+    public void onItemCrafted(ItemCraftedEvent event)
+    {
+        PlayerEntity player = event.getPlayer();
+        if (player != null) {
+            respondToEvent(player, event);
+        }
+    }
+
+
 
     @SubscribeEvent
     public void onMobKilled(LivingDeathEvent event)

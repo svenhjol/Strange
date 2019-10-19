@@ -7,6 +7,7 @@
   "gui.strange.scrolls.decline": "Decline Quest",
   "gui.strange.scrolls.quit": "Quit Quest",
   "gui.strange.quests.gather": "Pickup items",
+  "gui.strange.quests.craft": "Craft items",
   "gui.strange.quests.hunt": "Kill mobs",
   "gui.strange.quests.conditions": "Conditions",
   "gui.strange.quests.rewards": "Rewards",

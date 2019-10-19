@@ -9,10 +9,12 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 public class QuestBadgeGui extends AbstractGui
 {
     private int x0, x1, y0, y1;
+    private int buttonX0, buttonY0, buttonX1, buttonY1;
     private IQuest quest;
     private Minecraft mc;
     public static int WIDTH = 100;
     public static int HEIGHT = 14;
+    public static int BUTTON_PADDING = 2;
 
     public QuestBadgeGui(IQuest quest, int x, int y)
     {
@@ -23,6 +25,9 @@ public class QuestBadgeGui extends AbstractGui
         x1 = x + WIDTH;
         y0 = y;
         y1 = y + HEIGHT;
+
+        // Build button background
+        this.buildButton(x0 - BUTTON_PADDING, y0 - BUTTON_PADDING, WIDTH + BUTTON_PADDING*2, HEIGHT + BUTTON_PADDING*2);
 
 //        AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
         drawCenteredString(mc.fontRenderer, quest.getTitle(), x + 50, y, 0xFFFFFF);
@@ -35,6 +40,20 @@ public class QuestBadgeGui extends AbstractGui
 
         AbstractGui.fill(x0, y1-3, x1, y1, 0x88333333);
         AbstractGui.fill(x0, y1-3, x0 + (int)completion, y1, color);
+    }
+
+    public void buildButton(int butX, int butY, int butWidth, int butHeight)
+    {
+        buttonX0 = butX;
+        buttonX1 = butX + butWidth;
+        buttonY0 = butY;
+        buttonY1 = butY + butHeight;
+
+        AbstractGui.fill(buttonX0, buttonY0, buttonX1, buttonY1, 0x88AAAAAA);
+        AbstractGui.fill(buttonX0 - 1, buttonY0 - 1, buttonX1 + 1, buttonY0, 0x88FFFFFF);
+        AbstractGui.fill(buttonX0 - 1, buttonY0 - 1, buttonX0, buttonY1 + 1, 0x88FFFFFF);
+        AbstractGui.fill(buttonX0 - 1, buttonY1, buttonX1 + 1, buttonY1 + 1, 0x88000000);
+        AbstractGui.fill(buttonX1, buttonY0 - 1, buttonX1 + 1, buttonY1 + 1, 0x88000000);
     }
 
     public boolean isInBox(double x, double y)
