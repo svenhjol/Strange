@@ -31,12 +31,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.scrolls.block.WritingDeskBlock;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvent;
@@ -59,11 +61,13 @@ public class Scrollkeepers extends MesonModule
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
         "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.")
     public static double badOmenChance = 0.02D;
+    public static WritingDeskBlock block;
 
     @Override
     public void init()
     {
-        ImmutableSet<BlockState> states = ImmutableSet.copyOf(Scrolls.block.getStateContainer().getValidStates());
+        block = new WritingDeskBlock(this);
+        ImmutableSet<BlockState> states = ImmutableSet.copyOf(block.getStateContainer().getValidStates());
         PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, null, 1);
 
         // TODO move to Meson
@@ -74,6 +78,12 @@ public class Scrollkeepers extends MesonModule
         profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of());
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
         RegistryHandler.registerVillager(profession, res);
+    }
+
+    @Override
+    public void setup(FMLCommonSetupEvent event)
+    {
+        super.setup(event);
     }
 
     @SubscribeEvent
