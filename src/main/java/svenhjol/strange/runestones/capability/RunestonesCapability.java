@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class RunestonesCapability implements IRunestonesCapability
@@ -28,6 +29,23 @@ public class RunestonesCapability implements IRunestonesCapability
         if (!destinations.containsKey(r)) {
             destinations.put(r, d);
         }
+    }
+
+    @Override
+    public List<Integer> getDiscoveredTypes()
+    {
+        return discoveredTypes;
+    }
+
+    @Nullable
+    @Override
+    public BlockPos getDestination(BlockPos runePos)
+    {
+        long r = runePos.toLong();
+        if (destinations.containsKey(r)) {
+            return BlockPos.fromLong(destinations.get(r));
+        }
+        return null;
     }
 
     @Override
