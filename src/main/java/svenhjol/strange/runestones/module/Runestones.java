@@ -373,9 +373,9 @@ public class Runestones extends MesonModule
 
         double spread = 0.75D;
         for (int i = 0; i < 10; i++) {
-            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 1.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
         }
         SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
@@ -402,9 +402,9 @@ public class Runestones extends MesonModule
 
         double spread = 0.75D;
         for (int i = 0; i < 10; i++) {
-            double px = pos.getX() + 0.25D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 1.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 1.0D + (Math.random() - 0.5D) * spread;
+            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.1D, 0.1D, 0.1D);
         }
     }
