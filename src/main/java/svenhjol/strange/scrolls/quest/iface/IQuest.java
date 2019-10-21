@@ -52,7 +52,6 @@ public interface IQuest
         Failed,
         Completed;
 
-        // TODO move this to IMesonEnum
         public static State valueOrDefault(String name, State def) {
             try {
                 if (name == null || name.isEmpty()) return def;

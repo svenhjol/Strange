@@ -10,11 +10,11 @@ import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.BiomeHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.UtilHelper;
 import svenhjol.strange.stonecircles.structure.StoneCircleConfig;
 import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
 import svenhjol.strange.stonecircles.structure.VaultStructure;
@@ -45,19 +45,19 @@ public class StoneCircles extends MesonModule
 
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> biomesConfig = new ArrayList<>(Arrays.asList(
-        UtilHelper.getBiomeName(Biomes.PLAINS),
-        UtilHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
-        UtilHelper.getBiomeName(Biomes.DESERT),
-        UtilHelper.getBiomeName(Biomes.DESERT_LAKES),
-        UtilHelper.getBiomeName(Biomes.BEACH),
-        UtilHelper.getBiomeName(Biomes.SAVANNA),
-        UtilHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
-        UtilHelper.getBiomeName(Biomes.SNOWY_BEACH),
-        UtilHelper.getBiomeName(Biomes.SWAMP),
-        UtilHelper.getBiomeName(Biomes.END_BARRENS),
-        UtilHelper.getBiomeName(Biomes.END_HIGHLANDS),
-        UtilHelper.getBiomeName(Biomes.END_MIDLANDS),
-        UtilHelper.getBiomeName(Biomes.NETHER)
+        BiomeHelper.getBiomeName(Biomes.PLAINS),
+        BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
+        BiomeHelper.getBiomeName(Biomes.DESERT),
+        BiomeHelper.getBiomeName(Biomes.DESERT_LAKES),
+        BiomeHelper.getBiomeName(Biomes.BEACH),
+        BiomeHelper.getBiomeName(Biomes.SAVANNA),
+        BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
+        BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
+        BiomeHelper.getBiomeName(Biomes.SWAMP),
+        BiomeHelper.getBiomeName(Biomes.END_BARRENS),
+        BiomeHelper.getBiomeName(Biomes.END_HIGHLANDS),
+        BiomeHelper.getBiomeName(Biomes.END_MIDLANDS),
+        BiomeHelper.getBiomeName(Biomes.NETHER)
     ));
 
     public static List<Biome> validBiomes = new ArrayList<>();

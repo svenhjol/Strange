@@ -3,7 +3,6 @@ package svenhjol.strange.totems.item;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -15,13 +14,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.meson.helper.StringHelper;
 import svenhjol.strange.base.TotemHelper;
-import svenhjol.strange.base.UtilHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,20 +63,17 @@ public class TotemOfReturningItem extends MesonItem
             return super.onItemRightClick(world, player, hand);
         }
 
-        teleport(world, player, pos, held);
+        teleport(world, player, pos, dim, held);
 
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void teleport(World world, PlayerEntity player, BlockPos pos, ItemStack stack)
+    public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack)
     {
         // teleport the player
         if (!world.isRemote) {
-            ((ServerPlayerEntity) player).teleport((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
-            BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, pos);
-            player.setPositionAndUpdate(updateDest.getX(), updateDest.getY() + 1, updateDest.getZ()); // TODO check landing block
+            PlayerHelper.teleport(player, pos, dim);
         }
-
         TotemHelper.destroy(player, stack);
     }
 
@@ -110,7 +105,7 @@ public class TotemOfReturningItem extends MesonItem
         BlockPos pos = getPos(stack);
         if (pos != null) {
             String strDim = String.valueOf(getDim(stack));
-            String strPos = UtilHelper.formatBlockPos(pos);
+            String strPos = StringHelper.formatBlockPos(pos);
             strings.add(new StringTextComponent(I18n.format("totem.strange.returning", strPos, strDim)));
         }
         super.addInformation(stack, world, strings, flag);

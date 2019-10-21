@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.UtilHelper;
+import svenhjol.meson.helper.StringHelper;
 import svenhjol.strange.totems.module.TotemOfExtracting;
 
 import javax.annotation.Nullable;
@@ -91,7 +91,7 @@ public class TotemOfExtractingItem extends MesonItem
         String name = getBlockName(stack);
 
         if (!name.isEmpty()) {
-            String message = I18n.format("totem.strange.extracting", getBlockName(stack), UtilHelper.formatBlockPos(getPos(stack)));
+            String message = I18n.format("totem.strange.extracting", getBlockName(stack), StringHelper.formatBlockPos(getPos(stack)));
             if (!message.isEmpty()) {
                 strings.add(new StringTextComponent(message));
             }
