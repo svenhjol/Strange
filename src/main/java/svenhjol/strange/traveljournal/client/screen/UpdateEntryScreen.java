@@ -4,25 +4,25 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ActionMessage;
 
 public class UpdateEntryScreen extends BaseTravelJournalScreen
 {
     private TextFieldWidget nameField;
-    protected CompoundNBT entry;
-    protected CompoundNBT updated;
-    protected String id;
+    protected String name;
+    protected int color;
+    protected Entry entry;
 
-    public UpdateEntryScreen(String id, CompoundNBT entry, PlayerEntity player, Hand hand)
+    public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand)
     {
-        super(entry.getString(TravelJournalItem.NAME), player, hand);
-        this.id = id;
+        super(entry.name, player, hand);
         this.entry = entry;
-        this.updated = entry.copy();
+        this.name = entry.name;
+        this.color = entry.color;
         this.passEvents = false;
     }
 
@@ -41,7 +41,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         nameField.setEnableBackgroundDrawing(true);
         nameField.setMaxStringLength(TravelJournalItem.MAX_NAME_LENGTH);
         nameField.func_212954_a(this::responder);
-        nameField.setText(updated.getString(TravelJournalItem.NAME));
+        nameField.setText(entry.name);
         nameField.setEnabled(true);
         children.add(nameField);
         setFocusedDefault(nameField);
@@ -85,8 +85,10 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
 
     private void save()
     {
-        entry = updated;
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.UPDATE, id, hand, entry));
+        Entry updated = new Entry(this.entry);
+        updated.name = this.name;
+        updated.color = this.color;
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.UPDATE, updated, hand));
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
@@ -97,6 +99,6 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
 
     private void responder(String str)
     {
-        updated.putString(TravelJournalItem.NAME, str);
+        this.name = str;
     }
 }

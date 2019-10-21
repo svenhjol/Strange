@@ -9,10 +9,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ActionMessage;
 
@@ -22,19 +22,15 @@ import java.io.InputStream;
 
 public class ScreenshotScreen extends BaseTravelJournalScreen
 {
-    protected String id;
-    protected String title;
-    protected BlockPos pos;
+    protected Entry entry;
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
 
-    public ScreenshotScreen(String id, String title, BlockPos pos, PlayerEntity player, Hand hand)
+    public ScreenshotScreen(Entry entry, PlayerEntity player, Hand hand)
     {
-        super(title, player, hand);
-        this.id = id;
-        this.title = title;
-        this.pos = pos;
+        super(entry.name, player, hand);
+        this.entry = entry;
     }
 
     @Override
@@ -42,7 +38,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     {
         super.init();
         if (!mc.world.isRemote) return;
-        file = getScreenshot(id);
+        file = getScreenshot(entry);
     }
 
     @Override
@@ -52,7 +48,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
             this.renderBackground();
 
             int mid = this.width / 2;
-            this.drawCenteredString(this.font, title, mid, 10, 0xFFFFFF);
+            this.drawCenteredString(this.font, entry.name, mid, 10, 0xFFFFFF);
 
             if (tex == null) {
                 try {
@@ -92,24 +88,24 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         int h = 20;
         int buttonOffsetX = -50;
 
-        if (WorldHelper.getDistanceSq(player.getPosition(), pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
+        if (WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
             this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> {
                 this.close();
-                takeScreenshot(id, hand);
+                takeScreenshot(entry, hand);
             }));
             buttonOffsetX = 10;
         }
         this.addButton(new Button((width / 2) + buttonOffsetX, y, w, h, I18n.format("gui.strange.travel_journal.back"), (button) -> this.back()));
     }
 
-    public static void takeScreenshot(String id, Hand hand)
+    public static void takeScreenshot(Entry entry, Hand hand)
     {
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.SCREENSHOT, id, hand));
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.SCREENSHOT, entry, hand));
     }
 
-    public static File getScreenshot(String id)
+    public static File getScreenshot(Entry entry)
     {
-        return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), id);
+        return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), entry.id);
     }
 
     private boolean hasScreenshot()

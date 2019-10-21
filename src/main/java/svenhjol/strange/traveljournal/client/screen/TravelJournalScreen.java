@@ -11,12 +11,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.totems.module.TotemOfReturning;
+import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ActionMessage;
 import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
@@ -32,7 +32,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 {
     public static int PER_PAGE = 3;
 
-    protected Map<String, CompoundNBT> sortedEntries = new TreeMap<>();
+    protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
     protected List<String> hasScreenshots = new ArrayList<>();
     protected CompoundNBT journalEntries = new CompoundNBT();
@@ -58,10 +58,12 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         for (String id : journalEntries.keySet()) {
             INBT entryTag = journalEntries.get(id);
             if (entryTag == null) continue;
-            this.ids.add(id);
-            this.sortedEntries.put(id, (CompoundNBT)entryTag);
+            Entry entry = new Entry((CompoundNBT)entryTag);
 
-            File file = ScreenshotScreen.getScreenshot(id);
+            this.ids.add(id);
+            this.sortedEntries.put(id, entry);
+
+            File file = ScreenshotScreen.getScreenshot(entry);
             if (file.exists()) hasScreenshots.add(id);
         }
 
@@ -119,35 +121,31 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
         for (String id : sublist) {
             int buttonOffsetX = buttonX;
-            CompoundNBT entry = sortedEntries.get(id);
-            String name = entry.getString(TravelJournalItem.NAME);
-            long posLong = entry.getLong(TravelJournalItem.POS);
-            BlockPos pos = posLong != 0 ? BlockPos.fromLong(posLong) : null;
-            int color = entry.getInt(TravelJournalItem.COLOR);
+            Entry entry = sortedEntries.get(id);
 
             boolean hasScreenshot = hasScreenshots.contains(id);
-            boolean atPosition = pos != null && WorldHelper.getDistanceSq(player.getPosition(), pos) < TravelJournalItem.SCREENSHOT_DISTANCE;
+            boolean atPosition = entry.pos != null && WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE;
 
             // draw row
-            this.font.drawString(name, x + textX, y + textY, color);
+            this.font.drawString(entry.name, x + textX, y + textY, entry.color);
 
             // update button
-            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(id, entry)));
+            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
             buttonOffsetX += buttonSpacing;
 
             // delete button
-            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 60, 0, 19, BUTTONS, (r) -> delete(id)));
+            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 60, 0, 19, BUTTONS, (r) -> delete(entry)));
             buttonOffsetX += buttonSpacing;
 
             // screenshot button
             if (hasScreenshot || atPosition) {
-                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> screenshot(id, name, pos)));
+                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> screenshot(entry)));
                 buttonOffsetX += buttonSpacing;
             }
 
             // teleport button
-            if (hasTotem && pos != null) {
-                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(id)));
+            if (hasTotem && entry.pos != null) {
+                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(entry)));
                 buttonOffsetX += buttonSpacing;
             }
 
@@ -186,31 +184,36 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void add()
     {
-        String id = Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(8);
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.ADD, id, hand, 0, WorldHelper.getDimensionId(player.world), player.getPosition(), null));
+        Entry entry = new Entry(
+            Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(8),
+            player.getPosition(),
+            WorldHelper.getDimensionId(player.world)
+        );
+
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.ADD, entry, hand));
         startUpdateCheck();
     }
 
-    private void update(String id, CompoundNBT entry)
+    private void update(Entry entry)
     {
-        mc.displayGuiScreen(new UpdateEntryScreen(id, entry, player, hand));
+        mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
-    private void delete(String id)
+    private void delete(Entry entry)
     {
         startUpdateCheck();
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.DELETE, id, hand));
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.DELETE, entry, hand));
     }
 
-    private void teleport(String id)
+    private void teleport(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.TELEPORT, id, hand));
+        PacketHandler.sendToServer(new ActionMessage(ActionMessage.TELEPORT, entry, hand));
     }
 
-    private void screenshot(String id, String title, BlockPos pos)
+    private void screenshot(Entry entry)
     {
-        mc.displayGuiScreen(new ScreenshotScreen(id, title, pos, player, hand));
+        mc.displayGuiScreen(new ScreenshotScreen(entry, player, hand));
     }
 
     private void updateServerPage(int page)

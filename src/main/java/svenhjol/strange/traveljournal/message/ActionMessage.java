@@ -1,6 +1,7 @@
 package svenhjol.strange.traveljournal.message;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,11 +13,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
+import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -37,30 +39,20 @@ public class ActionMessage implements IMesonMessage
     private int dim;
     private String name;
 
-    public ActionMessage(int action, String id, Hand hand)
+    public ActionMessage(int action, Entry entry, Hand hand)
     {
-        this.id = id;
-        this.action = action;
-        this.hand = hand;
+        this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);
     }
 
-    public ActionMessage(int action, String id, Hand hand, int color, int dim, @Nullable BlockPos pos, @Nullable String name)
+    private ActionMessage(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
     {
-        this(action, id, hand);
+        this.action = action;
+        this.hand = hand;
+        this.id = id;
+        this.name = name;
         this.pos = pos;
         this.dim = dim;
         this.color = color;
-        this.name = name == null ? "" : name;
-    }
-
-    public ActionMessage(int action, String id, Hand hand, CompoundNBT entry)
-    {
-        this(action, id, hand);
-        long longPos = entry.getLong(TravelJournalItem.POS);
-        this.pos = longPos != 0 ? BlockPos.fromLong(longPos) : null;
-        this.name = entry.getString(TravelJournalItem.NAME);
-        this.dim = entry.getInt(TravelJournalItem.DIM);
-        this.color = entry.getInt(TravelJournalItem.COLOR);
     }
 
     public static void encode(ActionMessage msg, PacketBuffer buf)
@@ -70,11 +62,11 @@ public class ActionMessage implements IMesonMessage
 
         buf.writeInt(msg.action);
         buf.writeString(msg.id);
-        buf.writeEnumValue(msg.hand);
-        buf.writeInt(msg.color);
-        buf.writeInt(msg.dim);
-        buf.writeLong(pos);
         buf.writeString(name);
+        buf.writeLong(pos);
+        buf.writeInt(msg.dim);
+        buf.writeInt(msg.color);
+        buf.writeEnumValue(msg.hand);
     }
 
     public static ActionMessage decode(PacketBuffer buf)
@@ -82,11 +74,11 @@ public class ActionMessage implements IMesonMessage
         return new ActionMessage(
             buf.readInt(),
             buf.readString(),
-            buf.readEnumValue(Hand.class),
-            buf.readInt(),
-            buf.readInt(),
+            buf.readString(),
             BlockPos.fromLong(buf.readLong()),
-            buf.readString()
+            buf.readInt(),
+            buf.readInt(),
+            buf.readEnumValue(Hand.class)
         );
     }
 
@@ -102,32 +94,40 @@ public class ActionMessage implements IMesonMessage
                 ItemStack held = player.getHeldItem(msg.hand);
                 CompoundNBT entries = null;
 
+                if (msg.name == null || msg.name.isEmpty()) {
+                    msg.name = I18n.format("travel_journal.strange.new_entry");
+                }
+
+                // create entry
+                Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
+
                 if (msg.action == ADD) {
 
-                    entries = TravelJournalItem.addEntry(held, msg.id, msg.pos, msg.dim);
+                    entries = TravelJournalItem.addEntry(held, entry);
+                    updateAfterAdd(entry, msg.hand, player);
 
                 } else if (msg.action == UPDATE) {
 
-                    entries = TravelJournalItem.updateEntry(held, msg.id, msg.pos, msg.dim, msg.name, msg.color);
+                    entries = TravelJournalItem.updateEntry(held, entry);
 
                 } else if (msg.action == DELETE) {
 
-                    entries = TravelJournalItem.deleteEntry(held, msg.id);
+                    entries = TravelJournalItem.deleteEntry(held, entry);
 
                 } else if (msg.action == SCREENSHOT) {
 
-                    CompoundNBT entry = TravelJournalItem.getEntry(held, msg.id);
-                    if (entry != null) {
-                        takeScreenshot(msg.id, entry.getString(TravelJournalItem.NAME), TravelJournalItem.getPos(entry), msg.hand, player);
+                    CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
+                    if (nbt != null && !nbt.isEmpty()) {
+                        takeScreenshot(entry, msg.hand, player);
                     }
 
                 } else if (msg.action == TELEPORT) {
 
-                    CompoundNBT entry = TravelJournalItem.getEntry(held, msg.id);
-                    if (entry != null) {
+                    CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
+                    if (nbt != null && !nbt.isEmpty()) {
                         ItemStack totem = getTotem(player);
                         if (totem != null) {
-                            TotemOfReturningItem.teleport(player.world, player, TravelJournalItem.getPos(entry), totem);
+                            TotemOfReturningItem.teleport(player.world, player, entry.pos, entry.dim, totem);
                         }
                     }
                 }
@@ -144,10 +144,15 @@ public class ActionMessage implements IMesonMessage
             PacketHandler.sendTo(new ClientEntriesMessage(entries), (ServerPlayerEntity)player);
         }
 
-        private static void takeScreenshot(String id, String title, BlockPos pos, Hand hand, PlayerEntity player)
+        private static void updateAfterAdd(Entry entry, Hand hand, PlayerEntity player)
         {
-            TravelJournal.addToQueue(player.world.getGameTime(), player, (p) -> {
-                PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.SCREENSHOT, id, title, pos, hand), (ServerPlayerEntity)player);
+            PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.ADD, entry, hand), (ServerPlayerEntity)player);
+        }
+
+        private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)
+        {
+            PlayerQueueHandler.add(player.world.getGameTime(), player, (p) -> {
+                PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
             });
         }
 
