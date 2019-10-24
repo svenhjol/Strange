@@ -27,6 +27,7 @@ public class Generator
 
         // initialise generators
         List<Class<?>> generators = new ArrayList<>(Arrays.asList(
+            EncounterGenerator.class,
             GatherGenerator.class,
             CraftGenerator.class,
             HuntGenerator.class,
@@ -64,10 +65,12 @@ public class Generator
         public int tier;
         public String title;
         public String description;
+        public Map<String, Map<String, String>> encounter = new HashMap<>();
         public Map<String, String> gather = new HashMap<>();
         public Map<String, String> craft = new HashMap<>();
         public Map<String, String> hunt = new HashMap<>();
         public Map<String, String> rewardItems = new HashMap<>();
+        public Map<String, String> rewardConfig = new HashMap<>();
         public int xp;
         public int timeLimit; // in minutes
 
@@ -84,6 +87,11 @@ public class Generator
         public String getDescription()
         {
             return description == null ? "" : description;
+        }
+
+        public Map<String, Map<String, String>> getEncounter()
+        {
+            return encounter == null ? new HashMap<>() : encounter;
         }
 
         public Map<String, String> getGather()
@@ -104,6 +112,11 @@ public class Generator
         public Map<String, String> getRewardItems()
         {
             return rewardItems == null ? new HashMap<>() : rewardItems;
+        }
+
+        public Map<String, String> getRewardConfig()
+        {
+            return rewardConfig == null ? new HashMap<>() : rewardConfig;
         }
 
         public int parseCount(String countDef)

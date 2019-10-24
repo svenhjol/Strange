@@ -9,6 +9,7 @@ import net.minecraft.util.registry.Registry;
 import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.condition.Craft;
+import svenhjol.strange.scrolls.quest.condition.Encounter;
 import svenhjol.strange.scrolls.quest.condition.Gather;
 import svenhjol.strange.scrolls.quest.condition.Hunt;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -29,6 +30,10 @@ public class ActionsPanel extends BasePanel
 
             case Craft.ID:
                 new CraftPanel(quest, mid, y, width);
+                break;
+
+            case Encounter.ID:
+                new BossPanel(quest, mid, y, width);
                 break;
 
             case Hunt.ID:
@@ -132,6 +137,37 @@ public class ActionsPanel extends BasePanel
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
+            }
+        }
+    }
+
+    public static class BossPanel extends BasePanel
+    {
+        public BossPanel(IQuest quest, int mid, int y, int width)
+        {
+            super(quest, mid, width);
+
+            List<Condition<Encounter>> actions = quest.getCriteria().getConditions(Encounter.class);
+            if (actions.isEmpty()) return;
+
+            y += pad; // space above title
+
+            // draw title
+            drawCenteredTitle(I18n.format("gui.strange.quests.encounter"), y);
+            y += 16; // space between title and item list
+
+            for (int i = 0; i < actions.size(); i++) {
+                y += i * 16; // height of each line
+
+                Encounter encounter = actions.get(i).getDelegate();
+                int remaining = encounter.getCount() - encounter.getKilled();
+
+                // draw remaining count and item icon
+                blitItemIcon(new ItemStack(Items.DIAMOND_SWORD), mid - 60, y - 5);
+                this.drawString(fonts, I18n.format("gui.strange.quests.encounter_defeat", remaining), mid - 36, y, primaryTextColor);
+
+                // show tick if complete
+                if (encounter.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
             }
         }
     }

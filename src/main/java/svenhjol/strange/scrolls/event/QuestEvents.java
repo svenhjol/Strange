@@ -48,7 +48,7 @@ public class QuestEvents
     public void onQuestAccept(QuestEvent.Accept event)
     {
         event.getQuest().setState(State.Started);
-        Quests.toast(event.getQuest(), Type.General, I18n.format("quest.strange.accepted"));
+        Quests.toast(event.getQuest(), Type.General, I18n.format("event.strange.quests.accepted"));
         Quests.getCapability(event.getPlayer()).acceptQuest(event.getPlayer(), event.getQuest());
         respondToEvent(event.getPlayer(), event);
     }
@@ -57,7 +57,7 @@ public class QuestEvents
     public void onQuestComplete(QuestEvent.Complete event)
     {
         respondToEvent(event.getPlayer(), event);
-        Quests.toast(event.getQuest(), Type.Success, I18n.format("quest.strange.completed"));
+        Quests.toast(event.getQuest(), Type.Success, I18n.format("event.strange.quests.completed"));
         Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
@@ -65,7 +65,7 @@ public class QuestEvents
     public void onQuestDecline(QuestEvent.Decline event)
     {
         respondToEvent(event.getPlayer(), event);
-        Quests.toast(event.getQuest(), Type.General, I18n.format("quest.strange.declined"));
+        Quests.toast(event.getQuest(), Type.General, I18n.format("event.strange.quests.declined"));
         Quests.getCapability(event.getPlayer()).removeQuest(event.getPlayer(), event.getQuest());
     }
 
@@ -74,7 +74,7 @@ public class QuestEvents
     {
         final PlayerEntity player = event.getPlayer();
         respondToEvent(event.getPlayer(), event);
-        Quests.toast(event.getQuest(), Type.Failed, I18n.format("quest.strange.failed"));
+        Quests.toast(event.getQuest(), Type.Failed, I18n.format("event.strange.quests.failed"));
         Quests.getCapability(player).removeQuest(player, event.getQuest());
     }
 
@@ -108,6 +108,11 @@ public class QuestEvents
         IQuestsCapability oldCap = Quests.getCapability(event.getOriginal());
         IQuestsCapability newCap = Quests.getCapability(event.getPlayer());
         newCap.readNBT(oldCap.writeNBT());
+
+        PlayerEntity player = event.getPlayer();
+        if (player != null) {
+            respondToEvent(player, event);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -115,7 +120,7 @@ public class QuestEvents
     public void onBackgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        int delayTicks = 40;
+        int delayTicks = 100;
 
         if (isValidQuestBadgeScreen(mc)) {
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
@@ -171,8 +176,6 @@ public class QuestEvents
             respondToEvent(player, event);
         }
     }
-
-
 
     @SubscribeEvent
     public void onMobKilled(LivingDeathEvent event)
