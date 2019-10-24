@@ -4,6 +4,7 @@ import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -13,10 +14,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.stonecircles.module.StoneCircles;
@@ -63,7 +66,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             rand.setSeed((long)(px ^ pz << 4) ^ gen.getSeed());
             rand.nextInt();
 
-//            if (rand.nextInt(2) > 0) return false;
+            if (rand.nextInt(2) > 0) return false;
 
             Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
             return gen.hasStructure(biome, StoneCircles.structure);
@@ -100,7 +103,9 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             components.add(new StoneCirclePiece(this.rand, pos));
 
             // create vaults beneath the circle
-            if (isValidPosition(pos) && this.rand.nextFloat() < StoneCircles.vaultChance) {
+            if (isValidPosition(pos)
+                && generator instanceof OverworldChunkGenerator
+                && this.rand.nextFloat() < StoneCircles.vaultChance) {
                 VaultStructure vaults = new VaultStructure(templates, components, biomeIn, rand);
                 vaults.generate(pos);
             }
@@ -138,6 +143,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             if (world.getDimension().getType() == DimensionType.THE_NETHER) {
 
                 config.runeChance = 0.75F;
+                config.withChest = true;
                 config.radius = rand.nextInt(4) + 5;
                 config.columnMinHeight = 3;
                 config.columnVariation = 4;
@@ -152,9 +158,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                         surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                         surfacePosDown = surfacePos.down();
 
-                        if (world.isAirBlock(surfacePos)
-                            && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.NETHERRACK)
-                        ) {
+                        if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.NETHERRACK)) {
                             return generateCircle(world, pos, rand, config);
                         }
                     }
@@ -163,6 +167,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             } else if (world.getDimension().getType() == DimensionType.THE_END) {
 
                 config.runeChance = 0.9F;
+                config.withChest = true;
                 config.radius = rand.nextInt(7) + 4;
                 config.columnMinHeight = 3;
                 config.columnVariation = 3;
@@ -175,9 +180,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                     surfacePosDown = surfacePos.down();
 
-                    if (world.isAirBlock(surfacePos)
-                        && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)
-                    ) {
+                    if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
                         return generateCircle(world, pos, rand, config);
                     }
                 }
@@ -254,10 +257,12 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                             if (runestonesEnabled && l == maxHeight - 1 && f < config.runeChance) {
                                 int index = rand.nextInt(availableRunes.size());
                                 int rune = availableRunes.get(index);
-                                availableRunes.remove(index);
 
-                                state = Runestones.getRunestoneBlock(world, rune);
-                                generatedWithRune = true;
+                                if (rand.nextFloat() < Runestones.dests.get(index).weight) {
+                                    availableRunes.remove(index);
+                                    state = Runestones.getRunestoneBlock(world, rune);
+                                    generatedWithRune = true;
+                                }
                             }
 
                             world.setBlockState(findPos.up(l), state, 2);
@@ -272,6 +277,21 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 }
             }
 
+            for (int k = 5; k > -15; k--) {
+                BlockPos findPos = pos.add(0, k, 0);
+                BlockPos findPosUp = findPos.up();
+                BlockState findState = world.getBlockState(findPos);
+                BlockState findStateUp = world.getBlockState(findPosUp);
+
+                if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
+                    BlockState chest = Blocks.CHEST.getDefaultState();
+                    world.setBlockState(findPos, chest, 2);
+                    LockableLootTileEntity.setLootTable(world, rand, findPos, StrangeLoot.CHESTS_VAULT_TREASURE);
+                    Meson.debug("Generated with chest " + pos);
+                    break;
+                }
+            }
+
             if (generatedWithRune) {
                 Meson.debug("Generated with rune " + pos);
             }
@@ -282,10 +302,11 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
     public static class GenerationConfig
     {
-        public int radius = 4;
         public float runeChance = 0.5F;
+        public int radius = 4;
         public int columnMinHeight = 3;
         public int columnVariation = 3;
+        public boolean withChest = false;
         public List<BlockState> blocks = new ArrayList<>();
     }
 }
