@@ -11,7 +11,7 @@
   },
   "encounter": {
     "chicken": {
-      "count": 20,
+      "count": 8,
       "health": "20",
       "effects": "jump_boost,speed"
     }
