@@ -13,7 +13,7 @@
     "chicken": {
       "count": 20,
       "health": "20",
-      "effects": "levitation"
+      "effects": "jump_boost,speed"
     }
   },
   "rewardItems": {
