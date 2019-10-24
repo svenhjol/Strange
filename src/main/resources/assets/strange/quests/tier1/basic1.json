@@ -1,17 +1,17 @@
 {
   "tier": 1,
-  "title": "A basic quest",
-  "description": "This is an exciting quest that Sven loaded for testing",
+  "title": "Like a boss",
+  "description": "This is a surprisingly hard encounter for a Novice quest. Good luck!",
   "xp": 100,
-  "timeLimit": 7,
-  "hunt": {
-    "minecraft:skeleton": "1"
-  },
-  "gather": {
-    "minecraft:coal": "2"
+  "timeLimit": 30,
+  "encounter": {
+    "wither_skeleton": {
+      "count": 2,
+      "health": "100",
+      "effects": "strength"
+    }
   },
   "rewardItems": {
-    "minecraft:emerald": "4",
-    "minecraft:coal": "4"
+    "minecraft:emerald": "10"
   }
 }

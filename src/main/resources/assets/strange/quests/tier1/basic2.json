@@ -8,8 +8,7 @@
     "minecraft:skeleton": "1"
   },
   "gather": {
-    "minecraft:lapis_lazuli": "3",
-    "minecraft:redstone": "3"
+    "minecraft:lapis_lazuli": "3"
   },
   "rewardItems": {
     "minecraft:emerald": "3"

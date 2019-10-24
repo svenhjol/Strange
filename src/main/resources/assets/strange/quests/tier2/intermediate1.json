@@ -1,13 +1,23 @@
 {
   "tier": 2,
-  "title": "Getting tougher",
+  "title": "Getting weirder",
   "description": "Fun times for all the family",
   "xp": 1000,
   "gather": {
     "minecraft:coal": "64"
   },
+  "craft": {
+    "minecraft:crafting_table": "1"
+  },
+  "encounter": {
+    "chicken": {
+      "count": 20,
+      "health": "20",
+      "effects": "levitation"
+    }
+  },
   "rewardItems": {
     "minecraft:emerald": "2",
-    "minecraft:diamond": "1"
+    "minecraft:diamond": "10"
   }
 }
