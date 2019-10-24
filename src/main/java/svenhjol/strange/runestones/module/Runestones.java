@@ -1,7 +1,6 @@
 package svenhjol.strange.runestones.module;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -17,8 +16,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.TicketType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -35,16 +32,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ClientHelper;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.SoundHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.runestones.message.ClientInteractMessage;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
+import svenhjol.strange.runestones.message.ClientInteractMessage;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.*;
@@ -260,6 +258,7 @@ public class Runestones extends MesonModule
                             PacketHandler.sendTo(new ClientInteractMessage(ClientInteractMessage.TRAVELLED, runePos), (ServerPlayerEntity)player);
                             message = I18n.format("runestone.strange.rune_travelled", description, dest.getX(), dest.getZ());
                         } else {
+                            PacketHandler.sendTo(new ClientInteractMessage(ClientInteractMessage.DISCOVERED, runePos), (ServerPlayerEntity)player);
                             message = I18n.format("runestone.strange.rune_connects", description);
                         }
                         player.sendStatusMessage(new StringTextComponent(message), true);
@@ -327,43 +326,14 @@ public class Runestones extends MesonModule
         rand.setSeed(pos.toLong());
 
         BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
-
-        // TODO really lame
         if (destPos == null) destPos = world.getSpawnPoint();
 
         BlockPos dest = addRandomOffset(destPos, rand, 8);
-//        PlayerHelper.teleportPlayer(player, dest, WorldHelper.getDimensionId(world));
-
         int dim = WorldHelper.getDimensionId(world);
 
-        if (player.dimension.getId() != dim && !world.isRemote && !player.isPassenger() && !player.isBeingRidden() && player.isNonBoss()) {
-            DimensionType dimension = DimensionType.getById(dim);
-            if (dimension != null) {
-                player.changeDimension(dimension);
-            }
-        }
-
-        ChunkPos chunkpos = new ChunkPos(new BlockPos(dest.getX(), dest.getY(), dest.getZ()));
-        ((ServerWorld)world).getChunkProvider().func_217228_a(TicketType.POST_TELEPORT, chunkpos, 1, player.getEntityId());
-
-        Minecraft.getInstance().deferTask(() -> {
-
-            ((ServerPlayerEntity)player).teleport((ServerWorld)world, dest.getX(), dest.getY(), dest.getZ(), player.rotationYaw, player.rotationPitch);
-            for (int y = world.getHeight(); y > 0; y--) {
-                BlockPos pp = new BlockPos(dest.getX(), y, dest.getZ());
-                if (world.getBlockState(pp).isAir()
-                    && !world.getBlockState(pp.down()).isAir()
-                ) {
-                    player.setPositionAndUpdate(pp.getX(), y, pp.getZ());
-                    Runestones.getCapability(player).recordDestination(pos, dest);
-
-                    break;
-                }
-            }
+        PlayerHelper.teleportSurface(player, dest, dim, p -> {
+            Runestones.getCapability(player).recordDestination(pos, dest);
         });
-
-//        BlockPos updateDest = world.getHeight(Heightmap.Type.MOTION_BLOCKING, dest);
-//        player.setPositionAndUpdate((double)updateDest.getX(), (double)(updateDest.getY() + 1), (double)updateDest.getZ());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -389,7 +359,7 @@ public class Runestones extends MesonModule
         double spread = 1.75D;
         for (int i = 0; i < 10; i++) {
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 1.0D + (Math.random() - 0.5D) * spread;
+            double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.1D, 0.1D, 0.1D);
         }
@@ -400,12 +370,14 @@ public class Runestones extends MesonModule
     {
         ClientWorld world = ClientHelper.getClientWorld();
 
-        double spread = 0.75D;
-        for (int i = 0; i < 10; i++) {
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 1.0D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.1D, 0.1D, 0.1D);
+        double spread = 1.75D;
+        if (new Random().nextFloat() < 0.35F) {
+            for (int i = 0; i < 2; i++) {
+                double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+                double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
+                double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+                world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.02D, 0.02D, 0.02D);
+            }
         }
     }
 
