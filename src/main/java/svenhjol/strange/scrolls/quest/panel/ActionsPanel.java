@@ -33,7 +33,7 @@ public class ActionsPanel extends BasePanel
                 break;
 
             case Encounter.ID:
-                new BossPanel(quest, mid, y, width);
+                new EncounterPanel(quest, mid, y, width);
                 break;
 
             case Hunt.ID:
@@ -141,9 +141,9 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class BossPanel extends BasePanel
+    public static class EncounterPanel extends BasePanel
     {
-        public BossPanel(IQuest quest, int mid, int y, int width)
+        public EncounterPanel(IQuest quest, int mid, int y, int width)
         {
             super(quest, mid, width);
 
