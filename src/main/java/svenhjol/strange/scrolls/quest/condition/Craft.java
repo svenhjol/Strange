@@ -63,13 +63,13 @@ public class Craft implements IDelegate
                 // set the count to the remainder
                 crafted.setCount(count - remaining);
                 count = remaining;
-                notify = "You have crafted all the " + stack.getItem().getName().getString() + " required for the quest.";
+                notify = "You have crafted all the " + stack.getItem().getName().getString() + " items required for the quest."; // TODO localize
             } else {
                 // cancel the event, don't pick up any items
 //                craftedEvent.getItem().remove();
                 craftedEvent.setResult(Event.Result.DENY);
                 craftedEvent.setCanceled(true);
-                notify = "Craft " + (remaining - 1) + " more " + stack.getItem().getName().getString() + ".";
+                notify = "Craft " + (remaining - 1) + " more " + stack.getItem().getName().getString() + "."; // TODO localize
             }
 
             this.crafted += count;
