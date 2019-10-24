@@ -24,6 +24,8 @@ public class EncounterGenerator extends BaseGenerator
     public void generate()
     {
         Map<String, Map<String, String>> def = definition.getEncounter();
+        if (def.isEmpty()) return;
+
         Condition<Encounter> condition = Condition.factory(Encounter.class, quest);
         Encounter encounter = condition.getDelegate();
 
