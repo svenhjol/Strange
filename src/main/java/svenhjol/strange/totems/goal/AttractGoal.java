@@ -34,9 +34,6 @@ public class AttractGoal extends Goal
         this.temptItem = temptedBy;
         this.scaredByPlayerMovement = scared;
         this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
-//        if (!(p_i47823_1_.getNavigator() instanceof GroundPathNavigator)) {
-//            throw new IllegalArgumentException("Unsupported mob type for AttractGoal");
-//        }
     }
 
     public boolean shouldExecute() {
