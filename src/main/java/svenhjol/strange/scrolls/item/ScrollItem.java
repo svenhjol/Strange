@@ -66,7 +66,6 @@ public class ScrollItem extends MesonItem
                 Quests.showQuestScreen(playerIn, stack);
             }
 
-            // TODO flicker when opening another gui
             result = ActionResultType.SUCCESS;
         }
 
