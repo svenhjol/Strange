@@ -27,8 +27,10 @@
 
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
 
+  "block.strange.runestone": "Runestone",
   "block.strange.writing_desk": "Writing Desk",
 
+  "item.strange.runestone": "Runestone",
   "item.strange.travel_journal": "Travel Journal",
   "item.strange.scroll_tier": "Tier %s Scroll",
   "item.strange.scroll_tier_1": "Novice Scroll",
