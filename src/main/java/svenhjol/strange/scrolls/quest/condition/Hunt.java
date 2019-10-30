@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,10 +65,11 @@ public class Hunt implements IDelegate
             World world = player.world;
 
             this.killed++;
+            String mobName = killedEntity.getName().getFormattedText();
 
             if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
-                player.sendStatusMessage(new StringTextComponent("You have killed the last " + killedEntity.getName().getFormattedText() + " required for the quest."), true);
+                player.sendStatusMessage(new StringTextComponent(I18n.format("event.strange.quests.hunted_all", mobName)), true);
             } else {
                 Quests.playActionCountSound(player);
             }

@@ -2,7 +2,6 @@
   "filled_map.village": "Village map",
   "filled_map.stone_circle": "Stone Circle map",
 
-
   "gui.strange.scrolls.accept": "Accept Quest",
   "gui.strange.scrolls.close": "Close Window",
   "gui.strange.scrolls.decline": "Decline Quest",
@@ -51,8 +50,11 @@
   "event.strange.quests.declined": "Quest declined",
   "event.strange.quests.failed": "Quest failed",
   "event.strange.quests.encounter": "Encounter",
-
-  "travel_journal.strange.new_entry": "New Entry",
+  "event.strange.quests.crafted_all": "You have crafted all the %s items required for the quest.",
+  "event.strange.quests.crafted": "Craft %s more %s.",
+  "event.strange.quests.gathered_all": "You have collected all the %s items required for the quest.",
+  "event.strange.quests.gathered": "Collect %s more %s.",
+  "event.strange.quests.hunted_all": "You have killed the last %s required for the quest.",
 
   "totem.strange.attracting": "Searching for %s",
   "totem.strange.holding_item": "Holding one item",

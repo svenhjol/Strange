@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -59,18 +60,19 @@ public class Gather implements IDelegate
 
             int count = pickedUp.getCount();
             int remaining = getRemaining();
+            String itemName = stack.getItem().getName().getString();
 
             if (count > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
                 pickedUp.setCount(count - remaining);
                 count = remaining;
-                notify = "You have collected all the " + stack.getItem().getName().getString() + " required for the quest.";
+                notify = I18n.format("event.strange.quests.gathered_all", itemName);
             } else {
                 // cancel the event, don't pick up any items
                 pickupEvent.getItem().remove();
                 pickupEvent.setResult(Event.Result.DENY);
                 pickupEvent.setCanceled(true);
-                notify = "Collect " + (remaining - 1) + " more " + stack.getItem().getName().getString() + ".";
+                notify = I18n.format("event.strange.quests.gathered", remaining - 1, itemName);
             }
 
             collected += count;

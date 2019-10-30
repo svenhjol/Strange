@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,18 +59,18 @@ public class Craft implements IDelegate
 
             int count = crafted.getCount();
             int remaining = getRemaining();
+            String itemName = stack.getItem().getName().getString();
 
             if (count > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
                 crafted.setCount(count - remaining);
                 count = remaining;
-                notify = "You have crafted all the " + stack.getItem().getName().getString() + " items required for the quest."; // TODO localize
+                notify = I18n.format("event.strange.quests.crafted_all", itemName);
             } else {
                 // cancel the event, don't pick up any items
-//                craftedEvent.getItem().remove();
                 craftedEvent.setResult(Event.Result.DENY);
                 craftedEvent.setCanceled(true);
-                notify = "Craft " + (remaining - 1) + " more " + stack.getItem().getName().getString() + "."; // TODO localize
+                notify = I18n.format("event.strange.quests.crafted", remaining - 1, itemName);
             }
 
             this.crafted += count;
