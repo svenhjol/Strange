@@ -7,10 +7,10 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.message.*;
 import svenhjol.strange.runestones.message.ClientInteractMessage;
-import svenhjol.strange.traveljournal.message.ActionMessage;
+import svenhjol.strange.traveljournal.message.ServerActionMessage;
 import svenhjol.strange.traveljournal.message.ClientActionMessage;
 import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
-import svenhjol.strange.traveljournal.message.MetaMessage;
+import svenhjol.strange.traveljournal.message.ServerMetaMessage;
 
 public class StrangeLoader extends MesonLoader
 {
@@ -31,8 +31,8 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestShowQuest.class, RequestShowQuest::encode, RequestShowQuest::decode, RequestShowQuest.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateTotemMessage.class, UpdateTotemMessage::encode, UpdateTotemMessage::decode, UpdateTotemMessage.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateFlying.class, UpdateFlying::encode, UpdateFlying::decode, UpdateFlying.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ActionMessage.class, ActionMessage::encode, ActionMessage::decode, ActionMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, MetaMessage.class, MetaMessage::encode, MetaMessage::decode, MetaMessage.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ServerActionMessage.class, ServerActionMessage::encode, ServerActionMessage::decode, ServerActionMessage.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ServerMetaMessage.class, ServerMetaMessage::encode, ServerMetaMessage::decode, ServerMetaMessage.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientEntriesMessage.class, ClientEntriesMessage::encode, ClientEntriesMessage::decode, ClientEntriesMessage.Handler::handle);
         PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientActionMessage.class, ClientActionMessage::encode, ClientActionMessage::decode, ClientActionMessage.Handler::handle);
 
