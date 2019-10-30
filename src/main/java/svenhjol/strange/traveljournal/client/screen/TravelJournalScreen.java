@@ -18,9 +18,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.message.ActionMessage;
+import svenhjol.strange.traveljournal.message.ServerActionMessage;
 import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
-import svenhjol.strange.traveljournal.message.MetaMessage;
+import svenhjol.strange.traveljournal.message.ServerMetaMessage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -190,7 +190,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             WorldHelper.getDimensionId(player.world)
         );
 
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.ADD, entry, hand));
+        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.ADD, entry, hand));
         startUpdateCheck();
     }
 
@@ -202,13 +202,13 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     private void delete(Entry entry)
     {
         startUpdateCheck();
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.DELETE, entry, hand));
+        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.DELETE, entry, hand));
     }
 
     private void teleport(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.TELEPORT, entry, hand));
+        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.TELEPORT, entry, hand));
     }
 
     private void screenshot(Entry entry)
@@ -218,6 +218,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void updateServerPage(int page)
     {
-        PacketHandler.sendToServer(new MetaMessage(MetaMessage.SETPAGE, hand, page));
+        PacketHandler.sendToServer(new ServerMetaMessage(ServerMetaMessage.SETPAGE, hand, page));
     }
 }
