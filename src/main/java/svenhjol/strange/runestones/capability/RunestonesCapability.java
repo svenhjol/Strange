@@ -51,14 +51,9 @@ public class RunestonesCapability implements IRunestonesCapability
     @Override
     public void readNBT(INBT tag)
     {
-        // TODO: Fix this fix
-        if (tag == null) {
-            tag = new CompoundNBT();
-        }
-
+        if (tag == null) tag = new CompoundNBT();
         CompoundNBT nbt = (CompoundNBT)tag;
 
-        // TODO: Fix this fix
         if (!nbt.contains("destinations")) {
             nbt.put("destinations", new CompoundNBT());
         }
