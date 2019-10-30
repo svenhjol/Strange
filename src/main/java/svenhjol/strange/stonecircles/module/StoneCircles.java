@@ -67,7 +67,7 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-        // TODO check that this registers the stone_circle name properly
+        // TODO stone name isn't being registered properly
         Registry.register(Registry.FEATURE, NAME, structure);
         RegistryHandler.registerStructure(structure, ID);
 
