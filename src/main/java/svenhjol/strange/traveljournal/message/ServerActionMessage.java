@@ -23,7 +23,7 @@ import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ActionMessage implements IMesonMessage
+public class ServerActionMessage implements IMesonMessage
 {
     public static final int ADD = 0;
     public static final int UPDATE = 1;
@@ -39,12 +39,12 @@ public class ActionMessage implements IMesonMessage
     private int dim;
     private String name;
 
-    public ActionMessage(int action, Entry entry, Hand hand)
+    public ServerActionMessage(int action, Entry entry, Hand hand)
     {
         this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);
     }
 
-    private ActionMessage(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
+    private ServerActionMessage(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
     {
         this.action = action;
         this.hand = hand;
@@ -55,7 +55,7 @@ public class ActionMessage implements IMesonMessage
         this.color = color;
     }
 
-    public static void encode(ActionMessage msg, PacketBuffer buf)
+    public static void encode(ServerActionMessage msg, PacketBuffer buf)
     {
         String name = msg.name == null ? "" : msg.name;
         long pos = msg.pos == null ? 0 : msg.pos.toLong();
@@ -69,9 +69,9 @@ public class ActionMessage implements IMesonMessage
         buf.writeEnumValue(msg.hand);
     }
 
-    public static ActionMessage decode(PacketBuffer buf)
+    public static ServerActionMessage decode(PacketBuffer buf)
     {
-        return new ActionMessage(
+        return new ServerActionMessage(
             buf.readInt(),
             buf.readString(),
             buf.readString(),
@@ -84,7 +84,7 @@ public class ActionMessage implements IMesonMessage
 
     public static class Handler
     {
-        public static void handle(final ActionMessage msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ServerActionMessage msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
@@ -95,7 +95,7 @@ public class ActionMessage implements IMesonMessage
                 CompoundNBT entries = null;
 
                 if (msg.name == null || msg.name.isEmpty()) {
-                    msg.name = I18n.format("travel_journal.strange.new_entry");
+                    msg.name = I18n.format("gui.strange.travel_journal.new_entry");
                 }
 
                 // create entry
