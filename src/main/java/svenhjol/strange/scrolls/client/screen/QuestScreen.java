@@ -92,48 +92,6 @@ public class QuestScreen extends Screen implements IRenderable
             panelWidth = width / ii;
             new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
         }
-//
-//        switch (actionIds.size()) {
-//            case 1:
-//                panelMid = width / 2;
-//                panelWidth = width / 1;
-//                new ActionsPanel(quest, actionIds.get(0), panelMid, panelY, panelWidth);
-//
-//                for (int i = 0; i < actionIds.size(); i++) {
-//                    int ii = (i * 2) + 1;
-//                    panelMid = ii * (width / ii + 1);
-//                    panelWidth = width / ii;
-//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
-//                }
-//                break;
-//
-//            case 2:
-//                for (int i = 0; i < actionIds.size(); i++) {
-//                    panelMid = ((i * 2) + 1) * (width / 4);
-//                    panelWidth = width / 2;
-//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
-//                }
-//                break;
-//
-//            case 3:
-//                for (int i = 0; i < actionIds.size(); i++) {
-//                    panelMid = ((i * 2) + 1) * (width / 6);
-//                    panelWidth = width / 3;
-//                    new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
-//                }
-//                break;
-//        }
-
-//
-//        if (actionIds.size() == 2) {
-//            int panelWidth = 85;
-//            int midLeft = width / 4;
-//            int midRight = 3 * midLeft;
-//
-//            actionIds.forEach(type -> {
-//                // TODO panels
-//            });
-//        }
 
         boolean splitLimitsAndRewards = false;
         if (limits.size() > 0 && rewards.size() > 0) {
