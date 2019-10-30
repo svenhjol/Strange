@@ -8,7 +8,7 @@ import net.minecraft.util.Hand;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.message.ActionMessage;
+import svenhjol.strange.traveljournal.message.ServerActionMessage;
 
 public class UpdateEntryScreen extends BaseTravelJournalScreen
 {
@@ -40,7 +40,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         nameField.setDisabledTextColour(-1);
         nameField.setEnableBackgroundDrawing(true);
         nameField.setMaxStringLength(TravelJournalItem.MAX_NAME_LENGTH);
-        nameField.func_212954_a(this::responder);
+        nameField.setResponder(this::responder);
         nameField.setText(entry.name);
         nameField.setEnabled(true);
         children.add(nameField);
@@ -88,7 +88,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         Entry updated = new Entry(this.entry);
         updated.name = this.name;
         updated.color = this.color;
-        PacketHandler.sendToServer(new ActionMessage(ActionMessage.UPDATE, updated, hand));
+        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.UPDATE, updated, hand));
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
