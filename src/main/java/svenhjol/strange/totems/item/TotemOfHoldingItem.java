@@ -17,6 +17,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
@@ -74,7 +75,10 @@ public class TotemOfHoldingItem extends MesonItem
             TotemHelper.destroy(player, held);
             for (int i = 0; i < items.size(); i++) {
                 INBT itemTag = items.get(String.valueOf(i));
-                if (itemTag == null) continue; // TODO error about this
+                if (itemTag == null) {
+                    Meson.warn("Item tag missing from totem");
+                    continue;
+                }
                 ItemStack stack = ItemStack.read((CompoundNBT) itemTag);
                 world.addEntity(new ItemEntity(world, player.posX, player.posY + 0.5D, player.posZ, stack));
             }
