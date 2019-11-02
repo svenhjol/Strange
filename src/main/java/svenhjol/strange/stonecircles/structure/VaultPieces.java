@@ -33,7 +33,7 @@ import svenhjol.strange.runestones.module.Runestones;
 import java.util.*;
 
 import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
-import static svenhjol.strange.stonecircles.structure.VaultStructure.SCUP;
+import static svenhjol.strange.stonecircles.structure.VaultStructure.VAULT_PIECE;
 
 public class VaultPieces
 {
@@ -62,7 +62,7 @@ public class VaultPieces
 
         public VaultPiece(TemplateManager templates, ResourceLocation template, BlockPos pos, Rotation rotation)
         {
-            super(SCUP, 0);
+            super(VAULT_PIECE, 0);
 
             this.templateName = template;
             this.templatePosition = pos;
@@ -73,7 +73,7 @@ public class VaultPieces
 
         public VaultPiece(TemplateManager templates, CompoundNBT tag)
         {
-            super(SCUP, tag);
+            super(VAULT_PIECE, tag);
 
             this.templateName = new ResourceLocation(tag.getString("Template"));
             this.integrity = tag.getFloat("Integrity");

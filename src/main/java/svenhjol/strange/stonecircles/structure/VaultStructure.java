@@ -20,7 +20,7 @@ import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
 
 public class VaultStructure
 {
-    public static IStructurePieceType SCUP = VaultPiece::new;
+    public static IStructurePieceType VAULT_PIECE = VaultPiece::new;
     public static Map<PieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
 
     public static final int CORRIDOR_X = 5;
