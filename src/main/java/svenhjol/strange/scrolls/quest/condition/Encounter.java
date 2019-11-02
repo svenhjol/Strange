@@ -1,13 +1,14 @@
 package svenhjol.strange.scrolls.quest.condition;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -15,8 +16,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
@@ -31,6 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.charm.tools.item.BoundCompassItem;
 import svenhjol.charm.tools.module.CompassBinding;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
@@ -38,7 +38,6 @@ import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Encounter implements IDelegate
@@ -246,72 +245,9 @@ public class Encounter implements IDelegate
         return this.targets;
     }
 
-    // TODO move to Meson
-    public boolean spawnEntityNearPlayer(PlayerEntity player, MobEntity mob, BiConsumer<MobEntity, BlockPos> onSpawn)
-    {
-        boolean spawned = false;
-        int range = 8;
-        int tries = 8;
-        BlockPos playerPos = player.getPosition();
-        World world = player.world;
-        Random rand = world.rand;
-        List<BlockPos> valid = new ArrayList<>();
-
-        for (int y = range*2; y > -range*2; y--) {
-            for (int i = range; i > 1; i--) {
-                for (int c = 1; c < tries; c++) {
-                    BlockPos p = playerPos.add(rand.nextInt(i), y, rand.nextInt(i));
-                    BlockState floor = world.getBlockState(p.down());
-                    if (floor.isSolid() && world.isAirBlock(p) && world.isAirBlock(p.up())) {
-                        valid.add(p);
-                    }
-                }
-            }
-        }
-
-        if (valid.isEmpty()) return false;
-
-        BlockPos spawnPos = valid.get(rand.nextInt(valid.size()));
-        mob.moveToBlockPosAndAngles(spawnPos, 0.0F, 0.0F);
-        mob.onInitialSpawn(world, world.getDifficultyForLocation(spawnPos), SpawnReason.TRIGGERED, null, null);
-        world.addEntity(mob);
-        onSpawn.accept(mob, spawnPos);
-        return true;
-    }
-
     public void fail(PlayerEntity player)
     {
         Minecraft.getInstance().deferTask(() -> MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest)));
-    }
-
-    public void bringOnTheStorm(World world)
-    {
-        world.getWorldInfo().setClearWeatherTime(0);
-        world.getWorldInfo().setRainTime(6000);
-        world.getWorldInfo().setRaining(true);
-        world.getWorldInfo().setThunderTime(300);
-        world.getWorldInfo().setThundering(true);
-    }
-
-    public void doLightning(PlayerEntity player)
-    {
-        int dist = 24;
-        World world = player.world;
-        Random rand = world.rand;
-
-        if (!world.isSkyLightMax(player.getPosition())) return;
-
-        BlockPos pos = player.getPosition().add(-(dist/2) + rand.nextInt(dist), 0, -(dist/2) + rand.nextInt(dist));
-        ((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, false));
-    }
-
-    public void bringBackTheSunshine(World world)
-    {
-        world.getWorldInfo().setClearWeatherTime(6000);
-        world.getWorldInfo().setRainTime(0);
-        world.getWorldInfo().setThunderTime(0);
-        world.getWorldInfo().setThundering(false);
-        world.getWorldInfo().setRaining(false);
     }
 
     public boolean onStarted(IQuest quest, PlayerEntity player)
@@ -340,10 +276,7 @@ public class Encounter implements IDelegate
     public boolean onEnded(PlayerEntity player)
     {
         World world = player.world;
-
-        // TODO move to PlayerHelper
-        PlayerInventory inventory = player.inventory;
-        ImmutableList<NonNullList<ItemStack>> inventories = ImmutableList.of(inventory.mainInventory, inventory.armorInventory, inventory.offHandInventory);
+        ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
 
         // remove the quest helper equipment like compasses, maps, etc.  TODO probably should be quest helper method
         inventories.forEach(inv -> inv.forEach(stack -> {
@@ -354,7 +287,7 @@ public class Encounter implements IDelegate
             }
         }));
 
-        bringBackTheSunshine(world);
+        WorldHelper.clearWeather(world);
         return true;
     }
 
@@ -364,7 +297,7 @@ public class Encounter implements IDelegate
         if (!killed.getTags().contains(quest.getId())) return false;
         this.killed++;
 
-        if (isSatisfied()) bringBackTheSunshine(killed.world);
+        if (isSatisfied()) WorldHelper.clearWeather(killed.world);
         return true;
     }
 
@@ -387,8 +320,8 @@ public class Encounter implements IDelegate
                 bossInfo.addPlayer((ServerPlayerEntity) player);
 
                 // TODO weather should scale with difficulty
-                if (!world.getWorldInfo().isThundering() || !world.getWorldInfo().isRaining()) bringOnTheStorm(world);
-                if (world.rand.nextFloat() < 0.05F) doLightning(player);
+                if (!world.getWorldInfo().isThundering() || !world.getWorldInfo().isRaining()) WorldHelper.stormyWeather(world);
+                if (world.rand.nextFloat() < 0.05F) PlayerHelper.doLightningNearPlayer(player);
             } else {
                 bossInfo.setVisible(false);
                 bossInfo.removePlayer((ServerPlayerEntity) player);
@@ -412,7 +345,7 @@ public class Encounter implements IDelegate
                     MobEntity mob = (MobEntity) type.get().create(world);
                     if (mob == null) continue;
                     mob.addTag(quest.getId());
-                    boolean didSpawn = spawnEntityNearPlayer(player, mob, (m, pos) -> {
+                    boolean didSpawn = PlayerHelper.spawnEntityNearPlayer(player, mob, (m, pos) -> {
                         mob.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
                         mob.setHealth(health);
                         mob.enablePersistence();
@@ -421,16 +354,15 @@ public class Encounter implements IDelegate
                             Registry.EFFECTS.getValue(new ResourceLocation(effect)).ifPresent(value -> mob.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier)));
                         }
 
-                        // TODO move to EntityHelper
                         ((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, true));
-                        world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F, false);
+//                        world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F, false);
                     });
                     if (didSpawn) mobsSpawned++;
                 }
             }
 
             if (mobsSpawned == 0) this.fail(player);
-            bringOnTheStorm(world);
+            WorldHelper.stormyWeather(world);
             setCount(mobsSpawned);
             this.spawned = true;
             return true;
