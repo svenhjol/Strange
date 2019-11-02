@@ -119,6 +119,7 @@ public class Generator
             return rewardConfig == null ? new HashMap<>() : rewardConfig;
         }
 
+        // TODO rework in favor of scaled difficulty
         public int parseCount(String countDef)
         {
             if (countDef.contains("-")) { // it's a range
