@@ -35,7 +35,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
     public static final int SEED_MODIFIER = 247474720;
     public static final int TRIES = 64;
     public static final String STRUCTURE_NAME = "Stone_Circle";
-    public static IStructurePieceType SCP = StoneCirclePiece::new;
+    public static IStructurePieceType STONE_CIRCLE_PIECE = StoneCirclePiece::new;
 
     public StoneCircleStructure(Function<Dynamic<?>, ? extends StoneCircleConfig> config)
     {
@@ -124,12 +124,12 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
     {
         public StoneCirclePiece(Random rand, BlockPos pos)
         {
-            super(SCP, rand, pos.getX(), 64, pos.getZ(), 16, 6, 16);
+            super(STONE_CIRCLE_PIECE, rand, pos.getX(), 64, pos.getZ(), 16, 6, 16);
         }
 
         public StoneCirclePiece(TemplateManager templateManager, CompoundNBT tag)
         {
-            super(SCP, tag);
+            super(STONE_CIRCLE_PIECE, tag);
         }
 
         @Override
@@ -277,18 +277,20 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 }
             }
 
-            for (int k = 5; k > -15; k--) {
-                BlockPos findPos = pos.add(0, k, 0);
-                BlockPos findPosUp = findPos.up();
-                BlockState findState = world.getBlockState(findPos);
-                BlockState findStateUp = world.getBlockState(findPosUp);
+            if (config.withChest) {
+                for (int k = 5; k > -15; k--) {
+                    BlockPos findPos = pos.add(0, k, 0);
+                    BlockPos findPosUp = findPos.up();
+                    BlockState findState = world.getBlockState(findPos);
+                    BlockState findStateUp = world.getBlockState(findPosUp);
 
-                if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
-                    BlockState chest = Blocks.CHEST.getDefaultState();
-                    world.setBlockState(findPos, chest, 2);
-                    LockableLootTileEntity.setLootTable(world, rand, findPos, StrangeLoot.CHESTS_VAULT_TREASURE);
-                    Meson.debug("Generated with chest " + pos);
-                    break;
+                    if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
+                        BlockState chest = Blocks.CHEST.getDefaultState();
+                        world.setBlockState(findPos, chest, 2);
+                        LockableLootTileEntity.setLootTable(world, rand, findPos, StrangeLoot.STONE_CIRCLE_TREASURE);
+                        Meson.debug("Generated with chest " + pos);
+                        break;
+                    }
                 }
             }
 

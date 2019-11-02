@@ -67,13 +67,9 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-        // TODO stone name isn't being registered properly
-        Registry.register(Registry.FEATURE, NAME, structure);
         RegistryHandler.registerStructure(structure, ID);
-
-        // TODO add structure pieces to Meson registry
-        Registry.register(Registry.STRUCTURE_PIECE, "scp", StoneCircleStructure.SCP);
-        Registry.register(Registry.STRUCTURE_PIECE, "scup", VaultStructure.SCUP);
+        RegistryHandler.registerStructurePiece(StoneCircleStructure.STONE_CIRCLE_PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
+        RegistryHandler.registerStructurePiece(VaultStructure.VAULT_PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
         biomesConfig.forEach(biomeName -> {
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
