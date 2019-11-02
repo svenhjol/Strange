@@ -18,7 +18,6 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
@@ -69,15 +68,9 @@ public class Scrollkeepers extends MesonModule
         block = new WritingDeskBlock(this);
         ImmutableSet<BlockState> states = ImmutableSet.copyOf(block.getStateContainer().getValidStates());
         PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, null, 1);
-
-        // TODO move to Meson
-        Registry.POINT_OF_INTEREST_TYPE.register(new ResourceLocation(SCROLLKEEPER), type);
-        RegistryHandler.addRegisterable(type, new ResourceLocation(SCROLLKEEPER));
-        PointOfInterestType.func_221052_a(type); // SO FUCKING SHIT
-
-        profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of());
-        ResourceLocation res = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
-        RegistryHandler.registerVillager(profession, res);
+        ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
+        RegistryHandler.registerVillagerPointOfInterest(type, ID);
+        RegistryHandler.registerVillager(new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of()), ID);
     }
 
     @Override
