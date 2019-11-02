@@ -69,7 +69,7 @@ public class VillagersTradeTotems extends MesonModule
     private static boolean isValidPosition(Entity merchant)
     {
         if (!outerOnly || !Strange.loader.hasModule(Outerlands.class)) return true;
-        return merchant.getPosition().getX() > Outerlands.distance || merchant.getPosition().getZ() > Outerlands.distance;
+        return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
     }
 
     static class TotemForEmeralds implements ITrade
