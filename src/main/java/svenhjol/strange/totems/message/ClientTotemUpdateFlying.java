@@ -1,4 +1,4 @@
-package svenhjol.strange.base.message;
+package svenhjol.strange.totems.message;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +8,7 @@ import svenhjol.strange.totems.module.TotemOfFlying;
 
 import java.util.function.Supplier;
 
-public class UpdateFlying implements IMesonMessage
+public class ClientTotemUpdateFlying implements IMesonMessage
 {
     public static int DISABLE = 0;
     public static int ENABLE = 1;
@@ -16,24 +16,24 @@ public class UpdateFlying implements IMesonMessage
     private int status;
     private BlockPos pos;
 
-    public UpdateFlying(int status)
+    public ClientTotemUpdateFlying(int status)
     {
         this.status = status;
     }
 
-    public static void encode(UpdateFlying msg, PacketBuffer buf)
+    public static void encode(ClientTotemUpdateFlying msg, PacketBuffer buf)
     {
         buf.writeInt(msg.status);
     }
 
-    public static UpdateFlying decode(PacketBuffer buf)
+    public static ClientTotemUpdateFlying decode(PacketBuffer buf)
     {
-        return new UpdateFlying(buf.readInt());
+        return new ClientTotemUpdateFlying(buf.readInt());
     }
 
     public static class Handler
     {
-        public static void handle(final UpdateFlying msg, Supplier <NetworkEvent.Context> ctx)
+        public static void handle(final ClientTotemUpdateFlying msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 if (msg.status == ENABLE) {

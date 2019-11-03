@@ -1,4 +1,4 @@
-package svenhjol.strange.base.message;
+package svenhjol.strange.totems.message;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +8,7 @@ import svenhjol.strange.base.TotemHelper;
 
 import java.util.function.Supplier;
 
-public class UpdateTotemMessage implements IMesonMessage
+public class ClientTotemUpdate implements IMesonMessage
 {
     public static int DAMAGE = 0;
     public static int DESTROY = 1;
@@ -16,26 +16,26 @@ public class UpdateTotemMessage implements IMesonMessage
     private int status;
     private BlockPos pos;
 
-    public UpdateTotemMessage(int status, BlockPos pos)
+    public ClientTotemUpdate(int status, BlockPos pos)
     {
         this.status = status;
         this.pos = pos;
     }
 
-    public static void encode(UpdateTotemMessage msg, PacketBuffer buf)
+    public static void encode(ClientTotemUpdate msg, PacketBuffer buf)
     {
         buf.writeInt(msg.status);
         buf.writeLong(msg.pos.toLong());
     }
 
-    public static UpdateTotemMessage decode(PacketBuffer buf)
+    public static ClientTotemUpdate decode(PacketBuffer buf)
     {
-        return new UpdateTotemMessage(buf.readInt(), BlockPos.fromLong(buf.readLong()));
+        return new ClientTotemUpdate(buf.readInt(), BlockPos.fromLong(buf.readLong()));
     }
 
     public static class Handler
     {
-        public static void handle(final UpdateTotemMessage msg, Supplier <NetworkEvent.Context> ctx)
+        public static void handle(final ClientTotemUpdate msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 if (msg.status == DAMAGE) {

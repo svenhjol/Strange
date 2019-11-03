@@ -14,7 +14,7 @@ import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.message.ServerActionMessage;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,7 +100,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
 
     public static void takeScreenshot(Entry entry, Hand hand)
     {
-        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.SCREENSHOT, entry, hand));
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.SCREENSHOT, entry, hand));
     }
 
     public static File getScreenshot(Entry entry)

@@ -8,7 +8,7 @@ import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.function.Supplier;
 
-public class ClientInteractMessage implements IMesonMessage
+public class ClientRunestonesInteract implements IMesonMessage
 {
     public static final int ACTIVATE = 0;
     public static final int TRAVELLED = 1;
@@ -17,26 +17,26 @@ public class ClientInteractMessage implements IMesonMessage
     private int action;
     private BlockPos pos;
 
-    public ClientInteractMessage(int action, BlockPos pos)
+    public ClientRunestonesInteract(int action, BlockPos pos)
     {
         this.action = action;
         this.pos = pos;
     }
 
-    public static void encode(ClientInteractMessage msg, PacketBuffer buf)
+    public static void encode(ClientRunestonesInteract msg, PacketBuffer buf)
     {
         buf.writeInt(msg.action);
         buf.writeLong(msg.pos.toLong());
     }
 
-    public static ClientInteractMessage decode(PacketBuffer buf)
+    public static ClientRunestonesInteract decode(PacketBuffer buf)
     {
-        return new ClientInteractMessage(buf.readInt(), BlockPos.fromLong(buf.readLong()));
+        return new ClientRunestonesInteract(buf.readInt(), BlockPos.fromLong(buf.readLong()));
     }
 
     public static class Handler
     {
-        public static void handle(final ClientInteractMessage msg, Supplier <NetworkEvent.Context> ctx)
+        public static void handle(final ClientRunestonesInteract msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 if (msg.action == ACTIVATE) {

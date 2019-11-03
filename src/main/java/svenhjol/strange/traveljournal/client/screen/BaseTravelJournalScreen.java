@@ -11,7 +11,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import svenhjol.strange.Strange;
-import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
+import svenhjol.strange.traveljournal.message.ClientTravelJournalEntries;
 
 import java.util.function.Consumer;
 
@@ -108,10 +108,10 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     protected void checkServerUpdates(Consumer<Minecraft> onUpdate)
     {
         if (checkForUpdates > 0) {
-            if (ClientEntriesMessage.Handler.updated) {
+            if (ClientTravelJournalEntries.Handler.updated) {
                 onUpdate.accept(mc);
                 checkForUpdates = 0;
-                ClientEntriesMessage.Handler.clearUpdates();
+                ClientTravelJournalEntries.Handler.clearUpdates();
                 this.init();
             } else if (mc.world.getGameTime() - checkForUpdates > (UPDATE_TIMEOUT * 20)) {
                 checkForUpdates = 0;

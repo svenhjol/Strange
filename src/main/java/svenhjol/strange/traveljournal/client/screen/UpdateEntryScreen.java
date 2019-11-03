@@ -8,7 +8,7 @@ import net.minecraft.util.Hand;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.message.ServerActionMessage;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
 
 public class UpdateEntryScreen extends BaseTravelJournalScreen
 {
@@ -88,7 +88,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         Entry updated = new Entry(this.entry);
         updated.name = this.name;
         updated.color = this.color;
-        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.UPDATE, updated, hand));
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.UPDATE, updated, hand));
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 

@@ -5,12 +5,16 @@ import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.message.*;
-import svenhjol.strange.runestones.message.ClientInteractMessage;
-import svenhjol.strange.traveljournal.message.ServerActionMessage;
-import svenhjol.strange.traveljournal.message.ClientActionMessage;
-import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
-import svenhjol.strange.traveljournal.message.ServerMetaMessage;
+import svenhjol.strange.runestones.message.ClientRunestonesInteract;
+import svenhjol.strange.scrolls.message.ClientCurrentQuests;
+import svenhjol.strange.scrolls.message.ServerCurrentQuests;
+import svenhjol.strange.scrolls.message.ServerShowQuest;
+import svenhjol.strange.totems.message.ClientTotemUpdate;
+import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
+import svenhjol.strange.traveljournal.message.ClientTravelJournalAction;
+import svenhjol.strange.traveljournal.message.ClientTravelJournalEntries;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 
 public class StrangeLoader extends MesonLoader
 {
@@ -25,16 +29,16 @@ public class StrangeLoader extends MesonLoader
         super.setup(event);
 
         // messages
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestCurrentQuests.class, RequestCurrentQuests::encode, RequestCurrentQuests::decode, RequestCurrentQuests.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, SendCurrentQuests.class, SendCurrentQuests::encode, SendCurrentQuests::decode, SendCurrentQuests.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientInteractMessage.class, ClientInteractMessage::encode, ClientInteractMessage::decode, ClientInteractMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, RequestShowQuest.class, RequestShowQuest::encode, RequestShowQuest::decode, RequestShowQuest.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateTotemMessage.class, UpdateTotemMessage::encode, UpdateTotemMessage::decode, UpdateTotemMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, UpdateFlying.class, UpdateFlying::encode, UpdateFlying::decode, UpdateFlying.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ServerActionMessage.class, ServerActionMessage::encode, ServerActionMessage::decode, ServerActionMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ServerMetaMessage.class, ServerMetaMessage::encode, ServerMetaMessage::decode, ServerMetaMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientEntriesMessage.class, ClientEntriesMessage::encode, ClientEntriesMessage::decode, ClientEntriesMessage.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(PacketHandler.index++, ClientActionMessage.class, ClientActionMessage::encode, ClientActionMessage::decode, ClientActionMessage.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(20, ServerCurrentQuests.class, ServerCurrentQuests::encode, ServerCurrentQuests::decode, ServerCurrentQuests.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(21, ServerShowQuest.class, ServerShowQuest::encode, ServerShowQuest::decode, ServerShowQuest.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(22, ServerTravelJournalAction.class, ServerTravelJournalAction::encode, ServerTravelJournalAction::decode, ServerTravelJournalAction.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(23, ServerTravelJournalMeta.class, ServerTravelJournalMeta::encode, ServerTravelJournalMeta::decode, ServerTravelJournalMeta.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(24, ClientCurrentQuests.class, ClientCurrentQuests::encode, ClientCurrentQuests::decode, ClientCurrentQuests.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(25, ClientTotemUpdate.class, ClientTotemUpdate::encode, ClientTotemUpdate::decode, ClientTotemUpdate.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(26, ClientTotemUpdateFlying.class, ClientTotemUpdateFlying::encode, ClientTotemUpdateFlying::decode, ClientTotemUpdateFlying.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(27, ClientTravelJournalEntries.class, ClientTravelJournalEntries::encode, ClientTravelJournalEntries::decode, ClientTravelJournalEntries.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(28, ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(29, ClientRunestonesInteract.class, ClientRunestonesInteract::encode, ClientRunestonesInteract::decode, ClientRunestonesInteract.Handler::handle);
 
         // sounds
         RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COMPLETE);

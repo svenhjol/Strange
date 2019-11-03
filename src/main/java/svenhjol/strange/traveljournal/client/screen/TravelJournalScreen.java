@@ -18,9 +18,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
-import svenhjol.strange.traveljournal.message.ServerActionMessage;
-import svenhjol.strange.traveljournal.message.ClientEntriesMessage;
-import svenhjol.strange.traveljournal.message.ServerMetaMessage;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
+import svenhjol.strange.traveljournal.message.ClientTravelJournalEntries;
+import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     {
         renderBackground();
         renderBackgroundTexture();
-        checkServerUpdates(mc -> journalEntries = ClientEntriesMessage.Handler.entries);
+        checkServerUpdates(mc -> journalEntries = ClientTravelJournalEntries.Handler.entries);
 
         int mid = this.width / 2;
         int x = mid - 80;
@@ -186,11 +186,13 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     {
         Entry entry = new Entry(
             Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(8),
+            I18n.format("gui.strange.travel_journal.new_entry"),
             player.getPosition(),
-            WorldHelper.getDimensionId(player.world)
+            WorldHelper.getDimensionId(player.world),
+            0
         );
 
-        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.ADD, entry, hand));
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.ADD, entry, hand));
         startUpdateCheck();
     }
 
@@ -202,13 +204,13 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     private void delete(Entry entry)
     {
         startUpdateCheck();
-        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.DELETE, entry, hand));
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, entry, hand));
     }
 
     private void teleport(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ServerActionMessage(ServerActionMessage.TELEPORT, entry, hand));
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
     }
 
     private void screenshot(Entry entry)
@@ -218,6 +220,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void updateServerPage(int page)
     {
-        PacketHandler.sendToServer(new ServerMetaMessage(ServerMetaMessage.SETPAGE, hand, page));
+        PacketHandler.sendToServer(new ServerTravelJournalMeta(ServerTravelJournalMeta.SETPAGE, hand, page));
     }
 }

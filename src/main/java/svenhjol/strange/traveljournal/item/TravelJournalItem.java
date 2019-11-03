@@ -1,6 +1,5 @@
 package svenhjol.strange.traveljournal.item;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -14,7 +13,7 @@ import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.strange.traveljournal.Entry;
-import svenhjol.strange.traveljournal.client.screen.TravelJournalScreen;
+import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import javax.annotation.Nullable;
 
@@ -44,7 +43,7 @@ public class TravelJournalItem extends MesonItem
             result = ActionResultType.PASS;
         } else {
             if (world.isRemote) {
-                Minecraft.getInstance().displayGuiScreen(new TravelJournalScreen(player, hand));
+                TravelJournal.proxy.openTravelJournal(hand);
             }
 
             result = ActionResultType.SUCCESS;

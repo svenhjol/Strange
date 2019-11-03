@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.strange.base.message.SendCurrentQuests;
+import svenhjol.strange.scrolls.message.ClientCurrentQuests;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.Quest;
@@ -46,7 +46,7 @@ public class QuestsCapability implements IQuestsCapability
     @Override
     public void updateCurrentQuests(PlayerEntity player)
     {
-        PacketHandler.sendTo(new SendCurrentQuests(getCurrentQuests(player)), (ServerPlayerEntity)player);
+        PacketHandler.sendTo(new ClientCurrentQuests(getCurrentQuests(player)), (ServerPlayerEntity)player);
     }
 
     @Override

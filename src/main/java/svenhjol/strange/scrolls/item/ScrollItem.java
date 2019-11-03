@@ -63,7 +63,7 @@ public class ScrollItem extends MesonItem
                     stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
                 }
 
-                Quests.showQuestScreen(playerIn, stack);
+                Quests.proxy.showQuestScreen(playerIn, stack);
             }
 
             result = ActionResultType.SUCCESS;

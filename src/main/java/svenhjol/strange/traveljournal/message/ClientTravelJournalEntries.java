@@ -1,29 +1,23 @@
 package svenhjol.strange.traveljournal.message;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
-import svenhjol.strange.traveljournal.client.screen.TravelJournalScreen;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
-public class ClientEntriesMessage implements IMesonMessage
+public class ClientTravelJournalEntries implements IMesonMessage
 {
     private String serialized = "";
     private CompoundNBT entries;
 
-    public ClientEntriesMessage(CompoundNBT entries)
+    public ClientTravelJournalEntries(CompoundNBT entries)
     {
         this.entries = entries;
 
@@ -36,12 +30,12 @@ public class ClientEntriesMessage implements IMesonMessage
         }
     }
 
-    public static void encode(ClientEntriesMessage msg, PacketBuffer buf)
+    public static void encode(ClientTravelJournalEntries msg, PacketBuffer buf)
     {
         buf.writeString(msg.serialized);
     }
 
-    public static ClientEntriesMessage decode(PacketBuffer buf)
+    public static ClientTravelJournalEntries decode(PacketBuffer buf)
     {
         CompoundNBT entries = new CompoundNBT();
 
@@ -52,7 +46,7 @@ public class ClientEntriesMessage implements IMesonMessage
             Meson.warn("Failed to uncompress entries");
         }
 
-        return new ClientEntriesMessage(entries);
+        return new ClientTravelJournalEntries(entries);
     }
 
     public static class Handler
@@ -60,7 +54,7 @@ public class ClientEntriesMessage implements IMesonMessage
         public static CompoundNBT entries = new CompoundNBT();
         public static boolean updated = false;
 
-        public static void handle(final ClientEntriesMessage msg, Supplier <NetworkEvent.Context> ctx)
+        public static void handle(final ClientTravelJournalEntries msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 entries = msg.entries;
@@ -73,24 +67,6 @@ public class ClientEntriesMessage implements IMesonMessage
         {
             entries = new CompoundNBT();
             updated = false;
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        private static void openTravelJournal(PlayerEntity player, Hand hand)
-        {
-            Minecraft.getInstance().displayGuiScreen(new TravelJournalScreen(player, hand));
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        private static void openScreenshotEntry(PlayerEntity player, Hand hand, String id)
-        {
-            Minecraft mc = Minecraft.getInstance();
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        private static void openUpdateEntry(PlayerEntity player, Hand hand, String id)
-        {
-            Minecraft mc = Minecraft.getInstance();
         }
     }
 }

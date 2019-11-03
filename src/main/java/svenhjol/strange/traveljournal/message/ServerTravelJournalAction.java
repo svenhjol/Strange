@@ -1,7 +1,6 @@
 package svenhjol.strange.traveljournal.message;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -11,6 +10,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.PlayerQueueHandler;
@@ -23,7 +23,7 @@ import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ServerActionMessage implements IMesonMessage
+public class ServerTravelJournalAction implements IMesonMessage
 {
     public static final int ADD = 0;
     public static final int UPDATE = 1;
@@ -39,12 +39,12 @@ public class ServerActionMessage implements IMesonMessage
     private int dim;
     private String name;
 
-    public ServerActionMessage(int action, Entry entry, Hand hand)
+    public ServerTravelJournalAction(int action, Entry entry, Hand hand)
     {
         this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);
     }
 
-    private ServerActionMessage(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
+    private ServerTravelJournalAction(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
     {
         this.action = action;
         this.hand = hand;
@@ -55,7 +55,7 @@ public class ServerActionMessage implements IMesonMessage
         this.color = color;
     }
 
-    public static void encode(ServerActionMessage msg, PacketBuffer buf)
+    public static void encode(ServerTravelJournalAction msg, PacketBuffer buf)
     {
         String name = msg.name == null ? "" : msg.name;
         long pos = msg.pos == null ? 0 : msg.pos.toLong();
@@ -69,12 +69,12 @@ public class ServerActionMessage implements IMesonMessage
         buf.writeEnumValue(msg.hand);
     }
 
-    public static ServerActionMessage decode(PacketBuffer buf)
+    public static ServerTravelJournalAction decode(PacketBuffer buf)
     {
-        return new ServerActionMessage(
+        return new ServerTravelJournalAction(
             buf.readInt(),
-            buf.readString(),
-            buf.readString(),
+            buf.readString(32),
+            buf.readString(32),
             BlockPos.fromLong(buf.readLong()),
             buf.readInt(),
             buf.readInt(),
@@ -84,7 +84,7 @@ public class ServerActionMessage implements IMesonMessage
 
     public static class Handler
     {
-        public static void handle(final ServerActionMessage msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ServerTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
@@ -95,7 +95,7 @@ public class ServerActionMessage implements IMesonMessage
                 CompoundNBT entries = null;
 
                 if (msg.name == null || msg.name.isEmpty()) {
-                    msg.name = I18n.format("gui.strange.travel_journal.new_entry");
+                    msg.name = new TranslationTextComponent("gui.strange.travel_journal.new_entry").getUnformattedComponentText();
                 }
 
                 // create entry
@@ -141,18 +141,18 @@ public class ServerActionMessage implements IMesonMessage
 
         private static void updateClientEntries(CompoundNBT entries, PlayerEntity player)
         {
-            PacketHandler.sendTo(new ClientEntriesMessage(entries), (ServerPlayerEntity)player);
+            PacketHandler.sendTo(new ClientTravelJournalEntries(entries), (ServerPlayerEntity)player);
         }
 
         private static void updateAfterAdd(Entry entry, Hand hand, PlayerEntity player)
         {
-            PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.ADD, entry, hand), (ServerPlayerEntity)player);
+            PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.ADD, entry, hand), (ServerPlayerEntity)player);
         }
 
         private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)
         {
             PlayerQueueHandler.add(player.world.getGameTime(), player, (p) -> {
-                PacketHandler.sendTo(new ClientActionMessage(ClientActionMessage.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
+                PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
             });
         }
 

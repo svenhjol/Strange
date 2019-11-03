@@ -23,7 +23,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.TotemHelper;
-import svenhjol.strange.base.message.UpdateFlying;
+import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 import svenhjol.strange.totems.client.TotemOfFlyingSound;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;
 
@@ -87,7 +87,7 @@ public class TotemOfFlying extends MesonModule
                         int xp = player.experienceTotal;
                         if (xp <= 0) {
                             disableFlight(player);
-                            PacketHandler.sendTo(new UpdateFlying(UpdateFlying.DISABLE), (ServerPlayerEntity) player);
+                            PacketHandler.sendTo(new ClientTotemUpdateFlying(ClientTotemUpdateFlying.DISABLE), (ServerPlayerEntity) player);
                             return;
                         }
 

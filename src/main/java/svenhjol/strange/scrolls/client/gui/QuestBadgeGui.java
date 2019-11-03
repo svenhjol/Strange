@@ -3,7 +3,7 @@ package svenhjol.strange.scrolls.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.strange.base.message.RequestShowQuest;
+import svenhjol.strange.scrolls.message.ServerShowQuest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestBadgeGui extends AbstractGui
@@ -63,6 +63,6 @@ public class QuestBadgeGui extends AbstractGui
 
     public void onLeftClick()
     {
-        PacketHandler.sendToServer(new RequestShowQuest(quest.getId()));
+        PacketHandler.sendToServer(new ServerShowQuest(quest.getId()));
     }
 }

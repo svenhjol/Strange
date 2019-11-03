@@ -1,4 +1,4 @@
-package svenhjol.strange.base.message;
+package svenhjol.strange.scrolls.message;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -11,28 +11,28 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RequestCurrentQuests implements IMesonMessage
+public class ServerCurrentQuests implements IMesonMessage
 {
     private boolean test;
 
-    public RequestCurrentQuests()
+    public ServerCurrentQuests()
     {
         // no op
     }
 
-    public static void encode(RequestCurrentQuests msg, PacketBuffer buf)
+    public static void encode(ServerCurrentQuests msg, PacketBuffer buf)
     {
         // no op
     }
 
-    public static RequestCurrentQuests decode(PacketBuffer buf)
+    public static ServerCurrentQuests decode(PacketBuffer buf)
     {
-        return new RequestCurrentQuests();
+        return new ServerCurrentQuests();
     }
 
     public static class Handler
     {
-        public static void handle(final RequestCurrentQuests msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ServerCurrentQuests msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
@@ -40,7 +40,7 @@ public class RequestCurrentQuests implements IMesonMessage
                 if (player == null) return;
 
                 List<IQuest> currentQuests = Quests.getCapability(player).getCurrentQuests(player);
-                PacketHandler.sendTo(new SendCurrentQuests(currentQuests), player);
+                PacketHandler.sendTo(new ClientCurrentQuests(currentQuests), player);
             });
             ctx.get().setPacketHandled(true);
         }

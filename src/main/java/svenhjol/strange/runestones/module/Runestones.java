@@ -1,7 +1,6 @@
 package svenhjol.strange.runestones.module;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EnderPearlEntity;
@@ -12,7 +11,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -42,7 +41,7 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
-import svenhjol.strange.runestones.message.ClientInteractMessage;
+import svenhjol.strange.runestones.message.ClientRunestonesInteract;
 import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.*;
@@ -222,7 +221,7 @@ public class Runestones extends MesonModule
                 event.setCanceled(true);
                 event.getEntity().remove();
                 playerTeleport.put(player.getUniqueID(), pos); // prepare teleport, tick handles it
-                PacketHandler.sendTo(new ClientInteractMessage(ClientInteractMessage.ACTIVATE, pos), (ServerPlayerEntity)player);
+                PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.ACTIVATE, pos), (ServerPlayerEntity)player);
             }
         }
     }
@@ -251,17 +250,17 @@ public class Runestones extends MesonModule
                     IRunestonesCapability cap = Runestones.getCapability(player);
                     int rune = lookedAt.get(RunestoneBlock.RUNE);
                     if (cap.getDiscoveredTypes().contains(rune)) {
-                        String message;
-                        String description = I18n.format("runestone.strange." + dests.get(rune).description);
+                        TranslationTextComponent message;
+                        TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + dests.get(rune).description);
                         BlockPos dest = cap.getDestination(runePos);
                         if (dest != null) {
-                            PacketHandler.sendTo(new ClientInteractMessage(ClientInteractMessage.TRAVELLED, runePos), (ServerPlayerEntity)player);
-                            message = I18n.format("runestone.strange.rune_travelled", description, dest.getX(), dest.getZ());
+                            PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.TRAVELLED, runePos), (ServerPlayerEntity)player);
+                            message = new TranslationTextComponent("runestone.strange.rune_travelled", description, dest.getX(), dest.getZ());
                         } else {
-                            PacketHandler.sendTo(new ClientInteractMessage(ClientInteractMessage.DISCOVERED, runePos), (ServerPlayerEntity)player);
-                            message = I18n.format("runestone.strange.rune_connects", description);
+                            PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.DISCOVERED, runePos), (ServerPlayerEntity)player);
+                            message = new TranslationTextComponent("runestone.strange.rune_connects", description);
                         }
-                        player.sendStatusMessage(new StringTextComponent(message), true);
+                        player.sendStatusMessage(message, true);
                     }
                 }
             }
