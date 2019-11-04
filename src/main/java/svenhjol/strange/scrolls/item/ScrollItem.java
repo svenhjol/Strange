@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.item;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.handler.PlayerQueueHandler;
+import svenhjol.strange.scrolls.message.ClientScrollAction;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -42,6 +46,8 @@ public class ScrollItem extends MesonItem
             result = ActionResultType.FAIL;
         } else {
 
+            IQuest quest = null;
+
             if (!worldIn.isRemote) {
 
                 // if not populated yet, generate a quest and set the stack name
@@ -51,19 +57,30 @@ public class ScrollItem extends MesonItem
                     int tier = getTierFromScroll(stack);
                     if (tier < 1) tier = 1;
 
-                    IQuest quest = new Quest();
+                    quest = new Quest();
                     quest.setTier(tier);
                     putQuest(stack, quest);
                 }
 
                 if (!hasPopulatedQuest(stack)) {
-                    IQuest quest = Quests.generate(worldIn, getQuest(stack));
-                    quest.generateId();
-                    putQuest(stack, quest);
+                    final IQuest q = Quests.generate(worldIn, getQuest(stack));
+                    q.generateId();
+                    putQuest(stack, q);
                     stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
+
+                    PlayerQueueHandler.add(worldIn.getGameTime(), playerIn, p -> {
+                        PacketHandler.sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity)p);
+                    });
+
+                    return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
 
-                Quests.proxy.showQuestScreen(playerIn, stack);
+                quest = getQuest(stack);
+
+                if (!quest.getId().isEmpty()) {
+                    // message client to open screen
+                    PacketHandler.sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn);
+                }
             }
 
             result = ActionResultType.SUCCESS;

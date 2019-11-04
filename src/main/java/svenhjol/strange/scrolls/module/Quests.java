@@ -26,12 +26,12 @@ import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.client.QuestClientEvents;
 import svenhjol.strange.scrolls.event.QuestEvents;
+import svenhjol.strange.scrolls.proxy.IQuestProxy;
 import svenhjol.strange.scrolls.proxy.QuestProxyClient;
 import svenhjol.strange.scrolls.proxy.QuestProxyServer;
 import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
-import svenhjol.strange.scrolls.quest.iface.IQuestProxy;
 
 import java.util.*;
 

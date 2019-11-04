@@ -11,28 +11,26 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ServerCurrentQuests implements IMesonMessage
+public class ServerQuestList implements IMesonMessage
 {
-    private boolean test;
-
-    public ServerCurrentQuests()
+    public ServerQuestList()
     {
         // no op
     }
 
-    public static void encode(ServerCurrentQuests msg, PacketBuffer buf)
+    public static void encode(ServerQuestList msg, PacketBuffer buf)
     {
         // no op
     }
 
-    public static ServerCurrentQuests decode(PacketBuffer buf)
+    public static ServerQuestList decode(PacketBuffer buf)
     {
-        return new ServerCurrentQuests();
+        return new ServerQuestList();
     }
 
     public static class Handler
     {
-        public static void handle(final ServerCurrentQuests msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ServerQuestList msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
@@ -40,7 +38,7 @@ public class ServerCurrentQuests implements IMesonMessage
                 if (player == null) return;
 
                 List<IQuest> currentQuests = Quests.getCapability(player).getCurrentQuests(player);
-                PacketHandler.sendTo(new ClientCurrentQuests(currentQuests), player);
+                PacketHandler.sendTo(new ClientQuestList(currentQuests), player);
             });
             ctx.get().setPacketHandled(true);
         }

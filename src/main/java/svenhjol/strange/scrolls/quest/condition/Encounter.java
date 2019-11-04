@@ -1,8 +1,6 @@
 package svenhjol.strange.scrolls.quest.condition;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -19,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.ServerBossInfo;
 import net.minecraft.world.World;
@@ -43,7 +42,7 @@ import java.util.*;
 public class Encounter implements IDelegate
 {
     public final static String ID = "Encounter";
-    public ServerBossInfo bossInfo = new ServerBossInfo(new StringTextComponent(I18n.format("event.strange.quests.encounter")), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
+    public ServerBossInfo bossInfo = new ServerBossInfo(new TranslationTextComponent("event.strange.quests.encounter"), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
 
     private IQuest quest;
     private List<ResourceLocation> targets = new ArrayList<>();
@@ -247,7 +246,7 @@ public class Encounter implements IDelegate
 
     public void fail(PlayerEntity player)
     {
-        Minecraft.getInstance().deferTask(() -> MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest)));
+        MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest));
     }
 
     public boolean onStarted(IQuest quest, PlayerEntity player)

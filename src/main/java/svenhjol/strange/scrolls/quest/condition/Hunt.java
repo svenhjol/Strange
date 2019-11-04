@@ -1,13 +1,12 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -65,11 +64,10 @@ public class Hunt implements IDelegate
             World world = player.world;
 
             this.killed++;
-            String mobName = killedEntity.getName().getFormattedText();
 
             if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
-                player.sendStatusMessage(new StringTextComponent(I18n.format("event.strange.quests.hunted_all", mobName)), true);
+                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.hunted_all"), true);
             } else {
                 Quests.playActionCountSound(player);
             }

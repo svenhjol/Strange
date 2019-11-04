@@ -5,11 +5,13 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import svenhjol.strange.scrolls.client.toast.QuestToastTypes.Type;
 import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -24,13 +26,6 @@ public class QuestToast implements IToast
     private String title;
     private String subTitle;
     private Type type;
-
-    public enum Type
-    {
-        Success,
-        Failed,
-        General
-    }
 
     public QuestToast(IQuest quest, Type type, String title, String subTitle)
     {
@@ -50,14 +45,14 @@ public class QuestToast implements IToast
         List<String> lvt_5_1_ = toastGui.getMinecraft().fontRenderer.listFormattedStringToWidth("Really nope", 125);
         int lvt_6_1_ = 16746751;
         if (lvt_5_1_.size() == 1) {
-            toastGui.getMinecraft().fontRenderer.drawString(title, 30.0F, 7.0F, lvt_6_1_ | -16777216);
-            toastGui.getMinecraft().fontRenderer.drawString(subTitle, 30.0F, 18.0F, -1);
+            toastGui.getMinecraft().fontRenderer.drawString(I18n.format(title), 30.0F, 7.0F, lvt_6_1_ | -16777216);
+            toastGui.getMinecraft().fontRenderer.drawString(I18n.format(subTitle), 30.0F, 18.0F, -1);
         } else {
             float lvt_8_1_ = 300.0F;
             int lvt_9_2_;
             if (delta < 1500L) {
                 lvt_9_2_ = MathHelper.floor(MathHelper.clamp((float)(1500L - delta) / 300.0F, 0.0F, 1.0F) * 255.0F) << 24 | 67108864;
-                toastGui.getMinecraft().fontRenderer.drawString(title, 30.0F, 11.0F, lvt_6_1_ | lvt_9_2_);
+                toastGui.getMinecraft().fontRenderer.drawString(I18n.format(title), 30.0F, 11.0F, lvt_6_1_ | lvt_9_2_);
             } else {
                 lvt_9_2_ = MathHelper.floor(MathHelper.clamp((float)(delta - 1500L) / 300.0F, 0.0F, 1.0F) * 252.0F) << 24 | 67108864;
                 int var10001 = lvt_5_1_.size();

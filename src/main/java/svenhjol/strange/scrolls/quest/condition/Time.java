@@ -1,6 +1,5 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -61,7 +60,7 @@ public class Time implements IDelegate
 
             // check and fail the quest if the time is below zero
             if (getRemaining() <= 0) {
-                Minecraft.getInstance().deferTask(() -> MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest)));
+                MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest));
             }
             return true;
         }

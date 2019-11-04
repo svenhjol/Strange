@@ -1,11 +1,10 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -56,34 +55,30 @@ public class Gather implements IDelegate
 
             PlayerEntity player = pickupEvent.getPlayer();
             World world = pickupEvent.getPlayer().world;
-            String notify;
 
             int count = pickedUp.getCount();
             int remaining = getRemaining();
-            String itemName = stack.getItem().getName().getString();
 
             if (count > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
                 pickedUp.setCount(count - remaining);
                 count = remaining;
-                notify = I18n.format("event.strange.quests.gathered_all", itemName);
             } else {
                 // cancel the event, don't pick up any items
                 pickupEvent.getItem().remove();
                 pickupEvent.setResult(Event.Result.DENY);
                 pickupEvent.setCanceled(true);
-                notify = I18n.format("event.strange.quests.gathered", remaining - 1, itemName);
             }
 
             collected += count;
 
             if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
+                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.gathered_all"), true);
             } else {
                 Quests.playActionCountSound(player);
             }
 
-            player.sendStatusMessage(new StringTextComponent(notify), true);
             return true;
         }
 

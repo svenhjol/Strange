@@ -1,21 +1,20 @@
 package svenhjol.strange.scrolls.quest.generator;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.condition.RewardItem;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
-import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class RewardItemGenerator extends BaseGenerator
 
                 if (circlePos != null) {
                     TotemOfReturningItem.setPos(totem, circlePos.add(0, 1, 0));
-                    totem.setDisplayName(new StringTextComponent(I18n.format("item.strange.quest_reward_totem")));
+                    totem.setDisplayName(new TranslationTextComponent("item.strange.quest_reward_totem"));
                 }
 
                 return totem;

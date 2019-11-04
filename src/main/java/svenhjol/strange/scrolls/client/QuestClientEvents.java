@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.strange.scrolls.message.ServerCurrentQuests;
+import svenhjol.strange.scrolls.message.ServerQuestList;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class QuestClientEvents
 
         if (isValidQuestBadgeScreen(mc)) {
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
-                PacketHandler.sendToServer(new ServerCurrentQuests());
+                PacketHandler.sendToServer(new ServerQuestList());
                 QuestClient.lastQuery = mc.world.getGameTime();
             }
 

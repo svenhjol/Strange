@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ClientCurrentQuests implements IMesonMessage
+public class ClientQuestList implements IMesonMessage
 {
     private String serialized = "";
     private List<IQuest> quests;
 
-    public ClientCurrentQuests(List<IQuest> quests)
+    public ClientQuestList(List<IQuest> quests)
     {
         this.quests = quests;
         List<String> compressed = new ArrayList<>();
@@ -53,12 +53,12 @@ public class ClientCurrentQuests implements IMesonMessage
         }
     }
 
-    public static void encode(ClientCurrentQuests msg, PacketBuffer buf)
+    public static void encode(ClientQuestList msg, PacketBuffer buf)
     {
         buf.writeString(msg.serialized);
     }
 
-    public static ClientCurrentQuests decode(PacketBuffer buf)
+    public static ClientQuestList decode(PacketBuffer buf)
     {
         List<String> compressed = new ArrayList<>();
         List<IQuest> quests = new ArrayList<>();
@@ -86,15 +86,16 @@ public class ClientCurrentQuests implements IMesonMessage
             }
         }
 
-        return new ClientCurrentQuests(quests);
+        return new ClientQuestList(quests);
     }
 
     public static class Handler
     {
-        public static void handle(final ClientCurrentQuests msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ClientQuestList msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 QuestClient.currentQuests = msg.quests;
+                QuestClient.lastQuery = 0;
             });
             ctx.get().setPacketHandled(true);
         }

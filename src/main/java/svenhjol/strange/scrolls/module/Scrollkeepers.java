@@ -3,7 +3,6 @@ package svenhjol.strange.scrolls.module;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.VillagerData;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -18,7 +17,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,7 +69,9 @@ public class Scrollkeepers extends MesonModule
         PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, null, 1);
         ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
         RegistryHandler.registerVillagerPointOfInterest(type, ID);
-        RegistryHandler.registerVillager(new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of()), ID);
+
+        profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of());
+        RegistryHandler.registerVillager(profession, ID);
     }
 
     @Override
@@ -230,7 +231,7 @@ public class Scrollkeepers extends MesonModule
             quest.setSeller(merchant.getUniqueID());
 
             ScrollItem.putTag(out, quest.toNBT());
-            out.setDisplayName(new StringTextComponent(I18n.format("item.strange.scroll_tier_" + tier)));
+            out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier_" + tier));
             return new MerchantOffer(in1, out, 8, 0, 0.2F);
         }
     }
