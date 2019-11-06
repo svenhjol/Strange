@@ -189,8 +189,8 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
                 config.runeChance = 0.6F;
                 config.radius = rand.nextInt(6) + 5;
-                config.columnMinHeight = 2;
-                config.columnVariation = 3;
+                config.columnMinHeight = 3;
+                config.columnVariation = 2;
                 config.blocks = new ArrayList<>(Arrays.asList(
                     Blocks.STONE.getDefaultState(),
                     Blocks.COBBLESTONE.getDefaultState(),
