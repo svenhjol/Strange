@@ -3,6 +3,7 @@ package svenhjol.strange.scrolls.quest.generator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
@@ -14,9 +15,9 @@ import java.util.Map;
 
 public class CraftGenerator extends BaseGenerator
 {
-    public CraftGenerator(World world, IQuest quest, Definition definition)
+    public CraftGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
-        super(world, quest, definition);
+        super(world, pos, quest, definition);
     }
 
     @Override
@@ -28,7 +29,10 @@ public class CraftGenerator extends BaseGenerator
             ResourceLocation res = new ResourceLocation(key);
             Item item = ForgeRegistries.ITEMS.getValue(res);
             if (item == null) continue;
-            int count = definition.parseCount(def.get(key));
+            int count = Integer.parseInt(def.get(key));
+
+            // amount increases based on distance
+            count = multiplyDistance(count);
 
             Condition<Craft> condition = Condition.factory(Craft.class, quest);
             condition.getDelegate().setStack(new ItemStack(item)).setCount(count);

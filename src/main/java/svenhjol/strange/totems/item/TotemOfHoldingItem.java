@@ -69,6 +69,11 @@ public class TotemOfHoldingItem extends MesonItem
                     }
                 }
             }
+
+            if (world.isRemote) {
+                TotemHelper.effectActivateTotem(player.getPosition());
+            }
+
             TotemOfHoldingItem.setItems(held, serialized);
 
         } else if (!items.isEmpty()) {

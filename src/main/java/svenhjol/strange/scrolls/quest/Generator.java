@@ -2,6 +2,7 @@ package svenhjol.strange.scrolls.quest;
 
 import com.google.gson.Gson;
 import net.minecraft.resources.IResource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
@@ -17,7 +18,7 @@ public class Generator
 {
     public static Generator INSTANCE = new Generator();
 
-    public IQuest generate(World world, Definition definition, @Nullable IQuest quest)
+    public IQuest generate(World world, BlockPos pos, Definition definition, @Nullable IQuest quest)
     {
         if (quest == null) quest = new Quest();
 
@@ -31,6 +32,7 @@ public class Generator
             GatherGenerator.class,
             CraftGenerator.class,
             HuntGenerator.class,
+            MineGenerator.class,
             RewardItemGenerator.class,
             TimeGenerator.class,
             XPGenerator.class
@@ -38,7 +40,7 @@ public class Generator
 
         for (Class<?> clazz : generators) {
             try {
-                BaseGenerator gen = (BaseGenerator) clazz.getConstructor(World.class, IQuest.class, Definition.class).newInstance(world, quest, definition);
+                BaseGenerator gen = (BaseGenerator) clazz.getConstructor(World.class, BlockPos.class, IQuest.class, Definition.class).newInstance(world, pos, quest, definition);
                 gen.generate();
             } catch (Exception e) {
                 Meson.warn("Could not initialize generator " + clazz + ", skipping");
@@ -48,13 +50,13 @@ public class Generator
         return quest;
     }
 
-    public IQuest generate(World world, IQuest quest)
+    public IQuest generate(World world, BlockPos pos, IQuest quest)
     {
         List<Definition> definitions = Quests.available.get(quest.getTier());
         Definition definition = definitions.get(world.rand.nextInt(definitions.size()));
 
         try {
-            return generate(world, definition, quest);
+            return generate(world, pos, definition, quest);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +71,7 @@ public class Generator
         public Map<String, String> gather = new HashMap<>();
         public Map<String, String> craft = new HashMap<>();
         public Map<String, String> hunt = new HashMap<>();
+        public Map<String, String> mine = new HashMap<>();
         public Map<String, String> rewardItems = new HashMap<>();
         public Map<String, String> rewardConfig = new HashMap<>();
         public int xp;
@@ -109,6 +112,11 @@ public class Generator
             return hunt == null ? new HashMap<>() : hunt;
         }
 
+        public Map<String, String> getMine()
+        {
+            return mine == null ? new HashMap<>() : mine;
+        }
+
         public Map<String, String> getRewardItems()
         {
             return rewardItems == null ? new HashMap<>() : rewardItems;
@@ -117,19 +125,6 @@ public class Generator
         public Map<String, String> getRewardConfig()
         {
             return rewardConfig == null ? new HashMap<>() : rewardConfig;
-        }
-
-        // TODO rework in favor of scaled difficulty
-        public int parseCount(String countDef)
-        {
-            if (countDef.contains("-")) { // it's a range
-                String[] parts = countDef.split("-");
-                int min = Integer.parseInt(parts[0]);
-                int max = Integer.parseInt(parts[1]);
-                return (new Random().nextInt(max - min) + min) + 1;
-            } else {
-                return Integer.parseInt(countDef);
-            }
         }
 
         public static Definition deserialize(IResource resource)

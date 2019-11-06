@@ -5,7 +5,10 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -24,11 +27,8 @@ import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
-import svenhjol.strange.scrolls.client.QuestClientEvents;
+import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvents;
-import svenhjol.strange.scrolls.proxy.IQuestProxy;
-import svenhjol.strange.scrolls.proxy.QuestProxyClient;
-import svenhjol.strange.scrolls.proxy.QuestProxyServer;
 import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -48,14 +48,14 @@ public class Quests extends MesonModule
 
     public static Map<Integer, List<Definition>> available = new HashMap<>();
 
-    public static IQuestProxy proxy;
+    @OnlyIn(Dist.CLIENT)
+    public static QuestClient client;
 
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
         CapabilityManager.INSTANCE.register(IQuestsCapability.class, new QuestsStorage(), QuestsCapability::new); // register the interface, storage, and implementation
         MinecraftForge.EVENT_BUS.register(new QuestEvents()); // add all quest-related events to the bus
-        proxy = new QuestProxyServer();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Quests extends MesonModule
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
         try {
-            for (int tier = 1; tier < 4; tier++) {
+            for (int tier = 1; tier <= 5; tier++) {
                 Quests.available.put(tier, new ArrayList<>());
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
 
@@ -82,8 +82,8 @@ public class Quests extends MesonModule
     @Override
     public void setupClient(FMLClientSetupEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(new QuestClientEvents());
-        proxy = new QuestProxyClient();
+        client = new QuestClient();
+        MinecraftForge.EVENT_BUS.register(client);
     }
 
     public static IQuestsCapability getCapability(PlayerEntity player)
@@ -103,9 +103,9 @@ public class Quests extends MesonModule
             .findFirst();
     }
 
-    public static IQuest generate(World world, IQuest quest)
+    public static IQuest generate(World world, BlockPos pos, IQuest quest)
     {
-        return Generator.INSTANCE.generate(world, quest);
+        return Generator.INSTANCE.generate(world, pos, quest);
     }
 
     public static void update(PlayerEntity player)
@@ -115,11 +115,13 @@ public class Quests extends MesonModule
 
     public static void playActionCompleteSound(PlayerEntity player)
     {
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        PlayerEntity p = player.world.isRemote ? player : null;
+        player.world.playSound(p, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
     public static void playActionCountSound(PlayerEntity player)
     {
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
+        PlayerEntity p = player.world.isRemote ? player : null;
+        player.world.playSound(p, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 }

@@ -1,4 +1,4 @@
-package svenhjol.strange.traveljournal.proxy;
+package svenhjol.strange.traveljournal.client;
 
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -18,16 +18,14 @@ import svenhjol.strange.traveljournal.client.screen.UpdateEntryScreen;
 import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
-public class TravelJournalClientProxy implements ITravelJournalProxy
+public class TravelJournalClient
 {
-    @Override
     public void openTravelJournal(Hand hand)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();
         Minecraft.getInstance().displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
-    @Override
     public void takeScreenshot(String id, Consumer<ITextComponent> onFinish)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -35,14 +33,12 @@ public class TravelJournalClientProxy implements ITravelJournalProxy
         ScreenShotHelper.saveScreenshot(mc.gameDir, id, win.getFramebufferWidth() / 8, win.getFramebufferHeight() / 8, mc.getFramebuffer(), onFinish);
     }
 
-    @Override
     public void handleAddEntry(Hand hand, Entry entry)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();
         Minecraft.getInstance().displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
-    @Override
     public void handleScreenshot(Hand hand, Entry entry)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();

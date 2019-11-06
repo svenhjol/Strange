@@ -2,22 +2,22 @@
   "tier": 2,
   "title": "Getting weirder",
   "description": "Fun times for all the family",
-  "xp": 1000,
+  "xp": 200,
   "gather": {
     "minecraft:coal": "64"
   },
-  "craft": {
-    "minecraft:crafting_table": "1"
+  "mine": {
+    "minecraft:iron_ore": "4"
   },
   "encounter": {
     "chicken": {
-      "count": 8,
+      "count": 1,
       "health": "20",
       "effects": "jump_boost,speed"
     }
   },
   "rewardItems": {
-    "minecraft:emerald": "2",
-    "minecraft:diamond": "10"
+    "minecraft:emerald": "16",
+    "minecraft:diamond": "16"
   }
 }

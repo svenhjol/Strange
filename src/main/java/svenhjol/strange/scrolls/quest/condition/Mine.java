@@ -1,13 +1,15 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
@@ -15,19 +17,21 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Objects;
 
+import static net.minecraftforge.event.world.BlockEvent.BreakEvent;
+
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Craft implements IDelegate
+public class Mine implements IDelegate
 {
-    public final static String ID = "Craft";
+    public final static String ID = "Mine";
 
     private IQuest quest;
-    private ItemStack stack;
+    private Block block;
     private int count;
-    private int crafted;
+    private int mined;
 
-    private final String STACK = "stack";
+    private final String BLOCK = "block";
     private final String COUNT = "count";
-    private final String CRAFTED = "crafted";
+    private final String MINED = "mined";
 
     @Override
     public String getType()
@@ -45,30 +49,32 @@ public class Craft implements IDelegate
     public boolean respondTo(Event event)
     {
         if (isSatisfied()) return false;
-        if (crafted >= count) return false;
+        if (mined >= count) return false;
 
-        if (event instanceof ItemCraftedEvent) {
-            ItemCraftedEvent craftedEvent = (ItemCraftedEvent)event;
-            ItemStack crafted = craftedEvent.getCrafting();
-            if (this.stack == null || crafted.getItem() != stack.getItem().getItem()) return false;
+        if (event instanceof BreakEvent) {
+            BreakEvent blockEvent = (BreakEvent)event;
+            BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
+            Block block = state.getBlock();
+            ResourceLocation blockRes = block.getRegistryName();
 
-            PlayerEntity player = craftedEvent.getPlayer();
-            World world = craftedEvent.getPlayer().world;
+            if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
 
-            int count = crafted.getCount();
+            PlayerEntity player = blockEvent.getPlayer();
+            World world = blockEvent.getPlayer().world;
+
+            int count = 1;
             int remaining = getRemaining();
 
             if (count > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
-                crafted.setCount(count - remaining);
                 count = remaining;
             }
 
-            this.crafted += count;
+            mined += count;
 
             if (isSatisfied()) {
                 Quests.playActionCompleteSound(player);
-                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.crafted_all"), true);
+                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.mined_all"), true);
             } else {
                 Quests.playActionCountSound(player);
             }
@@ -82,7 +88,7 @@ public class Craft implements IDelegate
     @Override
     public boolean isSatisfied()
     {
-        return count <= crafted;
+        return count <= mined;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class Craft implements IDelegate
     @Override
     public float getCompletion()
     {
-        int collected = Math.min(this.crafted, this.count);
+        int collected = Math.min(this.mined, this.count);
         if (collected == 0 || count == 0) return 0;
         return ((float)collected / (float)count) * 100;
     }
@@ -103,8 +109,8 @@ public class Craft implements IDelegate
     public CompoundNBT toNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-        tag.put(STACK, stack.serializeNBT());
-        tag.putInt(CRAFTED, crafted);
+        tag.putString(BLOCK, Objects.requireNonNull(block.getRegistryName()).toString());
+        tag.putInt(MINED, mined);
         tag.putInt(COUNT, count);
         return tag;
     }
@@ -113,9 +119,9 @@ public class Craft implements IDelegate
     public void fromNBT(INBT nbt)
     {
         CompoundNBT data = (CompoundNBT)nbt;
-        this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
+        this.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(data.getString(BLOCK)));
         this.count = data.getInt(COUNT);
-        this.crafted = data.getInt(CRAFTED);
+        this.mined = data.getInt(MINED);
     }
 
     @Override
@@ -124,21 +130,21 @@ public class Craft implements IDelegate
         this.quest = quest;
     }
 
-    public Craft setCount(int count)
+    public Mine setCount(int count)
     {
         this.count = count;
         return this;
     }
 
-    public Craft setStack(ItemStack stack)
+    public Mine setBlock(Block block)
     {
-        this.stack = stack;
+        this.block = block;
         return this;
     }
 
-    public int getCrafted()
+    public int getMined()
     {
-        return this.crafted;
+        return this.mined;
     }
 
     public int getCount()
@@ -148,11 +154,11 @@ public class Craft implements IDelegate
 
     public int getRemaining()
     {
-        return count - crafted;
+        return count - mined;
     }
 
-    public ItemStack getStack()
+    public Block getBlock()
     {
-        return this.stack;
+        return this.block;
     }
 }

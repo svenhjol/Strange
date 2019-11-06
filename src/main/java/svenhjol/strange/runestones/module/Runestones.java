@@ -95,32 +95,6 @@ public class Runestones extends MesonModule
         } else {
             dests.add(new Destination("spawn_point", false, 0.125F));
         }
-
-
-
-        // first dest is always spawnpoint
-//        destinations.add((world, pos, rand) -> world.getSpawnPoint());
-//        destinations.add((world, pos, rand) -> world.getSpawnPoint());
-//        if (Strange.loader.hasModule(StoneCircles.class)) {
-//            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getInnerPos(world, rand), dist, true));
-//        } else {
-//            destinations.add((world, pos, rand) -> world.getSpawnPoint());
-//        }
-//
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getInnerPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getInnerPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getInnerPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getInnerPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Village", getOuterPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Desert_Pyramid", getOuterPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Jungle_Pyramid", getOuterPos(world, rand), dist, true));
-//        destinations.add((world, pos, rand) -> world.findNearestStructure("Ocean_Ruin", getOuterPos(world, rand), dist, true));
-//
-//        if (Strange.loader.hasModule(StoneCircles.class)) {
-//            destinations.add((world, pos, rand) -> world.findNearestStructure(StoneCircles.NAME, getOuterPos(world, rand), dist, true));
-//        } else {
-//            destinations.add((world, pos, rand) -> world.getSpawnPoint());
-//        }
     }
 
     public static IRunestonesCapability getCapability(PlayerEntity player)
@@ -324,13 +298,16 @@ public class Runestones extends MesonModule
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
+        int dim = WorldHelper.getDimensionId(world);
+        if (dim != 0) {
+            PlayerHelper.changeDimension(player, 0);
+        }
+
         BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
         if (destPos == null) destPos = world.getSpawnPoint();
-
         BlockPos dest = addRandomOffset(destPos, rand, 8);
-        int dim = WorldHelper.getDimensionId(world);
 
-        PlayerHelper.teleportSurface(player, dest, dim, p -> {
+        PlayerHelper.teleportSurface(player, dest, 0, p -> {
             Runestones.getCapability(player).recordDestination(pos, dest);
         });
     }

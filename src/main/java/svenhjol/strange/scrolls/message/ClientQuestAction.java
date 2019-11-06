@@ -69,23 +69,23 @@ public class ClientQuestAction implements IMesonMessage
             ctx.get().enqueueWork(() -> {
                 switch (msg.action) {
                     case SHOW:
-                        Quests.proxy.showQuest(msg.quest);
+                        Quests.client.showQuest(msg.quest);
                         break;
 
                     case ACCEPTED:
-                        Quests.proxy.toast(msg.quest, Type.General, "event.strange.quests.accepted");
+                        Quests.client.toast(msg.quest, Type.General, "event.strange.quests.accepted");
                         break;
 
                     case COMPLETED:
-                        Quests.proxy.toast(msg.quest, Type.Success, "event.strange.quests.completed");
+                        Quests.client.toast(msg.quest, Type.Success, "event.strange.quests.completed");
                         break;
 
                     case DECLINED:
-                        Quests.proxy.toast(msg.quest, Type.General, "event.strange.quests.declined");
+                        Quests.client.toast(msg.quest, Type.General, "event.strange.quests.declined");
                         break;
 
                     case FAILED:
-                        Quests.proxy.toast(msg.quest, Type.Failed, "event.strange.quests.failed");
+                        Quests.client.toast(msg.quest, Type.Failed, "event.strange.quests.failed");
                         break;
                 }
             });

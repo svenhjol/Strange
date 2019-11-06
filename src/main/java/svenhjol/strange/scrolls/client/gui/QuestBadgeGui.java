@@ -2,6 +2,7 @@ package svenhjol.strange.scrolls.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -62,7 +63,8 @@ public class QuestBadgeGui extends AbstractGui
 
     public void onLeftClick()
     {
-        Quests.proxy.showQuest(quest);
+        Meson.debug("[CLIENT] clicked quest badge", quest.getId());
+        Quests.client.showQuest(quest);
 //        Optional<IQuest> qq = QuestClient.currentQuests.stream().filter(q -> q.getId().equals(quest.getId())).findFirst();
 //        PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.SHOW, quest.getId(), Hand.MAIN_HAND));
     }

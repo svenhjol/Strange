@@ -38,7 +38,7 @@ public class ClientScrollAction implements IMesonMessage
         public static void handle(final ClientScrollAction msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
-                Quests.proxy.showScroll(msg.hand);
+                Quests.client.showScroll(msg.hand);
             });
             ctx.get().setPacketHandled(true);
         }

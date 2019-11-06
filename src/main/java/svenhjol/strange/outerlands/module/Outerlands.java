@@ -16,8 +16,11 @@ import java.util.Random;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.OUTERLANDS, hasSubscriptions = true)
 public class Outerlands extends MesonModule
 {
-    @Config(name = "Threshold", description = "X or Z axis values greater than this value are considered 'outer lands'")
+    @Config(name = "Threshold", description = "X or Z axis values greater than this value are considered 'outer lands'.")
     public static int threshold = 12000000;
+
+    @Config(name = "Scale by distance", description = "If true, some features will scale their difficulty or reward based on distance from spawn point.")
+    public static boolean scaleDistance = true;
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event)
@@ -54,7 +57,12 @@ public class Outerlands extends MesonModule
 
     public static float getScaledMultiplier(IWorld world, BlockPos pos)
     {
-        if (isInnerPos(pos)) return 1.0F;
+        if (!Strange.loader.hasModule(Outerlands.class)
+            || !scaleDistance
+            || isInnerPos(pos)
+        ) {
+            return 1.0F;
+        }
 
         float dist = Math.max(Math.abs(pos.getX()), Math.abs(pos.getZ())) - threshold;
         float max = getMaxDistance(world) - threshold;

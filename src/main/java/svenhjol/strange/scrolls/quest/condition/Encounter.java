@@ -318,7 +318,6 @@ public class Encounter implements IDelegate
                 bossInfo.setPercent(remainingHealth / (float)totalHealth);
                 bossInfo.addPlayer((ServerPlayerEntity) player);
 
-                // TODO weather should scale with difficulty
                 if (!world.getWorldInfo().isThundering() || !world.getWorldInfo().isRaining()) WorldHelper.stormyWeather(world);
                 if (world.rand.nextFloat() < 0.05F) PlayerHelper.doLightningNearPlayer(player);
             } else {
@@ -330,7 +329,7 @@ public class Encounter implements IDelegate
         if (!this.spawned && atLocation) {
             int mobsSpawned = 0;
             int effectDuration = 10000; // something silly so it doesn't run out
-            int effectAmplifier = 1; // TODO should scale with difficulty
+            int effectAmplifier = quest.getTier() - 1;
 
             for (ResourceLocation target : targets) {
                 Optional<EntityType<?>> type = EntityType.byKey(target.toString());
@@ -352,9 +351,7 @@ public class Encounter implements IDelegate
                         for (String effect : effects) {
                             Registry.EFFECTS.getValue(new ResourceLocation(effect)).ifPresent(value -> mob.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier)));
                         }
-
                         ((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, true));
-//                        world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F, false);
                     });
                     if (didSpawn) mobsSpawned++;
                 }

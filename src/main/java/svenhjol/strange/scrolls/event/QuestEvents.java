@@ -9,7 +9,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.handler.PacketHandler;
@@ -22,6 +22,9 @@ import svenhjol.strange.scrolls.quest.iface.IQuest.State;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+/**
+ * Handles server-side forge events related to quests.
+ */
 @SuppressWarnings("unused")
 public class QuestEvents
 {
@@ -99,6 +102,26 @@ public class QuestEvents
     }
 
     @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        final PlayerEntity player = event.getPlayer();
+
+        Quests.getCapability(player).readNBT(
+            player.getPersistentData()
+                .get(Quests.QUESTS_CAP_ID.toString()));
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        final PlayerEntity player = event.getPlayer();
+
+        player.getPersistentData().put(
+            Quests.QUESTS_CAP_ID.toString(),
+            Quests.getCapability(player).writeNBT());
+    }
+
+    @SubscribeEvent
     public void onPlayerDeath(PlayerEvent.Clone event)
     {
         if (!event.isWasDeath()) return;
@@ -106,6 +129,15 @@ public class QuestEvents
         IQuestsCapability newCap = Quests.getCapability(event.getPlayer());
         newCap.readNBT(oldCap.writeNBT());
 
+        PlayerEntity player = event.getPlayer();
+        if (player != null) {
+            respondToEvent(player, event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event)
+    {
         PlayerEntity player = event.getPlayer();
         if (player != null) {
             respondToEvent(player, event);
@@ -122,7 +154,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onItemCrafted(ItemCraftedEvent event)
+    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
     {
         PlayerEntity player = event.getPlayer();
         if (player != null) {

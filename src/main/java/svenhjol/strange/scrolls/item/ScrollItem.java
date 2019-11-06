@@ -63,7 +63,7 @@ public class ScrollItem extends MesonItem
                 }
 
                 if (!hasPopulatedQuest(stack)) {
-                    final IQuest q = Quests.generate(worldIn, getQuest(stack));
+                    final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), getQuest(stack));
                     q.generateId();
                     putQuest(stack, q);
                     stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));

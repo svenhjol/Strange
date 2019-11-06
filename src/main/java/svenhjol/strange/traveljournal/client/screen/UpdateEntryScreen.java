@@ -55,6 +55,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         renderButtons();
 
         super.render(mouseX, mouseY, partialTicks);
+        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update"), (width / 2), 28, TEXT_COLOR);
         nameField.render(mouseX, mouseY, partialTicks);
     }
 

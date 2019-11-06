@@ -13,6 +13,7 @@ import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,7 +95,7 @@ public class TotemOfExtracting extends MesonModule
             // check blacklist
             BlockState state = world.getBlockState(destPos);
             String srcName = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
-            String niceName = state.getBlock().getNameTextComponent().getString();
+            String niceName = new TranslationTextComponent(state.getBlock().getTranslationKey()).getUnformattedComponentText();
 
             if (blacklist.contains(srcName)) {
                 if (world.isRemote) {

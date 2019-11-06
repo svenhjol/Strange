@@ -1,21 +1,19 @@
 package svenhjol.strange.scrolls.quest.generator;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Generator;
-import svenhjol.strange.scrolls.quest.condition.Gather;
+import svenhjol.strange.scrolls.quest.condition.Mine;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Map;
 
-public class GatherGenerator extends BaseGenerator
+public class MineGenerator extends BaseGenerator
 {
-    public GatherGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public MineGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
     {
         super(world, pos, quest, definition);
     }
@@ -23,19 +21,16 @@ public class GatherGenerator extends BaseGenerator
     @Override
     public void generate()
     {
-        Map<String, String> def = definition.getGather();
+        Map<String, String> def = definition.getMine();
 
         for (String key : def.keySet()) {
-            ResourceLocation res = new ResourceLocation(key);
-            Item item = ForgeRegistries.ITEMS.getValue(res);
-            if (item == null) continue;
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
             count = multiplyDistance(count);
 
-            Condition<Gather> condition = Condition.factory(Gather.class, quest);
-            condition.getDelegate().setStack(new ItemStack(item)).setCount(count);
+            Condition<Mine> condition = Condition.factory(Mine.class, quest);
+            condition.getDelegate().setBlock(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key))).setCount(count);
             quest.getCriteria().addCondition(condition);
         }
     }

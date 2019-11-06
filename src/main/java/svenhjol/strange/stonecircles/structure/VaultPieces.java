@@ -192,7 +192,7 @@ public class VaultPieces
             } else if (data.equals("rune")) {
 
                 if (Strange.loader.hasModule(Runestones.class) && f < 0.75F) {
-                    state = Runestones.getRunestoneBlock(world, pos, rand);
+                    state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
                 }
 
             } else if (data.equals("ore")) {

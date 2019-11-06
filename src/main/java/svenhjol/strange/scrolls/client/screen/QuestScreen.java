@@ -4,10 +4,10 @@ import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.strange.scrolls.message.ServerScrollAction;
+import svenhjol.strange.scrolls.message.ServerQuestAction;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestScreen extends ScrollScreen implements IRenderable
@@ -31,7 +31,8 @@ public class QuestScreen extends ScrollScreen implements IRenderable
 
     private void quit()
     {
-        PacketHandler.sendToServer(new ServerScrollAction(ServerScrollAction.DECLINE, quest.getId(), Hand.MAIN_HAND));
+        Meson.debug("[CLIENT] calling server to decline quest", quest.getId());
+        PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.QUIT, quest.getId()));
         this.close();
     }
 }

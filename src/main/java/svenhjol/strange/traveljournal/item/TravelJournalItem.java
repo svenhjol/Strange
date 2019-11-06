@@ -43,7 +43,7 @@ public class TravelJournalItem extends MesonItem
             result = ActionResultType.PASS;
         } else {
             if (world.isRemote) {
-                TravelJournal.proxy.openTravelJournal(hand);
+                TravelJournal.client.openTravelJournal(hand);
             }
 
             result = ActionResultType.SUCCESS;

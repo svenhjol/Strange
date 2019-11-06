@@ -29,9 +29,9 @@ public class RewardItemGenerator extends BaseGenerator
         TOTEM_DISTANT_STONE_CIRCLE
     ));
 
-    public RewardItemGenerator(World world, IQuest quest, Generator.Definition definition)
+    public RewardItemGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
     {
-        super(world, quest, definition);
+        super(world, pos, quest, definition);
     }
 
     @Override
@@ -41,6 +41,7 @@ public class RewardItemGenerator extends BaseGenerator
 
         for (String key : def.keySet()) {
             ItemStack stack;
+            int count = Integer.parseInt(def.get(key));
 
             if (SPECIAL_ITEM_REWARDS.contains(key)) {
                 stack = getSpecialItemReward(key);
@@ -50,9 +51,8 @@ public class RewardItemGenerator extends BaseGenerator
                 Item item = ForgeRegistries.ITEMS.getValue(res);
                 if (item == null) continue;
                 stack = new ItemStack(item);
+                count = multiplyDistance(count);
             }
-
-            int count = definition.parseCount(def.get(key));
 
             Condition<RewardItem> condition = Condition.factory(RewardItem.class, quest);
             condition.getDelegate().setStack(stack).setCount(count);

@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.panel;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -8,10 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.condition.Craft;
-import svenhjol.strange.scrolls.quest.condition.Encounter;
-import svenhjol.strange.scrolls.quest.condition.Gather;
-import svenhjol.strange.scrolls.quest.condition.Hunt;
+import svenhjol.strange.scrolls.quest.condition.*;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
@@ -38,6 +36,10 @@ public class ActionsPanel extends BasePanel
 
             case Hunt.ID:
                 new HuntPanel(quest, mid, y, width);
+                break;
+
+            case Mine.ID:
+                new MinePanel(quest, mid, y, width);
                 break;
 
             default:
@@ -101,6 +103,37 @@ public class ActionsPanel extends BasePanel
                 // draw remaining count and item icon
                 blitItemIcon(stack, mid - 60, y - 5);
                 this.drawString(fonts, remaining + " " + stack.getDisplayName().getString(), mid - 36, y, primaryTextColor);
+
+                // show tick if complete
+                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
+            }
+        }
+    }
+
+    public static class MinePanel extends BasePanel
+    {
+        public MinePanel(IQuest quest, int mid, int y, int width)
+        {
+            super(quest, mid, width);
+            List<Condition<Mine>> toMine = quest.getCriteria().getConditions(Mine.class);
+            if (toMine.isEmpty()) return;
+
+            y += pad; // space above title
+
+            // draw title
+            drawCenteredTitle(I18n.format("gui.strange.quests.mine"), y);
+            y += 16; // space between title and item list
+
+            for (int i = 0; i < toMine.size(); i++) {
+                y += i * 16; // height of each line
+
+                Mine gather = toMine.get(i).getDelegate();
+                Block block = gather.getBlock();
+                int remaining = gather.getRemaining();
+
+                // draw remaining count and block name
+                blitItemIcon(new ItemStack(Items.IRON_PICKAXE), mid - 60, y - 5);
+                this.drawString(fonts, remaining + " " + block.getNameTextComponent().getString(), mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);

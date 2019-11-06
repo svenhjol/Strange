@@ -72,10 +72,10 @@ public class ClientTravelJournalAction implements IMesonMessage
                 Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
 
                 if (msg.action == ADD) {
-                    TravelJournal.proxy.handleAddEntry(msg.hand, entry);
+                    TravelJournal.client.handleAddEntry(msg.hand, entry);
                 }
                 if (msg.action == SCREENSHOT) {
-                    TravelJournal.proxy.handleScreenshot(msg.hand, entry);
+                    TravelJournal.client.handleScreenshot(msg.hand, entry);
                 }
             });
             ctx.get().setPacketHandled(true);

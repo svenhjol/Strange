@@ -1,0 +1,12 @@
+{
+  "tier": 5,
+  "title": "Fiddlesticks",
+  "description": "Master Chicken\nLine break?",
+  "xp": 500,
+  "hunt": {
+    "minecraft:chicken": "1"
+  },
+  "rewardItems": {
+    "TotemDistantStoneCircle": "1"
+  }
+}
