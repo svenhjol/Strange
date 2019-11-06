@@ -15,6 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,7 +34,6 @@ import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.SoundHelper;
-import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -247,7 +247,7 @@ public class Runestones extends MesonModule
                 UUID id = player.getUniqueID();
                 BlockPos pos = playerTeleport.get(id);
 
-                teleport(world, player, pos);
+                prepareTeleport(world, player, pos);
                 playerTeleport.remove(id);
             }
         }
@@ -279,6 +279,24 @@ public class Runestones extends MesonModule
     }
 
     @SubscribeEvent
+    public void onLogin(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        Runestones.getCapability(event.getPlayer()).readNBT(
+            event.getPlayer().getPersistentData()
+                .get(Runestones.RUNESTONES_CAP_ID.toString())
+        );
+    }
+
+    @SubscribeEvent
+    public void onLogout(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        event.getPlayer().getPersistentData().put(
+            Runestones.RUNESTONES_CAP_ID.toString(),
+            Runestones.getCapability(event.getPlayer()).writeNBT()
+        );
+    }
+
+    @SubscribeEvent
     public void onPlayerDeath(PlayerEvent.Clone event)
     {
         if (!event.isWasDeath()) return;
@@ -287,8 +305,11 @@ public class Runestones extends MesonModule
         newCap.readNBT(oldCap.writeNBT());
     }
 
-    private void teleport(World world, PlayerEntity player, BlockPos pos)
+    private void prepareTeleport(World world, PlayerEntity player, BlockPos pos)
     {
+        ServerWorld serverWorld = (ServerWorld)world;
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
@@ -298,11 +319,18 @@ public class Runestones extends MesonModule
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
-        int dim = WorldHelper.getDimensionId(world);
+        int dim = player.dimension.getId();
         if (dim != 0) {
+            boolean wasInvulnerable = player.isInvulnerable();
             PlayerHelper.changeDimension(player, 0);
+            serverWorld = serverPlayer.server.getWorld(DimensionType.OVERWORLD);
         }
 
+        teleport(serverWorld, pos, player, rand, rune);
+    }
+
+    private void teleport(World world, BlockPos pos, PlayerEntity player, Random rand, int rune)
+    {
         BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
         if (destPos == null) destPos = world.getSpawnPoint();
         BlockPos dest = addRandomOffset(destPos, rand, 8);
