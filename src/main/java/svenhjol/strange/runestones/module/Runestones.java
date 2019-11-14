@@ -35,7 +35,6 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.PlayerHelper;
-import svenhjol.meson.helper.SoundHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -367,6 +366,7 @@ public class Runestones extends MesonModule
     public static void effectActivate(BlockPos pos)
     {
         ClientWorld world = ClientHelper.getClientWorld();
+        PlayerEntity player = ClientHelper.getClientPlayer();
 
         double spread = 0.75D;
         for (int i = 0; i < 10; i++) {
@@ -375,7 +375,7 @@ public class Runestones extends MesonModule
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
         }
-        SoundHelper.playSoundAtPos(pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
+        world.playSound(player, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
     }
 
     @OnlyIn(Dist.CLIENT)
