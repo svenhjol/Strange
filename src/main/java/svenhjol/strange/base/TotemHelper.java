@@ -23,6 +23,8 @@ public class TotemHelper
 
     public static void destroy(PlayerEntity player, ItemStack totem)
     {
+        if (player.isSpectator() || player.isCreative()) return;
+
         totem.shrink(1);
 
         if (player.world.isRemote) effectDestroyTotem(player.getPosition());

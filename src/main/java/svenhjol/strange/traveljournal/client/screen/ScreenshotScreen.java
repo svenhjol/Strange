@@ -15,6 +15,7 @@ import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
+import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +40,10 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         super.init();
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
+
+        if (!hasScreenshot()) {
+            takeScreenshot(this.entry, hand);
+        }
     }
 
     @Override
@@ -115,6 +120,6 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
 
     private void back()
     {
-        mc.displayGuiScreen(new TravelJournalScreen(player, hand));
+        TravelJournal.client.returnAfterScreenshot(mc, entry, player, hand);
     }
 }

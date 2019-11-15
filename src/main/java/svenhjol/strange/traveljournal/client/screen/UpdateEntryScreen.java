@@ -2,13 +2,20 @@ package svenhjol.strange.traveljournal.client.screen;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.Hand;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
+import svenhjol.strange.traveljournal.module.TravelJournal;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class UpdateEntryScreen extends BaseTravelJournalScreen
 {
@@ -16,6 +23,10 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     protected String name;
     protected int color;
     protected Entry entry;
+    protected String message = "";
+    protected List<DyeColor> colors = Arrays.asList(
+        DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
+    );
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand)
     {
@@ -30,10 +41,11 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     protected void init()
     {
         super.init();
-        if (minecraft == null) return;
+        if (mc == null) return;
+        if (!mc.world.isRemote) return;
 
-        minecraft.keyboardListener.enableRepeatEvents(true);
-        nameField = new TextFieldWidget(font, (width / 2) - 50, 48, 103, 12, "NameField");
+        mc.keyboardListener.enableRepeatEvents(true);
+        nameField = new TextFieldWidget(font, (width / 2) - 50, 42, 103, 12, "NameField");
         nameField.setCanLoseFocus(false);
         nameField.changeFocus(true);
         nameField.setTextColor(-1);
@@ -50,20 +62,53 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
+        boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
+
+        int mid = this.width / 2;
+        int x = mid - 90;
+        int y = 20;
+        int colorsTopEdge = y + 46;
+        int colorsLeftEdge = mid - ((colors.size() * 21) / 2);
+
         renderBackground();
         renderBackgroundTexture();
         renderButtons();
 
-        super.render(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update"), (width / 2), 28, TEXT_COLOR);
+        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y + 8, this.color);
         nameField.render(mouseX, mouseY, partialTicks);
+
+        for (int i = 0; i < colors.size(); i++) {
+            final DyeColor col = colors.get(i);
+            this.addButton(new ImageButton(colorsLeftEdge + (i * 21), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+        }
+
+        if (entry.pos != null) {
+            this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), y + 76, TEXT_COLOR);
+        }
+
+        if (atEntryPosition || hasScreenshot()) {
+            String key = "gui.strange.travel_journal.show_screenshot";
+            if (atEntryPosition && !hasScreenshot()) key = "gui.strange.travel_journal.new_screenshot";
+            this.addButton(new Button((width / 2) - 60, y + 96, 120, 20, I18n.format(key), (button) -> this.screenshot()));
+        }
+
+        if (!this.message.isEmpty()) {
+            this.drawCenteredString(this.font, this.message, (width / 2), y + 135, WARN_COLOR);
+        }
+
+        super.render(mouseX, mouseY, partialTicks);
+    }
+
+    protected void setColor(DyeColor color)
+    {
+        this.color = color.getColorValue();
     }
 
     @Override
     public void removed()
     {
         super.removed();
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+        mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -76,26 +121,65 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     @Override
     protected void renderButtons()
     {
-        int y = (height / 4) + 160;
+        int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
+        int buttonX = -152;
 
-        this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.save"), (button) -> this.save()));
-        this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.cancel"), (button) -> this.cancel()));
+        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.save"), (button) -> this.save()));
+        buttonX += 105;
+
+        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.delete"), (button) -> this.delete()));
+        buttonX += 105;
+
+        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.cancel"), (button) -> this.back()));
     }
 
-    private void save()
+    private void saveProgress()
     {
         Entry updated = new Entry(this.entry);
         updated.name = this.name;
         updated.color = this.color;
+
+        TravelJournalItem.updateEntry(player.getHeldItem(hand), updated);
         PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.UPDATE, updated, hand));
+
+        this.entry = updated;
+    }
+
+    private void save()
+    {
+        this.saveProgress();
+        this.back();
+    }
+
+    private void back()
+    {
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
-    private void cancel()
+    private void delete()
     {
-        mc.displayGuiScreen(new TravelJournalScreen(player, hand));
+        if (hasShiftDown()) {
+            TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
+            PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
+            this.back();
+        } else {
+            this.message = I18n.format("gui.strange.travel_journal.hold_shift_to_delete");
+        }
+    }
+
+    private void screenshot()
+    {
+        this.saveProgress();
+        TravelJournal.client.updateAfterScreenshot = true;
+        mc.displayGuiScreen(new ScreenshotScreen(this.entry, player, hand));
+    }
+
+    private boolean hasScreenshot()
+    {
+        File file = ScreenshotScreen.getScreenshot(entry);
+        return file.exists();
     }
 
     private void responder(String str)

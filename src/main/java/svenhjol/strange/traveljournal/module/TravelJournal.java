@@ -20,7 +20,7 @@ public class TravelJournal extends MesonModule
     public static TravelJournalClient client;
 
     @Config(name = "Maximum entries", description = "Maximum number of entries a single travel journal can hold.")
-    public static int maxEntries = 15;
+    public static int maxEntries = 30;
 
     @Override
     public void init()

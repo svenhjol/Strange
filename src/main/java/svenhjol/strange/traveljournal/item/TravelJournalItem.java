@@ -45,7 +45,6 @@ public class TravelJournalItem extends MesonItem
             if (world.isRemote) {
                 TravelJournal.client.openTravelJournal(hand);
             }
-
             result = ActionResultType.SUCCESS;
         }
 
@@ -62,18 +61,18 @@ public class TravelJournalItem extends MesonItem
         ItemNBTHelper.setInt(stack, PAGE, page);
     }
 
-    public static CompoundNBT addEntry(ItemStack stack, Entry entry)
+    public static void addEntry(ItemStack stack, Entry entry)
     {
         CompoundNBT tag = entry.toNBT();
         CompoundNBT entries = ItemNBTHelper.getCompound(stack, ENTRIES);
 
-        entries.put(entry.id, tag);
-
-        ItemNBTHelper.setCompound(stack, ENTRIES, entries);
-        return entries;
+        if (entries.keySet().size() < TravelJournal.maxEntries) {
+            entries.put(entry.id, tag);
+            ItemNBTHelper.setCompound(stack, ENTRIES, entries);
+        }
     }
 
-    public static CompoundNBT updateEntry(ItemStack stack, Entry entry)
+    public static void updateEntry(ItemStack stack, Entry entry)
     {
         CompoundNBT entries = getEntries(stack);
         if (entries.get(entry.id) != null) {
@@ -84,17 +83,15 @@ public class TravelJournalItem extends MesonItem
                 ItemNBTHelper.setCompound(stack, ENTRIES, entries);
             }
         }
-        return entries;
     }
 
-    public static CompoundNBT deleteEntry(ItemStack stack, Entry entry)
+    public static void deleteEntry(ItemStack stack, Entry entry)
     {
         CompoundNBT entries = getEntries(stack);
         if (entries.get(entry.id) != null) {
             entries.remove(entry.id);
             ItemNBTHelper.setCompound(stack, ENTRIES, entries);
         }
-        return entries;
     }
 
     @Nullable
@@ -109,7 +106,6 @@ public class TravelJournalItem extends MesonItem
 
     public static CompoundNBT getEntries(ItemStack stack)
     {
-        CompoundNBT entries = ItemNBTHelper.getCompound(stack, ENTRIES);
-        return entries;
+        return ItemNBTHelper.getCompound(stack, ENTRIES);
     }
 }

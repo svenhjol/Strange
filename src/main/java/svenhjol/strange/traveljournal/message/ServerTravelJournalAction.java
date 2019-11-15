@@ -92,7 +92,6 @@ public class ServerTravelJournalAction implements IMesonMessage
                 if (player == null) return;
 
                 ItemStack held = player.getHeldItem(msg.hand);
-                CompoundNBT entries = null;
 
                 if (msg.name == null || msg.name.isEmpty()) {
                     msg.name = new TranslationTextComponent("gui.strange.travel_journal.new_entry").getUnformattedComponentText();
@@ -103,16 +102,15 @@ public class ServerTravelJournalAction implements IMesonMessage
 
                 if (msg.action == ADD) {
 
-                    entries = TravelJournalItem.addEntry(held, entry);
-                    updateAfterAdd(entry, msg.hand, player);
+                    TravelJournalItem.addEntry(held, entry);
 
                 } else if (msg.action == UPDATE) {
 
-                    entries = TravelJournalItem.updateEntry(held, entry);
+                    TravelJournalItem.updateEntry(held, entry);
 
                 } else if (msg.action == DELETE) {
 
-                    entries = TravelJournalItem.deleteEntry(held, entry);
+                    TravelJournalItem.deleteEntry(held, entry);
 
                 } else if (msg.action == SCREENSHOT) {
 
@@ -131,22 +129,8 @@ public class ServerTravelJournalAction implements IMesonMessage
                         }
                     }
                 }
-
-                if (entries != null) {
-                    updateClientEntries(entries, player);
-                }
             });
             ctx.get().setPacketHandled(true);
-        }
-
-        private static void updateClientEntries(CompoundNBT entries, PlayerEntity player)
-        {
-            PacketHandler.sendTo(new ClientTravelJournalEntries(entries), (ServerPlayerEntity)player);
-        }
-
-        private static void updateAfterAdd(Entry entry, Hand hand, PlayerEntity player)
-        {
-            PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.ADD, entry, hand), (ServerPlayerEntity)player);
         }
 
         private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)

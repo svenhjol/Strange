@@ -11,6 +11,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
@@ -19,8 +21,8 @@ import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
-import svenhjol.strange.traveljournal.message.ClientTravelJournalEntries;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
+import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.TreeMap;
 
 public class TravelJournalScreen extends BaseTravelJournalScreen
 {
-    public static int PER_PAGE = 3;
+    public static int PER_PAGE = 5;
 
     protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
@@ -38,14 +40,13 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     protected CompoundNBT journalEntries = new CompoundNBT();
     protected boolean hasTotem = false;
     protected int page;
+    protected String message = "";
 
     public TravelJournalScreen(PlayerEntity player, Hand hand)
     {
         super(I18n.format("item.strange.travel_journal"), player, hand);
         this.page = TravelJournalItem.getPage(stack);
         this.journalEntries = TravelJournalItem.getEntries(stack);
-
-        startUpdateCheck();
     }
 
     @Override
@@ -85,23 +86,24 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
+
         renderBackground();
         renderBackgroundTexture();
-        checkServerUpdates(mc -> journalEntries = ClientTravelJournalEntries.Handler.entries);
 
         int mid = this.width / 2;
-        int x = mid - 80;
+        int x = mid - 90;
         int y = 20;
         int p = page - 1;
-        int buttonSpacing = 21;
-        int titleSpacing = 6;
-        int rowHeight = 39;
+        int buttonSpacing = 18;
+        int titleSpacing = 11;
+        int rowHeight = 20;
         int titleX = 2;
         int titleY = 15;
         int textX = 2;
         int textY = 10;
         int buttonX = 2;
-        int buttonY = 20;
+        int buttonY = 4;
+        int rightEdge = mid + 94;
 
         this.font.drawString(I18n.format("gui.strange.travel_journal.title", ids.size()), x + titleX, titleY, TEXT_COLOR);
         y += titleSpacing;
@@ -120,33 +122,29 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         }
 
         for (String id : sublist) {
-            int buttonOffsetX = buttonX;
+            int buttonOffsetX = rightEdge - 18;
             Entry entry = sortedEntries.get(id);
-
             boolean hasScreenshot = hasScreenshots.contains(id);
-            boolean atPosition = entry.pos != null && WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE;
+            boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
 
             // draw row
-            this.font.drawString(entry.name, x + textX, y + textY, entry.color);
+            String bold = atEntryPosition ? "§l" : "";
+            this.font.drawString(bold + entry.name, x + textX, y + textY, entry.color);
 
             // update button
-            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
-            buttonOffsetX += buttonSpacing;
-
-            // delete button
-            this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 60, 0, 19, BUTTONS, (r) -> delete(entry)));
-            buttonOffsetX += buttonSpacing;
+            this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
+            buttonOffsetX -= buttonSpacing;
 
             // screenshot button
-            if (hasScreenshot || atPosition) {
-                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, atPosition ? 100 : 80, 0, 19, BUTTONS, (r) -> screenshot(entry)));
-                buttonOffsetX += buttonSpacing;
+            if (hasScreenshot) {
+                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 80, 0, 19, BUTTONS, (r) -> screenshot(entry)));
+                buttonOffsetX -= buttonSpacing;
             }
 
             // teleport button
-            if (hasTotem && entry.pos != null) {
-                this.addButton(new ImageButton(x + buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(entry)));
-                buttonOffsetX += buttonSpacing;
+            if (!atEntryPosition && hasTotem && entry.pos != null) {
+                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(entry)));
+                buttonOffsetX -= buttonSpacing;
             }
 
             y += rowHeight;
@@ -168,13 +166,17 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             }
         }
 
+        if (!this.message.isEmpty()) {
+            this.drawCenteredString(this.font, this.message, x + 10, 147, WARN_COLOR);
+        }
+
         super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
     protected void renderButtons()
     {
-        int y = (height / 4) + 160;
+        int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
 
@@ -184,27 +186,33 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void add()
     {
+        ItemStack held = player.getHeldItem(hand);
+        CompoundNBT entries = TravelJournalItem.getEntries(held);
+        if (entries.keySet().size() >= TravelJournal.maxEntries) {
+            this.message = I18n.format("gui.strange.travel_journal.journal_full");
+            return;
+        }
+
+        BlockPos playerPos = player.getPosition();
+        Biome biome = player.world.getBiome(playerPos);
+        String biomeName = biome.getDisplayName().getUnformattedComponentText();
+
         Entry entry = new Entry(
             Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(8),
-            I18n.format("gui.strange.travel_journal.new_entry"),
+            I18n.format("gui.strange.travel_journal.new_biome_entry", biomeName),
             player.getPosition(),
             WorldHelper.getDimensionId(player.world),
             0
         );
 
+        TravelJournalItem.addEntry(held, entry);
         PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.ADD, entry, hand));
-        startUpdateCheck();
+        mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
     private void update(Entry entry)
     {
         mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
-    }
-
-    private void delete(Entry entry)
-    {
-        startUpdateCheck();
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, entry, hand));
     }
 
     private void teleport(Entry entry)
@@ -215,6 +223,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void screenshot(Entry entry)
     {
+        TravelJournal.client.updateAfterScreenshot = false;
         mc.displayGuiScreen(new ScreenshotScreen(entry, player, hand));
     }
 
