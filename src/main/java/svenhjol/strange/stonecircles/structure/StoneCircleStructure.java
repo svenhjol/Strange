@@ -148,18 +148,17 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 config.columnMinHeight = 3;
                 config.columnVariation = 4;
                 config.blocks = new ArrayList<>(Arrays.asList(
-                    Blocks.NETHER_BRICKS.getDefaultState(),
-                    Blocks.RED_NETHER_BRICKS.getDefaultState()
+                    Blocks.NETHER_BRICKS.getDefaultState()
                 ));
 
-                for (int i = 20; i < 100; i++) {
+                for (int i = 100; i > 20; i--) {
                     for (int ii = 1; ii < TRIES; ii++) {
                         pos = new MutableBlockPos(this.boundingBox.minX, i, this.boundingBox.minZ);
                         surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                         surfacePosDown = surfacePos.down();
 
                         if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.NETHERRACK)) {
-                            return generateCircle(world, pos, rand, config);
+                            return generateCircle(world, new MutableBlockPos(surfacePos), rand, config);
                         }
                     }
                 }
@@ -181,7 +180,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     surfacePosDown = surfacePos.down();
 
                     if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
-                        return generateCircle(world, pos, rand, config);
+                        return generateCircle(world, new MutableBlockPos(surfacePos), rand, config);
                     }
                 }
 
@@ -205,7 +204,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
                         && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
                     ) {
-                        return generateCircle(world, pos, rand, config);
+                        return generateCircle(world, new MutableBlockPos(surfacePos), rand, config);
                     }
                 }
             }
@@ -286,8 +285,8 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
                     if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
                         BlockState chest = Blocks.CHEST.getDefaultState();
-                        world.setBlockState(findPos, chest, 2);
-                        LockableLootTileEntity.setLootTable(world, rand, findPos, StrangeLoot.STONE_CIRCLE_TREASURE);
+                        world.setBlockState(findPosUp, chest, 2);
+                        LockableLootTileEntity.setLootTable(world, rand, findPosUp, StrangeLoot.STONE_CIRCLE_TREASURE);
                         Meson.debug("Generated with chest " + pos);
                         break;
                     }
@@ -296,6 +295,10 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
             if (generatedWithRune) {
                 Meson.debug("Generated with rune " + pos);
+            }
+
+            if (!generated) {
+                Meson.debug("Did not generate");
             }
 
             return generated;

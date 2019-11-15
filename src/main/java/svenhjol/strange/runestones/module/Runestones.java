@@ -76,11 +76,12 @@ public class Runestones extends MesonModule
         CapabilityManager.INSTANCE.register(IRunestonesCapability.class, new RunestonesStorage(), RunestonesCapability::new);
 
         destsOrdered.add(new Destination("spawn_point", false, 1.0F));
-        destsOrdered.add(new Destination("spawn_point", false, 1.0F));
 
         if (Strange.loader.hasModule(StoneCircles.class)) {
+            destsOrdered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
             destsOrdered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
         } else {
+            destsOrdered.add(new Destination("spawn_point", false, 1.0F));
             destsOrdered.add(new Destination("spawn_point", false, 0.8F));
         }
 
