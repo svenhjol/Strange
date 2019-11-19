@@ -62,6 +62,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
+        TravelJournal.client.closeIfNotHolding(mc, player, hand);
         boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
 
         int mid = this.width / 2;

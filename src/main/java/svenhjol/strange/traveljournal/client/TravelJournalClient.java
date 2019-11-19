@@ -64,5 +64,12 @@ public class TravelJournalClient
     {
         return entry.pos != null && WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE;
     }
+
+    public void closeIfNotHolding(Minecraft mc, PlayerEntity player, Hand hand)
+    {
+        if (!(player.getHeldItem(hand).getItem() instanceof TravelJournalItem)) {
+            mc.displayGuiScreen(null);
+        }
+    }
 }
 

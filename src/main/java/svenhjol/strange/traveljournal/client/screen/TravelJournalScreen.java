@@ -86,7 +86,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
-
+        TravelJournal.client.closeIfNotHolding(mc, player, hand);
         renderBackground();
         renderBackgroundTexture();
 
@@ -105,7 +105,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         int buttonY = 4;
         int rightEdge = mid + 94;
 
-        this.font.drawString(I18n.format("gui.strange.travel_journal.title", ids.size()), x + titleX, titleY, TEXT_COLOR);
+        drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.title", ids.size()), mid, titleY, TEXT_COLOR);
         y += titleSpacing;
 
         List<String> sublist;
@@ -128,7 +128,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
 
             // draw row
-            String bold = atEntryPosition ? "§l" : "";
+            String bold = atEntryPosition ? "§o" : "";
             this.font.drawString(bold + entry.name, x + textX, y + textY, entry.color);
 
             // update button
