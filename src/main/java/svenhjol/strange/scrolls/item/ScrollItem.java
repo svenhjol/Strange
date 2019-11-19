@@ -52,11 +52,8 @@ public class ScrollItem extends MesonItem
 
                 // if not populated yet, generate a quest and set the stack name
                 if (!hasTag(stack)) {
-
                     // there isn't a quest, make one
-                    int tier = getTierFromScroll(stack);
-                    if (tier < 1) tier = 1;
-
+                    int tier = Math.min(getTierFromScroll(stack), 1);
                     quest = new Quest();
                     quest.setTier(tier);
                     putQuest(stack, quest);
@@ -64,7 +61,6 @@ public class ScrollItem extends MesonItem
 
                 if (!hasPopulatedQuest(stack)) {
                     final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), getQuest(stack));
-                    q.generateId();
                     putQuest(stack, q);
                     stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
 

@@ -10,6 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A Quest has an associated Criteria in a 1:1 relationship.
+ *
+ * Criteria consists of many Conditions.  Conditions may be filtered by
+ * type (Limit, Action or Reward).
+ *
+ * Criteria uses the completion status of each condition to determine
+ * the overall completion state of the quest.
+ */
 @SuppressWarnings("UnusedReturnValue")
 public class Criteria
 {

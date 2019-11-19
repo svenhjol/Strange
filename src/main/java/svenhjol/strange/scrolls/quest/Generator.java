@@ -22,19 +22,19 @@ public class Generator
     {
         if (quest == null) quest = new Quest();
 
+        quest.generateId();
         quest.setTitle(definition.getTitle());
         quest.setDescription(definition.getDescription());
 
         // initialise generators
         List<Class<?>> generators = new ArrayList<>(Arrays.asList(
+            TimeGenerator.class,
             EncounterGenerator.class,
             GatherGenerator.class,
             CraftGenerator.class,
             HuntGenerator.class,
             MineGenerator.class,
-            RewardItemGenerator.class,
-            TimeGenerator.class,
-            XPGenerator.class
+            RewardGenerator.class
         ));
 
         for (Class<?> clazz : generators) {
@@ -66,15 +66,13 @@ public class Generator
         public int tier;
         public String title;
         public String description;
-        public Map<String, Map<String, String>> encounter = new HashMap<>();
+        public int timeLimit; // in minutes
         public Map<String, String> gather = new HashMap<>();
         public Map<String, String> craft = new HashMap<>();
         public Map<String, String> hunt = new HashMap<>();
         public Map<String, String> mine = new HashMap<>();
-        public Map<String, String> rewardItems = new HashMap<>();
-        public Map<String, String> rewardConfig = new HashMap<>();
-        public int xp;
-        public int timeLimit; // in minutes
+        public Map<String, Map<String, String>> encounter = new HashMap<>();
+        public Map<String, Map<String, String>> rewards = new HashMap<>();
 
         public int getTier()
         {
@@ -89,11 +87,6 @@ public class Generator
         public String getDescription()
         {
             return description == null ? "" : description;
-        }
-
-        public Map<String, Map<String, String>> getEncounter()
-        {
-            return encounter == null ? new HashMap<>() : encounter;
         }
 
         public Map<String, String> getGather()
@@ -116,14 +109,14 @@ public class Generator
             return mine == null ? new HashMap<>() : mine;
         }
 
-        public Map<String, String> getRewardItems()
+        public Map<String, Map<String, String>> getEncounter()
         {
-            return rewardItems == null ? new HashMap<>() : rewardItems;
+            return encounter == null ? new HashMap<>() : encounter;
         }
 
-        public Map<String, String> getRewardConfig()
+        public Map<String, Map<String, String>> getRewards()
         {
-            return rewardConfig == null ? new HashMap<>() : rewardConfig;
+            return rewards == null ? new HashMap<>() : rewards;
         }
 
         public static Definition deserialize(IResource resource)

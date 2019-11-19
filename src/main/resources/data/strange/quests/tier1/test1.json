@@ -1,0 +1,16 @@
+{
+  "title": "Test Quest 1",
+  "description": "Blah blah things",
+  "timeLimit": 10,
+  "gather": {
+    "minecraft:dirt": "1"
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": "10"
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

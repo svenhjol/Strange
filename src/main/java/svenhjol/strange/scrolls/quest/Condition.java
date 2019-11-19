@@ -5,6 +5,17 @@ import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+/**
+ * A Condition belongs to a Quest Criteria.
+ *
+ * A quest can have multiple conditions, each affecting the quest
+ * completion criteria, limitations and rewards.
+ *
+ * Conditions are generated for a quest using the factory method.
+ *
+ * Event processing is deferred to a Delegate which is attached
+ * by the factory method.
+ */
 public class Condition<T extends IDelegate>
 {
     private static final String TYPE = "type";

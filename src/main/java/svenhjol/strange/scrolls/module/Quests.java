@@ -73,6 +73,7 @@ public class Quests extends MesonModule
                     Definition definition = Definition.deserialize(resource);
                     definition.tier = tier;
                     Quests.available.get(tier).add(definition);
+                    Meson.debug("Loaded quest " + definition.getTitle() + " for tier " + tier);
                 }
             }
         } catch (Exception e) {
