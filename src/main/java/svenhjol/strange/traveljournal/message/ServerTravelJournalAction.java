@@ -135,7 +135,7 @@ public class ServerTravelJournalAction implements IMesonMessage
 
         private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)
         {
-            PlayerQueueHandler.add(player.world.getGameTime(), player, (p) -> {
+            PlayerQueueHandler.add(player.world.getGameTime() + 20, player, (p) -> {
                 PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
             });
         }
