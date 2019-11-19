@@ -30,7 +30,7 @@
   "gui.strange.travel_journal.update": "Change %s",
   "gui.strange.travel_journal.page": "Page %s",
   "gui.strange.travel_journal.entry_location": "§7X §8%s, §7Z §8%s, §7Dimension §8%s",
-  "gui.strange.travel_journal.hold_shift_to_delete": "Hold shift to confirm delete.",
+  "gui.strange.travel_journal.hold_shift_to_delete": "Hold shift and click delete.",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
 
 
