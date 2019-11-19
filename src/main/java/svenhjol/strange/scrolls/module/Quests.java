@@ -71,6 +71,7 @@ public class Quests extends MesonModule
                 for (ResourceLocation res : resources) {
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
+                    definition.tier = tier;
                     Quests.available.get(tier).add(definition);
                 }
             }

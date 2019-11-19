@@ -22,7 +22,6 @@ public class Generator
     {
         if (quest == null) quest = new Quest();
 
-        quest.setTier(definition.getTier());
         quest.setTitle(definition.getTitle());
         quest.setDescription(definition.getDescription());
 
