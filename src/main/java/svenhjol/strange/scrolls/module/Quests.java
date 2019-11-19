@@ -6,6 +6,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,6 +34,7 @@ import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
@@ -115,15 +117,19 @@ public class Quests extends MesonModule
         Quests.getCapability(player).updateCurrentQuests(player);
     }
 
-    public static void playActionCompleteSound(PlayerEntity player)
+    public static void effectCompleted(PlayerEntity player, @Nullable ITextComponent message)
     {
         PlayerEntity p = player.world.isRemote ? player : null;
-        player.world.playSound(p, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+        if (message != null) {
+            player.sendStatusMessage(message, true);
+        }
     }
 
-    public static void playActionCountSound(PlayerEntity player)
+    public static void effectCounted(PlayerEntity player)
     {
         PlayerEntity p = player.world.isRemote ? player : null;
-        player.world.playSound(p, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 }

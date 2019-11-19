@@ -62,15 +62,18 @@ public class Craft implements IDelegate
                 // set the count to the remainder
                 crafted.setCount(count - remaining);
                 count = remaining;
+            } else {
+                // cancel the event, don't pick up any items
+                craftedEvent.setResult(Event.Result.DENY);
+                craftedEvent.setCanceled(true);
             }
 
             this.crafted += count;
 
             if (isSatisfied()) {
-                Quests.playActionCompleteSound(player);
-                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.crafted_all"), true);
+                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.crafted_all"));
             } else {
-                Quests.playActionCountSound(player);
+                Quests.effectCounted(player);
             }
 
             return true;

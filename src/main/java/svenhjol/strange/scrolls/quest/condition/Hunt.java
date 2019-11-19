@@ -66,10 +66,9 @@ public class Hunt implements IDelegate
             this.killed++;
 
             if (isSatisfied()) {
-                Quests.playActionCompleteSound(player);
-                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.hunted_all"), true);
+                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
             } else {
-                Quests.playActionCountSound(player);
+                Quests.effectCounted(player);
             }
 
             return true;
