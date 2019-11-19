@@ -63,11 +63,6 @@ public class Gather implements IDelegate
                 // set the count to the remainder
                 pickedUp.setCount(count - remaining);
                 count = remaining;
-            } else {
-                // cancel the event, don't pick up any items
-                pickupEvent.getItem().remove();
-                pickupEvent.setResult(Event.Result.DENY);
-                pickupEvent.setCanceled(true);
             }
 
             collected += count;
