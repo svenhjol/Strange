@@ -52,6 +52,8 @@ public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
     public static final String ANONYMOUS = "3-1-4-1-5";
+    public static final int[] DEFAULT_XP = new int[]{0, 10, 70, 150, 250};
+    public static final int[] QUEST_XP = new int[]{2, 11, 18, 27, 40};
     public static UUID ANY_SELLER = UUID.fromString(Scrollkeepers.ANONYMOUS);
     public static VillagerProfession profession;
     public static int interestRange = 16;
@@ -138,7 +140,7 @@ public class Scrollkeepers extends MesonModule
         if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(SCROLLKEEPER)) return;
 
         // add tiered scrolls for each villager trade level
-        for (int tier = 1; tier < Scrolls.MAX_TIERS; tier++) {
+        for (int tier = 1; tier <= Scrolls.MAX_TIERS; tier++) {
             for (int j = 0; j < 3; j++) {
                 trades.get(tier).add(new ScrollForEmeralds(tier));
             }
@@ -195,8 +197,12 @@ public class Scrollkeepers extends MesonModule
                 highestTier = Math.max(highestTier, questTier);
 
                 if (questTier >= villagerLevel) {
-                    int newXp = villagerXp + (questTier * (3 + questTier));
+                    int newXp = villagerXp + QUEST_XP[questTier-1];
+                    villager.setCustomer(null);
                     villager.setXp(newXp);
+                    if (villager.canLevelUp()) {
+                        villager.levelUp();
+                    }
                 }
                 MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
@@ -232,7 +238,7 @@ public class Scrollkeepers extends MesonModule
 
             ScrollItem.putTag(out, quest.toNBT());
             out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier_" + tier));
-            return new MerchantOffer(in1, out, 8, 0, 0.2F);
+            return new MerchantOffer(in1, out, 8, 0, 0.0F);
         }
     }
 }
