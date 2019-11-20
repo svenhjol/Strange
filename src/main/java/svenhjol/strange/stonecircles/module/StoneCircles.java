@@ -1,5 +1,6 @@
 package svenhjol.strange.stonecircles.module;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -8,13 +9,18 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import svenhjol.charm.tweaks.client.AmbientMusicClient;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.BiomeHelper;
+import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.stonecircles.structure.StoneCircleConfig;
 import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
 import svenhjol.strange.stonecircles.structure.VaultStructure;
@@ -67,7 +73,8 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-        RegistryHandler.registerStructure(structure, ID);
+//        RegistryHandler.registerStructure(structure, ID);
+        RegistryHandler.registerFeature(structure, new ResourceLocation("stone_circle"));
         RegistryHandler.registerStructurePiece(StoneCircleStructure.STONE_CIRCLE_PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
         RegistryHandler.registerStructurePiece(VaultStructure.VAULT_PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
@@ -84,6 +91,31 @@ public class StoneCircles extends MesonModule
 
         validBiomes.forEach(biome -> {
             biome.addStructure(structure, new StoneCircleConfig((float) stoneCircleChance));
+        });
+
+//        Advancement advancement2 = Advancement.Builder
+//            .builder()
+//            .withDisplay(Runestones.block,
+//                new TranslationTextComponent("advancements.strange.stonecircles.find.title"),
+//                new TranslationTextComponent("advancements.strange.stonecircles.find.description"),
+//                null,
+//                FrameType.TASK,
+//                true,
+//                true,
+//                false)
+//            .withCriterion("fortress",
+//                PositionTrigger.Instance.forLocation(
+//                    LocationPredicate.forFeature(StoneCircles.structure)))
+//            .r
+
+    }
+
+    @Override
+    public void setupClient(FMLClientSetupEvent event)
+    {
+        new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_THARNA, 1200, 3600, mc -> {
+            PlayerEntity player = ClientHelper.getClientPlayer();
+            return Outerlands.isOuterPos(player.getPosition()) && player.world.rand.nextFloat() < 0.25F;
         });
     }
 }
