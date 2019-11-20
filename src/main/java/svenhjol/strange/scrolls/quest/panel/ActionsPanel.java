@@ -42,6 +42,10 @@ public class ActionsPanel extends BasePanel
                 new MinePanel(quest, mid, y, width);
                 break;
 
+            case Locate.ID:
+                new LocatePanel(quest, mid, y, width);
+                break;
+
             default:
                 // shrug
                 break;
@@ -127,9 +131,9 @@ public class ActionsPanel extends BasePanel
             for (int i = 0; i < toMine.size(); i++) {
                 y += i * 16; // height of each line
 
-                Mine gather = toMine.get(i).getDelegate();
-                Block block = gather.getBlock();
-                int remaining = gather.getRemaining();
+                Mine mine = toMine.get(i).getDelegate();
+                Block block = mine.getBlock();
+                int remaining = mine.getRemaining();
 
                 // draw remaining count and block name
                 blitItemIcon(new ItemStack(Items.IRON_PICKAXE), mid - 60, y - 5);
@@ -201,6 +205,36 @@ public class ActionsPanel extends BasePanel
 
                 // show tick if complete
                 if (encounter.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
+            }
+        }
+    }
+
+    public static class LocatePanel extends BasePanel
+    {
+        public LocatePanel(IQuest quest, int mid, int y, int width)
+        {
+            super(quest, mid, width);
+            List<Condition<Locate>> toLocate = quest.getCriteria().getConditions(Locate.class);
+            if (toLocate.isEmpty()) return;
+
+            y += pad; // space above title
+
+            // draw title
+            drawCenteredTitle(I18n.format("gui.strange.quests.locate"), y);
+            y += 16; // space between title and item list
+
+            for (int i = 0; i < toLocate.size(); i++) {
+                y += i * 16; // height of each line
+
+                Locate locate = toLocate.get(i).getDelegate();
+                ItemStack stack = locate.getStack();
+
+                // draw remaining count and item icon
+                blitItemIcon(stack, mid - 60, y - 5);
+                this.drawString(fonts, stack.getDisplayName().getString(), mid - 36, y, primaryTextColor);
+
+                // show tick if complete
+                if (locate.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
             }
         }
     }
