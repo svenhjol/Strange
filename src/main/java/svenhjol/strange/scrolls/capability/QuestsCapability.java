@@ -24,7 +24,7 @@ public class QuestsCapability implements IQuestsCapability
     public void acceptQuest(PlayerEntity player, IQuest quest)
     {
         if (currentQuests.stream().noneMatch(q -> q.getId().equals(quest.getId()))
-            && currentQuests.size() <= Quests.max
+            && currentQuests.size() <= Quests.maxQuests
         ) {
             currentQuests.add(quest);
             updateCurrentQuests(player);
