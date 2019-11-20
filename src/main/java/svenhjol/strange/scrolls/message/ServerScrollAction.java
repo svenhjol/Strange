@@ -4,6 +4,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.handler.PacketHandler;
@@ -72,9 +73,13 @@ public class ServerScrollAction implements IMesonMessage
                         break;
 
                     case ACCEPT:
-                        quest = ScrollItem.getQuest(held);
-                        shrinkStack(held);
-                        MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest));
+                        if (Quests.getCurrent(player).size() < Quests.maxQuests) {
+                            quest = ScrollItem.getQuest(held);
+                            MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest));
+                            shrinkStack(held);
+                        } else {
+                            player.sendMessage(new TranslationTextComponent("gui.strange.quests.too_many_quests"));
+                        }
                         break;
 
                     case DECLINE:
