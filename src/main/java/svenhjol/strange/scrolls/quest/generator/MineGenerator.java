@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Mine;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class MineGenerator extends BaseGenerator
 {
-    public MineGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public MineGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
         super(world, pos, quest, definition);
     }

@@ -46,8 +46,9 @@ public class Reward implements IDelegate
             for (ItemStack stack : items.keySet()) {
                 stack.setCount(items.get(stack));
                 player.addItemStackToInventory(stack);
-                return true;
             }
+
+            return true;
         }
         return false;
     }
@@ -82,6 +83,7 @@ public class Reward implements IDelegate
                 String sindex = Integer.toString(index);
                 itemDataTag.put(sindex, stack.serializeNBT());
                 itemCountTag.putInt(sindex, items.get(stack));
+                index++;
             }
         }
 

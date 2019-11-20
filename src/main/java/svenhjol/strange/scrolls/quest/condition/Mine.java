@@ -2,15 +2,18 @@ package svenhjol.strange.scrolls.quest.condition;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.ForgeRegistries;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.base.QuestHelper;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -49,48 +52,16 @@ public class Mine implements IDelegate
         if (isSatisfied()) return false;
         if (mined >= count) return false;
 
-        if (event instanceof HarvestDropsEvent) {
-            HarvestDropsEvent blockEvent = (HarvestDropsEvent)event;
-            BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
-            Block block = state.getBlock();
-            ResourceLocation blockRes = block.getRegistryName();
-
-            if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
-
-            PlayerEntity player = blockEvent.getHarvester();
-            if (player == null) return false;
-
-            int count = 1;
-            int remaining = getRemaining();
-
-            if (count > remaining || remaining - 1 == 0) {
-                // set the count to the remainder
-                count = remaining;
-            } else {
-                blockEvent.setDropChance(0.0F);
-            }
-
-            mined += count;
-
-            if (isSatisfied()) {
-                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.mined_all"));
-            } else {
-                Quests.effectCounted(player);
-            }
-
-            return true;
-        }
-
-//        if (event instanceof BreakEvent) {
-//            BreakEvent blockEvent = (BreakEvent)event;
+//        if (event instanceof HarvestDropsEvent) {
+//            HarvestDropsEvent blockEvent = (HarvestDropsEvent)event;
 //            BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
 //            Block block = state.getBlock();
 //            ResourceLocation blockRes = block.getRegistryName();
 //
 //            if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
 //
-//            PlayerEntity player = blockEvent.getPlayer();
-//            World world = blockEvent.getPlayer().world;
+//            PlayerEntity player = blockEvent.getHarvester();
+//            if (player == null) return false;
 //
 //            int count = 1;
 //            int remaining = getRemaining();
@@ -98,19 +69,54 @@ public class Mine implements IDelegate
 //            if (count > remaining || remaining - 1 == 0) {
 //                // set the count to the remainder
 //                count = remaining;
+//            } else {
+//                blockEvent.setDropChance(0.0F);
 //            }
 //
 //            mined += count;
 //
 //            if (isSatisfied()) {
-//                Quests.effectCompleted(player);
-//                player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.mined_all"), true);
+//                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.mined_all"));
 //            } else {
 //                Quests.effectCounted(player);
 //            }
 //
 //            return true;
 //        }
+
+        if (event instanceof BreakEvent) {
+            BreakEvent blockEvent = (BreakEvent)event;
+            BlockPos blockPos = blockEvent.getPos();
+            BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
+            Block block = state.getBlock();
+            ResourceLocation blockRes = block.getRegistryName();
+
+            if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
+
+            PlayerEntity player = blockEvent.getPlayer();
+            World world = (World)blockEvent.getWorld();
+
+            int count = 1;
+            int remaining = getRemaining();
+
+            if (count > remaining || remaining - 1 == 0) {
+                // set the count to the remainder
+                count = remaining;
+            }
+
+            blockEvent.setCanceled(true);
+            world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 2);
+
+            mined += count;
+
+            if (isSatisfied()) {
+                QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.mined_all"));
+            } else {
+                QuestHelper.effectCounted(player);
+            }
+
+            return true;
+        }
 
         return false;
     }

@@ -4,7 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Hunt;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class HuntGenerator extends BaseGenerator
 {
-    public HuntGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public HuntGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
         super(world, pos, quest, definition);
     }

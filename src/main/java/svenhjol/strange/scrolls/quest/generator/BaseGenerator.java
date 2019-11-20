@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator.Definition;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public abstract class BaseGenerator

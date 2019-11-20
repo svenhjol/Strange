@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Encounter;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class EncounterGenerator extends BaseGenerator
 {
-    public EncounterGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public EncounterGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
         super(world, pos, quest, definition);
     }
@@ -30,9 +30,12 @@ public class EncounterGenerator extends BaseGenerator
         Condition<Encounter> condition = Condition.factory(Encounter.class, quest);
         Encounter encounter = condition.getDelegate();
 
-        for (String targetStr : def.keySet()) {
-            ResourceLocation target = new ResourceLocation(targetStr);
-            Map<String, String> data = def.get(targetStr);
+        for (String key : def.keySet()) { // key is the target enemy type
+            ResourceLocation target = ResourceLocation.tryCreate(key);
+            if (target == null) continue;
+
+            Map<String, String> data = def.get(key);
+
             int count = data.containsKey("count") ? Integer.parseInt(data.get("count")) : 0;
             int health = data.containsKey("health") ? Integer.parseInt(data.get("health")) : 0;
             String effectDefs = data.getOrDefault("effects", "");

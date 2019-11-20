@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.stonecircles.module.StoneCircles;
@@ -31,7 +31,7 @@ public class RewardGenerator extends BaseGenerator
         STONE_CIRCLE_TOTEM
     ));
 
-    public RewardGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public RewardGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
         super(world, pos, quest, definition);
     }
@@ -90,12 +90,10 @@ public class RewardGenerator extends BaseGenerator
             case STONE_CIRCLE_TOTEM:
                 if (world == null) return null;
                 ItemStack totem = new ItemStack(TotemOfReturning.item);
-                final BlockPos circlePos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world, world.rand), 1000, true);
+                BlockPos pos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world, world.rand), 1000, true);
 
-                if (circlePos != null) {
-                    TotemOfReturningItem.setPos(totem, circlePos.add(0, 1, 0));
-                    totem.setDisplayName(new TranslationTextComponent("item.strange.quest_reward_totem"));
-                }
+                TotemOfReturningItem.setPos(totem, pos.add(0, world.getSeaLevel(), 0));
+                totem.setDisplayName(new TranslationTextComponent("item.strange.quest_reward_totem"));
 
                 return totem;
 

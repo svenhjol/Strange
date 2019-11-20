@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Handles server-side forge events related to quests.
+ *
+ * If you want your quest delegate to be able to respond to a specific type of event,
+ * you must subscript to it it here and call `respondToEvent()`
  */
 @SuppressWarnings("unused")
 public class QuestEvents

@@ -1,22 +1,15 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.ServerBossInfo;
@@ -27,11 +20,12 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.charm.tools.item.BoundCompassItem;
-import svenhjol.charm.tools.module.CompassBinding;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.base.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -41,7 +35,7 @@ import java.util.*;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Encounter implements IDelegate
 {
-    public final static String ID = "Encounter";
+    public static final String ID = "Encounter";
     public ServerBossInfo bossInfo = new ServerBossInfo(new TranslationTextComponent("event.strange.quests.encounter"), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
 
     private IQuest quest;
@@ -54,6 +48,7 @@ public class Encounter implements IDelegate
     private int totalHealth;
     private boolean spawned = false;
     private BlockPos location;
+    private int dim;
 
     private final String TARGETS = "targets";
     private final String TARGET_COUNT = "targetCount";
@@ -63,8 +58,8 @@ public class Encounter implements IDelegate
     private final String KILLED = "killed";
     private final String SPAWNED = "spawned";
     private final String LOCATION = "location";
+    private final String DIM = "dim";
     private final String TOTAL_HEALTH = "totalHealth";
-    private final String QUEST_ID = "questId";
 
     @Override
     public String getType()
@@ -99,7 +94,7 @@ public class Encounter implements IDelegate
         }
 
         if (event instanceof LivingDeathEvent) {
-            return onMobKilled(((LivingDeathEvent) event).getEntityLiving());
+            return onMobKilled((LivingDeathEvent)event);
         }
 
         return false;
@@ -160,6 +155,7 @@ public class Encounter implements IDelegate
         tag.putInt(KILLED, killed);
         tag.putInt(COUNT, count);
         tag.putInt(TOTAL_HEALTH, totalHealth);
+        tag.putInt(DIM, dim);
         tag.putBoolean(SPAWNED, spawned);
         tag.putLong(LOCATION, location != null ? location.toLong() : 0);
         return tag;
@@ -172,6 +168,7 @@ public class Encounter implements IDelegate
         this.count = data.getInt(COUNT);
         this.killed = data.getInt(KILLED);
         this.totalHealth = data.getInt(TOTAL_HEALTH);
+        this.dim = data.getInt(DIM);
         this.spawned = data.getBoolean(SPAWNED);
         this.location = BlockPos.fromLong(data.getLong(LOCATION));
 
@@ -253,19 +250,14 @@ public class Encounter implements IDelegate
     {
         if (quest.getId().equals(this.quest.getId())) {
             Random rand = player.world.rand;
-            int dist = 100;
+            int dist = Quests.encounterDistance;
 
             int x = -(dist/2) + rand.nextInt(dist);
             int z = -(dist/2) + rand.nextInt(dist);
-
             this.location = player.getPosition().add(x, 0, z);
+            this.dim = WorldHelper.getDimensionId(player.world);
 
-            ItemStack compass = new ItemStack(CompassBinding.item);
-            compass.setDisplayName(new StringTextComponent(quest.getTitle()));
-            BoundCompassItem.setPos(compass, this.location);
-            BoundCompassItem.setDim(compass, 0);
-            Objects.requireNonNull(compass.getTag()).putString(QUEST_ID, quest.getId());
-            player.addItemStackToInventory(compass);
+            QuestHelper.giveLocationItemToPlayer(player, quest, this.location, this.dim);
             return true;
         }
 
@@ -274,29 +266,26 @@ public class Encounter implements IDelegate
 
     public boolean onEnded(PlayerEntity player)
     {
+        QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
         World world = player.world;
-        ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
-
-        // remove the quest helper equipment like compasses, maps, etc.  TODO probably should be quest helper method
-        inventories.forEach(inv -> inv.forEach(stack -> {
-            if (!stack.isEmpty() && stack.hasTag() && Objects.requireNonNull(stack.getTag()).contains(QUEST_ID)) {
-                if (stack.getTag().getString(QUEST_ID).equals(quest.getId())) {
-                    stack.shrink(1);
-                }
-            }
-        }));
-
         WorldHelper.clearWeather(world);
         return true;
     }
 
-    public boolean onMobKilled(LivingEntity killed)
+    public boolean onMobKilled(LivingDeathEvent event)
     {
+        LivingEntity killed = event.getEntityLiving();
+        PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+        if (player == null) return false;
+
         if (killed.getEntityString() == null) return false;
         if (!killed.getTags().contains(quest.getId())) return false;
         this.killed++;
 
-        if (isSatisfied()) WorldHelper.clearWeather(killed.world);
+        if (isSatisfied()) {
+            QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.encountered_all"));
+            WorldHelper.clearWeather(killed.world);
+        }
         return true;
     }
 
@@ -335,8 +324,8 @@ public class Encounter implements IDelegate
                 Optional<EntityType<?>> type = EntityType.byKey(target.toString());
                 if (!type.isPresent()) continue;
 
-                int count = targetCount.get(target);
-                int health = targetHealth.get(target);
+                int count = Math.max(1, targetCount.get(target));
+                int health = Math.max(1, targetHealth.get(target));
                 List<String> effects = targetEffects.get(target);
 
                 for (int i = 0; i < count; i++) {
@@ -349,7 +338,9 @@ public class Encounter implements IDelegate
                         mob.enablePersistence();
                         effects.add("fire_resistance");
                         for (String effect : effects) {
-                            Registry.EFFECTS.getValue(new ResourceLocation(effect)).ifPresent(value -> mob.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier)));
+                            Effect value = ForgeRegistries.POTIONS.getValue(new ResourceLocation(effect));
+                            if (value == null) continue;
+                            mob.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier));
                         }
                         ((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, true));
                     });
@@ -357,7 +348,11 @@ public class Encounter implements IDelegate
                 }
             }
 
-            if (mobsSpawned == 0) this.fail(player);
+            if (mobsSpawned == 0) {
+                this.fail(player);
+                return false;
+            }
+
             WorldHelper.stormyWeather(world);
             setCount(mobsSpawned);
             this.spawned = true;

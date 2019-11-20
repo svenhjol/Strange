@@ -10,7 +10,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.base.QuestHelper;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -66,9 +66,9 @@ public class Hunt implements IDelegate
             this.killed++;
 
             if (isSatisfied()) {
-                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
+                QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
             } else {
-                Quests.effectCounted(player);
+                QuestHelper.effectCounted(player);
             }
 
             return true;

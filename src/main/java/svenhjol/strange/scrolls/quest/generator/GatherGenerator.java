@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
-import svenhjol.strange.scrolls.quest.Generator;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Gather;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class GatherGenerator extends BaseGenerator
 {
-    public GatherGenerator(World world, BlockPos pos, IQuest quest, Generator.Definition definition)
+    public GatherGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
         super(world, pos, quest, definition);
     }
@@ -26,16 +26,20 @@ public class GatherGenerator extends BaseGenerator
         Map<String, String> def = definition.getGather();
 
         for (String key : def.keySet()) {
-            ResourceLocation res = new ResourceLocation(key);
+            ResourceLocation res = ResourceLocation.tryCreate(key);
+            if (res == null) continue;
+
             Item item = ForgeRegistries.ITEMS.getValue(res);
             if (item == null) continue;
+
+            ItemStack stack = new ItemStack(item);
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
             count = multiplyDistance(count);
 
             Condition<Gather> condition = Condition.factory(Gather.class, quest);
-            condition.getDelegate().setStack(new ItemStack(item)).setCount(count);
+            condition.getDelegate().setStack(stack).setCount(count);
             quest.getCriteria().addCondition(condition);
         }
     }

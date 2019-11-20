@@ -1,14 +1,19 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.strange.base.QuestHelper;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -47,36 +52,54 @@ public class Gather implements IDelegate
         if (isSatisfied()) return false;
         if (collected >= count) return false;
 
+        if (event instanceof QuestEvent.Accept) {
+            // gather as many things as possible from the player's inventory
+            final QuestEvent.Accept qe = (QuestEvent.Accept)event;
+            final PlayerEntity player = qe.getPlayer();
+            final ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
+            final Item requiredItem = stack.getItem();
+
+            for (NonNullList<ItemStack> inventory : inventories) {
+                for (ItemStack invStack : inventory) {
+                    if (invStack.isEmpty()) continue;
+                    if (invStack.getItem() != requiredItem) continue;
+                    if (isSatisfied()) continue;
+
+                    int invCount = invStack.getCount();
+                    int shrinkBy = Math.min(getRemaining(), invCount);
+                    this.collected += shrinkBy;
+                    invStack.shrink(shrinkBy);
+                }
+            }
+
+            showProgress(player);
+        }
+
         if (event instanceof EntityItemPickupEvent) {
-            EntityItemPickupEvent pickupEvent = (EntityItemPickupEvent)event;
-            ItemStack pickedUp = pickupEvent.getItem().getItem();
+            EntityItemPickupEvent qe = (EntityItemPickupEvent)event;
+            ItemStack pickedUp = qe.getItem().getItem();
 
             if (this.stack == null || pickedUp.getItem() != stack.getItem().getItem()) return false;
 
-            PlayerEntity player = pickupEvent.getPlayer();
-            World world = pickupEvent.getPlayer().world;
+            PlayerEntity player = qe.getPlayer();
+            World world = qe.getPlayer().world;
 
-            int count = pickedUp.getCount();
+            int pickedUpCount = pickedUp.getCount();
             int remaining = getRemaining();
 
-            if (count > remaining || remaining - 1 == 0) {
+            if (pickedUpCount > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
-                pickedUp.setCount(count - remaining);
-                count = remaining;
+                pickedUp.setCount(pickedUpCount - remaining);
+                pickedUpCount = remaining;
             } else {
                 // cancel the event, don't pick up any items
-                pickupEvent.getItem().remove();
-                pickupEvent.setResult(Event.Result.DENY);
-                pickupEvent.setCanceled(true);
+                qe.getItem().remove();
+                qe.setResult(Event.Result.DENY);
+                qe.setCanceled(true);
             }
 
-            collected += count;
-
-            if (isSatisfied()) {
-                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.gathered_all"));
-            } else {
-                Quests.effectCounted(player);
-            }
+            collected += pickedUpCount;
+            showProgress(player);
 
             return true;
         }
@@ -159,5 +182,14 @@ public class Gather implements IDelegate
     public ItemStack getStack()
     {
         return this.stack;
+    }
+
+    private void showProgress(PlayerEntity player)
+    {
+        if (isSatisfied()) {
+            QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.gathered_all"));
+        } else {
+            QuestHelper.effectCounted(player);
+        }
     }
 }

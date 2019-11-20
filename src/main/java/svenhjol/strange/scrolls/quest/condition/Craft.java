@@ -8,7 +8,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.base.QuestHelper;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -48,32 +48,28 @@ public class Craft implements IDelegate
         if (crafted >= count) return false;
 
         if (event instanceof ItemCraftedEvent) {
-            ItemCraftedEvent craftedEvent = (ItemCraftedEvent)event;
-            ItemStack crafted = craftedEvent.getCrafting();
-            if (this.stack == null || crafted.getItem() != stack.getItem().getItem()) return false;
+            ItemCraftedEvent qe = (ItemCraftedEvent)event;
+            ItemStack craftedItem = qe.getCrafting();
+            if (this.stack == null || craftedItem.getItem() != stack.getItem().getItem()) return false;
 
-            PlayerEntity player = craftedEvent.getPlayer();
-            World world = craftedEvent.getPlayer().world;
+            PlayerEntity player = qe.getPlayer();
+            World world = qe.getPlayer().world;
 
-            int count = crafted.getCount();
+            int countCrafted = craftedItem.getCount();
             int remaining = getRemaining();
 
-            if (count > remaining || remaining - 1 == 0) {
+            if (countCrafted > remaining || remaining - 1 == 0) {
                 // set the count to the remainder
-                crafted.setCount(count - remaining);
-                count = remaining;
-            } else {
-                // cancel the event, don't pick up any items
-                craftedEvent.setResult(Event.Result.DENY);
-                craftedEvent.setCanceled(true);
+                craftedItem.setCount(countCrafted - remaining);
+                countCrafted = remaining;
             }
 
-            this.crafted += count;
+            this.crafted += countCrafted;
 
             if (isSatisfied()) {
-                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.crafted_all"));
+                QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.crafted_all"));
             } else {
-                Quests.effectCounted(player);
+                QuestHelper.effectCounted(player);
             }
 
             return true;
