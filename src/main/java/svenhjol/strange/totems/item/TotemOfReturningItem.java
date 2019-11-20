@@ -14,8 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
@@ -72,7 +74,18 @@ public class TotemOfReturningItem extends MesonItem
     {
         // teleport the player
         if (!world.isRemote) {
+            BlockPos playerPos = player.getPosition();
+
+            player.setNoGravity(true);
+            player.setInvulnerable(true);
             PlayerHelper.teleport(player, pos, dim);
+
+            PlayerQueueHandler.add(world.getGameTime() + 40, player, p -> {
+                Meson.debug("Re-teleport");
+                PlayerHelper.teleport(player, pos, dim);
+                player.setNoGravity(false);
+                player.setInvulnerable(false);
+            });
         }
         TotemHelper.destroy(player, stack);
     }
