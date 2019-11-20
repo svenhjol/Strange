@@ -53,7 +53,7 @@ public class ScrollItem extends MesonItem
                 // if not populated yet, generate a quest and set the stack name
                 if (!hasTag(stack)) {
                     // there isn't a quest, make one
-                    int tier = Math.min(getTierFromScroll(stack), 1);
+                    int tier = Math.max(getTierFromScroll(stack), 1);
                     quest = new Quest();
                     quest.setTier(tier);
                     putQuest(stack, quest);
