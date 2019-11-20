@@ -3,12 +3,9 @@ package svenhjol.strange.totems.module;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.arguments.EntityAnchorArgument;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -21,7 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.MesonModule;
@@ -32,13 +28,11 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.TotemHelper;
-import svenhjol.strange.totems.goal.AttractGoal;
 import svenhjol.strange.totems.item.TotemOfAttractingItem;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
@@ -54,9 +48,6 @@ public class TotemOfAttracting extends MesonModule
 
     @Config(name = "Attract items range", description = "If attract items is enabled, items within this range of the player will be picked up.")
     public static int attractRange = 10;
-
-    @Config(name = "Attract mobs", description = "If true, the totem will attract nearby mobs to the player when the totem is held.")
-    public static boolean attractMobs = true;
 
     @Config(name = "Detect block", description = "If true, the totem can be bound to a block and will then detect blocks of the same type.")
     public static boolean detectBlock = true;
@@ -167,26 +158,6 @@ public class TotemOfAttracting extends MesonModule
                     item.setPosition(x, y, z);
                 }
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onEntityUpdate(LivingUpdateEvent event)
-    {
-        if (!attractMobs) return;
-
-        if (event.getEntityLiving().world.getGameTime() % 20 == 0
-            && event.getEntityLiving() instanceof MobEntity
-//            && event.getEntityLiving() instanceof CreatureEntity
-//            && ((MobEntity)event.getEntityLiving()).getNavigator() instanceof GroundPathNavigator
-        ) {
-            MobEntity entity = (MobEntity)event.getEntityLiving();
-            List<PrioritizedGoal> goals = entity.goalSelector.getRunningGoals().collect(Collectors.toList());
-            if (goals.isEmpty()) return;
-            for (PrioritizedGoal goal : goals) {
-                if (goal.getGoal() instanceof AttractGoal) return;
-            }
-            entity.goalSelector.addGoal(goals.size(), new AttractGoal(entity, 1.25D, Ingredient.fromItems(item), false));
         }
     }
 
