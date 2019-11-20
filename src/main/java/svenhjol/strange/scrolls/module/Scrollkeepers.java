@@ -16,6 +16,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
@@ -51,16 +52,18 @@ import java.util.*;
 public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
-    public static final String ANONYMOUS = "3-1-4-1-5";
     public static final int[] DEFAULT_XP = new int[]{0, 10, 70, 150, 250};
     public static final int[] QUEST_XP = new int[]{2, 11, 18, 27, 40};
-    public static UUID ANY_SELLER = UUID.fromString(Scrollkeepers.ANONYMOUS);
+    public static final UUID ANY_SELLER = UUID.fromString("0-0-0-0-1");
     public static VillagerProfession profession;
-    public static int interestRange = 16;
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
-        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.")
+        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.  Set to zero to disable Bad Omen effect.")
     public static double badOmenChance = 0.02D;
+
+    @Config(name = "Villager interest range", description = "Range (in blocks) that a scrollkeeper will indicate that they are ready to accept a completed quest.")
+    public static int interestRange = 16;
+
     public static WritingDeskBlock block;
 
     @Override
@@ -68,7 +71,7 @@ public class Scrollkeepers extends MesonModule
     {
         block = new WritingDeskBlock(this);
         ImmutableSet<BlockState> states = ImmutableSet.copyOf(block.getStateContainer().getValidStates());
-        PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, null, 1);
+        PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1);
         ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
         RegistryHandler.registerVillagerPointOfInterest(type, ID);
 
