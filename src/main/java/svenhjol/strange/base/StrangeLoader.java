@@ -44,8 +44,6 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ClientRunestonesInteract.class, ClientRunestonesInteract::encode, ClientRunestonesInteract::decode, ClientRunestonesInteract.Handler::handle);
 
         // sounds
-        RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COMPLETE);
-        RegistryHandler.registerSound(StrangeSounds.QUEST_ACTION_COUNT);
-        RegistryHandler.registerSound(StrangeSounds.RUNESTONE_TRAVEL);
+        StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);
     }
 }
