@@ -1,4 +1,9 @@
 {
+  "advancements.strange.stonecircles.find.title": "Stone Circles",
+  "advancements.strange.stonecircles.find.description": "Find a Stone Circle",
+  "advancements.strange.stonecircles.runic_travel.title": "Ancient Travel",
+  "advancements.strange.stonecircles.runic_travel.description": "Use an enderpearl to travel through a runestone",
+
   "filled_map.village": "Village map",
   "filled_map.stone_circle": "Stone Circle map",
 
@@ -9,15 +14,18 @@
   "gui.strange.quests.gather": "Pickup items",
   "gui.strange.quests.craft": "Craft items",
   "gui.strange.quests.encounter": "Encounter",
+  "gui.strange.quests.locate": "Locate",
   "gui.strange.quests.hunt": "Kill mobs",
   "gui.strange.quests.mine": "Mine blocks",
   "gui.strange.quests.conditions": "Conditions",
   "gui.strange.quests.rewards": "Rewards",
   "gui.strange.quests.encounter_defeat": "Defeat all enemies",
+  "gui.strange.quests.locate_items": "Search for items",
   "gui.strange.quests.complete_within_time": "Complete within %s:%s",
   "gui.strange.quests.complete_within_seconds": "Complete within %s seconds",
   "gui.strange.quests.reward_xp": "%s experience",
   "gui.strange.quests.reward_item": "%s %s",
+  "gui.strange.quests.too_many_quests": "You must complete or quit your current quests first.",
   "gui.strange.travel_journal.new_entry": "New Location",
   "gui.strange.travel_journal.new_biome_entry": "%s",
   "gui.strange.travel_journal.new_screenshot": "New Screenshot",
@@ -66,6 +74,8 @@
   "event.strange.quests.gathered_all": "You have collected all items required for your quest.",
   "event.strange.quests.hunted_all": "You have killed all targets required for your quest.",
   "event.strange.quests.mined_all": "You have mined all blocks required for your quest.",
+  "event.strange.quests.located_all": "You have located the item required for your quest.",
+  "event.strange.quests.encountered_all": "You have defeated the enemies required for your quest.",
 
   "totem.strange.attracting": "Searching for %s",
   "totem.strange.holding_item": "Holding one item",
