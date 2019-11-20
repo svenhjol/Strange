@@ -1,5 +1,6 @@
 package svenhjol.strange.runestones.module;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -337,6 +338,8 @@ public class Runestones extends MesonModule
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = state.get(RunestoneBlock.RUNE);
 
+        CriteriaTriggers.ENTER_BLOCK.trigger((ServerPlayerEntity)player, state);
+
         Runestones.getCapability(player).discoverType(rune);
 
         Random rand = world.rand;
@@ -357,6 +360,7 @@ public class Runestones extends MesonModule
         BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
         if (destPos == null) destPos = world.getSpawnPoint();
         BlockPos dest = addRandomOffset(destPos, rand, 8);
+
 
         PlayerHelper.teleportSurface(player, dest, 0, p -> {
             Runestones.getCapability(player).recordDestination(pos, dest);
