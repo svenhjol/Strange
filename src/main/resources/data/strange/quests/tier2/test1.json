@@ -3,11 +3,11 @@
   "description": "Blah blah things",
   "timeLimit": 10,
   "gather": {
-    "minecraft:dirt": "1"
+    "minecraft:dirt": 1
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": "10"
+      "minecraft:emerald": 10
     },
     "xp": {
       "count": 20

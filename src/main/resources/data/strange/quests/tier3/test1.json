@@ -2,8 +2,8 @@
   "title": "Test Quest 3",
   "description": "Blah blah things",
   "timeLimit": 10,
-  "gather": {
-    "minecraft:dirt": "1"
+  "hunt": {
+    "minecraft:zombie": "1"
   },
   "rewards": {
     "items": {

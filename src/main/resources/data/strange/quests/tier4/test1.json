@@ -2,12 +2,14 @@
   "title": "Test Quest 4",
   "description": "Blah blah things",
   "timeLimit": 10,
-  "gather": {
-    "minecraft:dirt": "1"
+  "encounter": {
+    "minecraft:zombie": {
+      "count": 1
+    }
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": "10"
+      "minecraft:emerald": 10
     },
     "xp": {
       "count": 20
