@@ -4,9 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,30 +21,36 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvents;
+import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.Generator;
-import svenhjol.strange.scrolls.quest.Generator.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
 public class Quests extends MesonModule
 {
     @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once.")
-    public static int max = 3;
+    public static int maxQuests = 3;
+
+    @Config(name = "Encounter distance", description = "Distance from quest start (in blocks) that a mob will spawn for 'encounter' quests.")
+    public static int encounterDistance = 100;
+
+    @Config(name = "Locate distance", description = "Distance from quest start (in blocks) that a treasure chest will spawn for 'locate' quests.")
+    public static int locateDistance = 100;
 
     @CapabilityInject(IQuestsCapability.class)
     public static Capability<IQuestsCapability> QUESTS = null;
 
     public static ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
+
+    public static final String QUEST_ID = "questId";
 
     public static Map<Integer, List<Definition>> available = new HashMap<>();
 
@@ -115,21 +119,5 @@ public class Quests extends MesonModule
     public static void update(PlayerEntity player)
     {
         Quests.getCapability(player).updateCurrentQuests(player);
-    }
-
-    public static void effectCompleted(PlayerEntity player, @Nullable ITextComponent message)
-    {
-        PlayerEntity p = player.world.isRemote ? player : null;
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-        if (message != null) {
-            player.sendStatusMessage(message, true);
-        }
-    }
-
-    public static void effectCounted(PlayerEntity player)
-    {
-        PlayerEntity p = player.world.isRemote ? player : null;
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 }
