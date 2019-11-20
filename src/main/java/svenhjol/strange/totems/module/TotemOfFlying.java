@@ -33,7 +33,7 @@ public class TotemOfFlying extends MesonModule
     public static TotemOfFlyingItem item;
 
     @Config(name = "Durability", description = "Durability of the Totem.")
-    public static int durability = 64;
+    public static int durability = 32;
 
     @Config(name = "XP cost", description = "Amount of XP consumed every second (20 ticks) while flying.")
     public static int xpCost = 1;
