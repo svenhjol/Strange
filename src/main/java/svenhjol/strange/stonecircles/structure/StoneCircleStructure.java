@@ -142,7 +142,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
             if (world.getDimension().getType() == DimensionType.THE_NETHER) {
 
-                config.runeChance = 0.75F;
+                config.runeChance = 0.8F;
                 config.withChest = true;
                 config.radius = rand.nextInt(4) + 5;
                 config.columnMinHeight = 3;
@@ -186,7 +186,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
             } else {
 
-                config.runeChance = 0.6F;
+                config.runeChance = 0.65F;
                 config.radius = rand.nextInt(6) + 5;
                 config.columnMinHeight = 3;
                 config.columnVariation = 2;
