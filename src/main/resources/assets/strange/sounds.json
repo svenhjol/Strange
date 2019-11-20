@@ -28,5 +28,15 @@
     "sounds": [
       "strange:screenshot"
     ]
+  },
+  "music.tharna": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "strange:music/tharna",
+        "stream": true,
+        "volume": 0.25
+      }
+    ]
   }
 }
