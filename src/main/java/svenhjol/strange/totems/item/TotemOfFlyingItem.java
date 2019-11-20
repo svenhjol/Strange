@@ -14,7 +14,7 @@ public class TotemOfFlyingItem extends MesonItem
     {
         super(module, "totem_of_flying", new Item.Properties()
             .group(ItemGroup.TRANSPORTATION)
-            .rarity(Rarity.UNCOMMON)
+            .rarity(Rarity.RARE)
             .maxStackSize(1)
             .maxDamage(TotemOfFlying.durability)
         );
