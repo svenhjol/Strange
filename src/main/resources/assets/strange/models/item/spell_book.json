@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "strange:item/spell_book"
+  },
+  "overrides": [
+    { "predicate": { "element": 0.1 }, "model": "strange:item/life_spell_book" },
+    { "predicate": { "element": 0.2 }, "model": "strange:item/death_spell_book" },
+    { "predicate": { "element": 0.3 }, "model": "strange:item/air_spell_book" },
+    { "predicate": { "element": 0.4 }, "model": "strange:item/water_spell_book" },
+    { "predicate": { "element": 0.5 }, "model": "strange:item/earth_spell_book" },
+    { "predicate": { "element": 0.6 }, "model": "strange:item/fire_spell_book" }
+  ]
+}

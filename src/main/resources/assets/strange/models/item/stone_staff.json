@@ -1,0 +1,6 @@
+{
+    "parent": "strange:item/staff",
+    "textures": {
+        "layer0": "strange:item/stone_staff"
+    }
+}

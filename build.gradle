@@ -28,7 +28,8 @@ minecraft {
     runs {
         client = {
             // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+//            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.markers': 'REGISTRIES'
             // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath

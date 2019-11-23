@@ -64,6 +64,12 @@
   "item.strange.totem_of_returning": "Totem of Returning",
   "item.strange.totem_of_shielding": "Totem of Shielding",
   "item.strange.quest_reward_totem": "Distant Stone Circle",
+  "item.strange.wooden_staff": "Wooden Staff",
+  "item.strange.stone_staff": "Stone Staff",
+  "item.strange.iron_staff": "Iron Staff",
+  "item.strange.golden_staff": "Golden Staff",
+  "item.strange.diamond_staff": "Diamond Staff",
+  "item.strange.spell_book": "Spell Book",
 
   "event.strange.quests.accepted": "Quest accepted",
   "event.strange.quests.completed": "Quest completed",
@@ -96,5 +102,11 @@
   "runestone.strange.outer_village": "a distant village",
   "runestone.strange.outer_desert_pyramid": "a distant desert temple",
   "runestone.strange.outer_jungle_pyramid": "a distant jungle temple",
-  "runestone.strange.outer_ocean_ruin": "a distant ocean ruin"
+  "runestone.strange.outer_ocean_ruin": "a distant ocean ruin",
+
+  "spell.strange.explosion": "Spell of Explosion",
+  "spell.strange.extraction": "Spell of Extraction",
+  "spell.strange.growth": "Spell of Growth",
+  "spell.strange.knockback": "Spell of Knockback",
+  "spell.strange.magma_melting": "Spell of Magma Melting"
 }

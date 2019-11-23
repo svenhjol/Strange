@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 public class StrangeCategories
 {
+    public static final String MAGIC = "Magic";
     public static final String OUTERLANDS = "Outerlands";
     public static final String RUNESTONES = "Runestones";
     public static final String SCROLLS = "Scrolls";
