@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +21,7 @@ public class LavaFreezingSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack staff)
+    public boolean cast(PlayerEntity player)
     {
         this.castArea(player, new int[] { 5, 1, 5 }, blocks -> {
             World world = player.world;

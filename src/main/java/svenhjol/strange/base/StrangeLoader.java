@@ -9,7 +9,6 @@ import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
-import svenhjol.strange.magic.message.ServerStaffAction;
 import svenhjol.strange.runestones.message.ClientRunestonesInteract;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
@@ -47,7 +46,7 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalEntries.class, ClientTravelJournalEntries::encode, ClientTravelJournalEntries::decode, ClientTravelJournalEntries.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientRunestonesInteract.class, ClientRunestonesInteract::encode, ClientRunestonesInteract::decode, ClientRunestonesInteract.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(index++, ServerStaffAction.class, ServerStaffAction::encode, ServerStaffAction::decode, ServerStaffAction.Handler::handle);
+//        PacketHandler.HANDLER.registerMessage(index++, ServerStaffAction.class, ServerStaffAction::encode, ServerStaffAction::decode, ServerStaffAction.Handler::handle);
 
         // sounds
         StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);

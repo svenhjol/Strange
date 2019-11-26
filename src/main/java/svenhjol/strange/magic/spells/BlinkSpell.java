@@ -3,7 +3,6 @@ package svenhjol.strange.magic.spells;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -23,7 +22,7 @@ public class BlinkSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack staff)
+    public boolean cast(PlayerEntity player)
     {
         AtomicBoolean didCast = new AtomicBoolean(false);
 

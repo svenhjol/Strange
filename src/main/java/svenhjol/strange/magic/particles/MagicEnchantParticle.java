@@ -43,28 +43,6 @@ public class MagicEnchantParticle extends EnchantmentTableParticle
         }
     }
 
-    public static class LightEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
-    {
-        public LightEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
-
-        @Override
-        public Spell.Element getElement()
-        {
-            return Spell.Element.LIGHT;
-        }
-    }
-
-    public static class DarkEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
-    {
-        public DarkEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
-
-        @Override
-        public Spell.Element getElement()
-        {
-            return Spell.Element.DARK;
-        }
-    }
-
     public static class AirEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
     {
         public AirEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }

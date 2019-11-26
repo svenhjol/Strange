@@ -57,12 +57,11 @@ public class SpellBookItem extends MesonItem
         if (!(entity instanceof PlayerEntity)) return false;
 
         PlayerEntity player = (PlayerEntity)entity;
-        ItemStack staff = SpellBookItem.getStaffFromOtherHand(player, book);
-        if (staff == null) return false;
 
-        if (StaffItem.castable(staff, player.world.getGameTime())) {
-            return StaffItem.cast(player, staff);
-        }
+        Spell spell = SpellBookItem.getSpell(book);
+        if (spell == null) return false;
+
+        boolean result = spell.cast(player); // TODO should do something with result here
 
         return false;
     }
@@ -127,15 +126,11 @@ public class SpellBookItem extends MesonItem
             int xp = player.experienceTotal;
             if (!player.isCreative() && xp <= 0) return book;
 
-            ItemStack staff = getStaffFromOtherHand(player, book);
-            if (staff == null) return book;
-
-            // set staff spell
             Spell spell = getSpell(book);
             if (spell == null) return book;
 
-            StaffItem.pushSpell(staff, spell);
-            spell.transfer(player, staff);
+            boolean result = spell.activate(player); // TODO should probably inform if this fails
+            if (!result) return book;
 
             // damage the spellbook
             book.damageItem(1, player, r -> effectUseBook((ServerPlayerEntity)player, spell));
@@ -143,8 +138,8 @@ public class SpellBookItem extends MesonItem
             // take XP from player
             player.giveExperiencePoints(-xpCost);
 
-            // inform the player of the spell that was used
-            ITextComponent message = MagicHelper.getSpellInfoText(spell, "event.strange.spellbook.transferred");
+            // inform the player of the spell that was activated
+            ITextComponent message = MagicHelper.getSpellInfoText(spell, "event.strange.spellbook.activated");
             player.sendStatusMessage(message, true);
 
             // ding
@@ -188,7 +183,6 @@ public class SpellBookItem extends MesonItem
         ITextComponent affectText = new TranslationTextComponent(spell.getAffectKey());
         affectText.setStyle((new Style()).setColor(TextFormatting.GRAY));
 
-
         tooltip.add(descriptionText);
         tooltip.add(affectText);
     }
@@ -215,15 +209,6 @@ public class SpellBookItem extends MesonItem
         }
 
         return null;
-    }
-
-    @Nullable
-    public static ItemStack getStaffFromOtherHand(PlayerEntity player, ItemStack book)
-    {
-        Hand staffHand = player.getHeldItemMainhand() == book ? Hand.OFF_HAND : Hand.MAIN_HAND;
-        ItemStack staff = player.getHeldItem(staffHand);
-        if (!(staff.getItem() instanceof StaffItem)) return null;
-        return staff;
     }
 
     public static void effectUseBook(ServerPlayerEntity player, Spell spell)

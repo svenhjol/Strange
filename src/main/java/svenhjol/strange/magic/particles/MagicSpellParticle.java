@@ -80,28 +80,6 @@ public class MagicSpellParticle extends SpriteTexturedParticle
         }
     }
 
-    public static class LightSpellFactory extends MagicSpellFactory
-    {
-        public LightSpellFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
-
-        @Override
-        public Element getElement()
-        {
-            return Element.LIGHT;
-        }
-    }
-
-    public static class DarkSpellFactory extends MagicSpellFactory
-    {
-        public DarkSpellFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
-
-        @Override
-        public Element getElement()
-        {
-            return Element.DARK;
-        }
-    }
-
     public static class AirSpellFactory extends MagicSpellFactory
     {
         public AirSpellFactory(IAnimatedSprite spriteSet) { super(spriteSet); }

@@ -1,7 +1,6 @@
 package svenhjol.strange.magic.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
@@ -102,24 +101,16 @@ public abstract class Spell
     }
 
     /**
-     * Called after the spell has been transferred to the staff.
+     * Called after the spellbook has been activated.
      * {@link svenhjol.strange.magic.item.SpellBookItem#onItemUseFinish}
      * @param player
-     * @param staff
      */
-    public void transfer(PlayerEntity player, ItemStack staff)
+    public boolean activate(PlayerEntity player)
     {
-        // no op
+        return true;
     }
 
-    /**
-     * Called after the spell has been removed from the staff.
-     * {@link svenhjol.strange.magic.item.StaffItem#cast}
-     * @param player
-     * @param staff
-     * @return True if casting successful.
-     */
-    public abstract boolean cast(PlayerEntity player, ItemStack staff);
+    public abstract boolean cast(PlayerEntity player);
 
     protected void castArea(PlayerEntity player, int[] range, Consumer<List<BlockPos>> onEffect)
     {
@@ -178,8 +169,6 @@ public abstract class Spell
     public enum Element implements IMesonEnum
     {
         BASE(new float[] { 0.5F, 0.5F, 0.5F }, "§7", TextFormatting.GRAY),
-        LIGHT(new float[] { 1.0F, 0.8F, 0.95F }, "§d", TextFormatting.LIGHT_PURPLE),
-        DARK(new float[] { 0.75F, 0.0F, 1.0F }, "§5", TextFormatting.DARK_PURPLE),
         AIR(new float[] { 1.0F, 1.0F, 0.4F }, "§e", TextFormatting.YELLOW),
         WATER(new float[] { 0.4F, 0.7F, 1.0F }, "§b", TextFormatting.AQUA),
         EARTH(new float[] { 0.4F, 1.0F, 0.5F }, "§a", TextFormatting.GREEN),

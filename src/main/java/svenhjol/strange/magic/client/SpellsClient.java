@@ -23,16 +23,12 @@ public class SpellsClient
 
         // TOOO there must be a way of doing this programmatically
         mc.particles.registerFactory(Spells.spellParticles.get(Element.BASE), MagicSpellParticle.MagicSpellFactory::new);
-        mc.particles.registerFactory(Spells.spellParticles.get(Element.LIGHT), MagicSpellParticle.LightSpellFactory::new);
-        mc.particles.registerFactory(Spells.spellParticles.get(Element.DARK), MagicSpellParticle.DarkSpellFactory::new);
         mc.particles.registerFactory(Spells.spellParticles.get(Element.AIR), MagicSpellParticle.AirSpellFactory::new);
         mc.particles.registerFactory(Spells.spellParticles.get(Element.WATER), MagicSpellParticle.WaterSpellFactory::new);
         mc.particles.registerFactory(Spells.spellParticles.get(Element.EARTH), MagicSpellParticle.EarthSpellFactory::new);
         mc.particles.registerFactory(Spells.spellParticles.get(Element.FIRE), MagicSpellParticle.FireSpellFactory::new);
 
         mc.particles.registerFactory(Spells.enchantParticles.get(Element.BASE), MagicEnchantParticle.MagicEnchantFactory::new);
-        mc.particles.registerFactory(Spells.enchantParticles.get(Element.LIGHT), MagicEnchantParticle.LightEnchantFactory::new);
-        mc.particles.registerFactory(Spells.enchantParticles.get(Element.DARK), MagicEnchantParticle.DarkEnchantFactory::new);
         mc.particles.registerFactory(Spells.enchantParticles.get(Element.AIR), MagicEnchantParticle.AirEnchantFactory::new);
         mc.particles.registerFactory(Spells.enchantParticles.get(Element.WATER), MagicEnchantParticle.WaterEnchantFactory::new);
         mc.particles.registerFactory(Spells.enchantParticles.get(Element.EARTH), MagicEnchantParticle.EarthEnchantFactory::new);

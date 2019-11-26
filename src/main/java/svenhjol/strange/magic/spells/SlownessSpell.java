@@ -3,7 +3,6 @@ package svenhjol.strange.magic.spells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -21,7 +20,7 @@ public class SlownessSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack staff)
+    public boolean cast(PlayerEntity player)
     {
         this.castTarget(player, (result, beam) -> {
             if (result.getType() == RayTraceResult.Type.ENTITY) {

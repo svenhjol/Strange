@@ -26,7 +26,6 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.magic.client.SpellsClient;
 import svenhjol.strange.magic.entity.TargettedSpellEntity;
 import svenhjol.strange.magic.item.SpellBookItem;
-import svenhjol.strange.magic.item.StaffItem;
 import svenhjol.strange.magic.spells.Spell;
 
 import java.util.Arrays;
@@ -133,26 +132,22 @@ public class Spells extends MesonModule
             World world = player.world;
 
             ItemStack book = event.getItem();
-            ItemStack staff = SpellBookItem.getStaffFromOtherHand(player, book);
 
-            if (staff != null && staff.getItem() instanceof StaffItem) {
-                StaffItem staffItem = (StaffItem) staff.getItem();
-                Spell spell = SpellBookItem.getSpell(book);
+            Spell spell = SpellBookItem.getSpell(book);
 
-                if (spell != null) {
-                    if (!player.isCreative() && spell.getXpCost() > player.experienceTotal) {
-                        event.setCanceled(true);
-                        return;
-                    }
-
-                    float duration = spell.getDuration() * staffItem.getTransferMultiplier();
-
-                    if (player.isCreative()) duration = 1.0F;
-                    event.setDuration((int) duration);
-
-                    Meson.log("Start, setting duration to " + duration);
-                    world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.8F, 1.5F);
+            if (spell != null) {
+                if (!player.isCreative() && spell.getXpCost() > player.experienceTotal) {
+                    event.setCanceled(true);
+                    return;
                 }
+
+                float duration = spell.getDuration();
+
+                if (player.isCreative()) duration = 1.0F;
+                event.setDuration((int) duration);
+
+                Meson.log("Start, setting duration to " + duration);
+                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.8F, 1.5F);
             }
         }
     }

@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MagmaBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +22,7 @@ public class MagmaMeltingSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack staff)
+    public boolean cast(PlayerEntity player)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
