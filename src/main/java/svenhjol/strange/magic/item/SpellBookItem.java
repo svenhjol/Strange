@@ -4,13 +4,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -31,6 +32,8 @@ import java.util.List;
 public class SpellBookItem extends MesonItem
 {
     public static final String SPELL = "spell";
+    public static final String META = "meta";
+    public static final String ACTIVATED = "activated";
 
     public SpellBookItem(MesonModule module)
     {
@@ -52,16 +55,29 @@ public class SpellBookItem extends MesonItem
     }
 
     @Override
+    public boolean hasEffect(ItemStack book)
+    {
+        return SpellBookItem.isActivated(book);
+    }
+
+    @Override
     public boolean onEntitySwing(ItemStack book, LivingEntity entity)
     {
         if (!(entity instanceof PlayerEntity)) return false;
-
+        if (entity.world.isRemote) return false;
         PlayerEntity player = (PlayerEntity)entity;
+
+        if (!SpellBookItem.isActivated(book)) return false;
 
         Spell spell = SpellBookItem.getSpell(book);
         if (spell == null) return false;
 
-        boolean result = spell.cast(player); // TODO should do something with result here
+        boolean result = spell.cast(player, book);
+        if (result) {
+            // deactivate and damage the spellbook
+            SpellBookItem.putActivated(book, false);
+            book.damageItem(1, player, r -> {});
+        }
 
         return false;
     }
@@ -94,12 +110,11 @@ public class SpellBookItem extends MesonItem
         player.setActiveHand(hand);
 
         Spell spell = getSpell(book);
+        if (spell == null) return new ActionResult<>(ActionResultType.FAIL, book);
 
-        if (!player.isCreative()) {
-            if (spell == null || spell.getXpCost() > player.experienceTotal) {
-                result = ActionResultType.FAIL;
-                player.sendStatusMessage(new StringTextComponent("Not enough XP to transfer the spell"), true);
-            }
+        if (!player.isCreative() && spell.getXpCost() > player.experienceTotal) {
+            result = ActionResultType.FAIL;
+            player.sendStatusMessage(new StringTextComponent("Not enough XP to transfer the spell"), true);
         }
 
         return new ActionResult<>(result, book);
@@ -110,9 +125,20 @@ public class SpellBookItem extends MesonItem
     {
         if (player != null
             && !player.world.isRemote
-            && player.world.getGameTime() % 5 == 0
+            && player.world.getGameTime() % 6 == 0
         ) {
-            SpellBookItem.effectUseBook((ServerPlayerEntity)player, SpellBookItem.getSpell(book));
+            ServerWorld world = (ServerWorld) player.world;
+            BlockPos pos = player.getPosition();
+            Vec3d playerVec = player.getPositionVec();
+            Spell spell = SpellBookItem.getSpell(book);
+            if (spell == null) return;
+
+            for (int i = 0; i < 1; i++) {
+                double px = playerVec.x;
+                double py = playerVec.y + 1.75D;
+                double pz = playerVec.z;
+                world.spawnParticle(Spells.enchantParticles.get(spell.getElement()), px, py, pz, 2 + (int)(count * 0.5F), 0.2D, 0.25D, 0.2D, 2.5);
+            }
         }
     }
 
@@ -129,11 +155,11 @@ public class SpellBookItem extends MesonItem
             Spell spell = getSpell(book);
             if (spell == null) return book;
 
-            boolean result = spell.activate(player); // TODO should probably inform if this fails
-            if (!result) return book;
+            if (SpellBookItem.isActivated(book)) return book;
 
-            // damage the spellbook
-            book.damageItem(1, player, r -> effectUseBook((ServerPlayerEntity)player, spell));
+            boolean result = spell.activate(player, book); // TODO should probably inform if this fails
+            if (!result) return book;
+            SpellBookItem.putActivated(book, true);
 
             // take XP from player
             player.giveExperiencePoints(-xpCost);
@@ -211,17 +237,29 @@ public class SpellBookItem extends MesonItem
         return null;
     }
 
-    public static void effectUseBook(ServerPlayerEntity player, Spell spell)
+    public static CompoundNBT getMeta(ItemStack book)
     {
-        ServerWorld world = (ServerWorld) player.world;
-        BlockPos pos = player.getPosition();
+        return book.getOrCreateChildTag(META);
+    }
 
-        double spread = 1.25D;
-        for (int i = 0; i < 1; i++) {
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.spawnParticle(Spells.enchantParticles.get(spell.getElement()), px, py, pz, 10, 0.0D, 0.5D, 0.0D, 2.2);
-        }
+    public static ItemStack putMeta(ItemStack book, CompoundNBT tag)
+    {
+        CompoundNBT bookTag = book.getOrCreateTag();
+        bookTag.put(META, tag);
+
+        return book;
+    }
+
+    public static ItemStack putActivated(ItemStack book, boolean val)
+    {
+        CompoundNBT tag = book.getOrCreateTag();
+        tag.putBoolean(ACTIVATED, val);
+        return book;
+    }
+
+    public static boolean isActivated(ItemStack book)
+    {
+        CompoundNBT tag = book.getOrCreateTag();
+        return tag.contains(ACTIVATED) && tag.getBoolean(ACTIVATED);
     }
 }

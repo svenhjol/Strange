@@ -132,7 +132,7 @@ public class Spells extends MesonModule
             World world = player.world;
 
             ItemStack book = event.getItem();
-
+            if (!SpellBookItem.isActivated(book)) return;
             Spell spell = SpellBookItem.getSpell(book);
 
             if (spell != null) {

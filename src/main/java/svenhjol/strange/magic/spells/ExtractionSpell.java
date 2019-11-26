@@ -2,6 +2,7 @@ package svenhjol.strange.magic.spells;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.magic.item.SpellBookItem;
 import svenhjol.strange.magic.module.Spells;
 
 import java.util.Objects;
@@ -30,7 +32,7 @@ public class ExtractionSpell extends Spell
     }
 
     @Override
-    public boolean activate(PlayerEntity player)
+    public boolean activate(PlayerEntity player, ItemStack book)
     {
         // get the block the player is looking at
         BlockRayTraceResult result = StrangeLoader.getBlockLookedAt(player);
@@ -38,8 +40,6 @@ public class ExtractionSpell extends Spell
         World world = player.world;
         BlockPos pos = result.getPos();
         BlockState state = world.getBlockState(result.getPos());
-
-        // TODO this needs to store book meta
 
         CompoundNBT meta = new CompoundNBT();
 
@@ -65,17 +65,16 @@ public class ExtractionSpell extends Spell
             ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
         }
 
-        // TODO put book meta
-//        StaffItem.putMeta(staff, index, meta);
+        SpellBookItem.putMeta(book, meta);
 
         return true;
     }
 
     @Override
-    public boolean cast(PlayerEntity player)
+    public boolean cast(PlayerEntity player, ItemStack book)
     {
         World world = player.world;
-        final CompoundNBT meta = new CompoundNBT(); // TODO this must get meta from the book
+        CompoundNBT meta = SpellBookItem.getMeta(book);
 
         if (!meta.contains("state")) return false;
         INBT nbtState = meta.get("state");

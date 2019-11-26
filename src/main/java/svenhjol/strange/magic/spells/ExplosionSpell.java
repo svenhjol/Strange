@@ -1,6 +1,7 @@
 package svenhjol.strange.magic.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -20,7 +21,7 @@ public class ExplosionSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player)
+    public boolean cast(PlayerEntity player, ItemStack book)
     {
         this.castTarget(player, (result, beam) -> {
             BlockPos pos = null;

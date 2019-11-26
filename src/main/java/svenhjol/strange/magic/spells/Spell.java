@@ -1,6 +1,8 @@
 package svenhjol.strange.magic.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
@@ -103,14 +105,13 @@ public abstract class Spell
     /**
      * Called after the spellbook has been activated.
      * {@link svenhjol.strange.magic.item.SpellBookItem#onItemUseFinish}
-     * @param player
      */
-    public boolean activate(PlayerEntity player)
+    public boolean activate(PlayerEntity player, ItemStack book)
     {
         return true;
     }
 
-    public abstract boolean cast(PlayerEntity player);
+    public abstract boolean cast(PlayerEntity player, ItemStack book);
 
     protected void castArea(PlayerEntity player, int[] range, Consumer<List<BlockPos>> onEffect)
     {
@@ -138,7 +139,7 @@ public abstract class Spell
     protected void castTarget(PlayerEntity player, BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact)
     {
         World world = player.world;
-        BlockPos playerPos = player.getPosition();
+        Vec3d playerVec = player.getPositionVec();
 
         float cx = -MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float)Math.PI / 180F));
         float cy = -MathHelper.sin(player.rotationPitch * ((float)Math.PI / 180F));
@@ -146,7 +147,7 @@ public abstract class Spell
         Vec3d v1 = (new Vec3d(cx, cy, cz)).normalize();
 
         TargettedSpellEntity entity = new TargettedSpellEntity(world, v1.x, v1.y, v1.z, this.element);
-        entity.setLocationAndAngles(playerPos.getX() + 0.5D, playerPos.getY() + 1.65D, playerPos.getZ() + 0.75D, 0.0F, 0.0F);
+        entity.setLocationAndAngles(playerVec.x, playerVec.y + 1.65D, playerVec.z, 0.0F, 0.0F);
         entity.onImpact(onImpact);
         world.addEntity(entity);
     }
@@ -168,21 +169,23 @@ public abstract class Spell
 
     public enum Element implements IMesonEnum
     {
-        BASE(new float[] { 0.5F, 0.5F, 0.5F }, "§7", TextFormatting.GRAY),
-        AIR(new float[] { 1.0F, 1.0F, 0.4F }, "§e", TextFormatting.YELLOW),
-        WATER(new float[] { 0.4F, 0.7F, 1.0F }, "§b", TextFormatting.AQUA),
-        EARTH(new float[] { 0.4F, 1.0F, 0.5F }, "§a", TextFormatting.GREEN),
-        FIRE(new float[] { 1.0F, 0.2F, 0.0F }, "§c", TextFormatting.RED);
+        BASE(new float[] { 0.5F, 0.5F, 0.5F }, DyeColor.WHITE, TextFormatting.GRAY, "§7"),
+        AIR(new float[] { 1.0F, 1.0F, 0.4F }, DyeColor.YELLOW, TextFormatting.YELLOW, "§e"),
+        WATER(new float[] { 0.4F, 0.7F, 1.0F }, DyeColor.CYAN, TextFormatting.AQUA, "§b"),
+        EARTH(new float[] { 0.4F, 1.0F, 0.5F }, DyeColor.LIME, TextFormatting.GREEN, "§a"),
+        FIRE(new float[] { 1.0F, 0.2F, 0.0F }, DyeColor.RED, TextFormatting.RED, "§c");
 
         private final float[] color;
         private final String formatCode;
         private final TextFormatting formatColor;
+        private final DyeColor dyeColor;
 
-        Element(float[] color, String formatCode, TextFormatting formatColor)
+        Element(float[] color, DyeColor dyeColor, TextFormatting formatColor, String formatCode)
         {
             this.color = color;
             this.formatCode = formatCode;
             this.formatColor = formatColor;
+            this.dyeColor = dyeColor;
         }
 
         public float[] getColor()
@@ -193,6 +196,11 @@ public abstract class Spell
         public String getFormatCode()
         {
             return formatCode;
+        }
+
+        public DyeColor getDyeColor()
+        {
+            return dyeColor;
         }
 
         public TextFormatting getFormatColor()
