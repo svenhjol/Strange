@@ -1,14 +1,15 @@
 package svenhjol.strange.magic.spells;
 
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.MagmaBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 public class MagmaMeltingSpell extends Spell
 {
@@ -16,13 +17,15 @@ public class MagmaMeltingSpell extends Spell
     {
         super("magma_melting");
         this.element = Element.FIRE;
-        this.effect = Effect.AREA;
+        this.affect = Affect.AREA;
+        this.duration = 100;
+        this.xpCost = 80;
     }
 
     @Override
     public boolean cast(PlayerEntity player, ItemStack staff)
     {
-        this.castArea(player, 4, blocks -> {
+        this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
 
             if (world.isRemote) return;
@@ -40,7 +43,6 @@ public class MagmaMeltingSpell extends Spell
 
                 if (didMelt) {
                     didAnyMelt = true;
-                    ((ServerWorld)world).spawnParticle(ParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 0.6D);
                 }
             }
 

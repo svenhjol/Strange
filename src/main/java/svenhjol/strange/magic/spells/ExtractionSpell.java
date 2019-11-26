@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.magic.item.StaffItem;
+import svenhjol.strange.magic.module.Spells;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,7 +26,7 @@ public class ExtractionSpell extends Spell
     {
         super("extraction");
         this.element = Element.EARTH;
-        this.effect = Effect.FOCUS;
+        this.affect = Affect.FOCUS;
         this.duration = 80;
         this.xpCost = 100;
     }
@@ -65,10 +65,10 @@ public class ExtractionSpell extends Spell
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() + 0.5D * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 30, 0, 0, 0, 0.5D);
+            ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
         }
 
-        StaffItem.putSpellMeta(staff, index, meta);
+        StaffItem.putMeta(staff, index, meta);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ExtractionSpell extends Spell
     {
         World world = player.world;
         int index = StaffItem.getNumberOfSpells(staff);
-        final CompoundNBT meta = StaffItem.getSpellMeta(staff, index);
+        final CompoundNBT meta = StaffItem.getMeta(staff, index);
 
         if (!meta.contains("state")) return false;
         INBT nbtState = meta.get("state");

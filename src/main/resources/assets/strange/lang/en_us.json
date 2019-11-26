@@ -82,6 +82,10 @@
   "event.strange.quests.mined_all": "You have mined all blocks required for your quest.",
   "event.strange.quests.located_all": "You have located the item required for your quest.",
   "event.strange.quests.encountered_all": "You have defeated the enemies required for your quest.",
+  "event.strange.spellbook.transferred": "Transferred %s",
+  "event.strange.spellbook.not_enough_xp": "Not enough XP to transfer the spell",
+  "event.strange.staff.cast_next": "Ready to cast %s",
+  "event.strange.staff.contains": "Holding: %s",
 
   "totem.strange.attracting": "Searching for %s",
   "totem.strange.holding_item": "Holding one item",
@@ -104,9 +108,35 @@
   "runestone.strange.outer_jungle_pyramid": "a distant jungle temple",
   "runestone.strange.outer_ocean_ruin": "a distant ocean ruin",
 
-  "spell.strange.explosion": "Spell of Explosion",
-  "spell.strange.extraction": "Spell of Extraction",
-  "spell.strange.growth": "Spell of Growth",
-  "spell.strange.knockback": "Spell of Knockback",
-  "spell.strange.magma_melting": "Spell of Magma Melting"
+  "spell.strange.affect.none": "Affects nothing",
+  "spell.strange.affect.target": "Affects a distant target",
+  "spell.strange.affect.self": "Affects the player",
+  "spell.strange.affect.area": "Affects area around player",
+  "spell.strange.affect.focus": "Affects what player is looking at",
+
+  "spell.strange.element.base": "No element",
+  "spell.strange.element.light": "Light Spell",
+  "spell.strange.element.dark": "Dark Spell",
+  "spell.strange.element.air": "Air Spell",
+  "spell.strange.element.water": "Water Spell",
+  "spell.strange.element.earth": "Earth Spell",
+  "spell.strange.element.fire": "Fire Spell",
+
+  "spell.strange.blink.title": "Blink Spell",
+  "spell.strange.explosion.title": "Explosion Spell",
+  "spell.strange.extraction.title": "Extraction Spell",
+  "spell.strange.growth.title": "Growth Spell",
+  "spell.strange.knockback.title": "Knockback Spell",
+  "spell.strange.lava_freezing.title": "Lava Freezing Spell",
+  "spell.strange.magma_melting.title": "Magma Melting Spell",
+  "spell.strange.slowness.title": "Slowness Spell",
+
+  "spell.strange.blink.desc": "Teleports to the target location.",
+  "spell.strange.explosion.desc": "Explosion at the target location.",
+  "spell.strange.extraction.desc": "Extracts a block and places it elsewhere.",
+  "spell.strange.growth.desc": "Crops in the area will grow.",
+  "spell.strange.knockback.desc": "Flings the target.",
+  "spell.strange.lava_freezing.desc": "Lava in the area will turn into magma blocks.",
+  "spell.strange.magma_melting.desc": "Magma blocks in the area will turn into lava.",
+  "spell.strange.slowness.desc": "Gives slowness to the target."
 }

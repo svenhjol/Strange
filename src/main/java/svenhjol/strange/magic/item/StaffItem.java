@@ -1,19 +1,21 @@
 package svenhjol.strange.magic.item;
 
+import com.google.common.collect.Lists;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.IMesonItem;
-import svenhjol.strange.magic.module.SpellBooks;
+import svenhjol.strange.magic.helper.MagicHelper;
+import svenhjol.strange.magic.module.Spells;
 import svenhjol.strange.magic.spells.Spell;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class StaffItem extends TieredItem implements IMesonItem
@@ -38,6 +40,21 @@ public class StaffItem extends TieredItem implements IMesonItem
         this.transferMultiplier = 1.0F;
     }
 
+    @Override
+    public void addInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    {
+        super.addInformation(staff, world, tooltip, flag);
+        List<Spell> spells = StaffItem.getSpells(staff);
+        if (spells.isEmpty()) return;
+
+        spells = Lists.reverse(spells);
+
+        for (Spell spell : spells) {
+            ITextComponent spellText = MagicHelper.getSpellInfoText(spell);
+            tooltip.add(spellText);
+        }
+    }
+
     public float getTransferMultiplier()
     {
         return transferMultiplier;
@@ -46,24 +63,6 @@ public class StaffItem extends TieredItem implements IMesonItem
     public int getCapacity()
     {
         return capacity;
-    }
-
-    @Override
-    public ActionResultType onItemUse(ItemUseContext context)
-    {
-        return super.onItemUse(context);
-    }
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
-    {
-        return super.onItemRightClick(worldIn, playerIn, handIn);
-    }
-
-    @Override
-    public boolean hasEffect(ItemStack staff)
-    {
-        return getNumberOfSpells(staff) > 0;
     }
 
     public StaffItem setCapacity(int capacity)
@@ -78,7 +77,7 @@ public class StaffItem extends TieredItem implements IMesonItem
         return this;
     }
 
-    public static CompoundNBT getSpellMeta(ItemStack staff, int index)
+    public static CompoundNBT getMeta(ItemStack staff, int index)
     {
         CompoundNBT tag = new CompoundNBT();
         CompoundNBT meta = staff.getOrCreateChildTag(META);
@@ -89,11 +88,10 @@ public class StaffItem extends TieredItem implements IMesonItem
         return tag;
     }
 
-    public static List<Spell> getSpells(ItemStack staff)
+    public static LinkedList<Spell> getSpells(ItemStack staff)
     {
-        checkStaff(staff);
-
-        List<Spell> out = new ArrayList<>();
+        requireStaff(staff);
+        LinkedList<Spell> out = new LinkedList<>();
 
         CompoundNBT spellsTag = staff.getChildTag(SPELLS);
         if (spellsTag == null) return out;
@@ -101,8 +99,8 @@ public class StaffItem extends TieredItem implements IMesonItem
         for (String sindex : spellsTag.keySet()) {
             String id = spellsTag.getString(sindex);
 
-            if (SpellBooks.spells.containsKey(id)) {
-                out.add(SpellBooks.spells.get(id));
+            if (Spells.spells.containsKey(id)) {
+                out.add(Spells.spells.get(id));
             }
         }
 
@@ -111,7 +109,7 @@ public class StaffItem extends TieredItem implements IMesonItem
 
     public static ItemStack putSpells(ItemStack staff, List<Spell> spells)
     {
-        checkStaff(staff);
+        requireStaff(staff);
 
         int index = 0;
         CompoundNBT spellsTag = new CompoundNBT();
@@ -124,10 +122,9 @@ public class StaffItem extends TieredItem implements IMesonItem
         return staff;
     }
 
-    public static ItemStack putSpellMeta(ItemStack staff, int index, CompoundNBT tag)
+    public static ItemStack putMeta(ItemStack staff, int index, CompoundNBT tag)
     {
-        checkStaff(staff);
-
+        requireStaff(staff);
         CompoundNBT meta = staff.getOrCreateChildTag(META);
         meta.put(String.valueOf(index), tag);
 
@@ -136,8 +133,7 @@ public class StaffItem extends TieredItem implements IMesonItem
 
     public static int getCapacity(ItemStack staff)
     {
-        checkStaff(staff);
-
+        requireStaff(staff);
         return ((StaffItem)staff.getItem()).getCapacity();
     }
 
@@ -151,7 +147,7 @@ public class StaffItem extends TieredItem implements IMesonItem
     @Nullable
     public static ItemStack pushSpell(ItemStack staff, Spell spell)
     {
-        List<Spell> spells = getSpells(staff);
+        LinkedList<Spell> spells = getSpells(staff);
         int capacity = getCapacity(staff);
         spells.add(spell); // push
 
@@ -165,7 +161,7 @@ public class StaffItem extends TieredItem implements IMesonItem
     @Nullable
     public static Spell popSpell(ItemStack staff)
     {
-        List<Spell> spells = getSpells(staff);
+        LinkedList<Spell> spells = getSpells(staff);
         if (spells.size() > 0) {
             Spell spell = spells.remove(spells.size() - 1);
             putSpells(staff, spells);
@@ -174,9 +170,10 @@ public class StaffItem extends TieredItem implements IMesonItem
         return null;
     }
 
+    @Nullable
     public static Hand getHand(PlayerEntity player, ItemStack staff)
     {
-        StaffItem.checkStaff(staff);
+        if (!isStaff(staff)) return null;
         return player.getHeldItemMainhand() == staff ? Hand.MAIN_HAND : Hand.OFF_HAND;
     }
 
@@ -194,16 +191,27 @@ public class StaffItem extends TieredItem implements IMesonItem
         if (spell == null) return false;
 
         boolean result = spell.cast(player, staff);
+
         if (!result) {
             // put the spell back if it failed to cast
             pushSpell(staff, spell);
+        } else {
+            // damage the staff
+            staff.damageItem(spell.getStaffDamage(), player, p -> {
+            });
         }
+
         return result;
     }
 
-    public static void checkStaff(ItemStack staff)
+    public static boolean isStaff(ItemStack staff)
     {
-        if (!(staff.getItem() instanceof StaffItem)) {
+        return staff.getItem() instanceof StaffItem;
+    }
+
+    public static void requireStaff(ItemStack staff)
+    {
+        if (!isStaff(staff)) {
             throw new RuntimeException("Trying to add spells to something that isn't a staff is illegal by decree of the Ministry.");
         }
     }
@@ -213,7 +221,7 @@ public class StaffItem extends TieredItem implements IMesonItem
         CompoundNBT tag = staff.getOrCreateTag();
         if (tag.contains(LAST_USED)) {
             long last = tag.getLong(LAST_USED);
-            if (last == 0 || (time - last) > 20) {
+            if (last == 0 || (time - last) > 10) {
                 tag.putLong(LAST_USED, time);
                 return true;
             }

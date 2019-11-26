@@ -13,13 +13,13 @@ public class GrowthSpell extends Spell
     {
         super("growth");
         this.element = Element.EARTH;
-        this.effect = Effect.AREA;
+        this.affect = Affect.AREA;
     }
 
     @Override
     public boolean cast(PlayerEntity player, ItemStack staff)
     {
-        this.castArea(player, 4, blocks -> {
+        this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
 
             for (BlockPos pos : blocks) {
@@ -43,13 +43,10 @@ public class GrowthSpell extends Spell
                     }
                 }
                 if (block instanceof SugarCaneBlock && world.isAirBlock(pos.up()) && state.has(SugarCaneBlock.AGE)) {
-                    Integer currentAge = state.get(SugarCaneBlock.AGE);
-                    if (currentAge < 15) {
-                        world.setBlockState(pos, state.with(SugarCaneBlock.AGE, ++currentAge), 2);
-                        SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)block;
-                        sugarCaneBlock.tick(state, world, pos, world.rand);
-                        didGrow = true;
-                    }
+                    BlockState newState = state.with(SugarCaneBlock.AGE, 15);
+                    SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)world.getBlockState(pos).getBlock();
+                    sugarCaneBlock.tick(newState, world, pos, world.rand);
+                    didGrow = true;
                 }
 
                 if (didGrow) world.playEvent(2005, pos, 0);

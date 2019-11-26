@@ -1,6 +1,7 @@
 package svenhjol.strange.magic.item;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -8,20 +9,25 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.magic.module.SpellBooks;
+import svenhjol.strange.magic.helper.MagicHelper;
+import svenhjol.strange.magic.module.Spells;
 import svenhjol.strange.magic.spells.Spell;
 import svenhjol.strange.magic.spells.Spell.Element;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
+/**
+ * onItemUseFirst is delegated to {@link Spells#onStartUsingItem}
+ * because Forge offers a way to change the item use duration dynamically.
+ */
 public class SpellBookItem extends MesonItem
 {
     public static final String SPELL = "spell";
@@ -29,11 +35,12 @@ public class SpellBookItem extends MesonItem
     public SpellBookItem(MesonModule module)
     {
         super(module, "spell_book", new Item.Properties()
-            .maxDamage(64));
+            .maxDamage(24));
 
+        // allows different item icons to be shown. Each item icon has a float ref (see model)
         addPropertyOverride(new ResourceLocation("element"), (stack, world, entity) -> {
             Spell spell = getSpell(stack);
-            float out = spell != null && spell.getElement() != null ? spell.getElement().ordinal() : Element.NONE.ordinal();
+            float out = spell != null && spell.getElement() != null ? spell.getElement().ordinal() : Element.BASE.ordinal();
             return out / 10.0F;
         });
     }
@@ -50,11 +57,11 @@ public class SpellBookItem extends MesonItem
         if (!(entity instanceof PlayerEntity)) return false;
 
         PlayerEntity player = (PlayerEntity)entity;
-        ItemStack staff = SpellBookItem.getStaffInOtherHand(player, book);
+        ItemStack staff = SpellBookItem.getStaffFromOtherHand(player, book);
         if (staff == null) return false;
 
         if (StaffItem.castable(staff, player.world.getGameTime())) {
-            StaffItem.cast(player, staff);
+            return StaffItem.cast(player, staff);
         }
 
         return false;
@@ -79,18 +86,6 @@ public class SpellBookItem extends MesonItem
         return spell != null ? spell.getDuration() : 20;
     }
 
-    public int getXpCost(ItemStack book)
-    {
-        Spell spell = getSpell(book);
-        return spell != null ? spell.getXpCost() : 0;
-    }
-
-//    @Override
-//    public ActionResultType onItemUse(ItemUseContext context)
-//    {
-//        return super.onItemUse(context);
-//    }
-
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
@@ -100,12 +95,26 @@ public class SpellBookItem extends MesonItem
         player.setActiveHand(hand);
 
         Spell spell = getSpell(book);
-        if (spell == null || spell.getXpCost() > player.experienceTotal) {
-            result = ActionResultType.FAIL;
-            player.sendStatusMessage(new StringTextComponent("Not enough XP to transfer the spell"), true);
+
+        if (!player.isCreative()) {
+            if (spell == null || spell.getXpCost() > player.experienceTotal) {
+                result = ActionResultType.FAIL;
+                player.sendStatusMessage(new StringTextComponent("Not enough XP to transfer the spell"), true);
+            }
         }
 
         return new ActionResult<>(result, book);
+    }
+
+    @Override
+    public void onUsingTick(ItemStack book, LivingEntity player, int count)
+    {
+        if (player != null
+            && !player.world.isRemote
+            && player.world.getGameTime() % 5 == 0
+        ) {
+            SpellBookItem.effectUseBook((ServerPlayerEntity)player, SpellBookItem.getSpell(book));
+        }
     }
 
     @Override
@@ -114,16 +123,12 @@ public class SpellBookItem extends MesonItem
         if (entity instanceof PlayerEntity && !entity.world.isRemote) {
             PlayerEntity player = (PlayerEntity)entity;
 
-            int xp = player.experienceTotal;
-            if (xp <= 0) return book;
-
-            ItemStack staff = getStaffInOtherHand(player, book);
-            if (staff == null) return book;
-
             int xpCost = this.getXpCost(book);
+            int xp = player.experienceTotal;
+            if (!player.isCreative() && xp <= 0) return book;
 
-            // take XP from player
-            player.giveExperiencePoints(-xpCost);
+            ItemStack staff = getStaffFromOtherHand(player, book);
+            if (staff == null) return book;
 
             // set staff spell
             Spell spell = getSpell(book);
@@ -133,7 +138,14 @@ public class SpellBookItem extends MesonItem
             spell.transfer(player, staff);
 
             // damage the spellbook
-            book.damageItem(1, player, r -> effectUseBook((ServerPlayerEntity)player));
+            book.damageItem(1, player, r -> effectUseBook((ServerPlayerEntity)player, spell));
+
+            // take XP from player
+            player.giveExperiencePoints(-xpCost);
+
+            // inform the player of the spell that was used
+            ITextComponent message = MagicHelper.getSpellInfoText(spell, "event.strange.spellbook.transferred");
+            player.sendStatusMessage(message, true);
 
             // ding
             world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
@@ -154,12 +166,37 @@ public class SpellBookItem extends MesonItem
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
     {
         if (group == ItemGroup.SEARCH) {
-            for (String id : SpellBooks.spells.keySet()) {
-                Spell spell = SpellBooks.spells.get(id);
-                ItemStack book = SpellBookItem.setSpell(new ItemStack(SpellBooks.item), spell);
+            for (String id : Spells.spells.keySet()) {
+                Spell spell = Spells.spells.get(id);
+                ItemStack book = SpellBookItem.setSpell(new ItemStack(Spells.item), spell);
+                book.setDisplayName(MagicHelper.getSpellInfoText(spell));
                 items.add(book);
             }
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack book, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    {
+        super.addInformation(book, world, tooltip, flag);
+        Spell spell = SpellBookItem.getSpell(book);
+        if (spell == null) return;
+
+        ITextComponent descriptionText = new TranslationTextComponent(spell.getDescriptionKey());
+        descriptionText.setStyle((new Style()).setColor(TextFormatting.WHITE));
+
+        ITextComponent affectText = new TranslationTextComponent(spell.getAffectKey());
+        affectText.setStyle((new Style()).setColor(TextFormatting.GRAY));
+
+
+        tooltip.add(descriptionText);
+        tooltip.add(affectText);
+    }
+
+    public int getXpCost(ItemStack book)
+    {
+        Spell spell = getSpell(book);
+        return spell != null ? spell.getXpCost() : 0;
     }
 
     public static ItemStack setSpell(ItemStack book, Spell spell)
@@ -173,15 +210,15 @@ public class SpellBookItem extends MesonItem
     {
         String id = book.getOrCreateTag().getString(SPELL);
 
-        if (SpellBooks.spells.containsKey(id)) {
-            return SpellBooks.spells.get(id);
+        if (Spells.spells.containsKey(id)) {
+            return Spells.spells.get(id);
         }
 
         return null;
     }
 
     @Nullable
-    public static ItemStack getStaffInOtherHand(PlayerEntity player, ItemStack book)
+    public static ItemStack getStaffFromOtherHand(PlayerEntity player, ItemStack book)
     {
         Hand staffHand = player.getHeldItemMainhand() == book ? Hand.OFF_HAND : Hand.MAIN_HAND;
         ItemStack staff = player.getHeldItem(staffHand);
@@ -189,17 +226,17 @@ public class SpellBookItem extends MesonItem
         return staff;
     }
 
-    public static void effectUseBook(ServerPlayerEntity player)
+    public static void effectUseBook(ServerPlayerEntity player, Spell spell)
     {
         ServerWorld world = (ServerWorld) player.world;
         BlockPos pos = player.getPosition();
 
-        double spread = 1.5D;
+        double spread = 1.25D;
         for (int i = 0; i < 1; i++) {
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 5, 0.0D, 0.5D, 0.0D, 3);
+            world.spawnParticle(Spells.enchantParticles.get(spell.getElement()), px, py, pz, 10, 0.0D, 0.5D, 0.0D, 2.2);
         }
     }
 }
