@@ -4,18 +4,10 @@ import com.google.common.base.CaseFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
@@ -104,64 +96,4 @@ public class Spells extends MesonModule
     {
         client = new SpellsClient();
     }
-
-    @SubscribeEvent
-    public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
-    {
-//        if (event.getPlayer() != null
-//            && event.getItemStack().getItem() instanceof SpellBookItem
-//        ) {
-//            PlayerEntity player = event.getPlayer();
-//            ItemStack book = event.getItemStack();
-//            ItemStack staff = SpellBookItem.getStaffInOtherHand(player, book);
-//            if (staff == null || !(staff.getItem() instanceof StaffItem)) return;
-//
-//            Hand staffHand = StaffItem.getHand(player, staff);
-//            PacketHandler.sendToServer(new ServerStaffAction(ServerStaffAction.CAST, staffHand));
-//        }
-    }
-
-    @SubscribeEvent
-    public void onStartUsingItem(LivingEntityUseItemEvent.Start event)
-    {
-        if (event.getEntity() instanceof PlayerEntity
-            && !event.getEntity().world.isRemote
-            && event.getItem().getItem() instanceof SpellBookItem)
-        {
-            PlayerEntity player = (PlayerEntity)event.getEntity();
-            World world = player.world;
-
-            ItemStack book = event.getItem();
-            if (!SpellBookItem.isActivated(book)) return;
-            Spell spell = SpellBookItem.getSpell(book);
-
-            if (spell != null) {
-                if (!player.isCreative() && spell.getXpCost() > player.experienceTotal) {
-                    event.setCanceled(true);
-                    return;
-                }
-
-                float duration = spell.getDuration();
-
-                if (player.isCreative()) duration = 1.0F;
-                event.setDuration((int) duration);
-
-                Meson.log("Start, setting duration to " + duration);
-                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.8F, 1.5F);
-            }
-        }
-    }
-//
-//    @SubscribeEvent
-//    public void onUsingItem(LivingEntityUseItemEvent.Tick event)
-//    {
-//        if (event.getEntity() instanceof PlayerEntity
-//            && !event.getEntity().world.isRemote
-//            && event.getEntity().world.getGameTime() % 5 == 0
-//            && event.getItem().getItem() instanceof SpellBookItem)
-//        {
-//            Meson.log("Ticking");
-//            SpellBookItem.effectUseBook((ServerPlayerEntity)event.getEntity());
-//        }
-//    }
 }

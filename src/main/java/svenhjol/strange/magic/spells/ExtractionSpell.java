@@ -14,11 +14,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.base.StrangeLoader;
-import svenhjol.strange.magic.item.SpellBookItem;
+import svenhjol.strange.magic.item.StaffItem;
 import svenhjol.strange.magic.module.Spells;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class ExtractionSpell extends Spell
 {
@@ -28,11 +29,11 @@ public class ExtractionSpell extends Spell
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
         this.duration = 80;
-        this.xpCost = 100;
+        this.castCost = 100;
     }
 
     @Override
-    public boolean activate(PlayerEntity player, ItemStack book)
+    public boolean activate(PlayerEntity player, ItemStack staff)
     {
         // get the block the player is looking at
         BlockRayTraceResult result = StrangeLoader.getBlockLookedAt(player);
@@ -65,20 +66,20 @@ public class ExtractionSpell extends Spell
             ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
         }
 
-        SpellBookItem.putMeta(book, meta);
+        StaffItem.putMeta(staff, meta);
 
         return true;
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
     {
         World world = player.world;
-        CompoundNBT meta = SpellBookItem.getMeta(book);
+        CompoundNBT meta = StaffItem.getMeta(staff);
 
-        if (!meta.contains("state")) return false;
+        if (!meta.contains("state")) return;
         INBT nbtState = meta.get("state");
-        if (nbtState == null) return false;
+        if (nbtState == null) return;
 
         BlockState srcState = NBTUtil.readBlockState((CompoundNBT) nbtState);
         AtomicBoolean destroyed = new AtomicBoolean(false);
@@ -155,7 +156,7 @@ public class ExtractionSpell extends Spell
             }
         });
 
-        return true;
+        onCast.accept(true);
     }
 
     private boolean isValidState(BlockState state)

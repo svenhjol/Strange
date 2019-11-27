@@ -31,9 +31,11 @@ public abstract class Spell
         FOCUS
     }
 
-    protected int xpCost = 5;
-    protected int duration = 60;
+    protected int castCost = 5;
+    protected int applyCost = 1;
+    protected int duration = 3;
     protected int staffDamage = 1;
+    protected int quantity = 16;
     protected String id;
     protected Element element = Element.BASE;
     protected Affect affect = Affect.NONE;
@@ -78,9 +80,19 @@ public abstract class Spell
         return duration;
     }
 
-    public int getXpCost()
+    public int getCastCost()
     {
-        return xpCost;
+        return castCost;
+    }
+
+    public int getApplyCost()
+    {
+        return applyCost;
+    }
+
+    public int getQuantity()
+    {
+        return quantity;
     }
 
     public int getStaffDamage()
@@ -111,7 +123,7 @@ public abstract class Spell
         return true;
     }
 
-    public abstract boolean cast(PlayerEntity player, ItemStack book);
+    public abstract void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> onCast);
 
     protected void castArea(PlayerEntity player, int[] range, Consumer<List<BlockPos>> onEffect)
     {

@@ -9,6 +9,9 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+
 public class SlownessSpell extends Spell
 {
     public SlownessSpell()
@@ -17,12 +20,14 @@ public class SlownessSpell extends Spell
         this.element = Element.WATER;
         this.affect = Affect.TARGET;
         this.duration = 30;
-        this.xpCost = 20;
+        this.castCost = 20;
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
     {
+        AtomicBoolean didCast = new AtomicBoolean(false);
+
         this.castTarget(player, (result, beam) -> {
             if (result.getType() == RayTraceResult.Type.ENTITY) {
                 EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
@@ -31,10 +36,11 @@ public class SlownessSpell extends Spell
                     LivingEntity living = (LivingEntity) e;
                     living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 120, 1));
                     beam.remove();
+                    didCast.set(true);
                 }
             }
         });
 
-        return true;
+        onCast.accept(didCast.get());
     }
 }

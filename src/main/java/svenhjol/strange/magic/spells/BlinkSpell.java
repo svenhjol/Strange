@@ -10,6 +10,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class BlinkSpell extends Spell
 {
@@ -19,11 +20,11 @@ public class BlinkSpell extends Spell
         this.element = Element.AIR;
         this.affect = Affect.TARGET;
         this.duration = 30;
-        this.xpCost = 30;
+        this.castCost = 30;
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> onCast)
     {
         AtomicBoolean didCast = new AtomicBoolean(false);
 
@@ -44,6 +45,6 @@ public class BlinkSpell extends Spell
             }
         });
 
-        return didCast.get();
+        onCast.accept(didCast.get());
     }
 }

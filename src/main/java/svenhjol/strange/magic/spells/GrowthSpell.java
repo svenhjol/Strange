@@ -7,6 +7,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 
+import java.util.function.Consumer;
+
 public class GrowthSpell extends Spell
 {
     public GrowthSpell()
@@ -17,7 +19,7 @@ public class GrowthSpell extends Spell
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
@@ -53,6 +55,6 @@ public class GrowthSpell extends Spell
             }
         });
 
-        return true;
+        onCast.accept(true);
     }
 }

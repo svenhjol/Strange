@@ -65,6 +65,11 @@
   "item.strange.totem_of_shielding": "Totem of Shielding",
   "item.strange.quest_reward_totem": "Distant Stone Circle",
   "item.strange.spell_book": "Spell Book",
+  "item.strange.wooden_staff": "Wooden Staff",
+  "item.strange.stone_staff": "Stone Staff",
+  "item.strange.iron_staff": "Iron Staff",
+  "item.strange.golden_staff": "Golden Staff",
+  "item.strange.diamond_staff": "Diamond Staff",
 
   "event.strange.quests.accepted": "Quest accepted",
   "event.strange.quests.completed": "Quest completed",
@@ -108,8 +113,6 @@
   "spell.strange.affect.focus": "Affects what player is looking at",
 
   "spell.strange.element.base": "No element",
-  "spell.strange.element.light": "Light Spell",
-  "spell.strange.element.dark": "Dark Spell",
   "spell.strange.element.air": "Air Spell",
   "spell.strange.element.water": "Water Spell",
   "spell.strange.element.earth": "Earth Spell",

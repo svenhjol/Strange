@@ -10,6 +10,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.function.Consumer;
+
 public class LavaFreezingSpell extends Spell
 {
     public LavaFreezingSpell()
@@ -18,11 +20,11 @@ public class LavaFreezingSpell extends Spell
         this.element = Element.WATER;
         this.affect = Affect.AREA;
         this.duration = 100;
-        this.xpCost = 80;
+        this.castCost = 80;
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
     {
         this.castArea(player, new int[] { 5, 1, 5 }, blocks -> {
             World world = player.world;
@@ -50,6 +52,6 @@ public class LavaFreezingSpell extends Spell
             }
         });
 
-        return true;
+        onCast.accept(true);
     }
 }

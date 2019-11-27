@@ -11,6 +11,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.function.Consumer;
+
 public class MagmaMeltingSpell extends Spell
 {
     public MagmaMeltingSpell()
@@ -19,11 +21,11 @@ public class MagmaMeltingSpell extends Spell
         this.element = Element.FIRE;
         this.affect = Affect.AREA;
         this.duration = 100;
-        this.xpCost = 80;
+        this.castCost = 80;
     }
 
     @Override
-    public boolean cast(PlayerEntity player, ItemStack book)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
@@ -52,6 +54,6 @@ public class MagmaMeltingSpell extends Spell
             }
         });
 
-        return true;
+        onCast.accept(true);
     }
 }
