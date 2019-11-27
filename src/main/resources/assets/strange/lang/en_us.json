@@ -42,7 +42,6 @@
   "gui.strange.travel_journal.hold_shift_to_delete": "Hold shift and click delete.",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
 
-
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
 
   "block.strange.runestone": "Runestone",
@@ -56,9 +55,7 @@
   "item.strange.scroll_tier_3": "Journeyman Scroll",
   "item.strange.scroll_tier_4": "Expert Scroll",
   "item.strange.scroll_tier_5": "Master Scroll",
-  "item.strange.totem_of_attracting": "Totem of Attracting",
   "item.strange.totem_of_enchanting": "Totem of Enchanting",
-  "item.strange.totem_of_extracting": "Totem of Extracting",
   "item.strange.totem_of_flying": "Totem of Flying",
   "item.strange.totem_of_holding": "Totem of Holding",
   "item.strange.totem_of_returning": "Totem of Returning",
@@ -85,11 +82,9 @@
   "event.strange.spellbook.activated": "Activated %s",
   "event.strange.spellbook.not_enough_xp": "Not enough XP to activate the spell",
 
-  "totem.strange.attracting": "Searching for %s",
   "totem.strange.holding_item": "Holding one item",
   "totem.strange.holding_items": "Holding %s items",
   "totem.strange.enchanting": "Preserving %s XP",
-  "totem.strange.extracting": "%s at %s",
   "totem.strange.returning": "%s in dimension %s",
 
   "runestone.strange.rune_connects": "This rune connects to %s",
@@ -106,6 +101,9 @@
   "runestone.strange.outer_jungle_pyramid": "a distant jungle temple",
   "runestone.strange.outer_ocean_ruin": "a distant ocean ruin",
 
+  "staff.strange.named_spell": "%s with %s",
+  "staff.strange.uses": "Uses: %s",
+
   "spell.strange.affect.none": "Affects nothing",
   "spell.strange.affect.target": "Affects a distant target",
   "spell.strange.affect.self": "Affects the player",
@@ -120,19 +118,19 @@
 
   "spell.strange.blink.title": "Blink Spell",
   "spell.strange.explosion.title": "Explosion Spell",
+  "spell.strange.extinguish.title": "Lava Freezing Spell",
   "spell.strange.extraction.title": "Extraction Spell",
   "spell.strange.growth.title": "Growth Spell",
   "spell.strange.knockback.title": "Knockback Spell",
-  "spell.strange.lava_freezing.title": "Lava Freezing Spell",
-  "spell.strange.magma_melting.title": "Magma Melting Spell",
   "spell.strange.slowness.title": "Slowness Spell",
+  "spell.strange.thaw.title": "Magma Melting Spell",
 
   "spell.strange.blink.desc": "Teleports to the target location.",
   "spell.strange.explosion.desc": "Explosion at the target location.",
+  "spell.strange.extinguish.desc": "Lava in the area will turn into magma blocks.",
   "spell.strange.extraction.desc": "Extracts a block and places it elsewhere.",
   "spell.strange.growth.desc": "Crops in the area will grow.",
   "spell.strange.knockback.desc": "Flings the target.",
-  "spell.strange.lava_freezing.desc": "Lava in the area will turn into magma blocks.",
-  "spell.strange.magma_melting.desc": "Magma blocks in the area will turn into lava.",
-  "spell.strange.slowness.desc": "Gives slowness to the target."
+  "spell.strange.slowness.desc": "Gives slowness to the target.",
+  "spell.strange.thaw.desc": "Magma blocks in the area will turn into lava."
 }

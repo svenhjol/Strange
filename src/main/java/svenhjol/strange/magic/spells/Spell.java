@@ -11,7 +11,7 @@ import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.iface.IMesonEnum;
 import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.magic.entity.TargettedSpellEntity;
-import svenhjol.strange.magic.module.Spells;
+import svenhjol.strange.magic.module.Magic;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -33,9 +33,9 @@ public abstract class Spell
 
     protected int castCost = 5;
     protected int applyCost = 1;
-    protected int duration = 3;
     protected int staffDamage = 1;
     protected int quantity = 16;
+    protected float duration = 3;
     protected String id;
     protected Element element = Element.BASE;
     protected Affect affect = Affect.NONE;
@@ -75,7 +75,7 @@ public abstract class Spell
         return affect;
     }
 
-    public int getDuration()
+    public float getDuration()
     {
         return duration;
     }
@@ -111,7 +111,7 @@ public abstract class Spell
     public static Spell fromNBT(CompoundNBT tag)
     {
         String id = tag.getString("id");
-        return Spells.spells.getOrDefault(id, null);
+        return Magic.spells.getOrDefault(id, null);
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class Spell
         return true;
     }
 
-    public abstract void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> onCast);
+    public abstract void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> didCast);
 
     protected void castArea(PlayerEntity player, int[] range, Consumer<List<BlockPos>> onEffect)
     {
@@ -143,7 +143,7 @@ public abstract class Spell
                 double px = block.getX() + 0.5D + (Math.random() - 0.5D) * spread;
                 double py = block.getY() + 0.5D * spread;
                 double pz = block.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-                world.spawnParticle(Spells.spellParticles.get(this.getElement()), px, py, pz, 5, 0.0D, 0.0D, 0.0D, 3);
+                world.spawnParticle(Magic.spellParticles.get(this.getElement()), px, py, pz, 5, 0.0D, 0.0D, 0.0D, 3);
             }
         }
     }
@@ -176,7 +176,7 @@ public abstract class Spell
         double px = focusPos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
         double py = focusPos.getY() + 1.5D * spread;
         double pz = focusPos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-        world.spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
+        world.spawnParticle(Magic.enchantParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
     }
 
     public enum Element implements IMesonEnum

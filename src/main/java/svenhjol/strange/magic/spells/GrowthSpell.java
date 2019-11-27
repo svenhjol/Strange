@@ -16,10 +16,12 @@ public class GrowthSpell extends Spell
         super("growth");
         this.element = Element.EARTH;
         this.affect = Affect.AREA;
+        this.duration = 2.0F;
+        this.castCost = 30;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
@@ -55,6 +57,6 @@ public class GrowthSpell extends Spell
             }
         });
 
-        onCast.accept(true);
+        didCast.accept(true);
     }
 }

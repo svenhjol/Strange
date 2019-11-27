@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.charm.world.module.EndermitePowder;
-import svenhjol.strange.magic.module.Spells;
+import svenhjol.strange.magic.module.Magic;
 import svenhjol.strange.magic.spells.Spell;
 
 import java.util.function.BiConsumer;
@@ -33,7 +33,7 @@ public class TargettedSpellEntity extends Entity
     // Forge complains if this is removed
     public TargettedSpellEntity(World world)
     {
-        super(Spells.entity, world);
+        super(Magic.entity, world);
     }
 
     public TargettedSpellEntity(EntityType<? extends Entity> type, World world)
@@ -65,8 +65,8 @@ public class TargettedSpellEntity extends Entity
         super.tick();
 
         double posSpread = 0.5D;
-        double scale = 0.8F;
-        int maxLiveTime = 100;
+        double scale = 0.77F;
+        int maxLiveTime = 80;
 
         if (ticks++ > maxLiveTime) {
             remove();
@@ -80,12 +80,12 @@ public class TargettedSpellEntity extends Entity
         this.posZ += vec3d.z;
 
         ProjectileHelper.rotateTowardsMovement(this, 0.2F);
-        BasicParticleType particleType = Spells.spellParticles.get(element);
+        BasicParticleType particleType = Magic.spellParticles.get(element);
 
         double px = posX + (Math.random() - 0.5) * posSpread;
         double py = posY + (Math.random() - 0.5) * posSpread;
         double pz = posZ + (Math.random() - 0.5) * posSpread;
-        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 20,0.0D, 0.0D, 0.0D, 0.6D);
+        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 15,0.0D, 0.0D, 0.0D, 0.6D);
 
         this.setMotion(vec3d.add(this.accelerationX, this.accelerationY, this.accelerationZ).scale(scale));
         this.setPosition(posX, posY, posZ);
@@ -93,7 +93,7 @@ public class TargettedSpellEntity extends Entity
         px = posX + (Math.random() - 0.5) * posSpread;
         py = posY + (Math.random() - 0.5) * posSpread;
         pz = posZ + (Math.random() - 0.5) * posSpread;
-        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 20,0.0D, 0.0D, 0.0D, 0.6D);
+        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 15,0.0D, 0.0D, 0.0D, 0.6D);
 
         if (this.onImpact != null && this.ticks >= 5) {
             RayTraceResult result = ProjectileHelper.rayTrace(this, true, true, null, RayTraceContext.BlockMode.COLLIDER);

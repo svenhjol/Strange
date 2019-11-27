@@ -12,19 +12,19 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-public class LavaFreezingSpell extends Spell
+public class ExtinguishSpell extends Spell
 {
-    public LavaFreezingSpell()
+    public ExtinguishSpell()
     {
-        super("lava_freezing");
+        super("extinguish");
         this.element = Element.WATER;
         this.affect = Affect.AREA;
-        this.duration = 100;
-        this.castCost = 80;
+        this.duration = 3.0F;
+        this.castCost = 30;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 5, 1, 5 }, blocks -> {
             World world = player.world;
@@ -52,6 +52,6 @@ public class LavaFreezingSpell extends Spell
             }
         });
 
-        onCast.accept(true);
+        didCast.accept(true);
     }
 }

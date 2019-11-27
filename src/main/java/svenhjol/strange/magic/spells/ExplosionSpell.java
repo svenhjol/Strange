@@ -7,9 +7,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class ExplosionSpell extends Spell
@@ -19,15 +17,14 @@ public class ExplosionSpell extends Spell
         super("explosion");
         this.element = Element.FIRE;
         this.affect = Affect.TARGET;
-        this.duration = 80;
-        this.castCost = 100;
+        this.applyCost = 5;
+        this.duration = 3.0F;
+        this.castCost = 30;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        AtomicBoolean didCast = new AtomicBoolean(false);
-
         this.castTarget(player, (result, beam) -> {
             BlockPos pos = null;
 
@@ -38,13 +35,13 @@ public class ExplosionSpell extends Spell
             }
 
             if (pos != null) {
-                World world = player.world;
-                world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 4.0F, Explosion.Mode.BREAK);
                 beam.remove();
-                didCast.set(true);
+                player.world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 4.0F, Explosion.Mode.BREAK);
+                didCast.accept(true);
+                return;
             }
-        });
 
-        onCast.accept(didCast.get());
+            didCast.accept(false);
+        });
     }
 }

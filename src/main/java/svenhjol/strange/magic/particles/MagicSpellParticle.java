@@ -18,8 +18,8 @@ public class MagicSpellParticle extends SpriteTexturedParticle
         this.spriteSet = sprite;
 
         if (xSpeed == 0 && zSpeed == 0) {
-            this.motionX *= 0.1D;
-            this.motionZ *= 0.1D;
+            this.motionX *= 0.08D;
+            this.motionZ *= 0.08D;
         }
         this.motionY *= 0.3D;
 

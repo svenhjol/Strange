@@ -13,19 +13,19 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-public class MagmaMeltingSpell extends Spell
+public class ThawSpell extends Spell
 {
-    public MagmaMeltingSpell()
+    public ThawSpell()
     {
-        super("magma_melting");
+        super("thaw");
         this.element = Element.FIRE;
         this.affect = Affect.AREA;
-        this.duration = 100;
-        this.castCost = 80;
+        this.duration = 3.0F;
+        this.castCost = 30;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
@@ -54,6 +54,6 @@ public class MagmaMeltingSpell extends Spell
             }
         });
 
-        onCast.accept(true);
+        didCast.accept(true);
     }
 }

@@ -8,7 +8,6 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class KnockbackSpell extends Spell
@@ -18,15 +17,13 @@ public class KnockbackSpell extends Spell
         super("knockback");
         this.element = Element.AIR;
         this.affect = Affect.TARGET;
-        this.duration = 20;
-        this.castCost = 30;
+        this.duration = 1.0F;
+        this.castCost = 10;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        AtomicBoolean didCast = new AtomicBoolean(false);
-
         this.castTarget(player, (result, beam) -> {
             if (result.getType() == RayTraceResult.Type.ENTITY) {
                 EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
@@ -35,11 +32,11 @@ public class KnockbackSpell extends Spell
                     LivingEntity living = (LivingEntity) e;
                     living.knockBack(player, 6.0F, (double)MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
                     beam.remove();
-                    didCast.set(true);
+                    didCast.accept(true);
+                    return;
                 }
             }
+            didCast.accept(false);
         });
-
-        onCast.accept(didCast.get());
     }
 }

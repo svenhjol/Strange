@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.magic.item.StaffItem;
-import svenhjol.strange.magic.module.Spells;
+import svenhjol.strange.magic.module.Magic;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,8 +28,8 @@ public class ExtractionSpell extends Spell
         super("extraction");
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
-        this.duration = 80;
-        this.castCost = 100;
+        this.duration = 1.0F;
+        this.castCost = 30;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ExtractionSpell extends Spell
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() + 0.5D * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
+            ((ServerWorld)world).spawnParticle(Magic.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
         }
 
         StaffItem.putMeta(staff, meta);
@@ -72,7 +72,7 @@ public class ExtractionSpell extends Spell
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> onCast)
+    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
         World world = player.world;
         CompoundNBT meta = StaffItem.getMeta(staff);
@@ -156,7 +156,7 @@ public class ExtractionSpell extends Spell
             }
         });
 
-        onCast.accept(true);
+        didCast.accept(true);
     }
 
     private boolean isValidState(BlockState state)

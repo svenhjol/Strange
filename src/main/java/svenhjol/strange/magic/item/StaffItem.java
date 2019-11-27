@@ -1,8 +1,11 @@
 package svenhjol.strange.magic.item;
 
+import com.google.gson.JsonParseException;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
@@ -10,15 +13,14 @@ import net.minecraft.item.TieredItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.IMesonItem;
 import svenhjol.strange.magic.helper.MagicHelper;
-import svenhjol.strange.magic.module.Spells;
+import svenhjol.strange.magic.module.Magic;
 import svenhjol.strange.magic.spells.Spell;
 
 import javax.annotation.Nullable;
@@ -30,9 +32,11 @@ public class StaffItem extends TieredItem implements IMesonItem
     public static final String USES = "quantity";
     public static final String CHARGED = "charged";
     public static final String META = "meta";
+    public static final String ORIGINAL_NAME = "originalName";
 
     protected float capacityMultiplier;
-    protected float reloadMultiplier;
+    protected float durationMultiplier;
+    protected float attackDamage;
 
     public StaffItem(MesonModule module, String type, ItemTier material, float durabilityMultiplier)
     {
@@ -43,8 +47,8 @@ public class StaffItem extends TieredItem implements IMesonItem
         this.register(module, type + "_staff");
 
         // some defaults
-        this.capacityMultiplier = 1.0F;
-        this.reloadMultiplier = 1.0F;
+        this.setCapacityMultiplier(1.0F);
+        this.setDurationMultiplier(1.0F);
     }
 
     @Override
@@ -55,7 +59,21 @@ public class StaffItem extends TieredItem implements IMesonItem
         if (spell == null) return;
 
         ITextComponent spellText = MagicHelper.getSpellInfoText(spell);
+
         tooltip.add(spellText);
+        tooltip.add(new TranslationTextComponent("staff.strange.uses", StaffItem.getUses(staff)));
+    }
+
+    @Override
+    public boolean hasEffect(ItemStack staff)
+    {
+        return StaffItem.isCharged(staff);
+    }
+
+    @Override
+    public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player)
+    {
+        return false;
     }
 
     @Override
@@ -68,9 +86,17 @@ public class StaffItem extends TieredItem implements IMesonItem
         Spell spell = StaffItem.getSpell(staff);
         if (spell == null) return false;
 
+        if (!StaffItem.isCharged(staff)) return false;
         StaffItem.cast(player, staff);
 
         return false;
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker)
+    {
+        target.attackEntityFrom(DamageSource.MAGIC, 4.0F);
+        return super.hitEntity(stack, target, attacker);
     }
 
     @Override
@@ -79,18 +105,22 @@ public class StaffItem extends TieredItem implements IMesonItem
         ActionResultType result = ActionResultType.SUCCESS;
 
         ItemStack staff = player.getHeldItem(hand);
-        player.setActiveHand(hand);
-
         Spell spell = getSpell(staff);
         if (spell == null) return new ActionResult<>(ActionResultType.FAIL, staff);
 
-        if (isCharged(staff)) {
+        if (hand == Hand.OFF_HAND && !(player.getHeldItemMainhand().getItem() instanceof StaffItem) && isCharged(staff)) {
+            // if charged then cast the spell - this is required for staff being in offhand
+            result = ActionResultType.PASS;
             cast(player, staff);
-        }
 
-        if (!player.isCreative() && spell.getCastCost() > player.experienceTotal) {
+        } else if (!player.isCreative() && spell.getCastCost() > player.experienceTotal) {
+            // check there's enough XP to charge the staff
             result = ActionResultType.FAIL;
             player.sendStatusMessage(new StringTextComponent("Not enough XP to cast the spell"), true);
+        }
+
+        if (result == ActionResultType.SUCCESS) {
+            player.setActiveHand(hand);
         }
 
         return new ActionResult<>(result, staff);
@@ -103,7 +133,7 @@ public class StaffItem extends TieredItem implements IMesonItem
 
         Spell spell = getSpell(staff);
         if (spell != null) {
-            duration = spell.getDuration() * 20; // TODO multiply by staff modifier
+            duration = (int)(spell.getDuration() * 20 * ((StaffItem)staff.getItem()).getDurationMultiplier());
         }
 
         return duration;
@@ -114,20 +144,20 @@ public class StaffItem extends TieredItem implements IMesonItem
     {
         if (player != null
             && !player.world.isRemote
-            && player.world.getGameTime() % 6 == 0
+            && player.world.getGameTime() % 5 == 0
         ) {
-            ServerWorld world = (ServerWorld) player.world;
-            BlockPos pos = player.getPosition();
-            Vec3d playerVec = player.getPositionVec();
-            Spell spell = StaffItem.getSpell(book);
+            Spell spell = null;
+            ItemStack heldMain = player.getHeldItemMainhand();
+
+            if (heldMain.getItem() instanceof StaffItem) {
+                spell = StaffItem.getSpell(heldMain);
+            } else {
+                spell = StaffItem.getSpell(book);
+            }
+
             if (spell == null) return;
 
-            for (int i = 0; i < 1; i++) {
-                double px = playerVec.x;
-                double py = playerVec.y + 1.75D;
-                double pz = playerVec.z;
-                world.spawnParticle(Spells.enchantParticles.get(spell.getElement()), px, py, pz, 2 + (int)(count * 0.5F), 0.2D, 0.25D, 0.2D, 2.5);
-            }
+            Magic.effectEnchantStaff((ServerPlayerEntity)player, spell, 2 + (int)(count * 0.5D), 0.2D, 0.2D, 0.2, 2.2D);
         }
     }
 
@@ -165,9 +195,69 @@ public class StaffItem extends TieredItem implements IMesonItem
         return staff;
     }
 
+    public float getCapacityMultiplier()
+    {
+        return capacityMultiplier;
+    }
+
+    public float getDurationMultiplier()
+    {
+        return durationMultiplier;
+    }
+
+    public float getAttackDamage()
+    {
+        return attackDamage;
+    }
+
+    public StaffItem setCapacityMultiplier(float capacityMultiplier)
+    {
+        this.capacityMultiplier = capacityMultiplier;
+        return this;
+    }
+
+    public StaffItem setDurationMultiplier(float durationMultiplier)
+    {
+        this.durationMultiplier = durationMultiplier;
+        return this;
+    }
+
+    public StaffItem setAttackDamage(float attackDamage)
+    {
+        this.attackDamage = attackDamage;
+        return this;
+    }
+
+    public static int getUses(ItemStack staff)
+    {
+        return staff.getOrCreateTag().getInt(USES);
+    }
+
     public static CompoundNBT getMeta(ItemStack staff)
     {
         return staff.getOrCreateChildTag(META);
+    }
+
+    public static ITextComponent getOriginalName(ItemStack staff)
+    {
+        CompoundNBT tag = staff.getOrCreateTag();
+        if (tag.contains(ORIGINAL_NAME)) {
+            try {
+                ITextComponent name = ITextComponent.Serializer.fromJson(tag.getString(ORIGINAL_NAME));
+                if (name != null) {
+                    return name;
+                }
+            } catch (JsonParseException e) {
+                tag.remove(ORIGINAL_NAME);
+            }
+        }
+        return new TranslationTextComponent(staff.getTranslationKey());
+    }
+
+    public static void putOriginalName(ItemStack staff, ITextComponent name)
+    {
+        CompoundNBT tag = staff.getOrCreateTag();
+        tag.putString(ORIGINAL_NAME, ITextComponent.Serializer.toJson(name));
     }
 
     @Nullable
@@ -176,25 +266,54 @@ public class StaffItem extends TieredItem implements IMesonItem
         requireStaff(staff);
 
         String id = staff.getOrCreateTag().getString(SPELL);
-        return Spells.spells.getOrDefault(id, null);
+        return Magic.spells.getOrDefault(id, null);
     }
 
-    public static ItemStack putSpell(ItemStack staff, Spell spell)
+    public static void putSpell(ItemStack staff, Spell spell)
     {
         requireStaff(staff);
 
         CompoundNBT tag = staff.getOrCreateTag();
         tag.putString(SPELL, spell.getId());
-        tag.putInt(USES, spell.getQuantity());
-
-        return staff;
+        putUses(staff, (int)(spell.getQuantity() * ((StaffItem)staff.getItem()).getCapacityMultiplier()));
     }
 
-    public static ItemStack putCharged(ItemStack staff, boolean val)
+    public static void putUses(ItemStack staff, int uses)
+    {
+        staff.getOrCreateTag().putInt(USES, uses);
+    }
+
+    public static void putCharged(ItemStack staff, boolean val)
     {
         CompoundNBT tag = staff.getOrCreateTag();
         tag.putBoolean(CHARGED, val);
-        return staff;
+    }
+
+    public static void putMeta(ItemStack staff, CompoundNBT tag)
+    {
+        requireStaff(staff);
+        CompoundNBT staffTag = staff.getOrCreateTag();
+        staffTag.put(META, tag);
+    }
+
+    public static void cast(PlayerEntity player, ItemStack staff)
+    {
+        if (player.world.isRemote) return;
+
+        Spell spell = getSpell(staff);
+        if (spell == null) return;
+
+        putCharged(staff, false); // until the spell returns
+
+        spell.cast(player, staff, result -> {
+            if (result) {
+                decreaseUses(staff);
+                staff.damageItem(spell.getStaffDamage(), player, r -> {});
+            } else {
+                // wasn't successful, set to charged
+                putCharged(staff, true);
+            }
+        });
     }
 
     public static boolean isCharged(ItemStack staff)
@@ -206,46 +325,23 @@ public class StaffItem extends TieredItem implements IMesonItem
     public static void decreaseUses(ItemStack staff)
     {
         CompoundNBT tag = staff.getOrCreateTag();
-        int remaining = tag.getInt(USES);
+        int remaining = tag.getInt(USES) - 1;
 
-        if (remaining == 0) {
-            tag.remove(SPELL);
-            tag.remove(USES);
+        if (remaining <= 0) {
+            clear(staff);
         } else {
-            tag.putInt(USES, --remaining);
+            tag.putInt(USES, remaining);
         }
     }
 
-    public static ItemStack putMeta(ItemStack staff, CompoundNBT tag)
+    public static void clear(ItemStack staff)
     {
-        requireStaff(staff);
-        CompoundNBT staffTag = staff.getOrCreateTag();
-        staffTag.put(META, tag);
-
-        return staff;
-    }
-
-    @Nullable
-    public static Hand getHand(PlayerEntity player, ItemStack staff)
-    {
-        if (!isStaff(staff)) return null;
-        return player.getHeldItemMainhand() == staff ? Hand.MAIN_HAND : Hand.OFF_HAND;
-    }
-
-    public static void cast(PlayerEntity player, ItemStack staff)
-    {
-        if (player.world.isRemote) return;
-
-        Spell spell = getSpell(staff);
-        if (spell == null) return;
-
-        spell.cast(player, staff, result -> {
-            if (result) {
-                putCharged(staff, false);
-                decreaseUses(staff);
-                staff.damageItem(spell.getStaffDamage(), player, r -> {});
-            }
-        });
+        CompoundNBT tag = staff.getOrCreateTag();
+        tag.remove(SPELL);
+        tag.remove(META);
+        tag.remove(USES);
+        tag.remove(CHARGED);
+        staff.setDisplayName(StaffItem.getOriginalName(staff));
     }
 
     public static boolean isStaff(ItemStack staff)

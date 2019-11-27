@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.magic.helper.MagicHelper;
-import svenhjol.strange.magic.module.Spells;
+import svenhjol.strange.magic.module.Magic;
 import svenhjol.strange.magic.spells.Spell;
 import svenhjol.strange.magic.spells.Spell.Element;
 
@@ -41,13 +41,6 @@ public class SpellBookItem extends MesonItem
     }
 
     @Override
-    public int getUseDuration(ItemStack book)
-    {
-        Spell spell = getSpell(book);
-        return spell != null ? spell.getDuration() * 20 : 20;
-    }
-
-    @Override
     public String getTranslationKey(ItemStack stack)
     {
         Spell spell = getSpell(stack);
@@ -58,9 +51,9 @@ public class SpellBookItem extends MesonItem
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
     {
         if (group == ItemGroup.SEARCH) {
-            for (String id : Spells.spells.keySet()) {
-                Spell spell = Spells.spells.get(id);
-                ItemStack book = SpellBookItem.putSpell(new ItemStack(Spells.item), spell);
+            for (String id : Magic.spells.keySet()) {
+                Spell spell = Magic.spells.get(id);
+                ItemStack book = SpellBookItem.putSpell(new ItemStack(Magic.book), spell);
                 book.setDisplayName(MagicHelper.getSpellInfoText(spell));
                 items.add(book);
             }
@@ -84,19 +77,13 @@ public class SpellBookItem extends MesonItem
         tooltip.add(affectText);
     }
 
-    public int getXpCost(ItemStack book)
-    {
-        Spell spell = getSpell(book);
-        return spell != null ? spell.getCastCost() : 0;
-    }
-
     @Nullable
     public static Spell getSpell(ItemStack book)
     {
         String id = book.getOrCreateTag().getString(SPELL);
 
-        if (Spells.spells.containsKey(id)) {
-            return Spells.spells.get(id);
+        if (Magic.spells.containsKey(id)) {
+            return Magic.spells.get(id);
         }
 
         return null;
