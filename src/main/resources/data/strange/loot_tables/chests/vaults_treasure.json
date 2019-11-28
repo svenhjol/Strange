@@ -10,19 +10,9 @@
           "weight": 10
         },
         {
-          "name": "strange:totem_of_attracting",
-          "type": "minecraft:item",
-          "weight": 10
-        },
-        {
           "name": "strange:totem_of_shielding",
           "type": "minecraft:item",
           "weight": 10
-        },
-        {
-          "name": "strange:totem_of_extracting",
-          "type": "minecraft:item",
-          "weight": 7
         },
         {
           "name": "strange:totem_of_enchanting",
@@ -30,14 +20,19 @@
           "weight": 7
         },
         {
+          "name": "minecraft:totem_of_undying",
+          "type": "minecraft:item",
+          "weight": 6
+        },
+        {
           "name": "strange:totem_of_flying",
           "type": "minecraft:item",
-          "weight": 7
+          "weight": 6
         },
         {
           "name": "strange:totem_of_holding",
           "type": "minecraft:item",
-          "weight": 7
+          "weight": 6
         }
       ]
     },

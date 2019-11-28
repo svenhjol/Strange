@@ -1,9 +1,6 @@
 package svenhjol.strange.magic.spells;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.MagmaBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -21,7 +18,7 @@ public class ThawSpell extends Spell
         this.element = Element.FIRE;
         this.affect = Affect.AREA;
         this.duration = 3.0F;
-        this.castCost = 30;
+        this.castCost = 15;
     }
 
     @Override
@@ -40,6 +37,9 @@ public class ThawSpell extends Spell
 
                 if (block instanceof MagmaBlock) {
                     world.setBlockState(pos, Blocks.LAVA.getDefaultState(), 2);
+                    didMelt = true;
+                } else if (block instanceof IceBlock) {
+                    world.setBlockState(pos, Blocks.WATER.getDefaultState(), 2);
                     didMelt = true;
                 }
 

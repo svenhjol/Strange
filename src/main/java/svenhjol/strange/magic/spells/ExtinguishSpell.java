@@ -20,7 +20,7 @@ public class ExtinguishSpell extends Spell
         this.element = Element.WATER;
         this.affect = Affect.AREA;
         this.duration = 3.0F;
-        this.castCost = 30;
+        this.castCost = 15;
     }
 
     @Override
@@ -39,6 +39,9 @@ public class ExtinguishSpell extends Spell
 
                 if (state == Blocks.LAVA.getDefaultState()) {
                     world.setBlockState(pos, Blocks.MAGMA_BLOCK.getDefaultState(), 2);
+                    didFreeze = true;
+                } else if (state == Blocks.WATER.getDefaultState()) {
+                    world.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
                     didFreeze = true;
                 }
 

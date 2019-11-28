@@ -40,7 +40,7 @@ public class StoneCircles extends MesonModule
     public static double stoneCircleChance = 0.2D;
 
     @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
-    public static double vaultChance = 0.33D;
+    public static double vaultChance = 0.5D;
 
     @Config(name = "Vault generation size", description = "Maximum number of rooms generated in any vault corridor.")
     public static int vaultSize = 6;

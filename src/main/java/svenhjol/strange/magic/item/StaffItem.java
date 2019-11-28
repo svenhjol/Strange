@@ -6,10 +6,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.TieredItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -58,9 +55,8 @@ public class StaffItem extends TieredItem implements IMesonItem
         Spell spell = StaffItem.getSpell(staff);
         if (spell == null) return;
 
-        ITextComponent spellText = MagicHelper.getSpellInfoText(spell);
-
-        tooltip.add(spellText);
+//        ITextComponent spellText = MagicHelper.getSpellInfoText(spell);
+//        tooltip.add(spellText);
         tooltip.add(new TranslationTextComponent("staff.strange.uses", StaffItem.getUses(staff)));
     }
 
@@ -108,11 +104,16 @@ public class StaffItem extends TieredItem implements IMesonItem
         Spell spell = getSpell(staff);
         if (spell == null) return new ActionResult<>(ActionResultType.FAIL, staff);
 
-        if (hand == Hand.OFF_HAND && !(player.getHeldItemMainhand().getItem() instanceof StaffItem) && isCharged(staff)) {
-            // if charged then cast the spell - this is required for staff being in offhand
-            result = ActionResultType.PASS;
-            cast(player, staff);
-
+        if (isCharged(staff)) {
+            if (player.getHeldItemOffhand().getItem() instanceof StaffItem
+                && !(player.getHeldItemMainhand().getItem() instanceof StaffItem)
+            ) {
+                // if charged then cast the spell - this is required for staff being in offhand
+                result = ActionResultType.PASS;
+                cast(player, staff);
+            } else {
+                result = ActionResultType.FAIL;
+            }
         } else if (!player.isCreative() && spell.getCastCost() > player.experienceTotal) {
             // check there's enough XP to charge the staff
             result = ActionResultType.FAIL;
@@ -124,6 +125,12 @@ public class StaffItem extends TieredItem implements IMesonItem
         }
 
         return new ActionResult<>(result, staff);
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack staff)
+    {
+        return UseAction.BOW;
     }
 
     @Override
@@ -146,7 +153,7 @@ public class StaffItem extends TieredItem implements IMesonItem
             && !player.world.isRemote
             && player.world.getGameTime() % 5 == 0
         ) {
-            Spell spell = null;
+            Spell spell;
             ItemStack heldMain = player.getHeldItemMainhand();
 
             if (heldMain.getItem() instanceof StaffItem) {
@@ -203,11 +210,6 @@ public class StaffItem extends TieredItem implements IMesonItem
     public float getDurationMultiplier()
     {
         return durationMultiplier;
-    }
-
-    public float getAttackDamage()
-    {
-        return attackDamage;
     }
 
     public StaffItem setCapacityMultiplier(float capacityMultiplier)
@@ -276,6 +278,11 @@ public class StaffItem extends TieredItem implements IMesonItem
         CompoundNBT tag = staff.getOrCreateTag();
         tag.putString(SPELL, spell.getId());
         putUses(staff, (int)(spell.getQuantity() * ((StaffItem)staff.getItem()).getCapacityMultiplier()));
+
+        ITextComponent originalName = staff.getDisplayName();
+        StaffItem.putOriginalName(staff, originalName);
+
+        staff.setDisplayName(new TranslationTextComponent("staff.strange.named_spell", originalName.getFormattedText(), MagicHelper.getSpellInfoText(spell).getFormattedText()));
     }
 
     public static void putUses(ItemStack staff, int uses)
@@ -310,7 +317,7 @@ public class StaffItem extends TieredItem implements IMesonItem
                 decreaseUses(staff);
                 staff.damageItem(spell.getStaffDamage(), player, r -> {});
             } else {
-                // wasn't successful, set to charged
+                // wasn't successful, set back to charged
                 putCharged(staff, true);
             }
         });

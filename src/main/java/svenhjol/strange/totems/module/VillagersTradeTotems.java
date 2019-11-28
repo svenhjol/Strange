@@ -30,7 +30,7 @@ public class VillagersTradeTotems extends MesonModule
     public static final String LIBRARIAN = "librarian";
     public static List<Item> availableTotems = new ArrayList<>();
 
-    @Config(name = "Trade level", description = "Level at which a villager will trade totems.")
+    @Config(name = "Trade level", description = "Level at which a merchant will trade totems.")
     public static int tradeLevel = 1;
 
     @Config(name = "Base buy cost", description = "Minimum number of emeralds required to buy a totem.")
@@ -42,7 +42,7 @@ public class VillagersTradeTotems extends MesonModule
     @Config(name = "Additional cost", description = "Maximum additional emeralds required to buy or sell.")
     public static int additional = 16;
 
-    @Config(name = "Outer villagers only", description = "If true, only villagers from 'outer lands' villages have totem trades.\n" +
+    @Config(name = "Outer villagers only", description = "If true, only merchants from 'outer lands' villages have totem trades.\n" +
         "This has no effect if the Outerlands module is disabled.")
     public static boolean outerOnly = true;
 
@@ -72,7 +72,7 @@ public class VillagersTradeTotems extends MesonModule
         return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
     }
 
-    static class TotemForEmeralds implements ITrade
+    public static class TotemForEmeralds implements ITrade
     {
         @Nullable
         @Override
@@ -85,7 +85,7 @@ public class VillagersTradeTotems extends MesonModule
         }
     }
 
-    static class EmeraldsForTotem implements ITrade
+    public static class EmeraldsForTotem implements ITrade
     {
         @Nullable
         @Override

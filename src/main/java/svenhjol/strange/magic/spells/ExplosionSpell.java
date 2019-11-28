@@ -19,7 +19,7 @@ public class ExplosionSpell extends Spell
         this.affect = Affect.TARGET;
         this.applyCost = 5;
         this.duration = 3.0F;
-        this.castCost = 30;
+        this.castCost = 15;
     }
 
     @Override

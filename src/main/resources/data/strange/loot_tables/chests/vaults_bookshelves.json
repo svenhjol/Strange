@@ -2,7 +2,7 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 7,
+      "rolls": 6,
       "entries": [
         {
           "name": "minecraft:book",
@@ -12,7 +12,7 @@
         {
           "name": "minecraft:book",
           "type": "minecraft:item",
-          "weight": 2,
+          "weight": 1,
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "rolls": 2,
+      "rolls": 3,
       "entries": [
         {
           "name": "minecraft:book",

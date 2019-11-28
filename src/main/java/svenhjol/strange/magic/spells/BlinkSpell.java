@@ -20,7 +20,7 @@ public class BlinkSpell extends Spell
         this.affect = Affect.TARGET;
         this.applyCost = 2;
         this.duration = 1.0F;
-        this.castCost = 10;
+        this.castCost = 5;
     }
 
     @Override

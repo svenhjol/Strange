@@ -18,7 +18,7 @@ public class KnockbackSpell extends Spell
         this.element = Element.AIR;
         this.affect = Affect.TARGET;
         this.duration = 1.0F;
-        this.castCost = 10;
+        this.castCost = 5;
     }
 
     @Override

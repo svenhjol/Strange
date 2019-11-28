@@ -118,12 +118,12 @@
 
   "spell.strange.blink.title": "Blink Spell",
   "spell.strange.explosion.title": "Explosion Spell",
-  "spell.strange.extinguish.title": "Lava Freezing Spell",
+  "spell.strange.extinguish.title": "Extinguish Spell",
   "spell.strange.extraction.title": "Extraction Spell",
   "spell.strange.growth.title": "Growth Spell",
   "spell.strange.knockback.title": "Knockback Spell",
   "spell.strange.slowness.title": "Slowness Spell",
-  "spell.strange.thaw.title": "Magma Melting Spell",
+  "spell.strange.thaw.title": "Thaw Spell",
 
   "spell.strange.blink.desc": "Teleports to the target location.",
   "spell.strange.explosion.desc": "Explosion at the target location.",

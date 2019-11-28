@@ -19,7 +19,7 @@ public class SlownessSpell extends Spell
         this.element = Element.WATER;
         this.affect = Affect.TARGET;
         this.duration = 1.0F;
-        this.castCost = 10;
+        this.castCost = 5;
     }
 
     @Override

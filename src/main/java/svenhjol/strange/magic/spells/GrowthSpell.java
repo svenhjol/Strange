@@ -17,7 +17,7 @@ public class GrowthSpell extends Spell
         this.element = Element.EARTH;
         this.affect = Affect.AREA;
         this.duration = 2.0F;
-        this.castCost = 30;
+        this.castCost = 15;
     }
 
     @Override

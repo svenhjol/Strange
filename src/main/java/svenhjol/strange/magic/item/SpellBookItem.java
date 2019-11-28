@@ -1,11 +1,17 @@
 package svenhjol.strange.magic.item;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -93,5 +99,20 @@ public class SpellBookItem extends MesonItem
     {
         book.getOrCreateTag().putString(SPELL, spell.getId()); // add new spell
         return book;
+    }
+
+    @Override
+    public ActionResultType onItemUse(ItemUseContext context)
+    {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        BlockState state = world.getBlockState(pos);
+
+        if (state.getBlock() == Blocks.LECTERN) {
+            boolean result = LecternBlock.tryPlaceBook(world, pos, state, context.getItem());
+            return result ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        }
+
+        return ActionResultType.PASS;
     }
 }

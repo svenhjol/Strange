@@ -18,6 +18,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.*;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
 import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.block.BookshelfChestBlock;
@@ -130,13 +131,17 @@ public class VaultPieces
 
                 if (f < 0.66F) {
                     state = Blocks.CHEST.getDefaultState();
+                    ResourceLocation lootTable = StrangeLoot.CHESTS_VAULT_TREASURE;
+
                     if (data.contains("north")) state = state.with(ChestBlock.FACING, Direction.NORTH);
                     if (data.contains("east")) state = state.with(ChestBlock.FACING, Direction.EAST);
                     if (data.contains("south")) state = state.with(ChestBlock.FACING, Direction.SOUTH);
                     if (data.contains("west")) state = state.with(ChestBlock.FACING, Direction.WEST);
+                    if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
+                    if (data.contains("stronghold")) lootTable = LootTables.CHESTS_STRONGHOLD_LIBRARY;
 
                     world.setBlockState(pos, state, 2);
-                    LockableLootTileEntity.setLootTable(world, rand, pos, StrangeLoot.CHESTS_VAULT_TREASURE);
+                    LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
                     return;
                 }
 
@@ -230,6 +235,14 @@ public class VaultPieces
                     return;
                 }
 
+            } else if (data.contains("lectern")) {
+
+                state = Blocks.LECTERN.getDefaultState();
+                if (data.contains("north")) state = state.with(LecternBlock.FACING, Direction.SOUTH);
+                if (data.contains("east")) state = state.with(LecternBlock.FACING, Direction.WEST);
+                if (data.contains("south")) state = state.with(LecternBlock.FACING, Direction.NORTH);
+                if (data.contains("west")) state = state.with(LecternBlock.FACING, Direction.EAST);
+
             } else if (data.equals("bookshelf")) {
 
                 if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.2F) {
@@ -281,6 +294,7 @@ public class VaultPieces
                         Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
                         Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
                         Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
+                        Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
                         Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
                         Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
                         Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
@@ -291,6 +305,7 @@ public class VaultPieces
                         Blocks.COBWEB.getDefaultState(),
                         Blocks.HAY_BLOCK.getDefaultState(),
                         Blocks.JUKEBOX.getDefaultState(),
+                        Blocks.NOTE_BLOCK.getDefaultState(),
                         Blocks.FLETCHING_TABLE.getDefaultState(),
                         Blocks.SMITHING_TABLE.getDefaultState(),
                         Blocks.CRAFTING_TABLE.getDefaultState(),
@@ -298,11 +313,14 @@ public class VaultPieces
                         Blocks.TNT.getDefaultState(),
                         Blocks.WHITE_WOOL.getDefaultState(),
                         Blocks.RED_WOOL.getDefaultState(),
+                        Blocks.BLUE_WOOL.getDefaultState(),
                         Blocks.BLACK_WOOL.getDefaultState(),
                         Blocks.ORANGE_WOOL.getDefaultState(),
                         Blocks.OBSIDIAN.getDefaultState(),
                         Blocks.IRON_BLOCK.getDefaultState(),
+                        Blocks.ANVIL.getDefaultState(),
                         Blocks.CHIPPED_ANVIL.getDefaultState(),
+                        Blocks.DAMAGED_ANVIL.getDefaultState(),
                         Blocks.BELL.getDefaultState()
                     ));
 

@@ -29,7 +29,7 @@ public class ExtractionSpell extends Spell
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
         this.duration = 1.0F;
-        this.castCost = 30;
+        this.castCost = 15;
     }
 
     @Override
