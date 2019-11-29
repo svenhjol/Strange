@@ -36,6 +36,12 @@
       "strange:staff_charge_long"
     ]
   },
+  "staff_empty": {
+    "category": "players",
+    "sounds": [
+      "strange:staff_empty"
+    ]
+  },
   "quest_action_complete": {
     "category": "players",
     "sounds": [

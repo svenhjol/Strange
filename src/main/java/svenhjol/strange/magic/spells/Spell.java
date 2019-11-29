@@ -34,7 +34,7 @@ public abstract class Spell
     protected int castCost = 5;
     protected int applyCost = 1;
     protected int staffDamage = 1;
-    protected int quantity = 16;
+    protected int quantity = 32;
     protected float duration = 3;
     protected String id;
     protected Element element = Element.BASE;

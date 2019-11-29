@@ -127,14 +127,13 @@ public class StaffItem extends TieredItem implements IMesonItem
 
             if (spell.getDuration() < 1.5F) {
                 sound = StrangeSounds.STAFF_CHARGE_SHORT;
-            } else if (spell.getDuration() < 3.5F) {
+            } else if (spell.getDuration() < 3.0F) {
                 sound = StrangeSounds.STAFF_CHARGE_MEDIUM;
             } else {
                 sound = StrangeSounds.STAFF_CHARGE_LONG;
             }
 
-            player.world.playSound(null, player.getPosition(), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
+            player.world.playSound(null, player.getPosition(), sound, SoundCategory.PLAYERS, 0.5F, 1.0F);
         }
 
         return new ActionResult<>(result, staff);
@@ -328,8 +327,11 @@ public class StaffItem extends TieredItem implements IMesonItem
 
         spell.cast(player, staff, result -> {
             if (result) {
-                decreaseUses(staff);
+                boolean hasUses = decreaseUses(staff);
                 staff.damageItem(spell.getStaffDamage(), player, r -> {});
+                if (!hasUses) {
+                    player.world.playSound(null, player.getPosition(), StrangeSounds.STAFF_EMPTY, SoundCategory.PLAYERS, 0.75F, 1.0F);
+                }
             } else {
                 // wasn't successful, set back to charged
                 putCharged(staff, true);
@@ -344,15 +346,17 @@ public class StaffItem extends TieredItem implements IMesonItem
         return tag.contains(CHARGED) && tag.getBoolean(CHARGED);
     }
 
-    public static void decreaseUses(ItemStack staff)
+    public static boolean decreaseUses(ItemStack staff)
     {
         CompoundNBT tag = staff.getOrCreateTag();
         int remaining = tag.getInt(USES) - 1;
 
         if (remaining <= 0) {
             clear(staff);
+            return false;
         } else {
             tag.putInt(USES, remaining);
+            return true;
         }
     }
 
