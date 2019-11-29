@@ -186,7 +186,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
 
             } else {
 
-                config.runeChance = 0.65F;
+                config.runeChance = 0.7F;
                 config.radius = rand.nextInt(6) + 5;
                 config.columnMinHeight = 3;
                 config.columnVariation = 2;

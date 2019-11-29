@@ -36,9 +36,6 @@ public class StoneCircles extends MesonModule
     public static final String NAME = "stone_circle";
     public static Structure<StoneCircleConfig> structure;
 
-    @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating under correct conditions.")
-    public static double stoneCircleChance = 1.0D;
-
     @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
     public static double vaultChance = 0.66D;
 
@@ -73,7 +70,6 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
-//        RegistryHandler.registerStructure(structure, ID);
         RegistryHandler.registerFeature(structure, new ResourceLocation("stone_circle"));
         RegistryHandler.registerStructurePiece(StoneCircleStructure.STONE_CIRCLE_PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
         RegistryHandler.registerStructurePiece(VaultStructure.VAULT_PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
@@ -86,28 +82,12 @@ public class StoneCircles extends MesonModule
         Registry.BIOME.forEach(biome -> {
             biome.addFeature(
                 GenerationStage.Decoration.SURFACE_STRUCTURES,
-                Biome.createDecoratedFeature(structure, new StoneCircleConfig((float) stoneCircleChance), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+                Biome.createDecoratedFeature(structure, new StoneCircleConfig(1.0F), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
         });
 
         validBiomes.forEach(biome -> {
-            biome.addStructure(structure, new StoneCircleConfig((float) stoneCircleChance));
+            biome.addStructure(structure, new StoneCircleConfig(1.0F));
         });
-
-//        Advancement advancement2 = Advancement.Builder
-//            .builder()
-//            .withDisplay(Runestones.block,
-//                new TranslationTextComponent("advancements.strange.stonecircles.find.title"),
-//                new TranslationTextComponent("advancements.strange.stonecircles.find.description"),
-//                null,
-//                FrameType.TASK,
-//                true,
-//                true,
-//                false)
-//            .withCriterion("fortress",
-//                PositionTrigger.Instance.forLocation(
-//                    LocationPredicate.forFeature(StoneCircles.structure)))
-//            .r
-
     }
 
     @Override
