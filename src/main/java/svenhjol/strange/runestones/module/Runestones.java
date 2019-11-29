@@ -2,7 +2,6 @@ package svenhjol.strange.runestones.module;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -33,8 +30,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PacketHandler;
-import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -43,7 +38,6 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
-import svenhjol.strange.runestones.message.ClientRunestonesInteract;
 
 import java.util.*;
 
@@ -228,7 +222,7 @@ public class Runestones extends MesonModule
                 event.setCanceled(true);
                 event.getEntity().remove();
                 playerTeleport.put(player.getUniqueID(), pos); // prepare teleport, tick handles it
-                PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.ACTIVATE, pos), (ServerPlayerEntity)player);
+                effectActivate(world, pos);
             }
         }
     }
@@ -250,25 +244,23 @@ public class Runestones extends MesonModule
             Vec3d vec3d2 = vec3d.add(vec3d1.x * len, vec3d1.y * len, vec3d1.z * len);
             BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
 
-            if (result.getPos() != null) {
-                BlockPos runePos = result.getPos();
-                BlockState lookedAt = world.getBlockState(runePos);
-                if (lookedAt.getBlock() == Runestones.block) {
-                    IRunestonesCapability cap = Runestones.getCapability(player);
-                    int rune = lookedAt.get(RunestoneBlock.RUNE);
-                    if (cap.getDiscoveredTypes().contains(rune)) {
-                        TranslationTextComponent message;
-                        TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + dests.get(rune).description);
-                        BlockPos dest = cap.getDestination(runePos);
-                        if (dest != null) {
-                            PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.TRAVELLED, runePos), (ServerPlayerEntity)player);
-                            message = new TranslationTextComponent("runestone.strange.rune_travelled", description, dest.getX(), dest.getZ());
-                        } else {
-                            PacketHandler.sendTo(new ClientRunestonesInteract(ClientRunestonesInteract.DISCOVERED, runePos), (ServerPlayerEntity)player);
-                            message = new TranslationTextComponent("runestone.strange.rune_connects", description);
-                        }
-                        player.sendStatusMessage(message, true);
+            BlockPos runePos = result.getPos();
+            BlockState lookedAt = world.getBlockState(runePos);
+            if (lookedAt.getBlock() == Runestones.block) {
+                IRunestonesCapability cap = Runestones.getCapability(player);
+                int rune = lookedAt.get(RunestoneBlock.RUNE);
+                if (cap.getDiscoveredTypes().contains(rune)) {
+                    TranslationTextComponent message;
+                    TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + dests.get(rune).description);
+                    BlockPos dest = cap.getDestination(runePos);
+                    if (dest != null) {
+                        effectTravelled(world, runePos);
+                        message = new TranslationTextComponent("runestone.strange.rune_travelled", description, dest.getX(), dest.getZ());
+                    } else {
+                        effectDiscovered(world, runePos);
+                        message = new TranslationTextComponent("runestone.strange.rune_connects", description);
                     }
+                    player.sendStatusMessage(message, true);
                 }
             }
 
@@ -376,49 +368,33 @@ public class Runestones extends MesonModule
         });
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void effectActivate(BlockPos pos)
+    public static void effectActivate(World world, BlockPos pos)
     {
-        ClientWorld world = ClientHelper.getClientWorld();
-        PlayerEntity player = ClientHelper.getClientPlayer();
-
         double spread = 0.75D;
-        for (int i = 0; i < 10; i++) {
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.addParticle(ParticleTypes.PORTAL, px, py, pz, 0.3D, 0.3D, 0.3D);
-        }
-        world.playSound(player, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
+        double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+        double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
+        double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+        ((ServerWorld)world).spawnParticle(ParticleTypes.PORTAL, px, py, pz, 10,0.3D, 0.3D, 0.3D, 0.3D);
+        world.playSound(null, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 0.6F, 1.05F);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void effectTravelled(BlockPos pos)
+    public static void effectTravelled(World world, BlockPos pos)
     {
-        ClientWorld world = ClientHelper.getClientWorld();
-
         double spread = 1.75D;
-        for (int i = 0; i < 10; i++) {
+        double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+        double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
+        double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+        ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 10,0.1D, 0.1D, 0.1D, 0.2D);
+    }
+
+    public static void effectDiscovered(World world, BlockPos pos)
+    {
+        double spread = 1.75D;
+        if (world.rand.nextFloat() < 0.35F) {
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.1D, 0.1D, 0.1D);
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void effectDiscovered(BlockPos pos)
-    {
-        ClientWorld world = ClientHelper.getClientWorld();
-
-        double spread = 1.75D;
-        if (new Random().nextFloat() < 0.35F) {
-            for (int i = 0; i < 2; i++) {
-                double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-                double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
-                double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-                world.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.02D, 0.02D, 0.02D);
-            }
+            ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 3, 0.02D, 0.02D, 0.02D, 0.2D);
         }
     }
 
