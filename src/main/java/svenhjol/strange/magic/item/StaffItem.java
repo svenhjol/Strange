@@ -16,6 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.IMesonItem;
+import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.magic.helper.MagicHelper;
 import svenhjol.strange.magic.module.Magic;
 import svenhjol.strange.magic.spells.Spell;
@@ -122,6 +123,18 @@ public class StaffItem extends TieredItem implements IMesonItem
 
         if (result == ActionResultType.SUCCESS) {
             player.setActiveHand(hand);
+            SoundEvent sound;
+
+            if (spell.getDuration() < 1.5F) {
+                sound = StrangeSounds.STAFF_CHARGE_SHORT;
+            } else if (spell.getDuration() < 3.5F) {
+                sound = StrangeSounds.STAFF_CHARGE_MEDIUM;
+            } else {
+                sound = StrangeSounds.STAFF_CHARGE_LONG;
+            }
+
+            player.world.playSound(null, player.getPosition(), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
         }
 
         return new ActionResult<>(result, staff);
@@ -311,6 +324,7 @@ public class StaffItem extends TieredItem implements IMesonItem
         if (spell == null) return;
 
         putCharged(staff, false); // until the spell returns
+        player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_CAST, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
         spell.cast(player, staff, result -> {
             if (result) {
@@ -319,6 +333,7 @@ public class StaffItem extends TieredItem implements IMesonItem
             } else {
                 // wasn't successful, set back to charged
                 putCharged(staff, true);
+                player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_FAIL, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         });
     }

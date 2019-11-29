@@ -11,7 +11,12 @@ public class StrangeSounds
 {
     public static List<SoundEvent> soundsToRegister = new ArrayList<>();
 
-    public static final SoundEvent ATTRACTED = createSound("attracted");
+    public static final SoundEvent SPELL_BOOK_CHARGE = createSound("spell_book_charge");
+    public static final SoundEvent SPELL_CAST = createSound("spell_cast");
+    public static final SoundEvent SPELL_FAIL = createSound("spell_fail");
+    public static final SoundEvent STAFF_CHARGE_SHORT = createSound("staff_charge_short");
+    public static final SoundEvent STAFF_CHARGE_MEDIUM = createSound("staff_charge_medium");
+    public static final SoundEvent STAFF_CHARGE_LONG = createSound("staff_charge_long");
     public static final SoundEvent QUEST_ACTION_COMPLETE = createSound("quest_action_complete");
     public static final SoundEvent QUEST_ACTION_COUNT = createSound("quest_action_count");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");

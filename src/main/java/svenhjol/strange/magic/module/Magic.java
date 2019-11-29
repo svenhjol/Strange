@@ -18,6 +18,7 @@ import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -47,6 +48,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.magic.client.SpellsClient;
 import svenhjol.strange.magic.entity.TargettedSpellEntity;
 import svenhjol.strange.magic.item.SpellBookItem;
@@ -296,6 +298,7 @@ public class Magic extends MesonModule
 
             StaffItem.putSpell(staff, spell);
             StaffItem.putUses(staff, 1);
+            world.playSound(null, player.getPosition(), StrangeSounds.SPELL_BOOK_CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
             effectEnchantStaff((ServerPlayerEntity)player, spell, 15, 0.1D, 0.4D, 0.1D, 3.0D);
             effectEnchant((ServerWorld)world, vec, spell, 15, 0D, 0.5D, 0D, 4.0D);
         }

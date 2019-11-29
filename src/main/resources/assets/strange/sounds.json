@@ -1,8 +1,39 @@
 {
-  "attracted": {
-    "category": "blocks",
+  "spell_book_charge": {
+    "category": "players",
     "sounds": [
-      "strange:attracted"
+      "strange:spell_book_charge1",
+      "strange:spell_book_charge2"
+    ]
+  },
+  "spell_cast": {
+    "category": "players",
+    "sounds": [
+      "strange:spell_cast"
+    ]
+  },
+  "spell_fail": {
+    "category": "players",
+    "sounds": [
+      "strange:spell_fail"
+    ]
+  },
+  "staff_charge_short": {
+    "category": "players",
+    "sounds": [
+      "strange:staff_charge_short"
+    ]
+  },
+  "staff_charge_medium": {
+    "category": "players",
+    "sounds": [
+      "strange:staff_charge_medium"
+    ]
+  },
+  "staff_charge_long": {
+    "category": "players",
+    "sounds": [
+      "strange:staff_charge_long"
     ]
   },
   "quest_action_complete": {

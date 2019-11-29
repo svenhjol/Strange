@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ScreenShotHelper;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,6 +29,7 @@ public class TravelJournalClient
     public void openTravelJournal(Hand hand)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();
+        player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
         Minecraft.getInstance().displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
@@ -41,6 +43,7 @@ public class TravelJournalClient
     public void handleAddEntry(Entry entry, Hand hand)
     {
         PlayerEntity player = ClientHelper.getClientPlayer();
+        player.playSound(SoundEvents.ITEM_BOOK_PUT, 1.0F, 1.0F);
         Minecraft.getInstance().displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 

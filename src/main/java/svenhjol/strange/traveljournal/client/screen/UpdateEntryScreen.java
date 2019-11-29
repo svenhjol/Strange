@@ -7,6 +7,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
@@ -144,6 +145,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
 
         TravelJournalItem.updateEntry(player.getHeldItem(hand), updated);
         PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.UPDATE, updated, hand));
+        player.playSound(SoundEvents.ITEM_BOOK_PUT, 1.0F, 1.0F);
 
         this.entry = updated;
     }
@@ -164,6 +166,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         if (hasShiftDown()) {
             TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
             PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
+            player.playSound(SoundEvents.BLOCK_WOOD_BREAK, 1.0F, 1.0F);
             this.back();
         } else {
             this.message = I18n.format("gui.strange.travel_journal.hold_shift_to_delete");
