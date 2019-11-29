@@ -155,9 +155,9 @@ public class Scrollkeepers extends MesonModule
     {
         double spread = 0.5D;
         for (int i = 0; i < 3; i++) {
-            double px = villager.getPosition().getX() + 0.25D + (Math.random() - 0.5D) * spread;
+            double px = villager.getPosition().getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = villager.getPosition().getY() + 2.25D + (Math.random() - 0.5D) * spread;
-            double pz = villager.getPosition().getZ() + 0.25D + (Math.random() - 0.5D) * spread;
+            double pz = villager.getPosition().getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             villager.world.addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0, 0, 0.12D);
         }
     }
@@ -188,7 +188,6 @@ public class Scrollkeepers extends MesonModule
         }
 
         if (!completableQuests.isEmpty()) {
-
             VillagerData data = villager.getVillagerData();
             int villagerXp = villager.getXp();
             int villagerLevel = data.getLevel();

@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:emerald": 4
+  },
+  "rewards": {
+    "xp": {
+      "count": 20
+    }
+  }
+}

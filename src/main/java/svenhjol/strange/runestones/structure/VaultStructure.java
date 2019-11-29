@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.structure;
+package svenhjol.strange.runestones.structure;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -9,14 +9,14 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
-import svenhjol.strange.stonecircles.module.StoneCircles;
-import svenhjol.strange.stonecircles.structure.VaultPieces.PieceType;
-import svenhjol.strange.stonecircles.structure.VaultPieces.VaultPiece;
+import svenhjol.strange.runestones.module.StoneCircles;
+import svenhjol.strange.runestones.structure.VaultPieces.PieceType;
+import svenhjol.strange.runestones.structure.VaultPieces.VaultPiece;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
+import static svenhjol.strange.runestones.structure.VaultPieces.PieceType.*;
 
 public class VaultStructure
 {

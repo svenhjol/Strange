@@ -16,17 +16,16 @@ import java.util.Map;
  */
 public class Definition
 {
-    public int tier;
-    public String title;
-    public String description;
-    public int timeLimit; // in minutes
-    public List<String> locate = new ArrayList<>();
-    public Map<String, String> craft = new HashMap<>();
-    public Map<String, String> gather = new HashMap<>();
-    public Map<String, String> hunt = new HashMap<>();
-    public Map<String, String> mine = new HashMap<>();
-    public Map<String, Map<String, String>> encounter = new HashMap<>();
-    public Map<String, Map<String, String>> rewards = new HashMap<>();
+    private int tier;
+    private String title;
+    private int timeLimit; // in minutes
+    private List<String> locate = new ArrayList<>();
+    private Map<String, String> craft = new HashMap<>();
+    private Map<String, String> gather = new HashMap<>();
+    private Map<String, String> hunt = new HashMap<>();
+    private Map<String, String> mine = new HashMap<>();
+    private Map<String, Map<String, String>> encounter = new HashMap<>();
+    private Map<String, Map<String, String>> rewards = new HashMap<>();
 
     public int getTier()
     {
@@ -35,12 +34,12 @@ public class Definition
 
     public String getTitle()
     {
-        return title == null ? "" : title;
+        return title;
     }
 
-    public String getDescription()
+    public int getTimeLimit()
     {
-        return description == null ? "" : description;
+        return timeLimit;
     }
 
     public List<String> getLocate()
@@ -76,6 +75,16 @@ public class Definition
     public Map<String, Map<String, String>> getRewards()
     {
         return rewards == null ? new HashMap<>() : rewards;
+    }
+
+    public void setTier(int tier)
+    {
+        this.tier = tier;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 
     public static Definition deserialize(IResource resource)

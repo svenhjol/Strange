@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import svenhjol.strange.scrolls.client.QuestIcons;
@@ -58,6 +59,7 @@ public abstract class BasePanel extends AbstractGui
 
     public void blitItemIcon(ItemStack stack, int x, int y)
     {
+        RenderHelper.enableGUIStandardItemLighting();
         items.renderItemIntoGUI(stack, x, y);
     }
 }

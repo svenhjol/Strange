@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.module;
+package svenhjol.strange.runestones.module;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -21,9 +21,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.stonecircles.structure.StoneCircleConfig;
-import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
-import svenhjol.strange.stonecircles.structure.VaultStructure;
+import svenhjol.strange.runestones.structure.StoneCircleConfig;
+import svenhjol.strange.runestones.structure.StoneCircleStructure;
+import svenhjol.strange.runestones.structure.VaultStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +36,11 @@ public class StoneCircles extends MesonModule
     public static final String NAME = "stone_circle";
     public static Structure<StoneCircleConfig> structure;
 
-    @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating in a chunk.")
-    public static double stoneCircleChance = 0.2D;
+    @Config(name = "Generation chance", description = "Chance (out of 1.0) of a stone circle generating under correct conditions.")
+    public static double stoneCircleChance = 1.0D;
 
     @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
-    public static double vaultChance = 0.5D;
+    public static double vaultChance = 0.66D;
 
     @Config(name = "Vault generation size", description = "Maximum number of rooms generated in any vault corridor.")
     public static int vaultSize = 6;

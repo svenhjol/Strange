@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:coal": 32
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    }
+  }
+}

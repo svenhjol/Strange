@@ -2,6 +2,7 @@ package svenhjol.strange.scrolls.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.resources.I18n;
 import svenhjol.meson.Meson;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -30,7 +31,7 @@ public class QuestBadgeGui extends AbstractGui
         this.buildButton(x0 - BUTTON_PADDING, y0 - BUTTON_PADDING, WIDTH + BUTTON_PADDING*2, HEIGHT + BUTTON_PADDING*2);
 
 //        AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
-        drawCenteredString(mc.fontRenderer, quest.getTitle(), x + 50, y, 0xFFFFFF);
+        drawCenteredString(mc.fontRenderer, I18n.format(quest.getTitle()), x + 50, y, 0xFFFFFF);
 
         // progress
         float completion = quest.getCriteria().getCompletion();

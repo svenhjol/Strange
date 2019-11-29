@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:cobblestone": 48
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    }
+  }
+}

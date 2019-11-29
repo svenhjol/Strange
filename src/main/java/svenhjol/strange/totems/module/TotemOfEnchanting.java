@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.charm.Charm;
 import svenhjol.charm.tweaks.module.NoAnvilMinimumXp;
 import svenhjol.meson.MesonModule;
@@ -31,7 +30,7 @@ public class TotemOfEnchanting extends MesonModule
         item = new TotemOfEnchantingItem(this);
     }
 
-    @SubscribeEvent
+    // disabled for now
     public void onAnvilUpdate(AnvilUpdateEvent event)
     {
         ItemStack left = event.getLeft();

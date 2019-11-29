@@ -13,7 +13,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.totems.item.TotemOfHoldingItem;
+import svenhjol.strange.totems.item.TotemOfPreservingItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfHolding extends MesonModule
+public class TotemOfPreserving extends MesonModule
 {
-    public static TotemOfHoldingItem item;
+    public static TotemOfPreservingItem item;
 
     @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.")
     public static boolean saveItems = true;
@@ -37,7 +37,7 @@ public class TotemOfHolding extends MesonModule
     @Override
     public void init()
     {
-        item = new TotemOfHoldingItem(this);
+        item = new TotemOfPreservingItem(this);
     }
 
     @SubscribeEvent
@@ -67,15 +67,17 @@ public class TotemOfHolding extends MesonModule
             serialized.put(Integer.toString(i), holdable.get(i).serializeNBT());
         }
 
-        TotemOfHoldingItem.setItems(totem, serialized);
+        TotemOfPreservingItem.setItems(totem, serialized);
 
         if (source != null) {
-            TotemOfHoldingItem.setMessage(totem, source.getDeathMessage(event.getEntityLiving()).getString());
+            TotemOfPreservingItem.setMessage(totem, source.getDeathMessage(event.getEntityLiving()).getString());
         }
 
         double x = player.posX + 0.5D;
         double y = player.posY + 1.25D;
         double z = player.posZ + 0.5D;
+
+        if (y < 0) y = 64;
 
         ItemEntity totemEntity = new ItemEntity(world, x, y, z, totem);
 

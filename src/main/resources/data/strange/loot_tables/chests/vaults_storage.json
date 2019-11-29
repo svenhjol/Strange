@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:barrel",
+  "type": "minecraft:chest",
   "pools": [
     {
       "rolls": 1,

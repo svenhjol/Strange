@@ -1,0 +1,13 @@
+{
+  "craft": {
+    "minecraft:iron_sword": 9
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

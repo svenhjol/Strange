@@ -1,0 +1,13 @@
+{
+  "hunt": {
+    "minecraft:spider": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

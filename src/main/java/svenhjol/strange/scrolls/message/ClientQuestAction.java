@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
+import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.scrolls.client.toast.QuestToastTypes.Type;
 import svenhjol.strange.scrolls.module.Quests;
@@ -67,6 +68,9 @@ public class ClientQuestAction implements IMesonMessage
         public static void handle(final ClientQuestAction msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
+
+                PacketHandler.sendToServer(new ServerQuestList());
+
                 switch (msg.action) {
                     case SHOW:
                         Quests.client.showQuest(msg.quest);

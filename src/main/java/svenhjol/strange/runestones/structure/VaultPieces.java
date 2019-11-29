@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.structure;
+package svenhjol.strange.runestones.structure;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
@@ -33,8 +33,8 @@ import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.*;
 
-import static svenhjol.strange.stonecircles.structure.VaultPieces.PieceType.*;
-import static svenhjol.strange.stonecircles.structure.VaultStructure.VAULT_PIECE;
+import static svenhjol.strange.runestones.structure.VaultPieces.PieceType.*;
+import static svenhjol.strange.runestones.structure.VaultStructure.VAULT_PIECE;
 
 public class VaultPieces
 {
@@ -245,12 +245,20 @@ public class VaultPieces
 
             } else if (data.equals("bookshelf")) {
 
-                if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.2F) {
+                if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.22F) {
                     state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
                         .with(BookshelfChestBlock.SLOTS, 9);
 
+                    ResourceLocation lootTable;
+
+                    if (f < 0.5F) {
+                        lootTable = StrangeLoot.CHESTS_VAULT_BOOKSHELVES;
+                    } else {
+                        lootTable = LootTables.CHESTS_STRONGHOLD_LIBRARY;
+                    }
+
                     world.setBlockState(pos, state, 2);
-                    LockableLootTileEntity.setLootTable(world, rand, pos, StrangeLoot.CHESTS_VAULT_BOOKSHELVES);
+                    LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
                     return;
 
                 } else {
@@ -300,7 +308,6 @@ public class VaultPieces
                         Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
                         Blocks.PUMPKIN.getDefaultState(),
                         Blocks.MELON.getDefaultState(),
-                        Blocks.BOOKSHELF.getDefaultState(),
                         Blocks.LANTERN.getDefaultState(),
                         Blocks.COBWEB.getDefaultState(),
                         Blocks.HAY_BLOCK.getDefaultState(),
@@ -310,14 +317,6 @@ public class VaultPieces
                         Blocks.SMITHING_TABLE.getDefaultState(),
                         Blocks.CRAFTING_TABLE.getDefaultState(),
                         Blocks.CARTOGRAPHY_TABLE.getDefaultState(),
-                        Blocks.TNT.getDefaultState(),
-                        Blocks.WHITE_WOOL.getDefaultState(),
-                        Blocks.RED_WOOL.getDefaultState(),
-                        Blocks.BLUE_WOOL.getDefaultState(),
-                        Blocks.BLACK_WOOL.getDefaultState(),
-                        Blocks.ORANGE_WOOL.getDefaultState(),
-                        Blocks.OBSIDIAN.getDefaultState(),
-                        Blocks.IRON_BLOCK.getDefaultState(),
                         Blocks.ANVIL.getDefaultState(),
                         Blocks.CHIPPED_ANVIL.getDefaultState(),
                         Blocks.DAMAGED_ANVIL.getDefaultState(),

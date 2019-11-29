@@ -22,19 +22,19 @@ import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.strange.base.TotemHelper;
-import svenhjol.strange.totems.module.TotemOfHolding;
+import svenhjol.strange.totems.module.TotemOfPreserving;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TotemOfHoldingItem extends MesonItem
+public class TotemOfPreservingItem extends MesonItem
 {
     private static final String MESSAGE = "message";
     private static final String ITEMS = "items";
 
-    public TotemOfHoldingItem(MesonModule module)
+    public TotemOfPreservingItem(MesonModule module)
     {
-        super(module, "totem_of_holding", new Properties()
+        super(module, "totem_of_preserving", new Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
@@ -62,7 +62,7 @@ public class TotemOfHoldingItem extends MesonItem
             for (List<ItemStack> list : inventories) {
                 for (int i = 0; i < list.size(); ++i) {
                     ItemStack stack = list.get(i);
-                    if (stack.getItem() == TotemOfHolding.item) continue;
+                    if (stack.getItem() == TotemOfPreserving.item) continue;
                     if (!stack.isEmpty()) {
                         serialized.put(Integer.toString(j++), stack.copy().serializeNBT());
                         list.set(i, ItemStack.EMPTY);
@@ -74,7 +74,7 @@ public class TotemOfHoldingItem extends MesonItem
                 TotemHelper.effectActivateTotem(player.getPosition());
             }
 
-            TotemOfHoldingItem.setItems(held, serialized);
+            TotemOfPreservingItem.setItems(held, serialized);
 
         } else if (!items.isEmpty()) {
             TotemHelper.destroy(player, held);
@@ -124,7 +124,7 @@ public class TotemOfHoldingItem extends MesonItem
 
         if (!items.isEmpty()) {
             int size = items.size();
-            String str = size == 1 ? "totem.strange.holding_item" : "totem.strange.holding_items";
+            String str = size == 1 ? "totem.strange.preserving_item" : "totem.strange.preserving_items";
             strings.add(new StringTextComponent(I18n.format(str, size)));
         }
 

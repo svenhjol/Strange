@@ -77,7 +77,9 @@ public class Quests extends MesonModule
                 for (ResourceLocation res : resources) {
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
-                    definition.tier = tier;
+                    String name = res.getPath().replace("/", ".").replace(".json", "");
+                    definition.setTitle(name);
+                    definition.setTier(tier);
                     Quests.available.get(tier).add(definition);
                     Meson.debug("Loaded quest " + definition.getTitle() + " for tier " + tier);
                 }

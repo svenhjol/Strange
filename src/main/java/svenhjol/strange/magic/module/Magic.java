@@ -22,7 +22,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.ItemLootEntry;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -33,11 +36,11 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.Config;
@@ -331,15 +334,7 @@ public class Magic extends MesonModule
                 .build();
 
             LootTable table = event.getTable();
-
-            // TODO move to Meson
-            List<LootPool> pools = ObfuscationReflectionHelper.getPrivateValue(LootTable.class, table, "field_186466_c");
-            if (pools == null) return;
-            LootPool pool = pools.get(0);
-
-            List<LootEntry> entries = ObfuscationReflectionHelper.getPrivateValue(LootPool.class, pool, "field_186453_a");
-            if (entries == null) return;
-            entries.add(entry);
+            LootHelper.addTableEntry(table, entry);
         }
     }
 

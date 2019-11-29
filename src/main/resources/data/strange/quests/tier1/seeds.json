@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:wheat_seeds": 24
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    }
+  }
+}

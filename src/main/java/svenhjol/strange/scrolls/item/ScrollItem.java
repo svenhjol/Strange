@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
@@ -62,7 +62,7 @@ public class ScrollItem extends MesonItem
                 if (!hasPopulatedQuest(stack)) {
                     final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), getQuest(stack));
                     putQuest(stack, q);
-                    stack.setDisplayName(new StringTextComponent(getQuest(stack).getTitle()));
+                    stack.setDisplayName(new TranslationTextComponent(getQuest(stack).getTitle()));
 
                     PlayerQueueHandler.add(worldIn.getGameTime(), playerIn, p -> {
                         PacketHandler.sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity)p);

@@ -1,0 +1,10 @@
+{
+  "mine": {
+    "minecraft:gold_ore": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    }
+  }
+}

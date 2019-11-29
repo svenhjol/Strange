@@ -17,7 +17,7 @@ public class TimeGenerator extends BaseGenerator
     @Override
     public void generate()
     {
-        int timeLimit = definition.timeLimit;
+        int timeLimit = definition.getTimeLimit();
         if (timeLimit == 0) return;
 
         Condition<Time> condition = Condition.factory(Time.class, quest);

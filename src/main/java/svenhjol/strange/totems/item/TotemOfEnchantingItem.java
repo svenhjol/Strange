@@ -51,7 +51,7 @@ public class TotemOfEnchantingItem extends MesonItem
         ItemStack held = player.getHeldItem(hand);
         if (player.isSneaking()) {
             int xp = player.experienceTotal;
-            setXp(held, xp);
+            addXp(held, xp);
             player.giveExperiencePoints(-xp);
 
             if (world.isRemote) {
@@ -71,9 +71,10 @@ public class TotemOfEnchantingItem extends MesonItem
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void setXp(ItemStack stack, int amount)
+    public static void addXp(ItemStack stack, int amount)
     {
-        ItemNBTHelper.setInt(stack, XP, amount);
+        int current = ItemNBTHelper.getInt(stack, XP, 0);
+        ItemNBTHelper.setInt(stack, XP, current + amount);
     }
 
     public static int getXp(ItemStack stack)

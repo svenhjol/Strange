@@ -1,14 +1,14 @@
 {
-  "parent": "strange:stonecircles/root",
+  "parent": "strange:runestones/root",
   "display": {
     "icon": {
       "item": "minecraft:ender_pearl"
     },
     "title": {
-      "translate": "advancements.strange.stonecircles.runic_travel.title"
+      "translate": "advancements.strange.runestones.runic_travel.title"
     },
     "description": {
-      "translate": "advancements.strange.stonecircles.runic_travel.description"
+      "translate": "advancements.strange.runestones.runic_travel.description"
     },
     "frame": "task",
     "show_toast": true,

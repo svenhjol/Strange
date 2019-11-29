@@ -65,12 +65,12 @@ public class ScrollScreen extends Screen implements IRenderable
         if (this.minecraft == null || this.minecraft.world == null) return;
 
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), mid, 18, 0xFFFFFF);
+        this.drawCenteredString(this.font, I18n.format(this.title.getFormattedText()), mid, 18, 0xFFFFFF);
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
 
-        this.drawCenteredString(this.font, quest.getDescription(), mid, 36, 0xFFFFFF);
+        this.drawCenteredString(this.font, I18n.format(quest.getDescription()), mid, 36, 0xFFFFFF);
 
         Criteria criteria = quest.getCriteria();
         final List<Condition<IDelegate>> actions = criteria.getConditions(Criteria.ACTION);

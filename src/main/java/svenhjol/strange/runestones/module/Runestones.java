@@ -44,7 +44,6 @@ import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 import svenhjol.strange.runestones.message.ClientRunestonesInteract;
-import svenhjol.strange.stonecircles.module.StoneCircles;
 
 import java.util.*;
 
@@ -83,7 +82,7 @@ public class Runestones extends MesonModule
             destsOrdered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
         } else {
             destsOrdered.add(new Destination("spawn_point", false, 1.0F));
-            destsOrdered.add(new Destination("spawn_point", false, 0.8F));
+            destsOrdered.add(new Destination("spawn_point", false, 0.85F));
         }
 
         destsOrdered.add(new Destination("Village", "village", false, 0.8F));
@@ -91,13 +90,13 @@ public class Runestones extends MesonModule
         destsOrdered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.75F));
         destsOrdered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.75F));
 
-        destsOrdered.add(new Destination("Village", "outer_village", true, 0.35F));
-        destsOrdered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.35F));
-        destsOrdered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.35F));
-        destsOrdered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.35F));
+        destsOrdered.add(new Destination("Village", "outer_village", true, 0.18F));
+        destsOrdered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.25F));
+        destsOrdered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.25F));
+        destsOrdered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.25F));
 
         if (Strange.loader.hasModule(StoneCircles.class)) {
-            destsOrdered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.125F));
+            destsOrdered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.08F));
         } else {
             destsOrdered.add(new Destination("spawn_point", false, 0.125F));
         }
@@ -110,8 +109,11 @@ public class Runestones extends MesonModule
 
     public static int getRunestoneType(IWorld world)
     {
-        DimensionType type = world.getDimension().getType();
+        return getRunestoneType(world.getDimension().getType());
+    }
 
+    public static int getRunestoneType(DimensionType type)
+    {
         if (type == DimensionType.THE_END) {
             return 2;
         } else if (type == DimensionType.THE_NETHER) {
@@ -143,6 +145,13 @@ public class Runestones extends MesonModule
     {
         return block.getDefaultState()
             .with(RunestoneBlock.TYPE, getRunestoneType(world))
+            .with(RunestoneBlock.RUNE, runeValue);
+    }
+
+    public static BlockState getRunestoneBlock(DimensionType dim, int runeValue)
+    {
+        return block.getDefaultState()
+            .with(RunestoneBlock.TYPE, getRunestoneType(dim))
             .with(RunestoneBlock.RUNE, runeValue);
     }
 

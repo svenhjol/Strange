@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.structure;
+package svenhjol.strange.runestones.structure;
 
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
@@ -22,7 +22,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.stonecircles.module.StoneCircles;
+import svenhjol.strange.runestones.module.StoneCircles;
 
 import java.util.ArrayList;
 import java.util.Arrays;

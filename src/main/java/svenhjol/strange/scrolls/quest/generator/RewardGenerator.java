@@ -12,7 +12,7 @@ import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
-import svenhjol.strange.stonecircles.module.StoneCircles;
+import svenhjol.strange.runestones.module.StoneCircles;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 

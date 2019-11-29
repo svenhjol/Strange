@@ -4,10 +4,10 @@
       "item": "strange:runestone"
     },
     "title": {
-      "translate": "advancements.strange.stonecircles.find.title"
+      "translate": "advancements.strange.runestones.find.title"
     },
     "description": {
-      "translate": "advancements.strange.stonecircles.find.description"
+      "translate": "advancements.strange.runestones.find.description"
     },
     "frame": "task",
     "show_toast": true,

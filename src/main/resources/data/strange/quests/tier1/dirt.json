@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:dirt": 48
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    }
+  }
+}

@@ -21,8 +21,8 @@ public class Generator
         if (quest == null) quest = new Quest();
 
         quest.generateId();
-        quest.setTitle(definition.getTitle());
-        quest.setDescription(definition.getDescription());
+        quest.setTitle(definition.getTitle() + ".title");
+        quest.setDescription(definition.getTitle() + ".desc");
 
         // initialise generators
         List<Class<?>> generators = new ArrayList<>(Arrays.asList(

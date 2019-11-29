@@ -75,7 +75,7 @@ public class ActionsPanel extends BasePanel
 
                 // draw remaining count and item icon
                 blitItemIcon(stack, mid - 60, y - 5);
-                this.drawString(fonts, remaining + " " + stack.getDisplayName().getString(), mid - 36, y, primaryTextColor);
+                this.drawString(fonts, stack.getDisplayName().getString() + ": " + remaining, mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
@@ -106,7 +106,7 @@ public class ActionsPanel extends BasePanel
 
                 // draw remaining count and item icon
                 blitItemIcon(stack, mid - 60, y - 5);
-                this.drawString(fonts, remaining + " " + stack.getDisplayName().getString(), mid - 36, y, primaryTextColor);
+                this.drawString(fonts, stack.getDisplayName().getString() + ": " + remaining, mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
@@ -137,7 +137,7 @@ public class ActionsPanel extends BasePanel
 
                 // draw remaining count and block name
                 blitItemIcon(new ItemStack(Items.IRON_PICKAXE), mid - 60, y - 5);
-                this.drawString(fonts, remaining + " " + block.getNameTextComponent().getString(), mid - 36, y, primaryTextColor);
+                this.drawString(fonts, block.getNameTextComponent().getString() + ": " + remaining, mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
@@ -170,7 +170,7 @@ public class ActionsPanel extends BasePanel
 
                 // draw remaining count and item icon
                 blitItemIcon(new ItemStack(Items.IRON_SWORD), mid - 60, y - 5);
-                this.drawString(fonts, remaining + " " + entity.getName().getFormattedText(), mid - 36, y, primaryTextColor);
+                this.drawString(fonts, entity.getName().getFormattedText() + ": " + remaining, mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
