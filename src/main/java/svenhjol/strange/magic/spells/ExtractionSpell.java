@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import svenhjol.strange.base.StrangeLoader;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.magic.item.StaffItem;
 import svenhjol.strange.magic.module.Magic;
 
@@ -36,7 +36,7 @@ public class ExtractionSpell extends Spell
     public boolean activate(PlayerEntity player, ItemStack staff)
     {
         // get the block the player is looking at
-        BlockRayTraceResult result = StrangeLoader.getBlockLookedAt(player);
+        BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player);
 
         World world = player.world;
         BlockPos pos = result.getPos();

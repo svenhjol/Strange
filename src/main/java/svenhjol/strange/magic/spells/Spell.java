@@ -8,8 +8,8 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.meson.iface.IMesonEnum;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.magic.entity.TargettedSpellEntity;
 import svenhjol.strange.magic.module.Magic;
 
@@ -114,10 +114,6 @@ public abstract class Spell
         return Magic.spells.getOrDefault(id, null);
     }
 
-    /**
-     * Called after the spellbook has been activated.
-     * {@link svenhjol.strange.magic.item.SpellBookItem#onItemUseFinish}
-     */
     public boolean activate(PlayerEntity player, ItemStack book)
     {
         return true;
@@ -167,7 +163,7 @@ public abstract class Spell
     protected void castFocus(PlayerEntity player, Consumer<BlockRayTraceResult> onFocusPos)
     {
         ServerWorld world = (ServerWorld)player.world;
-        BlockRayTraceResult result = StrangeLoader.getBlockLookedAt(player);
+        BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player);
         onFocusPos.accept(result);
 
         float spread = 0.5F;

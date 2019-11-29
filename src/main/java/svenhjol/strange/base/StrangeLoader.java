@@ -1,15 +1,10 @@
 package svenhjol.strange.base;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.message.ClientRunestonesInteract;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
@@ -45,19 +40,8 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ClientTotemUpdateFlying.class, ClientTotemUpdateFlying::encode, ClientTotemUpdateFlying::decode, ClientTotemUpdateFlying.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalEntries.class, ClientTravelJournalEntries::encode, ClientTravelJournalEntries::decode, ClientTravelJournalEntries.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
-        PacketHandler.HANDLER.registerMessage(index++, ClientRunestonesInteract.class, ClientRunestonesInteract::encode, ClientRunestonesInteract::decode, ClientRunestonesInteract.Handler::handle);
-//        PacketHandler.HANDLER.registerMessage(index++, ServerStaffAction.class, ServerStaffAction::encode, ServerStaffAction::decode, ServerStaffAction.Handler::handle);
 
         // sounds
         StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);
-    }
-
-    // TODO move this to WorldHelper
-    public static BlockRayTraceResult getBlockLookedAt(PlayerEntity player)
-    {
-        int len = 6;
-        Vec3d vec3d = player.getEyePosition(1.0F);
-        Vec3d vec3d1 = player.getLook(1.0F);
-        return player.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d.add(vec3d1.x * len, vec3d1.y * len, vec3d1.z * len), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
     }
 }
