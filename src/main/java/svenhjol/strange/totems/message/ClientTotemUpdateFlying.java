@@ -1,7 +1,6 @@
 package svenhjol.strange.totems.message;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.totems.module.TotemOfFlying;
@@ -14,7 +13,6 @@ public class ClientTotemUpdateFlying implements IMesonMessage
     public static int ENABLE = 1;
 
     private int status;
-    private BlockPos pos;
 
     public ClientTotemUpdateFlying(int status)
     {
