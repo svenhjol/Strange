@@ -10,6 +10,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.handler.PacketHandler;
@@ -135,7 +136,8 @@ public class ServerTravelJournalAction implements IMesonMessage
 
         private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)
         {
-            PlayerQueueHandler.add(player.world.getGameTime() + 20, player, (p) -> {
+            PlayerQueueHandler.add(player.world.getGameTime() + 60, player, (p) -> {
+                player.sendStatusMessage(new StringTextComponent(""), true);
                 PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
             });
         }

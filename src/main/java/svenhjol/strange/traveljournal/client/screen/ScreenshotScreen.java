@@ -9,6 +9,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
@@ -41,9 +42,9 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
 
-        if (!hasScreenshot()) {
-            takeScreenshot(this.entry, hand);
-        }
+//        if (!hasScreenshot()) {
+//            takeScreenshot(this.entry, hand);
+//        }
     }
 
     @Override
@@ -97,6 +98,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         if (WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
             this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> {
                 this.close();
+                player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
                 takeScreenshot(entry, hand);
             }));
             buttonOffsetX = 10;
