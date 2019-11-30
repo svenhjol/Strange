@@ -10,18 +10,18 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.StoneCircles;
-import svenhjol.strange.runestones.structure.VaultPieces.PieceType;
+import svenhjol.strange.runestones.structure.VaultPieces.VaultPieceType;
 import svenhjol.strange.runestones.structure.VaultPieces.VaultPiece;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static svenhjol.strange.runestones.structure.VaultPieces.PieceType.*;
+import static svenhjol.strange.runestones.structure.VaultPieces.VaultPieceType.*;
 
 public class VaultStructure
 {
     public static IStructurePieceType VAULT_PIECE = VaultPiece::new;
-    public static Map<PieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
+    public static Map<VaultPieceType, List<ResourceLocation>> pieceTypes = new HashMap<>();
 
     public static final int CORRIDOR_X = 5;
     public static final int CORRIDOR_Z = 11;
@@ -78,13 +78,13 @@ public class VaultStructure
         generate(Junction, startPos, 0, Direction.byHorizontalIndex(rand.nextInt(4) + 2), Rotation.NONE);
     }
 
-    public ResourceLocation getRandomTemplate(PieceType type)
+    public ResourceLocation getRandomTemplate(VaultPieceType type)
     {
         List<ResourceLocation> templates = pieceTypes.get(type);
         return templates.get(this.rand.nextInt(templates.size()));
     }
 
-    public void generate(PieceType pieceType, BlockPos pos, int iterations, @Nullable Direction from, @Nullable Rotation rotation)
+    public void generate(VaultPieceType pieceType, BlockPos pos, int iterations, @Nullable Direction from, @Nullable Rotation rotation)
     {
         iterations++;
 
@@ -100,7 +100,7 @@ public class VaultStructure
             if (f > chance || iterations >= maxIterations) continue;
 
             int nextX, nextZ;
-            PieceType nextType;
+            VaultPieceType nextType;
             BlockPos nextPos = null;
 
             if (f < 0.12F) {

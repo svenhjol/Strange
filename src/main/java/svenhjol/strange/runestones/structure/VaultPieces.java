@@ -33,19 +33,19 @@ import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.*;
 
-import static svenhjol.strange.runestones.structure.VaultPieces.PieceType.*;
+import static svenhjol.strange.runestones.structure.VaultPieces.VaultPieceType.*;
 import static svenhjol.strange.runestones.structure.VaultStructure.VAULT_PIECE;
 
 public class VaultPieces
 {
-    public enum PieceType
+    public enum VaultPieceType
     {
         Corridor,
         Junction,
         Large
     }
 
-    static Map<PieceType, int[]> sizes = new HashMap<>();
+    static Map<VaultPieceType, int[]> sizes = new HashMap<>();
     static {
         sizes.put(Corridor, new int[]{5, 8, 11});
         sizes.put(Junction, new int[]{9, 8, 9});
