@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.STONE_CIRCLES)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES)
 public class StoneCircles extends MesonModule
 {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
