@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.strange.scrolls.client.toast.QuestToastTypes.Type;
+import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -75,7 +76,7 @@ public class QuestToast implements IToast
         }
 
         RenderHelper.enableGUIStandardItemLighting();
-        toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, new ItemStack(Scrolls.tiers.get(quest.getTier())), 8, 8);
+        toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, ScrollItem.putTier(new ItemStack(Scrolls.item), quest.getTier()), 8, 8);
         return delta >= 5000L ? Visibility.HIDE : Visibility.SHOW;
     }
 }
