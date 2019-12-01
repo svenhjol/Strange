@@ -286,7 +286,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                     if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
                         BlockState chest = Blocks.CHEST.getDefaultState();
                         world.setBlockState(findPosUp, chest, 2);
-                        LockableLootTileEntity.setLootTable(world, rand, findPosUp, StrangeLoot.STONE_CIRCLE_TREASURE);
+                        LockableLootTileEntity.setLootTable(world, rand, findPosUp, StrangeLoot.CHESTS_STONE_CIRCLE_TREASURE);
                         Meson.debug("Generated with chest " + pos);
                         break;
                     }
