@@ -1,0 +1,53 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 3,
+      "entries": [
+        {
+          "name": "strange:spell_book",
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "strange:add_spell_randomly"
+            },
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 2.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "minecraft:book",
+          "type": "minecraft:item",
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "rolls": 6,
+      "entries": [
+        {
+          "name": "minecraft:book",
+          "type": "minecraft:item",
+          "weight": 15
+        },
+        {
+          "name": "minecraft:book",
+          "type": "minecraft:item",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
