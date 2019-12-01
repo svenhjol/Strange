@@ -6,6 +6,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.util.ResourceLocation;
 import svenhjol.strange.Strange;
 import svenhjol.strange.magic.module.Magic;
+import svenhjol.strange.scrolls.module.Scrolls;
 
 @JeiPlugin
 public class StrangeJeiPlugin implements IModPlugin
@@ -22,5 +23,6 @@ public class StrangeJeiPlugin implements IModPlugin
     public void registerItemSubtypes(ISubtypeRegistration registration)
     {
         registration.useNbtForSubtypes(Magic.book);
+        registration.useNbtForSubtypes(Scrolls.item);
     }
 }

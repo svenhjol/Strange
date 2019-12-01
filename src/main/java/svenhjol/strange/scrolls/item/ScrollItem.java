@@ -7,9 +7,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
@@ -18,22 +16,39 @@ import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.strange.scrolls.message.ClientScrollAction;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class ScrollItem extends MesonItem
 {
-    private int tier;
     private static final String QUEST = "quest";
+    private static final String TIER = "tier";
 
-    public ScrollItem(MesonModule module, int tier)
+    public ScrollItem(MesonModule module)
     {
-        super(module, "scroll_tier_" + tier, new Item.Properties()
+        super(module, "scroll", new Item.Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
             .maxStackSize(1)
         );
-        this.tier = tier;
+
+        // allows different item icons to be shown. Each item icon has a float ref (see model)
+        addPropertyOverride(new ResourceLocation("element"), (stack, world, entity) -> {
+            int tier = getTier(stack);
+            return tier / 10.0F;
+        });
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        if (group == ItemGroup.SEARCH) {
+            for (int i = 1; i <= Scrolls.MAX_TIERS; i++) { ;
+                ItemStack scroll = ScrollItem.putTier(new ItemStack(Scrolls.item), i);
+                items.add(scroll);
+            }
+        }
     }
 
     @Override
@@ -45,15 +60,13 @@ public class ScrollItem extends MesonItem
         if (playerIn.isSneaking()) {
             result = ActionResultType.FAIL;
         } else {
-
-            IQuest quest = null;
-
+            IQuest quest;
             if (!worldIn.isRemote) {
 
                 // if not populated yet, generate a quest and set the stack name
                 if (!hasTag(stack)) {
                     // there isn't a quest, make one
-                    int tier = Math.max(getTierFromScroll(stack), 1);
+                    int tier = Math.max(getTier(stack), 1);
                     quest = new Quest();
                     quest.setTier(tier);
                     putQuest(stack, quest);
@@ -74,8 +87,7 @@ public class ScrollItem extends MesonItem
                 quest = getQuest(stack);
 
                 if (!quest.getId().isEmpty()) {
-                    // message client to open screen
-                    PacketHandler.sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn);
+                    PacketHandler.sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn); // open the screen
                 }
             }
 
@@ -85,21 +97,16 @@ public class ScrollItem extends MesonItem
         return new ActionResult<>(result, stack);
     }
 
-    public static boolean isValidScroll(ItemStack stack)
-    {
-        return stack.getItem() instanceof ScrollItem;
-    }
-
-    public static IQuest getQuest(ItemStack stack)
+    public static IQuest getQuest(ItemStack scroll)
     {
         IQuest quest = new Quest();
-        quest.fromNBT( getTag(stack) );
+        quest.fromNBT( getTag(scroll) );
         return quest;
     }
 
-    public static void putQuest(ItemStack stack, IQuest quest)
+    public static void putQuest(ItemStack scroll, IQuest quest)
     {
-        putTag(stack, quest.toNBT());
+        putTag(scroll, quest.toNBT());
     }
 
     public static boolean hasPopulatedQuest(ItemStack stack)
@@ -108,47 +115,32 @@ public class ScrollItem extends MesonItem
         return !quest.getCriteria().getConditions().isEmpty();
     }
 
-    public static int getTierFromScroll(ItemStack stack)
+    public static int getTier(ItemStack scroll)
     {
-        if (hasTag(stack)) {
-            IQuest quest = getQuest(stack);
-            if (quest.getTier() > 0) return quest.getTier();
-        }
-
-        String path = stack.getItem().getRegistryName().getPath();
-        if (!path.isEmpty()) {
-            String[] split = path.split("_");
-            return Integer.parseInt(split[2]);
-        }
-
-        return 0;
+        return scroll.getOrCreateTag().getInt(TIER);
     }
 
-    public static boolean hasTag(ItemStack stack)
+    public static ItemStack putTier(ItemStack scroll, int tier)
     {
-        return stack.hasTag() && stack.getTag().contains(QUEST);
+        scroll.getOrCreateTag().putInt(TIER, tier);
+        scroll.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
+        return scroll;
     }
 
-    public static CompoundNBT getTag(ItemStack stack)
+    public static boolean hasTag(ItemStack scroll)
     {
-        if (!isValidScroll(stack)) return new CompoundNBT();
+        return scroll.hasTag() && scroll.getTag().contains(QUEST);
+    }
 
-        CompoundNBT tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundNBT();
-        }
+    public static CompoundNBT getTag(ItemStack scroll)
+    {
+        CompoundNBT tag = scroll.getOrCreateTag();
         return (CompoundNBT)tag.get(QUEST);
     }
 
-    public static CompoundNBT putTag(ItemStack stack, CompoundNBT data)
+    public static void putTag(ItemStack scroll, CompoundNBT data)
     {
-        CompoundNBT tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundNBT();
-        }
-
+        CompoundNBT tag = scroll.getOrCreateTag();
         tag.put(QUEST, data);
-        stack.setTag(tag);
-        return tag;
     }
 }

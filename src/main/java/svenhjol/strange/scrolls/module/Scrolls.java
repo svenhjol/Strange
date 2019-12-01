@@ -1,12 +1,14 @@
 package svenhjol.strange.scrolls.module;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.ItemLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.charm.Charm;
+import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Module;
@@ -14,21 +16,24 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.scrolls.item.ScrollItem;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
 public class Scrolls extends MesonModule
 {
     public static int MAX_TIERS = 5;
 
-    public static Map<Integer, ScrollItem> tiers = new HashMap<>();
+    public static ScrollItem item;
 
     @Override
     public void init()
     {
-        for (int i = 1; i <= MAX_TIERS; i++) {
-            tiers.put(i, new ScrollItem(this, i));
+        item = new ScrollItem(this);
+    }
+
+    @Override
+    public void setup(FMLCommonSetupEvent event)
+    {
+        if (Charm.loader.hasModule(BookshelfChests.class)) {
+            BookshelfChests.validItems.add(ScrollItem.class);
         }
     }
 
@@ -41,13 +46,13 @@ public class Scrolls extends MesonModule
         ResourceLocation res = event.getName();
 
         if (res.equals(LootTables.CHESTS_WOODLAND_MANSION)) {
-            weight = 5;
+            weight = 6;
         } else if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
             weight = 3;
         } else if (res.equals(LootTables.CHESTS_SIMPLE_DUNGEON)) {
             weight = 1;
         } else if (res.equals(LootTables.CHESTS_PILLAGER_OUTPOST)) {
-            weight = 5;
+            weight = 6;
         } else if (res.equals(LootTables.CHESTS_SHIPWRECK_SUPPLY)) {
             weight = 3;
         } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)
@@ -56,16 +61,16 @@ public class Scrolls extends MesonModule
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)
         ) {
-            weight = 1;
+            weight = 2;
         }
 
         if (weight > 0) {
-            LootEntry entry = ItemLootEntry.builder(Scrolls.tiers.get(1))
+            LootEntry entry = ItemLootEntry.builder(Scrolls.item)
                 .weight(weight)
                 .quality(quality)
-                .acceptFunction(() -> (stack, context) -> {
-                    ScrollItem scroll = Scrolls.tiers.get(context.getRandom().nextInt(Scrolls.tiers.size()));
-                    return new ItemStack(scroll);
+                .acceptFunction(() -> (scroll, context) -> {
+                    int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS);
+                    return ScrollItem.putTier(scroll, tier);
                 })
                 .build();
 
