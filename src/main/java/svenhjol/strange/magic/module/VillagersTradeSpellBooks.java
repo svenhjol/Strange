@@ -39,12 +39,6 @@ public class VillagersTradeSpellBooks extends MesonModule
     @Config(name = "Allow rare spells", description = "Allows all spells rather than common ones.")
     public static boolean useRare = false;
 
-    @Override
-    public boolean isEnabled()
-    {
-        return super.isEnabled() && Strange.loader.hasModule(Magic.class);
-    }
-
     @SubscribeEvent
     public void onVillagerTrades(VillagerTradesEvent event)
     {

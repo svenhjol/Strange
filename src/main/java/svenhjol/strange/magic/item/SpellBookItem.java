@@ -30,8 +30,6 @@ import java.util.List;
 public class SpellBookItem extends MesonItem
 {
     public static final String SPELL = "spell";
-    public static final String META = "meta";
-    public static final String ACTIVATED = "activated";
 
     public SpellBookItem(MesonModule module)
     {
@@ -60,7 +58,6 @@ public class SpellBookItem extends MesonItem
             for (String id : Magic.spells.keySet()) {
                 Spell spell = Magic.spells.get(id);
                 ItemStack book = SpellBookItem.putSpell(new ItemStack(Magic.book), spell);
-                book.setDisplayName(MagicHelper.getSpellInfoText(spell));
                 items.add(book);
             }
         }
@@ -98,6 +95,7 @@ public class SpellBookItem extends MesonItem
     public static ItemStack putSpell(ItemStack book, Spell spell)
     {
         book.getOrCreateTag().putString(SPELL, spell.getId()); // add new spell
+        book.setDisplayName(MagicHelper.getSpellInfoText(spell));
         return book;
     }
 

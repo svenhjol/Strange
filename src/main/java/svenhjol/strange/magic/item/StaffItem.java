@@ -55,9 +55,6 @@ public class StaffItem extends TieredItem implements IMesonItem
         super.addInformation(staff, world, tooltip, flag);
         Spell spell = StaffItem.getSpell(staff);
         if (spell == null) return;
-
-//        ITextComponent spellText = MagicHelper.getSpellInfoText(spell);
-//        tooltip.add(spellText);
         tooltip.add(new TranslationTextComponent("staff.strange.uses", StaffItem.getUses(staff)));
     }
 
@@ -338,6 +335,8 @@ public class StaffItem extends TieredItem implements IMesonItem
                 player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_FAIL, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         });
+
+        player.getCooldownTracker().setCooldown(staff.getItem(), 5);
     }
 
     public static boolean isCharged(ItemStack staff)

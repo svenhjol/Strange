@@ -12,11 +12,11 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-public class ExtinguishSpell extends Spell
+public class FreezeSpell extends Spell
 {
-    public ExtinguishSpell()
+    public FreezeSpell()
     {
-        super("extinguish");
+        super("freeze");
         this.element = Element.WATER;
         this.affect = Affect.AREA;
         this.duration = 3.0F;
@@ -26,7 +26,7 @@ public class ExtinguishSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castArea(player, new int[] { 5, 1, 5 }, blocks -> {
+        this.castArea(player, new int[] { 5, 2, 5 }, blocks -> {
             World world = player.world;
 
             if (world.isRemote) return;
@@ -42,6 +42,9 @@ public class ExtinguishSpell extends Spell
                     didFreeze = true;
                 } else if (state == Blocks.WATER.getDefaultState()) {
                     world.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
+                    didFreeze = true;
+                } else if (state == Blocks.FIRE.getDefaultState()) {
+                    world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
                     didFreeze = true;
                 }
 

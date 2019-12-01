@@ -20,7 +20,7 @@ public class BlinkSpell extends Spell
         this.affect = Affect.TARGET;
         this.applyCost = 2;
         this.duration = 1.0F;
-        this.castCost = 5;
+        this.castCost = 6;
     }
 
     @Override
@@ -33,9 +33,10 @@ public class BlinkSpell extends Spell
                 BlockState state = world.getBlockState(pos);
                 beam.remove();
 
-                if (state.isSolid() || state.getMaterial() == Material.WATER
+                if ((state.isSolid() || state.getMaterial() == Material.WATER)
                     && world.isAirBlock(pos.up(1))
                     && world.isAirBlock(pos.up(2))
+                    && world.isAirBlock(pos.up(3))
                 ) {
                     player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
                     didCast.accept(true);

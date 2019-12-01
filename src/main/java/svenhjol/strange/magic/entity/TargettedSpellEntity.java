@@ -95,7 +95,7 @@ public class TargettedSpellEntity extends Entity
         pz = posZ + (Math.random() - 0.5) * posSpread;
         ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 15,0.0D, 0.0D, 0.0D, 0.6D);
 
-        if (this.onImpact != null && this.ticks >= 5) {
+        if (this.onImpact != null && this.ticks > 2) {
             RayTraceResult result = ProjectileHelper.rayTrace(this, true, true, null, RayTraceContext.BlockMode.COLLIDER);
             if (result.getType() != RayTraceResult.Type.MISS
                 && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, result)

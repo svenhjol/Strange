@@ -38,6 +38,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.charm.Charm;
+import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
@@ -76,22 +79,33 @@ public class Magic extends MesonModule
 
     @Config(name = "Enabled spells", description = "List of all available spells.")
     public static List<String> enabledSpells = Arrays.asList(
+        "aura",
         "blink",
+        "boost",
+        "drain",
         "explosion",
-        "extinguish",
         "extraction",
+        "freeze",
         "growth",
         "knockback",
-        "slowness",
+        "pacify",
+        "portal",
+        "repel",
+        "rise",
+        "roots",
+        "summon",
         "thaw"
     );
 
     @Config(name = "Common spells", description = "Subset of 'enabled spells' that appear in common dungeon loot and villager trades.")
     public static List<String> commonSpells = Arrays.asList(
-        "knockback",
-        "slowness",
+        "aura",
+        "freeze",
         "growth",
-        "extinguish"
+        "knockback",
+        "pacify",
+        "repel",
+        "roots"
     );
 
     @OnlyIn(Dist.CLIENT)
@@ -166,6 +180,15 @@ public class Magic extends MesonModule
     }
 
     @Override
+    public void setup(FMLCommonSetupEvent event)
+    {
+        // spellbooks are valid bookshelf items
+        if (Charm.loader.hasModule(BookshelfChests.class)) {
+            BookshelfChests.validItems.add(SpellBookItem.class);
+        }
+    }
+
+    @Override
     public void setupClient(FMLClientSetupEvent event)
     {
         client = new SpellsClient();
@@ -181,7 +204,6 @@ public class Magic extends MesonModule
         if (left.isEmpty() || right.isEmpty()) return;
         if (!(left.getItem() instanceof StaffItem)) return;
         if (right.getItem() != book) return;
-        if (StaffItem.hasSpell(left)) return;
 
         Spell spell = SpellBookItem.getSpell(right);
         if (spell == null) return;
@@ -189,6 +211,11 @@ public class Magic extends MesonModule
         int cost = spell.getApplyCost();
 
         out = left.copy();
+
+        if (StaffItem.hasSpell(out)) {
+            StaffItem.clear(out);
+        }
+
         StaffItem.putSpell(out, spell);
 
         event.setCost(cost);

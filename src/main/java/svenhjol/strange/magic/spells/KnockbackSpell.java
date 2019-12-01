@@ -28,10 +28,10 @@ public class KnockbackSpell extends Spell
             if (result.getType() == RayTraceResult.Type.ENTITY) {
                 EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
                 Entity e = entityImpact.getEntity();
+                beam.remove();
                 if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) e;
-                    living.knockBack(player, 6.0F, (double)MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
-                    beam.remove();
+                    living.knockBack(player, 6.0F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)));
                     didCast.accept(true);
                     return;
                 }

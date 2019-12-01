@@ -1,6 +1,7 @@
 package svenhjol.strange.magic.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -133,14 +134,12 @@ public abstract class Spell
 
         double spread = 1.0D;
         for (BlockPos block : blocks) {
-            if (world.rand.nextFloat() > 0.18F) continue;
+            if (world.rand.nextFloat() > 0.05F) continue;
 
-            for (int i = 0; i < 1; i++) {
-                double px = block.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-                double py = block.getY() + 0.5D * spread;
-                double pz = block.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-                world.spawnParticle(Magic.spellParticles.get(this.getElement()), px, py, pz, 5, 0.0D, 0.0D, 0.0D, 3);
-            }
+            double px = block.getX() + 0.5D + (Math.random() - 0.5D) * spread;
+            double py = block.getY() + 0.5D * spread;
+            double pz = block.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
+            world.spawnParticle(Magic.spellParticles.get(this.getElement()), px, py, pz, 4, 0.0D, 0.0D, 0.0D, 3);
         }
     }
 
@@ -163,7 +162,7 @@ public abstract class Spell
     protected void castFocus(PlayerEntity player, Consumer<BlockRayTraceResult> onFocusPos)
     {
         ServerWorld world = (ServerWorld)player.world;
-        BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player);
+        BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player, 100);
         onFocusPos.accept(result);
 
         float spread = 0.5F;
@@ -173,6 +172,19 @@ public abstract class Spell
         double py = focusPos.getY() + 1.5D * spread;
         double pz = focusPos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
         world.spawnParticle(Magic.enchantParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
+    }
+
+    protected void castSelf(PlayerEntity player, Consumer<ServerPlayerEntity> onSelf)
+    {
+        ServerWorld world = (ServerWorld)player.world;
+        onSelf.accept((ServerPlayerEntity)player);
+
+        Vec3d vec = player.getPositionVec();
+        float spread = 0.5F;
+        double px = vec.x + 0.5D + (Math.random() - 0.5D) * spread;
+        double py = vec.y + 1.5D * spread;
+        double pz = vec.z + 0.5D + (Math.random() - 0.5D) * spread;
+        world.spawnParticle(Magic.spellParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
     }
 
     public enum Element implements IMesonEnum
