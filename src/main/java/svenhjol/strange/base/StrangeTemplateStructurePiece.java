@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
@@ -22,6 +23,7 @@ import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.*;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.block.BookshelfChestBlock;
 import svenhjol.charm.decoration.module.AllTheBarrels;
@@ -32,19 +34,16 @@ import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class StrangeTemplateStructurePiece extends TemplateStructurePiece
 {
     protected ResourceLocation templateName;
     protected float integrity;
     protected Rotation rotation;
-    public int x;
-    public int y;
-    public int z;
+    protected int x;
+    protected int y;
+    protected int z;
 
     public List<Block> flowerTypes = Arrays.asList(
         Blocks.SUNFLOWER,
@@ -104,19 +103,9 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         this.placeSettings
             .clearProcessors()
             .addProcessor(new IntegrityProcessor(this.integrity))
-            .addProcessor(new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.STRUCTURE_BLOCK, Blocks.STONE)));
+            .addProcessor(new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.STRUCTURE_BLOCK, Blocks.LIGHT_BLUE_STAINED_GLASS)));
 
         BlockPos pos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
-//
-//        int range = 32;
-//        List<BlockPos> valid = BlockPos.getAllInBox(pos.add(-range, -10, -range), pos.add(range, 10, range))
-//            .map(BlockPos::toImmutable)
-//            .filter(world::isAirBlock)
-//            .collect(Collectors.toList());
-//
-//        if (!valid.isEmpty()) {
-//             pos = valid.get(rand.nextInt(valid.size()));
-//        }
 
         this.templatePosition = pos;
         return super.addComponentParts(world, rand, bb, chunkPos);
@@ -134,54 +123,52 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
             if (f < 0.66F) {
                 state = Blocks.CHEST.getDefaultState();
-                ResourceLocation lootTable = StrangeLoot.CHESTS_VAULT_TREASURE;
+
+                ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
+
+                Set<ResourceLocation> lootTables = LootTables.func_215796_a();
+                for (ResourceLocation res : lootTables) {
+                    if (data.contains(res.getPath())) {
+                        lootTable = res;
+                    }
+                }
 
                 if (data.contains("north")) state = state.with(ChestBlock.FACING, Direction.NORTH);
                 if (data.contains("east")) state = state.with(ChestBlock.FACING, Direction.EAST);
                 if (data.contains("south")) state = state.with(ChestBlock.FACING, Direction.SOUTH);
                 if (data.contains("west")) state = state.with(ChestBlock.FACING, Direction.WEST);
                 if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
-                if (data.contains("stronghold")) lootTable = LootTables.CHESTS_STRONGHOLD_LIBRARY;
 
                 world.setBlockState(pos, state, 2);
                 LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
                 return;
             }
 
-        } else if (data.equals("mob")) {
+        } else if (data.contains("mob")) {
 
-            MobEntity mob = null;
+            Entity entity = null;
+            EntityType<?> type = null;
+            boolean persist = data.contains("persist");
 
-            if (f < 0.12F) {
-                mob = EntityType.ILLUSIONER.create(world.getWorld());
-            } else if (f < 0.24F) {
-                mob = EntityType.EVOKER.create(world.getWorld());
-            } else if (f < 0.6F) {
-                mob = EntityType.PILLAGER.create(world.getWorld());
-            } else if (f < 1.0F){
-                mob = EntityType.VINDICATOR.create(world.getWorld());
-            }
+            List<ResourceLocation> entities = new ArrayList<>(ForgeRegistries.ENTITIES.getKeys());
 
-            if (mob == null) return;
-
-            mob.enablePersistence();
-            mob.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
-            mob.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
-            world.addEntity(mob);
-
-        } else if (data.contains("erosion")) {
-
-            if (data.contains("wood")) {
-                if (f < 0.5F) {
-                    state = Blocks.OAK_PLANKS.getDefaultState();
-                }
-            } else {
-                if (f < 0.3F) {
-                    state = Blocks.STONE_BRICKS.getDefaultState();
-                } else if (f < 0.5F) {
-                    state = Blocks.CRACKED_STONE_BRICKS.getDefaultState();
+            for (ResourceLocation res : entities) {
+                if (data.contains(res.getPath())) {
+                    type = ForgeRegistries.ENTITIES.getValue(res);
                 }
             }
+
+            if (type == null) return;
+            entity = type.create(world.getWorld());
+
+            if (entity == null) return;
+            entity.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
+
+            if (entity instanceof MobEntity) {
+                if (persist) ((MobEntity)entity).enablePersistence();
+                ((MobEntity)entity).onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
+            }
+            world.addEntity(entity);
 
         } else if (data.contains("lantern")) {
 
@@ -203,19 +190,22 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
             }
 
-        } else if (data.equals("ore")) {
+        } else if (data.contains("ore")) {
 
-            if (f < 0.2F) {
-                state = Blocks.DIAMOND_ORE.getDefaultState();
-            } else if (f < 0.4F) {
-                state = Blocks.EMERALD_ORE.getDefaultState();
-            } else if (f < 0.7F) {
-                state = Blocks.GOLD_ORE.getDefaultState();
-            } else if (f < 1.0F) {
-                state = Blocks.IRON_ORE.getDefaultState();
+            if (f < 0.66F) {
+
+                if (f < 0.2F) {
+                    state = Blocks.DIAMOND_ORE.getDefaultState();
+                } else if (f < 0.4F) {
+                    state = Blocks.EMERALD_ORE.getDefaultState();
+                } else if (f < 0.7F) {
+                    state = Blocks.GOLD_ORE.getDefaultState();
+                } else if (f < 1.0F) {
+                    state = Blocks.IRON_ORE.getDefaultState();
+                }
             }
 
-        } else if (data.equals("storage")) {
+        } else if (data.contains("storage")) {
 
             if (f < 0.66F) {
 
@@ -233,8 +223,15 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
                 state = types.get(rand.nextInt(types.size()));
 
+                List<ResourceLocation> tables = Arrays.asList(
+                    LootTables.CHESTS_SHIPWRECK_SUPPLY,
+                    LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
+                    LootTables.CHESTS_IGLOO_CHEST
+                );
+                ResourceLocation lootTable = getLootTableResourceLocation(data, tables.get(rand.nextInt(tables.size())));
+
                 world.setBlockState(pos, state, 2);
-                LockableLootTileEntity.setLootTable(world, rand, pos, StrangeLoot.CHESTS_VAULT_STORAGE);
+                LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
                 return;
             }
 
@@ -246,19 +243,13 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             if (data.contains("south")) state = state.with(LecternBlock.FACING, Direction.NORTH);
             if (data.contains("west")) state = state.with(LecternBlock.FACING, Direction.EAST);
 
-        } else if (data.equals("bookshelf")) {
+        } else if (data.contains("bookshelf")) {
 
             if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.22F) {
                 state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
                     .with(BookshelfChestBlock.SLOTS, 9);
 
-                ResourceLocation lootTable;
-
-                if (f < 0.5F) {
-                    lootTable = StrangeLoot.CHESTS_VAULT_BOOKSHELVES;
-                } else {
-                    lootTable = LootTables.CHESTS_STRONGHOLD_LIBRARY;
-                }
+                ResourceLocation lootTable = getLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
 
                 world.setBlockState(pos, state, 2);
                 LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
@@ -278,6 +269,12 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
             if (f < 0.8F) {
                 state = Blocks.VINE.getDefaultState();
+            }
+
+        } else if (data.contains("flower")) {
+
+            if (f < 0.8F) {
+                state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
             }
 
         } else if (data.equals("spawner")) {
@@ -330,6 +327,21 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             }
         }
 
+        state = state.rotate(this.rotation);
         world.setBlockState(pos, state, 2);
+    }
+
+    public ResourceLocation getLootTableResourceLocation(String name, ResourceLocation defaultTable)
+    {
+        ResourceLocation lootTable = defaultTable;
+
+        Set<ResourceLocation> lootTables = LootTables.func_215796_a();
+        for (ResourceLocation res : lootTables) {
+            if (name.contains(res.getPath())) {
+                lootTable = res;
+            }
+        }
+
+        return lootTable;
     }
 }

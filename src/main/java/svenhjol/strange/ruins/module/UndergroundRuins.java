@@ -1,4 +1,4 @@
-package svenhjol.strange.undergroundruins.module;
+package svenhjol.strange.ruins.module;
 
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -15,13 +15,13 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.undergroundruins.structure.UndergroundRuinConfig;
-import svenhjol.strange.undergroundruins.structure.UndergroundRuinStructure;
+import svenhjol.strange.ruins.structure.UndergroundRuinConfig;
+import svenhjol.strange.ruins.structure.UndergroundRuinStructure;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.UNDERGROUND_RUINS)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
 public class UndergroundRuins extends MesonModule
 {
     public static Structure<UndergroundRuinConfig> structure;

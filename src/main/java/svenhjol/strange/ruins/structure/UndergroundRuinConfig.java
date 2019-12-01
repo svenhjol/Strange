@@ -1,4 +1,4 @@
-package svenhjol.strange.undergroundruins.structure;
+package svenhjol.strange.ruins.structure;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.Dynamic;
