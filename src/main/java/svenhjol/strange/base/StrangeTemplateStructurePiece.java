@@ -1,5 +1,6 @@
 package svenhjol.strange.base;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -41,9 +42,17 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     protected ResourceLocation templateName;
     protected float integrity;
     protected Rotation rotation;
-    protected int x;
-    protected int y;
-    protected int z;
+    public int x;
+    public int y;
+    public int z;
+
+    public List<Block> flowerTypes = Arrays.asList(
+        Blocks.SUNFLOWER,
+        Blocks.POPPY,
+        Blocks.AZURE_BLUET,
+        Blocks.WHITE_TULIP,
+        Blocks.LILAC
+    );
 
     public StrangeTemplateStructurePiece(IStructurePieceType piece, int type)
     {
@@ -75,6 +84,11 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         this.setup(template, this.templatePosition, placement);
     }
 
+    public BlockPos getTemplatePosition()
+    {
+        return this.templatePosition;
+    }
+
     @Override
     protected void readAdditional(CompoundNBT tag)
     {
@@ -90,9 +104,21 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         this.placeSettings
             .clearProcessors()
             .addProcessor(new IntegrityProcessor(this.integrity))
-            .addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
+            .addProcessor(new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.STRUCTURE_BLOCK, Blocks.STONE)));
 
-        this.templatePosition = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
+        BlockPos pos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
+//
+//        int range = 32;
+//        List<BlockPos> valid = BlockPos.getAllInBox(pos.add(-range, -10, -range), pos.add(range, 10, range))
+//            .map(BlockPos::toImmutable)
+//            .filter(world::isAirBlock)
+//            .collect(Collectors.toList());
+//
+//        if (!valid.isEmpty()) {
+//             pos = valid.get(rand.nextInt(valid.size()));
+//        }
+
+        this.templatePosition = pos;
         return super.addComponentParts(world, rand, bb, chunkPos);
     }
 

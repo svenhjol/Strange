@@ -14,7 +14,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
@@ -23,6 +22,7 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
+import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
@@ -38,10 +38,10 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeTemplateStructurePiece;
 import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.undergroundruins.module.UndergroundRuins;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuinConfig>
 {
@@ -73,25 +73,29 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         return SEED_MODIFIER;
     }
 
+//    @Override
+//    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
+//    {
+//        ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
+//
+//        if (x == chunk.x && z == chunk.z) {
+//            Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
+//            return gen.hasStructure(biome, UndergroundRuins.structure);
+//        }
+//
+//        return false;
+//    }
+
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
+    protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
+        return 8;
+    }
 
-        if (x == chunk.x && z == chunk.z) {
-            int px = x >> 4;
-            int pz = z >> 4;
-
-            rand.setSeed((long)(px ^ pz << 4) ^ gen.getSeed());
-            rand.nextInt();
-
-            if (rand.nextInt(1) > 0) return false;
-
-            Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
-            return gen.hasStructure(biome, UndergroundRuins.structure);
-        }
-
-        return false;
+    @Override
+    protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
+    {
+        return 4;
     }
 
     @Override
@@ -108,21 +112,58 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         }
 
         @Override
-        public void init(ChunkGenerator<?> generator, TemplateManager templates, int chunkX, int chunkZ, Biome biome)
+        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biome)
         {
             BlockPos pos = new BlockPos(chunkX * 16,  rand.nextInt(12) + 24, chunkZ * 16);
 
             if (pos.getY() == 0 || pos.getY() > 48) {
-                pos = new BlockPos(pos.getX(), rand.nextInt(12) + 24, pos.getZ());
+                pos = new BlockPos(pos.getX(), rand.nextInt(24) + 16, pos.getZ());
+
             }
             if (biomeRuins.containsKey(biome.getCategory()) && !biomeRuins.get(biome.getCategory()).isEmpty()) {
-                List<ResourceLocation> biomeTemplates = biomeRuins.get(biome.getCategory());
-                ResourceLocation useTemplate = biomeTemplates.get(rand.nextInt(biomeTemplates.size()));
-                UndergroundRuinPiece ruin = new UndergroundRuinPiece(templates, useTemplate, pos, Rotation.randomRotation(rand));
-                components.add(ruin);
+                Rotation rotation = Rotation.randomRotation(rand);
+
+                ResourceLocation mainRes = getRandomTemplate(biome);
+                Template main = templates.getTemplateDefaulted(mainRes);
+                components.add(new UndergroundRuinPiece(templates, mainRes, pos, rotation));
+
+                List<Direction> directions = Arrays.stream(Direction.values())
+                    .filter(direction -> direction.getHorizontalIndex() >= 0)
+                    .collect(Collectors.toList());
+
+                Collections.shuffle(directions);
+
+                int ii = rand.nextInt(4) + 1;
+                for (int i = 0; i < ii; i++) {
+                    BlockPos nextPos = null;
+                    Direction direction = directions.get(i);
+                    ResourceLocation nextRes = getRandomTemplate(biome);
+                    Template next = templates.getTemplateDefaulted(nextRes);
+
+                    if (direction == Direction.NORTH) {
+                        nextPos = pos.north(next.getSize().getZ());
+                    } else if (direction == Direction.EAST) {
+                        nextPos = pos.east(main.getSize().getX());
+                    } else if (direction == Direction.SOUTH) {
+                        nextPos = pos.south(main.getSize().getZ());
+                    } else if (direction == Direction.WEST) {
+                        nextPos = pos.west(next.getSize().getX());
+                    }
+
+                    if (nextPos != null) {
+                        nextPos.rotate(rotation);
+                        components.add(new UndergroundRuinPiece(templates, nextRes, nextPos, rotation));
+                    }
+                }
 
                 this.recalculateStructureSize();
             }
+        }
+
+        public ResourceLocation getRandomTemplate(Biome biome)
+        {
+            List<ResourceLocation> biomeTemplates = biomeRuins.get(biome.getCategory());
+            return biomeTemplates.get(rand.nextInt(biomeTemplates.size()));
         }
     }
 
@@ -302,6 +343,12 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     state = Blocks.VINE.getDefaultState();
                 }
 
+            } else if (data.contains("flower")) {
+
+                if (f < 0.8F) {
+                    state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
+                }
+
             } else if (data.equals("spawner")) {
 
                 if (f < 0.8F) {
@@ -352,6 +399,7 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                 }
             }
 
+            state = state.rotate(this.rotation);
             world.setBlockState(pos, state, 2);
         }
     }
