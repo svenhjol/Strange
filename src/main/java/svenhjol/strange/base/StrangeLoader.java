@@ -1,5 +1,6 @@
 package svenhjol.strange.base;
 
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
@@ -43,5 +44,8 @@ public class StrangeLoader extends MesonLoader
 
         // sounds
         StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);
+
+        // loot functions
+        LootFunctionManager.registerFunction(new AddSpellRandomly.Serializer());
     }
 }
