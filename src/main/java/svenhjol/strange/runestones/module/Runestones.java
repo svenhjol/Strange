@@ -264,7 +264,6 @@ public class Runestones extends MesonModule
                 }
             }
 
-
             // do teleport if queued
             if (!world.isRemote && !playerTeleport.isEmpty()
                 && playerTeleport.containsKey(event.player.getUniqueID())) {
@@ -380,21 +379,21 @@ public class Runestones extends MesonModule
 
     public static void effectTravelled(World world, BlockPos pos)
     {
-        double spread = 1.75D;
+        double spread = 1.5D;
         double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-        double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
+        double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
         double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-        ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 10,0.1D, 0.1D, 0.1D, 0.2D);
+        ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 10,0.2D, 0.6D, 0.2D, 0.45D);
     }
 
     public static void effectDiscovered(World world, BlockPos pos)
     {
         double spread = 1.75D;
-        if (world.rand.nextFloat() < 0.35F) {
+        if (world.rand.nextFloat() < 0.6F) {
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.25D + (Math.random() - 0.25D) * spread;
+            double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 3, 0.02D, 0.02D, 0.02D, 0.2D);
+            ((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, px, py, pz, 3, 0.15D, 0.3D, 0.15D, 0.2D);
         }
     }
 
