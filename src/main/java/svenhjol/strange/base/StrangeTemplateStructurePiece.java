@@ -33,6 +33,7 @@ import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.scrolls.block.WritingDeskBlock;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
@@ -179,7 +180,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
         } else if (data.contains("mob")) {
 
-            Entity entity = null;
+            Entity entity;
             EntityType<?> type = null;
             boolean persist = data.contains("persist");
 
@@ -356,7 +357,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 ));
 
                 if (Strange.loader.hasModule(Scrollkeepers.class)) {
-                    types.add(Scrollkeepers.block.getDefaultState());
+                    types.add(Scrollkeepers.block.getDefaultState().with(WritingDeskBlock.FACING, facing));
                 }
 
                 state = types.get(rand.nextInt(types.size()));
@@ -364,17 +365,6 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
         }
 
-//        facing = facing.rotateAround(rotation.rotate(facing).getAxis());
-
-//        if (rotation.equals(Rotation.COUNTERCLOCKWISE_90)) {
-//            state = state.rotate(Rotation.CLOCKWISE_180);
-//        } else if (rotation.equals(Rotation.CLOCKWISE_90)) {
-//            state = state.rotate(Rotation.CLOCKWISE_90);
-//        } else if (rotation.equals(Rotation.CLOCKWISE_180)) {
-//            state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-//        }
-
-//        state = state.rotate(this.rotation);
         world.setBlockState(pos, state, 2);
 
     }
