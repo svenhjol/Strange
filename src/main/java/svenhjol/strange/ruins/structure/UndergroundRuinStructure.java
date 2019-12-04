@@ -132,15 +132,21 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     Template next = templates.getTemplateDefaulted(nextRes);
 
                     int offset = rand.nextInt(7) - 2;
+                    int dist;
+                    boolean hasRotation = rotation.equals(Rotation.COUNTERCLOCKWISE_90) || rotation.equals(Rotation.CLOCKWISE_90);
 
                     if (direction == Direction.NORTH) {
-                        nextPos = centrePos.north(next.getSize().getZ()).east(offset);
+                        dist = hasRotation ? next.getSize().getX() : next.getSize().getZ();
+                        nextPos = centrePos.north(dist).east(offset);
                     } else if (direction == Direction.EAST) {
-                        nextPos = centrePos.east(main.getSize().getX()).north(offset);
+                        dist = hasRotation ? main.getSize().getZ() : main.getSize().getX();
+                        nextPos = centrePos.east(dist).north(offset);
                     } else if (direction == Direction.SOUTH) {
-                        nextPos = centrePos.south(main.getSize().getZ()).east(offset);
+                        dist = hasRotation ? main.getSize().getX() : main.getSize().getZ();
+                        nextPos = centrePos.south(dist).east(offset);
                     } else if (direction == Direction.WEST) {
-                        nextPos = centrePos.west(next.getSize().getX()).north(offset);
+                        dist = hasRotation ? next.getSize().getZ() : next.getSize().getX();
+                        nextPos = centrePos.west(dist).north(offset);
                     }
 //                    } else if (direction == Direction.DOWN) {
 //                        if (centrePos.add(0, -next.getSize().getY(), 0).getY() > 10) {
