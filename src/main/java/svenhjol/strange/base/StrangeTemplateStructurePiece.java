@@ -46,6 +46,14 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     protected int x;
     protected int y;
     protected int z;
+    protected Random fixedRand;
+
+    protected Direction faceNorth;
+    protected Direction faceEast;
+    protected Direction faceSouth;
+    protected Direction faceWest;
+
+    public List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
 
     public static List<Block> flowerTypes = Arrays.asList(
         Blocks.SUNFLOWER,
@@ -53,8 +61,9 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         Blocks.AZURE_BLUET,
         Blocks.WHITE_TULIP,
         Blocks.RED_TULIP,
-        Blocks.BLUE_ORCHID,
         Blocks.PINK_TULIP,
+        Blocks.ORANGE_TULIP,
+        Blocks.BLUE_ORCHID,
         Blocks.OXEYE_DAISY,
         Blocks.WITHER_ROSE,
         Blocks.LILAC,
@@ -139,47 +148,161 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     @Override
     protected void handleDataMarker(String data, BlockPos pos, IWorld world, Random rand, MutableBoundingBox bb)
     {
-        BlockState state = Blocks.AIR.getDefaultState();
-        float f = rand.nextFloat();
-        List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
-        WoodType woodType = woodTypes.get(rand.nextInt(woodTypes.size()));
+        this.fixedRand = new Random();
+        this.fixedRand.setSeed(bb.hashCode());
 
-        Random structureRand = new Random();
-        structureRand.setSeed(bb.hashCode());
+        this.faceNorth = rotation.rotate(Direction.NORTH);
+        this.faceEast = rotation.rotate(Direction.EAST);
+        this.faceSouth = rotation.rotate(Direction.SOUTH);
+        this.faceWest = rotation.rotate(Direction.WEST);
 
-        Direction faceNorth = rotation.rotate(Direction.NORTH);
-        Direction faceEast = rotation.rotate(Direction.EAST);
-        Direction faceSouth = rotation.rotate(Direction.SOUTH);
-        Direction faceWest = rotation.rotate(Direction.WEST);
+        dataForBookshelf(world, pos, data, rand);
+        dataForChest(world, pos, data, rand);
+        dataForDecoration(world, pos, data, rand);
+        dataForFlower(world, pos, data, rand);
+        dataForLantern(world, pos, data, rand);
+        dataForLectern(world, pos, data, rand);
+        dataForMob(world, pos, data, rand);
+        dataForOre(world, pos, data, rand);
+        dataForRune(world, pos, data, rand);
+        dataForSapling(world, pos, data, rand);
+        dataForSpawner(world, pos, data, rand);
+        dataForStorage(world, pos, data, rand);
+    }
 
-        if (data.contains("chest")) {
+    protected void dataForBookshelf(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        // TODO variant bookshelves
+        if (data.contains("bookshelf")) {
+            if (Charm.loader.hasModule(BookshelfChests.class) && rand.nextFloat() < 0.22F) {
+                BlockState state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
+                    .with(BookshelfChestBlock.SLOTS, 9);
 
-            if (f < 0.66F) {
-                state = Blocks.CHEST.getDefaultState();
-
-                ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
-
-                Set<ResourceLocation> lootTables = LootTables.func_215796_a();
-                for (ResourceLocation res : lootTables) {
-                    String[] s = res.getPath().split("/");
-                    if (data.contains(s[s.length-1])) {
-                        lootTable = res;
-                    }
-                }
-
-                if (data.contains("north")) state = state.with(ChestBlock.FACING, faceNorth);
-                if (data.contains("east")) state = state.with(ChestBlock.FACING, faceEast);
-                if (data.contains("south")) state = state.with(ChestBlock.FACING, faceSouth);
-                if (data.contains("west")) state = state.with(ChestBlock.FACING, faceWest);
-                if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
-
+                ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
                 world.setBlockState(pos, state, 2);
                 LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
-                return;
+            } else {
+                BlockState state = Blocks.BOOKSHELF.getDefaultState();
+                world.setBlockState(pos, state, 2);
+            }
+        }
+    }
+
+    protected void dataForChest(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("chest") && rand.nextFloat() < 0.66F) {
+            BlockState state = Blocks.CHEST.getDefaultState();
+
+            ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
+
+            Set<ResourceLocation> lootTables = LootTables.func_215796_a();
+            for (ResourceLocation res : lootTables) {
+                String[] s = res.getPath().split("/");
+                if (data.contains(s[s.length-1])) {
+                    lootTable = res;
+                }
             }
 
-        } else if (data.contains("mob")) {
+            if (data.contains("north")) state = state.with(ChestBlock.FACING, faceNorth);
+            if (data.contains("east")) state = state.with(ChestBlock.FACING, faceEast);
+            if (data.contains("south")) state = state.with(ChestBlock.FACING, faceSouth);
+            if (data.contains("west")) state = state.with(ChestBlock.FACING, faceWest);
+            if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
 
+            world.setBlockState(pos, state, 2);
+            LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
+        }
+    }
+
+    protected void dataForDecoration(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("decoration") && rand.nextFloat() < 0.65F) {
+            Direction facing = faceNorth;
+            if (data.contains("east")) facing = faceEast;
+            if (data.contains("south")) facing = faceSouth;
+            if (data.contains("west")) facing = faceWest;
+
+            List<BlockState> types = new ArrayList<>(Arrays.asList(
+                Blocks.BLAST_FURNACE.getDefaultState().with(BlastFurnaceBlock.FACING, facing),
+                Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
+                Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
+                Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
+                Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, facing),
+                Blocks.OBSERVER.getDefaultState().with(ObserverBlock.FACING, facing),
+                Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
+                Blocks.TRAPPED_CHEST.getDefaultState().with(TrappedChestBlock.FACING, facing),
+                Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
+                Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
+                Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
+                Blocks.BREWING_STAND.getDefaultState(),
+                Blocks.STONECUTTER.getDefaultState(),
+                Blocks.PUMPKIN.getDefaultState(),
+                Blocks.MELON.getDefaultState(),
+                Blocks.LANTERN.getDefaultState(),
+                Blocks.COBWEB.getDefaultState(),
+                Blocks.HAY_BLOCK.getDefaultState(),
+                Blocks.JUKEBOX.getDefaultState(),
+                Blocks.NOTE_BLOCK.getDefaultState(),
+                Blocks.FLETCHING_TABLE.getDefaultState(),
+                Blocks.SMITHING_TABLE.getDefaultState(),
+                Blocks.CRAFTING_TABLE.getDefaultState(),
+                Blocks.CARTOGRAPHY_TABLE.getDefaultState(),
+                Blocks.ANVIL.getDefaultState(),
+                Blocks.CHIPPED_ANVIL.getDefaultState(),
+                Blocks.DAMAGED_ANVIL.getDefaultState(),
+                Blocks.BELL.getDefaultState()
+            ));
+
+            if (Strange.loader.hasModule(Scrollkeepers.class)) {
+                types.add(Scrollkeepers.block.getDefaultState().with(WritingDeskBlock.FACING, facing));
+            }
+
+            BlockState state = types.get(rand.nextInt(types.size()));
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForFlower(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("flower") && rand.nextFloat() < 0.8F) {
+            BlockState state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForLantern(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("lantern")) {
+            BlockState state = Blocks.LANTERN.getDefaultState();
+
+            if (Charm.loader.hasModule(GoldLanterns.class) && rand.nextFloat() < 0.25F) {
+                state = GoldLanterns.block.getDefaultState();
+            }
+
+            if (data.contains("hanging")) {
+                state = state.with(LanternBlock.HANGING, true);
+            }
+
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForLectern(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("lectern") && rand.nextFloat() < 0.8F) {
+            BlockState state = Blocks.LECTERN.getDefaultState();
+            if (data.contains("north")) state = state.with(LecternBlock.FACING, faceSouth);
+            if (data.contains("east")) state = state.with(LecternBlock.FACING, faceWest);
+            if (data.contains("south")) state = state.with(LecternBlock.FACING, faceNorth);
+            if (data.contains("west")) state = state.with(LecternBlock.FACING, faceEast);
+
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForMob(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("mob") && rand.nextFloat() < 0.8F) {
             Entity entity;
             EntityType<?> type = null;
             boolean persist = data.contains("persist");
@@ -199,183 +322,92 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             entity.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
 
             if (entity instanceof MobEntity) {
-                if (persist) ((MobEntity)entity).enablePersistence();
-                ((MobEntity)entity).onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
+                if (persist) ((MobEntity) entity).enablePersistence();
+                ((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
             }
             world.addEntity(entity);
-
-        } else if (data.contains("lantern")) {
-
-            state = Blocks.LANTERN.getDefaultState();
-
-            if (Charm.loader.hasModule(GoldLanterns.class) && f < 0.25F) {
-                state = GoldLanterns.block.getDefaultState();
-            }
-
-            if (data.contains("hanging")) {
-                state = state.with(LanternBlock.HANGING, true);
-            }
-
-        } else if (data.equals("rune")) {
-
-            if (Strange.loader.hasModule(Runestones.class) && f < 0.75F) {
-                state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
-            }
-
-        } else if (data.contains("ore")) {
-
-            if (f < 0.66F) {
-                state = oreTypes.get(structureRand.nextInt(oreTypes.size())).getDefaultState();
-            }
-
-        } else if (data.contains("storage")) {
-
-            if (f < 0.66F) {
-
-                List<BlockState> types = new ArrayList<>(Arrays.asList(
-                    Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)
-                ));
-                if (Charm.loader.hasModule(AllTheBarrels.class)) {
-                    types.add(AllTheBarrels.barrels.get(rand.nextInt(AllTheBarrels.barrels.size())).getDefaultState()
-                        .with(BarrelBlock.PROPERTY_FACING, Direction.UP));
-                }
-                if (Charm.loader.hasModule(Crates.class)) {
-                    types.add(Crates.openTypes.get(woodType).getDefaultState());
-                    types.add(Crates.sealedTypes.get(woodType).getDefaultState());
-                }
-
-                state = types.get(structureRand.nextInt(types.size()));
-
-                List<ResourceLocation> tables = Arrays.asList(
-                    LootTables.CHESTS_SHIPWRECK_SUPPLY,
-                    LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
-                    LootTables.CHESTS_IGLOO_CHEST
-                );
-                ResourceLocation lootTable = getLootTableResourceLocation(data, tables.get(rand.nextInt(tables.size())));
-
-                world.setBlockState(pos, state, 2);
-                LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
-                return;
-            }
-
-        } else if (data.contains("lectern")) {
-
-            state = Blocks.LECTERN.getDefaultState();
-            if (data.contains("north")) state = state.with(LecternBlock.FACING, faceSouth);
-            if (data.contains("east")) state = state.with(LecternBlock.FACING, faceWest);
-            if (data.contains("south")) state = state.with(LecternBlock.FACING, faceNorth);
-            if (data.contains("west")) state = state.with(LecternBlock.FACING, faceEast);
-
-        } else if (data.contains("bookshelf")) {
-
-            if (Charm.loader.hasModule(BookshelfChests.class) && f < 0.22F) {
-                state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
-                    .with(BookshelfChestBlock.SLOTS, 9);
-
-                ResourceLocation lootTable = getLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
-
-                world.setBlockState(pos, state, 2);
-                LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
-                return;
-
-            } else {
-                state = Blocks.BOOKSHELF.getDefaultState();
-            }
-
-        } else if (data.equals("bars")) {
-
-            if (f < 0.8F) {
-                state = Blocks.IRON_BARS.getDefaultState();
-            }
-
-        } else if (data.equals("vines")) {
-
-            if (f < 0.8F) {
-                state = Blocks.VINE.getDefaultState();
-            }
-
-        } else if (data.contains("flower")) {
-
-            if (f < 0.8F) {
-                state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
-            }
-
-        } else if (data.contains("sapling")) {
-
-            if (f < 0.8F) {
-                state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
-            }
-
-        } else if (data.equals("spawner")) {
-
-            if (f < 0.8F) {
-                state = Blocks.SPAWNER.getDefaultState();
-                world.setBlockState(pos, state, 2);
-                TileEntity tile = world.getTileEntity(pos);
-                if (tile instanceof MobSpawnerTileEntity) {
-                    ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(structureRand));
-                }
-            }
-
-        } else if (data.contains("decoration")) {
-
-            Direction facing = faceNorth;
-            if (data.contains("east")) facing = faceEast;
-            if (data.contains("south")) facing = faceSouth;
-            if (data.contains("west")) facing = faceWest;
-
-            if (f < 0.65F) {
-                List<BlockState> types = new ArrayList<>(Arrays.asList(
-                    Blocks.BLAST_FURNACE.getDefaultState().with(BlastFurnaceBlock.FACING, facing),
-                    Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
-                    Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
-                    Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
-                    Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, facing),
-                    Blocks.OBSERVER.getDefaultState().with(ObserverBlock.FACING, facing),
-                    Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
-                    Blocks.TRAPPED_CHEST.getDefaultState().with(TrappedChestBlock.FACING, facing),
-                    Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
-                    Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
-                    Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
-                    Blocks.BREWING_STAND.getDefaultState(),
-                    Blocks.STONECUTTER.getDefaultState(),
-                    Blocks.PUMPKIN.getDefaultState(),
-                    Blocks.MELON.getDefaultState(),
-                    Blocks.LANTERN.getDefaultState(),
-                    Blocks.COBWEB.getDefaultState(),
-                    Blocks.HAY_BLOCK.getDefaultState(),
-                    Blocks.JUKEBOX.getDefaultState(),
-                    Blocks.NOTE_BLOCK.getDefaultState(),
-                    Blocks.FLETCHING_TABLE.getDefaultState(),
-                    Blocks.SMITHING_TABLE.getDefaultState(),
-                    Blocks.CRAFTING_TABLE.getDefaultState(),
-                    Blocks.CARTOGRAPHY_TABLE.getDefaultState(),
-                    Blocks.ANVIL.getDefaultState(),
-                    Blocks.CHIPPED_ANVIL.getDefaultState(),
-                    Blocks.DAMAGED_ANVIL.getDefaultState(),
-                    Blocks.BELL.getDefaultState()
-                ));
-
-                if (Strange.loader.hasModule(Scrollkeepers.class)) {
-                    types.add(Scrollkeepers.block.getDefaultState().with(WritingDeskBlock.FACING, facing));
-                }
-
-                state = types.get(rand.nextInt(types.size()));
-            }
-
         }
-
-        world.setBlockState(pos, state, 2);
-
     }
 
-    public ResourceLocation getLootTableResourceLocation(String name, ResourceLocation defaultTable)
+    protected void dataForOre(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("ore") && rand.nextFloat() < 0.66F) {
+            BlockState state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForRune(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("rune") && rand.nextFloat() < 0.75F) {
+            if (Strange.loader.hasModule(Runestones.class)) {
+                BlockState state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
+                world.setBlockState(pos, state, 2);
+            }
+        }
+    }
+
+    protected void dataForSapling(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("sapling") && rand.nextFloat() < 0.8F) {
+            BlockState state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForSpawner(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("spawner") && rand.nextFloat() < 0.8F) {
+            BlockState state = Blocks.SPAWNER.getDefaultState();
+            world.setBlockState(pos, state, 2);
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof MobSpawnerTileEntity) {
+                ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(fixedRand));
+            }
+        }
+    }
+
+    protected void dataForStorage(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (data.contains("storage") && rand.nextFloat() < 0.66F) {
+            WoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
+
+            List<BlockState> types = new ArrayList<>(Arrays.asList(
+                Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)
+            ));
+            if (Charm.loader.hasModule(AllTheBarrels.class)) {
+                types.add(AllTheBarrels.barrels.get(rand.nextInt(AllTheBarrels.barrels.size())).getDefaultState()
+                    .with(BarrelBlock.PROPERTY_FACING, Direction.UP));
+            }
+            if (Charm.loader.hasModule(Crates.class)) {
+                types.add(Crates.openTypes.get(woodType).getDefaultState());
+                types.add(Crates.sealedTypes.get(woodType).getDefaultState());
+            }
+
+            BlockState state = types.get(fixedRand.nextInt(types.size()));
+
+            List<ResourceLocation> tables = Arrays.asList(
+                LootTables.CHESTS_SHIPWRECK_SUPPLY,
+                LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
+                LootTables.CHESTS_IGLOO_CHEST
+            );
+            ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, tables.get(rand.nextInt(tables.size())));
+
+            world.setBlockState(pos, state, 2);
+            LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
+        }
+    }
+
+    public ResourceLocation getVanillaLootTableResourceLocation(String name, ResourceLocation defaultTable)
     {
         ResourceLocation lootTable = defaultTable;
 
         Set<ResourceLocation> lootTables = LootTables.func_215796_a();
         for (ResourceLocation res : lootTables) {
-            if (name.contains(res.getPath())) {
+            String[] s = res.getPath().split("/");
+            if (s.length == 0) continue;
+            String path = s[s.length-1];
+            if (name.contains(path)) {
                 lootTable = res;
             }
         }
