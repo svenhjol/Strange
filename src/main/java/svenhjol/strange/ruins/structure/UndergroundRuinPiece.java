@@ -45,21 +45,34 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
     public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos)
     {
         if (this.tryFindOpening) {
-            BlockPos originalPos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
-            BlockPos newPos = null;
+            BlockPos oPos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
+            BlockPos nPos = null;
 
-            List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
+            final BlockPos templateSize = this.template.getSize();
+
+            List<BlockPos> valid = BlockPos.getAllInBox(oPos.add(0, -verticalRange, 0), oPos.add(0, verticalRange, 0))
                 .map(BlockPos::toImmutable)
                 .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
-                    && world.getBlockState(p.add(0, this.template.getSize().getY(), 0)).isSolid())
+                    && world.getBlockState(p.add(0, templateSize.getY() - 1, 0)).isSolid()
+                    && world.getBlockState(p.add(templateSize.getX(), templateSize.getY() - 1, templateSize.getZ())).isSolid()
+                )
                 .collect(Collectors.toList());
 
             if (!valid.isEmpty()) {
-                newPos = valid.get(rand.nextInt(valid.size()));
+                for (int i = world.getSeaLevel() - 12; i > 12; i--) {
+                    nPos = new BlockPos(oPos.getX(), i - templateSize.getY(), oPos.getZ());
+                    if (world.getBlockState(nPos).isSolid()) {
+                        nPos = new BlockPos(oPos.getX() + templateSize.getX(), i - templateSize.getY(), oPos.getZ() + templateSize.getZ());
+                        if (world.getBlockState(nPos).isSolid()) {
+                            nPos = nPos.down(2);
+                            break;
+                        }
+                    }
+                }
             }
 
-            if (newPos != null && newPos.down(this.template.getSize().getY()).getY() > 5) {
-                this.templatePosition = new BlockPos(this.templatePosition.getX(), newPos.getY(), this.templatePosition.getZ());
+            if (nPos != null && nPos.down(templateSize.getY()).getY() > 5) {
+                this.templatePosition = new BlockPos(this.templatePosition.getX(), nPos.getY(), this.templatePosition.getZ());
             }
         }
 

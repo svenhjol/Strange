@@ -66,13 +66,13 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        return 8;
+        return 4;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
     {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
 //            biomeCategory = Biome.Category.SAVANNA;
 
             if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
-                Rotation rotation = Rotation.randomRotation(rand);
+                Rotation rotation = Rotation.NONE;
                 int numStructures = rand.nextInt(4) + 1;
 
                 List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, numStructures);
@@ -114,6 +114,8 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
 
                 ResourceLocation mainRes = ruinTemplates.get(0);
                 Template main = templates.getTemplateDefaulted(mainRes);
+
+                if (ruinTemplates.size() == 1) rotation = Rotation.randomRotation(rand);
                 UndergroundRuinPiece ruin = new UndergroundRuinPiece(templates, mainRes, pos, rotation, ruinTemplates.size() == 1);
                 components.add(ruin);
 
@@ -131,22 +133,21 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     ResourceLocation nextRes = ruinTemplates.get(i);
                     Template next = templates.getTemplateDefaulted(nextRes);
 
-                    int offset = rand.nextInt(7) - 2;
                     int dist;
-                    boolean hasRotation = rotation.equals(Rotation.COUNTERCLOCKWISE_90) || rotation.equals(Rotation.CLOCKWISE_90);
+                    int offset = rand.nextInt(3) - 1;
 
                     if (direction == Direction.NORTH) {
-                        dist = hasRotation ? next.getSize().getX() : next.getSize().getZ();
-                        nextPos = centrePos.north(dist).east(offset);
+                        dist = next.getSize().getZ();
+                        nextPos = centrePos.north(dist-1).east(offset);
                     } else if (direction == Direction.EAST) {
-                        dist = hasRotation ? main.getSize().getZ() : main.getSize().getX();
-                        nextPos = centrePos.east(dist).north(offset);
+                        dist = main.getSize().getX();
+                        nextPos = centrePos.east(dist-1).north(offset);
                     } else if (direction == Direction.SOUTH) {
-                        dist = hasRotation ? main.getSize().getX() : main.getSize().getZ();
-                        nextPos = centrePos.south(dist).east(offset);
+                        dist = main.getSize().getZ();
+                        nextPos = centrePos.south(dist-1).east(offset);
                     } else if (direction == Direction.WEST) {
-                        dist = hasRotation ? next.getSize().getZ() : next.getSize().getX();
-                        nextPos = centrePos.west(dist).north(offset);
+                        dist = next.getSize().getX();
+                        nextPos = centrePos.west(dist-1).north(offset);
                     }
 //                    } else if (direction == Direction.DOWN) {
 //                        if (centrePos.add(0, -next.getSize().getY(), 0).getY() > 10) {
@@ -159,8 +160,7 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
 //                    }
 
                     if (nextPos != null) {
-                        nextPos.rotate(rotation);
-                        components.add(new UndergroundRuinPiece(templates, nextRes, nextPos, rotation, false));
+                        components.add(new UndergroundRuinPiece(templates, nextRes, nextPos, Rotation.NONE, true));
                     }
                 }
 
