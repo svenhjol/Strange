@@ -1,5 +1,6 @@
 package svenhjol.strange.ruins.structure;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -49,7 +50,8 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
 
             List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
                 .map(BlockPos::toImmutable)
-                .filter(world::isAirBlock)
+                .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
+                    && world.getBlockState(p.add(0, this.template.getSize().getY(), 0)).isSolid())
                 .collect(Collectors.toList());
 
             if (!valid.isEmpty()) {

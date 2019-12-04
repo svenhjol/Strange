@@ -33,6 +33,7 @@ import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
 
@@ -45,12 +46,37 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     protected int y;
     protected int z;
 
-    public List<Block> flowerTypes = Arrays.asList(
+    public static List<Block> flowerTypes = Arrays.asList(
         Blocks.SUNFLOWER,
         Blocks.POPPY,
         Blocks.AZURE_BLUET,
         Blocks.WHITE_TULIP,
-        Blocks.LILAC
+        Blocks.RED_TULIP,
+        Blocks.BLUE_ORCHID,
+        Blocks.PINK_TULIP,
+        Blocks.OXEYE_DAISY,
+        Blocks.WITHER_ROSE,
+        Blocks.LILAC,
+        Blocks.DANDELION
+    );
+
+    public static List<Block> saplingTypes = Arrays.asList(
+        Blocks.OAK_SAPLING,
+        Blocks.SPRUCE_SAPLING,
+        Blocks.BIRCH_SAPLING,
+        Blocks.ACACIA_SAPLING,
+        Blocks.DARK_OAK_SAPLING,
+        Blocks.JUNGLE_SAPLING
+    );
+
+    public static List<Block> oreTypes = Arrays.asList(
+        Blocks.DIAMOND_ORE,
+        Blocks.EMERALD_ORE,
+        Blocks.GOLD_ORE,
+        Blocks.IRON_ORE,
+        Blocks.COAL_ORE,
+        Blocks.REDSTONE_ORE,
+        Blocks.LAPIS_ORE
     );
 
     public StrangeTemplateStructurePiece(IStructurePieceType piece, int type)
@@ -105,9 +131,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             .addProcessor(new IntegrityProcessor(this.integrity))
             .addProcessor(new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.STRUCTURE_BLOCK, Blocks.LIGHT_BLUE_STAINED_GLASS)));
 
-        BlockPos pos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
-
-        this.templatePosition = pos;
+        this.templatePosition = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
         return super.addComponentParts(world, rand, bb, chunkPos);
     }
 
@@ -119,6 +143,14 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
         WoodType woodType = woodTypes.get(rand.nextInt(woodTypes.size()));
 
+        Random structureRand = new Random();
+        structureRand.setSeed(bb.hashCode());
+
+        Direction faceNorth = rotation.rotate(Direction.NORTH);
+        Direction faceEast = rotation.rotate(Direction.EAST);
+        Direction faceSouth = rotation.rotate(Direction.SOUTH);
+        Direction faceWest = rotation.rotate(Direction.WEST);
+
         if (data.contains("chest")) {
 
             if (f < 0.66F) {
@@ -128,15 +160,16 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
                 Set<ResourceLocation> lootTables = LootTables.func_215796_a();
                 for (ResourceLocation res : lootTables) {
-                    if (data.contains(res.getPath())) {
+                    String[] s = res.getPath().split("/");
+                    if (data.contains(s[s.length-1])) {
                         lootTable = res;
                     }
                 }
 
-                if (data.contains("north")) state = state.with(ChestBlock.FACING, Direction.NORTH);
-                if (data.contains("east")) state = state.with(ChestBlock.FACING, Direction.EAST);
-                if (data.contains("south")) state = state.with(ChestBlock.FACING, Direction.SOUTH);
-                if (data.contains("west")) state = state.with(ChestBlock.FACING, Direction.WEST);
+                if (data.contains("north")) state = state.with(ChestBlock.FACING, faceNorth);
+                if (data.contains("east")) state = state.with(ChestBlock.FACING, faceEast);
+                if (data.contains("south")) state = state.with(ChestBlock.FACING, faceSouth);
+                if (data.contains("west")) state = state.with(ChestBlock.FACING, faceWest);
                 if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
 
                 world.setBlockState(pos, state, 2);
@@ -172,16 +205,14 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
         } else if (data.contains("lantern")) {
 
-            if (f < 0.5F) {
-                state = Blocks.LANTERN.getDefaultState();
+            state = Blocks.LANTERN.getDefaultState();
 
-                if (Charm.loader.hasModule(GoldLanterns.class) && f < 0.25F) {
-                    state = GoldLanterns.block.getDefaultState();
-                }
+            if (Charm.loader.hasModule(GoldLanterns.class) && f < 0.25F) {
+                state = GoldLanterns.block.getDefaultState();
+            }
 
-                if (data.contains("hanging")) {
-                    state = state.with(LanternBlock.HANGING, true);
-                }
+            if (data.contains("hanging")) {
+                state = state.with(LanternBlock.HANGING, true);
             }
 
         } else if (data.equals("rune")) {
@@ -193,16 +224,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         } else if (data.contains("ore")) {
 
             if (f < 0.66F) {
-
-                if (f < 0.2F) {
-                    state = Blocks.DIAMOND_ORE.getDefaultState();
-                } else if (f < 0.4F) {
-                    state = Blocks.EMERALD_ORE.getDefaultState();
-                } else if (f < 0.7F) {
-                    state = Blocks.GOLD_ORE.getDefaultState();
-                } else if (f < 1.0F) {
-                    state = Blocks.IRON_ORE.getDefaultState();
-                }
+                state = oreTypes.get(structureRand.nextInt(oreTypes.size())).getDefaultState();
             }
 
         } else if (data.contains("storage")) {
@@ -221,7 +243,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                     types.add(Crates.sealedTypes.get(woodType).getDefaultState());
                 }
 
-                state = types.get(rand.nextInt(types.size()));
+                state = types.get(structureRand.nextInt(types.size()));
 
                 List<ResourceLocation> tables = Arrays.asList(
                     LootTables.CHESTS_SHIPWRECK_SUPPLY,
@@ -238,10 +260,10 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         } else if (data.contains("lectern")) {
 
             state = Blocks.LECTERN.getDefaultState();
-            if (data.contains("north")) state = state.with(LecternBlock.FACING, Direction.SOUTH);
-            if (data.contains("east")) state = state.with(LecternBlock.FACING, Direction.WEST);
-            if (data.contains("south")) state = state.with(LecternBlock.FACING, Direction.NORTH);
-            if (data.contains("west")) state = state.with(LecternBlock.FACING, Direction.EAST);
+            if (data.contains("north")) state = state.with(LecternBlock.FACING, faceSouth);
+            if (data.contains("east")) state = state.with(LecternBlock.FACING, faceWest);
+            if (data.contains("south")) state = state.with(LecternBlock.FACING, faceNorth);
+            if (data.contains("west")) state = state.with(LecternBlock.FACING, faceEast);
 
         } else if (data.contains("bookshelf")) {
 
@@ -277,6 +299,12 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
             }
 
+        } else if (data.contains("sapling")) {
+
+            if (f < 0.8F) {
+                state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
+            }
+
         } else if (data.equals("spawner")) {
 
             if (f < 0.8F) {
@@ -284,28 +312,32 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 world.setBlockState(pos, state, 2);
                 TileEntity tile = world.getTileEntity(pos);
                 if (tile instanceof MobSpawnerTileEntity) {
-                    ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(rand));
+                    ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(structureRand));
                 }
             }
 
         } else if (data.contains("decoration")) {
 
-            if (f < 0.5F) {
+            Direction facing = faceNorth;
+            if (data.contains("east")) facing = faceEast;
+            if (data.contains("south")) facing = faceSouth;
+            if (data.contains("west")) facing = faceWest;
 
-                Direction facing = Direction.NORTH;
-                if (data.contains("east")) facing = Direction.EAST;
-                if (data.contains("south")) facing = Direction.SOUTH;
-                if (data.contains("west")) facing = Direction.WEST;
-
+            if (f < 0.65F) {
                 List<BlockState> types = new ArrayList<>(Arrays.asList(
                     Blocks.BLAST_FURNACE.getDefaultState().with(BlastFurnaceBlock.FACING, facing),
                     Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
                     Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
                     Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
+                    Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, facing),
+                    Blocks.OBSERVER.getDefaultState().with(ObserverBlock.FACING, facing),
                     Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
+                    Blocks.TRAPPED_CHEST.getDefaultState().with(TrappedChestBlock.FACING, facing),
                     Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
                     Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
                     Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
+                    Blocks.BREWING_STAND.getDefaultState(),
+                    Blocks.STONECUTTER.getDefaultState(),
                     Blocks.PUMPKIN.getDefaultState(),
                     Blocks.MELON.getDefaultState(),
                     Blocks.LANTERN.getDefaultState(),
@@ -323,12 +355,28 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                     Blocks.BELL.getDefaultState()
                 ));
 
+                if (Strange.loader.hasModule(Scrollkeepers.class)) {
+                    types.add(Scrollkeepers.block.getDefaultState());
+                }
+
                 state = types.get(rand.nextInt(types.size()));
             }
+
         }
 
-        state = state.rotate(this.rotation);
+//        facing = facing.rotateAround(rotation.rotate(facing).getAxis());
+
+//        if (rotation.equals(Rotation.COUNTERCLOCKWISE_90)) {
+//            state = state.rotate(Rotation.CLOCKWISE_180);
+//        } else if (rotation.equals(Rotation.CLOCKWISE_90)) {
+//            state = state.rotate(Rotation.CLOCKWISE_90);
+//        } else if (rotation.equals(Rotation.CLOCKWISE_180)) {
+//            state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+//        }
+
+//        state = state.rotate(this.rotation);
         world.setBlockState(pos, state, 2);
+
     }
 
     public ResourceLocation getLootTableResourceLocation(String name, ResourceLocation defaultTable)

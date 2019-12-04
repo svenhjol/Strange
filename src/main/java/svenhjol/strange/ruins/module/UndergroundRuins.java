@@ -18,13 +18,13 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.ruins.structure.UndergroundRuinConfig;
 import svenhjol.strange.ruins.structure.UndergroundRuinStructure;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
 public class UndergroundRuins extends MesonModule
 {
     public static Structure<UndergroundRuinConfig> structure;
+    public static Map<Biome.Category, Map<String, List<ResourceLocation>>> biomeRuins = new HashMap<>();
 
     @Override
     public void init()
@@ -49,25 +49,37 @@ public class UndergroundRuins extends MesonModule
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
         try {
+            biomeRuins = new HashMap<>();
+
             for (Biome.Category cat : Biome.Category.values()) {
                 String catName = cat.getName().toLowerCase();
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations("structures/underground_ruins/" + catName, file -> file.endsWith(".nbt"));
 
+                if (!biomeRuins.containsKey(cat)) {
+                    biomeRuins.put(cat, new HashMap<>());
+                }
+
                 for (ResourceLocation res : resources) {
-                    String name = res.getPath()
+                    String name;
+                    String subcat = UndergroundRuinStructure.GENERAL;
+                    String[] p = res.getPath().split("/");
+                    if (p.length == 5) subcat = p[3];
+
+                    name = res.getPath()
                         .replace(".nbt", "")
                         .replace("structures/", "");
 
-                    if (!UndergroundRuinStructure.biomeRuins.containsKey(cat)) {
-                        UndergroundRuinStructure.biomeRuins.put(cat, new ArrayList<>());
+                    if (!biomeRuins.get(cat).containsKey(subcat)) {
+                        biomeRuins.get(cat).put(subcat, new ArrayList<>());
                     }
-                    UndergroundRuinStructure.biomeRuins.get(cat).add(new ResourceLocation(Strange.MOD_ID, name));
+
+                    biomeRuins.get(cat).get(subcat).add(new ResourceLocation(Strange.MOD_ID, name));
                 }
             }
         } catch (Exception e) {
             Meson.warn("Could not load structures for biome category", e);
         }
 
-        Meson.log(UndergroundRuinStructure.biomeRuins);
+        Meson.log(biomeRuins);
     }
 }
