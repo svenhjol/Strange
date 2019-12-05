@@ -4,6 +4,7 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -25,6 +26,12 @@ public class UndergroundRuins extends MesonModule
 {
     public static Structure<UndergroundRuinConfig> structure;
     public static Map<Biome.Category, Map<String, List<ResourceLocation>>> biomeRuins = new HashMap<>();
+    public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
+        Feature.STRONGHOLD,
+        Feature.OCEAN_MONUMENT,
+        Feature.NETHER_BRIDGE,
+        Feature.BURIED_TREASURE
+    ));
 
     @Override
     public void init()

@@ -5,6 +5,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -50,18 +51,33 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         return SEED_MODIFIER;
     }
 
-//    @Override
-//    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
-//    {
-//        ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
-//
-//        if (x == chunk.x && z == chunk.z) {
-//            Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
-//            return gen.hasStructure(biome, UndergroundRuins.structure);
-//        }
-//
-//        return false;
-//    }
+    @Override
+    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
+    {
+        ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
+
+        if (x == chunk.x && z == chunk.z) {
+            Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
+
+            // don't spawn underground ruin near blacklisted structure
+            if (gen.hasStructure(biome, UndergroundRuins.structure)) {
+                int cx = x >> 4;
+                int cz = z >> 4;
+
+                for (Structure<?> structure : UndergroundRuins.blacklist) {
+                    for (int xx = cx - 10; xx <= x + 10; ++xx) {
+                        for (int zz = cz - 10; zz <= z + 10; ++zz) {
+                            if (structure.hasStartAt(gen, rand, xx, zz)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)

@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -40,12 +41,26 @@ import java.util.*;
 
 public abstract class StrangeTemplateStructurePiece extends TemplateStructurePiece
 {
+    public static final String BOOKSHELF = "bookshelf";
+    public static final String CARPET = "carpet";
+    public static final String CHEST = "chest";
+    public static final String DECORATION = "decoration";
+    public static final String FLOWER = "flower";
+    public static final String LANTERN = "lantern";
+    public static final String LECTERN = "lectern";
+    public static final String MOB = "mob";
+    public static final String ORE = "ore";
+    public static final String RUNE = "rune";
+    public static final String SAPLING = "sapling";
+    public static final String SPAWNER = "spawner";
+    public static final String STORAGE = "storage";
+
+    public float integrity;
+    public int x;
+    public int y;
+    public int z;
     protected ResourceLocation templateName;
-    protected float integrity;
     protected Rotation rotation;
-    protected int x;
-    protected int y;
-    protected int z;
     protected Random fixedRand;
 
     protected Direction faceNorth;
@@ -87,6 +102,18 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         Blocks.COAL_ORE,
         Blocks.REDSTONE_ORE,
         Blocks.LAPIS_ORE
+    );
+
+    public static List<Block> carpetTypes = Arrays.asList(
+        Blocks.WHITE_CARPET,
+        Blocks.ORANGE_CARPET,
+        Blocks.RED_CARPET,
+        Blocks.YELLOW_CARPET,
+        Blocks.LIME_CARPET,
+        Blocks.CYAN_CARPET,
+        Blocks.BLUE_CARPET,
+        Blocks.PURPLE_CARPET,
+        Blocks.BLACK_CARPET
     );
 
     public StrangeTemplateStructurePiece(IStructurePieceType piece, int type)
@@ -156,41 +183,60 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         this.faceSouth = rotation.rotate(Direction.SOUTH);
         this.faceWest = rotation.rotate(Direction.WEST);
 
-        dataForBookshelf(world, pos, data, rand);
-        dataForChest(world, pos, data, rand);
-        dataForDecoration(world, pos, data, rand);
-        dataForFlower(world, pos, data, rand);
-        dataForLantern(world, pos, data, rand);
-        dataForLectern(world, pos, data, rand);
-        dataForMob(world, pos, data, rand);
-        dataForOre(world, pos, data, rand);
-        dataForRune(world, pos, data, rand);
-        dataForSapling(world, pos, data, rand);
-        dataForSpawner(world, pos, data, rand);
-        dataForStorage(world, pos, data, rand);
+        world.setBlockState(pos, Blocks.AIR.getDefaultState(), 1);
+        rand.setSeed(pos.toLong());
+
+        if (data.contains(BOOKSHELF)) dataForBookshelf(world, pos, data, rand);
+        if (data.contains(CARPET)) dataForCarpet(world, pos, data, rand);
+        if (data.contains(CHEST)) dataForChest(world, pos, data, rand);
+        if (data.contains(DECORATION)) dataForDecoration(world, pos, data, rand);
+        if (data.contains(FLOWER)) dataForFlower(world, pos, data, rand);
+        if (data.contains(LANTERN)) dataForLantern(world, pos, data, rand);
+        if (data.contains(LECTERN)) dataForLectern(world, pos, data, rand);
+        if (data.contains(MOB)) dataForMob(world, pos, data, rand);
+        if (data.contains(ORE)) dataForOre(world, pos, data, rand);
+        if (data.contains(RUNE)) dataForRune(world, pos, data, rand);
+        if (data.contains(SAPLING)) dataForSapling(world, pos, data, rand);
+        if (data.contains(SPAWNER)) dataForSpawner(world, pos, data, rand);
+        if (data.contains(STORAGE)) dataForStorage(world, pos, data, rand);
     }
 
     protected void dataForBookshelf(IWorld world, BlockPos pos, String data, Random rand)
     {
         // TODO variant bookshelves
-        if (data.contains("bookshelf")) {
-            if (Charm.loader.hasModule(BookshelfChests.class) && rand.nextFloat() < 0.22F) {
-                BlockState state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
-                    .with(BookshelfChestBlock.SLOTS, 9);
+        if (Charm.loader.hasModule(BookshelfChests.class) && rand.nextFloat() < 0.22F) {
+            BlockState state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
+                .with(BookshelfChestBlock.SLOTS, 9);
 
-                ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
-                world.setBlockState(pos, state, 2);
-                LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
-            } else {
-                BlockState state = Blocks.BOOKSHELF.getDefaultState();
-                world.setBlockState(pos, state, 2);
+            ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
+            world.setBlockState(pos, state, 2);
+            LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
+        } else {
+            BlockState state = Blocks.BOOKSHELF.getDefaultState();
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForCarpet(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        List<Block> types = new ArrayList<>(carpetTypes);
+        Collections.shuffle(types);
+        BlockState state = null;
+
+        for (int i = 0; i < types.size(); i++) {
+            if (data.contains(String.valueOf(i)) && types.contains(i)) {
+                state = types.get(i).getDefaultState();
             }
+        }
+
+        if (state != null) {
+            world.setBlockState(pos, state, 2);
         }
     }
 
     protected void dataForChest(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("chest") && rand.nextFloat() < 0.66F) {
+        if (rand.nextFloat() < 0.66F) {
             BlockState state = Blocks.CHEST.getDefaultState();
 
             ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
@@ -207,7 +253,10 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             if (data.contains("east")) state = state.with(ChestBlock.FACING, faceEast);
             if (data.contains("south")) state = state.with(ChestBlock.FACING, faceSouth);
             if (data.contains("west")) state = state.with(ChestBlock.FACING, faceWest);
-            if (data.contains("water")) state = state.with(ChestBlock.WATERLOGGED, true);
+
+            if (world.getBlockState(pos.up()).getMaterial() == Material.WATER) {
+                state = state.with(ChestBlock.WATERLOGGED, true);
+            }
 
             world.setBlockState(pos, state, 2);
             LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
@@ -216,7 +265,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForDecoration(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("decoration") && rand.nextFloat() < 0.65F) {
+        if (rand.nextFloat() < 0.65F) {
             Direction facing = faceNorth;
             if (data.contains("east")) facing = faceEast;
             if (data.contains("south")) facing = faceSouth;
@@ -264,7 +313,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForFlower(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("flower") && rand.nextFloat() < 0.8F) {
+        if (rand.nextFloat() < 0.8F) {
             BlockState state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
             world.setBlockState(pos, state, 2);
         }
@@ -272,24 +321,22 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForLantern(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("lantern")) {
-            BlockState state = Blocks.LANTERN.getDefaultState();
+        BlockState state = Blocks.LANTERN.getDefaultState();
 
-            if (Charm.loader.hasModule(GoldLanterns.class) && rand.nextFloat() < 0.25F) {
-                state = GoldLanterns.block.getDefaultState();
-            }
-
-            if (data.contains("hanging")) {
-                state = state.with(LanternBlock.HANGING, true);
-            }
-
-            world.setBlockState(pos, state, 2);
+        if (Charm.loader.hasModule(GoldLanterns.class) && rand.nextFloat() < 0.25F) {
+            state = GoldLanterns.block.getDefaultState();
         }
+
+        if (data.contains("hanging")) {
+            state = state.with(LanternBlock.HANGING, true);
+        }
+
+        world.setBlockState(pos, state, 2);
     }
 
     protected void dataForLectern(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("lectern") && rand.nextFloat() < 0.8F) {
+        if (rand.nextFloat() < 0.8F) {
             BlockState state = Blocks.LECTERN.getDefaultState();
             if (data.contains("north")) state = state.with(LecternBlock.FACING, faceSouth);
             if (data.contains("east")) state = state.with(LecternBlock.FACING, faceWest);
@@ -302,7 +349,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForMob(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("mob") && rand.nextFloat() < 0.8F) {
+        if (rand.nextFloat() < 0.8F) {
             Entity entity;
             EntityType<?> type = null;
             boolean persist = data.contains("persist");
@@ -331,7 +378,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForOre(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("ore") && rand.nextFloat() < 0.66F) {
+        if (rand.nextFloat() < 0.66F) {
             BlockState state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
             world.setBlockState(pos, state, 2);
         }
@@ -339,7 +386,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForRune(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("rune") && rand.nextFloat() < 0.75F) {
+        if (rand.nextFloat() < 0.75F) {
             if (Strange.loader.hasModule(Runestones.class)) {
                 BlockState state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
                 world.setBlockState(pos, state, 2);
@@ -349,7 +396,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForSapling(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("sapling") && rand.nextFloat() < 0.8F) {
+        if (rand.nextFloat() < 0.8F) {
             BlockState state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
             world.setBlockState(pos, state, 2);
         }
@@ -357,7 +404,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForSpawner(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("spawner") && rand.nextFloat() < 0.8F) {
+        if (rand.nextFloat() < 0.8F) {
             BlockState state = Blocks.SPAWNER.getDefaultState();
             world.setBlockState(pos, state, 2);
             TileEntity tile = world.getTileEntity(pos);
@@ -369,7 +416,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
 
     protected void dataForStorage(IWorld world, BlockPos pos, String data, Random rand)
     {
-        if (data.contains("storage") && rand.nextFloat() < 0.66F) {
+        if (rand.nextFloat() < 0.66F) {
             WoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
 
             List<BlockState> types = new ArrayList<>(Arrays.asList(

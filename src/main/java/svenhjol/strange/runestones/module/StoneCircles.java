@@ -21,6 +21,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
+import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.structure.StoneCircleConfig;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
 import svenhjol.strange.runestones.structure.VaultStructure;
@@ -49,6 +50,8 @@ public class StoneCircles extends MesonModule
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> biomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.PLAINS),
+        BiomeHelper.getBiomeName(Biomes.BADLANDS),
+        BiomeHelper.getBiomeName(Biomes.MUSHROOM_FIELDS),
         BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
         BiomeHelper.getBiomeName(Biomes.DESERT),
         BiomeHelper.getBiomeName(Biomes.DESERT_LAKES),
@@ -88,6 +91,8 @@ public class StoneCircles extends MesonModule
         validBiomes.forEach(biome -> {
             biome.addStructure(structure, new StoneCircleConfig(1.0F));
         });
+
+        UndergroundRuins.blacklist.add(structure);
     }
 
     @Override
