@@ -1,5 +1,6 @@
 package svenhjol.strange.ruins.structure;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -49,33 +50,33 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
         BlockPos originalPos = new BlockPos(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
         BlockPos foundPos = null;
 
-        final BlockPos templateSize = this.template.getSize();
+        final BlockPos size = this.template.getSize();
 
         if (false) {
             List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
                 .map(BlockPos::toImmutable)
                 .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
-                    && world.getBlockState(p.add(1, templateSize.getY() - 1, 1)).isSolid()
-                    && world.getBlockState(p.add(templateSize.getX() - 1, templateSize.getY() - 1, templateSize.getZ() - 1)).isSolid()
+                    && world.getBlockState(p.add(1, size.getY() - 1, 1)).isSolid()
+                    && world.getBlockState(p.add(size.getX() - 1, size.getY() - 1, size.getZ() - 1)).isSolid()
                 )
                 .collect(Collectors.toList());
+        }
 
-            if (!valid.isEmpty()) {
-                for (int i = world.getSeaLevel() - 12; i > 12; i--) {
-                    foundPos = new BlockPos(originalPos.getX(), i - templateSize.getY(), originalPos.getZ());
+        BlockPos checkPos = originalPos.add(size.getX() / 2, size.getY(), size.getZ() / 2).down();
+        if (!world.getBlockState(checkPos).isSolid()) {
+            world.setBlockState(checkPos, Blocks.GLOWSTONE.getDefaultState(), 0);
+            for (int i = checkPos.getY(); i > 12; i--) {
+                foundPos = new BlockPos(originalPos.getX(), i - size.getY(), originalPos.getZ());
+                if (world.getBlockState(foundPos).isSolid()) {
+                    foundPos = new BlockPos(originalPos.getX() + size.getX(), i - size.getY(), originalPos.getZ() + size.getZ());
                     if (world.getBlockState(foundPos).isSolid()) {
-                        foundPos = new BlockPos(originalPos.getX() + templateSize.getX(), i - templateSize.getY(), originalPos.getZ() + templateSize.getZ());
-                        if (world.getBlockState(foundPos).isSolid()) {
-                            foundPos = foundPos.down(5);
-                            break;
-                        }
+                        break;
                     }
                 }
             }
-
-            if (foundPos != null && foundPos.down(templateSize.getY()).getY() > 2) {
-                this.templatePosition = new BlockPos(this.templatePosition.getX(), foundPos.getY(), this.templatePosition.getZ());
-            }
+        }
+        if (foundPos != null && foundPos.down(size.getY()).getY() > 2) {
+            this.templatePosition = new BlockPos(this.templatePosition.getX(), foundPos.getY(), this.templatePosition.getZ());
         }
 
         // offset the template down according to depth
@@ -84,10 +85,10 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
         }
 
         // don't let the template render out of the bottom of the world
-        int yo = this.templatePosition.getY() - templateSize.getY();
+        int yo = this.templatePosition.getY() - size.getY();
         if (yo < 2) {
             Meson.debug("Structure too deep (would be " + yo + "), moving up", this.templatePosition);
-            this.templatePosition = new BlockPos(this.templatePosition.getX(), 2 + templateSize.getY(), this.templatePosition.getZ());
+            this.templatePosition = new BlockPos(this.templatePosition.getX(), 2 + size.getY(), this.templatePosition.getZ());
         }
 
         return super.addComponentParts(world, rand, bb, chunkPos);
