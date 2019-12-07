@@ -7,6 +7,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.item.ArmorStandEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
@@ -41,15 +46,20 @@ import java.util.*;
 
 public abstract class StrangeTemplateStructurePiece extends TemplateStructurePiece
 {
+    public static final String ANVIL = "anvil";
+    public static final String ARMOR = "armor";
     public static final String BOOKSHELF = "bookshelf";
     public static final String CARPET = "carpet";
+    public static final String CAULDRON = "cauldron";
     public static final String CHEST = "chest";
     public static final String DECORATION = "decoration";
     public static final String FLOWER = "flower";
     public static final String LANTERN = "lantern";
+    public static final String LAVA = "lava";
     public static final String LECTERN = "lectern";
     public static final String MOB = "mob";
     public static final String ORE = "ore";
+    public static final String POTTED = "potted";
     public static final String RUNE = "rune";
     public static final String SAPLING = "sapling";
     public static final String SPAWNER = "spawner";
@@ -71,7 +81,6 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     public List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
 
     public static List<Block> flowerTypes = Arrays.asList(
-        Blocks.SUNFLOWER,
         Blocks.POPPY,
         Blocks.AZURE_BLUET,
         Blocks.WHITE_TULIP,
@@ -82,7 +91,33 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         Blocks.OXEYE_DAISY,
         Blocks.WITHER_ROSE,
         Blocks.LILAC,
-        Blocks.DANDELION
+        Blocks.DANDELION,
+        Blocks.CORNFLOWER,
+        Blocks.ALLIUM,
+        Blocks.LILY_OF_THE_VALLEY
+    );
+
+    public static List<Block> pottedTypes = Arrays.asList(
+        Blocks.POTTED_ACACIA_SAPLING,
+        Blocks.POTTED_BIRCH_SAPLING,
+        Blocks.POTTED_DARK_OAK_SAPLING,
+        Blocks.POTTED_JUNGLE_SAPLING,
+        Blocks.POTTED_OAK_SAPLING,
+        Blocks.POTTED_SPRUCE_SAPLING,
+        Blocks.POTTED_CACTUS,
+        Blocks.POTTED_POPPY,
+        Blocks.POTTED_AZURE_BLUET,
+        Blocks.POTTED_WHITE_TULIP,
+        Blocks.POTTED_RED_TULIP,
+        Blocks.POTTED_PINK_TULIP,
+        Blocks.POTTED_ORANGE_TULIP,
+        Blocks.POTTED_BLUE_ORCHID,
+        Blocks.POTTED_OXEYE_DAISY,
+        Blocks.POTTED_WITHER_ROSE,
+        Blocks.POTTED_DANDELION,
+        Blocks.POTTED_CORNFLOWER,
+        Blocks.POTTED_ALLIUM,
+        Blocks.POTTED_LILY_OF_THE_VALLEY
     );
 
     public static List<Block> saplingTypes = Arrays.asList(
@@ -186,19 +221,100 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 1);
         rand.setSeed(pos.toLong());
 
+        if (data.contains("|")) {
+            String[] split = data.split("\\|");
+            data = split[rand.nextInt(split.length)];
+        }
+
+        if (data.contains(ANVIL)) dataForAnvil(world, pos, data, rand);
+        if (data.contains(ARMOR)) dataForArmorStand(world, pos, data, rand);
         if (data.contains(BOOKSHELF)) dataForBookshelf(world, pos, data, rand);
         if (data.contains(CARPET)) dataForCarpet(world, pos, data, rand);
+        if (data.contains(CAULDRON)) dataForCauldron(world, pos, data, rand);
         if (data.contains(CHEST)) dataForChest(world, pos, data, rand);
         if (data.contains(DECORATION)) dataForDecoration(world, pos, data, rand);
         if (data.contains(FLOWER)) dataForFlower(world, pos, data, rand);
         if (data.contains(LANTERN)) dataForLantern(world, pos, data, rand);
+        if (data.contains(LAVA)) dataForLava(world, pos, data, rand);
         if (data.contains(LECTERN)) dataForLectern(world, pos, data, rand);
         if (data.contains(MOB)) dataForMob(world, pos, data, rand);
         if (data.contains(ORE)) dataForOre(world, pos, data, rand);
+        if (data.contains(POTTED)) dataForPotted(world, pos, data, rand);
         if (data.contains(RUNE)) dataForRune(world, pos, data, rand);
         if (data.contains(SAPLING)) dataForSapling(world, pos, data, rand);
         if (data.contains(SPAWNER)) dataForSpawner(world, pos, data, rand);
         if (data.contains(STORAGE)) dataForStorage(world, pos, data, rand);
+    }
+
+    protected void dataForAnvil(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        BlockState state = null;
+        float f = rand.nextFloat();
+        if (f < 0.25F) {
+            state = Blocks.ANVIL.getDefaultState();
+        } else if (f < 0.5F) {
+            state = Blocks.CHIPPED_ANVIL.getDefaultState();
+        } else if (f < 0.75F) {
+            state = Blocks.DAMAGED_ANVIL.getDefaultState();
+        }
+
+        if (state != null) {
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForArmorStand(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        Direction facing = faceNorth;
+        ArmorStandEntity stand = EntityType.ARMOR_STAND.create(world.getWorld());
+        if (stand == null) return;
+
+        if (data.contains("east")) facing = faceEast;
+        if (data.contains("south")) facing = faceSouth;
+        if (data.contains("west")) facing = faceWest;
+
+        List<Item> ironHeld = new ArrayList<>(Arrays.asList(
+            Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE
+        ));
+        List<Item> goldHeld = new ArrayList<>(Arrays.asList(
+            Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE
+        ));
+        List<Item> diamondHeld = new ArrayList<>(Arrays.asList(
+            Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_SHOVEL
+        ));
+
+        if (data.contains("chain")) {
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ironHeld.get(rand.nextInt(ironHeld.size()))));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.CHAINMAIL_HELMET));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.CHAINMAIL_CHESTPLATE));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.CHAINMAIL_LEGGINGS));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.CHAINMAIL_BOOTS));
+        }
+        if (data.contains("iron")) {
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ironHeld.get(rand.nextInt(ironHeld.size()))));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.IRON_HELMET));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.IRON_LEGGINGS));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.IRON_BOOTS));
+        }
+        if (data.contains("gold")) {
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(goldHeld.get(rand.nextInt(goldHeld.size()))));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.GOLDEN_HELMET));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.GOLDEN_CHESTPLATE));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.GOLDEN_LEGGINGS));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.GOLDEN_BOOTS));
+        }
+        if (data.contains("diamond")) {
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(diamondHeld.get(rand.nextInt(diamondHeld.size()))));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.DIAMOND_HELMET));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS));
+            if (rand.nextFloat() < 0.25F) stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.DIAMOND_BOOTS));
+        }
+
+        float yaw = facing.getHorizontalAngle();
+        stand.moveToBlockPosAndAngles(pos, yaw, 0.0F);
+        world.addEntity(stand);
     }
 
     protected void dataForBookshelf(IWorld world, BlockPos pos, String data, Random rand)
@@ -220,11 +336,11 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     protected void dataForCarpet(IWorld world, BlockPos pos, String data, Random rand)
     {
         List<Block> types = new ArrayList<>(carpetTypes);
-        Collections.shuffle(types);
+        Collections.shuffle(types, fixedRand);
         BlockState state = null;
 
         for (int i = 0; i < types.size(); i++) {
-            if (data.contains(String.valueOf(i)) && types.contains(i)) {
+            if (data.contains(String.valueOf(i))) {
                 state = types.get(i).getDefaultState();
             }
         }
@@ -232,6 +348,22 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         if (state != null) {
             world.setBlockState(pos, state, 2);
         }
+    }
+
+    protected void dataForCauldron(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        BlockState state = Blocks.CAULDRON.getDefaultState();
+
+        float f = rand.nextFloat();
+        if (f > 0.8F) {
+            state = state.with(CauldronBlock.LEVEL, 3);
+        } else if (f > 0.6F) {
+            state = state.with(CauldronBlock.LEVEL, 2);
+        } else if (f > 0.4F) {
+            state = state.with(CauldronBlock.LEVEL, 1);
+        }
+
+        world.setBlockState(pos, state, 2);
     }
 
     protected void dataForChest(IWorld world, BlockPos pos, String data, Random rand)
@@ -334,14 +466,25 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         world.setBlockState(pos, state, 2);
     }
 
+    protected void dataForLava(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        BlockState state = Blocks.MAGMA_BLOCK.getDefaultState();
+
+        if (fixedRand.nextFloat() < 0.5F) {
+            state = Blocks.LAVA.getDefaultState();
+        }
+
+        world.setBlockState(pos, state, 2);
+    }
+
     protected void dataForLectern(IWorld world, BlockPos pos, String data, Random rand)
     {
         if (rand.nextFloat() < 0.8F) {
             BlockState state = Blocks.LECTERN.getDefaultState();
-            if (data.contains("north")) state = state.with(LecternBlock.FACING, faceSouth);
-            if (data.contains("east")) state = state.with(LecternBlock.FACING, faceWest);
-            if (data.contains("south")) state = state.with(LecternBlock.FACING, faceNorth);
-            if (data.contains("west")) state = state.with(LecternBlock.FACING, faceEast);
+            if (data.contains("north")) state = state.with(LecternBlock.FACING, faceNorth);
+            if (data.contains("east")) state = state.with(LecternBlock.FACING, faceEast);
+            if (data.contains("south")) state = state.with(LecternBlock.FACING, faceSouth);
+            if (data.contains("west")) state = state.with(LecternBlock.FACING, faceWest);
 
             world.setBlockState(pos, state, 2);
         }
@@ -380,6 +523,14 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.66F) {
             BlockState state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
+            world.setBlockState(pos, state, 2);
+        }
+    }
+
+    protected void dataForPotted(IWorld world, BlockPos pos, String data, Random rand)
+    {
+        if (rand.nextFloat() < 0.8F) {
+            BlockState state = pottedTypes.get(rand.nextInt(pottedTypes.size())).getDefaultState();
             world.setBlockState(pos, state, 2);
         }
     }
