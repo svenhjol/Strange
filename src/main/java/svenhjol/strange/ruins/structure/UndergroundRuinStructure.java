@@ -19,6 +19,8 @@ import svenhjol.strange.ruins.module.UndergroundRuins;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuinConfig>
@@ -68,13 +70,13 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     for (int xx = cx - 10; xx <= x + 10; ++xx) {
                         for (int zz = cz - 10; zz <= z + 10; ++zz) {
                             if (structure.hasStartAt(gen, rand, xx, zz)) {
-                                return false;
+                                return true;
                             }
                         }
                     }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -123,64 +125,68 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
 
             if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
                 Rotation rotation = Rotation.NONE;
-                int numStructures = rand.nextInt(4) + 1;
-
-                List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, numStructures);
-                if (ruinTemplates.isEmpty()) return;
-
-                ResourceLocation mainRes = ruinTemplates.get(0);
-                Template main = templates.getTemplateDefaulted(mainRes);
-
-                if (ruinTemplates.size() == 1) rotation = Rotation.randomRotation(rand);
-                UndergroundRuinPiece ruin = new UndergroundRuinPiece(templates, mainRes, pos, rotation, ruinTemplates.size() == 1);
-                components.add(ruin);
-
                 List<Direction> directions = Arrays.stream(Direction.values())
                     .filter(d -> d.getHorizontalIndex() >= 0)
                     .collect(Collectors.toList());
 
-                Collections.shuffle(directions);
 
-                BlockPos centrePos = ruin.getTemplatePosition();
+                // pick a direction
+                Direction axis = directions.get(rand.nextInt(directions.size()));
+                BlockPos offset = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                int cc = 1;
 
-                for (int i = 1; i < ruinTemplates.size(); i++) {
-                    BlockPos nextPos = null;
-                    Direction direction = directions.get(i);
-                    ResourceLocation nextRes = ruinTemplates.get(i);
-                    Template next = templates.getTemplateDefaulted(nextRes);
+//                if (rand.nextFloat() < 0.25F) {
+//                    cc = rand.nextInt(5) + 1;
+//                }
+                for (int c = 0; c < cc; c++) {
+                    List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, rand.nextInt(4) + 1);
+                    if (ruinTemplates.isEmpty()) continue;
 
-                    int dist;
-                    int offset = rand.nextInt(3) - 1;
+                    ResourceLocation mainRes = ruinTemplates.get(0);
+                    Template main = templates.getTemplateDefaulted(mainRes);
 
-                    if (direction == Direction.NORTH) {
-                        dist = next.getSize().getZ();
-                        nextPos = centrePos.north(dist-1).east(offset);
-                    } else if (direction == Direction.EAST) {
-                        dist = main.getSize().getX();
-                        nextPos = centrePos.east(dist-1).north(offset);
-                    } else if (direction == Direction.SOUTH) {
-                        dist = main.getSize().getZ();
-                        nextPos = centrePos.south(dist-1).east(offset);
-                    } else if (direction == Direction.WEST) {
-                        dist = next.getSize().getX();
-                        nextPos = centrePos.west(dist-1).north(offset);
+                    if (ruinTemplates.size() == 1) rotation = Rotation.randomRotation(rand);
+                    UndergroundRuinPiece ruin = new UndergroundRuinPiece(templates, mainRes, offset, rotation, getDepth(mainRes));
+                    components.add(ruin);
+
+                    Collections.shuffle(directions);
+
+                    BlockPos centrePos = ruin.getTemplatePosition();
+                    Map<ResourceLocation, BlockPos> nextPieces = new HashMap<>();
+
+                    for (int i = 1; i < ruinTemplates.size(); i++) {
+                        Direction direction = directions.get(i - 1);
+                        ResourceLocation nextRes = ruinTemplates.get(i);
+                        Template next = templates.getTemplateDefaulted(nextRes);
+                        int variation = 0;
+                        int dist = 0;
+
+                        if (direction == Direction.NORTH) {
+                            dist = next.getSize().getZ() - 1;
+                            nextPieces.put(nextRes, centrePos.north(dist).east(variation));
+                        } else if (direction == Direction.EAST) {
+                            dist = main.getSize().getX() - 1;
+                            nextPieces.put(nextRes, centrePos.east(dist).north(variation));
+                        } else if (direction == Direction.SOUTH) {
+                            dist = main.getSize().getZ() - 1;
+                            nextPieces.put(nextRes, centrePos.south(dist).east(variation));
+                        } else if (direction == Direction.WEST) {
+                            dist = next.getSize().getX() - 1;
+                            nextPieces.put(nextRes, centrePos.west(dist).north(variation));
+                        }
+
+                        if (direction == axis) {
+                            offset = offset.offset(direction, dist);
+                        }
                     }
-//                    } else if (direction == Direction.DOWN) {
-//                        if (centrePos.add(0, -next.getSize().getY(), 0).getY() > 10) {
-//                            nextPos = centrePos.add(rand.nextInt(5) - 2, -next.getSize().getY(), rand.nextInt(5) - 2);
-//                        }
-//                    } else if (direction == Direction.UP) {
-//                        if (centrePos.add(0, main.getSize().getY(), 0).getY() < 48) {
-//                            nextPos = centrePos.add(rand.nextInt(5) - 2, main.getSize().getY(), rand.nextInt(5) - 2);
-//                        }
-//                    }
 
-                    if (nextPos != null) {
-                        components.add(new UndergroundRuinPiece(templates, nextRes, nextPos, Rotation.NONE, true));
+                    for (ResourceLocation r : nextPieces.keySet()) {
+                        BlockPos p = nextPieces.get(r);
+                        components.add(new UndergroundRuinPiece(templates, r, p, Rotation.NONE, getDepth(r)));
                     }
+
+                    this.recalculateStructureSize();
                 }
-
-                this.recalculateStructureSize();
             }
         }
 
@@ -199,6 +205,22 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
 
             Collections.shuffle(biomeTemplates);
             return biomeTemplates.subList(0, Math.min(amount, biomeTemplates.size()));
+        }
+
+        public int getDepth(ResourceLocation res)
+        {
+            int depth = 0;
+            String path = res.getPath();
+            if (path.contains("depth")) {
+                Pattern d = Pattern.compile("depth(\\d+)");
+                Matcher m = d.matcher(path);
+                if (m.find()) {
+                    depth = Integer.parseInt(m.group(1));
+                    return depth;
+                }
+            }
+
+            return depth;
         }
     }
 }
