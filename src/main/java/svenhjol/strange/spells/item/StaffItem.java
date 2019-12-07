@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
@@ -115,7 +114,7 @@ public class StaffItem extends TieredItem implements IMesonItem
         } else if (!player.isCreative() && spell.getCastCost() > player.experienceTotal) {
             // check there's enough XP to charge the staff
             result = ActionResultType.FAIL;
-            player.sendStatusMessage(new StringTextComponent("Not enough XP to cast the spell"), true);
+            player.sendStatusMessage(new TranslationTextComponent("event.strange.spellbook.not_enough_xp"), true);
         }
 
         if (result == ActionResultType.SUCCESS) {

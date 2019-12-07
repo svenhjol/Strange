@@ -9,6 +9,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class BlinkSpell extends Spell
@@ -26,22 +29,24 @@ public class BlinkSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castTarget(player, (result, beam) -> {
-            if (result.getType() == RayTraceResult.Type.BLOCK) {
-                World world = player.world;
-                BlockPos pos = ((BlockRayTraceResult) result).getPos();
-                BlockState state = world.getBlockState(pos);
-                beam.remove();
+        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.BLOCK));
+        this.castTarget(player, respondTo, (result, beam) -> {
+            World world = player.world;
+            BlockPos pos = ((BlockRayTraceResult) result).getPos();
+            BlockState state = world.getBlockState(pos);
+            beam.remove();
 
-                if ((state.isSolid() || state.getMaterial() == Material.WATER)
-                    && world.isAirBlock(pos.up(1))
-                    && world.isAirBlock(pos.up(2))
-                    && world.isAirBlock(pos.up(3))
-                ) {
-                    player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
-                    didCast.accept(true);
-                    return;
-                }
+            if ((state.isSolid()
+                || state.getMaterial() == Material.WATER
+                || state.getMaterial() == Material.LEAVES
+                || state.getMaterial() == Material.PLANTS
+            )
+                && !world.getBlockState(pos.up(1)).isSolid()
+                && !world.getBlockState(pos.up(2)).isSolid()
+            ) {
+                player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
+                didCast.accept(true);
+                return;
             }
             didCast.accept(false);
         });

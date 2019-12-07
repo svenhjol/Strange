@@ -9,6 +9,9 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class SlownessSpell extends Spell
@@ -25,18 +28,17 @@ public class SlownessSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castTarget(player, (result, beam) -> {
-            if (result.getType() == RayTraceResult.Type.ENTITY) {
-                EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
-                Entity e = entityImpact.getEntity();
-                beam.remove();
+        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.ENTITY));
+        this.castTarget(player, respondTo, (result, beam) -> {
+            EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
+            Entity e = entityImpact.getEntity();
+            beam.remove();
 
-                if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
-                    LivingEntity living = (LivingEntity) e;
-                    living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 150, 2));
-                    didCast.accept(true);
-                    return;
-                }
+            if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
+                LivingEntity living = (LivingEntity) e;
+                living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 150, 2));
+                didCast.accept(true);
+                return;
             }
             didCast.accept(false);
         });

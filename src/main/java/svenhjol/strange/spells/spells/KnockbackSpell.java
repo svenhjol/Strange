@@ -8,6 +8,9 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class KnockbackSpell extends Spell
@@ -24,17 +27,16 @@ public class KnockbackSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castTarget(player, (result, beam) -> {
-            if (result.getType() == RayTraceResult.Type.ENTITY) {
-                EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
-                Entity e = entityImpact.getEntity();
-                beam.remove();
-                if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
-                    LivingEntity living = (LivingEntity) e;
-                    living.knockBack(player, 6.0F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)));
-                    didCast.accept(true);
-                    return;
-                }
+        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.ENTITY));
+        this.castTarget(player, respondTo, (result, beam) -> {
+            EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
+            Entity e = entityImpact.getEntity();
+            beam.remove();
+            if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
+                LivingEntity living = (LivingEntity) e;
+                living.knockBack(player, 6.0F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)));
+                didCast.accept(true);
+                return;
             }
             didCast.accept(false);
         });

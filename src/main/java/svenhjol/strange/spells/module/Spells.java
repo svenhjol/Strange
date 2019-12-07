@@ -108,6 +108,20 @@ public class Spells extends MesonModule
         "roots"
     );
 
+    public static List<String> extractionBlacklist = Arrays.asList(
+        "minecraft:bedrock",
+        "minecraft:end_portal_frame",
+        "minecraft:end_portal",
+        "minecraft:iron_door",
+        "charm:rune_portal_frame",
+        "charm:rune_portal"
+    );
+
+    public static List<String> extractionHeavy = Arrays.asList(
+        "minecraft:spawner",
+        "minecraft:dragon_egg"
+    );
+
     @OnlyIn(Dist.CLIENT)
     public static SpellsClient client;
     public static Map<Element, BasicParticleType> spellParticles = new HashMap<>();

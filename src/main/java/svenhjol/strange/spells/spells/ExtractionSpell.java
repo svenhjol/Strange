@@ -9,8 +9,11 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.helper.WorldHelper;
@@ -42,6 +45,35 @@ public class ExtractionSpell extends Spell
         BlockPos pos = result.getPos();
         BlockState state = world.getBlockState(result.getPos());
 
+        String srcName = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
+
+        // check blacklist
+        if (!player.isCreative()) {
+            boolean invalid = state.has(BlockStateProperties.DOUBLE_BLOCK_HALF)
+                || state.has(BlockStateProperties.BED_PART)
+                || state.has(BlockStateProperties.HALF)
+                || state.has(BlockStateProperties.BOTTOM)
+                || world.isAirBlock(pos);
+
+            if (invalid || Spells.extractionBlacklist.contains(srcName)) {
+                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                player.getCooldownTracker().setCooldown(staff.getItem(), 20);
+                return false;
+            }
+
+            if (Spells.extractionHeavy.contains(srcName)) {
+                int playerLevel = player.experienceLevel;
+                int levelCost = 10;
+
+                if (playerLevel < levelCost) {
+                    player.sendStatusMessage(new TranslationTextComponent("event.strange.spellbook.not_enough_xp"), true);
+                    player.getCooldownTracker().setCooldown(staff.getItem(), 20);
+                    return false;
+                }
+                player.addExperienceLevel(-levelCost);
+            }
+        }
+
         CompoundNBT meta = new CompoundNBT();
 
         // store state
@@ -59,11 +91,10 @@ public class ExtractionSpell extends Spell
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 
         if (!world.isRemote) {
-            double spread = 0.5D;
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() + 0.5D * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 30, 0, 0, 0, 0.5D);
+            double px = pos.getX() + 0.5D;
+            double py = pos.getY() + 1.0D;
+            double pz = pos.getZ() + 0.5D;
+            ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 20, 0.1D, 0.1D, 0.1D, 0.5D);
         }
 
         StaffItem.putMeta(staff, meta);
@@ -83,16 +114,6 @@ public class ExtractionSpell extends Spell
 
         BlockState srcState = NBTUtil.readBlockState((CompoundNBT) nbtState);
         AtomicBoolean destroyed = new AtomicBoolean(false);
-        String srcName = Objects.requireNonNull(srcState.getBlock().getRegistryName()).toString();
-
-        // check fail conditions
-//        if (dim != TotemOfExtractingItem.getDim(held)
-//            || blacklist.contains(srcName)
-//            || event.getFace() == null
-//        ) {
-//            player.playSound(SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, 1.0F, 1.0F);
-//            return;
-//        }
 
         // check for exceptions, modify state accordingly
         if (srcState.getProperties().contains(ChestBlock.TYPE)) {
