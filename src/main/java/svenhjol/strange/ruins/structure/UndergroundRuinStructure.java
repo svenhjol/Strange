@@ -126,7 +126,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     .filter(d -> d.getHorizontalIndex() >= 0)
                     .collect(Collectors.toList());
 
-//                int numTemplates = 2;
                 int numTemplates = rand.nextInt(4) + 1;
 
                 List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, numTemplates);
@@ -150,54 +149,50 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                 List<ResourceLocation> sublist = ruinTemplates.subList(1, ruinTemplates.size());
                 int j = 0;
 
-                while (j < sublist.size()) {
+                while (j < sublist.size() && j < 8) {
                     Direction direction = directions.get(j % 4);
                     ResourceLocation nextRes = sublist.get(j);
                     Template next = templates.getTemplateDefaulted(nextRes);
                     BlockPos nextSize = next.getSize();
 
+                    // corrections
                     int xc = (mainSize.getX() - nextSize.getX()) / 2;
                     int zc = (mainSize.getZ() - nextSize.getZ()) / 2;
-                    int dist;
 
+                    // offsets
                     int xo = 0;
+                    int yo = j > 3 ? -nextSize.getY() : 0;
                     int zo = 0;
 
+//                    if (direction == Direction.NORTH) {
+//                        dist = next.getSize().getZ() - 1;
+//                        nextPieces.put(nextRes, centrePos.add(xc, 0, -dist));
+//                    } else if (direction == Direction.EAST) {
+//                        dist = main.getSize().getX() - 1;
+//                        nextPieces.put(nextRes, centrePos.add(dist, 0, zc));
+//                    } else if (direction == Direction.SOUTH) {
+//                        dist = main.getSize().getZ() - 1;
+//                        nextPieces.put(nextRes, centrePos.add(xc, 0, dist));
+//                    } else if (direction == Direction.WEST) {
+//                        dist = next.getSize().getX() - 1;
+//                        nextPieces.put(nextRes, centrePos.add(-dist, 0, zc));
+//                    }
+
                     if (direction == Direction.NORTH) {
-                        dist = next.getSize().getZ() - 1;
-                        nextPieces.put(nextRes, centrePos.add(xc, 0, -dist));
+                        xo = xc;
+                        zo = -(nextSize.getZ() - 1);
                     } else if (direction == Direction.EAST) {
-                        dist = main.getSize().getX() - 1;
-                        nextPieces.put(nextRes, centrePos.add(dist, 0, zc));
+                        xo = mainSize.getX() - 1;
+                        zo = zc;
                     } else if (direction == Direction.SOUTH) {
-                        dist = main.getSize().getZ() - 1;
-                        nextPieces.put(nextRes, centrePos.add(xc, 0, dist));
+                        xo = xc;
+                        zo = mainSize.getZ() - 1;
                     } else if (direction == Direction.WEST) {
-                        dist = next.getSize().getX() - 1;
-                        nextPieces.put(nextRes, centrePos.add(-dist, 0, zc));
+                        xo = -(nextSize.getX() - 1);
+                        zo = zc;
                     }
 
-//                    if (direction == Direction.NORTH) {
-//                        xo = xc;
-//                        zo = -(next.getSize().getZ() - 1);
-//                    } else if (direction == Direction.EAST) {
-//                        xo = main.getSize().getX() - 1;
-//                        zo = zc;
-//                    } else if (direction == Direction.SOUTH) {
-//                        xo = xc;
-//                        zo = main.getSize().getZ() - 1;
-//                    } else if (direction == Direction.WEST) {
-//                        xo = -(next.getSize().getX() - 1);
-//                        zo = zc;
-//                    }
-
-//                    boolean cluster = rand.nextFloat() < 0.5F;
-//                    if (cluster) {
-//                        nextSize = templates.getTemplateDefaulted(sublist.get(++j)).getSize();
-//                        xc = (mainSize.getX() - nextSize.getX()) / 2;
-//                        zc = (mainSize.getZ() - nextSize.getZ()) / 2;
-//                        nextPieces.put(next)
-//                    }
+                    nextPieces.put(nextRes, centrePos.add(xo, yo, zo));
 
                     j++;
                 }
@@ -214,7 +209,8 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         {
             List<ResourceLocation> out = new ArrayList<>();
 
-//            out = UndergroundRuins.biomeRuins.get(Biome.Category.NONE).get("bambi1").subList(0, 2);
+//            out = UndergroundRuins.biomeRuins.get(Biome.Category.SAVANNA).get("forgotten_village").subList(0, 8);
+//            Collections.shuffle(out);
 //            return out;
 //
             Map<String, List<ResourceLocation>> map = UndergroundRuins.biomeRuins.get(biomeCategory);

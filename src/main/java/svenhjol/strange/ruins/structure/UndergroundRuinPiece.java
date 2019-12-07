@@ -9,6 +9,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import svenhjol.meson.Meson;
 import svenhjol.strange.base.StrangeTemplateStructurePiece;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
                 }
             }
 
-            if (foundPos != null && foundPos.down(templateSize.getY()).getY() > 5) {
+            if (foundPos != null && foundPos.down(templateSize.getY()).getY() > 2) {
                 this.templatePosition = new BlockPos(this.templatePosition.getX(), foundPos.getY(), this.templatePosition.getZ());
             }
         }
@@ -83,8 +84,10 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
         }
 
         // don't let the template render out of the bottom of the world
-        if (this.templatePosition.getY() - templateSize.getY() < 5) {
-            this.templatePosition = new BlockPos(this.templatePosition.getX(), 5 + templateSize.getY(), this.templatePosition.getZ());
+        int yo = this.templatePosition.getY() - templateSize.getY();
+        if (yo < 2) {
+            Meson.debug("Structure too deep (would be " + yo + "), moving up", this.templatePosition);
+            this.templatePosition = new BlockPos(this.templatePosition.getX(), 2 + templateSize.getY(), this.templatePosition.getZ());
         }
 
         return super.addComponentParts(world, rand, bb, chunkPos);

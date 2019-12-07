@@ -44,6 +44,7 @@ import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public abstract class StrangeTemplateStructurePiece extends TemplateStructurePiece
 {
     public static final String ANVIL = "anvil";
@@ -259,7 +260,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         }
 
         if (state != null) {
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -325,11 +326,11 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 .with(BookshelfChestBlock.SLOTS, 9);
 
             ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY);
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
             LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
         } else {
             BlockState state = Blocks.BOOKSHELF.getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -345,9 +346,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             }
         }
 
-        if (state != null) {
-            world.setBlockState(pos, state, 2);
-        }
+        if (state != null) setBlockState(world, pos, state);
     }
 
     protected void dataForCauldron(IWorld world, BlockPos pos, String data, Random rand)
@@ -363,7 +362,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             state = state.with(CauldronBlock.LEVEL, 1);
         }
 
-        world.setBlockState(pos, state, 2);
+        setBlockState(world, pos, state);
     }
 
     protected void dataForChest(IWorld world, BlockPos pos, String data, Random rand)
@@ -390,7 +389,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 state = state.with(ChestBlock.WATERLOGGED, true);
             }
 
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
             LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
         }
     }
@@ -439,7 +438,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             }
 
             BlockState state = types.get(rand.nextInt(types.size()));
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -447,7 +446,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.8F) {
             BlockState state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -463,7 +462,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             state = state.with(LanternBlock.HANGING, true);
         }
 
-        world.setBlockState(pos, state, 2);
+        setBlockState(world, pos, state);
     }
 
     protected void dataForLava(IWorld world, BlockPos pos, String data, Random rand)
@@ -474,7 +473,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             state = Blocks.LAVA.getDefaultState();
         }
 
-        world.setBlockState(pos, state, 2);
+        setBlockState(world, pos, state);
     }
 
     protected void dataForLectern(IWorld world, BlockPos pos, String data, Random rand)
@@ -486,7 +485,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
             if (data.contains("south")) state = state.with(LecternBlock.FACING, faceSouth);
             if (data.contains("west")) state = state.with(LecternBlock.FACING, faceWest);
 
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -523,7 +522,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.66F) {
             BlockState state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -531,7 +530,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.8F) {
             BlockState state = pottedTypes.get(rand.nextInt(pottedTypes.size())).getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -540,7 +539,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
         if (rand.nextFloat() < 0.75F) {
             if (Strange.loader.hasModule(Runestones.class)) {
                 BlockState state = Runestones.getRunestoneBlock(world, rand.nextInt(Runestones.dests.size()));
-                world.setBlockState(pos, state, 2);
+                setBlockState(world, pos, state);
             }
         }
     }
@@ -549,7 +548,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.8F) {
             BlockState state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
         }
     }
 
@@ -557,7 +556,7 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
     {
         if (rand.nextFloat() < 0.8F) {
             BlockState state = Blocks.SPAWNER.getDefaultState();
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
             TileEntity tile = world.getTileEntity(pos);
             if (tile instanceof MobSpawnerTileEntity) {
                 ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(fixedRand));
@@ -589,11 +588,16 @@ public abstract class StrangeTemplateStructurePiece extends TemplateStructurePie
                 LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
                 LootTables.CHESTS_IGLOO_CHEST
             );
-            ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, tables.get(rand.nextInt(tables.size())));
 
-            world.setBlockState(pos, state, 2);
+            setBlockState(world, pos, state);
+            ResourceLocation lootTable = getVanillaLootTableResourceLocation(data, tables.get(rand.nextInt(tables.size())));
             LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
         }
+    }
+
+    protected void setBlockState(IWorld world, BlockPos pos, BlockState state)
+    {
+        world.setBlockState(pos, state, 0);
     }
 
     public ResourceLocation getVanillaLootTableResourceLocation(String name, ResourceLocation defaultTable)
