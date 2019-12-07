@@ -50,29 +50,31 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
 
         final BlockPos templateSize = this.template.getSize();
 
-        List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
-            .map(BlockPos::toImmutable)
-            .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
-                && world.getBlockState(p.add(1, templateSize.getY() - 1, 1)).isSolid()
-                && world.getBlockState(p.add(templateSize.getX() - 1, templateSize.getY() - 1, templateSize.getZ() - 1)).isSolid()
-            )
-            .collect(Collectors.toList());
+        if (false) {
+            List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
+                .map(BlockPos::toImmutable)
+                .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
+                    && world.getBlockState(p.add(1, templateSize.getY() - 1, 1)).isSolid()
+                    && world.getBlockState(p.add(templateSize.getX() - 1, templateSize.getY() - 1, templateSize.getZ() - 1)).isSolid()
+                )
+                .collect(Collectors.toList());
 
-        if (!valid.isEmpty()) {
-            for (int i = world.getSeaLevel() - 12; i > 12; i--) {
-                foundPos = new BlockPos(originalPos.getX(), i - templateSize.getY(), originalPos.getZ());
-                if (world.getBlockState(foundPos).isSolid()) {
-                    foundPos = new BlockPos(originalPos.getX() + templateSize.getX(), i - templateSize.getY(), originalPos.getZ() + templateSize.getZ());
+            if (!valid.isEmpty()) {
+                for (int i = world.getSeaLevel() - 12; i > 12; i--) {
+                    foundPos = new BlockPos(originalPos.getX(), i - templateSize.getY(), originalPos.getZ());
                     if (world.getBlockState(foundPos).isSolid()) {
-                        foundPos = foundPos.down(5);
-                        break;
+                        foundPos = new BlockPos(originalPos.getX() + templateSize.getX(), i - templateSize.getY(), originalPos.getZ() + templateSize.getZ());
+                        if (world.getBlockState(foundPos).isSolid()) {
+                            foundPos = foundPos.down(5);
+                            break;
+                        }
                     }
                 }
             }
-        }
 
-        if (foundPos != null && foundPos.down(templateSize.getY()).getY() > 5) {
-            this.templatePosition = new BlockPos(this.templatePosition.getX(), foundPos.getY(), this.templatePosition.getZ());
+            if (foundPos != null && foundPos.down(templateSize.getY()).getY() > 5) {
+                this.templatePosition = new BlockPos(this.templatePosition.getX(), foundPos.getY(), this.templatePosition.getZ());
+            }
         }
 
         // offset the template down according to depth
