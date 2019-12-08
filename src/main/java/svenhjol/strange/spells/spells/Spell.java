@@ -1,5 +1,7 @@
 package svenhjol.strange.spells.spells;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -16,8 +18,10 @@ import svenhjol.strange.spells.module.Spells;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -143,7 +147,7 @@ public abstract class Spell
         }
     }
 
-    protected void castTarget(PlayerEntity player, List<RayTraceResult.Type> respondTo, BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact)
+    protected void castTarget(PlayerEntity player, BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact)
     {
         World world = player.world;
         Vec3d playerVec = player.getPositionVec();
@@ -153,8 +157,8 @@ public abstract class Spell
         float cz = MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float)Math.PI / 180F));
         Vec3d v1 = (new Vec3d(cx, cy, cz)).normalize();
 
-        TargettedSpellEntity entity = new TargettedSpellEntity(world, player, respondTo, v1.x, v1.y, v1.z, this.element);
-        entity.setLocationAndAngles(playerVec.x, playerVec.y + 1.25D, playerVec.z, 0.0F, 0.0F);
+        TargettedSpellEntity entity = new TargettedSpellEntity(world, player, v1.x, v1.y, v1.z, this.element);
+        entity.setLocationAndAngles(playerVec.x, playerVec.y + 1.5D, playerVec.z, 0.0F, 0.0F);
         entity.onImpact(onImpact);
         world.addEntity(entity);
     }
@@ -184,6 +188,28 @@ public abstract class Spell
         double py = vec.y + 1.5D * spread;
         double pz = vec.z + 0.5D + (Math.random() - 0.5D) * spread;
         world.spawnParticle(Spells.spellParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
+    }
+
+    protected List<LivingEntity> getEntitiesAroundPos(World world, BlockPos pos, double[] range)
+    {
+        AxisAlignedBB bb = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+        AxisAlignedBB area = bb.grow(range[0], range[1], range[2]);
+        Predicate<LivingEntity> selector = Objects::nonNull;
+        return world.getEntitiesWithinAABB(LivingEntity.class, area, selector);
+    }
+
+    @Nullable
+    protected Entity getClosestEntity(World world, RayTraceResult result)
+    {
+        Entity e = null;
+        if (result.getType() == RayTraceResult.Type.BLOCK) {
+            List<LivingEntity> entities = getEntitiesAroundPos(world, ((BlockRayTraceResult) result).getPos(), new double[]{2, 2, 2});
+            if (!entities.isEmpty()) e = entities.get(0);
+        } else if (result.getType() == RayTraceResult.Type.ENTITY) {
+            e = ((EntityRayTraceResult) result).getEntity();
+        }
+
+        return e;
     }
 
     public enum Element implements IMesonEnum
