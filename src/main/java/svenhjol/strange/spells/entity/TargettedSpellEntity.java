@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -16,6 +17,7 @@ import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 
+import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 
 public class TargettedSpellEntity extends Entity
@@ -98,14 +100,40 @@ public class TargettedSpellEntity extends Entity
         ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 10,0.0D, 0.0D, 0.0D, 0.6D);
 
         if (this.onImpact != null && ticks > 1) {
-            RayTraceResult result = ProjectileHelper.rayTrace(this, true, false, this.caster, RayTraceContext.BlockMode.COLLIDER);
-//                && !(result.getType() == RayTraceResult.Type.BLOCK && world.isAirBlock(((BlockRayTraceResult)result).getPos()))
-            if (result.getType() != RayTraceResult.Type.MISS
-                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, result)
-            ) {
-                this.onImpact.accept(result, this);
+
+            Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+            Vec3d vec3d2 = vec3d1.add(vec3d);
+            RayTraceResult r = this.world.rayTraceBlocks(new RayTraceContext(vec3d1, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+            if (r.getType() != RayTraceResult.Type.MISS) {
+                vec3d2 = r.getHitVec();
             }
+
+            EntityRayTraceResult er = this.rayTraceEntities(vec3d1, vec3d2);
+            if (er != null) {
+                r = er;
+            }
+
+            if (r.getType() != RayTraceResult.Type.MISS
+                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, r)
+            ) {
+                this.onImpact.accept(r, this);
+            }
+
+
+//            RayTraceResult result = ProjectileHelper.rayTrace(this, true, false, this.caster, RayTraceContext.BlockMode.COLLIDER);
+////                && !(result.getType() == RayTraceResult.Type.BLOCK && world.isAirBlock(((BlockRayTraceResult)result).getPos()))
+//            if (result.getType() != RayTraceResult.Type.MISS
+//                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, result)
+//            ) {
+//            }
         }
+    }
+
+    @Nullable
+    protected EntityRayTraceResult rayTraceEntities(Vec3d startVec, Vec3d endVec) {
+        return ProjectileHelper.rayTraceEntities(this.world, this, startVec, endVec, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (entity) -> {
+            return !entity.isSpectator() && entity.isAlive() && entity.canBeCollidedWith() && (entity != this.caster || this.ticks >= 5);
+        });
     }
 
     public void onImpact(BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact)
