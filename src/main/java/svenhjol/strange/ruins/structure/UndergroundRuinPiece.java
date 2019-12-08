@@ -1,7 +1,5 @@
 package svenhjol.strange.ruins.structure;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -13,9 +11,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.base.StrangeTemplateStructurePiece;
 
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static svenhjol.strange.ruins.structure.UndergroundRuinStructure.UNDERGROUND_RUIN_PIECE;
 
@@ -52,19 +48,9 @@ public class UndergroundRuinPiece extends StrangeTemplateStructurePiece
 
         final BlockPos size = this.template.getSize();
 
-        if (false) {
-            List<BlockPos> valid = BlockPos.getAllInBox(originalPos.add(0, -verticalRange, 0), originalPos.add(0, verticalRange, 0))
-                .map(BlockPos::toImmutable)
-                .filter(p -> (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER)
-                    && world.getBlockState(p.add(1, size.getY() - 1, 1)).isSolid()
-                    && world.getBlockState(p.add(size.getX() - 1, size.getY() - 1, size.getZ() - 1)).isSolid()
-                )
-                .collect(Collectors.toList());
-        }
-
         BlockPos checkPos = originalPos.add(size.getX() / 2, size.getY(), size.getZ() / 2).down();
         if (!world.getBlockState(checkPos).isSolid()) {
-            world.setBlockState(checkPos, Blocks.GLOWSTONE.getDefaultState(), 0);
+//            world.setBlockState(checkPos, Blocks.GLOWSTONE.getDefaultState(), 0); // for testing
             for (int i = checkPos.getY(); i > 12; i--) {
                 foundPos = new BlockPos(originalPos.getX(), i - size.getY(), originalPos.getZ());
                 if (world.getBlockState(foundPos).isSolid()) {

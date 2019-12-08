@@ -9,6 +9,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -110,13 +111,15 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biome)
         {
             Biome.Category biomeCategory = biome.getCategory();
-            BlockPos pos = new BlockPos(chunkX * 16,  rand.nextInt(12) + 24, chunkZ * 16);
+            BlockPos pos = new BlockPos(chunkX * 16,  rand.nextInt(16) + 42, chunkZ * 16);
+            if (pos.getY() == 0 || pos.getY() > 48) return;
 
-            if (pos.getY() == 0 || pos.getY() > 48) {
-                pos = new BlockPos(pos.getX(), rand.nextInt(24) + 16, pos.getZ());
-            }
+            boolean useOverworld = rand.nextFloat() < 0.1F
+                || !UndergroundRuins.biomeRuins.containsKey(biomeCategory)
+                || UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty();
 
-            if (rand.nextFloat() < 0.15F || !UndergroundRuins.biomeRuins.containsKey(biomeCategory) || UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
+            if (useOverworld) {
+                if (!(gen instanceof OverworldChunkGenerator)) return; // don't generate overworld structures in non-overworld dims
                 biomeCategory = Biome.Category.NONE; // chance of being a general overworld structure
             }
 
@@ -126,7 +129,7 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     .filter(d -> d.getHorizontalIndex() >= 0)
                     .collect(Collectors.toList());
 
-                int numTemplates = rand.nextInt(4) + 1;
+                int numTemplates = rand.nextInt(6) + 1;
 
                 List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, numTemplates);
                 if (ruinTemplates.isEmpty()) return;
@@ -164,20 +167,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     int yo = j > 3 ? -nextSize.getY() : 0;
                     int zo = 0;
 
-//                    if (direction == Direction.NORTH) {
-//                        dist = next.getSize().getZ() - 1;
-//                        nextPieces.put(nextRes, centrePos.add(xc, 0, -dist));
-//                    } else if (direction == Direction.EAST) {
-//                        dist = main.getSize().getX() - 1;
-//                        nextPieces.put(nextRes, centrePos.add(dist, 0, zc));
-//                    } else if (direction == Direction.SOUTH) {
-//                        dist = main.getSize().getZ() - 1;
-//                        nextPieces.put(nextRes, centrePos.add(xc, 0, dist));
-//                    } else if (direction == Direction.WEST) {
-//                        dist = next.getSize().getX() - 1;
-//                        nextPieces.put(nextRes, centrePos.add(-dist, 0, zc));
-//                    }
-
                     if (direction == Direction.NORTH) {
                         xo = xc;
                         zo = -(nextSize.getZ() - 1);
@@ -193,7 +182,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     }
 
                     nextPieces.put(nextRes, centrePos.add(xo, yo, zo));
-
                     j++;
                 }
 
@@ -209,10 +197,11 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         {
             List<ResourceLocation> out = new ArrayList<>();
 
+            // for testing
 //            out = UndergroundRuins.biomeRuins.get(Biome.Category.SAVANNA).get("forgotten_village").subList(0, 8);
 //            Collections.shuffle(out);
 //            return out;
-//
+
             Map<String, List<ResourceLocation>> map = UndergroundRuins.biomeRuins.get(biomeCategory);
             if (map.keySet().size() == 0) return out;
 
