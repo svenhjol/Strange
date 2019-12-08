@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -17,8 +16,6 @@ import net.minecraft.world.server.ServerWorld;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 public class TargettedSpellEntity extends Entity
@@ -29,9 +26,7 @@ public class TargettedSpellEntity extends Entity
     public double accelerationY;
     public double accelerationZ;
 
-
     protected LivingEntity caster;
-    protected List<RayTraceResult.Type> respondTo = new ArrayList<>();
     protected Spell.Element element = Spell.Element.BASE;
 
     private BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact = null;
@@ -47,11 +42,10 @@ public class TargettedSpellEntity extends Entity
         super(type, world);
     }
 
-    public TargettedSpellEntity(World world, LivingEntity caster, List<RayTraceResult.Type> respondTo, double x, double y, double z, Spell.Element element)
+    public TargettedSpellEntity(World world, LivingEntity caster, double x, double y, double z, Spell.Element element)
     {
         this(Spells.entity, world);
         this.caster = caster;
-        this.respondTo = respondTo;
 
         this.accelerationX = x * 1.5D;
         this.accelerationY = y * 1.5D;
@@ -73,8 +67,8 @@ public class TargettedSpellEntity extends Entity
         super.tick();
 
         double posSpread = 0.5D;
-        double scale = 0.77F;
-        int maxLiveTime = 30;
+        double scale = 0.65F;
+        int maxLiveTime = 40;
 
         if (ticks++ > maxLiveTime) {
             remove();
@@ -87,13 +81,13 @@ public class TargettedSpellEntity extends Entity
         this.posY += vec3d.y;
         this.posZ += vec3d.z;
 
-        ProjectileHelper.rotateTowardsMovement(this, 0.2F);
+//        ProjectileHelper.rotateTowardsMovement(this, 0.2F);
         BasicParticleType particleType = Spells.spellParticles.get(element);
 
         double px = posX + (Math.random() - 0.5) * posSpread;
         double py = posY + (Math.random() - 0.5) * posSpread;
         double pz = posZ + (Math.random() - 0.5) * posSpread;
-        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 15,0.0D, 0.0D, 0.0D, 0.6D);
+        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 10,0.0D, 0.0D, 0.0D, 0.6D);
 
         this.setMotion(vec3d.add(this.accelerationX, this.accelerationY, this.accelerationZ).scale(scale));
         this.setPosition(posX, posY, posZ);
@@ -101,13 +95,12 @@ public class TargettedSpellEntity extends Entity
         px = posX + (Math.random() - 0.5) * posSpread;
         py = posY + (Math.random() - 0.5) * posSpread;
         pz = posZ + (Math.random() - 0.5) * posSpread;
-        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 15,0.0D, 0.0D, 0.0D, 0.6D);
+        ((ServerWorld)world).spawnParticle(particleType, px, py, pz, 10,0.0D, 0.0D, 0.0D, 0.6D);
 
-        if (this.onImpact != null && ticks > 4) {
-            RayTraceResult result = ProjectileHelper.rayTrace(this, true, false, null, RayTraceContext.BlockMode.COLLIDER);
-            if (respondTo.contains(result.getType())
-                && !(result.getType() == RayTraceResult.Type.BLOCK && world.isAirBlock(((BlockRayTraceResult)result).getPos()))
-//                && ((result.getType() == RayTraceResult.Type.ENTITY && !((EntityRayTraceResult)result).getEntity().isEntityEqual(caster)))
+        if (this.onImpact != null && ticks > 1) {
+            RayTraceResult result = ProjectileHelper.rayTrace(this, true, false, this.caster, RayTraceContext.BlockMode.COLLIDER);
+//                && !(result.getType() == RayTraceResult.Type.BLOCK && world.isAirBlock(((BlockRayTraceResult)result).getPos()))
+            if (result.getType() != RayTraceResult.Type.MISS
                 && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, result)
             ) {
                 this.onImpact.accept(result, this);
