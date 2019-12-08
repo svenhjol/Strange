@@ -27,6 +27,7 @@ public class ClientQuestList implements IMesonMessage
     public ClientQuestList(List<IQuest> quests)
     {
         this.quests = quests;
+        if (quests == null) quests = new ArrayList<>();
         List<String> compressed = new ArrayList<>();
 
         // must serialize+compress each quest nbt first
