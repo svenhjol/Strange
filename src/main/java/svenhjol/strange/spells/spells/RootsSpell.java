@@ -22,9 +22,9 @@ public class RootsSpell extends Spell
         super("roots");
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
-        this.applyCost = 2;
+        this.applyCost = 1;
         this.duration = 1.0F;
-        this.castCost = 3;
+        this.castCost = 4;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class RepelSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        int[] range = {6, 2, 6};
+        int[] range = {12, 3, 12};
         this.castArea(player, range, blocks -> {
             World world = player.world;
 

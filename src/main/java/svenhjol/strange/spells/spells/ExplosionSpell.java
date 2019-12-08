@@ -8,9 +8,6 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class ExplosionSpell extends Spell
@@ -21,24 +18,19 @@ public class ExplosionSpell extends Spell
         this.element = Element.FIRE;
         this.affect = Affect.TARGET;
         this.applyCost = 5;
-        this.duration = 3.0F;
+        this.duration = 3.5F;
         this.castCost = 20;
     }
 
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(
-            RayTraceResult.Type.BLOCK,
-            RayTraceResult.Type.ENTITY
-        ));
-
-        this.castTarget(player, respondTo, (result, beam) -> {
+        this.castTarget(player, (result, beam) -> {
             BlockPos pos = null;
 
             if (result.getType() == RayTraceResult.Type.BLOCK) {
                 pos = ((BlockRayTraceResult) result).getPos();
-            } else if (result.getType() == RayTraceResult.Type.ENTITY && !((EntityRayTraceResult)result).getEntity().isEntityEqual(player)) {
+            } else if (result.getType() == RayTraceResult.Type.ENTITY) {
                 pos = ((EntityRayTraceResult) result).getEntity().getPosition();
             }
 

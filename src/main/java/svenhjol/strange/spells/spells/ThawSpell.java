@@ -24,7 +24,7 @@ public class ThawSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
+        this.castArea(player, new int[] { 7, 3, 7 }, blocks -> {
             World world = player.world;
 
             if (world.isRemote) return;

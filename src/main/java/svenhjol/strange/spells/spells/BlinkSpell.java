@@ -1,17 +1,13 @@
 package svenhjol.strange.spells.spells;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class BlinkSpell extends Spell
@@ -20,26 +16,27 @@ public class BlinkSpell extends Spell
     {
         super("blink");
         this.element = Element.AIR;
-        this.affect = Affect.TARGET;
+        this.affect = Affect.FOCUS;
         this.applyCost = 2;
-        this.duration = 1.0F;
-        this.castCost = 6;
+        this.duration = 1.25F;
+        this.castCost = 8;
     }
 
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.BLOCK));
-        this.castTarget(player, respondTo, (result, beam) -> {
-            World world = player.world;
-            BlockPos pos = ((BlockRayTraceResult) result).getPos();
+        World world = player.world;
+
+        castFocus(player, result -> {
+            BlockPos pos = result.getPos();
             BlockState state = world.getBlockState(pos);
-            beam.remove();
 
             if ((state.isSolid()
                 || state.getMaterial() == Material.WATER
                 || state.getMaterial() == Material.LEAVES
                 || state.getMaterial() == Material.PLANTS
+                || state.getMaterial() == Material.ORGANIC
+                || state.getBlock() == Blocks.GRASS
             )
                 && !world.getBlockState(pos.up(1)).isSolid()
                 && !world.getBlockState(pos.up(2)).isSolid()

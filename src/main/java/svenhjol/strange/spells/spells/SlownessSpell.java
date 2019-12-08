@@ -7,11 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class SlownessSpell extends Spell
@@ -28,8 +24,9 @@ public class SlownessSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.ENTITY));
-        this.castTarget(player, respondTo, (result, beam) -> {
+        this.castTarget(player, (result, beam) -> {
+            // TODO get entities in range if block hit
+
             EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
             Entity e = entityImpact.getEntity();
             beam.remove();

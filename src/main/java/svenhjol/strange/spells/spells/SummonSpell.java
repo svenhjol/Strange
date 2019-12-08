@@ -7,8 +7,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.strange.spells.module.Spells;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +57,12 @@ public class SummonSpell extends Spell
                     });
                 }
 
-                PlayerQueueHandler.add(world.getGameTime() + 200, player, p -> {
+                PlayerQueueHandler.add(world.getGameTime() + 250, player, p -> {
                     for (WolfEntity fighter : spawned) {
+                        double px = fighter.getPosition().getX() + 0.5D;
+                        double py = fighter.getPosition().getY() + 0.75D;
+                        double pz = fighter.getPosition().getZ() + 0.5D;
+                        ((ServerWorld)world).spawnParticle(Spells.spellParticles.get(this.getElement()), px, py, pz, 4, 0.0D, 0.0D, 0.0D, 3);
                         fighter.remove();
                     }
                 });

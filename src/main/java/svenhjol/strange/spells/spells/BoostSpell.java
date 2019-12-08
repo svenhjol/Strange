@@ -2,12 +2,9 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class BoostSpell extends Spell
@@ -27,13 +24,6 @@ public class BoostSpell extends Spell
     {
         this.castSelf(player, p -> {
             Collection<EffectInstance> effects = p.getActivePotionEffects();
-
-            List<Effect> toRemove = new ArrayList<>();
-
-            for (EffectInstance effect : effects) {
-                if (!effect.getPotion().isBeneficial()) continue;
-                toRemove.add(effect.getPotion());
-            }
 
             for (EffectInstance effect : effects) {
                 int duration = (int)(effect.getDuration() * 1.2);

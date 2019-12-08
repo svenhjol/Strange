@@ -4,6 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -41,6 +43,7 @@ public class PortalSpell extends Spell
                                 pt.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
                             }
                         }
+                        pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 100, 0));
                         pt.setPositionAndUpdate(pt.getPosition().getX() + 0.5D, pt.getPosition().getY() + 1.0D, pt.getPosition().getZ() + 0.5D);
                         Spells.effectEnchant((ServerWorld)pt.world, pt.getPositionVec(), this, 10, 0, 0, 0, 0.05D);
                         pt.world.playSound(null, pt.getPosition(), StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);

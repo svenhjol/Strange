@@ -4,14 +4,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
 import svenhjol.meson.handler.PlayerQueueHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class PacifySpell extends Spell
@@ -29,18 +26,16 @@ public class PacifySpell extends Spell
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
         World world = player.world;
-        List<RayTraceResult.Type> respondTo = new ArrayList<>(Arrays.asList(RayTraceResult.Type.ENTITY));
 
-        this.castTarget(player, respondTo, (result, beam) -> {
-            EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
-            Entity e = entityImpact.getEntity();
+        this.castTarget(player, (result, beam) -> {
+            Entity e = getClosestEntity(world, result);
             beam.remove();
-
             if (e instanceof MobEntity) {
                 MobEntity mob = (MobEntity) e;
                 if (!mob.isAIDisabled()) {
                     mob.setNoAI(true);
-                    PlayerQueueHandler.add(world.getGameTime() + 80, player, p -> mob.setNoAI(false));
+                    mob.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 140, 0));
+                    PlayerQueueHandler.add(world.getGameTime() + 150, player, p -> mob.setNoAI(false));
                 }
 
                 didCast.accept(true);
