@@ -15,7 +15,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -25,10 +24,10 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.iface.Module;
@@ -186,23 +185,38 @@ public class Runestones extends MesonModule
         return pos;
     }
 
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event)
+    @Override
+    public void serverStarted(FMLServerStartedEvent event)
     {
-        // randomize rune destinations per world seed
-        IWorld world = event.getWorld();
+        super.serverStarted(event);
 
-        if (world.getChunkProvider().getChunkGenerator() instanceof OverworldChunkGenerator) {
-            long worldSeed = event.getWorld().getSeed();
-            if (worldSeed != this.seed) {
-                Random rand = new Random();
-                rand.setSeed(worldSeed);
-                dests = new ArrayList<>(destsOrdered);
-                Collections.shuffle(dests, rand);
-                this.seed = worldSeed;
-            }
+        long seed = event.getServer().getWorld(DimensionType.OVERWORLD).getSeed();
+        if (seed != this.seed) {
+            Random rand = new Random();
+            rand.setSeed(seed);
+            dests = new ArrayList<>(destsOrdered);
+            Collections.shuffle(dests, rand);
+            this.seed = seed;
         }
     }
+
+//    @SubscribeEvent
+//    public void onWorldLoad(WorldEvent.Load event)
+//    {
+//        // randomize rune destinations per world seed
+//        IWorld world = event.getWorld();
+//
+//        if (world.getChunkProvider().getChunkGenerator() instanceof OverworldChunkGenerator) {
+//            long worldSeed = event.getWorld().getSeed();
+//            if (worldSeed != this.seed) {
+//                Random rand = new Random();
+//                rand.setSeed(worldSeed);
+//                dests = new ArrayList<>(destsOrdered);
+//                Collections.shuffle(dests, rand);
+//                this.seed = worldSeed;
+//            }
+//        }
+//    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPearlImpact(ProjectileImpactEvent event)
