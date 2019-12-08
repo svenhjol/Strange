@@ -6,6 +6,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
@@ -27,23 +29,26 @@ public class BlinkSpell extends Spell
     {
         World world = player.world;
 
-        castFocus(player, result -> {
-            BlockPos pos = result.getPos();
-            BlockState state = world.getBlockState(pos);
+        this.castTarget(player, (result, beam) -> {
+            beam.remove();
+            if (result.getType() == RayTraceResult.Type.BLOCK) {
+                BlockPos pos = ((BlockRayTraceResult)result).getPos();
+                BlockState state = world.getBlockState(pos);
 
-            if ((state.isSolid()
-                || state.getMaterial() == Material.WATER
-                || state.getMaterial() == Material.LEAVES
-                || state.getMaterial() == Material.PLANTS
-                || state.getMaterial() == Material.ORGANIC
-                || state.getBlock() == Blocks.GRASS
-            )
-                && !world.getBlockState(pos.up(1)).isSolid()
-                && !world.getBlockState(pos.up(2)).isSolid()
-            ) {
-                player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
-                didCast.accept(true);
-                return;
+                if ((state.isSolid()
+                    || state.getMaterial() == Material.WATER
+                    || state.getMaterial() == Material.LEAVES
+                    || state.getMaterial() == Material.PLANTS
+                    || state.getMaterial() == Material.ORGANIC
+                    || state.getBlock() == Blocks.GRASS
+                )
+                    && !world.getBlockState(pos.up(1)).isSolid()
+                    && !world.getBlockState(pos.up(2)).isSolid()
+                ) {
+                    player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
+                    didCast.accept(true);
+                    return;
+                }
             }
             didCast.accept(false);
         });

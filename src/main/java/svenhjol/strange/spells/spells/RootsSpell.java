@@ -23,8 +23,8 @@ public class RootsSpell extends Spell
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
         this.applyCost = 1;
-        this.duration = 1.0F;
-        this.castCost = 4;
+        this.duration = 0.75F;
+        this.castCost = 3;
     }
 
     @Override
