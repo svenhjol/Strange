@@ -323,10 +323,12 @@ public class StaffItem extends TieredItem implements IMesonItem
 
         spell.cast(player, staff, result -> {
             if (result) {
-                boolean hasUses = decreaseUses(staff);
-                staff.damageItem(spell.getStaffDamage(), player, r -> {});
-                if (!hasUses) {
-                    player.world.playSound(null, player.getPosition(), StrangeSounds.STAFF_EMPTY, SoundCategory.PLAYERS, 0.75F, 1.0F);
+                if (!player.isCreative()) {
+                    boolean hasUses = decreaseUses(staff);
+                    staff.damageItem(spell.getStaffDamage(), player, r -> { });
+                    if (!hasUses || getUses(staff) == 1) {
+                        player.world.playSound(null, player.getPosition(), StrangeSounds.STAFF_EMPTY, SoundCategory.PLAYERS, 0.75F, hasUses ? 1.0F : 0.75F);
+                    }
                 }
             } else {
                 // wasn't successful, set back to charged
