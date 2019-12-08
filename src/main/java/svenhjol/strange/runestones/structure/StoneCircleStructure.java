@@ -223,6 +223,11 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 for (int i = 0; i < Runestones.dests.size(); i++) {
                     availableRunes.add(i);
                 }
+
+                if (availableRunes.size() == 0) {
+                    Meson.warn("No available runes to generate");
+                    return false;
+                }
             }
 
             if (config.blocks.isEmpty()) {
