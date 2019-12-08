@@ -104,8 +104,7 @@ public class Spells extends MesonModule
         "growth",
         "knockback",
         "pacify",
-        "repel",
-        "roots"
+        "repel"
     );
 
     public static List<String> extractionBlacklist = Arrays.asList(
@@ -171,7 +170,7 @@ public class Spells extends MesonModule
         // register targetted spell entity
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, "targetted_spell");
         entity = EntityType.Builder.create(TargettedSpellEntity::new, EntityClassification.MISC)
-            .size(5.0F, 5.0F)
+            .size(1.5F, 1.5F)
             .build(res.getPath())
             .setRegistryName(res);
         RegistryHandler.registerEntity(entity, res);
