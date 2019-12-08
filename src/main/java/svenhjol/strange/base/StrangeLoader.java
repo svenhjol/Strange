@@ -22,10 +22,8 @@ public class StrangeLoader extends MesonLoader
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void earlyInit()
     {
-        super.setup(event);
-
         int index = 20;
 
         // messages
@@ -44,6 +42,12 @@ public class StrangeLoader extends MesonLoader
 
         // sounds
         StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);
+    }
+
+    @Override
+    public void setup(FMLCommonSetupEvent event)
+    {
+        super.setup(event);
 
         // loot functions
         LootFunctionManager.registerFunction(new AddSpellRandomly.Serializer());
