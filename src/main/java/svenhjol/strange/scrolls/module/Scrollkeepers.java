@@ -239,7 +239,7 @@ public class Scrollkeepers extends MesonModule
             quest.setSeller(merchant.getUniqueID());
 
             ScrollItem.putTag(out, quest.toNBT());
-            out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier_" + tier));
+            out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
             return new MerchantOffer(in1, out, 8, 0, 0.0F);
         }
     }
