@@ -1,15 +1,11 @@
 {
-  "title": "Test Quest 4",
-  "description": "Blah blah things",
   "timeLimit": 10,
-  "encounter": {
-    "minecraft:zombie": {
-      "count": 1
-    }
+  "craft": {
+    "minecraft:crafting_table": 1
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 10
+      "StoneCircleTotem": 1
     },
     "xp": {
       "count": 20

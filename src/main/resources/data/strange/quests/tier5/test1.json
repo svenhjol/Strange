@@ -1,14 +1,16 @@
 {
-  "title": "Test Quest 5",
-  "description": "Blah blah things",
-  "timeLimit": 10,
-  "craft": {
-    "minecraft:crafting_table": 1
+  "timeLimit": 100,
+  "encounter": {
+    "minecraft:zombie": {
+      "count": 5,
+      "health": 40
+    }
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 10,
-      "StoneCircleTotem": 1
+      "StoneCircleTotem": 1,
+      "RandomSpellBook": 1,
+      "RandomEnchantedBook": 1
     },
     "xp": {
       "count": 20
