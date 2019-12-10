@@ -3,7 +3,11 @@ package svenhjol.strange.spells.helper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
+import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 public class SpellsHelper
 {
@@ -27,6 +31,20 @@ public class SpellsHelper
         TranslationTextComponent elementText = new TranslationTextComponent("spell.strange.element." + spell.getElement().getName());
         elementText.setStyle((new Style()).setColor(spell.getElement().getFormatColor()));
         return elementText;
+    }
 
+    @Nullable
+    public static Spell getRandomSpell(Random rand, boolean rare)
+    {
+        String spellId;
+
+        if (!rare) {
+            spellId = Spells.commonSpells.get(rand.nextInt(Spells.commonSpells.size()));
+        } else {
+            spellId = Spells.enabledSpells.get(rand.nextInt(Spells.enabledSpells.size()));
+        }
+        if (spellId == null || spellId.isEmpty()) return null;
+        if (!Spells.spells.containsKey(spellId)) return null;
+        return Spells.spells.get(spellId);
     }
 }
