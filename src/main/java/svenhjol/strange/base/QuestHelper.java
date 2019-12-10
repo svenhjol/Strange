@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import svenhjol.charm.tools.item.BoundCompassItem;
 import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.helper.PlayerHelper;
@@ -39,11 +39,12 @@ public class QuestHelper
     {
         // TODO should check if compass binding is enabled, if not, use a map
         ItemStack compass = new ItemStack(CompassBinding.item);
-        compass.setDisplayName(new StringTextComponent(quest.getTitle()));
+        compass.setDisplayName(new TranslationTextComponent(quest.getTitle()));
         BoundCompassItem.setPos(compass, location);
         BoundCompassItem.setDim(compass, dim);
         Objects.requireNonNull(compass.getTag()).putString(Quests.QUEST_ID, quest.getId());
-        player.addItemStackToInventory(compass);
+        PlayerHelper.addOrDropStack(player, compass);
+//        player.addItemStackToInventory(compass);
     }
 
     public static void removeQuestItemsFromPlayer(PlayerEntity player, IQuest quest)
@@ -51,8 +52,9 @@ public class QuestHelper
         // remove the quest helper equipment like compasses, maps, etc.
         ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
         inventories.forEach(inv -> inv.forEach(stack -> {
-            if (!stack.isEmpty() && stack.hasTag() && Objects.requireNonNull(stack.getTag()).contains(Quests.QUEST_ID)) {
-                if (stack.getTag().getString(Quests.QUEST_ID).equals(quest.getId())) {
+            if (!stack.isEmpty() && stack.hasTag() && stack.getTag() != null) {
+                String questTagId = stack.getTag().getString(Quests.QUEST_ID);
+                if (questTagId.contains(quest.getId())) {
                     stack.shrink(1);
                 }
             }
