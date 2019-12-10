@@ -53,9 +53,11 @@ public class QuestClient
     public void onBackgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        int delayTicks = 100;
+        int delayTicks = 101;
 
         if (isValidQuestBadgeScreen(mc)) {
+            questBadges.clear();
+
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
                 PacketHandler.sendToServer(new ServerQuestList());
                 QuestClient.lastQuery = mc.world.getGameTime();
@@ -68,7 +70,6 @@ public class QuestClient
             int xPos = (mc.mainWindow.getScaledWidth() / 2) - (numQuests*w/2);
             int yPos = (mc.mainWindow.getScaledHeight() / 4) - 50;
 
-            questBadges.clear();
             for (int i = 0; i < numQuests; i++) {
                 questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos + (i * (w + 10)), yPos));
             }
