@@ -1,11 +1,13 @@
 package svenhjol.strange.scrolls.quest;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,14 +75,14 @@ public class Quest implements IQuest
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         boolean responded = false;
 
         final List<Condition> conditions = this.criteria.getConditions();
 
         for (Condition condition : conditions) {
-            responded = condition.respondTo(event) || responded;
+            responded = condition.respondTo(event, player) || responded;
         }
 
         return responded;
