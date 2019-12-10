@@ -1,0 +1,17 @@
+{
+  "encounter": {
+    "minecraft:zombie_villager": {
+      "count": 5,
+      "health": 50
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 3,
+      "minecraft:emerald": 3
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

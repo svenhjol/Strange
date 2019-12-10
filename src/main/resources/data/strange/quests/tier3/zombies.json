@@ -1,0 +1,14 @@
+{
+  "hunt": {
+    "minecraft:zombie": 10,
+    "minecraft:zombie_villager": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 9
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

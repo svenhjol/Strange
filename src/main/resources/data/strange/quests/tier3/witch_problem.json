@@ -1,0 +1,16 @@
+{
+  "encounter": {
+    "minecraft:witch": {
+      "count": 3,
+      "health": 60
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 2
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

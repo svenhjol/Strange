@@ -1,0 +1,14 @@
+{
+  "locate": [
+    "minecraft:gold_block"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 1,
+      "minecraft:emerald": 5
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

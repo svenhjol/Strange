@@ -1,0 +1,19 @@
+{
+  "craft": {
+    "minecraft:enchanting_table": 1,
+    "minecraft:bookshelf": 6
+  },
+  "gather": {
+    "minecraft:lapis_lazuli": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:lapis_lazuli": 15,
+      "RandomEnchantedBook": 1
+    },
+    "xp": {
+      "count": 30
+    }
+  }
+}
