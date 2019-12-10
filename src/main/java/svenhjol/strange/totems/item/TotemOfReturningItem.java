@@ -1,5 +1,7 @@
 package svenhjol.strange.totems.item;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -7,14 +9,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PlayerQueueHandler;
@@ -63,9 +68,11 @@ public class TotemOfReturningItem extends MesonItem
 
             player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
             return super.onItemRightClick(world, player, hand);
+        } else if (pos != null) {
+            teleport(world, player, pos, dim, held);
+        } else {
+            player.sendStatusMessage(new TranslationTextComponent("totem.strange.returning.unbound"), true);
         }
-
-        teleport(world, player, pos, dim, held);
 
         return super.onItemRightClick(world, player, hand);
     }
@@ -76,16 +83,31 @@ public class TotemOfReturningItem extends MesonItem
         if (!world.isRemote) {
             BlockPos playerPos = player.getPosition();
 
-            player.setNoGravity(true);
+//            player.setNoGravity(true);
             player.setInvulnerable(true);
-            PlayerHelper.teleport(player, pos, dim);
-
-            PlayerQueueHandler.add(world.getGameTime() + 40, player, p -> {
-                Meson.debug("Re-teleport");
-                PlayerHelper.teleport(player, pos, dim);
-                player.setNoGravity(false);
-                player.setInvulnerable(false);
+            PlayerHelper.teleport(player, pos, dim, t -> {
+                PlayerQueueHandler.add(t.world.getGameTime() + 10, t, pt -> {
+                    for (int i = 0; i < 3; i++) {
+                        BlockPos pp = pt.getPosition().add(0, i, 0);
+                        BlockState state = pt.world.getBlockState(pp);
+                        if (state.isSolid()) {
+                            pt.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
+                        }
+                    }
+                    pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
+                    pt.setPositionAndUpdate(pt.getPosition().getX() + 0.5D, pt.getPosition().getY() + 1.0D, pt.getPosition().getZ() + 0.5D);
+                    pt.world.playSound(null, pt.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.setInvulnerable(false);
+                    player.setNoGravity(false);
+                });
             });
+//
+//            PlayerQueueHandler.add(world.getGameTime() + 40, player, p -> {
+//                Meson.debug("Re-teleport");
+//                PlayerHelper.teleport(player, pos, dim);
+//                player.setNoGravity(false);
+//                player.setInvulnerable(false);
+//            });
         }
         TotemHelper.destroy(player, stack);
     }
@@ -119,7 +141,7 @@ public class TotemOfReturningItem extends MesonItem
         if (pos != null) {
             String strDim = String.valueOf(getDim(stack));
             String strPos = StringHelper.formatBlockPos(pos);
-            strings.add(new StringTextComponent(I18n.format("totem.strange.returning", strPos, strDim)));
+            strings.add(new StringTextComponent(I18n.format("totem.strange.returning.bound", strPos, strDim)));
         }
         super.addInformation(stack, world, strings, flag);
     }
