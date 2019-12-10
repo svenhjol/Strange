@@ -6,7 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
@@ -38,6 +40,30 @@ public class TotemOfPreserving extends MesonModule
     public void init()
     {
         item = new TotemOfPreservingItem(this);
+    }
+
+    @SubscribeEvent
+    public void onItemExpire(ItemExpireEvent event)
+    {
+        if (noDespawn
+            && event.getEntityItem() != null
+            && event.getEntityItem().getItem().getItem() == item
+            && !TotemOfPreservingItem.getItems(event.getEntityItem().getItem()).isEmpty()
+        ) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onItemPickup(PlayerEvent.ItemPickupEvent event)
+    {
+        if (event.getStack().getItem() == item
+            && event.getPlayer() != null
+            && event.getOriginalEntity().getOwnerId() != null
+            && event.getOriginalEntity().getOwnerId() != event.getPlayer().getUniqueID()
+        ) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -88,8 +114,9 @@ public class TotemOfPreserving extends MesonModule
         }
 
         if (noDespawn) totemEntity.setNoDespawn();
-
+        totemEntity.setGlowing(true);
         totemEntity.setInvulnerable(true);
+        totemEntity.setOwnerId(player.getUniqueID());
 
         world.addEntity(totemEntity);
         event.setCanceled(true);
