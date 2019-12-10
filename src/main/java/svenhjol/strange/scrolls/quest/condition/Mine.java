@@ -18,6 +18,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -47,42 +48,11 @@ public class Mine implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable  PlayerEntity player)
     {
+        if (player == null) return false;
         if (isSatisfied()) return false;
         if (mined >= count) return false;
-
-//        if (event instanceof HarvestDropsEvent) {
-//            HarvestDropsEvent blockEvent = (HarvestDropsEvent)event;
-//            BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
-//            Block block = state.getBlock();
-//            ResourceLocation blockRes = block.getRegistryName();
-//
-//            if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
-//
-//            PlayerEntity player = blockEvent.getHarvester();
-//            if (player == null) return false;
-//
-//            int count = 1;
-//            int remaining = getRemaining();
-//
-//            if (count > remaining || remaining - 1 == 0) {
-//                // set the count to the remainder
-//                count = remaining;
-//            } else {
-//                blockEvent.setDropChance(0.0F);
-//            }
-//
-//            mined += count;
-//
-//            if (isSatisfied()) {
-//                Quests.effectCompleted(player, new TranslationTextComponent("event.strange.quests.mined_all"));
-//            } else {
-//                Quests.effectCounted(player);
-//            }
-//
-//            return true;
-//        }
 
         if (event instanceof BreakEvent) {
             BreakEvent blockEvent = (BreakEvent)event;
@@ -93,7 +63,6 @@ public class Mine implements IDelegate
 
             if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
 
-            PlayerEntity player = blockEvent.getPlayer();
             World world = (World)blockEvent.getWorld();
 
             int count = 1;

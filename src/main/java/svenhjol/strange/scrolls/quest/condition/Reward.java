@@ -5,11 +5,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.eventbus.api.Event;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,15 +39,14 @@ public class Reward implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
-        if (event instanceof QuestEvent.Complete) {
-            QuestEvent qe = (QuestEvent.Complete)event;
-            final PlayerEntity player = qe.getPlayer();
+        if (player == null) return false;
 
+        if (event instanceof QuestEvent.Complete) {
             for (ItemStack stack : items.keySet()) {
                 stack.setCount(items.get(stack));
-                player.addItemStackToInventory(stack);
+                PlayerHelper.addOrDropStack(player, stack);
             }
 
             return true;

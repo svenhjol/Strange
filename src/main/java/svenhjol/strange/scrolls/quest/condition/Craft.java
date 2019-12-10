@@ -13,6 +13,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -42,17 +43,17 @@ public class Craft implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         if (isSatisfied()) return false;
         if (crafted >= count) return false;
+        if (player == null) return false;
 
         if (event instanceof ItemCraftedEvent) {
             ItemCraftedEvent qe = (ItemCraftedEvent)event;
             ItemStack craftedItem = qe.getCrafting();
             if (this.stack == null || craftedItem.getItem() != stack.getItem().getItem()) return false;
 
-            PlayerEntity player = qe.getPlayer();
             World world = qe.getPlayer().world;
 
             int countCrafted = craftedItem.getCount();

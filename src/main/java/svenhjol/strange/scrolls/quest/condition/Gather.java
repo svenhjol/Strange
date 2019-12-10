@@ -18,6 +18,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -47,15 +48,15 @@ public class Gather implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (player == null) return false;
         if (isSatisfied()) return false;
         if (collected >= count) return false;
 
         if (event instanceof QuestEvent.Accept) {
             // gather as many things as possible from the player's inventory
             final QuestEvent.Accept qe = (QuestEvent.Accept)event;
-            final PlayerEntity player = qe.getPlayer();
             final ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
             final Item requiredItem = stack.getItem();
 
@@ -81,8 +82,7 @@ public class Gather implements IDelegate
 
             if (this.stack == null || pickedUp.getItem() != stack.getItem().getItem()) return false;
 
-            PlayerEntity player = qe.getPlayer();
-            World world = qe.getPlayer().world;
+            World world = player.world;
 
             int pickedUpCount = pickedUp.getCount();
             int remaining = getRemaining();

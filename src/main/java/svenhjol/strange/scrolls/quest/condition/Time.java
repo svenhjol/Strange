@@ -3,6 +3,7 @@ package svenhjol.strange.scrolls.quest.condition;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -10,6 +11,8 @@ import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+
+import javax.annotation.Nullable;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Time implements IDelegate
@@ -45,18 +48,21 @@ public class Time implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (player == null) return false;
+
+        World world = player.world;
+
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
             if (qe.getQuest().getId().equals(this.quest.getId())) {
-                setStart(qe.getPlayer().world.getGameTime());
+                setStart(world.getGameTime());
             }
         }
 
         if (event instanceof PlayerTickEvent) {
-            final PlayerEntity player = ((PlayerTickEvent) event).player;
-            lastTime = player.world.getGameTime();
+            lastTime = world.getGameTime();
 
             // check and fail the quest if the time is below zero
             if (getRemaining() <= 0) {

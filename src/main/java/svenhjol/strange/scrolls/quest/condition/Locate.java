@@ -26,6 +26,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,21 +62,22 @@ public class Locate implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         if (isSatisfied()) return false;
+        if (player == null) return false;
 
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
-            return onStarted(qe.getQuest(), qe.getPlayer());
+            return onStarted(qe.getQuest(), player);
         }
 
         if (event instanceof QuestEvent.Complete || event instanceof QuestEvent.Fail || event instanceof QuestEvent.Decline) {
-            return onEnded(((QuestEvent) event).getPlayer());
+            return onEnded(player);
         }
 
         if (event instanceof PlayerTickEvent) {
-            return onTick(((PlayerTickEvent)event).player);
+            return onTick(player);
         }
 
         return false;
@@ -154,15 +156,18 @@ public class Locate implements IDelegate
         boolean atLocation = WorldHelper.getDistanceSq(playerPos, this.location) < 8;
 
         if (this.spawned && !this.located && world.getGameTime() % 20 == 0) {
-            ItemStack locatedStack = null;
+
             for (ItemStack s : player.inventory.mainInventory) {
                 CompoundNBT tag = s.getTag();
                 if (tag == null || tag.isEmpty()) continue;
 
-                String id = tag.getString(Locate.ID + "_" + Quests.QUEST_ID);
+                String key = Locate.ID + "_" + Quests.QUEST_ID;
+
+                String id = tag.getString(key);
                 if (id.isEmpty() || !id.equals(quest.getId())) continue;
 
                 this.located = true;
+                tag.remove(key);
                 s.shrink(s.getCount());
                 break;
             }
@@ -223,10 +228,7 @@ public class Locate implements IDelegate
                 // add the quest item to the dungeon loot
                 ItemStack lootStack = stack.copy();
 
-                CompoundNBT tag = lootStack.getTag();
-                if (tag == null || tag.isEmpty()) {
-                    tag = new CompoundNBT();
-                }
+                CompoundNBT tag = lootStack.getOrCreateTag();
                 tag.putString(Locate.ID + "_" + Quests.QUEST_ID, quest.getId());
                 lootStack.setTag(tag);
                 chest.setInventorySlotContents(rand.nextInt(chest.getSizeInventory()), lootStack);

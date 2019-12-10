@@ -1,10 +1,12 @@
 package svenhjol.strange.scrolls.quest.iface;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.iface.IMesonEnum;
 import svenhjol.strange.scrolls.quest.Criteria;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface IQuest
@@ -23,7 +25,7 @@ public interface IQuest
 
     CompoundNBT toNBT();
 
-    boolean respondTo(Event event);
+    boolean respondTo(Event event, @Nullable PlayerEntity player);
 
     State getState();
 

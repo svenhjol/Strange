@@ -1,19 +1,19 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.QuestHelper;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+
+import javax.annotation.Nullable;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Hunt implements IDelegate
@@ -42,8 +42,9 @@ public class Hunt implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (player == null) return false;
         if (isSatisfied()) return false;
         if (killed >= count) return false;
 
@@ -55,13 +56,6 @@ public class Hunt implements IDelegate
             ResourceLocation killedRes = ResourceLocation.tryCreate(killedEntity.getEntityString());
             if (killedRes == null) return false;
             if (!killedRes.equals(this.target)) return false;
-
-            // must be a player who did it
-            Entity trueSource = killEvent.getSource().getTrueSource();
-            if (!(trueSource instanceof PlayerEntity)) return false;
-
-            PlayerEntity player = (PlayerEntity)trueSource;
-            World world = player.world;
 
             this.killed++;
 

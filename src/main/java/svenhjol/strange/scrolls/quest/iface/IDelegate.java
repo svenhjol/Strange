@@ -1,8 +1,11 @@
 package svenhjol.strange.scrolls.quest.iface;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.eventbus.api.Event;
+
+import javax.annotation.Nullable;
 
 public interface IDelegate
 {
@@ -10,7 +13,7 @@ public interface IDelegate
 
     String getType();
 
-    boolean respondTo(Event event);
+    boolean respondTo(Event event, @Nullable PlayerEntity player);
 
     boolean isSatisfied();
 

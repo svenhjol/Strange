@@ -1,9 +1,12 @@
 package svenhjol.strange.scrolls.quest;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
+
+import javax.annotation.Nullable;
 
 /**
  * A Condition belongs to a Quest Criteria.
@@ -52,10 +55,10 @@ public class Condition<T extends IDelegate>
         return this.delegate;
     }
 
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         if (delegate == null) return false;
-        return delegate.respondTo(event);
+        return delegate.respondTo(event, player);
     }
 
     public IQuest getQuest()
