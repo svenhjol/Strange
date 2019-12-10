@@ -1,7 +1,10 @@
 package svenhjol.strange.scrolls.quest.condition;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.entity.monster.DrownedEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,12 +33,14 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Encounter implements IDelegate
 {
     public static final String ID = "Encounter";
+    public static final String ENCOUNTER_TAG = "isEncounterMob";
     public ServerBossInfo bossInfo = new ServerBossInfo(new TranslationTextComponent("event.strange.quests.encounter"), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
 
     private IQuest quest;
@@ -74,27 +79,29 @@ public class Encounter implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (player == null) return false;
+
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
-            return onStarted(qe.getQuest(), qe.getPlayer());
+            return onStarted(qe.getQuest(), player);
         }
 
         if (event instanceof QuestEvent.Complete || event instanceof QuestEvent.Fail || event instanceof QuestEvent.Decline) {
-            return onEnded(((QuestEvent) event).getPlayer());
+            return onEnded(player);
         }
 
         if (event instanceof PlayerTickEvent) {
-            return onTick(((PlayerTickEvent)event).player);
+            return onTick(player);
         }
 
         if (event instanceof PlayerEvent.Clone) {
-            return onDeath(((PlayerEvent.Clone) event).getPlayer());
+            return onDeath(player);
         }
 
         if (event instanceof LivingDeathEvent) {
-            return onMobKilled((LivingDeathEvent)event);
+            return onMobKilled((LivingDeathEvent)event, player);
         }
 
         return false;
@@ -272,11 +279,10 @@ public class Encounter implements IDelegate
         return true;
     }
 
-    public boolean onMobKilled(LivingDeathEvent event)
+    public boolean onMobKilled(LivingDeathEvent event, PlayerEntity player)
     {
-        LivingEntity killed = event.getEntityLiving();
-        PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
         if (player == null) return false;
+        LivingEntity killed = event.getEntityLiving();
 
         if (killed.getEntityString() == null) return false;
         if (!killed.getTags().contains(quest.getId())) return false;
@@ -298,7 +304,8 @@ public class Encounter implements IDelegate
         if (this.spawned) {
             float remainingHealth = world.getEntitiesWithinAABB(MobEntity.class, player.getBoundingBox().grow(24))
                 .stream()
-                .filter(m -> m.getTags().contains(quest.getId())) // only count the mobs that are part of the encounter
+                .filter(m -> m.getTags().contains(ENCOUNTER_TAG))  // only count the mobs that are part of the encounter
+                .filter(m -> m.getTags().contains(quest.getId())) // and with the quest ID
                 .map(LivingEntity::getHealth) // get each mob's current health
                 .reduce(0.0F, (total, health) -> total += health); // add each mob's current health together
 
@@ -319,6 +326,7 @@ public class Encounter implements IDelegate
             int mobsSpawned = 0;
             int effectDuration = 10000; // something silly so it doesn't run out
             int effectAmplifier = quest.getTier() - 1;
+            bossInfo.setName(new TranslationTextComponent(quest.getTitle()));
 
             for (ResourceLocation target : targets) {
                 Optional<EntityType<?>> type = EntityType.byKey(target.toString());
@@ -331,16 +339,30 @@ public class Encounter implements IDelegate
                 for (int i = 0; i < count; i++) {
                     MobEntity mob = (MobEntity) type.get().create(world);
                     if (mob == null) continue;
-                    mob.addTag(quest.getId());
                     boolean didSpawn = PlayerHelper.spawnEntityNearPlayer(player, mob, (m, pos) -> {
-                        mob.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
-                        mob.setHealth(health);
-                        mob.enablePersistence();
+                        // if zombie and spawned in water, set as drowned
+                        m.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
+                        if (m.getEntity() instanceof ZombieEntity && world.getBlockState(pos).getMaterial() == Material.WATER) {
+                            DrownedEntity drowned = EntityType.DROWNED.create(world);
+                            if (drowned != null) {
+                                drowned.setPositionAndUpdate(m.posX, m.posY, m.posZ);
+                                drowned.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, (ILivingEntityData)null, (CompoundNBT)null);
+                                world.addEntity(drowned);
+                                m.setHealth(0);
+                                m.remove();
+                                m = drowned;
+                            }
+                        }
+                        m.setHealth(health);
+                        m.enablePersistence();
+                        m.addTag(ENCOUNTER_TAG);
+                        m.addTag(quest.getId());
                         effects.add("fire_resistance");
+                        effects.add("water_breathing");
                         for (String effect : effects) {
                             Effect value = ForgeRegistries.POTIONS.getValue(new ResourceLocation(effect));
                             if (value == null) continue;
-                            mob.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier));
+                            m.addPotionEffect(new EffectInstance(value, effectDuration, effectAmplifier));
                         }
                         ((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, true));
                     });
