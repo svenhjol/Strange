@@ -83,10 +83,11 @@
   "event.strange.spellbook.activated": "Activated %s",
   "event.strange.spellbook.not_enough_xp": "Not enough XP to activate the spell",
 
-  "totem.strange.preserving_item": "Preserving one item",
-  "totem.strange.preserving_items": "Preserving %s items",
-  "totem.strange.enchanting": "Preserving %s XP",
-  "totem.strange.returning": "%s in dimension %s",
+  "totem.strange.preserving.item": "Preserving one item",
+  "totem.strange.preserving.items": "Preserving %s items",
+  "totem.strange.enchanting.contains": "Contains %s XP",
+  "totem.strange.returning.bound": "%s in dimension %s",
+  "totem.strange.returning.unbound": "Shift-right click to set the totem's location",
 
   "runestone.strange.rune_connects": "This rune connects to %s",
   "runestone.strange.rune_travelled": "This rune connects to %s (%s, %s)",
@@ -189,5 +190,22 @@
   "quests.tier2.iron_swords.title": "Iron Swords",
   "quests.tier2.iron_swords.desc": "Craft iron swords to complete the quest.",
   "quests.tier2.gold.title": "Gold Ore",
-  "quests.tier2.gold.desc": "Find gold ore and mine it."
+  "quests.tier2.gold.desc": "Find gold ore and mine it.",
+
+  "quests.tier3.zombies.title": "Zombie Cull",
+  "quests.tier3.zombies.desc": "Find and kill zombies to complete the quest.",
+  "quests.tier3.skeletons.title": "Skeleton Search",
+  "quests.tier3.skeletons.desc": "Find and kill skeletons to complete the quest.",
+  "quests.tier3.enchanting.title": "Enchanting",
+  "quests.tier3.enchanting.desc": "Build the requirements for an enchanting room.",
+  "quests.tier3.brewing.title": "Brewing",
+  "quests.tier3.brewing.desc": "Build the requirements for a brewing room.",
+  "quests.tier3.witch_problem.title": "Witch Problem",
+  "quests.tier3.witch_problem.desc": "Find the witches and kill them.",
+  "quests.tier3.zombie_villager_outbreak.title": "Zombie Outbreak",
+  "quests.tier3.zombie_villager_outbreak.desc": "Find the outbreak of zombie villagers and kill them.",
+  "quests.tier3.lost_book.title": "Lost Book",
+  "quests.tier3.lost_book.desc": "Bring back the book from the lost chest.",
+  "quests.tier3.lost_gold.title": "Lost Gold",
+  "quests.tier3.lost_gold.desc": "Bring back the block of gold from the lost chest."
 }
