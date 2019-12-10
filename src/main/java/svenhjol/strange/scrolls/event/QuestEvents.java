@@ -17,6 +17,7 @@ import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsProvider;
 import svenhjol.strange.scrolls.message.ClientQuestAction;
 import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.quest.condition.Encounter;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.iface.IQuest.State;
 
@@ -169,11 +170,21 @@ public class QuestEvents
     public void onMobKilled(LivingDeathEvent event)
     {
         if (!(event.getEntity() instanceof PlayerEntity)
-            && event.getSource().getTrueSource() instanceof PlayerEntity
             && event.getEntityLiving() != null
         ) {
-            PlayerEntity player = (PlayerEntity)event.getSource().getTrueSource();
-            respondToEvent(player, event);
+            Entity source = event.getSource().getTrueSource();
+            if (source instanceof PlayerEntity) {
+                respondToEvent((PlayerEntity)source, event);
+            }
+            if (source == null) return;
+
+            // needed to propagate out to all players in vicinity of encounter
+            if (event.getEntityLiving().getTags().contains(Encounter.ENCOUNTER_TAG)) {
+                source.world.getEntitiesWithinAABB(Entity.class, source.getBoundingBox().grow(24))
+                    .stream()
+                    .filter(p -> p instanceof PlayerEntity && !p.isEntityEqual(source))
+                    .forEach(p -> respondToEvent((PlayerEntity)p, event));
+            }
         }
     }
 
@@ -197,7 +208,7 @@ public class QuestEvents
         ConcurrentLinkedDeque<IQuest> quests = new ConcurrentLinkedDeque<>(Quests.getCurrent(player));
 
         for (IQuest q : quests) {
-            responded = q.respondTo(event) || responded;
+            responded = q.respondTo(event, player) || responded;
         }
 
         if (responded) Quests.update(player);
