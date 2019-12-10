@@ -85,7 +85,7 @@ public class TotemOfEnchantingItem extends MesonItem
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
     {
-        strings.add(new StringTextComponent(I18n.format("totem.strange.enchanting", getXp(stack))));
+        strings.add(new StringTextComponent(I18n.format("totem.strange.enchanting.contains", getXp(stack))));
         super.addInformation(stack, world, strings, flag);
     }
 }

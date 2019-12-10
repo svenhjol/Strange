@@ -124,7 +124,7 @@ public class TotemOfPreservingItem extends MesonItem
 
         if (!items.isEmpty()) {
             int size = items.size();
-            String str = size == 1 ? "totem.strange.preserving_item" : "totem.strange.preserving_items";
+            String str = size == 1 ? "totem.strange.preserving.item" : "totem.strange.preserving.items";
             strings.add(new StringTextComponent(I18n.format(str, size)));
         }
 
