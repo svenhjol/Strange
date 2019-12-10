@@ -60,6 +60,8 @@ public class ScrollItem extends MesonItem
         if (playerIn.isSneaking()) {
             result = ActionResultType.FAIL;
         } else {
+            playerIn.getCooldownTracker().setCooldown(this, 40);
+
             IQuest quest;
             if (!worldIn.isRemote) {
 
@@ -89,9 +91,10 @@ public class ScrollItem extends MesonItem
                 if (!quest.getId().isEmpty()) {
                     PacketHandler.sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn); // open the screen
                 }
+                result = ActionResultType.SUCCESS;
+            } else {
+                result = ActionResultType.PASS;
             }
-
-            result = ActionResultType.SUCCESS;
         }
 
         return new ActionResult<>(result, stack);
