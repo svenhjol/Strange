@@ -1,35 +1,35 @@
 package svenhjol.strange.ruins.structure;
 
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuinConfig>
 {
     public static final int SEED_MODIFIER = 135318;
     public static final String GENERAL = "general";
     public static final String STRUCTURE_NAME = "Underground_Ruin";
-    public static IStructurePieceType UNDERGROUND_RUIN_PIECE = UndergroundRuinPiece::new;
+    public static IStructurePieceType UNDERGROUND_RUIN_PIECE = Start.Piece::new;
 
     public UndergroundRuinStructure(Function<Dynamic<?>, ? extends UndergroundRuinConfig> config)
     {
@@ -62,22 +62,8 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
         if (x == chunk.x && z == chunk.z) {
             Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
 
-            // don't spawn underground ruin near blacklisted structure
-            if (gen.hasStructure(biome, UndergroundRuins.structure)) {
-//                int cx = x >> 4;
-//                int cz = z >> 4;
-//
-//                for (Structure<?> structure : UndergroundRuins.blacklist) {
-//                    for (int xx = cx - 10; xx <= x + 10; ++xx) {
-//                        for (int zz = cz - 10; zz <= z + 10; ++zz) {
-//                            if (structure.hasStartAt(gen, rand, xx, zz)) {
-//                                return true;
-//                            }
-//                        }
-//                    }
-//                }
-                return true;
-            }
+            // TODO don't spawn underground ruin near blacklisted structure
+            return gen.hasStructure(biome, UndergroundRuins.structure);
         }
         return false;
     }
@@ -85,13 +71,13 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        return 4;
+        return 6;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
     {
-        return 3;
+        return 5;
     }
 
     @Override
@@ -124,111 +110,74 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             }
 
             if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
-                Rotation rotation = Rotation.NONE;
-                List<Direction> directions = Arrays.stream(Direction.values())
-                    .filter(d -> d.getHorizontalIndex() >= 0)
-                    .collect(Collectors.toList());
-
-                int numTemplates = rand.nextInt(6) + 1;
-
-                List<ResourceLocation> ruinTemplates = getRandomTemplates(biomeCategory, rand, numTemplates);
-                if (ruinTemplates.isEmpty()) return;
-
-                // get the first template
-                ResourceLocation mainRes = ruinTemplates.get(0);
-                Template main = templates.getTemplateDefaulted(mainRes);
-                BlockPos mainSize = main.getSize();
-
-                // if there's only 1 template, rotate it randomly
-                if (ruinTemplates.size() == 1) rotation = Rotation.randomRotation(rand);
-                UndergroundRuinPiece mainRuin = new UndergroundRuinPiece(templates, mainRes, pos, rotation, getDepth(mainRes));
-                components.add(mainRuin);
-
-                // for any other other templates, place them at random directions from the centre template
-                Collections.shuffle(directions);
-                BlockPos centrePos = mainRuin.getTemplatePosition();
-                Map<ResourceLocation, BlockPos> nextPieces = new HashMap<>();
-
-                List<ResourceLocation> sublist = ruinTemplates.subList(1, ruinTemplates.size());
-                int j = 0;
-
-                while (j < sublist.size() && j < 8) {
-                    Direction direction = directions.get(j % 4);
-                    ResourceLocation nextRes = sublist.get(j);
-                    Template next = templates.getTemplateDefaulted(nextRes);
-                    BlockPos nextSize = next.getSize();
-
-                    // corrections
-                    int xc = (mainSize.getX() - nextSize.getX()) / 2;
-                    int zc = (mainSize.getZ() - nextSize.getZ()) / 2;
-
-                    // offsets
-                    int xo = 0;
-                    int yo = j > 3 ? -nextSize.getY() : 0;
-                    int zo = 0;
-
-                    if (direction == Direction.NORTH) {
-                        xo = xc;
-                        zo = -(nextSize.getZ() - 1);
-                    } else if (direction == Direction.EAST) {
-                        xo = mainSize.getX() - 1;
-                        zo = zc;
-                    } else if (direction == Direction.SOUTH) {
-                        xo = xc;
-                        zo = mainSize.getZ() - 1;
-                    } else if (direction == Direction.WEST) {
-                        xo = -(nextSize.getX() - 1);
-                        zo = zc;
-                    }
-
-                    nextPieces.put(nextRes, centrePos.add(xo, yo, zo));
-                    j++;
-                }
-
-                for (ResourceLocation r : nextPieces.keySet()) {
-                    components.add(new UndergroundRuinPiece(templates, r, nextPieces.get(r), Rotation.NONE, getDepth(r)));
-                }
-
+                ResourceLocation start = getStart(biomeCategory, rand);
+                if (start == null) return;
+                JigsawManager.func_214889_a(start, 5, Piece::new, gen, templates, pos, components, rand);
                 this.recalculateStructureSize();
-            }
-        }
 
-        public List<ResourceLocation> getRandomTemplates(Biome.Category biomeCategory, Random rand, int amount)
-        {
-            List<ResourceLocation> out = new ArrayList<>();
+                int maxTop = 60;
+                if (bounds.maxY >= maxTop) {
+                    int shift = 5 + (bounds.maxY - maxTop);
+                    bounds.offset(0, -shift, 0);
+                    components.forEach(p -> p.offset(0, -shift, 0));
+                }
 
-            // for testing
-//            out = UndergroundRuins.biomeRuins.get(Biome.Category.SAVANNA).get("forgotten_village").subList(0, 8);
-//            Collections.shuffle(out);
-//            return out;
-
-            Map<String, List<ResourceLocation>> map = UndergroundRuins.biomeRuins.get(biomeCategory);
-            if (map.keySet().size() == 0) return out;
-
-            List<String> strings = new ArrayList<>(map.keySet());
-            String set = strings.get(rand.nextInt(strings.size()));
-
-            List<ResourceLocation> biomeTemplates = map.get(set);
-            if (biomeTemplates.isEmpty()) return out;
-
-            Collections.shuffle(biomeTemplates);
-            return biomeTemplates.subList(0, Math.min(amount, biomeTemplates.size()));
-        }
-
-        public int getDepth(ResourceLocation res)
-        {
-            int depth = 0;
-            String path = res.getPath();
-            if (path.contains("depth")) {
-                Pattern d = Pattern.compile("depth(\\d+)");
-                Matcher m = d.matcher(path);
-                if (m.find()) {
-                    depth = Integer.parseInt(m.group(1));
-                    return depth;
+                if (bounds.minY < 6) {
+                    int shift = 6 - bounds.minY;
+                    bounds.offset(0, shift, 0);
+                    components.forEach(p -> p.offset(0, shift, 0));
                 }
             }
+        }
 
-            return depth;
+        @Nullable
+        public ResourceLocation getStart(Biome.Category cat, Random rand)
+        {
+            String catName = cat.toString().toLowerCase();
+            List<String> subcats = UndergroundRuins.biomeRuins.get(cat);
+            if (subcats.size() == 0) return null;
+
+            String subcat = subcats.get(rand.nextInt(subcats.size()));
+            return new ResourceLocation(Strange.MOD_ID, "underground_ruins/" + catName + "/" + subcat + "/rooms");
+        }
+
+        public static class Piece extends AbstractVillagePiece
+        {
+            protected TemplateManager templates;
+
+            public Piece(TemplateManager templates, JigsawPiece piece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds) {
+                super(UNDERGROUND_RUIN_PIECE, templates, piece, pos, groundLevelDelta, rotation, bounds);
+                this.templates = templates;
+            }
+
+            public Piece(TemplateManager templates, CompoundNBT nbt) {
+                super(templates, nbt, UNDERGROUND_RUIN_PIECE);
+                this.templates = templates;
+            }
+
+            @Override
+            public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk)
+            {
+                MutableBoundingBox templateBox = this.jigsawPiece.getBoundingBox(this.templates, this.pos, this.rotation);
+                BlockPos checkPos = new BlockPos(templateBox.minX, templateBox.minY, templateBox.minZ).down();
+                BlockState checkState = world.getBlockState(checkPos);
+
+                int i = templateBox.minY;
+
+                while (--i > 12 && !checkState.isSolid() || world.isAirBlock(checkPos) || checkState.getMaterial().isLiquid()) {
+//                    world.setBlockState(checkPos, Blocks.GLOWSTONE.getDefaultState(), 0); // for testing
+                    checkPos = checkPos.down();
+                    checkState = world.getBlockState(checkPos);
+
+                    if (checkState.isSolid()) {
+                        templateBox.offset(0, -(templateBox.minY - i), 0);
+                        this.pos = new BlockPos(this.pos.getX(), i - 1, this.pos.getZ());
+                        break;
+                    }
+                }
+
+                return super.addComponentParts(world, rand, structureBox, chunk);
+            }
         }
     }
 }

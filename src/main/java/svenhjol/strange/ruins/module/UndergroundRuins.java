@@ -1,11 +1,20 @@
 package svenhjol.strange.ruins.module;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.block.Blocks;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
+import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -16,6 +25,8 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.ruins.feature.StructureBlockProcessor;
+import svenhjol.strange.ruins.feature.UndergroundJigsawPiece;
 import svenhjol.strange.ruins.structure.UndergroundRuinConfig;
 import svenhjol.strange.ruins.structure.UndergroundRuinStructure;
 
@@ -25,13 +36,16 @@ import java.util.*;
 public class UndergroundRuins extends MesonModule
 {
     public static Structure<UndergroundRuinConfig> structure;
-    public static Map<Biome.Category, Map<String, List<ResourceLocation>>> biomeRuins = new HashMap<>();
+    public static Map<Biome.Category, List<String>> biomeRuins = new HashMap<>();
+    public static Map<String, Map<String, List<String>>> jigsawPieces = new HashMap<>();
+    public static List<ResourceLocation> registeredPatterns = new ArrayList<>();
     public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
         Feature.STRONGHOLD,
         Feature.OCEAN_MONUMENT,
         Feature.NETHER_BRIDGE,
         Feature.BURIED_TREASURE
     ));
+    public static final List<String> pieceTypes = Arrays.asList("corridors", "junctions", "rooms");
 
     @Override
     public void init()
@@ -43,7 +57,7 @@ public class UndergroundRuins extends MesonModule
 
         for (Biome biome : ForgeRegistries.BIOMES) {
             biome.addFeature(
-                GenerationStage.Decoration.SURFACE_STRUCTURES,
+                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, new UndergroundRuinConfig(1.0F), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
             biome.addStructure(structure, new UndergroundRuinConfig(1.0F));
@@ -55,33 +69,60 @@ public class UndergroundRuins extends MesonModule
     {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
+        List<StructureProcessor> processors = Arrays.asList(
+            new StructureBlockProcessor(),
+            new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.LIGHT_BLUE_STAINED_GLASS))
+        );
+
         try {
             biomeRuins = new HashMap<>();
+            jigsawPieces = new HashMap<>();
 
             for (Biome.Category cat : Biome.Category.values()) {
                 String catName = cat.getName().toLowerCase();
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations("structures/underground_ruins/" + catName, file -> file.endsWith(".nbt"));
-
-                if (!biomeRuins.containsKey(cat)) {
-                    biomeRuins.put(cat, new HashMap<>());
-                }
+                if (!biomeRuins.containsKey(cat)) biomeRuins.put(cat, new ArrayList<>());
 
                 for (ResourceLocation res : resources) {
-                    String name;
-                    String subcat = UndergroundRuinStructure.GENERAL;
+                    String name, subcat;
+
                     String[] p = res.getPath().split("/");
-                    if (p.length == 5) subcat = p[3];
+                    if (p.length != 5) continue;
+
+                    subcat = p[3];
+                    biomeRuins.get(cat).add(subcat);
 
                     name = res.getPath()
                         .replace(".nbt", "")
                         .replace("structures/", "");
 
-                    if (!biomeRuins.get(cat).containsKey(subcat)) {
-                        biomeRuins.get(cat).put(subcat, new ArrayList<>());
-                    }
+                    if (!jigsawPieces.containsKey(subcat)) jigsawPieces.put(subcat, new HashMap<>());
 
-                    biomeRuins.get(cat).get(subcat).add(new ResourceLocation(Strange.MOD_ID, name));
+                    for (String pieceType : pieceTypes) {
+                        if (!jigsawPieces.get(subcat).containsKey(pieceType)) jigsawPieces.get(subcat).put(pieceType, new ArrayList<>());
+                        if (name.contains(pieceType.substring(0, pieceType.length()-1))) jigsawPieces.get(subcat).get(pieceType).add(name);
+                    }
                 }
+
+                for (String subcat : jigsawPieces.keySet()) {
+                    for (String pieceType : pieceTypes) {
+                        ResourceLocation patternId = new ResourceLocation(Strange.MOD_ID, "underground_ruins/" + catName + "/" + subcat + "/" + pieceType);
+                        if (registeredPatterns.contains(patternId)) continue;
+
+                        List<String> pieces = jigsawPieces.get(subcat).get(pieceType);
+                        List<Pair<JigsawPiece, Integer>> piecesAndWeights = new ArrayList<>();
+
+                        for (String piece : pieces) {
+                            SingleJigsawPiece jigsawPiece = new UndergroundJigsawPiece(Strange.MOD_ID + ":" + piece, processors);
+                            piecesAndWeights.add(Pair.of(jigsawPiece, 1));
+                        }
+
+                        JigsawPattern pattern = new JigsawPattern(patternId, new ResourceLocation("empty"), piecesAndWeights, JigsawPattern.PlacementBehaviour.RIGID);
+                        JigsawManager.REGISTRY.register(pattern);
+                        registeredPatterns.add(patternId);
+                    }
+                }
+
             }
         } catch (Exception e) {
             Meson.warn("Could not load structures for biome category", e);
