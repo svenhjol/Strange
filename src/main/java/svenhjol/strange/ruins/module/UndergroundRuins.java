@@ -45,8 +45,9 @@ public class UndergroundRuins extends MesonModule
         Feature.NETHER_BRIDGE,
         Feature.BURIED_TREASURE
     ));
-    public static final List<String> pieceTypes = Arrays.asList("corridors", "rooms", "closes", "mobs", "monsters");
+    public static final List<String> pieceTypes = Arrays.asList("corridors", "rooms", "starts", "ends", "mobs", "monsters");
     public static final List<String> hasTerminators = Arrays.asList("corridors", "rooms");
+    public static final String DIR = "underground";
 
     @Override
     public void init()
@@ -81,53 +82,52 @@ public class UndergroundRuins extends MesonModule
 
             for (Biome.Category cat : Biome.Category.values()) {
                 String catName = cat.getName().toLowerCase();
-                Collection<ResourceLocation> resources = rm.getAllResourceLocations("structures/underground/" + catName, file -> file.endsWith(".nbt"));
+                Collection<ResourceLocation> resources = rm.getAllResourceLocations("structures/" + DIR + "/" + catName, file -> file.endsWith(".nbt"));
                 if (!biomeRuins.containsKey(cat)) biomeRuins.put(cat, new ArrayList<>());
 
                 for (ResourceLocation res : resources) {
-                    String name, subcat;
+                    String name, ruin;
 
                     String[] p = res.getPath().split("/");
                     if (p.length != 5) continue;
 
-                    subcat = p[3];
-                    if (!biomeRuins.get(cat).contains(subcat)) {
-                        biomeRuins.get(cat).add(subcat);
+                    ruin = p[3];
+                    if (!biomeRuins.get(cat).contains(ruin)) {
+                        biomeRuins.get(cat).add(ruin);
                     }
 
                     name = res.getPath()
                         .replace(".nbt", "")
                         .replace("structures/", "");
 
-                    if (!jigsawPieces.containsKey(subcat)) jigsawPieces.put(subcat, new HashMap<>());
+                    if (!jigsawPieces.containsKey(ruin)) jigsawPieces.put(ruin, new HashMap<>());
 
                     for (String pieceType : pieceTypes) {
-                        if (!jigsawPieces.get(subcat).containsKey(pieceType)) jigsawPieces.get(subcat).put(pieceType, new ArrayList<>());
-                        if (name.contains(pieceType.substring(0, pieceType.length()-1))) jigsawPieces.get(subcat).get(pieceType).add(name);
+                        if (!jigsawPieces.get(ruin).containsKey(pieceType)) jigsawPieces.get(ruin).put(pieceType, new ArrayList<>());
+                        if (name.contains(pieceType.substring(0, pieceType.length()-1))) jigsawPieces.get(ruin).get(pieceType).add(name);
                     }
                 }
 
-                for (String subcat : jigsawPieces.keySet()) {
+                for (String ruin : jigsawPieces.keySet()) {
                     // used to close off pathways
-                    ResourceLocation closes = new ResourceLocation(Strange.MOD_ID, "underground/" + catName + "/" + subcat + "/closes");
+                    ResourceLocation ends = new ResourceLocation(Strange.MOD_ID, DIR + "/" + catName + "/" + ruin + "/ends");
 
                     for (String pieceType : pieceTypes) {
-                        ResourceLocation patternId = new ResourceLocation(Strange.MOD_ID, "underground/" + catName + "/" + subcat + "/" + pieceType);
+                        ResourceLocation patternId = new ResourceLocation(Strange.MOD_ID, DIR + "/" + catName + "/" + ruin + "/" + pieceType);
                         if (registeredPatterns.contains(patternId)) continue;
 
-                        List<String> pieces = jigsawPieces.get(subcat).get(pieceType);
+                        List<String> pieces = jigsawPieces.get(ruin).get(pieceType);
                         List<Pair<JigsawPiece, Integer>> piecesAndWeights = new ArrayList<>();
 
                         for (String piece : pieces) {
-                            int weight = 1;
                             SingleJigsawPiece jigsawPiece = new UndergroundJigsawPiece(Strange.MOD_ID + ":" + piece, processors);
-                            piecesAndWeights.add(Pair.of(jigsawPiece, weight));
+                            piecesAndWeights.add(Pair.of(jigsawPiece, UndergroundRuinStructure.getWeight("_w", piece, 1)));
                         }
 
-                        ResourceLocation close = hasTerminators.contains(pieceType) ? closes : new ResourceLocation("empty");
+                        ResourceLocation end = hasTerminators.contains(pieceType) ? ends : new ResourceLocation("empty");
 
                         if (piecesAndWeights.size() > 0) {
-                            JigsawPattern pattern = new JigsawPattern(patternId, close, piecesAndWeights, JigsawPattern.PlacementBehaviour.RIGID);
+                            JigsawPattern pattern = new JigsawPattern(patternId, end, piecesAndWeights, JigsawPattern.PlacementBehaviour.RIGID);
                             JigsawManager.REGISTRY.register(pattern);
                         }
                         registeredPatterns.add(patternId);

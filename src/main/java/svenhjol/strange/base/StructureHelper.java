@@ -517,9 +517,9 @@ public class StructureHelper
                 LockableLootTileEntity tile;
                 WoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
 
-                List<BlockState> barrels = Arrays.asList(
+                List<BlockState> barrels = new ArrayList<>(Arrays.asList(
                     Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)
-                );
+                ));
                 if (Charm.hasModule(AllTheBarrels.class)) {
                     barrels.add(AllTheBarrels.barrels.get(rand.nextInt(AllTheBarrels.barrels.size())).getDefaultState()
                         .with(BarrelBlock.PROPERTY_FACING, Direction.UP));

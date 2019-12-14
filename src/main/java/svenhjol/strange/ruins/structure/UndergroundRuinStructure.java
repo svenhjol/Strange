@@ -19,10 +19,11 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuinConfig>
 {
@@ -71,13 +72,13 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        return 6;
+        return 5;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
     {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -110,11 +111,15 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             }
 
             if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
-                ResourceLocation start = getStart(biomeCategory, rand);
-                if (start == null) return;
+                List<String> ruins = UndergroundRuins.biomeRuins.get(biomeCategory);
+                if (ruins.size() == 0) return;
 
-                Random r = new Random(pos.toLong());
-                JigsawManager.func_214889_a(start, r.nextInt(3) + 1, Piece::new, gen, templates, pos, components, r);
+                Random ruinRand = new Random(pos.toLong());
+                String ruin = ruins.get(rand.nextInt(ruins.size()));
+                int size = getSize(ruin, 4) + rand.nextInt(2);
+
+                ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + biomeCategory.toString().toLowerCase() + "/" + ruin + "/starts");
+                JigsawManager.func_214889_a(start, size, Piece::new, gen, templates, pos, components, ruinRand);
                 this.recalculateStructureSize();
 
                 int maxTop = 60;
@@ -130,17 +135,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                     components.forEach(p -> p.offset(0, shift, 0));
                 }
             }
-        }
-
-        @Nullable
-        public ResourceLocation getStart(Biome.Category cat, Random rand)
-        {
-            String catName = cat.toString().toLowerCase();
-            List<String> subcats = UndergroundRuins.biomeRuins.get(cat);
-            if (subcats.size() == 0) return null;
-
-            String subcat = subcats.get(rand.nextInt(subcats.size()));
-            return new ResourceLocation(Strange.MOD_ID, "underground/" + catName + "/" + subcat + "/rooms");
         }
 
         public static class Piece extends AbstractVillagePiece
@@ -164,7 +158,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                 MutableBoundingBox templateBox = this.jigsawPiece.getBoundingBox(this.templates, this.pos, this.rotation);
                 BlockPos checkPos = new BlockPos(templateBox.minX, templateBox.minY, templateBox.minZ).down();
                 BlockState checkState = world.getBlockState(checkPos);
-
                 int i = templateBox.minY;
 
                 while (--i > 12 && !checkState.isSolid() || world.isAirBlock(checkPos) || checkState.getMaterial().isLiquid()) {
@@ -182,5 +175,24 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                 return super.addComponentParts(world, rand, structureBox, chunk);
             }
         }
+    }
+
+    public static int getWeight(String prefix, String name, int def)
+    {
+        if (name.contains(prefix)) {
+            Pattern p = Pattern.compile(prefix + "(\\d+)");
+            Matcher m = p.matcher(name);
+            if (m.find()) return Integer.parseInt(m.group(1));
+        }
+        return def;
+    }
+
+    public static int getSize(String name, int def)
+    {
+        if (name.contains("huge")) return 7;
+        if (name.contains("large")) return 5;
+        if (name.contains("medium")) return 3;
+        if (name.contains("small")) return 1;
+        return def;
     }
 }
