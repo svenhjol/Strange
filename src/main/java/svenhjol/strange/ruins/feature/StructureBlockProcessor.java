@@ -40,7 +40,7 @@ public class StructureBlockProcessor extends StructureProcessor
             StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
             if (mode == StructureMode.DATA) {
                 String metadata = blockInfo.nbt.getString("metadata");
-                BlockInfo b = replacement.replace(blockInfo.pos, metadata);
+                BlockInfo b = replacement.replace(blockInfo, metadata);
                 return b;
             }
         }

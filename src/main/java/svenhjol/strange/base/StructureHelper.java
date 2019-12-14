@@ -127,6 +127,7 @@ public class StructureHelper
         protected CompoundNBT nbt;
         protected Random fixedRand;
         protected Random rand;
+        protected BlockInfo blockInfo;
 
         protected Direction faceNorth;
         protected Direction faceEast;
@@ -143,14 +144,13 @@ public class StructureHelper
             this.faceWest = Direction.WEST;
         }
 
-        public BlockInfo replace(BlockPos pos, String data)
+        public BlockInfo replace(BlockInfo blockInfo, String data)
         {
-            this.pos = pos;
-            this.state = Blocks.AIR.getDefaultState();
+            this.blockInfo = blockInfo;
+            this.pos = blockInfo.pos;
+            this.state = null;
             this.nbt = null;
-            this.rand = new Random();
-
-            rand.setSeed(pos.toLong());
+            this.rand = new Random(blockInfo.hashCode());
 
             if (data.contains("|")) {
                 String[] split = this.data.split("\\|");
@@ -177,6 +177,10 @@ public class StructureHelper
             if (this.data.contains(SAPLING)) dataForSapling();
             if (this.data.contains(SPAWNER)) dataForSpawner();
             if (this.data.contains(STORAGE)) dataForStorage();
+
+            if (this.state == null) {
+                this.state = Blocks.AIR.getDefaultState();
+            }
 
             return new BlockInfo(this.pos, this.state, this.nbt);
         }
@@ -276,7 +280,7 @@ public class StructureHelper
 
                 BookshelfChestTileEntity tile = BookshelfChests.tile.create();
                 if (tile != null) {
-                    tile.setLootTable(getVanillaLootTableResourceLocation(data, LootTables.CHESTS_STRONGHOLD_LIBRARY), rand.nextLong());
+                    tile.setLootTable(LootTables.CHESTS_STRONGHOLD_LIBRARY, rand.nextLong());
                     this.nbt = new CompoundNBT();
                     tile.write(this.nbt);
                 }
@@ -431,6 +435,10 @@ public class StructureHelper
 
         protected void dataForMob()
         {
+            // passthrough, let addComponentParts deal with it
+            this.state = this.blockInfo.state;
+            this.nbt = this.blockInfo.nbt;
+
 //            if (rand.nextFloat() < 0.8F) {
 //                Entity entity;
 //                EntityType<?> type = null;
@@ -541,7 +549,7 @@ public class StructureHelper
 
                 if (tile != null) {
                     tile.setLootTable(getVanillaLootTableResourceLocation(data, lootTable), rand.nextLong());
-                    nbt = new CompoundNBT();
+                    this.nbt = new CompoundNBT();
                     tile.write(this.nbt);
                 }
             }

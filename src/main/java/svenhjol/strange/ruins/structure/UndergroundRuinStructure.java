@@ -112,7 +112,9 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
                 ResourceLocation start = getStart(biomeCategory, rand);
                 if (start == null) return;
-                JigsawManager.func_214889_a(start, 5, Piece::new, gen, templates, pos, components, rand);
+
+                Random r = new Random(pos.toLong());
+                JigsawManager.func_214889_a(start, r.nextInt(3) + 1, Piece::new, gen, templates, pos, components, r);
                 this.recalculateStructureSize();
 
                 int maxTop = 60;
@@ -138,7 +140,7 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             if (subcats.size() == 0) return null;
 
             String subcat = subcats.get(rand.nextInt(subcats.size()));
-            return new ResourceLocation(Strange.MOD_ID, "underground_ruins/" + catName + "/" + subcat + "/rooms");
+            return new ResourceLocation(Strange.MOD_ID, "underground/" + catName + "/" + subcat + "/rooms");
         }
 
         public static class Piece extends AbstractVillagePiece
@@ -150,7 +152,8 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
                 this.templates = templates;
             }
 
-            public Piece(TemplateManager templates, CompoundNBT nbt) {
+            public Piece(TemplateManager templates, CompoundNBT nbt)
+            {
                 super(templates, nbt, UNDERGROUND_RUIN_PIECE);
                 this.templates = templates;
             }
