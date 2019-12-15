@@ -33,10 +33,9 @@ public class AirBlockProcessor extends StructureProcessor
     @Override
     public BlockInfo process(IWorldReader world, BlockPos pos, BlockInfo unused, BlockInfo blockInfo, PlacementSettings placement, @Nullable Template template)
     {
-        if (blockInfo.state.getBlock() == Blocks.AIR) {
+        if (blockInfo.state.getBlock() == Blocks.AIR || blockInfo.state.getBlock() == Blocks.CAVE_AIR) {
             if (blockInfo.pos == null) return blockInfo;
 
-//            Biome biome = world.getBiome(blockInfo.pos);
             if (world.getBlockState(blockInfo.pos.up()).getMaterial().isLiquid())
                 return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
 
