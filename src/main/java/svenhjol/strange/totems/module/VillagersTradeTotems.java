@@ -36,10 +36,7 @@ public class VillagersTradeTotems extends MesonModule
     @Config(name = "Base buy cost", description = "Minimum number of emeralds required to buy a totem.")
     public static int baseBuy = 8;
 
-    @Config(name = "Base sell cost", description = "Minimum number of emeralds required to sell a totem.")
-    public static int baseSell = 32;
-
-    @Config(name = "Additional cost", description = "Maximum additional emeralds required to buy or sell.")
+    @Config(name = "Additional cost", description = "Maximum additional emeralds required to buy.")
     public static int additional = 16;
 
     @Config(name = "Outer villagers only", description = "If true, only merchants from 'outer lands' villages have totem trades.\n" +
@@ -49,8 +46,12 @@ public class VillagersTradeTotems extends MesonModule
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
+        availableTotems.add(Items.TOTEM_OF_UNDYING);
         if (Strange.loader.hasModule(TotemOfReturning.class)) availableTotems.add(TotemOfReturning.item);
         if (Strange.loader.hasModule(TotemOfShielding.class)) availableTotems.add(TotemOfShielding.item);
+        if (Strange.loader.hasModule(TotemOfPreserving.class)) availableTotems.add(TotemOfPreserving.item);
+        if (Strange.loader.hasModule(TotemOfFlying.class)) availableTotems.add(TotemOfFlying.item);
+        if (Strange.loader.hasModule(TotemOfEnchanting.class)) availableTotems.add(TotemOfEnchanting.item);
     }
 
     @SubscribeEvent
@@ -62,7 +63,6 @@ public class VillagersTradeTotems extends MesonModule
 
         if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(useProfession)) return;
 
-        trades.get(tradeLevel).add(new TotemForEmeralds());
         trades.get(tradeLevel).add(new EmeraldsForTotem());
     }
 
@@ -70,19 +70,6 @@ public class VillagersTradeTotems extends MesonModule
     {
         if (!outerOnly || !Strange.loader.hasModule(Outerlands.class)) return true;
         return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
-    }
-
-    public static class TotemForEmeralds implements ITrade
-    {
-        @Nullable
-        @Override
-        public MerchantOffer getOffer(Entity merchant, Random rand)
-        {
-            if (!isValidPosition(merchant)) return null;
-            ItemStack in1 = new ItemStack(Items.EMERALD, baseSell + (rand.nextInt(additional)));
-            ItemStack out = new ItemStack(availableTotems.get(rand.nextInt(availableTotems.size())));
-            return new MerchantOffer(in1, out, 3, 8, 0.2F);
-        }
     }
 
     public static class EmeraldsForTotem implements ITrade
