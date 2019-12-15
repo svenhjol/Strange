@@ -10,6 +10,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.charm.tweaks.client.AmbientMusicClient;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
@@ -93,6 +94,35 @@ public class StoneCircles extends MesonModule
         });
 
         UndergroundRuins.blacklist.add(structure);
+    }
+
+    @Override
+    public void serverStarted(FMLServerStartedEvent event)
+    {
+//        pieceTypes.put(Junction, new ArrayList<>(Arrays.asList(
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction1"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction2"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction3"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction4"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction5"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/junction6")
+//        )));
+//        pieceTypes.put(Corridor, new ArrayList<>(Arrays.asList(
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor1"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor2"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor3"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor4"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor5"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor6")
+//        )));
+//        pieceTypes.put(Large, new ArrayList<>(Arrays.asList(
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large1"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large2"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large3"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large4"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large5"),
+//            new ResourceLocation(Strange.MOD_ID, "vaults/large6")
+//        )));
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StructureHelper.StructureBlockReplacement;
+import svenhjol.strange.base.DecorationHelper.StructureBlockReplacement;
 
 import javax.annotation.Nullable;
 

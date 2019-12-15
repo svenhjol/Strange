@@ -103,7 +103,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
             components.add(new StoneCirclePiece(this.rand, pos));
 
             // create vaults beneath the circle
-            if (isValidPosition(pos)
+            if (isVaultValid(pos)
                 && generator instanceof OverworldChunkGenerator
                 && this.rand.nextFloat() < StoneCircles.vaultChance) {
                 VaultStructure vaults = new VaultStructure(templates, components, biomeIn, rand);
@@ -114,7 +114,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
         }
     }
 
-    private static boolean isValidPosition(BlockPos pos)
+    private static boolean isVaultValid(BlockPos pos)
     {
         if (!Strange.loader.hasModule(Outerlands.class) || !StoneCircles.outerOnly) return true;
         return Strange.loader.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos);

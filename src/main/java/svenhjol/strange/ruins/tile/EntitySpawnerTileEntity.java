@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
-import svenhjol.strange.base.StructureHelper;
+import svenhjol.strange.base.DecorationHelper;
 import svenhjol.strange.scrolls.module.EntitySpawner;
 
 import java.util.ArrayList;
@@ -131,10 +131,10 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         ArmorStandEntity stand = EntityType.ARMOR_STAND.create(world.getWorld());
         if (stand == null) return false;
 
-        Direction face = StructureHelper.getFacing(StructureHelper.getValue("facing", this.meta, "north"));
+        Direction face = DecorationHelper.getFacing(DecorationHelper.getValue("facing", this.meta, "north"));
         Direction facing = this.rotation.rotate(face);
 
-        String type = StructureHelper.getValue("type", this.meta, "");
+        String type = DecorationHelper.getValue("type", this.meta, "");
 
         List<Item> ironHeld = new ArrayList<>(Arrays.asList(
             Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE
