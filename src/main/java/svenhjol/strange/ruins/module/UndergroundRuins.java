@@ -25,6 +25,7 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.ruins.feature.AirBlockProcessor;
 import svenhjol.strange.ruins.feature.StructureBlockProcessor;
 import svenhjol.strange.ruins.feature.UndergroundJigsawPiece;
 import svenhjol.strange.ruins.structure.UndergroundRuinConfig;
@@ -36,16 +37,17 @@ import java.util.*;
 public class UndergroundRuins extends MesonModule
 {
     public static Structure<UndergroundRuinConfig> structure;
-    public static Map<Biome.Category, List<String>> biomeRuins = new HashMap<>();
-    public static Map<String, Map<String, List<String>>> jigsawPieces = new HashMap<>();
-    public static List<ResourceLocation> registeredPatterns = new ArrayList<>();
+    public static Map<Biome.Category, List<String>> ruinBiomes = new HashMap<>();
+    public static Map<Biome.Category, Map<String, Integer>> ruinBiomeSizes = new HashMap<>();
+    public static Map<Biome.Category, Map<String, Map<String, List<String>>>> ruinPieces = new HashMap<>();
+    public static List<ResourceLocation> registered = new ArrayList<>();
     public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
         Feature.STRONGHOLD,
         Feature.OCEAN_MONUMENT,
         Feature.NETHER_BRIDGE,
         Feature.BURIED_TREASURE
     ));
-    public static final List<String> pieceTypes = Arrays.asList("corridors", "rooms", "starts", "ends", "mobs", "monsters");
+    public static final List<String> pieceTypes = Arrays.asList("corridors", "rooms", "starts", "ends");
     public static final List<String> hasTerminators = Arrays.asList("corridors", "rooms");
     public static final String DIR = "underground";
 
@@ -73,72 +75,87 @@ public class UndergroundRuins extends MesonModule
 
         List<StructureProcessor> processors = Arrays.asList(
             new StructureBlockProcessor(),
-            new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.LIGHT_BLUE_STAINED_GLASS))
+            new AirBlockProcessor(),
+            new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.GRAY_STAINED_GLASS))
         );
 
         try {
-            biomeRuins = new HashMap<>();
-            jigsawPieces = new HashMap<>();
+            ruinBiomes = new HashMap<>();
+            ruinPieces = new HashMap<>();
+            ruinBiomeSizes = new HashMap<>();
 
             for (Biome.Category cat : Biome.Category.values()) {
                 String catName = cat.getName().toLowerCase();
+
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations("structures/" + DIR + "/" + catName, file -> file.endsWith(".nbt"));
-                if (!biomeRuins.containsKey(cat)) biomeRuins.put(cat, new ArrayList<>());
+                if (!ruinBiomes.containsKey(cat)) ruinBiomes.put(cat, new ArrayList<>());
 
                 for (ResourceLocation res : resources) {
-                    String name, ruin;
+                    String path, ruin;
 
                     String[] p = res.getPath().split("/");
                     if (p.length != 5) continue;
-
                     ruin = p[3];
-                    if (!biomeRuins.get(cat).contains(ruin)) {
-                        biomeRuins.get(cat).add(ruin);
+                    if (!ruinBiomes.get(cat).contains(ruin)) {
+                        ruinBiomes.get(cat).add(ruin);
                     }
 
-                    name = res.getPath()
-                        .replace(".nbt", "")
-                        .replace("structures/", "");
+                    path = res.getPath().replace(".nbt", "").replace("structures/", "");
 
-                    if (!jigsawPieces.containsKey(ruin)) jigsawPieces.put(ruin, new HashMap<>());
+                    // create the ruin pieces tree structure for adding ruin piece types to
+                    if (!ruinPieces.containsKey(cat))
+                        ruinPieces.put(cat, new HashMap<>());
+                    if (!ruinPieces.get(cat).containsKey(ruin))
+                        ruinPieces.get(cat).put(ruin, new HashMap<>());
 
                     for (String pieceType : pieceTypes) {
-                        if (!jigsawPieces.get(ruin).containsKey(pieceType)) jigsawPieces.get(ruin).put(pieceType, new ArrayList<>());
-                        if (name.contains(pieceType.substring(0, pieceType.length()-1))) jigsawPieces.get(ruin).get(pieceType).add(name);
+                        if (!ruinPieces.get(cat).get(ruin).containsKey(pieceType))
+                            ruinPieces.get(cat).get(ruin).put(pieceType, new ArrayList<>());
+                        if (path.contains(pieceType.substring(0, pieceType.length() - 1)))
+                            ruinPieces.get(cat).get(ruin).get(pieceType).add(path);
                     }
                 }
+            }
 
-                for (String ruin : jigsawPieces.keySet()) {
-                    // used to close off pathways
-                    ResourceLocation ends = new ResourceLocation(Strange.MOD_ID, DIR + "/" + catName + "/" + ruin + "/ends");
+            for (Biome.Category cat : ruinPieces.keySet()) {
+                String catName = cat.getName().toLowerCase();
+                if (!ruinBiomeSizes.containsKey(cat))
+                    ruinBiomeSizes.put(cat, new HashMap<>());
+
+                for (String ruin : ruinPieces.get(cat).keySet()) {
+                    int size = 0;
 
                     for (String pieceType : pieceTypes) {
                         ResourceLocation patternId = new ResourceLocation(Strange.MOD_ID, DIR + "/" + catName + "/" + ruin + "/" + pieceType);
-                        if (registeredPatterns.contains(patternId)) continue;
+                        if (registered.contains(patternId))
+                            continue;
 
-                        List<String> pieces = jigsawPieces.get(ruin).get(pieceType);
+                        List<String> pieces = ruinPieces.get(cat).get(ruin).get(pieceType);
                         List<Pair<JigsawPiece, Integer>> piecesAndWeights = new ArrayList<>();
 
                         for (String piece : pieces) {
+                            size = Math.max(size, UndergroundRuinStructure.getWeight("_s", piece, 0));
                             SingleJigsawPiece jigsawPiece = new UndergroundJigsawPiece(Strange.MOD_ID + ":" + piece, processors);
                             piecesAndWeights.add(Pair.of(jigsawPiece, UndergroundRuinStructure.getWeight("_w", piece, 1)));
                         }
 
-                        ResourceLocation end = hasTerminators.contains(pieceType) ? ends : new ResourceLocation("empty");
+                        // used to close off pathways
+                        ResourceLocation end = hasTerminators.contains(pieceType) ? new ResourceLocation(Strange.MOD_ID, DIR + "/" + catName + "/" + ruin + "/ends") : new ResourceLocation("empty");
 
                         if (piecesAndWeights.size() > 0) {
                             JigsawPattern pattern = new JigsawPattern(patternId, end, piecesAndWeights, JigsawPattern.PlacementBehaviour.RIGID);
                             JigsawManager.REGISTRY.register(pattern);
                         }
-                        registeredPatterns.add(patternId);
+                        registered.add(patternId);
                     }
-                }
 
+                    ruinBiomeSizes.get(cat).put(ruin, Math.max(2, size));
+                }
             }
         } catch (Exception e) {
             Meson.warn("Could not load structures for biome category", e);
         }
 
-        Meson.log(biomeRuins);
+        Meson.log(ruinBiomes);
     }
 }

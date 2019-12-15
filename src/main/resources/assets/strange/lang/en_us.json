@@ -47,6 +47,9 @@
 
   "block.strange.runestone": "Runestone",
   "block.strange.writing_desk": "Writing Desk",
+  "block.strange.entity_spawner": "Entity Spawner",
+
+  "tile.strange.entity_spawner": "Entity Spawner",
 
   "item.strange.runestone": "Runestone",
   "item.strange.travel_journal": "Travel Journal",

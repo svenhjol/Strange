@@ -1,8 +1,13 @@
 package svenhjol.strange.base;
 
 import net.minecraft.block.*;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.*;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -10,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.block.BookshelfChestBlock;
 import svenhjol.charm.decoration.module.AllTheBarrels;
@@ -19,10 +25,14 @@ import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.strange.Strange;
+import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
+import svenhjol.strange.scrolls.module.EntitySpawner;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StructureHelper
 {
@@ -129,19 +139,10 @@ public class StructureHelper
         protected Random rand;
         protected BlockInfo blockInfo;
 
-        protected Direction faceNorth;
-        protected Direction faceEast;
-        protected Direction faceSouth;
-        protected Direction faceWest;
-
         public StructureBlockReplacement(Rotation rotation, Random fixedRand)
         {
             this.fixedRand = fixedRand;
             this.rotation = rotation;
-            this.faceNorth = Direction.NORTH;
-            this.faceEast = Direction.EAST;
-            this.faceSouth = Direction.SOUTH;
-            this.faceWest = Direction.WEST;
         }
 
         public BlockInfo replace(BlockInfo blockInfo, String data)
@@ -153,30 +154,30 @@ public class StructureHelper
             this.rand = new Random(blockInfo.hashCode());
 
             if (data.contains("|")) {
-                String[] split = this.data.split("\\|");
+                String[] split = data.split("\\|");
                 data = split[rand.nextInt(split.length)];
             }
 
-            this.data = data;
+            this.data = data.trim();
 
-            if (this.data.contains(ANVIL)) dataForAnvil();
-            if (this.data.contains(ARMOR)) dataForArmorStand();
-            if (this.data.contains(BOOKSHELF)) dataForBookshelf();
-            if (this.data.contains(CARPET)) dataForCarpet();
-            if (this.data.contains(CAULDRON)) dataForCauldron();
-            if (this.data.contains(CHEST)) dataForChest();
-            if (this.data.contains(DECORATION)) dataForDecoration();
-            if (this.data.contains(FLOWER)) dataForFlower();
-            if (this.data.contains(LANTERN)) dataForLantern();
-            if (this.data.contains(LAVA)) dataForLava();
-            if (this.data.contains(LECTERN)) dataForLectern();
-            if (this.data.contains(MOB)) dataForMob();
-            if (this.data.contains(ORE)) dataForOre();
-            if (this.data.contains(POTTED)) dataForPotted();
-            if (this.data.contains(RUNE)) dataForRune();
-            if (this.data.contains(SAPLING)) dataForSapling();
-            if (this.data.contains(SPAWNER)) dataForSpawner();
-            if (this.data.contains(STORAGE)) dataForStorage();
+            if (this.data.startsWith(ANVIL)) anvil();
+            if (this.data.startsWith(ARMOR)) armorStand();
+            if (this.data.startsWith(BOOKSHELF)) bookshelf();
+            if (this.data.startsWith(CARPET)) carpet();
+            if (this.data.startsWith(CAULDRON)) cauldron();
+            if (this.data.startsWith(CHEST)) chest();
+            if (this.data.startsWith(DECORATION)) decoration();
+            if (this.data.startsWith(FLOWER)) flower();
+            if (this.data.startsWith(LANTERN)) lantern();
+            if (this.data.startsWith(LAVA)) lava();
+            if (this.data.startsWith(LECTERN)) lectern();
+            if (this.data.startsWith(MOB)) mob();
+            if (this.data.startsWith(ORE)) ore();
+            if (this.data.startsWith(POTTED)) potted();
+            if (this.data.startsWith(RUNE)) rune();
+            if (this.data.startsWith(SAPLING)) sapling();
+            if (this.data.startsWith(SPAWNER)) spawner();
+            if (this.data.startsWith(STORAGE)) storage();
 
             if (this.state == null) {
                 this.state = Blocks.AIR.getDefaultState();
@@ -185,93 +186,35 @@ public class StructureHelper
             return new BlockInfo(this.pos, this.state, this.nbt);
         }
 
-        protected void dataForAnvil()
+        protected void anvil()
         {
-            float f = rand.nextFloat();
-            if (f < 0.25F) {
-                this.state = Blocks.ANVIL.getDefaultState();
-            } else if (f < 0.5F) {
-                this.state = Blocks.CHIPPED_ANVIL.getDefaultState();
-            } else if (f < 0.75F) {
-                this.state = Blocks.DAMAGED_ANVIL.getDefaultState();
+            if (rand.nextFloat() < 0.8F) {
+                float f = rand.nextFloat();
+                if (f < 0.33F) {
+                    this.state = Blocks.ANVIL.getDefaultState();
+                } else if (f < 0.66F) {
+                    this.state = Blocks.CHIPPED_ANVIL.getDefaultState();
+                } else if (f < 1.0F) {
+                    this.state = Blocks.DAMAGED_ANVIL.getDefaultState();
+                }
             }
         }
 
-        protected void dataForArmorStand()
+        protected void armorStand()
         {
-//            Direction facing = faceNorth;
-//            ArmorStandEntity stand = EntityType.ARMOR_STAND.create(world.getWorld());
-//            if (stand == null) return;
-//
-//            if (data.contains("east")) facing = faceEast;
-//            if (data.contains("south")) facing = faceSouth;
-//            if (data.contains("west")) facing = faceWest;
-//
-//            List<Item> ironHeld = new ArrayList<>(Arrays.asList(
-//                Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE
-//            ));
-//            List<Item> goldHeld = new ArrayList<>(Arrays.asList(
-//                Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE
-//            ));
-//            List<Item> diamondHeld = new ArrayList<>(Arrays.asList(
-//                Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_SHOVEL
-//            ));
-//
-//            if (data.contains("chain")) {
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ironHeld.get(rand.nextInt(ironHeld.size()))));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.CHAINMAIL_HELMET));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.CHAINMAIL_CHESTPLATE));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.CHAINMAIL_LEGGINGS));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.CHAINMAIL_BOOTS));
-//            }
-//            if (data.contains("iron")) {
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ironHeld.get(rand.nextInt(ironHeld.size()))));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.IRON_HELMET));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.IRON_LEGGINGS));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.IRON_BOOTS));
-//            }
-//            if (data.contains("gold")) {
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(goldHeld.get(rand.nextInt(goldHeld.size()))));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.GOLDEN_HELMET));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.GOLDEN_CHESTPLATE));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.GOLDEN_LEGGINGS));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.GOLDEN_BOOTS));
-//            }
-//            if (data.contains("diamond")) {
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(diamondHeld.get(rand.nextInt(diamondHeld.size()))));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.DIAMOND_HELMET));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS));
-//                if (rand.nextFloat() < 0.25F)
-//                    stand.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.DIAMOND_BOOTS));
-//            }
-//
-//            float yaw = facing.getHorizontalAngle();
-//            stand.moveToBlockPosAndAngles(pos, yaw, 0.0F);
-//            world.addEntity(stand);
+            EntitySpawnerTileEntity tile = EntitySpawner.tile.create();
+            if (tile == null) return;
+            nbt = new CompoundNBT();
+
+            tile.entity = EntityType.ARMOR_STAND.getRegistryName();
+            tile.meta = this.data;
+            tile.rotation = this.rotation;
+            tile.write(this.nbt);
+
+            this.state = EntitySpawner.block.getDefaultState();
         }
 
-        protected void dataForBookshelf()
+        protected void bookshelf()
         {
             // TODO variant bookshelves
             if (Charm.hasModule(BookshelfChests.class) && rand.nextFloat() < 0.22F) {
@@ -289,119 +232,100 @@ public class StructureHelper
             }
         }
 
-        protected void dataForCarpet()
+        protected void carpet()
         {
             List<Block> types = new ArrayList<>(carpetTypes);
             Collections.shuffle(types, fixedRand);
-            state = null;
 
-            for (int i = 0; i < types.size(); i++) {
-                if (data.contains(String.valueOf(i))) {
-                    state = types.get(i).getDefaultState();
+            int type = getValue("type", this.data, 0);
+            if (type > types.size()) type = 0;
+            state = types.get(type).getDefaultState();
+        }
+
+        protected void cauldron()
+        {
+            state = Blocks.CAULDRON.getDefaultState()
+                .with(CauldronBlock.LEVEL, (int)Math.max(3.0F, 4.0F * rand.nextFloat()));
+        }
+
+        protected void chest()
+        {
+            if (rand.nextFloat() > getChance(this.data, 0.66F)) return;
+
+            state = Blocks.CHEST.getDefaultState();
+            ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
+
+            Set<ResourceLocation> lootTables = LootTables.func_215796_a();
+            for (ResourceLocation res : lootTables) {
+                String[] s = res.getPath().split("/");
+                if (data.contains(s[s.length - 1])) {
+                    lootTable = res;
                 }
             }
-        }
 
-        protected void dataForCauldron()
-        {
-            state = Blocks.CAULDRON.getDefaultState();
+            state = setFacing(state, ChestBlock.FACING, getValue("facing", this.data, "north"));
 
-            float f = rand.nextFloat();
-            if (f > 0.8F) {
-                state = state.with(CauldronBlock.LEVEL, 3);
-            } else if (f > 0.6F) {
-                state = state.with(CauldronBlock.LEVEL, 2);
-            } else if (f > 0.4F) {
-                state = state.with(CauldronBlock.LEVEL, 1);
+            ChestTileEntity tile = TileEntityType.CHEST.create();
+            if (tile != null) {
+                tile.setLootTable(getVanillaLootTableResourceLocation(data, lootTable), rand.nextLong());
+                nbt = new CompoundNBT();
+                tile.write(this.nbt);
             }
         }
 
-        protected void dataForChest()
+        protected void decoration()
         {
-            if (rand.nextFloat() < 1.0F) {
-                state = Blocks.CHEST.getDefaultState();
+            if (rand.nextFloat() > getChance(this.data, 0.85F)) return;
 
-                ResourceLocation lootTable = LootTables.CHESTS_SIMPLE_DUNGEON;
+            Direction facing = getFacing(getValue("facing", this.data, "north"));
+            List<BlockState> types = new ArrayList<>(Arrays.asList(
+                Blocks.BLAST_FURNACE.getDefaultState().with(BlastFurnaceBlock.FACING, facing),
+                Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
+                Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
+                Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
+                Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, facing),
+                Blocks.OBSERVER.getDefaultState().with(ObserverBlock.FACING, facing),
+                Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
+                Blocks.TRAPPED_CHEST.getDefaultState().with(TrappedChestBlock.FACING, facing),
+                Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
+                Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
+                Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
+                Blocks.BREWING_STAND.getDefaultState(),
+                Blocks.STONECUTTER.getDefaultState(),
+                Blocks.PUMPKIN.getDefaultState(),
+                Blocks.MELON.getDefaultState(),
+                Blocks.LANTERN.getDefaultState(),
+                Blocks.COBWEB.getDefaultState(),
+                Blocks.HAY_BLOCK.getDefaultState(),
+                Blocks.JUKEBOX.getDefaultState(),
+                Blocks.NOTE_BLOCK.getDefaultState(),
+                Blocks.FLETCHING_TABLE.getDefaultState(),
+                Blocks.SMITHING_TABLE.getDefaultState(),
+                Blocks.CRAFTING_TABLE.getDefaultState(),
+                Blocks.CARTOGRAPHY_TABLE.getDefaultState(),
+                Blocks.ANVIL.getDefaultState(),
+                Blocks.CHIPPED_ANVIL.getDefaultState(),
+                Blocks.DAMAGED_ANVIL.getDefaultState(),
+                Blocks.BELL.getDefaultState()
+            ));
 
-                Set<ResourceLocation> lootTables = LootTables.func_215796_a();
-                for (ResourceLocation res : lootTables) {
-                    String[] s = res.getPath().split("/");
-                    if (data.contains(s[s.length - 1])) {
-                        lootTable = res;
-                    }
-                }
-
-                if (data.contains("north")) state = state.with(ChestBlock.FACING, faceNorth);
-                if (data.contains("east")) state = state.with(ChestBlock.FACING, faceEast);
-                if (data.contains("south")) state = state.with(ChestBlock.FACING, faceSouth);
-                if (data.contains("west")) state = state.with(ChestBlock.FACING, faceWest);
-
-                ChestTileEntity tile = TileEntityType.CHEST.create();
-
-                if (tile != null) {
-                    tile.setLootTable(getVanillaLootTableResourceLocation(data, lootTable), rand.nextLong());
-                    nbt = new CompoundNBT();
-                    tile.write(this.nbt);
-                }
+            if (Strange.loader.hasModule(Scrollkeepers.class)) {
+                types.add(Scrollkeepers.block.getDefaultState().with(WritingDeskBlock.FACING, facing));
             }
+
+            state = types.get(rand.nextInt(types.size()));
         }
 
-        protected void dataForDecoration()
+        protected void flower()
         {
-            if (rand.nextFloat() < 1.0F) {
-                Direction facing = faceNorth;
-                if (data.contains("east")) facing = faceEast;
-                if (data.contains("south")) facing = faceSouth;
-                if (data.contains("west")) facing = faceWest;
-
-                List<BlockState> types = new ArrayList<>(Arrays.asList(
-                    Blocks.BLAST_FURNACE.getDefaultState().with(BlastFurnaceBlock.FACING, facing),
-                    Blocks.FURNACE.getDefaultState().with(FurnaceBlock.FACING, facing),
-                    Blocks.SMOKER.getDefaultState().with(SmokerBlock.FACING, facing),
-                    Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),
-                    Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, facing),
-                    Blocks.OBSERVER.getDefaultState().with(ObserverBlock.FACING, facing),
-                    Blocks.LECTERN.getDefaultState().with(LecternBlock.FACING, facing),
-                    Blocks.TRAPPED_CHEST.getDefaultState().with(TrappedChestBlock.FACING, facing),
-                    Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, false),
-                    Blocks.CAULDRON.getDefaultState().with(CauldronBlock.LEVEL, rand.nextInt(3)),
-                    Blocks.COMPOSTER.getDefaultState().with(ComposterBlock.LEVEL, rand.nextInt(7)),
-                    Blocks.BREWING_STAND.getDefaultState(),
-                    Blocks.STONECUTTER.getDefaultState(),
-                    Blocks.PUMPKIN.getDefaultState(),
-                    Blocks.MELON.getDefaultState(),
-                    Blocks.LANTERN.getDefaultState(),
-                    Blocks.COBWEB.getDefaultState(),
-                    Blocks.HAY_BLOCK.getDefaultState(),
-                    Blocks.JUKEBOX.getDefaultState(),
-                    Blocks.NOTE_BLOCK.getDefaultState(),
-                    Blocks.FLETCHING_TABLE.getDefaultState(),
-                    Blocks.SMITHING_TABLE.getDefaultState(),
-                    Blocks.CRAFTING_TABLE.getDefaultState(),
-                    Blocks.CARTOGRAPHY_TABLE.getDefaultState(),
-                    Blocks.ANVIL.getDefaultState(),
-                    Blocks.CHIPPED_ANVIL.getDefaultState(),
-                    Blocks.DAMAGED_ANVIL.getDefaultState(),
-                    Blocks.BELL.getDefaultState()
-                ));
-
-                if (Strange.loader.hasModule(Scrollkeepers.class)) {
-                    types.add(Scrollkeepers.block.getDefaultState().with(WritingDeskBlock.FACING, facing));
-                }
-
-                state = types.get(rand.nextInt(types.size()));
-            }
+            if (rand.nextFloat() > getChance(this.data, 0.8F)) return;
+            state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
         }
 
-        protected void dataForFlower()
+        protected void lantern()
         {
-            if (rand.nextFloat() < 0.8F) {
-                state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
-            }
-        }
+            if (rand.nextFloat() > getChance(this.data, 0.9F)) return;
 
-        protected void dataForLantern()
-        {
             state = Blocks.LANTERN.getDefaultState();
 
             if (Charm.hasModule(GoldLanterns.class) && rand.nextFloat() < 0.25F) {
@@ -413,7 +337,7 @@ public class StructureHelper
             }
         }
 
-        protected void dataForLava()
+        protected void lava()
         {
             state = Blocks.MAGMA_BLOCK.getDefaultState();
 
@@ -422,65 +346,58 @@ public class StructureHelper
             }
         }
 
-        protected void dataForLectern()
+        protected void lectern()
+        {
+            if (rand.nextFloat() > getChance(this.data, 0.8F)) return;
+
+            state = Blocks.LECTERN.getDefaultState();
+            state = setFacing(state, LecternBlock.FACING, getValue("facing", this.data, "north"));
+        }
+
+        protected void mob()
+        {
+            if (rand.nextFloat() > getChance(this.data, 0.75F)) return;
+
+            EntitySpawnerTileEntity tile = EntitySpawner.tile.create();
+            if (tile == null) return;
+
+            String type = getValue("type", this.data, "");
+            if (type.isEmpty()) return;
+            nbt = new CompoundNBT();
+
+            tile.entity = new ResourceLocation(type);
+            tile.health = getValue("health", this.data, 0.0D);
+            tile.persist = getValue("persist", this.data, true);
+            tile.rotation = this.rotation;
+            tile.write(this.nbt);
+
+            this.state = EntitySpawner.block.getDefaultState();
+        }
+
+        protected void ore()
         {
             if (rand.nextFloat() < 0.8F) {
-                state = Blocks.LECTERN.getDefaultState();
-                if (data.contains("north")) state = state.with(LecternBlock.FACING, faceNorth);
-                if (data.contains("east")) state = state.with(LecternBlock.FACING, faceEast);
-                if (data.contains("south")) state = state.with(LecternBlock.FACING, faceSouth);
-                if (data.contains("west")) state = state.with(LecternBlock.FACING, faceWest);
-            }
-        }
+                String type = getValue("type", this.data, "");
+                if (!type.isEmpty()) {
+                    Block ore = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(type));
+                    if (ore != null) {
+                        state = ore.getDefaultState();
+                        return;
+                    }
+                }
 
-        protected void dataForMob()
-        {
-            // passthrough, let addComponentParts deal with it
-            this.state = this.blockInfo.state;
-            this.nbt = this.blockInfo.nbt;
-
-//            if (rand.nextFloat() < 0.8F) {
-//                Entity entity;
-//                EntityType<?> type = null;
-//                boolean persist = data.contains("persist");
-//
-//                List<ResourceLocation> entities = new ArrayList<>(ForgeRegistries.ENTITIES.getKeys());
-//
-//                for (ResourceLocation res : entities) {
-//                    if (data.contains(res.getPath())) {
-//                        type = ForgeRegistries.ENTITIES.getValue(res);
-//                    }
-//                }
-//
-//                if (type == null) return;
-//                entity = type.create(world.getWorld());
-//
-//                if (entity == null) return;
-//                entity.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
-//
-//                if (entity instanceof MobEntity) {
-//                    if (persist) ((MobEntity) entity).enablePersistence();
-//                    ((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
-//                }
-//                world.addEntity(entity);
-//            }
-        }
-
-        protected void dataForOre()
-        {
-            if (rand.nextFloat() < 0.66F) {
                 state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
             }
         }
 
-        protected void dataForPotted()
+        protected void potted()
         {
             if (rand.nextFloat() < 0.8F) {
                 state = pottedTypes.get(rand.nextInt(pottedTypes.size())).getDefaultState();
             }
         }
 
-        protected void dataForRune()
+        protected void rune()
         {
 //            if (rand.nextFloat() < 0.75F) {
 //                if (Strange.loader.hasModule(Runestones.class)) {
@@ -489,14 +406,14 @@ public class StructureHelper
 //            }
         }
 
-        protected void dataForSapling()
+        protected void sapling()
         {
             if (rand.nextFloat() < 0.8F) {
                 state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
             }
         }
 
-        protected void dataForSpawner()
+        protected void spawner()
         {
             if (rand.nextFloat() < 0.8F) {
                 state = Blocks.SPAWNER.getDefaultState();
@@ -511,7 +428,7 @@ public class StructureHelper
             }
         }
 
-        protected void dataForStorage()
+        protected void storage()
         {
             if (rand.nextFloat() < 1.0F) {
                 LockableLootTileEntity tile;
@@ -571,5 +488,57 @@ public class StructureHelper
 
             return lootTable;
         }
+
+        public float getChance(String name, float def)
+        {
+            int i = getValue("chance", name, 0);
+            return i == 0 ? def : ((float)i)/100.0F;
+        }
+    }
+
+    public static Direction getFacing(String direction)
+    {
+        if (direction.equals("east")) return Direction.EAST;
+        if (direction.equals("south")) return Direction.SOUTH;
+        if (direction.equals("west")) return Direction.WEST;
+        return Direction.NORTH;
+    }
+
+    public static BlockState setFacing(BlockState state, DirectionProperty prop, String direction)
+    {
+        if (direction.equals("north")) state = state.with(prop, Direction.NORTH);
+        if (direction.equals("east")) state = state.with(prop, Direction.EAST);
+        if (direction.equals("south")) state = state.with(prop, Direction.SOUTH);
+        if (direction.equals("west")) state = state.with(prop, Direction.WEST);
+        return state;
+    }
+
+    public static boolean getValue(String key, String name, boolean def)
+    {
+        String val = getValue(key, name, "false");
+        return val.isEmpty() ? def : Boolean.parseBoolean(val);
+    }
+
+    public static int getValue(String key, String name, int def)
+    {
+        int i = Integer.parseInt(getValue(key, name, "0"));
+        return i == 0 ? def : i;
+    }
+
+    public static double getValue(String key, String name, double def)
+    {
+        double d = Double.parseDouble(getValue(key, name, "0"));
+        return d == 0 ? def : d;
+    }
+
+    public static String getValue(String key, String data, String def)
+    {
+        String lookFor = key.endsWith("=") ? key : key + "=";
+        if (data.contains(lookFor)) {
+            Pattern p = Pattern.compile(lookFor + "([a-zA-Z0-9_:\\-]+)");
+            Matcher m = p.matcher(data);
+            if (m.find()) return m.group(1);
+        }
+        return def;
     }
 }

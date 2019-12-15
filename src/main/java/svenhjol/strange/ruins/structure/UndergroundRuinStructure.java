@@ -16,6 +16,8 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import svenhjol.meson.Meson;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 
@@ -28,7 +30,6 @@ import java.util.regex.Pattern;
 public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuinConfig>
 {
     public static final int SEED_MODIFIER = 135318;
-    public static final String GENERAL = "general";
     public static final String STRUCTURE_NAME = "Underground_Ruin";
     public static IStructurePieceType UNDERGROUND_RUIN_PIECE = Start.Piece::new;
 
@@ -102,27 +103,31 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             if (pos.getY() == 0 || pos.getY() > 48) return;
 
             boolean useOverworld = rand.nextFloat() < 0.1F
-                || !UndergroundRuins.biomeRuins.containsKey(biomeCategory)
-                || UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty();
+                || !UndergroundRuins.ruinBiomes.containsKey(biomeCategory)
+                || UndergroundRuins.ruinBiomes.get(biomeCategory).isEmpty();
 
             if (useOverworld) {
                 if (!(gen instanceof OverworldChunkGenerator)) return; // don't generate overworld structures in non-overworld dims
                 biomeCategory = Biome.Category.NONE; // chance of being a general overworld structure
             }
 
-            if (UndergroundRuins.biomeRuins.containsKey(biomeCategory) && !UndergroundRuins.biomeRuins.get(biomeCategory).isEmpty()) {
-                List<String> ruins = UndergroundRuins.biomeRuins.get(biomeCategory);
+            if (UndergroundRuins.ruinBiomes.containsKey(biomeCategory) && !UndergroundRuins.ruinBiomes.get(biomeCategory).isEmpty()) {
+                List<String> ruins = UndergroundRuins.ruinBiomes.get(biomeCategory);
                 if (ruins.size() == 0) return;
 
+                // get random ruin and its preferred size for this biome
                 Random ruinRand = new Random(pos.toLong());
                 String ruin = ruins.get(rand.nextInt(ruins.size()));
-                int size = getSize(ruin, 4) + rand.nextInt(2);
+
+                int size = 2;
+                if (UndergroundRuins.ruinBiomeSizes.containsKey(biomeCategory))
+                    size = UndergroundRuins.ruinBiomeSizes.get(biomeCategory).getOrDefault(ruin, 2) + ruinRand.nextInt(2);
 
                 ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + biomeCategory.toString().toLowerCase() + "/" + ruin + "/starts");
                 JigsawManager.func_214889_a(start, size, Piece::new, gen, templates, pos, components, ruinRand);
                 this.recalculateStructureSize();
 
-                int maxTop = 60;
+                int maxTop = 50;
                 if (bounds.maxY >= maxTop) {
                     int shift = 5 + (bounds.maxY - maxTop);
                     bounds.offset(0, -shift, 0);
@@ -155,20 +160,29 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             @Override
             public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk)
             {
-                MutableBoundingBox templateBox = this.jigsawPiece.getBoundingBox(this.templates, this.pos, this.rotation);
-                BlockPos checkPos = new BlockPos(templateBox.minX, templateBox.minY, templateBox.minZ).down();
-                BlockState checkState = world.getBlockState(checkPos);
-                int i = templateBox.minY;
+                if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
 
-                while (--i > 12 && !checkState.isSolid() || world.isAirBlock(checkPos) || checkState.getMaterial().isLiquid()) {
+                    MutableBoundingBox templateBox = this.jigsawPiece.getBoundingBox(this.templates, this.pos, this.rotation);
+                    BlockPos checkPos = new BlockPos(templateBox.minX, templateBox.minY, templateBox.minZ).down();
+                    BlockState checkState = world.getBlockState(checkPos);
+                    int i = templateBox.minY;
+                    int m = 0;
+
+                    while (--i > 12 && (!checkState.isSolid() || world.isAirBlock(checkPos) || checkState.getMaterial().isLiquid())) {
 //                    world.setBlockState(checkPos, Blocks.GLOWSTONE.getDefaultState(), 0); // for testing
-                    checkPos = checkPos.down();
-                    checkState = world.getBlockState(checkPos);
+                        checkPos = checkPos.down();
+                        checkState = world.getBlockState(checkPos);
 
-                    if (checkState.isSolid()) {
-                        templateBox.offset(0, -(templateBox.minY - i), 0);
-                        this.pos = new BlockPos(this.pos.getX(), i - 1, this.pos.getZ());
-                        break;
+                        if (checkState.isSolid()) {
+                            templateBox.offset(0, -(templateBox.minY - i), 0);
+                            this.pos = new BlockPos(this.pos.getX(), i - 1, this.pos.getZ());
+                            break;
+                        }
+
+                        if (++m > 100) {
+                            Meson.debug("ARGH WHAT");
+                            break;
+                        }
                     }
                 }
 
@@ -184,15 +198,6 @@ public class UndergroundRuinStructure extends ScatteredStructure<UndergroundRuin
             Matcher m = p.matcher(name);
             if (m.find()) return Integer.parseInt(m.group(1));
         }
-        return def;
-    }
-
-    public static int getSize(String name, int def)
-    {
-        if (name.contains("huge")) return 7;
-        if (name.contains("large")) return 5;
-        if (name.contains("medium")) return 3;
-        if (name.contains("small")) return 1;
         return def;
     }
 }
