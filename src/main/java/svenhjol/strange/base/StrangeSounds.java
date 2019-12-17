@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
@@ -30,5 +31,10 @@ public class StrangeSounds
         SoundEvent sound = new SoundEvent(res).setRegistryName(res);
         soundsToRegister.add(sound);
         return sound;
+    }
+
+    public static void init()
+    {
+        soundsToRegister.forEach(RegistryHandler::registerSound);
     }
 }

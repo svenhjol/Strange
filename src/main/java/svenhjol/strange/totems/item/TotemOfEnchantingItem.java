@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;

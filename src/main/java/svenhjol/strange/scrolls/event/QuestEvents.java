@@ -180,7 +180,7 @@ public class QuestEvents
 
             // needed to propagate out to all players in vicinity of encounter
             if (event.getEntityLiving().getTags().contains(Encounter.ENCOUNTER_TAG)) {
-                source.world.getEntitiesWithinAABB(Entity.class, source.getBoundingBox().grow(24))
+                source.world.getEntitiesWithinAABB(Entity.class, source.getBoundingBox().grow(Encounter.FIGHT_RANGE))
                     .stream()
                     .filter(p -> p instanceof PlayerEntity && !p.isEntityEqual(source))
                     .forEach(p -> respondToEvent((PlayerEntity)p, event));

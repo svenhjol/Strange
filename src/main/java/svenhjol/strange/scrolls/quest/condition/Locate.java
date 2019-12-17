@@ -19,7 +19,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
-import svenhjol.strange.base.QuestHelper;
+import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;

@@ -22,7 +22,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 import svenhjol.strange.totems.client.TotemOfFlyingSound;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;

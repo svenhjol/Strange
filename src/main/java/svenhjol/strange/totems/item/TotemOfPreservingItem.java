@@ -21,7 +21,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
-import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.module.TotemOfPreserving;
 
 import javax.annotation.Nullable;

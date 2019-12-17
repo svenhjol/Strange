@@ -26,7 +26,7 @@ import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
-import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;

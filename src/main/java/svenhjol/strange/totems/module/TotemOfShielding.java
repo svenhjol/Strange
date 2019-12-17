@@ -10,7 +10,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.TotemHelper;
+import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)

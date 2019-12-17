@@ -1,6 +1,7 @@
 package svenhjol.strange.base;
 
 import net.minecraft.util.ResourceLocation;
+import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.Strange;
 
 public class StrangeLoot
@@ -13,6 +14,10 @@ public class StrangeLoot
 
     public static ResourceLocation createLootTable(String path)
     {
-        return new ResourceLocation(Strange.MOD_ID, path);
+        ResourceLocation res = new ResourceLocation(Strange.MOD_ID, path);
+        LootHelper.customTables.add(res);
+        return res;
     }
+
+    public static void init() {}
 }

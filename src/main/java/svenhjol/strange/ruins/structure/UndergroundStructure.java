@@ -1,23 +1,19 @@
 package svenhjol.strange.ruins.structure;
 
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.structure.ScatteredStructure;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
-import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
@@ -28,14 +24,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
 {
     public static final int SEED_MODIFIER = 135318;
     public static final String STRUCTURE_NAME = "Underground_Ruin";
-    public static IStructurePieceType UNDERGROUND_PIECE = Start.Piece::new;
 
     public UndergroundStructure(Function<Dynamic<?>, ? extends UndergroundConfig> config)
     {
@@ -89,13 +82,13 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        return 5;
+        return 7;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
     {
-        return 4;
+        return 6;
     }
 
     @Override
@@ -129,8 +122,11 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             size += rand.nextInt(UndergroundRuins.variation + 1);
 
             ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + catName + "/" + ruin + "/starts");
-            JigsawManager.func_214889_a(start, size, Piece::new, gen, templates, pos, components, rand);
+
+            Meson.debug("Trying to create ruin " + ruin + " at " + pos);
+            JigsawManager.func_214889_a(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
+            Meson.debug("Recalculating after create");
 
             int maxTop = 50;
             if (bounds.maxY >= maxTop) {
@@ -145,68 +141,6 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
                 bounds.offset(0, shift, 0);
                 components.forEach(p -> p.offset(0, shift, 0));
 //                Meson.debug("[UndergroundRuinStructure] Shifting up by " + shift + " at " + pos);
-            }
-        }
-
-        public static class Piece extends AbstractVillagePiece
-        {
-            protected TemplateManager templates;
-
-            public Piece(TemplateManager templates, JigsawPiece piece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds) {
-                super(UNDERGROUND_PIECE, templates, piece, pos, groundLevelDelta, rotation, bounds);
-                this.templates = templates;
-            }
-
-            public Piece(TemplateManager templates, CompoundNBT nbt)
-            {
-                super(templates, nbt, UNDERGROUND_PIECE);
-                this.templates = templates;
-            }
-
-            @Override
-            public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk)
-            {
-                if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
-
-                    MutableBoundingBox bb = this.jigsawPiece.getBoundingBox(this.templates, this.pos, this.rotation);
-                    BlockPos pos = new BlockPos(bb.minX, bb.minY, bb.minZ).down();
-                    BlockState state = world.getBlockState(pos);
-                    BlockPos found = isValidBlock(world, pos, state) ? this.pos : null;
-
-                    int i = bb.minY;
-                    int m = 0;
-
-                    while (--i > 12 && found == null && !isValidBlock(world, pos, state)) {
-                        // world.setBlockState(pos, Blocks.GLOWSTONE.getDefaultState(), 0); // for testing
-                        pos = pos.down();
-                        state = world.getBlockState(pos);
-
-                        if (isValidBlock(world, pos, state)) {
-                            bb.offset(0, -(bb.minY - i), 0);
-                            found = new BlockPos(this.pos.getX(), i - 1, this.pos.getZ());
-                            break;
-                        }
-
-                        if (++m > 60) {
-                            Meson.warn("[UndergroundRuinStructure] too many loops, cancelling!");
-                            break;
-                        }
-                    }
-
-                    if (found != null) {
-                        this.pos = found;
-                        //Meson.debug("[UndergroundRuinStructure] changing vertical pos for component at " + this.pos);
-                    } else {
-                        Meson.warn("[UndergroundRuinStructure] could not find suitable vertical pos for component at " + this.pos);
-                    }
-                }
-
-                return super.addComponentParts(world, rand, structureBox, chunk);
-            }
-
-            protected boolean isValidBlock(IWorld world, BlockPos pos, BlockState state)
-            {
-                return (state.isSolid() && !world.isAirBlock(pos) && !state.getMaterial().isLiquid());
             }
         }
 
@@ -236,15 +170,5 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
                 return ruins.get(0);
             }
         }
-    }
-
-    public static int getWeight(String prefix, String name, int def)
-    {
-        if (name.contains(prefix)) {
-            Pattern p = Pattern.compile(prefix + "(\\d+)");
-            Matcher m = p.matcher(name);
-            if (m.find()) return Integer.parseInt(m.group(1));
-        }
-        return def;
     }
 }

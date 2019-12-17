@@ -21,11 +21,13 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.structure.StoneCircleConfig;
+import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
-import svenhjol.strange.runestones.structure.VaultStructure;
+import svenhjol.strange.runestones.structure.VaultPiece;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +38,7 @@ public class StoneCircles extends MesonModule
 {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
     public static final String NAME = "stone_circle";
+    public static final String VAULTS_DIR = "vaults";
     public static Structure<StoneCircleConfig> structure;
 
     @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
@@ -75,8 +78,8 @@ public class StoneCircles extends MesonModule
         structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
 
         RegistryHandler.registerFeature(structure, new ResourceLocation("stone_circle"));
-        RegistryHandler.registerStructurePiece(StoneCircleStructure.STONE_CIRCLE_PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
-        RegistryHandler.registerStructurePiece(VaultStructure.VAULT_PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
+        RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
+        RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
         biomesConfig.forEach(biomeName -> {
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
@@ -99,30 +102,7 @@ public class StoneCircles extends MesonModule
     @Override
     public void serverStarted(FMLServerStartedEvent event)
     {
-//        pieceTypes.put(Junction, new ArrayList<>(Arrays.asList(
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction1"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction2"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction3"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction4"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction5"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/junction6")
-//        )));
-//        pieceTypes.put(Corridor, new ArrayList<>(Arrays.asList(
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor1"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor2"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor3"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor4"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor5"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/corridor6")
-//        )));
-//        pieceTypes.put(Large, new ArrayList<>(Arrays.asList(
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large1"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large2"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large3"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large4"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large5"),
-//            new ResourceLocation(Strange.MOD_ID, "vaults/large6")
-//        )));
+        new RegisterJigsawPieces(event.getServer().getResourceManager(), VAULTS_DIR);
     }
 
     @Override

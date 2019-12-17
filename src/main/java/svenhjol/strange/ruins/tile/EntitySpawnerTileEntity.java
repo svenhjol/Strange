@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
-import svenhjol.strange.base.DecorationHelper;
+import svenhjol.strange.base.helper.DecorationHelper;
 import svenhjol.strange.scrolls.module.EntitySpawner;
 
 import java.util.ArrayList;
@@ -36,12 +36,14 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
     private final static String PERSIST = "persist";
     private final static String HEALTH = "health";
     private final static String META = "meta";
+    private final static String COUNT = "count";
     private final static String ROTATION = "rotation";
 
     public ResourceLocation entity = null;
     public Rotation rotation = Rotation.NONE;
     public boolean persist = false;
     public double health = 0;
+    public int count = 1;
     public String meta = "";
 
     public EntitySpawnerTileEntity()
@@ -56,6 +58,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         this.entity = ResourceLocation.tryCreate(tag.getString(ENTITY));
         this.persist = tag.getBoolean(PERSIST);
         this.health = tag.getDouble(HEALTH);
+        this.count = tag.getInt(COUNT);
         this.meta = tag.getString(META);
         String rot = tag.getString(ROTATION);
         this.rotation = rot.isEmpty() ? Rotation.NONE : Rotation.valueOf(rot);
@@ -69,6 +72,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         tag.putString(ROTATION, rotation.name());
         tag.putBoolean(PERSIST, persist);
         tag.putDouble(HEALTH, health);
+        tag.putInt(COUNT, count);
         tag.putString(META, meta);
         return tag;
     }
@@ -109,17 +113,21 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
             return tryCreateArmorStand(pos);
         }
 
-        ent = type.create(world);
-        if (ent == null) return false;
+        for (int i = 0; i < this.count; i++) {
+            ent = type.create(world);
+            if (ent == null) return false;
 
-        ent.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
+            ent.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
 
-        if (ent instanceof MobEntity) {
-            if (persist) ((MobEntity) ent).enablePersistence();
-            ((MobEntity) ent).onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
+            if (ent instanceof MobEntity) {
+                MobEntity m = (MobEntity)ent;
+                if (persist) m.enablePersistence();
+                if (health > 0) m.setHealth((float)health);
+                m.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
+            }
+
+            world.addEntity(ent);
         }
-
-        world.addEntity(ent);
         return true;
     }
 

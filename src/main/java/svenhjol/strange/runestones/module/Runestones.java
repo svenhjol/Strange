@@ -46,7 +46,7 @@ public class Runestones extends MesonModule
 
     public static RunestoneBlock block;
     public static List<Destination> dests = new ArrayList<>();
-    public static List<Destination> destsOrdered = new ArrayList<>();
+    public static List<Destination> ordered = new ArrayList<>();
     private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
 
     @CapabilityInject(IRunestonesCapability.class)
@@ -68,30 +68,30 @@ public class Runestones extends MesonModule
         // register cap, cap storage and implementation
         CapabilityManager.INSTANCE.register(IRunestonesCapability.class, new RunestonesStorage(), RunestonesCapability::new);
 
-        destsOrdered.add(new Destination("spawn_point", false, 1.0F));
+        ordered.add(new Destination("spawn_point", false, 1.0F));
 
         if (Strange.loader.hasModule(StoneCircles.class)) {
-            destsOrdered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
-            destsOrdered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
+            ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
+            ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
         } else {
-            destsOrdered.add(new Destination("spawn_point", false, 1.0F));
-            destsOrdered.add(new Destination("spawn_point", false, 0.85F));
+            ordered.add(new Destination("spawn_point", false, 1.0F));
+            ordered.add(new Destination("spawn_point", false, 0.85F));
         }
 
-        destsOrdered.add(new Destination("Village", "village", false, 0.8F));
-        destsOrdered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.75F));
-        destsOrdered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.75F));
-        destsOrdered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.75F));
+        ordered.add(new Destination("Village", "village", false, 0.8F));
+        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.75F));
+        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.75F));
+        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.75F));
 
-        destsOrdered.add(new Destination("Village", "outer_village", true, 0.18F));
-        destsOrdered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.25F));
-        destsOrdered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.25F));
-        destsOrdered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.25F));
+        ordered.add(new Destination("Village", "outer_village", true, 0.18F));
+        ordered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.25F));
+        ordered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.25F));
+        ordered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.25F));
 
         if (Strange.loader.hasModule(StoneCircles.class)) {
-            destsOrdered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.08F));
+            ordered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.08F));
         } else {
-            destsOrdered.add(new Destination("spawn_point", false, 0.125F));
+            ordered.add(new Destination("spawn_point", false, 0.125F));
         }
     }
 
@@ -116,24 +116,6 @@ public class Runestones extends MesonModule
         }
     }
 
-    public static int getRunestoneValue(IWorld world, BlockPos pos, Random rand)
-    {
-        final int destSize = dests.size();
-        for (int i = 0; i < destSize; i++) {
-            if (rand.nextFloat() < dests.get(i).weight) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    public static BlockState getRunestoneBlock(IWorld world, BlockPos pos, Random rand)
-    {
-        return block.getDefaultState()
-            .with(RunestoneBlock.TYPE, getRunestoneType(world))
-            .with(RunestoneBlock.RUNE, getRunestoneValue(world, pos, rand));
-    }
-
     public static BlockState getRunestoneBlock(IWorld world, int runeValue)
     {
         return block.getDefaultState()
@@ -146,6 +128,11 @@ public class Runestones extends MesonModule
         return block.getDefaultState()
             .with(RunestoneBlock.TYPE, getRunestoneType(dim))
             .with(RunestoneBlock.RUNE, runeValue);
+    }
+
+    public static BlockState getRandomBlock(DimensionType dim)
+    {
+        return getRunestoneBlock(dim, new Random().nextInt(ordered.size()));
     }
 
     public static BlockPos getInnerPos(World world, Random rand)
@@ -194,29 +181,11 @@ public class Runestones extends MesonModule
         if (seed != this.seed) {
             Random rand = new Random();
             rand.setSeed(seed);
-            dests = new ArrayList<>(destsOrdered);
+            dests = new ArrayList<>(ordered);
             Collections.shuffle(dests, rand);
             this.seed = seed;
         }
     }
-
-//    @SubscribeEvent
-//    public void onWorldLoad(WorldEvent.Load event)
-//    {
-//        // randomize rune destinations per world seed
-//        IWorld world = event.getWorld();
-//
-//        if (world.getChunkProvider().getChunkGenerator() instanceof OverworldChunkGenerator) {
-//            long worldSeed = event.getWorld().getSeed();
-//            if (worldSeed != this.seed) {
-//                Random rand = new Random();
-//                rand.setSeed(worldSeed);
-//                dests = new ArrayList<>(destsOrdered);
-//                Collections.shuffle(dests, rand);
-//                this.seed = worldSeed;
-//            }
-//        }
-//    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPearlImpact(ProjectileImpactEvent event)

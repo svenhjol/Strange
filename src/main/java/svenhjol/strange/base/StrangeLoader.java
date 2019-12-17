@@ -4,8 +4,8 @@ import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.loot.AddSpellRandomly;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
@@ -25,7 +25,10 @@ public class StrangeLoader extends MesonLoader
     public void earlyInit()
     {
         // sounds
-        StrangeSounds.soundsToRegister.forEach(RegistryHandler::registerSound);
+        StrangeSounds.init();
+
+        // loot
+        StrangeLoot.init();
     }
 
     @Override

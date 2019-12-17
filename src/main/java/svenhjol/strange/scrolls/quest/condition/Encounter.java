@@ -26,7 +26,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
-import svenhjol.strange.base.QuestHelper;
+import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
@@ -41,6 +41,8 @@ public class Encounter implements IDelegate
 {
     public static final String ID = "Encounter";
     public static final String ENCOUNTER_TAG = "isEncounterMob";
+    public static final int TRIGGER_RANGE = 8;
+    public static final int FIGHT_RANGE = 32;
     public ServerBossInfo bossInfo = new ServerBossInfo(new TranslationTextComponent("event.strange.quests.encounter"), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
 
     private IQuest quest;
@@ -299,10 +301,10 @@ public class Encounter implements IDelegate
     {
         World world = player.world;
         BlockPos playerPos = player.getPosition();
-        boolean atLocation = WorldHelper.getDistanceSq(playerPos, this.location) < 8;
+        boolean atLocation = WorldHelper.getDistanceSq(playerPos, this.location) < TRIGGER_RANGE;
 
         if (this.spawned) {
-            float remainingHealth = world.getEntitiesWithinAABB(MobEntity.class, player.getBoundingBox().grow(24))
+            float remainingHealth = world.getEntitiesWithinAABB(MobEntity.class, player.getBoundingBox().grow(FIGHT_RANGE))
                 .stream()
                 .filter(m -> m.getTags().contains(ENCOUNTER_TAG))  // only count the mobs that are part of the encounter
                 .filter(m -> m.getTags().contains(quest.getId())) // and with the quest ID
