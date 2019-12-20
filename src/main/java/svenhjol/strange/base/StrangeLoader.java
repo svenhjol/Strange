@@ -1,10 +1,12 @@
 package svenhjol.strange.base;
 
+import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.feature.StrangeJigsawPiece;
 import svenhjol.strange.base.loot.AddSpellRandomly;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
@@ -29,6 +31,8 @@ public class StrangeLoader extends MesonLoader
 
         // loot
         StrangeLoot.init();
+
+        StrangeJigsawPiece.STRANGE_POOL_ELEMENT = IJigsawDeserializer.register("strange_pool_element", StrangeJigsawPiece::new);
     }
 
     @Override

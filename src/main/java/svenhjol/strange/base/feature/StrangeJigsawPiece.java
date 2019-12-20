@@ -21,7 +21,7 @@ public class StrangeJigsawPiece extends SingleJigsawPiece
 {
     protected final ResourceLocation location;
     protected final ImmutableList<StructureProcessor> processors;
-    public static IJigsawDeserializer STRANGE_POOL_ELEMENT = IJigsawDeserializer.register("strange_pool_element", StrangeJigsawPiece::new);
+    public static IJigsawDeserializer STRANGE_POOL_ELEMENT;
 
     public StrangeJigsawPiece(String location, List<StructureProcessor> processors)
     {
