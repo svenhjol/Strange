@@ -5,6 +5,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IllusionerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -16,6 +17,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.outerlands.module.Outerlands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +33,13 @@ public class IllusionersDropTotems extends MesonModule
     )
     public static double chance = 1.0D;
 
+    @Config(name = "Only drop when in Outerlands",
+        description = "If true, Illusioners only drop totems when in the Outerlands.")
+    public static boolean outerlands = true;
+
     @Config(name = "Dropped totems",
-        description = "List of totems that may be dropped by an Illusioner."
+        description = "List of totems that may be dropped by an Illusioner." +
+            "If these totems are disabled, the Illusioner will drop a Totem of Undying."
     )
     public static List<String> totemsConfig = new ArrayList<>(Arrays.asList(
         "strange:totem_of_returning",
@@ -58,11 +65,19 @@ public class IllusionersDropTotems extends MesonModule
             && event.getEntityLiving() instanceof IllusionerEntity
             && (double)event.getEntityLiving().world.rand.nextFloat() <= chance
         ) {
-            if (totems.isEmpty()) return;
-
+            Item totemItem;
             Entity entity = event.getEntity();
             World world = entity.getEntityWorld();
-            Item totemItem = totems.get(world.rand.nextInt(totems.size()));
+
+            if (outerlands && (Strange.loader.hasModule(Outerlands.class) && !Outerlands.isOuterPos(entity.getPosition())))
+                return;
+
+            if (!totems.isEmpty()) {
+                totemItem = totems.get(world.rand.nextInt(totems.size()));
+            } else {
+                totemItem = Items.TOTEM_OF_UNDYING;
+            }
+
             if (totemItem == null) return;
             ItemStack totem = new ItemStack(totemItem);
             event.getDrops().add(new ItemEntity(world, entity.posX, entity.posY, entity.posZ, totem));
