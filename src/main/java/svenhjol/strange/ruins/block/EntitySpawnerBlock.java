@@ -1,6 +1,7 @@
 package svenhjol.strange.ruins.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -33,5 +34,11 @@ public class EntitySpawnerBlock extends MesonBlock
     public boolean hasTileEntity(BlockState state)
     {
         return true;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state)
+    {
+        return BlockRenderType.INVISIBLE;
     }
 }
