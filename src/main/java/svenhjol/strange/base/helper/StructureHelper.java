@@ -18,9 +18,8 @@ import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.feature.AirBlockProcessor;
+import svenhjol.strange.base.feature.DecorationProcessor;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
-import svenhjol.strange.base.feature.StructureBlockProcessor;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -42,7 +41,7 @@ public class StructureHelper
 
     public static BlockPos adjustForOceanFloor(IWorld world, BlockPos pos, MutableBoundingBox box)
     {
-        Meson.debug("[StructureHelper] adjusting " + pos);
+        Meson.debug("[StructureHelper] adjusting piece for ocean floor at " + pos);
         int i = 256;
         int j = 0;
         int xsize = box.maxX - box.minX;
@@ -56,7 +55,7 @@ public class StructureHelper
         }
 
         j = j / (xsize * zsize);
-        Meson.debug("[StructureHelper] to " + pos);
+//        Meson.debug("[StructureHelper] to " + pos);
         return new BlockPos(pos.getX(), j, pos.getZ());
     }
 
@@ -70,6 +69,7 @@ public class StructureHelper
         public static final String STRUCTURES = "structures";
         public static final String CORRIDORS = "corridors";
         public static final String ROOMS = "rooms";
+        public static final String SECRETS = "secrets";
         public static final String STARTS = "starts";
         public static final String ENDS = "ends";
 
@@ -77,14 +77,13 @@ public class StructureHelper
         public List<ResourceLocation> starts = new ArrayList<>();
         public Map<String, Integer> sizes = new HashMap<>();
 
-        protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, STARTS, ENDS);
+        protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, SECRETS, STARTS, ENDS);
         protected final List<String> hasEnds = Arrays.asList(CORRIDORS, ROOMS);
 
         public RegisterJigsawPieces(IReloadableResourceManager rm, String structuresPath)
         {
             this(rm, structuresPath, Arrays.asList(
-                new StructureBlockProcessor(),
-                new AirBlockProcessor(),
+                new DecorationProcessor(),
                 new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.GRAY_STAINED_GLASS))
             ));
         }
