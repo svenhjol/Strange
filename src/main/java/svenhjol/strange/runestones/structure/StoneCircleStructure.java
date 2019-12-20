@@ -84,7 +84,7 @@ public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
                 && gen instanceof OverworldChunkGenerator
                 && this.rand.nextFloat() < 1.0F) {
 
-                int size = 7;
+                int size = 8;
                 ResourceLocation start = new ResourceLocation(Strange.MOD_ID, StoneCircles.VAULTS_DIR + "/starts");
                 JigsawManager.func_214889_a(start, size, VaultPiece::new, gen, templates, pos, components, rand);
                 this.recalculateStructureSize();
