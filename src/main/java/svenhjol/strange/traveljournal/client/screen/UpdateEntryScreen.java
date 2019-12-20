@@ -76,7 +76,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         renderBackgroundTexture();
         renderButtons();
 
-        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y + 8, this.color);
+        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y + 8, DyeColor.byId(this.color).getColorValue());
         nameField.render(mouseX, mouseY, partialTicks);
 
         for (int i = 0; i < colors.size(); i++) {
@@ -103,7 +103,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
 
     protected void setColor(DyeColor color)
     {
-        this.color = color.getColorValue();
+        this.color = color.getId();
     }
 
     @Override

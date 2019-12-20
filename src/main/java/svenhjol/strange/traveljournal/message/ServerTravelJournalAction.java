@@ -2,19 +2,26 @@ package svenhjol.strange.traveljournal.message;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.MapData;
+import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.network.NetworkEvent;
+import svenhjol.charm.tools.item.BoundCompassItem;
+import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.PlayerQueueHandler;
+import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
@@ -31,6 +38,8 @@ public class ServerTravelJournalAction implements IMesonMessage
     public static final int DELETE = 2;
     public static final int TELEPORT = 3;
     public static final int SCREENSHOT = 4;
+    public static final int BIND_COMPASS = 5;
+    public static final int MAKE_MAP = 6;
 
     private String id;
     private BlockPos pos;
@@ -88,11 +97,15 @@ public class ServerTravelJournalAction implements IMesonMessage
         public static void handle(final ServerTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
+                World world;
+                ItemStack held;
+
                 NetworkEvent.Context context = ctx.get();
                 ServerPlayerEntity player = context.getSender();
                 if (player == null) return;
 
-                ItemStack held = player.getHeldItem(msg.hand);
+                world = player.world;
+                held = player.getHeldItem(msg.hand);
 
                 if (msg.name == null || msg.name.isEmpty()) {
                     msg.name = new TranslationTextComponent("gui.strange.travel_journal.new_entry").getUnformattedComponentText();
@@ -100,6 +113,8 @@ public class ServerTravelJournalAction implements IMesonMessage
 
                 // create entry
                 Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
+                CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
+                ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
 
                 if (msg.action == ADD) {
 
@@ -115,18 +130,66 @@ public class ServerTravelJournalAction implements IMesonMessage
 
                 } else if (msg.action == SCREENSHOT) {
 
-                    CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
                     if (nbt != null && !nbt.isEmpty()) {
                         takeScreenshot(entry, msg.hand, player);
                     }
 
                 } else if (msg.action == TELEPORT) {
 
-                    CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
                     if (nbt != null && !nbt.isEmpty()) {
-                        ItemStack totem = getTotem(player);
+                        ItemStack totem = getItemFromInventory(inventories, TotemOfReturning.item);
                         if (totem != null) {
                             TotemOfReturningItem.teleport(player.world, player, entry.pos, entry.dim, totem);
+                        }
+                    }
+
+                } else if (msg.action == BIND_COMPASS) {
+
+                    if (nbt != null && !nbt.isEmpty()) {
+                        ItemStack compass = getItemFromInventory(inventories, Items.COMPASS);
+                        if (compass != null) {
+                            compass.shrink(1);
+
+                            ItemStack boundCompass = new ItemStack(CompassBinding.item);
+                            BoundCompassItem.setPos(boundCompass, entry.pos);
+                            BoundCompassItem.setDim(boundCompass, entry.dim);
+                            BoundCompassItem.setColor(boundCompass, entry.color);
+
+                            StringTextComponent text = new StringTextComponent(entry.name);
+                            text.setStyle(new Style().setColor(StringHelper.getTextFormattingByDyeDamage(entry.color)));
+                            boundCompass.setDisplayName(text);
+
+                            PlayerHelper.addOrDropStack(player, boundCompass);
+                        }
+                    }
+
+                } else if (msg.action == MAKE_MAP) {
+
+                    if (nbt != null && !nbt.isEmpty()) {
+                        ItemStack map = getItemFromInventory(inventories, Items.MAP);
+                        if (map != null) {
+                            DyeColor col = DyeColor.byId(entry.color);
+                            MapDecoration.Type decoration = MapDecoration.Type.TARGET_X;
+
+                            if (col == DyeColor.BLACK) decoration = MapDecoration.Type.BANNER_BLACK;
+                            if (col == DyeColor.BLUE) decoration = MapDecoration.Type.BANNER_BLUE;
+                            if (col == DyeColor.PURPLE) decoration = MapDecoration.Type.BANNER_PURPLE;
+                            if (col == DyeColor.RED) decoration = MapDecoration.Type.BANNER_RED;
+                            if (col == DyeColor.BROWN) decoration = MapDecoration.Type.BANNER_BROWN;
+                            if (col == DyeColor.GREEN) decoration = MapDecoration.Type.BANNER_GREEN;
+                            if (col == DyeColor.LIGHT_GRAY) decoration = MapDecoration.Type.BANNER_LIGHT_GRAY;
+
+                            map.shrink(1);
+                            BlockPos pos = entry.pos;
+                            ItemStack filled = FilledMapItem.setupNewMap(world, pos.getX(), pos.getZ(), (byte)2, true, true);
+                            FilledMapItem.renderBiomePreviewMap(world, filled);
+                            MapData.addTargetDecoration(filled, pos, "+", decoration);
+
+                            StringTextComponent text = new StringTextComponent(entry.name);
+                            text.setStyle(new Style().setColor(StringHelper.getTextFormattingByDyeDamage(entry.color)));
+                            filled.setDisplayName(text);
+
+                            PlayerHelper.addOrDropStack(player, filled);
                         }
                     }
                 }
@@ -143,20 +206,15 @@ public class ServerTravelJournalAction implements IMesonMessage
         }
 
         @Nullable
-        private static ItemStack getTotem(PlayerEntity player)
+        private static ItemStack getItemFromInventory(ImmutableList<NonNullList<ItemStack>> inventories, Item item)
         {
-            // check if player has a totem in their inventory
-            PlayerInventory inventory = player.inventory;
-            ImmutableList<NonNullList<ItemStack>> inventories = ImmutableList.of(inventory.mainInventory, inventory.offHandInventory);
-
             for (NonNullList<ItemStack> itemStacks : inventories) {
                 for (ItemStack stack : itemStacks) {
-                    if (!stack.isEmpty() && stack.getItem() == TotemOfReturning.item) {
+                    if (!stack.isEmpty() && stack.getItem() == item) {
                         return stack;
                     }
                 }
             }
-
             return null;
         }
     }

@@ -5,8 +5,9 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Hand;
@@ -14,7 +15,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.RandomStringUtils;
+import svenhjol.charm.Charm;
+import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.totems.module.TotemOfReturning;
@@ -39,6 +43,8 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     protected List<String> hasScreenshots = new ArrayList<>();
     protected CompoundNBT journalEntries = new CompoundNBT();
     protected boolean hasTotem = false;
+    protected boolean hasCompass = false;
+    protected boolean hasMap = false;
     protected int page;
     protected String message = "";
 
@@ -68,18 +74,17 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             if (file.exists()) hasScreenshots.add(id);
         }
 
-        // check if player has a totem in their inventory
-        PlayerInventory inventory = player.inventory;
-        ImmutableList<NonNullList<ItemStack>> inventories = ImmutableList.of(inventory.mainInventory, inventory.offHandInventory);
+        // check if player has an actionable item in their inventory
+        ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
+
 
         for (NonNullList<ItemStack> itemStacks : inventories) {
             for (ItemStack stack : itemStacks) {
-                if (!stack.isEmpty() && stack.getItem() == TotemOfReturning.item) {
-                    hasTotem = true;
-                    break;
-                }
+                if (stack.isEmpty()) continue;
+                if (!hasTotem) hasTotem = stack.getItem() == TotemOfReturning.item;
+                if (!hasCompass) hasCompass = Charm.hasModule(CompassBinding.class) && stack.getItem() == Items.COMPASS;
+                if (!hasMap) hasMap = stack.getItem() == Items.MAP;
             }
-            if (hasTotem) break;
         }
     }
 
@@ -129,7 +134,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
             // draw row
             String bold = atEntryPosition ? "§o" : "";
-            this.font.drawString(bold + entry.name, x + textX, y + textY, entry.color);
+            this.font.drawString(bold + entry.name, x + textX, y + textY, DyeColor.byId(entry.color).getColorValue());
 
             // update button
             this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
@@ -144,6 +149,18 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             // teleport button
             if (!atEntryPosition && hasTotem && entry.pos != null) {
                 this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(entry)));
+                buttonOffsetX -= buttonSpacing;
+            }
+
+            // compass button
+            if (hasCompass && entry.pos != null) {
+                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 60, 0, 19, BUTTONS, (r) -> bindCompass(entry)));
+                buttonOffsetX -= buttonSpacing;
+            }
+
+            // map button
+            if (hasMap && entry.pos != null) {
+                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 100, 0, 19, BUTTONS, (r) -> makeMap(entry)));
                 buttonOffsetX -= buttonSpacing;
             }
 
@@ -219,6 +236,18 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     {
         this.close();
         PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
+    }
+
+    private void bindCompass(Entry entry)
+    {
+        this.close();
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
+    }
+
+    private void makeMap(Entry entry)
+    {
+        this.close();
+        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
     }
 
     private void screenshot(Entry entry)
