@@ -84,7 +84,6 @@ public class Spells extends MesonModule
         "boost",
         "drain",
         "explosion",
-        "extraction",
         "freeze",
         "growth",
         "knockback",
@@ -107,7 +106,7 @@ public class Spells extends MesonModule
         "repel"
     );
 
-    public static List<String> extractionBlacklist = Arrays.asList(
+    public static List<String> transferBlacklist = Arrays.asList(
         "minecraft:bedrock",
         "minecraft:end_portal_frame",
         "minecraft:end_portal",
@@ -116,7 +115,7 @@ public class Spells extends MesonModule
         "charm:rune_portal"
     );
 
-    public static List<String> extractionHeavy = Arrays.asList(
+    public static List<String> transferHeavy = Arrays.asList(
         "minecraft:spawner",
         "minecraft:dragon_egg"
     );

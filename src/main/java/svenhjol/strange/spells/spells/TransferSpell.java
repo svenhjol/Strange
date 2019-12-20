@@ -24,11 +24,11 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class ExtractionSpell extends Spell
+public class TransferSpell extends Spell
 {
-    public ExtractionSpell()
+    public TransferSpell()
     {
-        super("extraction");
+        super("transfer");
         this.element = Element.EARTH;
         this.affect = Affect.FOCUS;
         this.duration = 1.0F;
@@ -55,13 +55,13 @@ public class ExtractionSpell extends Spell
                 || state.has(BlockStateProperties.BOTTOM)
                 || world.isAirBlock(pos);
 
-            if (invalid || Spells.extractionBlacklist.contains(srcName)) {
+            if (invalid || Spells.transferBlacklist.contains(srcName)) {
                 world.playSound(null, player.getPosition(), SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 player.getCooldownTracker().setCooldown(staff.getItem(), 20);
                 return false;
             }
 
-            if (Spells.extractionHeavy.contains(srcName)) {
+            if (Spells.transferHeavy.contains(srcName)) {
                 int playerLevel = player.experienceLevel;
                 int levelCost = 10;
 
