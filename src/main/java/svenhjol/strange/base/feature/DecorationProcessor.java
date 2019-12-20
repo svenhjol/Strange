@@ -22,11 +22,10 @@ import java.util.Random;
 public class DecorationProcessor extends StructureProcessor
 {
     private static final IStructureProcessorType TYPE = Registry.register(Registry.STRUCTURE_PROCESSOR, Strange.MOD_ID + ":air_block", DecorationProcessor::new);
-    private Random rand;
 
     public DecorationProcessor()
     {
-        this.rand = new Random();
+        // no op
     }
 
     public DecorationProcessor(Dynamic<?> dynamic)
@@ -58,7 +57,7 @@ public class DecorationProcessor extends StructureProcessor
         if (blockInfo.state.getBlock() == Blocks.STRUCTURE_BLOCK) {
             StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
             if (mode == StructureMode.DATA) {
-                return DecorationHelper.STRUCTURE_BLOCK_INSTANCE.replace(placement.getRotation(), blockInfo, blockInfo.nbt.getString("metadata"), this.rand);
+                return DecorationHelper.STRUCTURE_BLOCK_INSTANCE.replace(placement.getRotation(), blockInfo, blockInfo.nbt.getString("metadata"), new Random(pos.toLong()));
             }
         }
 
