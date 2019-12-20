@@ -113,9 +113,9 @@ public class Quests extends MesonModule
             .findFirst();
     }
 
-    public static IQuest generate(World world, BlockPos pos, IQuest quest)
+    public static IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest)
     {
-        return Generator.INSTANCE.generate(world, pos, quest);
+        return Generator.INSTANCE.generate(world, pos, valueMultiplier, quest);
     }
 
     public static void update(PlayerEntity player)

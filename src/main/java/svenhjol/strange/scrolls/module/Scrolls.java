@@ -70,7 +70,9 @@ public class Scrolls extends MesonModule
                 .quality(quality)
                 .acceptFunction(() -> (scroll, context) -> {
                     int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1;
-                    return ScrollItem.putTier(scroll, tier);
+                    ScrollItem.putTier(scroll, tier);
+                    ScrollItem.putValue(scroll, 0.25F * context.getRandom().nextInt(4) + 2);
+                    return scroll;
                 })
                 .build();
 

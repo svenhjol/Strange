@@ -59,7 +59,7 @@ public class Scrollkeepers extends MesonModule
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
         "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.  Set to zero to disable Bad Omen effect.")
-    public static double badOmenChance = 0.02D;
+    public static double badOmenChance = 0.025D;
 
     @Config(name = "Villager interest range", description = "Range (in blocks) that a scrollkeeper will indicate that they are ready to accept a completed quest.")
     public static int interestRange = 16;
@@ -238,7 +238,8 @@ public class Scrollkeepers extends MesonModule
             quest.setTier(tier);
             quest.setSeller(merchant.getUniqueID());
 
-            ScrollItem.putTag(out, quest.toNBT());
+            ScrollItem.putQuest(out, quest);
+            ScrollItem.putValue(out,in1.getCount() * 0.25F);
             out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
             return new MerchantOffer(in1, out, 6, 0, 0.0F);
         }

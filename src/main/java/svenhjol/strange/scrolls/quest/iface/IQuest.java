@@ -23,6 +23,8 @@ public interface IQuest
 
     int getTier();
 
+    float getValue();
+
     CompoundNBT toNBT();
 
     boolean respondTo(Event event, @Nullable PlayerEntity player);
@@ -42,6 +44,8 @@ public interface IQuest
     void setSeller(UUID sellerId);
 
     void setTier(int tier);
+
+    void setValue(float value);
 
     void setCriteria(Criteria criteria);
 

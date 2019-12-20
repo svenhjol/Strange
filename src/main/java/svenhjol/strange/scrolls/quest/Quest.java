@@ -21,6 +21,7 @@ public class Quest implements IQuest
     private static final String STATE = "state";
     private static final String CRITERIA = "criteria";
     private static final String TIER = "tier";
+    private static final String VALUE = "value";
 
     private String questId = "";
     private String seller = "";
@@ -30,6 +31,7 @@ public class Quest implements IQuest
     private State state = State.NotStarted;
     private long purchased;
     private int tier;
+    private float value;
 
     public Quest()
     {
@@ -48,6 +50,7 @@ public class Quest implements IQuest
         tag.putString(DESCRIPTION, description);
         tag.putString(STATE, state.toString());
         tag.putLong(PURCHASED, purchased);
+        tag.putFloat(VALUE, value);
         tag.put(CRITERIA, criteria.toNBT());
 
         return tag;
@@ -63,6 +66,7 @@ public class Quest implements IQuest
         purchased = tag.getLong(PURCHASED);
         state = State.valueOrDefault(tag.getString(STATE), State.NotStarted);
         tier = tag.getInt(TIER);
+        value = tag.getFloat(VALUE);
 
         criteria = new Criteria(this);
         criteria.fromNBT(tag.getCompound(CRITERIA));
@@ -137,6 +141,12 @@ public class Quest implements IQuest
     }
 
     @Override
+    public void setValue(float value)
+    {
+        this.value = value;
+    }
+
+    @Override
     public String getId()
     {
         return questId;
@@ -152,6 +162,12 @@ public class Quest implements IQuest
     public String getTitle()
     {
         return this.title;
+    }
+
+    @Override
+    public float getValue()
+    {
+        return this.value;
     }
 
     @Override
