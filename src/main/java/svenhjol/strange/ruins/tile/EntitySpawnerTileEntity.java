@@ -6,6 +6,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ArmorStandEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.item.minecart.ChestMinecartEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -20,6 +23,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.strange.base.helper.DecorationHelper;
@@ -93,9 +97,9 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
         boolean result = trySpawn(pos);
         if (result) {
-            Meson.debug("EntitySpawner spawned mob at pos", pos);
+            Meson.debug("EntitySpawner spawned entity at pos", pos);
         } else {
-            Meson.warn("EntitySpawner failed to spawn mob at pos", pos);
+            Meson.warn("EntitySpawner failed to spawn entity at pos", pos);
         }
     }
 
@@ -108,6 +112,10 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
 
         type = ForgeRegistries.ENTITIES.getValue(entity);
         if (type == null) return false;
+
+        if (type == EntityType.MINECART || type == EntityType.CHEST_MINECART) {
+            return tryCreateMinecart(type, pos);
+        }
 
         if (type == EntityType.ARMOR_STAND) {
             return tryCreateArmorStand(pos);
@@ -128,6 +136,24 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
 
             world.addEntity(ent);
         }
+        return true;
+    }
+
+    public boolean tryCreateMinecart(EntityType<?> type, BlockPos pos)
+    {
+        AbstractMinecartEntity minecart = null;
+        if (world == null) return false;
+
+        if (type == EntityType.CHEST_MINECART) {
+            minecart = new ChestMinecartEntity(world.getWorld(), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            ResourceLocation lootTable = DecorationHelper.getLootTable(this.meta, LootTables.CHESTS_ABANDONED_MINESHAFT);
+            ((ChestMinecartEntity)minecart).setLootTable(lootTable, world.rand.nextLong());
+        } else if (type == EntityType.MINECART) {
+            minecart = new MinecartEntity(world.getWorld(), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+        }
+
+        if (minecart == null) return false;
+        world.addEntity(minecart);
         return true;
     }
 
