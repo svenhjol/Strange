@@ -67,7 +67,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {
                             if (structure.hasStartAt(gen, rand, k, l)) {
-                                Meson.debug("[UndergroundRuinStructure] not spawning near " + structure.getStructureName());
+                                Meson.debug("[UndergroundStructure] too close to " + structure.getStructureName());
                                 return false;
                             }
                         }
@@ -123,10 +123,9 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
 
             ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + catName + "/" + ruin + "/starts");
 
-            Meson.debug("Trying to create ruin " + ruin + " at " + pos);
+            Meson.debug("[UndergroundStructure] create ruin " + ruin + " at " + pos);
             JigsawManager.func_214889_a(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
-            Meson.debug("Recalculating after create");
 
             int maxTop = 50;
             if (bounds.maxY >= maxTop) {
