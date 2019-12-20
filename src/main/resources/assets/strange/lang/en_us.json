@@ -127,7 +127,6 @@
   "spell.strange.drain.title": "Drain Spell",
   "spell.strange.explosion.title": "Explosion Spell",
   "spell.strange.freeze.title": "Freeze Spell",
-  "spell.strange.extraction.title": "Extraction Spell",
   "spell.strange.growth.title": "Growth Spell",
   "spell.strange.knockback.title": "Knockback Spell",
   "spell.strange.pacify.title": "Pacify Spell",
@@ -138,6 +137,7 @@
   "spell.strange.slowness.title": "Slowness Spell",
   "spell.strange.summon.title": "Summon Spell",
   "spell.strange.thaw.title": "Thaw Spell",
+  "spell.strange.transfer.title": "Transfer Spell",
 
   "spell.strange.aura.desc": "Heals all friendly creatures in range.",
   "spell.strange.blink.desc": "Teleports to the target location.",
@@ -145,7 +145,6 @@
   "spell.strange.drain.desc": "Extracts health from all creatures in range and gives it to you.",
   "spell.strange.explosion.desc": "Explosion at the target location.",
   "spell.strange.freeze.desc": "Lava turns to magma, water turns to ice, fires are extinguished.",
-  "spell.strange.extraction.desc": "Extracts a block and places it elsewhere.",
   "spell.strange.growth.desc": "Crops in the area will grow.",
   "spell.strange.knockback.desc": "Flings the target.",
   "spell.strange.pacify.desc": "Temporarily makes target creature passive.",
@@ -156,6 +155,7 @@
   "spell.strange.slowness.desc": "Gives slowness to the target.",
   "spell.strange.summon.desc": "Summons wolves to fight enemies around you.",
   "spell.strange.thaw.desc": "Magma blocks in the area will turn into lava.",
+  "spell.strange.transfer.desc": "Transfer a block to a new location.",
 
   "quests.tier1.wheat.title": "Wheat",
   "quests.tier1.wheat.desc": "Farm and pickup wheat to complete the quest.",
