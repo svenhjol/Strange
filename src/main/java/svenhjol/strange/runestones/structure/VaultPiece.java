@@ -11,6 +11,7 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.base.helper.StructureHelper;
 
@@ -36,6 +37,7 @@ public class VaultPiece extends AbstractVillagePiece
     @Override
     public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk)
     {
+        boolean result;
         MutableBoundingBox box = this.jigsawPiece.getBoundingBox(this.templates, pos, this.rotation);
 
         if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
@@ -44,6 +46,13 @@ public class VaultPiece extends AbstractVillagePiece
 //            this.pos = new BlockPos(this.pos.getX(), 40, this.pos.getY());
         }
 
-        return super.addComponentParts(world, rand, structureBox, chunk);
+        try {
+            result = super.addComponentParts(world, rand, structureBox, chunk);
+        } catch (NullPointerException e) {
+            Meson.warn("NullPointer when generating piece, FIXME", e);
+            result = false;
+        }
+
+        return result;
     }
 }
