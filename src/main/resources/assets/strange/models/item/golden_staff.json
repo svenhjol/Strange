@@ -2,5 +2,15 @@
     "parent": "strange:item/staff",
     "textures": {
         "layer0": "strange:item/golden_staff"
-    }
+    },
+    "overrides": [
+        { "predicate": { "spell": 0.1 }, "model": "strange:item/golden_staff_air" },
+        { "predicate": { "spell": 0.2 }, "model": "strange:item/golden_staff_water" },
+        { "predicate": { "spell": 0.3 }, "model": "strange:item/golden_staff_earth" },
+        { "predicate": { "spell": 0.4 }, "model": "strange:item/golden_staff_fire" },
+        { "predicate": { "spell": 0.5 }, "model": "strange:item/golden_staff_air_charged" },
+        { "predicate": { "spell": 0.6 }, "model": "strange:item/golden_staff_water_charged" },
+        { "predicate": { "spell": 0.7 }, "model": "strange:item/golden_staff_earth_charged" },
+        { "predicate": { "spell": 0.8 }, "model": "strange:item/golden_staff_fire_charged" }
+    ]
 }

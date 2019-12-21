@@ -19,6 +19,7 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
+import svenhjol.strange.spells.spells.Spell.Element;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,6 +47,17 @@ public class StaffItem extends TieredItem implements IMesonItem
         // some defaults
         this.setCapacityMultiplier(1.0F);
         this.setDurationMultiplier(1.0F);
+
+        addPropertyOverride(new ResourceLocation("spell"), (stack, world, entity) -> {
+            float out = 0.0F;
+            boolean charged = isCharged(stack);
+
+            Spell spell = getSpell(stack);
+            out = spell != null && spell.getElement() != null ? spell.getElement().ordinal() : Element.BASE.ordinal();
+
+            if (charged) out += 4.0F;
+            return out / 10.0F;
+        });
     }
 
     @Override
@@ -55,12 +67,6 @@ public class StaffItem extends TieredItem implements IMesonItem
         Spell spell = StaffItem.getSpell(staff);
         if (spell == null) return;
         tooltip.add(new TranslationTextComponent("staff.strange.uses", StaffItem.getUses(staff)));
-    }
-
-    @Override
-    public boolean hasEffect(ItemStack staff)
-    {
-        return StaffItem.isCharged(staff);
     }
 
     @Override

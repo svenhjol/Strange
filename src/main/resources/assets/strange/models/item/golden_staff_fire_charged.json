@@ -1,0 +1,7 @@
+{
+    "parent": "strange:item/staff",
+    "textures": {
+        "layer0": "strange:item/golden_staff",
+        "layer1": "strange:item/overlay_staff_fire_charged"
+    }
+}
