@@ -1,17 +1,14 @@
 package svenhjol.strange.scrolls.quest.condition;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
@@ -57,23 +54,13 @@ public class Gather implements IDelegate
         if (event instanceof QuestEvent.Accept) {
             // gather as many things as possible from the player's inventory
             final QuestEvent.Accept qe = (QuestEvent.Accept)event;
-            final ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
-            final Item requiredItem = stack.getItem();
-
-            for (NonNullList<ItemStack> inventory : inventories) {
-                for (ItemStack invStack : inventory) {
-                    if (invStack.isEmpty()) continue;
-                    if (invStack.getItem() != requiredItem) continue;
-                    if (isSatisfied()) continue;
-
-                    int invCount = invStack.getCount();
-                    int shrinkBy = Math.min(getRemaining(), invCount);
-                    this.collected += shrinkBy;
-                    invStack.shrink(shrinkBy);
-                }
-            }
-
+            pollInventory(player);
             showProgress(player);
+        }
+
+        if (event instanceof PlayerTickEvent) {
+            if (player.world.getGameTime() % 30 == 0)
+                pollInventory(player);
         }
 
         if (event instanceof EntityItemPickupEvent) {
@@ -190,6 +177,20 @@ public class Gather implements IDelegate
             QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.gathered_all"));
         } else {
             QuestHelper.effectCounted(player);
+        }
+    }
+
+    private void pollInventory(PlayerEntity player)
+    {
+        for (ItemStack invStack : player.inventory.mainInventory) {
+            if (invStack.isEmpty()) continue;
+            if (invStack.getItem() != stack.getItem()) continue;
+            if (isSatisfied()) continue;
+
+            int invCount = invStack.getCount();
+            int shrinkBy = Math.min(getRemaining(), invCount);
+            this.collected += shrinkBy;
+            invStack.shrink(shrinkBy);
         }
     }
 }
