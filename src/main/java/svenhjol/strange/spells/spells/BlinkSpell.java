@@ -1,14 +1,12 @@
 package svenhjol.strange.spells.spells;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import svenhjol.strange.base.helper.StructureHelper;
 
 import java.util.function.Consumer;
 
@@ -33,19 +31,15 @@ public class BlinkSpell extends Spell
             beam.remove();
             if (result.getType() == RayTraceResult.Type.BLOCK) {
                 BlockPos pos = ((BlockRayTraceResult)result).getPos();
-                BlockState state = world.getBlockState(pos);
+                BlockPos pos1 = pos.up(1);
+                BlockPos pos2 = pos.up(2);
 
-                if ((state.isSolid()
-                    || state.getMaterial() == Material.WATER
-                    || state.getMaterial() == Material.LEAVES
-                    || state.getMaterial() == Material.PLANTS
-                    || state.getMaterial() == Material.ORGANIC
-                    || state.getBlock() == Blocks.GRASS
-                )
-                    && !world.getBlockState(pos.up(1)).isSolid()
-                    && !world.getBlockState(pos.up(2)).isSolid()
+                if (StructureHelper.isSolidishBlock(world, pos)
+                    && StructureHelper.isAirBlock(world, pos1)
+                    && StructureHelper.isAirBlock(world, pos2)
                 ) {
                     player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D);
+                    player.setMotion(0, 0, 0);
                     didCast.accept(true);
                     return;
                 }
