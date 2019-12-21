@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +46,7 @@ public class StructureHelper
         int i = 256;
         int j = 0;
         int xsize = box.maxX - box.minX;
+        int ysize = box.maxY - box.minY;
         int zsize = box.maxZ - box.minZ;
         BlockPos blockpos = pos.add(xsize - 1, 0, zsize - 1);
 
@@ -55,13 +57,40 @@ public class StructureHelper
         }
 
         j = j / (xsize * zsize);
-//        Meson.debug("[StructureHelper] to " + pos);
-        return new BlockPos(pos.getX(), j, pos.getZ());
+        return new BlockPos(pos.getX(), j - ysize - 2, pos.getZ()); // embed the structure below the surface
     }
 
-    public static boolean isSolidBlock(World world, BlockPos pos, BlockState state)
+    public static boolean isSolidBlock(World world, BlockPos pos)
     {
-        return (state.isSolid() && !world.isAirBlock(pos) && !state.getMaterial().isLiquid());
+        BlockState state = world.getBlockState(pos);
+
+        return state.isSolid()
+            && !world.isAirBlock(pos)
+            && !state.getMaterial().isLiquid();
+    }
+
+    public static boolean isSolidishBlock(World world, BlockPos pos)
+    {
+        BlockState state = world.getBlockState(pos);
+
+        return isSolidBlock(world, pos)
+            || state.getMaterial() == Material.LEAVES
+            || state.getMaterial() == Material.SNOW
+            || state.getMaterial() == Material.ORGANIC
+            || state.getMaterial() == Material.PLANTS;
+    }
+
+    public static boolean isAirBlock(World world, BlockPos pos)
+    {
+        BlockState state = world.getBlockState(pos);
+
+        return !state.isSolid()
+            || state.getMaterial() == Material.WATER
+            || state.getMaterial() == Material.SNOW
+            || state.getMaterial() == Material.WATER
+            || state.getMaterial() == Material.PLANTS
+            || state.getMaterial() == Material.LEAVES
+            || state.getMaterial() == Material.ORGANIC;
     }
 
     public static class RegisterJigsawPieces
