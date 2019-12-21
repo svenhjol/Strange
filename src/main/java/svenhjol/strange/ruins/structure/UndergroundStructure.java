@@ -115,12 +115,13 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             String ruin = getRuin(biomeCategory, pos);
             if (ruin == null) return;
 
-            int size = UndergroundRuins.defaultSize;
-            if (UndergroundRuins.sizes.containsKey(biomeCategory)) {
-                size = UndergroundRuins.sizes.get(biomeCategory).getOrDefault(ruin, UndergroundRuins.defaultSize);
-            }
-            size += rand.nextInt(UndergroundRuins.variation + 1);
+            pos = adjustPosForBiome(biomeCategory, pos);
 
+            int size = UndergroundRuins.defaultSize;
+            if (UndergroundRuins.sizes.containsKey(biomeCategory))
+                size = UndergroundRuins.sizes.get(biomeCategory).getOrDefault(ruin, UndergroundRuins.defaultSize);
+
+            size += rand.nextInt(UndergroundRuins.variation + 1);
             ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + catName + "/" + ruin + "/starts");
 
             Meson.debug("[UndergroundStructure] create ruin " + ruin + " at " + pos);
@@ -168,6 +169,14 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             } else {
                 return ruins.get(0);
             }
+        }
+
+        public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos)
+        {
+            if (biomeCategory == Biome.Category.OCEAN) {
+                return new BlockPos(pos.getX(), Math.min(pos.getY(), 30), pos.getZ());
+            }
+            return pos;
         }
     }
 }

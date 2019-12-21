@@ -35,8 +35,7 @@ public class UndergroundRuins extends MesonModule
     public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
         Feature.STRONGHOLD,
         Feature.OCEAN_MONUMENT,
-        Feature.NETHER_BRIDGE,
-        Feature.BURIED_TREASURE
+        Feature.NETHER_BRIDGE
     ));
 
     @Config(name = "Default size", description = "Controls how many pieces generate as part of a ruin.")
