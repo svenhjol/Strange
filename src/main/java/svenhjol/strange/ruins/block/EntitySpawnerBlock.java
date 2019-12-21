@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockReader;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
@@ -37,8 +38,14 @@ public class EntitySpawnerBlock extends MesonBlock
     }
 
     @Override
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
     public BlockRenderType getRenderType(BlockState state)
     {
-        return BlockRenderType.INVISIBLE;
+        return BlockRenderType.MODEL;
     }
 }
