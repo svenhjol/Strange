@@ -45,10 +45,18 @@ public class Reward implements IDelegate
 
         if (event instanceof QuestEvent.Complete) {
             for (ItemStack stack : items.keySet()) {
-                stack.setCount(items.get(stack));
-                PlayerHelper.addOrDropStack(player, stack);
+                int c = items.get(stack);
+                if (stack.getMaxStackSize() == 1) {
+                    for (int i = 0; i < c; i++) {
+                        ItemStack s = stack.copy();
+                        PlayerHelper.addOrDropStack(player, s);
+                    }
+                } else {
+                    ItemStack s = stack.copy();
+                    s.setCount(c);
+                    PlayerHelper.addOrDropStack(player, s);
+                }
             }
-
             return true;
         }
         return false;
