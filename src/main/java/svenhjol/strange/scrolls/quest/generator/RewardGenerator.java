@@ -18,6 +18,7 @@ import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.item.SpellBookItem;
+import svenhjol.strange.spells.item.StaffItem;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
@@ -42,6 +43,8 @@ public class RewardGenerator extends BaseGenerator
     public static final String RANDOM_RARE_ENCHANTED_BOOK = "RandomRareEnchantedBook";
     public static final String RANDOM_SPELL_BOOK = "RandomSpellBook";
     public static final String RANDOM_RARE_SPELL_BOOK = "RandomRareSpellBook";
+    public static final String RANDOM_CHARGED_STAFF = "RandomChargedStaff";
+    public static final String RANDOM_RARE_CHARGED_STAFF = "RandomRareChargedStaff";
     public static final String TRAVEL_JOURNAL = "TravelJournal";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
@@ -50,6 +53,8 @@ public class RewardGenerator extends BaseGenerator
         RANDOM_SPELL_BOOK,
         RANDOM_RARE_ENCHANTED_BOOK,
         RANDOM_RARE_SPELL_BOOK,
+        RANDOM_CHARGED_STAFF,
+        RANDOM_RARE_CHARGED_STAFF,
         TRAVEL_JOURNAL
     ));
 
@@ -72,6 +77,7 @@ public class RewardGenerator extends BaseGenerator
 
             for (String stackName : items.keySet()) {
                 ItemStack stack;
+                int count = Integer.parseInt(items.get(stackName));
 
                 if (SPECIAL_ITEMS.contains(stackName)) {
                     stack = getSpecialItemReward(stackName);
@@ -83,10 +89,8 @@ public class RewardGenerator extends BaseGenerator
                     if (item == null) continue;
 
                     stack = new ItemStack(item);
+                    count = multiplyDistance(count);
                 }
-
-                int count = Integer.parseInt(items.get(stackName));
-                count = multiplyDistance(count);
 
                 reward.addItem(stack, count);
             }
@@ -113,7 +117,6 @@ public class RewardGenerator extends BaseGenerator
         Random rand = world.rand;
         ItemStack out = null;
         boolean rare;
-
 
         switch (item) {
             case STONE_CIRCLE_TOTEM:
@@ -142,6 +145,19 @@ public class RewardGenerator extends BaseGenerator
                     Spell spell = SpellsHelper.getRandomSpell(rand, rare);
                     if (spell == null) return null;
                     SpellBookItem.putSpell(out, spell);
+                }
+                break;
+
+            case RANDOM_CHARGED_STAFF:
+            case RANDOM_RARE_CHARGED_STAFF:
+                if (Strange.hasModule(Spells.class)) {
+                    out = new ItemStack(Spells.staves.get(rand.nextInt(3)));
+                    rare = item.equals(RANDOM_RARE_CHARGED_STAFF);
+                    Spell spell = SpellsHelper.getRandomSpell(rand, rare);
+                    if (spell == null) return null;
+                    StaffItem.putSpell(out, spell);
+                    StaffItem.putUses(out, Math.min(spell.getQuantity(), rand.nextInt(8) + 8));
+                    StaffItem.putCharged(out, true);
                 }
                 break;
 
