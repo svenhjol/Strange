@@ -1,0 +1,11 @@
+{
+  "gather": {
+    "minecraft:gold_ingot": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:gold_ingot": 2
+    }
+  }
+}

@@ -1,13 +1,13 @@
 {
   "hunt": {
-    "minecraft:enderman": 1
+    "minecraft:blaze": 8
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 2
+      "minecraft:emerald": 4
     },
     "xp": {
-      "count": 30
+      "count": 40
     }
   }
 }

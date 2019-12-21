@@ -1,13 +1,13 @@
 {
-  "locate": [
-    "minecraft:enchanted_book"
-  ],
+  "craft": {
+    "minecraft:book": 6
+  },
   "rewards": {
     "items": {
       "minecraft:emerald": 3
     },
     "xp": {
-      "count": 50
+      "count": 20
     }
   }
 }

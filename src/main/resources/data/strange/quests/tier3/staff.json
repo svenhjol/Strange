@@ -1,0 +1,16 @@
+{
+  "gather": {
+    "minecraft:iron_ingot": 60,
+    "minecraft:gold_ingot": 30
+  },
+  "module_enabled": "strange:spells",
+  "rewards": {
+    "items": {
+      "RandomChargedStaff": 1,
+      "RandomSpellBook": 1
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

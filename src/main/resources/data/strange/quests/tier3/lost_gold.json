@@ -5,7 +5,7 @@
   "rewards": {
     "items": {
       "minecraft:diamond": 1,
-      "minecraft:emerald": 5
+      "minecraft:emerald": 3
     },
     "xp": {
       "count": 50

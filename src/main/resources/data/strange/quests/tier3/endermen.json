@@ -1,0 +1,14 @@
+{
+  "hunt": {
+    "minecraft:enderman": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:ender_pearl": 5
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

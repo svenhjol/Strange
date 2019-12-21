@@ -1,0 +1,17 @@
+{
+  "timeLimit": 6,
+  "encounter": {
+    "minecraft:skeleton": {
+      "count": 10
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 2,
+      "RandomEnchantedBook": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,10 +1,10 @@
 {
-  "hunt": {
-    "minecraft:enderman": 1
+  "mine": {
+    "minecraft:diamond_ore": 1
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 2
+      "minecraft:diamond": 1
     },
     "xp": {
       "count": 30

@@ -1,0 +1,11 @@
+{
+  "gather": {
+    "minecraft:water_bucket": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:bucket": 5
+    }
+  }
+}

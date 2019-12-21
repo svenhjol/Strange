@@ -1,10 +1,11 @@
 {
   "locate": [
-    "minecraft:enchanted_book"
+    "minecraft:diamond_block"
   ],
   "rewards": {
     "items": {
-      "minecraft:emerald": 3
+      "minecraft:diamond": 3,
+      "minecraft:emerald": 1
     },
     "xp": {
       "count": 50

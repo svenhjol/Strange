@@ -1,6 +1,6 @@
 {
-  "mine": {
-    "minecraft:iron_ore": 10
+  "gather": {
+    "minecraft:charcoal": 15
   },
   "rewards": {
     "items": {
