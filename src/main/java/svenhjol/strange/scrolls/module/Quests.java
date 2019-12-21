@@ -16,6 +16,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.meson.Meson;
+import svenhjol.meson.MesonLoader;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -77,6 +78,12 @@ public class Quests extends MesonModule
                 for (ResourceLocation res : resources) {
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
+
+                    // check module enabled
+                    String mod = definition.getModuleEnabled();
+                    if (!mod.isEmpty() && !MesonLoader.hasModule(new ResourceLocation(mod)))
+                        continue;
+
                     String name = res.getPath().replace("/", ".").replace(".json", "");
                     definition.setTitle(name);
                     definition.setTier(tier);

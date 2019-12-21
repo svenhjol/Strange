@@ -18,6 +18,7 @@ public class Definition
 {
     private int tier;
     private String title;
+    private String moduleEnabled;
     private int timeLimit; // in minutes
     private List<String> locate = new ArrayList<>();
     private Map<String, String> craft = new HashMap<>();
@@ -35,6 +36,11 @@ public class Definition
     public String getTitle()
     {
         return title;
+    }
+
+    public String getModuleEnabled()
+    {
+        return moduleEnabled;
     }
 
     public int getTimeLimit()
