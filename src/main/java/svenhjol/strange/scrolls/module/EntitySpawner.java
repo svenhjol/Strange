@@ -23,7 +23,6 @@ public class EntitySpawner extends MesonModule
     public void init()
     {
         block = new EntitySpawnerBlock(this);
-
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, "entity_spawner");
         tile = TileEntityType.Builder.create(EntitySpawnerTileEntity::new, block).build(null);
         RegistryHandler.registerTile(tile, res);
