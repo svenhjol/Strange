@@ -1,7 +1,9 @@
 package svenhjol.strange.spells.spells;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FireBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -25,7 +27,7 @@ public class FreezeSpell extends Spell
     @Override
     public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
     {
-        this.castArea(player, new int[] { 6, 2, 6 }, blocks -> {
+        this.castArea(player, new int[] { 6, 4, 6 }, blocks -> {
             World world = player.world;
 
             if (world.isRemote) return;
@@ -34,6 +36,7 @@ public class FreezeSpell extends Spell
             for (BlockPos pos : blocks) {
                 boolean didFreeze = false;
                 BlockState state = world.getBlockState(pos);
+                Block block = state.getBlock();
 
                 if (state == Blocks.LAVA.getDefaultState()) {
                     world.setBlockState(pos, Blocks.MAGMA_BLOCK.getDefaultState(), 2);
@@ -45,6 +48,9 @@ public class FreezeSpell extends Spell
                     world.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
                     didFreeze = true;
                 } else if (state == Blocks.FIRE.getDefaultState()) {
+                    world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+                    didFreeze = true;
+                } else if (block instanceof FireBlock) {
                     world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
                     didFreeze = true;
                 } else if (state.getBlock() == Blocks.WATER) {
