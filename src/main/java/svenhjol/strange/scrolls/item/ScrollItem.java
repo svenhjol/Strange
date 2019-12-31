@@ -35,7 +35,7 @@ public class ScrollItem extends MesonItem
         );
 
         // allows different item icons to be shown. Each item icon has a float ref (see model)
-        addPropertyOverride(new ResourceLocation("element"), (stack, world, entity) -> {
+        addPropertyOverride(new ResourceLocation("tier"), (stack, world, entity) -> {
             int tier = getTier(stack);
             return tier / 10.0F;
         });

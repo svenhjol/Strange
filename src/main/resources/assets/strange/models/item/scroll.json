@@ -4,10 +4,10 @@
     "layer0": "strange:item/scroll"
   },
   "overrides": [
-    { "predicate": { "element": 0.1 }, "model": "strange:item/scroll_tier1" },
-    { "predicate": { "element": 0.2 }, "model": "strange:item/scroll_tier2" },
-    { "predicate": { "element": 0.3 }, "model": "strange:item/scroll_tier3" },
-    { "predicate": { "element": 0.4 }, "model": "strange:item/scroll_tier4" },
-    { "predicate": { "element": 0.5 }, "model": "strange:item/scroll_tier5" }
+    { "predicate": { "tier": 0.1 }, "model": "strange:item/scroll_tier1" },
+    { "predicate": { "tier": 0.2 }, "model": "strange:item/scroll_tier2" },
+    { "predicate": { "tier": 0.3 }, "model": "strange:item/scroll_tier3" },
+    { "predicate": { "tier": 0.4 }, "model": "strange:item/scroll_tier4" },
+    { "predicate": { "tier": 0.5 }, "model": "strange:item/scroll_tier5" }
   ]
 }
