@@ -61,7 +61,7 @@ public class ServerScrollAction implements IMesonMessage
                 ServerPlayerEntity player = context.getSender();
                 if (player == null) return;
 
-                IQuest quest = null;
+                IQuest quest;
                 ItemStack held = player.getHeldItem(msg.hand);
 
                 switch (msg.action) {
@@ -75,8 +75,8 @@ public class ServerScrollAction implements IMesonMessage
                     case ACCEPT:
                         if (Quests.getCurrent(player).size() < Quests.maxQuests) {
                             quest = ScrollItem.getQuest(held);
-                            shrinkStack(held);
-                            MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest));
+                            if (!MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest)))
+                                shrinkStack(held);
                         } else {
                             player.sendMessage(new TranslationTextComponent("gui.strange.quests.too_many_quests"));
                         }
