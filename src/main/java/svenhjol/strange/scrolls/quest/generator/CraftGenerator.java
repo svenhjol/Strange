@@ -32,7 +32,7 @@ public class CraftGenerator extends BaseGenerator
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
-            count = multiplyDistance(count);
+            count = multiplyValue(count);
 
             Condition<Craft> condition = Condition.factory(Craft.class, quest);
             condition.getDelegate().setStack(new ItemStack(item)).setCount(count);

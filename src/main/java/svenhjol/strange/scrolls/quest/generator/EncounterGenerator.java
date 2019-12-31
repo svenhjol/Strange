@@ -49,7 +49,7 @@ public class EncounterGenerator extends BaseGenerator
             }
 
             // health scales on distance
-            health = multiplyDistance(health);
+            health = multiplyValue(health);
 
             encounter.addTarget(target, count, health, effects);
         }

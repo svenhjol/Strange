@@ -36,7 +36,7 @@ public class GatherGenerator extends BaseGenerator
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
-            count = multiplyDistance(count);
+            count = multiplyValue(count);
 
             Condition<Gather> condition = Condition.factory(Gather.class, quest);
             condition.getDelegate().setStack(stack).setCount(count);

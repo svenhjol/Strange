@@ -89,7 +89,7 @@ public class RewardGenerator extends BaseGenerator
                     if (item == null) continue;
 
                     stack = new ItemStack(item);
-                    count = multiplyDistance(count);
+                    count = multiplyValue(count);
                 }
 
                 reward.addItem(stack, count);
@@ -100,7 +100,7 @@ public class RewardGenerator extends BaseGenerator
             Map<String, String> xp = def.get(XP);
             if (xp.containsKey(COUNT)) {
                 int count = Integer.parseInt(xp.get(COUNT));
-                count = multiplyDistance(count);
+                count = multiplyValue(count);
 
                 reward.setXP(count);
             }

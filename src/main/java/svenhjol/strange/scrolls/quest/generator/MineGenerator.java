@@ -27,7 +27,7 @@ public class MineGenerator extends BaseGenerator
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
-            count = multiplyDistance(count);
+            count = multiplyValue(count);
 
             Condition<Mine> condition = Condition.factory(Mine.class, quest);
             condition.getDelegate().setBlock(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key))).setCount(count);

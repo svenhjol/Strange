@@ -27,7 +27,7 @@ public class HuntGenerator extends BaseGenerator
             int count = Integer.parseInt(def.get(key));
 
             // amount increases based on distance
-            count = multiplyDistance(count);
+            count = multiplyValue(count);
 
             Condition<Hunt> condition = Condition.factory(Hunt.class, quest);
             condition.getDelegate().setTarget(target).setCount(count);

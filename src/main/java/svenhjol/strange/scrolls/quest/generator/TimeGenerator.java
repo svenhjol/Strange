@@ -22,7 +22,7 @@ public class TimeGenerator extends BaseGenerator
 
         Condition<Time> condition = Condition.factory(Time.class, quest);
 
-        int limit = timeLimit * 60 * 20;
+        int limit = multiplyValue(timeLimit * 60 * 20);
 
         condition.getDelegate().setLimit(limit);
         addCondition(condition);

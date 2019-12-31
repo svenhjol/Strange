@@ -26,7 +26,7 @@ public abstract class BaseGenerator
         quest.getCriteria().addCondition(condition);
     }
 
-    public int multiplyDistance(int original)
+    public int multiplyValue(int original)
     {
         return (int)(original * quest.getValue());
     }
