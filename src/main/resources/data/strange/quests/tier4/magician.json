@@ -1,0 +1,20 @@
+{
+  "timeLimit": 10,
+  "encounter": {
+    "minecraft:evoker": {
+      "count": 1,
+      "health": 150,
+      "effects": "regeneration"
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "RandomChargedStaff": 1,
+      "RandomSpellBook": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

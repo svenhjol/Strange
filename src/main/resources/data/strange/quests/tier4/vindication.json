@@ -1,0 +1,13 @@
+{
+  "hunt": {
+    "minecraft:vindicator": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 6
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "locate": [
+    "minecraft:ender_eye"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 1,
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

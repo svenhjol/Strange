@@ -1,0 +1,16 @@
+{
+  "locate": [
+    "minecraft:diamond_block",
+    "minecraft:diamond_sword",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_chestplate"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 10
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

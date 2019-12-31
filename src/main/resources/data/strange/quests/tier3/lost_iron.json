@@ -1,0 +1,13 @@
+{
+  "locate": [
+    "minecraft:iron_block"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

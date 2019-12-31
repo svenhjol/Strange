@@ -1,0 +1,14 @@
+{
+  "hunt": {
+    "minecraft:wither": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:wither_skeleton_skull": 2,
+      "minecraft:diamond": 2
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

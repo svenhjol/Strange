@@ -1,0 +1,16 @@
+{
+  "timeLimit": 30,
+  "craft": {
+    "minecraft:beacon": 4
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleTotem": 1,
+      "RandomSpellBook": 1,
+      "minecraft:nether_star": 2
+    },
+    "xp": {
+      "count": 180
+    }
+  }
+}

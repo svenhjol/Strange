@@ -1,0 +1,33 @@
+{
+  "timeLimit": 10,
+  "encounter": {
+    "minecraft:evoker": {
+      "count": 4,
+      "health": 80,
+      "effects": "regeneration"
+    },
+    "minecraft:pillager": {
+      "count": 4,
+      "health": 100,
+      "effects": "regeneration"
+    },
+    "minecraft:vindicator": {
+      "count": 4,
+      "health": 100,
+      "effects": "strength"
+    },
+    "minecraft:illusioner": {
+      "count": 4,
+      "health": 80
+    }
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleTotem": 1,
+      "minecraft:diamond": 12
+    },
+    "xp": {
+      "count": 200
+    }
+  }
+}

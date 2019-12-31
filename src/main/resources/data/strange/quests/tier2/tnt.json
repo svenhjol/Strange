@@ -1,0 +1,13 @@
+{
+  "craft": {
+    "minecraft:tnt": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 30
+    }
+  }
+}

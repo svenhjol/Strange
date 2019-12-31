@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:salmon": 4
+  },
+  "rewards": {
+    "xp": {
+      "count": 20
+    }
+  }
+}

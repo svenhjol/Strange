@@ -1,0 +1,13 @@
+{
+  "fetch": {
+    "minecraft:parrot": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

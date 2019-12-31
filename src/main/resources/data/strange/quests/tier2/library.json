@@ -1,0 +1,14 @@
+{
+  "craft": {
+    "minecraft:writing_desk": 1,
+    "minecraft:lectern": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 30
+    }
+  }
+}

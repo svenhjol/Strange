@@ -1,0 +1,16 @@
+{
+  "encounter": {
+    "minecraft:blaze": {
+      "count": 4,
+      "health": 60
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 3
+    },
+    "xp": {
+      "count": 90
+    }
+  }
+}

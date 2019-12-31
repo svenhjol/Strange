@@ -1,0 +1,15 @@
+{
+  "craft": {
+    "minecraft:end_crystal": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:eye_of_ender": 1,
+      "minecraft:ghast_tear": 1,
+      "RandomEnchantedBook": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

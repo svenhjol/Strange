@@ -1,0 +1,10 @@
+{
+  "gather": {
+    "minecraft:jungle_log": 50
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2
+    }
+  }
+}

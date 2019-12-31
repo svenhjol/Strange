@@ -1,0 +1,8 @@
+{
+  "gather": {
+    "minecraft:quartz": 50
+  },
+  "rewards": {
+    "xp": 50
+  }
+}
