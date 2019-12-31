@@ -81,9 +81,6 @@ public class TotemOfReturningItem extends MesonItem
     {
         // teleport the player
         if (!world.isRemote) {
-            BlockPos playerPos = player.getPosition();
-
-//            player.setNoGravity(true);
             player.setInvulnerable(true);
             PlayerHelper.teleport(player, pos, dim, t -> {
                 PlayerQueueHandler.add(t.world.getGameTime() + 10, t, pt -> {
@@ -97,17 +94,8 @@ public class TotemOfReturningItem extends MesonItem
                     pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
                     pt.setPositionAndUpdate(pt.getPosition().getX() + 0.5D, pt.getPosition().getY() + 1.0D, pt.getPosition().getZ() + 0.5D);
                     pt.world.playSound(null, pt.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    player.setInvulnerable(false);
-                    player.setNoGravity(false);
                 });
             });
-//
-//            PlayerQueueHandler.add(world.getGameTime() + 40, player, p -> {
-//                Meson.debug("Re-teleport");
-//                PlayerHelper.teleport(player, pos, dim);
-//                player.setNoGravity(false);
-//                player.setInvulnerable(false);
-//            });
         }
         TotemHelper.destroy(player, stack);
     }
