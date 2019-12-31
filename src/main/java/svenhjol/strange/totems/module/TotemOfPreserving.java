@@ -9,7 +9,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
@@ -51,18 +50,6 @@ public class TotemOfPreserving extends MesonModule
             && event.getEntityItem() != null
             && event.getEntityItem().getItem().getItem() == item
             && !TotemOfPreservingItem.getItems(event.getEntityItem().getItem()).isEmpty()
-        ) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void onItemPickup(PlayerEvent.ItemPickupEvent event)
-    {
-        if (event.getStack().getItem() == item
-            && event.getPlayer() != null
-            && event.getOriginalEntity().getOwnerId() != null
-            && event.getOriginalEntity().getOwnerId() != event.getPlayer().getUniqueID()
         ) {
             event.setCanceled(true);
         }
