@@ -43,7 +43,6 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class Runestones extends MesonModule
 {
-
     public static RunestoneBlock block;
     public static List<Destination> dests = new ArrayList<>();
     public static List<Destination> ordered = new ArrayList<>();

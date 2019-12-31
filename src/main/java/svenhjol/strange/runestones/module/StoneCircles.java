@@ -1,6 +1,5 @@
 package svenhjol.strange.runestones.module;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -9,20 +8,15 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import svenhjol.charm.tweaks.client.AmbientMusicClient;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.BiomeHelper;
-import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
-import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.structure.StoneCircleConfig;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
@@ -103,14 +97,5 @@ public class StoneCircles extends MesonModule
     public void serverStarted(FMLServerStartedEvent event)
     {
         new RegisterJigsawPieces(event.getServer().getResourceManager(), VAULTS_DIR);
-    }
-
-    @Override
-    public void setupClient(FMLClientSetupEvent event)
-    {
-        new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_THARNA, 1200, 3600, mc -> {
-            PlayerEntity player = ClientHelper.getClientPlayer();
-            return Outerlands.isOuterPos(player.getPosition()) && player.world.rand.nextFloat() < 0.25F;
-        });
     }
 }
