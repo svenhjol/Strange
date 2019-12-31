@@ -38,11 +38,15 @@ public class QuestEvents
         final PlayerEntity player = event.getPlayer();
         final IQuest quest = event.getQuest();
 
-        quest.setState(State.Started);
         Quests.getCapability(player).acceptQuest(player, quest);
-        PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
 
-        respondToEvent(player, event);
+        if (respondToEvent(player, event)) {
+            quest.setState(State.Started);
+            PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
+        } else {
+            event.setCanceled(true);
+            Quests.getCapability(player).removeQuest(player, quest);
+        }
     }
 
     @SubscribeEvent
@@ -193,16 +197,16 @@ public class QuestEvents
     {
         if (event.phase == Phase.END
             && event.player != null
-            && event.player.world.getGameTime() % 10 == 0
+            && event.player.world.getGameTime() % 12 == 0
             && event.player.isAlive()
         ) {
             respondToEvent(event.player, event);
         }
     }
 
-    private void respondToEvent(PlayerEntity player, Event event)
+    private boolean respondToEvent(PlayerEntity player, Event event)
     {
-        if (player == null || !player.isAlive()) return;
+        if (player == null || !player.isAlive()) return false;
         boolean responded = false;
 
         ConcurrentLinkedDeque<IQuest> quests = new ConcurrentLinkedDeque<>(Quests.getCurrent(player));
@@ -212,5 +216,6 @@ public class QuestEvents
         }
 
         if (responded) Quests.update(player);
+        return responded;
     }
 }
