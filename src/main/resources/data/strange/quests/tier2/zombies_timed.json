@@ -1,5 +1,5 @@
 {
-  "timeLimit": 2,
+  "timeLimit": 10,
   "hunt": {
     "minecraft:zombie": 4
   },
