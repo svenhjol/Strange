@@ -18,6 +18,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
@@ -37,6 +38,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
@@ -58,7 +60,7 @@ public class Scrollkeepers extends MesonModule
     public static VillagerProfession profession;
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
-        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level.  Set to zero to disable Bad Omen effect.")
+        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level and distance from spawn.  Set to zero to disable Bad Omen effect.")
     public static double badOmenChance = 0.025D;
 
     @Config(name = "Villager interest range", description = "Range (in blocks) that a scrollkeeper will indicate that they are ready to accept a completed quest.")
@@ -169,6 +171,7 @@ public class Scrollkeepers extends MesonModule
         UUID villagerId = villager.getUniqueID();
         List<IQuest> completableQuests = new ArrayList<>();
         World world = player.world;
+        BlockPos pos = player.getPosition();
 
         for (IQuest quest : cap.getCurrentQuests(player)) {
             UUID seller = quest.getSeller();
@@ -179,13 +182,11 @@ public class Scrollkeepers extends MesonModule
 
         if (sellers.isEmpty()) return;
 
-        if (sellers.containsKey(ANY_SELLER)) {
+        if (sellers.containsKey(ANY_SELLER))
             completableQuests.addAll(sellers.get(ANY_SELLER));
-        }
 
-        if (sellers.containsKey(villagerId)) {
+        if (sellers.containsKey(villagerId))
             completableQuests.addAll(sellers.get(villagerId));
-        }
 
         if (!completableQuests.isEmpty()) {
             VillagerData data = villager.getVillagerData();
@@ -202,15 +203,14 @@ public class Scrollkeepers extends MesonModule
                     int newXp = villagerXp + QUEST_XP[questTier-1];
                     villager.setCustomer(null);
                     villager.setXp(newXp);
-                    if (villager.canLevelUp()) {
+                    if (villager.canLevelUp())
                         villager.levelUp();
-                    }
                 }
                 MinecraftForge.EVENT_BUS.post(new QuestEvent.Complete(player, quest));
             }
 
-            // apply bad omen effect according to villager level
-            if (badOmenChance > 0 && world.rand.nextFloat() < (badOmenChance + ((villagerLevel-1) * badOmenChance))) {
+            // apply bad omen effect according to villager level and distance from spawn
+            if (badOmenChance > 0 && world.rand.nextFloat() < (badOmenChance + ((villagerLevel-1) * badOmenChance * Outerlands.getScaledMultiplier(world, pos)))) {
                 EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
                 player.addPotionEffect(badOmen);
             }
@@ -231,7 +231,7 @@ public class Scrollkeepers extends MesonModule
         @Override
         public MerchantOffer getOffer(Entity merchant, Random rand)
         {
-            ItemStack in1 = new ItemStack(Items.EMERALD, 1 + (rand.nextInt(tier * 2)));
+            ItemStack in1 = new ItemStack(Items.EMERALD, (int)(1 + (rand.nextInt(tier * 2)) * Outerlands.getScaledMultiplier(merchant.world, merchant.getPosition())));
             ItemStack out = ScrollItem.putTier(new ItemStack(Scrolls.item), tier);
 
             IQuest quest = new Quest();
@@ -241,7 +241,7 @@ public class Scrollkeepers extends MesonModule
             ScrollItem.putQuest(out, quest);
             ScrollItem.putValue(out,in1.getCount() * 0.25F);
             out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
-            return new MerchantOffer(in1, out, 6, 0, 0.0F);
+            return new MerchantOffer(in1, out, 7 - this.tier, 0, 0.0F);
         }
     }
 }
