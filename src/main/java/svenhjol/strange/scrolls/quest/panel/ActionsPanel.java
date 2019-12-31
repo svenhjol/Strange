@@ -46,6 +46,10 @@ public class ActionsPanel extends BasePanel
                 new LocatePanel(quest, mid, y, width);
                 break;
 
+            case Fetch.ID:
+                new FetchPanel(quest, mid, y, width);
+                break;
+
             default:
                 // shrug
                 break;
@@ -224,7 +228,6 @@ public class ActionsPanel extends BasePanel
             y += 16; // space between title and item list
 
             for (int i = 0; i < toLocate.size(); i++) {
-                y += i * 16; // height of each line
 
                 Locate locate = toLocate.get(i).getDelegate();
                 ItemStack stack = locate.getStack();
@@ -235,6 +238,42 @@ public class ActionsPanel extends BasePanel
 
                 // show tick if complete
                 if (locate.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
+
+                y += 16; // height of each line
+            }
+        }
+    }
+
+
+    public static class FetchPanel extends BasePanel
+    {
+        public FetchPanel(IQuest quest, int mid, int y, int width)
+        {
+            super(quest, mid, width);
+
+            List<Condition<Fetch>> actions = quest.getCriteria().getConditions(Fetch.class);
+            if (actions.isEmpty()) return;
+
+            y += pad; // space above title
+
+            // draw title
+            drawCenteredTitle(I18n.format("gui.strange.quests.fetch"), y);
+            y += 16; // space between title and item list
+
+            for (int i = 0; i < actions.size(); i++) {
+                y += i * 16; // height of each line
+
+                Fetch fetch = actions.get(i).getDelegate();
+                ResourceLocation target = fetch.getTarget();
+                int remaining = fetch.getCount() - fetch.getFetched();
+                EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
+
+                // draw remaining count and item icon
+                blitItemIcon(new ItemStack(Items.LEAD), mid - 60, y - 5);
+                this.drawString(fonts, entity.getName().getFormattedText() + ": " + remaining, mid - 36, y, primaryTextColor);
+
+                // show tick if complete
+                if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
             }
         }
     }

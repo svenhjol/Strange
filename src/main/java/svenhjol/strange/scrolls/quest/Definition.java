@@ -21,6 +21,7 @@ public class Definition
     private String moduleEnabled;
     private int timeLimit; // in minutes
     private List<String> locate = new ArrayList<>();
+    private Map<String, String> fetch = new HashMap<>();
     private Map<String, String> craft = new HashMap<>();
     private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
@@ -51,6 +52,11 @@ public class Definition
     public List<String> getLocate()
     {
         return locate == null ? new ArrayList<>() : locate;
+    }
+
+    public Map<String, String> getFetch()
+    {
+        return fetch == null ? new HashMap<>() : fetch;
     }
 
     public Map<String, String> getCraft()

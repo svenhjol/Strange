@@ -34,6 +34,7 @@ public class Generator
             HuntGenerator.class,
             LocateGenerator.class,
             MineGenerator.class,
+            FetchGenerator.class,
             RewardGenerator.class,
             TimeGenerator.class
         ));
