@@ -58,6 +58,7 @@ public class Time implements IDelegate
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
             if (qe.getQuest().getId().equals(this.quest.getId())) {
                 setStart(world.getGameTime());
+                return true;
             }
         }
 

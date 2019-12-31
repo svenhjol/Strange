@@ -14,6 +14,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.base.helper.QuestHelper;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -48,8 +49,10 @@ public class Mine implements IDelegate
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable  PlayerEntity player)
+    public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
+
         if (player == null) return false;
         if (isSatisfied()) return false;
         if (mined >= count) return false;

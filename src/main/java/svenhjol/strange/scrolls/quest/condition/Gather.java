@@ -48,15 +48,16 @@ public class Gather implements IDelegate
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         if (player == null) return false;
-        if (isSatisfied()) return false;
-        if (collected >= count) return false;
 
         if (event instanceof QuestEvent.Accept) {
             // gather as many things as possible from the player's inventory
-            final QuestEvent.Accept qe = (QuestEvent.Accept)event;
             pollInventory(player);
             showProgress(player);
+            return true;
         }
+
+        if (isSatisfied()) return false;
+        if (collected >= count) return false;
 
         if (event instanceof PlayerTickEvent) {
             if (player.world.getGameTime() % 30 == 0)
@@ -191,6 +192,7 @@ public class Gather implements IDelegate
             int shrinkBy = Math.min(getRemaining(), invCount);
             this.collected += shrinkBy;
             invStack.shrink(shrinkBy);
+            showProgress(player);
         }
     }
 }

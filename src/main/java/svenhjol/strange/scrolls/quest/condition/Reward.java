@@ -41,6 +41,7 @@ public class Reward implements IDelegate
     @Override
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
         if (player == null) return false;
 
         if (event instanceof QuestEvent.Complete) {

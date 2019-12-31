@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.helper.QuestHelper;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -45,6 +46,8 @@ public class Craft implements IDelegate
     @Override
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
+
         if (isSatisfied()) return false;
         if (crafted >= count) return false;
         if (player == null) return false;

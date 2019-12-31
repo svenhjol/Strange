@@ -64,13 +64,13 @@ public class Locate implements IDelegate
     @Override
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
-        if (isSatisfied()) return false;
-        if (player == null) return false;
-
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
             return onStarted(qe.getQuest(), player);
         }
+
+        if (isSatisfied()) return false;
+        if (player == null) return false;
 
         if (event instanceof QuestEvent.Complete || event instanceof QuestEvent.Fail || event instanceof QuestEvent.Decline) {
             return onEnded(player);

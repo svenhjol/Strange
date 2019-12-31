@@ -9,6 +9,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.helper.QuestHelper;
+import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -44,6 +45,8 @@ public class Hunt implements IDelegate
     @Override
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
+        if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
+        
         if (player == null) return false;
         if (isSatisfied()) return false;
         if (killed >= count) return false;
@@ -58,12 +61,7 @@ public class Hunt implements IDelegate
             if (!killedRes.equals(this.target)) return false;
 
             this.killed++;
-
-            if (isSatisfied()) {
-                QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
-            } else {
-                QuestHelper.effectCounted(player);
-            }
+            showProgress(player);
 
             return true;
         }
@@ -140,5 +138,14 @@ public class Hunt implements IDelegate
     public ResourceLocation getTarget()
     {
         return this.target;
+    }
+
+    private void showProgress(PlayerEntity player)
+    {
+        if (isSatisfied()) {
+            QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
+        } else {
+            QuestHelper.effectCounted(player);
+        }
     }
 }
