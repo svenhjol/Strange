@@ -40,7 +40,7 @@ import java.util.*;
 public class Encounter implements IDelegate
 {
     public static final String ID = "Encounter";
-    public static final String ENCOUNTER_TAG = "isEncounterMob";
+    public static final String ENCOUNTER_TAG = "strange:encounter_mob";
     public static final int TRIGGER_RANGE = 8;
     public static final int FIGHT_RANGE = 32;
     public ServerBossInfo bossInfo = new ServerBossInfo(new TranslationTextComponent("event.strange.quests.encounter"), BossInfo.Color.BLUE, BossInfo.Overlay.NOTCHED_10);
@@ -276,6 +276,7 @@ public class Encounter implements IDelegate
     public boolean onEnded(PlayerEntity player)
     {
         QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
+        this.bossInfo.removePlayer((ServerPlayerEntity)player);
         World world = player.world;
         WorldHelper.clearWeather(world);
         return true;
