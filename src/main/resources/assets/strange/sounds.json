@@ -75,5 +75,15 @@
         "volume": 0.25
       }
     ]
+  },
+  "music.steinn": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "strange:music/steinn",
+        "stream": true,
+        "volume": 0.5
+      }
+    ]
   }
 }

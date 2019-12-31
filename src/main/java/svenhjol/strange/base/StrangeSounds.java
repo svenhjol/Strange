@@ -13,6 +13,7 @@ public class StrangeSounds
     public static List<SoundEvent> soundsToRegister = new ArrayList<>();
 
     public static final SoundEvent MUSIC_THARNA = createSound("music.tharna");
+    public static final SoundEvent MUSIC_STEINN = createSound("music.steinn");
     public static final SoundEvent QUEST_ACTION_COMPLETE = createSound("quest_action_complete");
     public static final SoundEvent QUEST_ACTION_COUNT = createSound("quest_action_count");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");
