@@ -37,22 +37,20 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
 public class Quests extends MesonModule
 {
+    public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
+    public static final String QUEST_ID = "questId";
+
     @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once.")
     public static int maxQuests = 3;
 
     @Config(name = "Encounter distance", description = "Distance from quest start (in blocks) that a mob will spawn for 'encounter' quests.")
-    public static int encounterDistance = 100;
+    public static int encounterDistance = 600;
 
     @Config(name = "Locate distance", description = "Distance from quest start (in blocks) that a treasure chest will spawn for 'locate' quests.")
-    public static int locateDistance = 100;
+    public static int locateDistance = 400;
 
     @CapabilityInject(IQuestsCapability.class)
     public static Capability<IQuestsCapability> QUESTS = null;
-
-    public static ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
-
-    public static final String QUEST_ID = "questId";
-
     public static Map<Integer, List<Definition>> available = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
@@ -70,29 +68,29 @@ public class Quests extends MesonModule
     {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
-        try {
-            for (int tier = 1; tier <= 5; tier++) {
-                Quests.available.put(tier, new ArrayList<>());
-                Collection<ResourceLocation> resources = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
+        for (int tier = 1; tier <= Scrolls.MAX_TIERS; tier++) {
+            Quests.available.put(tier, new ArrayList<>());
+            Collection<ResourceLocation> resources = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
 
-                for (ResourceLocation res : resources) {
+            for (ResourceLocation res : resources) {
+                try {
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
 
-                    // check module enabled
                     String mod = definition.getModuleEnabled();
-                    if (!mod.isEmpty() && !MesonLoader.hasModule(new ResourceLocation(mod)))
+                    if (mod != null && !mod.isEmpty() && !MesonLoader.hasModule(new ResourceLocation(mod)))
                         continue;
 
                     String name = res.getPath().replace("/", ".").replace(".json", "");
                     definition.setTitle(name);
                     definition.setTier(tier);
                     Quests.available.get(tier).add(definition);
-                    Meson.debug("Loaded quest " + definition.getTitle() + " for tier " + tier);
+                    Meson.debug(this, "Loaded quest " + definition.getTitle() + " for tier " + tier);
+
+                } catch (Exception e) {
+                    Meson.warn(this, "Could not load quest for " + res, e);
                 }
             }
-        } catch (Exception e) {
-            Meson.warn("Could not load quests", e);
         }
     }
 
