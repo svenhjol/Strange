@@ -82,7 +82,7 @@ public class ScrollScreen extends Screen implements IRenderable
             if (!actionIds.contains(action.getId())) actionIds.add(action.getId());
         }
 
-        int panelY = 64;
+        int panelY = 54;
         int panelMid;
         int panelWidth;
 
@@ -99,11 +99,11 @@ public class ScrollScreen extends Screen implements IRenderable
         }
 
         if (splitLimitsAndRewards) {
-            new LimitsPanel(quest, width / 4, panelY + 70, 85);
-            new RewardsPanel(quest, 3 * (width / 4), panelY + 70, 85);
+            new LimitsPanel(quest, width / 4, panelY + 84, 85);
+            new RewardsPanel(quest, 3 * (width / 4), panelY + 84, 85);
         } else {
-            if (limits.size() > 0) new LimitsPanel(quest, width / 2, panelY + 70, 170);
-            if (rewards.size() > 0) new RewardsPanel(quest, width / 2, panelY + 70, 170);
+            if (limits.size() > 0) new LimitsPanel(quest, width / 2, panelY + 84, 170);
+            if (rewards.size() > 0) new RewardsPanel(quest, width / 2, panelY + 84, 170);
         }
 
         GlStateManager.popMatrix();
