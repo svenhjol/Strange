@@ -82,7 +82,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
     {
-        return 7;
+        return 12;
     }
 
     @Override
