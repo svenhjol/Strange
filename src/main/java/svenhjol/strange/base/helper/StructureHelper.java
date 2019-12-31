@@ -2,15 +2,12 @@ package svenhjol.strange.base.helper;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
@@ -58,39 +55,6 @@ public class StructureHelper
 
         j = j / (xsize * zsize);
         return new BlockPos(pos.getX(), j - ysize - 2, pos.getZ()); // embed the structure below the surface
-    }
-
-    public static boolean isSolidBlock(World world, BlockPos pos)
-    {
-        BlockState state = world.getBlockState(pos);
-
-        return state.isSolid()
-            && !world.isAirBlock(pos)
-            && !state.getMaterial().isLiquid();
-    }
-
-    public static boolean isSolidishBlock(World world, BlockPos pos)
-    {
-        BlockState state = world.getBlockState(pos);
-
-        return isSolidBlock(world, pos)
-            || state.getMaterial() == Material.LEAVES
-            || state.getMaterial() == Material.SNOW
-            || state.getMaterial() == Material.ORGANIC
-            || state.getMaterial() == Material.PLANTS;
-    }
-
-    public static boolean isAirBlock(World world, BlockPos pos)
-    {
-        BlockState state = world.getBlockState(pos);
-
-        return !state.isSolid()
-            || state.getMaterial() == Material.WATER
-            || state.getMaterial() == Material.SNOW
-            || state.getMaterial() == Material.WATER
-            || state.getMaterial() == Material.PLANTS
-            || state.getMaterial() == Material.LEAVES
-            || state.getMaterial() == Material.ORGANIC;
     }
 
     public static class RegisterJigsawPieces
