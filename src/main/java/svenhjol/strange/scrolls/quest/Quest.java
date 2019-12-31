@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Quest implements IQuest
 {
     private static final String SELLER = "seller";
-    private static final String PURCHASED = "purchased";
     private static final String QUEST_ID = "questId";
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
@@ -29,7 +28,6 @@ public class Quest implements IQuest
     private String description = "";
     private Criteria criteria = new Criteria(this);
     private State state = State.NotStarted;
-    private long purchased;
     private int tier;
     private float value;
 
@@ -49,7 +47,6 @@ public class Quest implements IQuest
         tag.putString(TITLE, title);
         tag.putString(DESCRIPTION, description);
         tag.putString(STATE, state.toString());
-        tag.putLong(PURCHASED, purchased);
         tag.putFloat(VALUE, value);
         tag.put(CRITERIA, criteria.toNBT());
 
@@ -63,7 +60,6 @@ public class Quest implements IQuest
         seller = tag.getString(SELLER);
         title = tag.getString(TITLE);
         description = tag.getString(DESCRIPTION);
-        purchased = tag.getLong(PURCHASED);
         state = State.valueOrDefault(tag.getString(STATE), State.NotStarted);
         tier = tag.getInt(TIER);
         value = tag.getFloat(VALUE);
