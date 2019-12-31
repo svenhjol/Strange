@@ -15,6 +15,12 @@ public class QuestEvent extends Event
         this.quest = quest;
     }
 
+    @Override
+    public boolean isCancelable()
+    {
+        return true;
+    }
+
     public IQuest getQuest()
     {
         return quest;
