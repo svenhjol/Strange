@@ -20,7 +20,6 @@ import svenhjol.strange.scrolls.item.ScrollItem;
 public class Scrolls extends MesonModule
 {
     public static int MAX_TIERS = 5;
-
     public static ScrollItem item;
 
     @Override
@@ -32,9 +31,8 @@ public class Scrolls extends MesonModule
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
-        if (Charm.loader.hasModule(BookshelfChests.class)) {
+        if (Charm.loader.hasModule(BookshelfChests.class))
             BookshelfChests.validItems.add(ScrollItem.class);
-        }
     }
 
     @SubscribeEvent
@@ -42,20 +40,14 @@ public class Scrolls extends MesonModule
     {
         int weight = 0;
         int quality = 2;
-
         ResourceLocation res = event.getName();
 
-        if (res.equals(LootTables.CHESTS_WOODLAND_MANSION)) {
-            weight = 6;
-        } else if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
-            weight = 3;
-        } else if (res.equals(LootTables.CHESTS_SIMPLE_DUNGEON)) {
-            weight = 1;
-        } else if (res.equals(LootTables.CHESTS_PILLAGER_OUTPOST)) {
-            weight = 6;
-        } else if (res.equals(LootTables.CHESTS_SHIPWRECK_SUPPLY)) {
-            weight = 3;
-        } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)
+        if (res.equals(LootTables.CHESTS_WOODLAND_MANSION)) { weight = 6; }
+        else if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) { weight = 3; }
+        else if (res.equals(LootTables.CHESTS_SIMPLE_DUNGEON)) { weight = 1; }
+        else if (res.equals(LootTables.CHESTS_PILLAGER_OUTPOST)) { weight = 6; }
+        else if (res.equals(LootTables.CHESTS_SHIPWRECK_SUPPLY)) { weight = 3; }
+        else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SAVANNA_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE)
