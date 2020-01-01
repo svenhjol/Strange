@@ -12,17 +12,11 @@ import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import svenhjol.charm.Charm;
-import svenhjol.charm.tweaks.client.AmbientMusicClient;
-import svenhjol.charm.tweaks.module.AmbientMusicImprovements;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeSounds;
 
 import java.util.Random;
 
@@ -37,30 +31,6 @@ public class Outerlands extends MesonModule
 
     @Config(name = "Scary monsters", description = "If true, monsters will use the distance scaling to become more challenging in the Outerlands.")
     public static boolean scaryMonsters = true;
-
-    @Config(name = "Play outerlands music", description = "If true, extra music may play when the player is in the Outerlands.\n" +
-        "Charm's 'Ambient Music Improvements' module must be enabled for this to work.")
-    public static boolean music = true;
-
-    @Override
-    public void setupClient(FMLClientSetupEvent event)
-    {
-        if (!Charm.hasModule(AmbientMusicImprovements.class)) return;
-
-        AmbientMusicClient.conditions.add(new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_THARNA, 1200, 3600, mc -> {
-            PlayerEntity player = ClientHelper.getClientPlayer();
-            if (player == null) return false;
-            return Outerlands.isOuterPos(player.getPosition()) && player.world.rand.nextFloat() < 0.25F;
-        }));
-
-        AmbientMusicClient.conditions.add(new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_STEINN, 1200, 3600, mc -> {
-            PlayerEntity player = ClientHelper.getClientPlayer();
-            if (player == null) return false;
-            return Outerlands.isOuterPos(player.getPosition())
-                && player.getPosition().getY() < 48
-                && player.world.rand.nextFloat() < 0.25F;
-        }));
-    }
 
     @SubscribeEvent
     public void onSpawn(LivingSpawnEvent event)

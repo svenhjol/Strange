@@ -85,5 +85,31 @@
         "volume": 0.5
       }
     ]
+  },
+  "music.mus": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "strange:music/mus",
+        "stream": true,
+        "volume": 0.25
+      }
+    ]
+  },
+  "music_disc.outerlands": {
+    "sounds": [
+      {
+        "name": "strange:music/tharna",
+        "stream": true
+      },
+      {
+        "name": "strange:music/steinn",
+        "stream": true
+      },
+      {
+        "name": "strange:music/mus",
+        "stream": true
+      }
+    ]
   }
 }
