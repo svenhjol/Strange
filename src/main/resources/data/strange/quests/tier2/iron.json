@@ -2,11 +2,10 @@
   "gather": {
     "minecraft:iron_ingot": 32
   },
-  "module_enabled": "strange:spells",
   "rewards": {
     "items": {
       "minecraft:emerald": 2,
-      "RandomChargedStaff": 1
+      "minecraft:compass": 1
     },
     "xp": {
       "count": 20

@@ -10,7 +10,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "RandomChargedStaff": 1,
+      "RandomMoonstone": 1,
       "RandomSpellBook": 1
     },
     "xp": {

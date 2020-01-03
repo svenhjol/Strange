@@ -6,8 +6,7 @@
   "module_enabled": "strange:spells",
   "rewards": {
     "items": {
-      "RandomChargedStaff": 1,
-      "RandomSpellBook": 1
+      "RandomMoonstone": 2
     },
     "xp": {
       "count": 50
