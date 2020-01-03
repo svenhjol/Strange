@@ -17,8 +17,9 @@ import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.spells.helper.SpellsHelper;
+import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.item.SpellBookItem;
-import svenhjol.strange.spells.item.StaffItem;
+import svenhjol.strange.spells.module.Moonstones;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
@@ -43,8 +44,7 @@ public class RewardGenerator extends BaseGenerator
     public static final String RANDOM_RARE_ENCHANTED_BOOK = "RandomRareEnchantedBook";
     public static final String RANDOM_SPELL_BOOK = "RandomSpellBook";
     public static final String RANDOM_RARE_SPELL_BOOK = "RandomRareSpellBook";
-    public static final String RANDOM_CHARGED_STAFF = "RandomChargedStaff";
-    public static final String RANDOM_RARE_CHARGED_STAFF = "RandomRareChargedStaff";
+    public static final String RANDOM_MOONSTONE = "RandomMoonstone";
     public static final String TRAVEL_JOURNAL = "TravelJournal";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
@@ -53,8 +53,7 @@ public class RewardGenerator extends BaseGenerator
         RANDOM_SPELL_BOOK,
         RANDOM_RARE_ENCHANTED_BOOK,
         RANDOM_RARE_SPELL_BOOK,
-        RANDOM_CHARGED_STAFF,
-        RANDOM_RARE_CHARGED_STAFF,
+        RANDOM_MOONSTONE,
         TRAVEL_JOURNAL
     ));
 
@@ -148,16 +147,12 @@ public class RewardGenerator extends BaseGenerator
                 }
                 break;
 
-            case RANDOM_CHARGED_STAFF:
-            case RANDOM_RARE_CHARGED_STAFF:
-                if (Strange.hasModule(Spells.class)) {
-                    out = new ItemStack(Spells.staves.get(rand.nextInt(3)));
-                    rare = item.equals(RANDOM_RARE_CHARGED_STAFF);
-                    Spell spell = SpellsHelper.getRandomSpell(rand, rare);
+            case RANDOM_MOONSTONE:
+                if (Strange.loader.hasModule(Moonstones.class)) {
+                    out = new ItemStack(Moonstones.item);
+                    Spell spell = SpellsHelper.getRandomSpell(rand, true);
                     if (spell == null) return null;
-                    StaffItem.putSpell(out, spell);
-                    StaffItem.putUses(out, Math.min(spell.getQuantity(), rand.nextInt(8) + 8));
-                    StaffItem.putCharged(out, true);
+                    MoonstoneItem.putSpell(out, spell);
                 }
                 break;
 
