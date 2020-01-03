@@ -4,25 +4,27 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
+import svenhjol.strange.spells.block.SpellLecternBlock;
 import svenhjol.strange.spells.helper.SpellsHelper;
+import svenhjol.strange.spells.module.SpellLecterns;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
-import svenhjol.strange.spells.spells.Spell.Element;
+import svenhjol.strange.spells.tile.SpellLecternTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,13 +36,14 @@ public class SpellBookItem extends MesonItem
     public SpellBookItem(MesonModule module)
     {
         super(module, "spell_book", new Item.Properties()
-            .maxStackSize(16));
+            .maxStackSize(1)
+            .maxDamage(16));
 
         // allows different item icons to be shown. Each item icon has a float ref (see model)
         addPropertyOverride(new ResourceLocation("element"), (stack, world, entity) -> {
             Spell spell = getSpell(stack);
-            float out = spell != null && spell.getElement() != null ? spell.getElement().ordinal() : Element.BASE.ordinal();
-            return out / 10.0F;
+            float out = spell != null ? spell.getColor().getId() : 0;
+            return out / 16.0F;
         });
     }
 
@@ -70,14 +73,7 @@ public class SpellBookItem extends MesonItem
         Spell spell = SpellBookItem.getSpell(book);
         if (spell == null) return;
 
-        ITextComponent descriptionText = new TranslationTextComponent(spell.getDescriptionKey());
-        descriptionText.setStyle((new Style()).setColor(TextFormatting.WHITE));
-
-        ITextComponent affectText = new TranslationTextComponent(spell.getAffectKey());
-        affectText.setStyle((new Style()).setColor(TextFormatting.GRAY));
-
-        tooltip.add(descriptionText);
-        tooltip.add(affectText);
+        SpellsHelper.addSpellDescription(spell, tooltip);
     }
 
     @Nullable
@@ -105,10 +101,33 @@ public class SpellBookItem extends MesonItem
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         BlockState state = world.getBlockState(pos);
+        ItemStack stack = context.getItem();
+        PlayerEntity player = context.getPlayer();
+        Hand hand = context.getHand();
+
+        if (player == null) return ActionResultType.PASS;
+
+        ItemStack book = stack.copy();
+        Spell spell = SpellBookItem.getSpell(book);
+        if (spell == null) return ActionResultType.PASS;
 
         if (state.getBlock() == Blocks.LECTERN) {
-            boolean result = LecternBlock.tryPlaceBook(world, pos, state, context.getItem());
-            return result ? ActionResultType.SUCCESS : ActionResultType.PASS;
+            world.removeTileEntity(pos);
+
+            BlockState replace = SpellLecterns.block.getDefaultState()
+                .with(SpellLecternBlock.FACING, state.get(LecternBlock.FACING))
+                .with(SpellLecternBlock.COLOR, spell.getColor().getId());
+
+            world.setBlockState(pos, replace, 2);
+
+            TileEntity replaceTile = world.getTileEntity(pos);
+            if (replaceTile instanceof SpellLecternTileEntity) {
+                SpellLecternTileEntity spellLectern = (SpellLecternTileEntity)replaceTile;
+                spellLectern.setBook(book);
+                spellLectern.markDirty();
+                player.getHeldItem(hand).shrink(1);
+                return ActionResultType.SUCCESS;
+            }
         }
 
         return ActionResultType.PASS;
