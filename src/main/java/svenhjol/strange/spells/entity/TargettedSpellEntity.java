@@ -29,7 +29,7 @@ public class TargettedSpellEntity extends Entity
     public double accelerationZ;
 
     protected LivingEntity caster;
-    protected Spell.Element element = Spell.Element.BASE;
+    protected Spell spell;
 
     private BiConsumer<RayTraceResult, TargettedSpellEntity> onImpact = null;
 
@@ -44,7 +44,7 @@ public class TargettedSpellEntity extends Entity
         super(type, world);
     }
 
-    public TargettedSpellEntity(World world, LivingEntity caster, double x, double y, double z, Spell.Element element)
+    public TargettedSpellEntity(World world, LivingEntity caster, double x, double y, double z, Spell spell)
     {
         this(Spells.entity, world);
         this.caster = caster;
@@ -54,7 +54,7 @@ public class TargettedSpellEntity extends Entity
         this.accelerationZ = z * 1.5D;
 
         this.setNoGravity(true);
-        this.element = element;
+        this.spell = spell;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class TargettedSpellEntity extends Entity
         this.posZ += vec3d.z;
 
 //        ProjectileHelper.rotateTowardsMovement(this, 0.2F);
-        BasicParticleType particleType = Spells.spellParticles.get(element);
+        BasicParticleType particleType = Spells.spellParticle;
 
         double px = posX + (Math.random() - 0.5) * posSpread;
         double py = posY + (Math.random() - 0.5) * posSpread;
