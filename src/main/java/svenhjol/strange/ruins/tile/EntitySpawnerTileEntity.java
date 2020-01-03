@@ -27,7 +27,7 @@ import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.strange.base.helper.DecorationHelper;
-import svenhjol.strange.scrolls.module.EntitySpawner;
+import svenhjol.strange.ruins.module.EntitySpawner;
 
 import java.util.ArrayList;
 import java.util.Arrays;

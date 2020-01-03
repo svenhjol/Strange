@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls.module;
+package svenhjol.strange.ruins.module;
 
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
