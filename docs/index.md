@@ -1,6 +1,9 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
+# Feel free to add content and custom Front Matter to this.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-layout: home
+layout: page
+permalink: /
 ---
+
+Content?
