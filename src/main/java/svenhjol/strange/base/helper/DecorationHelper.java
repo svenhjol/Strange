@@ -34,7 +34,7 @@ import svenhjol.strange.base.compat.QuarkVariantChests;
 import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
-import svenhjol.strange.scrolls.module.EntitySpawner;
+import svenhjol.strange.ruins.module.EntitySpawner;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
