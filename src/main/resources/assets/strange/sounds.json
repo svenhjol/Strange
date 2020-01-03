@@ -18,28 +18,16 @@
       "strange:spell_fail"
     ]
   },
-  "staff_charge_short": {
+  "spell_charge_short": {
     "category": "players",
     "sounds": [
-      "strange:staff_charge_short"
+      "strange:spell_charge_short"
     ]
   },
-  "staff_charge_medium": {
+  "spell_no_more_uses": {
     "category": "players",
     "sounds": [
-      "strange:staff_charge_medium"
-    ]
-  },
-  "staff_charge_long": {
-    "category": "players",
-    "sounds": [
-      "strange:staff_charge_long"
-    ]
-  },
-  "staff_empty": {
-    "category": "players",
-    "sounds": [
-      "strange:staff_empty"
+      "strange:spell_no_more_uses"
     ]
   },
   "quest_action_complete": {

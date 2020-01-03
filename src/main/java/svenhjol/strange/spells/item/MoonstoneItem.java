@@ -84,7 +84,7 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         if (spell == null) return;
 
         if (spell.needsActivation() && !hasMeta(stone)) {
-            player.world.playSound(null, player.getPosition(), StrangeSounds.STAFF_CHARGE_SHORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_CHARGE_SHORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
             spell.activate(player, stone);
             return;
         }
@@ -98,7 +98,7 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
                 if (!player.isCreative()) {
                     boolean hasUses = decreaseUses(stone);
                     if (!hasUses) {
-                        player.world.playSound(null, player.getPosition(), StrangeSounds.NO_MORE_USES, SoundCategory.PLAYERS, 0.75F, hasUses ? 1.0F : 0.75F);
+                        player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_NO_MORE_USES, SoundCategory.PLAYERS, 0.75F, hasUses ? 1.0F : 0.75F);
                     }
                 }
             } else {
