@@ -38,29 +38,27 @@ public class Outerlands extends MesonModule
         if (!scaleDistance) return;
 
         IWorld world = event.getWorld();
-        if (world.getWorld().isRemote) return;
+        if (!world.getWorld().isRemote) {
+            Random rand = world.getRandom();
+            double x = event.getX();
+            double z = event.getZ();
+            BlockPos pos = new BlockPos(x, 0, z);
+            if (!isOuterPos(pos)) return;
 
-        Random rand = world.getRandom();
+            LivingEntity entity = event.getEntityLiving();
+            float multiplier = getScaledMultiplier(world, pos);
 
-        double x = event.getX();
-        double z = event.getZ();
-        BlockPos pos = new BlockPos(x, 0, z);
-
-        if (!isOuterPos(pos)) return;
-
-        LivingEntity entity = event.getEntityLiving();
-        float multiplier = getScaledMultiplier(world, pos);
-
-        if (entity instanceof MonsterEntity) {
-            if (rand.nextFloat() < (0.0025F * multiplier)) {
-                entity.addPotionEffect(new EffectInstance(Effects.HEALTH_BOOST, 1000, (int) (multiplier * multiplier)));
-                entity.setHealth(entity.getMaxHealth());
-            }
-            if (rand.nextFloat() < (0.0015F * multiplier)) {
-                entity.addPotionEffect(new EffectInstance(Effects.STRENGTH, 1000, (int) (1 * multiplier)));
-            }
-            if (rand.nextFloat() < (0.0005F * multiplier)) {
-                entity.addPotionEffect(new EffectInstance(Effects.SPEED, 1000, (int) (1 * multiplier)));
+            if (entity instanceof MonsterEntity) {
+                if (rand.nextFloat() < (0.0020F * multiplier)) {
+                    entity.addPotionEffect(new EffectInstance(Effects.HEALTH_BOOST, 500, (int) (multiplier * multiplier)));
+                    entity.setHealth(entity.getMaxHealth());
+                }
+                if (rand.nextFloat() < (0.0010F * multiplier)) {
+                    entity.addPotionEffect(new EffectInstance(Effects.STRENGTH, 500, (int) (1 * multiplier)));
+                }
+                if (rand.nextFloat() < (0.0005F * multiplier)) {
+                    entity.addPotionEffect(new EffectInstance(Effects.SPEED, 500, (int) (1 * multiplier)));
+                }
             }
         }
     }
@@ -88,7 +86,7 @@ public class Outerlands extends MesonModule
         int xp = event.getOriginalExperience();
 
         if (event.getEntityLiving() instanceof MonsterEntity) {
-            int newXp = (int) (xp * getScaledMultiplier(world, pos));
+            int newXp = (int) (xp * 1.25 * getScaledMultiplier(world, pos));
             event.setDroppedExperience(newXp);
         }
     }
