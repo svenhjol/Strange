@@ -26,7 +26,7 @@ public class StrangeSounds
     public static final SoundEvent STAFF_CHARGE_SHORT = createSound("staff_charge_short");
     public static final SoundEvent STAFF_CHARGE_MEDIUM = createSound("staff_charge_medium");
     public static final SoundEvent STAFF_CHARGE_LONG = createSound("staff_charge_long");
-    public static final SoundEvent STAFF_EMPTY = createSound("staff_empty");
+    public static final SoundEvent NO_MORE_USES = createSound("staff_empty");
 
     public static SoundEvent createSound(String name)
     {
