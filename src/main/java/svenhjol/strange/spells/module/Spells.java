@@ -141,23 +141,6 @@ public class Spells extends MesonModule
 
         RegistryHandler.registerParticleType(spellType, spellRes);
         RegistryHandler.registerParticleType(enchantType, enchantRes);
-
-
-        // register spell and enchantment particles
-//        for (DyeColor el : DyeColor.values()) {
-//            ResourceLocation spellRes = new ResourceLocation(Strange.MOD_ID, el.getName() + "_spell");
-//            BasicParticleType spellType = new BasicParticleType(false);
-//            spellType.setRegistryName(spellRes);
-//            spellParticles.put(el, spellType);
-//
-//            ResourceLocation enchantRes = new ResourceLocation(Strange.MOD_ID, el.getName() + "_enchant");
-//            BasicParticleType enchantType = new BasicParticleType(false);
-//            enchantType.setRegistryName(enchantRes);
-//            enchantParticles.put(el, enchantType);
-//
-//            RegistryHandler.registerParticleType(spellType, spellRes);
-//            RegistryHandler.registerParticleType(enchantType, enchantRes);
-//        }
     }
 
     @Override
@@ -226,6 +209,7 @@ public class Spells extends MesonModule
     {
         List<String> pool = useRare ? enabledSpells : commonSpells;
         String id = pool.get(rand.nextInt(pool.size()));
+        Meson.debug("Attaching spell " + id + " to spellbook");
         SpellBookItem.putSpell(book, Spells.spells.get(id));
         return book;
     }

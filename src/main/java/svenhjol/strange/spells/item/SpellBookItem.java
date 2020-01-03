@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.spells.block.SpellLecternBlock;
@@ -90,6 +91,10 @@ public class SpellBookItem extends MesonItem
 
     public static ItemStack putSpell(ItemStack book, Spell spell)
     {
+        if (spell == null) {
+            Meson.warn("Tried to put an empty spell");
+            return ItemStack.EMPTY;
+        }
         book.getOrCreateTag().putString(SPELL, spell.getId()); // add new spell
         book.setDisplayName(SpellsHelper.getSpellInfoText(spell));
         return book;

@@ -10,6 +10,7 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
@@ -79,6 +80,7 @@ public class Moonstones extends MesonModule
     {
         List<String> pool = Spells.enabledSpells;
         String id = pool.get(rand.nextInt(pool.size()));
+        Meson.debug("Attaching spell " + id + " to moonstone");
         Spell spell = Spells.spells.get(id);
 
         MoonstoneItem.putSpell(stone, spell);
