@@ -1,46 +1,88 @@
 package svenhjol.strange.spells.module;
 
-import net.minecraft.item.DyeColor;
-import svenhjol.charm.tools.item.MoonstoneItem;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.ItemLootEntry;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTables;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.helper.LootHelper;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.spells.item.MoonstoneItem;
+import svenhjol.strange.spells.spells.Spell;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true,
     description = "")
 public class Moonstones extends MesonModule
 {
-    public static List<MoonstoneItem> items = new ArrayList<>();
+    public static MoonstoneItem item;
+
+    @Config(name = "Add moonstones to loot", description = "If true, enchanted moonstones will be added to dungeon loot and buried treasure.")
+    public static boolean addMoonstonesToLoot = true;
+
+    @Config(name = "Enchantment glint", description = "If true, enchanted moonstones will have the glint effect.")
+    public static boolean glint = true;
 
     @Override
     public void init()
     {
-        for (DyeColor value : DyeColor.values()) {
-            items.add(new MoonstoneItem(this, value));
+        item = new MoonstoneItem(this);
+    }
+
+    @SubscribeEvent
+    public void onLootTableLoad(LootTableLoadEvent event)
+    {
+        if (!addMoonstonesToLoot) return;
+
+        int weight = 0;
+        int quality = 2;
+        ResourceLocation res = event.getName();
+
+        if (res.equals(LootTables.CHESTS_SIMPLE_DUNGEON)) {
+            weight = 4;
+        } else if (res.equals(LootTables.CHESTS_BURIED_TREASURE)) {
+            weight = 6;
+        }
+
+        if (weight > 0) {
+            LootEntry entry = ItemLootEntry.builder(Moonstones.item)
+                .weight(weight)
+                .quality(quality)
+                .acceptFunction(() -> (stack, context) -> {
+                    Random rand = context.getRandom();
+                    return attachRandomSpell(stack, rand);
+                })
+                .build();
+
+            LootTable table = event.getTable();
+            LootHelper.addTableEntry(table, entry);
         }
     }
 
-//    @SubscribeEvent
-//    public void onMoonstoneUse(RightClickBlock event)
-//    {
-//        if (!event.getWorld().isRemote
-//            && event.getPlayer() != null
-//            && event.getPlayer().getHeldItem(event.getHand()).getItem() instanceof MoonstoneItem
-//        ) {
-//            PlayerEntity player = event.getPlayer();
-//            Hand hand = event.getHand();
-//            ItemStack held = player.getHeldItem(hand);
-//            BlockPos pos = event.getPos();
-//
-//            if (player.isSneaking()) {
-//                MoonstoneItem.setStonePos(held, pos);
-//                MoonstoneItem.setStoneDim(held, player.dimension.getId());
-//                player.swingArm(hand);
-//            }
-//        }
-//    }
+    public static void effectEnchantStone(ServerPlayerEntity player, Spell spell, int particles, double xOffset, double yOffset, double zOffset, double speed)
+    {
+        Spells.effectEnchant((ServerWorld)player.world, player.getPositionVec(), spell, particles, xOffset, yOffset, zOffset, speed);
+    }
+
+    public static ItemStack attachRandomSpell(ItemStack stone, Random rand)
+    {
+        List<String> pool = Spells.enabledSpells;
+        String id = pool.get(rand.nextInt(pool.size()));
+        Spell spell = Spells.spells.get(id);
+
+        MoonstoneItem.putSpell(stone, spell);
+        MoonstoneItem.putUses(stone, (int)(spell.getUses() * (1.0 + rand.nextFloat())));
+        return stone;
+    }
 }

@@ -1,0 +1,23 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "strange:item/moonstone"
+  },
+  "overrides": [
+    { "predicate": { "color": 0.0625 }, "model": "strange:item/moonstone_orange" },
+    { "predicate": { "color": 0.125 }, "model": "strange:item/moonstone_magenta" },
+    { "predicate": { "color": 0.1875 }, "model": "strange:item/moonstone_light_blue" },
+    { "predicate": { "color": 0.25 }, "model": "strange:item/moonstone_yellow" },
+    { "predicate": { "color": 0.3125 }, "model": "strange:item/moonstone_lime" },
+    { "predicate": { "color": 0.375 }, "model": "strange:item/moonstone_pink" },
+    { "predicate": { "color": 0.4375 }, "model": "strange:item/moonstone_gray" },
+    { "predicate": { "color": 0.5 }, "model": "strange:item/moonstone_light_gray" },
+    { "predicate": { "color": 0.5626 }, "model": "strange:item/moonstone_cyan" },
+    { "predicate": { "color": 0.625 }, "model": "strange:item/moonstone_purple" },
+    { "predicate": { "color": 0.6875 }, "model": "strange:item/moonstone_blue" },
+    { "predicate": { "color": 0.75 }, "model": "strange:item/moonstone_brown" },
+    { "predicate": { "color": 0.8125 }, "model": "strange:item/moonstone_green" },
+    { "predicate": { "color": 0.875 }, "model": "strange:item/moonstone_red" },
+    { "predicate": { "color": 0.9375 }, "model": "strange:item/moonstone_black" }
+  ]
+}
