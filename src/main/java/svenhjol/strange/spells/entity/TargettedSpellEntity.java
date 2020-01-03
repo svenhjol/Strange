@@ -118,14 +118,6 @@ public class TargettedSpellEntity extends Entity
             ) {
                 this.onImpact.accept(r, this);
             }
-
-
-//            RayTraceResult result = ProjectileHelper.rayTrace(this, true, false, this.caster, RayTraceContext.BlockMode.COLLIDER);
-////                && !(result.getType() == RayTraceResult.Type.BLOCK && world.isAirBlock(((BlockRayTraceResult)result).getPos()))
-//            if (result.getType() != RayTraceResult.Type.MISS
-//                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, result)
-//            ) {
-//            }
         }
     }
 
