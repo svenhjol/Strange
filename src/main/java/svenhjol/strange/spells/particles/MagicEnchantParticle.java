@@ -1,9 +1,9 @@
 package svenhjol.strange.spells.particles;
 
 import net.minecraft.client.particle.*;
+import net.minecraft.item.DyeColor;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
-import svenhjol.strange.spells.spells.Spell;
 
 public class MagicEnchantParticle extends EnchantmentTableParticle
 {
@@ -31,59 +31,188 @@ public class MagicEnchantParticle extends EnchantmentTableParticle
         {
             MagicEnchantParticle particle = new MagicEnchantParticle(world, x, y, z, xSpeed, ySpeed, zSpeed);
             float f = world.rand.nextFloat() * 0.75F + 0.25F;
-            float[] color = getElement().getColor();
+            float[] color = getColor().getColorComponentValues();
             particle.setColor(color[0] * f, color[1] * f, color[2] * f);
             particle.selectSpriteRandomly(this.spriteSet);
             return particle;
         }
 
-        public Spell.Element getElement()
+        public DyeColor getColor()
         {
-            return Spell.Element.BASE;
+            return DyeColor.WHITE;
         }
     }
 
-    public static class AirEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
+    public static class WhiteFactory extends MagicSpellParticle.MagicSpellFactory
     {
-        public AirEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+        public WhiteFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
 
         @Override
-        public Spell.Element getElement()
+        public DyeColor getColor() { return DyeColor.WHITE; }
+    }
+
+    public static class OrangeFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public OrangeFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
         {
-            return Spell.Element.AIR;
+            return DyeColor.ORANGE;
         }
     }
 
-    public static class WaterEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
+    public static class MagentaFactory extends MagicSpellParticle.MagicSpellFactory
     {
-        public WaterEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+        public MagentaFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
 
         @Override
-        public Spell.Element getElement()
+        public DyeColor getColor()
         {
-            return Spell.Element.WATER;
+            return DyeColor.MAGENTA;
         }
     }
 
-    public static class EarthEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
+    public static class LightBlueFactory extends MagicSpellParticle.MagicSpellFactory
     {
-        public EarthEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+        public LightBlueFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
 
         @Override
-        public Spell.Element getElement()
+        public DyeColor getColor()
         {
-            return Spell.Element.EARTH;
+            return DyeColor.LIGHT_BLUE;
         }
     }
 
-    public static class FireEnchantFactory extends MagicEnchantParticle.MagicEnchantFactory
+    public static class YellowFactory extends MagicSpellParticle.MagicSpellFactory
     {
-        public FireEnchantFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+        public YellowFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
 
         @Override
-        public Spell.Element getElement()
+        public DyeColor getColor()
         {
-            return Spell.Element.FIRE;
+            return DyeColor.YELLOW;
+        }
+    }
+
+    public static class LimeFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public LimeFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.LIME;
+        }
+    }
+
+    public static class PinkFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public PinkFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.PINK;
+        }
+    }
+
+    public static class GrayFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public GrayFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.GRAY;
+        }
+    }
+
+    public static class LightGrayFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public LightGrayFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.LIGHT_GRAY;
+        }
+    }
+
+    public static class CyanFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public CyanFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.CYAN;
+        }
+    }
+
+    public static class PurpleFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public PurpleFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.PURPLE;
+        }
+    }
+
+    public static class BlueFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public BlueFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.BLUE;
+        }
+    }
+
+    public static class BrownFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public BrownFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.BROWN;
+        }
+    }
+
+    public static class GreenFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public GreenFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.GREEN;
+        }
+    }
+
+    public static class RedFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public RedFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.RED;
+        }
+    }
+
+    public static class BlackFactory extends MagicSpellParticle.MagicSpellFactory
+    {
+        public BlackFactory(IAnimatedSprite spriteSet) { super(spriteSet); }
+
+        @Override
+        public DyeColor getColor()
+        {
+            return DyeColor.BLACK;
         }
     }
 }
