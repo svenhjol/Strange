@@ -3,6 +3,7 @@ package svenhjol.strange.spells.spells;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -16,15 +17,12 @@ public class AuraSpell extends Spell
     public AuraSpell()
     {
         super("aura");
-        this.element = Element.WATER;
+        this.color = DyeColor.CYAN;
         this.affect = Affect.AREA;
-        this.quantity = 8;
-        this.duration = 3.5F;
-        this.castCost = 20;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         int[] range = {8, 5, 8};
         this.castArea(player, range, blocks -> {

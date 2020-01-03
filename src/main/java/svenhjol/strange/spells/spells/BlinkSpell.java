@@ -1,6 +1,7 @@
 package svenhjol.strange.spells.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -15,15 +16,13 @@ public class BlinkSpell extends Spell
     public BlinkSpell()
     {
         super("blink");
-        this.element = Element.AIR;
-        this.affect = Affect.FOCUS;
-        this.applyCost = 2;
-        this.duration = 1.25F;
-        this.castCost = 8;
+        this.color = DyeColor.MAGENTA;
+        this.affect = Affect.TARGET;
+        this.uses = 10;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         World world = player.world;
 

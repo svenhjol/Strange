@@ -3,6 +3,7 @@ package svenhjol.strange.spells.spells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -13,15 +14,13 @@ public class KnockbackSpell extends Spell
     public KnockbackSpell()
     {
         super("knockback");
-        this.element = Element.AIR;
+        this.color = DyeColor.PINK;
         this.affect = Affect.TARGET;
-        this.duration = 1.0F;
-        this.castCost = 4;
-        this.quantity = 50;
+        this.uses = 10;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castTarget(player, (result, beam) -> {
             Entity e = getClosestEntity(player.world, result);

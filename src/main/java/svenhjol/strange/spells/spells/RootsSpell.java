@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LogBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -20,15 +21,13 @@ public class RootsSpell extends Spell
     public RootsSpell()
     {
         super("roots");
-        this.element = Element.EARTH;
+        this.color = DyeColor.GREEN;
         this.affect = Affect.FOCUS;
-        this.applyCost = 1;
-        this.duration = 0.75F;
-        this.castCost = 3;
+        this.uses = 10;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         World world = player.world;
 

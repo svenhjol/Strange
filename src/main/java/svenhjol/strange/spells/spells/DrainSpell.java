@@ -2,6 +2,7 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,15 +17,13 @@ public class DrainSpell extends Spell
     public DrainSpell()
     {
         super("drain");
-        this.element = Element.FIRE;
+        this.color = DyeColor.BLACK;
         this.affect = Affect.AREA;
-        this.quantity = 8;
-        this.duration = 3.5F;
-        this.castCost = 20;
+        this.applyCost = 2;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         int[] range = {8, 5, 8};
         this.castArea(player, range, blocks -> {

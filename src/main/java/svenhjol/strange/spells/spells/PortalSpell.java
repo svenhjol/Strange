@@ -3,6 +3,7 @@ package svenhjol.strange.spells.spells;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -22,15 +23,13 @@ public class PortalSpell extends Spell
     public PortalSpell()
     {
         super("portal");
-        this.element = Element.FIRE;
+        this.color = DyeColor.RED;
         this.affect = Affect.SELF;
         this.applyCost = 5;
-        this.duration = 3.5F;
-        this.castCost = 50;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castSelf(player, p -> {
             if (p.dimension == DimensionType.OVERWORLD) {

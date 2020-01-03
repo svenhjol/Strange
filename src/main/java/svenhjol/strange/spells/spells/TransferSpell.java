@@ -2,6 +2,7 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -17,7 +18,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.helper.WorldHelper;
-import svenhjol.strange.spells.item.StaffItem;
+import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.module.Spells;
 
 import java.util.Objects;
@@ -29,14 +30,14 @@ public class TransferSpell extends Spell
     public TransferSpell()
     {
         super("transfer");
-        this.element = Element.EARTH;
+        this.color = DyeColor.LIME;
         this.affect = Affect.FOCUS;
-        this.duration = 1.0F;
-        this.castCost = 15;
+        this.applyCost = 2;
+        this.needsActivation = true;
     }
 
     @Override
-    public boolean activate(PlayerEntity player, ItemStack staff)
+    public boolean activate(PlayerEntity player, ItemStack stone)
     {
         // get the block the player is looking at
         BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player);
@@ -57,7 +58,7 @@ public class TransferSpell extends Spell
 
             if (invalid || Spells.transferBlacklist.contains(srcName)) {
                 world.playSound(null, player.getPosition(), SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                player.getCooldownTracker().setCooldown(staff.getItem(), 20);
+                player.getCooldownTracker().setCooldown(stone.getItem(), 20);
                 return false;
             }
 
@@ -67,7 +68,7 @@ public class TransferSpell extends Spell
 
                 if (playerLevel < levelCost) {
                     player.sendStatusMessage(new TranslationTextComponent("event.strange.spellbook.not_enough_xp"), true);
-                    player.getCooldownTracker().setCooldown(staff.getItem(), 20);
+                    player.getCooldownTracker().setCooldown(stone.getItem(), 20);
                     return false;
                 }
                 player.addExperienceLevel(-levelCost);
@@ -94,19 +95,21 @@ public class TransferSpell extends Spell
             double px = pos.getX() + 0.5D;
             double py = pos.getY() + 1.0D;
             double pz = pos.getZ() + 0.5D;
-            ((ServerWorld)world).spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 20, 0.1D, 0.1D, 0.1D, 0.5D);
+            ((ServerWorld)world).spawnParticle(Spells.enchantParticle, px, py, pz, 20, 0.1D, 0.1D, 0.1D, 0.5D);
         }
 
-        StaffItem.putMeta(staff, meta);
+        MoonstoneItem.putMeta(stone, meta);
 
         return true;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         World world = player.world;
-        CompoundNBT meta = StaffItem.getMeta(staff);
+
+        // TODO moonstones must have meta
+        CompoundNBT meta = MoonstoneItem.getMeta(stone);
 
         if (!meta.contains("state")) return;
         INBT nbtState = meta.get("state");
@@ -175,6 +178,8 @@ public class TransferSpell extends Spell
                 }
                 world.notifyNeighborsOfStateChange(destPos, srcBlock);
             }
+
+            didCast.accept(false);
         });
 
         didCast.accept(true);

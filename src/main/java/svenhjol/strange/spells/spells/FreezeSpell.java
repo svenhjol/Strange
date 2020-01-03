@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FireBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -18,14 +19,12 @@ public class FreezeSpell extends Spell
     public FreezeSpell()
     {
         super("freeze");
-        this.element = Element.WATER;
+        this.color = DyeColor.LIGHT_BLUE;
         this.affect = Affect.AREA;
-        this.duration = 3.0F;
-        this.castCost = 15;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 6, 4, 6 }, blocks -> {
             World world = player.world;

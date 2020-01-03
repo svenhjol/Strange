@@ -8,7 +8,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.helper.WorldHelper;
@@ -36,13 +35,11 @@ public abstract class Spell
         FOCUS
     }
 
-    protected int castCost = 5;
+    protected boolean needsActivation = false;
     protected int applyCost = 1;
-    protected int staffDamage = 1;
-    protected int quantity = 32;
-    protected float duration = 3;
+    protected int uses = 1;
     protected String id;
-    protected Element element = Element.BASE;
+    protected DyeColor color;
     protected Affect affect = Affect.NONE;
 
     public Spell(String id)
@@ -70,9 +67,9 @@ public abstract class Spell
         return "spell.strange.affect." + getAffect().getName();
     }
 
-    public Element getElement()
+    public DyeColor getColor()
     {
-        return element;
+        return color;
     }
 
     public Affect getAffect()
@@ -80,29 +77,19 @@ public abstract class Spell
         return affect;
     }
 
-    public float getDuration()
-    {
-        return duration;
-    }
-
-    public int getCastCost()
-    {
-        return castCost;
-    }
-
     public int getApplyCost()
     {
         return applyCost;
     }
 
-    public int getQuantity()
+    public int getUses()
     {
-        return quantity;
+        return uses;
     }
 
-    public int getStaffDamage()
+    public boolean needsActivation()
     {
-        return staffDamage;
+        return this.needsActivation;
     }
 
     public CompoundNBT toNBT()
@@ -119,12 +106,12 @@ public abstract class Spell
         return Spells.spells.getOrDefault(id, null);
     }
 
-    public boolean activate(PlayerEntity player, ItemStack book)
+    public boolean activate(PlayerEntity player, ItemStack stone)
     {
         return true;
     }
 
-    public abstract void cast(PlayerEntity player, ItemStack book, Consumer<Boolean> didCast);
+    public abstract void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast);
 
     protected void castArea(PlayerEntity player, int[] range, Consumer<List<BlockPos>> onEffect)
     {
@@ -143,7 +130,7 @@ public abstract class Spell
             double px = block.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = block.getY() + 0.5D * spread;
             double pz = block.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            world.spawnParticle(Spells.spellParticles.get(this.getElement()), px, py, pz, 4, 0.0D, 0.0D, 0.0D, 3);
+            world.spawnParticle(Spells.spellParticle, px, py, pz, 4, 0.0D, 0.0D, 0.0D, 3);
         }
     }
 
@@ -157,7 +144,7 @@ public abstract class Spell
         float cz = MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float)Math.PI / 180F));
         Vec3d v1 = (new Vec3d(cx, cy, cz)).normalize();
 
-        TargettedSpellEntity entity = new TargettedSpellEntity(world, player, v1.x, v1.y, v1.z, this.element);
+        TargettedSpellEntity entity = new TargettedSpellEntity(world, player, v1.x, v1.y, v1.z, this);
         entity.setLocationAndAngles(playerVec.x, playerVec.y + 1.5D, playerVec.z, 0.0F, 0.0F);
         entity.onImpact(onImpact);
         world.addEntity(entity);
@@ -174,7 +161,7 @@ public abstract class Spell
         double px = focusPos.getX() + 0.5D;
         double py = focusPos.getY() + 1.5D;
         double pz = focusPos.getZ() + 0.5D;
-        world.spawnParticle(Spells.enchantParticles.get(this.getElement()), px, py, pz, 20, 0.1D, 0.1D, 0.1D, 1.2D);
+        world.spawnParticle(Spells.enchantParticle, px, py, pz, 20, 0.1D, 0.1D, 0.1D, 1.2D);
     }
 
     protected void castSelf(PlayerEntity player, Consumer<ServerPlayerEntity> onSelf)
@@ -187,7 +174,7 @@ public abstract class Spell
         double px = vec.x + 0.5D + (Math.random() - 0.5D) * spread;
         double py = vec.y + 1.5D * spread;
         double pz = vec.z + 0.5D + (Math.random() - 0.5D) * spread;
-        world.spawnParticle(Spells.spellParticles.get(this.getElement()), px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
+        world.spawnParticle(Spells.spellParticle, px, py, pz, 50, 0.0D, 0.0D, 0.0D, 1.5D);
     }
 
     protected List<LivingEntity> getEntitiesAroundPos(World world, BlockPos pos, double[] range)
@@ -210,47 +197,5 @@ public abstract class Spell
         }
 
         return e;
-    }
-
-    public enum Element implements IMesonEnum
-    {
-        BASE(new float[] { 0.5F, 0.5F, 0.5F }, DyeColor.WHITE, TextFormatting.GRAY, "§7"),
-        AIR(new float[] { 1.0F, 1.0F, 0.4F }, DyeColor.YELLOW, TextFormatting.YELLOW, "§e"),
-        WATER(new float[] { 0.4F, 0.7F, 1.0F }, DyeColor.CYAN, TextFormatting.AQUA, "§b"),
-        EARTH(new float[] { 0.4F, 1.0F, 0.5F }, DyeColor.LIME, TextFormatting.GREEN, "§a"),
-        FIRE(new float[] { 1.0F, 0.2F, 0.0F }, DyeColor.RED, TextFormatting.RED, "§c");
-
-        private final float[] color;
-        private final String formatCode;
-        private final TextFormatting formatColor;
-        private final DyeColor dyeColor;
-
-        Element(float[] color, DyeColor dyeColor, TextFormatting formatColor, String formatCode)
-        {
-            this.color = color;
-            this.formatCode = formatCode;
-            this.formatColor = formatColor;
-            this.dyeColor = dyeColor;
-        }
-
-        public float[] getColor()
-        {
-            return this.color;
-        }
-
-        public String getFormatCode()
-        {
-            return formatCode;
-        }
-
-        public DyeColor getDyeColor()
-        {
-            return dyeColor;
-        }
-
-        public TextFormatting getFormatColor()
-        {
-            return formatColor;
-        }
     }
 }

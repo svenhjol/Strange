@@ -3,27 +3,26 @@ package svenhjol.strange.spells.spells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
-import svenhjol.meson.handler.PlayerQueueHandler;
 
 import java.util.function.Consumer;
 
-public class PacifySpell extends Spell
+public class LevitateSpell extends Spell
 {
-    public PacifySpell()
+    public LevitateSpell()
     {
-        super("pacify");
-        this.element = Element.WATER;
+        super("levitate");
+        this.color = DyeColor.PINK;
         this.affect = Affect.TARGET;
-        this.duration = 1.0F;
-        this.castCost = 5;
+        this.uses = 3;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         World world = player.world;
 
@@ -32,12 +31,7 @@ public class PacifySpell extends Spell
             beam.remove();
             if (e instanceof MobEntity) {
                 MobEntity mob = (MobEntity) e;
-                if (!mob.isAIDisabled()) {
-                    mob.setNoAI(true);
-                    mob.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 140, 0));
-                    PlayerQueueHandler.add(world.getGameTime() + 150, player, p -> mob.setNoAI(false));
-                }
-
+                mob.addPotionEffect(new EffectInstance(Effects.LEVITATION, 140, 0));
                 didCast.accept(true);
                 return;
             }

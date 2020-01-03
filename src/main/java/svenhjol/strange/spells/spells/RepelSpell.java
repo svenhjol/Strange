@@ -2,6 +2,7 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -17,14 +18,13 @@ public class RepelSpell extends Spell
     public RepelSpell()
     {
         super("repel");
-        this.element = Element.AIR;
+        this.color = DyeColor.PURPLE;
         this.affect = Affect.AREA;
-        this.duration = 2.25F;
-        this.castCost = 10;
+        this.uses = 3;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         int[] range = {12, 5, 12};
         this.castArea(player, range, blocks -> {

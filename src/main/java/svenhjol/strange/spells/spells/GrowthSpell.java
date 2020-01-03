@@ -2,6 +2,7 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -14,14 +15,12 @@ public class GrowthSpell extends Spell
     public GrowthSpell()
     {
         super("growth");
-        this.element = Element.EARTH;
+        this.color = DyeColor.BROWN;
         this.affect = Affect.AREA;
-        this.duration = 2.0F;
-        this.castCost = 15;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 4, 3, 4 }, blocks -> {
             World world = player.world;
@@ -50,6 +49,12 @@ public class GrowthSpell extends Spell
                     BlockState newState = state.with(SugarCaneBlock.AGE, 15);
                     SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)world.getBlockState(pos).getBlock();
                     sugarCaneBlock.tick(newState, world, pos, world.rand);
+                    didGrow = true;
+                }
+                if (block instanceof SaplingBlock) {
+                    BlockState newState = state.with(SaplingBlock.STAGE, 1);
+                    SaplingBlock saplingBlock = (SaplingBlock)world.getBlockState(pos).getBlock();
+                    saplingBlock.tick(newState, world, pos, world.rand);
                     didGrow = true;
                 }
 

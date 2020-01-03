@@ -1,6 +1,7 @@
 package svenhjol.strange.spells.spells;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 
@@ -12,15 +13,13 @@ public class BoostSpell extends Spell
     public BoostSpell()
     {
         super("boost");
-        this.element = Element.WATER;
+        this.color = DyeColor.BLUE;
         this.affect = Affect.SELF;
-        this.applyCost = 5;
-        this.duration = 3.0F;
-        this.castCost = 20;
+        this.applyCost = 2;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castSelf(player, p -> {
             Collection<EffectInstance> effects = p.getActivePotionEffects();

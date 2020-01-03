@@ -2,6 +2,7 @@ package svenhjol.strange.spells.spells;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -10,19 +11,17 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-public class ThawSpell extends Spell
+public class HeatSpell extends Spell
 {
-    public ThawSpell()
+    public HeatSpell()
     {
-        super("thaw");
-        this.element = Element.FIRE;
+        super("heat");
+        this.color = DyeColor.YELLOW;
         this.affect = Affect.AREA;
-        this.duration = 3.0F;
-        this.castCost = 15;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castArea(player, new int[] { 7, 3, 7 }, blocks -> {
             World world = player.world;

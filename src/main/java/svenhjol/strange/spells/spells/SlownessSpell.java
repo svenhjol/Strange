@@ -3,6 +3,7 @@ package svenhjol.strange.spells.spells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -15,18 +16,15 @@ public class SlownessSpell extends Spell
     public SlownessSpell()
     {
         super("slowness");
-        this.element = Element.WATER;
+        this.color = DyeColor.LIGHT_BLUE;
         this.affect = Affect.TARGET;
-        this.duration = 1.0F;
-        this.castCost = 5;
+        this.uses = 3;
     }
 
     @Override
-    public void cast(PlayerEntity player, ItemStack staff, Consumer<Boolean> didCast)
+    public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         this.castTarget(player, (result, beam) -> {
-            // TODO get entities in range if block hit
-
             EntityRayTraceResult entityImpact = (EntityRayTraceResult) result;
             Entity e = entityImpact.getEntity();
             beam.remove();
