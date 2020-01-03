@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "strange:block/spell_lectern" },
+        "facing=south": { "model": "strange:block/spell_lectern", "y": 180 },
+        "facing=west":  { "model": "strange:block/spell_lectern", "y": 270 },
+        "facing=east":  { "model": "strange:block/spell_lectern", "y": 90 }
+    }
+}

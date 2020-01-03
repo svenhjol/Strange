@@ -1,0 +1,6 @@
+{
+    "parent": "block/lectern",
+    "textures": {
+        "base": "strange:block/spell_lectern_base"
+    }
+}
