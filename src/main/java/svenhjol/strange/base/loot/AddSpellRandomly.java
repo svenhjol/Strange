@@ -11,6 +11,7 @@ import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
+import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
@@ -35,13 +36,13 @@ public class AddSpellRandomly extends LootFunction
         Random rand = context.getRandom();
         Spell spell;
 
-        if (!(stack.getItem() instanceof SpellBookItem)) {
-            Meson.warn("Trying to add a spell to something that isn't a spell book", stack);
+        if (!(stack.getItem() instanceof SpellBookItem || !(stack.getItem() instanceof MoonstoneItem)
+        )) {
+            Meson.warn("Trying to add a spell to something invalid", stack);
             return stack;
         }
 
         if (spells.isEmpty()) {
-
             List<Spell> list = Lists.newArrayList();
 
             for (String spellId : Spells.spells.keySet()) {
@@ -49,7 +50,7 @@ public class AddSpellRandomly extends LootFunction
             }
 
             if (list.isEmpty()) {
-                Meson.warn("Spell list is empty, can't add a spell to the book", stack);
+                Meson.warn("Spell list is empty, can't add a spell", stack);
                 return stack;
             }
 
@@ -58,7 +59,11 @@ public class AddSpellRandomly extends LootFunction
             spell = spells.get(rand.nextInt(spells.size()));
         }
 
-        SpellBookItem.putSpell(stack, spell);
+        if (stack.getItem() instanceof SpellBookItem) {
+            SpellBookItem.putSpell(stack, spell);
+        } else if (stack.getItem() instanceof MoonstoneItem) {
+            MoonstoneItem.putSpell(stack, spell);
+        }
         return stack;
     }
 
