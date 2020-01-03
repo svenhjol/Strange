@@ -38,8 +38,11 @@ public class UndergroundRuins extends MesonModule
         Feature.NETHER_BRIDGE
     ));
 
-    @Config(name = "Default size", description = "Controls how many pieces generate as part of a ruin.")
+    @Config(name = "Default size", description = "Default number of pieces that generate as part of a ruin.")
     public static int defaultSize = 2;
+
+    @Config(name = "Distance", description = "Distance between ruin structures. For reference, Shipwrecks are 16.")
+    public static int distance = 12;
 
     @Config(name = "Additional pieces", description = "Random number of extra pieces that may be added to a ruin.")
     public static int variation = 1;
