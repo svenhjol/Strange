@@ -5,7 +5,7 @@ title: Totem of Preserving
 
 # Totem of Preserving
 
-This black totem preserves your current inventory items.  It is based on the *Totem of Holding* from Quark.
+This black totem preserves your current inventory items.  It is based on the *Totem of Holding* from Quark. 
 
 ## On death
 

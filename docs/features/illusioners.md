@@ -5,7 +5,7 @@ title: Illusioners
 
 # Illusioners
 
-Illusioners are vanilla Minecraft (1.14) Illagers but not enabled in the game by default.
+Illusioners are vanilla Minecraft illagers but are not enabled in the game by default.
 *Strange* enables Illusioners to spawn in certain conditions:
 * within Dark Forests of [The Outerlands]({{ site.baseurl }}/features/outerlands)
 * inside [Vaults]({{ site.baseurl }}/features/vaults)
