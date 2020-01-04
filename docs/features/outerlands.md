@@ -12,7 +12,7 @@ title: outerlands
 * [Quests]({{ site.baseurl }}/features/scrolls) are tougher but give greater reward.
 * [Illusioners]({{ site.baseurl }}/features/illusioners), powerful magic illagers, spawn naturally in Dark Forests of the outerlands.
 
-## Other notes
+## Notes
 
 The outerlands features can be configured via the `strange-common.toml` file.  This lets you specify the threshold that the outerlands begins, the monster difficulty, and other options.
 
