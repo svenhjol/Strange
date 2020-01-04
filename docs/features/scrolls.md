@@ -5,7 +5,7 @@ title: Scrolls
 
 # Scrolls
 
-**Scrolls** contain quest instructions. Clicking on a scroll shows you the details about the quest. You may then make a decision about whether you want to **Accept**, **Decline** or **Close** the quest scroll.  Clicking **Accept** begins the quest and removes the scroll from your inventory. You can then see your quest progress at the top of your inventory screen. [Follow this link]({{ site.baseurl }}/features/quests) to read more about quests.
+**Scrolls** contain quest instructions. Clicking on a scroll shows you the details about the quest.  You may then make a decision about whether you want to **Accept**, **Decline** or **Close** the quest scroll.  Clicking **Accept** begins the quest and removes the scroll from your inventory. You can then see your quest progress at the top of your inventory screen. [Follow this link]({{ site.baseurl }}/features/quests) to read more about quests.
 
 Scrolls are typically sold by the [Scrollkeeper]({{ site.baseurl }}/features/scrollkeepers) villager but may also be found in dungeon loot.
 

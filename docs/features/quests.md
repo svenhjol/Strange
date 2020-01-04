@@ -11,7 +11,7 @@ By default you may undertake 3 quests simultaneously.
 
 ## Keeping track of quests
 
-Quests in progress are viewable at the top of your inventory screen.  Each box represents a single quest and shows its name and progress (as a bar).  Click on the box to show a more detailed view including the necessary actions you need to complete the quest criteria. 
+Quests that are in progress are viewable at the top of your inventory screen.  Each box represents a single quest and shows its name and progress (as a bar).  Click on the box to show a more detailed view including the necessary actions you need to complete the quest criteria. 
 
 From this screen you may also **Quit** a quest.  You do not get any partial reward for any progress you have made.
 
