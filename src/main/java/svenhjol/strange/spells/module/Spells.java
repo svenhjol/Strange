@@ -71,8 +71,8 @@ public class Spells extends MesonModule
     @Config(name = "Common spells", description = "Subset of 'enabled spells' that appear in common dungeon loot and villager trades.")
     public static List<String> commonSpells = Arrays.asList(
         "aura",
+        "freeze",
         "growth",
-        "heat",
         "knockback",
         "levitate",
         "slowness"
