@@ -13,3 +13,6 @@ Expanding on the vanilla "Totem of Undying", *Strange* offers a number of new to
 * [Totem of Preserving]({{ site.baseurl }}/features/totem_of_preserving) - sneak-click while holding to transfer and store all your items in the totem.  Click again to break the totem and restore them.
 * [Totem of Flying]({{ site.baseurl }}/features/totem_of_flying) - hold in your **off-hand** to allow flight (jump to activate). Flying consumes experience points.
 
+## Finding totems
+
+Some totems such as the *Totem of Returning* and *Totem of Shielding* are more common than the others. Click on the links above to find out how to obtain them. Other totems are incredibly rare and can only be found in [Vaults]({{ site.baseurl }}/features/vaults) which are large underground structures [far from the spawn point]({{ site.baseurl }}/features/outerlands).
