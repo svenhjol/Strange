@@ -17,7 +17,7 @@ A number of other monster spawners can be found in rooms and corridors. Remember
 
 Each vault structure is unique and may have many levels all the way down to bedrock.  Some rooms connect to lower or higher levels via staircases or drops.
 
-Treasure chests often contain a single [Totem]({{ site.baseurl }}/features/totems).  These chests are **the only place** to find the rarest totems.  Barrels and Crates should also be checked as there is a slight chance they will also contain totems.  Don't pass by the bookshelves!  Any of the vault bookshelves might be a "bookshelf chest" and contain rare books and items too.
+Treasure chests often contain a [Totem]({{ site.baseurl }}/features/totems).  These chests are **the only place** to find the rarest totems.  Barrels and Crates should also be checked as there is a slight chance they will also contain totems.  Don't pass by the bookshelves!  Any of the vault bookshelves might be a "bookshelf chest" and contain rare books and items too.
 
 **NOTE**: A single vault structure is not guaranteed to contain **all** the rarest loot available.  Find another distant Stone Circle to search for more vaults underground.
 
