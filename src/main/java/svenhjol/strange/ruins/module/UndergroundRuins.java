@@ -34,8 +34,7 @@ public class UndergroundRuins extends MesonModule
     public static Map<Biome.Category, List<ResourceLocation>> starts = new HashMap<>();
     public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
         Feature.STRONGHOLD,
-        Feature.OCEAN_MONUMENT,
-        Feature.NETHER_BRIDGE
+        Feature.OCEAN_MONUMENT
     ));
 
     @Config(name = "Default size", description = "Default number of pieces that generate as part of a ruin.")
