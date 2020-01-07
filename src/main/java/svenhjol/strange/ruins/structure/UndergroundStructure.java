@@ -115,7 +115,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             String ruin = getRuin(biomeCategory, pos);
             if (ruin == null) return;
 
-            pos = adjustPosForBiome(biomeCategory, pos);
+            pos = adjustPosForBiome(biomeCategory, pos, new Random(pos.toLong()));
 
             int size = UndergroundRuins.defaultSize;
             if (UndergroundRuins.sizes.containsKey(biomeCategory))
@@ -128,7 +128,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             JigsawManager.func_214889_a(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
 
-            int maxTop = 50;
+            int maxTop = getMaxTopForBiome(biomeCategory, new Random(pos.toLong()));
             if (bounds.maxY >= maxTop) {
                 int shift = 5 + (bounds.maxY - maxTop);
                 bounds.offset(0, -shift, 0);
@@ -171,12 +171,26 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
             }
         }
 
-        public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos)
+        public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos, Random rand)
         {
             if (biomeCategory == Biome.Category.OCEAN) {
                 return new BlockPos(pos.getX(), Math.min(pos.getY(), 30), pos.getZ());
             }
+            if (biomeCategory == Biome.Category.NETHER) {
+                return new BlockPos(pos.getX(), Math.min(pos.getY(), 20), pos.getZ());
+            }
             return pos;
+        }
+
+        public int getMaxTopForBiome(Biome.Category biomeCategory, Random rand)
+        {
+            if (biomeCategory == Biome.Category.NETHER) {
+                return 32;
+            }
+            if (biomeCategory == Biome.Category.OCEAN) {
+                return 32;
+            }
+            return 50;
         }
     }
 }
