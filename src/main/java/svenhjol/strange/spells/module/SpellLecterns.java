@@ -151,7 +151,7 @@ public class SpellLecterns extends MesonModule
             Spell spell = SpellBookItem.getSpell(book);
             if (spell == null) return;
 
-            if (player.experienceLevel < spell.getApplyCost()) {
+            if (!player.isCreative() && player.experienceLevel < spell.getApplyCost()) {
                 player.sendStatusMessage(SpellsHelper.getSpellInfoText(spell, "event.strange.spellbook.not_enough_xp"), true);
                 return;
             }
