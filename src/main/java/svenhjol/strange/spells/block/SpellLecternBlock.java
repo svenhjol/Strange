@@ -86,11 +86,8 @@ public class SpellLecternBlock extends LecternBlock implements IMesonBlock
         if (book == null) return false;
 
         PlayerHelper.addOrDropStack(player, book);
-        worldIn.removeTileEntity(pos);
 
-        BlockState replace = Blocks.LECTERN.getDefaultState();
-        replace = replace.with(LecternBlock.FACING, state.get(SpellLecternBlock.FACING));
-        worldIn.setBlockState(pos, replace);
+        restoreLectern(worldIn, pos, state);
         return true;
     }
 
@@ -116,5 +113,13 @@ public class SpellLecternBlock extends LecternBlock implements IMesonBlock
     public boolean hasComparatorInputOverride(BlockState state)
     {
         return false;
+    }
+
+    public static void restoreLectern(World world, BlockPos pos, BlockState state)
+    {
+        world.removeTileEntity(pos);
+        BlockState replace = Blocks.LECTERN.getDefaultState();
+        replace = replace.with(LecternBlock.FACING, state.get(SpellLecternBlock.FACING));
+        world.setBlockState(pos, replace);
     }
 }

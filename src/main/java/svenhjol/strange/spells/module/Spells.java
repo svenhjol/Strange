@@ -4,47 +4,34 @@ import com.google.common.base.CaseFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import svenhjol.charm.Charm;
-import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
-import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.spells.client.SpellsClient;
 import svenhjol.strange.spells.entity.TargettedSpellEntity;
-import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.spells.Spell;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true)
 public class Spells extends MesonModule
 {
-    public static SpellBookItem book;
     public static EntityType<? extends Entity> entity;
     public static Map<String, Spell> spells = new HashMap<>();
-
-    @Config(name = "Add spell books to loot", description = "If true, common spell books will be added to dungeon loot and rare books to stronghold and vaults.")
-    public static boolean addSpellBooksToLoot = true;
 
     @Config(name = "Enabled spells", description = "List of all available spells.")
     public static List<String> enabledSpells = Arrays.asList(
@@ -101,9 +88,6 @@ public class Spells extends MesonModule
     @Override
     public void init()
     {
-        // init items
-        book = new SpellBookItem(this);
-
         // add the valid spell instances
         for (String id : enabledSpells) {
             String niceName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, id);
@@ -142,55 +126,9 @@ public class Spells extends MesonModule
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
-    {
-        // spellbooks are valid bookshelf items
-        if (Charm.loader.hasModule(BookshelfChests.class)) {
-            BookshelfChests.validItems.add(SpellBookItem.class);
-        }
-    }
-
-    @Override
     public void setupClient(FMLClientSetupEvent event)
     {
         client = new SpellsClient();
-    }
-
-    @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
-        if (!addSpellBooksToLoot) return;
-
-        int weight = 0;
-        int quality = 2;
-        boolean rare = false;
-
-        ResourceLocation res = event.getName();
-
-        if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
-            weight = 8;
-            rare = true;
-        } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TEMPLE)) {
-            weight = 2;
-        } else if (res.equals(LootTables.CHESTS_WOODLAND_MANSION)) {
-            weight = 4;
-        }
-
-        final boolean useRare = rare;
-
-        if (weight > 0) {
-            LootEntry entry = ItemLootEntry.builder(Spells.book)
-                .weight(weight)
-                .quality(quality)
-                .acceptFunction(() -> (stack, context) -> {
-                    Random rand = context.getRandom();
-                    return attachRandomSpell(stack, rand, useRare);
-                })
-                .build();
-
-            LootTable table = event.getTable();
-            LootHelper.addTableEntry(table, entry);
-        }
     }
 
     public static void effectEnchant(ServerWorld world, Vec3d vec, Spell spell, int particles, double xOffset, double yOffset, double zOffset, double speed)
@@ -201,14 +139,5 @@ public class Spells extends MesonModule
             double pz = vec.z;
             world.spawnParticle(Spells.enchantParticle, px, py, pz, particles, xOffset, yOffset, zOffset, speed);
         }
-    }
-
-    public static ItemStack attachRandomSpell(ItemStack book, Random rand, boolean useRare)
-    {
-        List<String> pool = useRare ? enabledSpells : commonSpells;
-        String id = pool.get(rand.nextInt(pool.size()));
-        Meson.debug("Attaching spell " + id + " to spellbook");
-        SpellBookItem.putSpell(book, Spells.spells.get(id));
-        return book;
     }
 }

@@ -146,7 +146,7 @@ public class SpellLecterns extends MesonModule
 
             SpellLecternTileEntity lectern = (SpellLecternTileEntity)tile;
             ItemStack book = lectern.getBook();
-            if (book.getItem() != Spells.book) return;
+            if (book.getItem() != SpellBooks.book) return;
 
             Spell spell = SpellBookItem.getSpell(book);
             if (spell == null) return;
@@ -162,6 +162,10 @@ public class SpellLecterns extends MesonModule
             world.playSound(null, player.getPosition(), StrangeSounds.SPELL_BOOK_CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
             Moonstones.effectEnchantStone((ServerPlayerEntity)player, spell, 15, 0.1D, 0.4D, 0.1D, 3.0D);
             Spells.effectEnchant((ServerWorld)world, vec, spell, 15, 0D, 0.5D, 0D, 4.0D);
+
+            if (book.attemptDamageItem(8, world.rand, (ServerPlayerEntity) player)) {
+                SpellLecternBlock.restoreLectern(world, closestPos, world.getBlockState(closestPos));
+            }
         }
     }
 }

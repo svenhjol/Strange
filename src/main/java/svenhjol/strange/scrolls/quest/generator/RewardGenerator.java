@@ -20,6 +20,7 @@ import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.module.Moonstones;
+import svenhjol.strange.spells.module.SpellBooks;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
@@ -139,7 +140,7 @@ public class RewardGenerator extends BaseGenerator
             case RANDOM_SPELL_BOOK:
             case RANDOM_RARE_SPELL_BOOK:
                 if (Strange.loader.hasModule(Spells.class)) {
-                    out = new ItemStack(Spells.book);
+                    out = new ItemStack(SpellBooks.book);
                     rare = item.equals(RANDOM_RARE_SPELL_BOOK);
                     Spell spell = SpellsHelper.getRandomSpell(rand, rare);
                     if (spell == null) return null;

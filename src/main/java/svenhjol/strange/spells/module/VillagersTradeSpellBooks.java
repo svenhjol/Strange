@@ -55,10 +55,10 @@ public class VillagersTradeSpellBooks extends MesonModule
         @Override
         public MerchantOffer getOffer(Entity merchant, Random rand)
         {
-            ItemStack book = new ItemStack(Spells.book);
+            ItemStack book = new ItemStack(SpellBooks.book);
 
             ItemStack in1 = new ItemStack(Items.EMERALD, baseSell + rand.nextInt(additional));
-            ItemStack out = Spells.attachRandomSpell(book, rand, useRare);
+            ItemStack out = SpellBooks.attachRandomSpell(book, rand, useRare);
             return new MerchantOffer(in1, out, maxUses, 8, 0.2F);
         }
     }

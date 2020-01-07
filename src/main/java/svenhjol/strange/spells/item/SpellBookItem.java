@@ -22,6 +22,7 @@ import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.spells.block.SpellLecternBlock;
 import svenhjol.strange.spells.helper.SpellsHelper;
+import svenhjol.strange.spells.module.SpellBooks;
 import svenhjol.strange.spells.module.SpellLecterns;
 import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
@@ -61,7 +62,7 @@ public class SpellBookItem extends MesonItem
         if (group == ItemGroup.SEARCH) {
             for (String id : Spells.spells.keySet()) {
                 Spell spell = Spells.spells.get(id);
-                ItemStack book = SpellBookItem.putSpell(new ItemStack(Spells.book), spell);
+                ItemStack book = SpellBookItem.putSpell(new ItemStack(SpellBooks.book), spell);
                 items.add(book);
             }
         }
