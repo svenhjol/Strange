@@ -1,18 +1,30 @@
 package svenhjol.strange.ruins.module;
 
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.MapData;
+import net.minecraft.world.storage.MapDecoration;
+import net.minecraft.world.storage.loot.*;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -24,7 +36,7 @@ import svenhjol.strange.ruins.structure.UndergroundStructure;
 
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true)
 public class UndergroundRuins extends MesonModule
 {
     public static final String DIR = "underground";
@@ -86,5 +98,45 @@ public class UndergroundRuins extends MesonModule
         }
 
         Meson.log(ruins);
+    }
+
+    @SubscribeEvent
+    public void onLootTableLoad(LootTableLoadEvent event)
+    {
+        int weight = 0;
+        int quality = 1;
+
+        ResourceLocation res = event.getName();
+
+        if (res.equals(LootTables.CHESTS_SIMPLE_DUNGEON)) {
+            weight = 10;
+        } else if (res.equals(LootTables.CHESTS_NETHER_BRIDGE)) {
+            weight = 16;
+        }
+
+        if (weight > 0) {
+            LootEntry entry = ItemLootEntry.builder(Items.MAP)
+                .weight(weight)
+                .quality(quality)
+                .acceptFunction(() -> (stack, context) -> {
+                    BlockPos pos = context.get(LootParameters.POSITION);
+                    if (pos != null) {
+                        ServerWorld world = context.getWorld();
+                        BlockPos structurePos = world.findNearestStructure("underground_ruin", pos, 100, true);
+                        if (structurePos != null) {
+                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
+                            FilledMapItem.renderBiomePreviewMap(world, map);
+                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
+                            map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
+                            return map;
+                        }
+                    }
+                    return stack;
+                })
+                .build();
+
+            LootTable table = event.getTable();
+            LootHelper.addTableEntry(table, entry);
+        }
     }
 }
