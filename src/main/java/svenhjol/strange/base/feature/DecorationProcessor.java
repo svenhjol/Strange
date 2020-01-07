@@ -39,7 +39,7 @@ public class DecorationProcessor extends StructureProcessor
     {
         // remove air
         if (blockInfo.state.getMaterial() == Material.AIR) {
-            if (world.getBlockState(blockInfo.pos.up()).getMaterial().isLiquid())
+            if (world.getBlockState(blockInfo.pos.up()).getMaterial() == Material.WATER)
                 return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
 
             if (pos.getY() < world.getSeaLevel())
