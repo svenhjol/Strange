@@ -54,6 +54,8 @@ public class Moonstones extends MesonModule
             weight = 4;
         } else if (res.equals(LootTables.CHESTS_BURIED_TREASURE)) {
             weight = 6;
+        } else if (res.equals(LootTables.CHESTS_NETHER_BRIDGE)) {
+            weight = 8;
         }
 
         if (weight > 0) {
