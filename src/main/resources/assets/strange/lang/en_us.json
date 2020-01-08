@@ -5,7 +5,9 @@
   "advancements.strange.runestones.runic_travel.description": "Use an enderpearl to travel through a runestone",
 
   "filled_map.village": "Village map",
+  "filled_map.overground_ruin": "Overground Ruin map",
   "filled_map.stone_circle": "Stone Circle map",
+  "filled_map.underground_ruin": "Underground Ruin map",
 
   "gui.strange.scrolls.accept": "Accept Quest",
   "gui.strange.scrolls.close": "Close Window",
