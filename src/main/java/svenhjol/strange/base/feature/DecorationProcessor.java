@@ -8,6 +8,7 @@ import net.minecraft.state.properties.StructureMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
@@ -39,8 +40,15 @@ public class DecorationProcessor extends StructureProcessor
     {
         // remove air
         if (blockInfo.state.getMaterial() == Material.AIR) {
-            if (world.getBlockState(blockInfo.pos.up()).getMaterial() == Material.WATER)
-                return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
+            if (world != null && world.getChunk(pos) != null && world.getChunk(pos).getBiomes() != null && world.getChunk(pos).getBiomes().length > 0) {
+                Biome biome = world.getChunk(pos).getBiome(pos);
+                if (biome.getCategory() == Biome.Category.OCEAN) {
+                    return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
+                }
+            }
+
+//            if (world.getBlockState(blockInfo.pos.up()).getMaterial() == Material.WATER)
+//                return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
 
             if (pos.getY() < world.getSeaLevel())
                 return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
