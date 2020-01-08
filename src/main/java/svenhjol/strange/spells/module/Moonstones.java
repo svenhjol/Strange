@@ -23,7 +23,7 @@ import svenhjol.strange.spells.spells.Spell;
 import java.util.List;
 import java.util.Random;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true,
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false,
     description = "")
 public class Moonstones extends MesonModule
 {
@@ -34,6 +34,12 @@ public class Moonstones extends MesonModule
 
     @Config(name = "Enchantment glint", description = "If true, enchanted moonstones will have the glint effect.")
     public static boolean glint = true;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Spells.class);
+    }
 
     @Override
     public void init()

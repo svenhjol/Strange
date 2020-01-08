@@ -26,7 +26,7 @@ import svenhjol.strange.spells.item.SpellBookItem;
 import java.util.List;
 import java.util.Random;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false)
 public class SpellBooks extends MesonModule
 {
     @Config(name = "Add spell books to loot", description = "If true, common spell books will be added to dungeon loot and rare books to stronghold and vaults.")
@@ -36,6 +36,12 @@ public class SpellBooks extends MesonModule
     public static int xpRepairCost = 1;
 
     public static SpellBookItem book;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Spells.class);
+    }
 
     @Override
     public void init()

@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false)
 public class SpellLecterns extends MesonModule
 {
     public static SpellLecternBlock block;
@@ -52,6 +52,12 @@ public class SpellLecterns extends MesonModule
 
     @OnlyIn(Dist.CLIENT)
     public static SpellLecternsClient client;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Spells.class);
+    }
 
     @Override
     public void init()

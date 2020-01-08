@@ -11,13 +11,19 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.ruins.block.EntitySpawnerBlock;
 import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, configureEnabled = false)
 public class EntitySpawner extends MesonModule
 {
     @ObjectHolder("strange:entity_spawner")
     public static TileEntityType<EntitySpawnerTileEntity> tile;
 
     public static EntitySpawnerBlock block;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(UndergroundRuins.class);
+    }
 
     @Override
     public void init()

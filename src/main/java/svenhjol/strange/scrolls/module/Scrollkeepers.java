@@ -50,7 +50,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, configureEnabled = false)
 public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
@@ -67,6 +67,12 @@ public class Scrollkeepers extends MesonModule
     public static int interestRange = 16;
 
     public static WritingDeskBlock block;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Scrolls.class);
+    }
 
     @Override
     public void init()

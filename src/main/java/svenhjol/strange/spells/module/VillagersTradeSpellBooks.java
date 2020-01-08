@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false)
 public class VillagersTradeSpellBooks extends MesonModule
 {
     public static final String LIBRARIAN = "librarian";
@@ -38,6 +38,12 @@ public class VillagersTradeSpellBooks extends MesonModule
 
     @Config(name = "Allow rare spells", description = "Allows all spells rather than common ones.")
     public static boolean useRare = false;
+
+    @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Spells.class);
+    }
 
     @SubscribeEvent
     public void onVillagerTrades(VillagerTradesEvent event)
