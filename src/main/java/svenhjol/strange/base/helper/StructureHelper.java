@@ -47,14 +47,21 @@ public class StructureHelper
         int zsize = box.maxZ - box.minZ;
         BlockPos blockpos = pos.add(xsize - 1, 0, zsize - 1);
 
-        for(BlockPos blockpos1 : BlockPos.getAllInBoxMutable(pos, blockpos)) {
+        for (BlockPos blockpos1 : BlockPos.getAllInBoxMutable(pos, blockpos)) {
             int k = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, blockpos1.getX(), blockpos1.getZ());
             j += k;
             i = Math.min(i, k);
+//            if (world.getBlockState(blockpos1) == Blocks.AIR.getDefaultState()) {
+//                world.setBlockState(blockpos1, Blocks.WATER.getDefaultState(), 0);
+//            }
         }
 
         j = j / (xsize * zsize);
-        return new BlockPos(pos.getX(), j - ysize - 2, pos.getZ()); // embed the structure below the surface
+
+        int kk = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, blockpos.getX(), blockpos.getZ());
+
+        return new BlockPos(pos.getX(), kk - ysize - 2, pos.getZ());
+//        return new BlockPos(pos.getX(), j - ysize - 2, pos.getZ()); // embed the structure below the surface
     }
 
     public static class RegisterJigsawPieces
