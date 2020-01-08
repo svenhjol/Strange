@@ -28,6 +28,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.iface.Module;
@@ -69,13 +70,8 @@ public class Runestones extends MesonModule
 
         ordered.add(new Destination("spawn_point", false, 1.0F));
 
-        if (Strange.loader.hasModule(StoneCircles.class)) {
-            ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
-            ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
-        } else {
-            ordered.add(new Destination("spawn_point", false, 1.0F));
-            ordered.add(new Destination("spawn_point", false, 0.85F));
-        }
+        ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
+        ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
 
         ordered.add(new Destination("Village", "village", false, 0.8F));
         ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.7F));
@@ -87,11 +83,7 @@ public class Runestones extends MesonModule
         ordered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.14F));
         ordered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.14F));
 
-        if (Strange.loader.hasModule(StoneCircles.class)) {
-            ordered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.04F));
-        } else {
-            ordered.add(new Destination("spawn_point", false, 0.125F));
-        }
+        ordered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.04F));
     }
 
     public static IRunestonesCapability getCapability(PlayerEntity player)
@@ -339,10 +331,11 @@ public class Runestones extends MesonModule
 
     private void teleport(World world, BlockPos pos, PlayerEntity player, Random rand, int rune)
     {
+        Meson.debug("Rune is " + rune + ", dest is " + dests.get(rune));
+
         BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
         if (destPos == null) destPos = world.getSpawnPoint();
         BlockPos dest = addRandomOffset(destPos, rand, 8);
-
 
         PlayerHelper.teleportSurface(player, dest, 0, p -> {
             Runestones.getCapability(player).recordDestination(pos, dest);
@@ -404,12 +397,15 @@ public class Runestones extends MesonModule
 
         public BlockPos getDest(World world, BlockPos runePos, Random rand)
         {
+            Meson.debug("structure = " + structure);
+
             if (this.structure.equals(SPAWN)) {
                 return world.getSpawnPoint();
             }
 
             BlockPos target = outerlands ? getOuterPos(world, rand) : getInnerPos(world, rand);
             BlockPos dest = world.findNearestStructure(structure, target, dist, true);
+
 
             return dest == null ? world.getSpawnPoint() : dest;
         }
