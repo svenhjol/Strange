@@ -10,6 +10,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -30,7 +32,6 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
-import svenhjol.strange.ruins.structure.UndergroundConfig;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
 
@@ -40,7 +41,7 @@ import java.util.*;
 public class UndergroundRuins extends MesonModule
 {
     public static final String DIR = "underground";
-    public static Structure<UndergroundConfig> structure;
+    public static Structure<NoFeatureConfig> structure;
     public static Map<Biome.Category, List<String>> ruins = new HashMap<>();
     public static Map<Biome.Category, Map<String, Integer>> sizes = new HashMap<>();
     public static Map<Biome.Category, List<ResourceLocation>> starts = new HashMap<>();
@@ -58,20 +59,23 @@ public class UndergroundRuins extends MesonModule
     @Config(name = "Additional pieces", description = "Random number of extra pieces that may be added to a ruin.")
     public static int variation = 1;
 
+    @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests")
+    public static boolean addMapsToLoot = true;
+
     @Override
     public void init()
     {
-        structure = new UndergroundStructure(UndergroundConfig::deserialize);
+        structure = new UndergroundStructure();
 
-        RegistryHandler.registerFeature(structure, new ResourceLocation("underground_ruin"));
+        RegistryHandler.registerStructure(structure, new ResourceLocation("underground_ruin"));
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
 
         for (Biome biome : ForgeRegistries.BIOMES) {
             biome.addFeature(
                 GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, new UndergroundConfig(1.0F), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
-            biome.addStructure(structure, new UndergroundConfig(1.0F));
+            biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
         }
     }
 
@@ -103,6 +107,8 @@ public class UndergroundRuins extends MesonModule
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent event)
     {
+        if (!addMapsToLoot) return;
+
         int weight = 0;
         int quality = 1;
 

@@ -5,6 +5,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -18,7 +20,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.ruins.module.UndergroundRuins;
-import svenhjol.strange.runestones.structure.StoneCircleConfig;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
 import svenhjol.strange.runestones.structure.VaultPiece;
@@ -27,13 +28,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, configureEnabled = false)
 public class StoneCircles extends MesonModule
 {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
-    public static final String NAME = "stone_circle";
+    public static final String NAME = "strange:stone_circle";
     public static final String VAULTS_DIR = "vaults";
-    public static Structure<StoneCircleConfig> structure;
+    public static Structure<NoFeatureConfig> structure;
 
     @Config(name = "Vault generation chance", description = "Chance (out of 1.0) of vaults generating beneath a stone circle.")
     public static double vaultChance = 0.66D;
@@ -67,11 +68,17 @@ public class StoneCircles extends MesonModule
     public static List<Biome> validBiomes = new ArrayList<>();
 
     @Override
+    public boolean isEnabled()
+    {
+        return super.isEnabled() && Strange.hasModule(Runestones.class);
+    }
+
+    @Override
     public void init()
     {
-        structure = new StoneCircleStructure(StoneCircleConfig::deserialize);
+        structure = new StoneCircleStructure();
 
-        RegistryHandler.registerFeature(structure, new ResourceLocation("stone_circle"));
+        RegistryHandler.registerStructure(structure, new ResourceLocation("stone_circle"));
         RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
         RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
@@ -80,14 +87,12 @@ public class StoneCircles extends MesonModule
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-        Registry.BIOME.forEach(biome -> {
+        validBiomes.forEach(biome -> {
             biome.addFeature(
                 GenerationStage.Decoration.SURFACE_STRUCTURES,
-                Biome.createDecoratedFeature(structure, new StoneCircleConfig(1.0F), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-        });
+                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
-        validBiomes.forEach(biome -> {
-            biome.addStructure(structure, new StoneCircleConfig(1.0F));
+            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
         });
 
         UndergroundRuins.blacklist.add(structure);

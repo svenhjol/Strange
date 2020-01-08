@@ -1,6 +1,5 @@
 package svenhjol.strange.runestones.structure;
 
-import com.mojang.datafixers.Dynamic;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -8,6 +7,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -18,22 +18,22 @@ import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.StoneCircles;
 
 import java.util.Random;
-import java.util.function.Function;
 
-public class StoneCircleStructure extends ScatteredStructure<StoneCircleConfig>
+public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
 {
     public static final int SEED_MODIFIER = 247474720;
-    public static final String STRUCTURE_NAME = "Stone_Circle";
+    public static final String STRUCTURE_NAME = "stone_circle";
 
-    public StoneCircleStructure(Function<Dynamic<?>, ? extends StoneCircleConfig> config)
+    public StoneCircleStructure()
     {
-        super(config);
+        super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
+        setRegistryName(Strange.MOD_ID, STRUCTURE_NAME);
     }
 
     @Override
     public String getStructureName()
     {
-        return STRUCTURE_NAME;
+        return getRegistryName().toString();
     }
 
     @Override

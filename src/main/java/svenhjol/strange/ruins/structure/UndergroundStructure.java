@@ -1,6 +1,5 @@
 package svenhjol.strange.ruins.structure;
 
-import com.mojang.datafixers.Dynamic;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -8,6 +7,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -23,22 +23,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
-public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
+public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
 {
     public static final int SEED_MODIFIER = 135318;
-    public static final String STRUCTURE_NAME = "Underground_Ruin";
+    public static final String STRUCTURE_NAME = "underground_ruin";
 
-    public UndergroundStructure(Function<Dynamic<?>, ? extends UndergroundConfig> config)
+    public UndergroundStructure()
     {
-        super(config);
+        super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
+        setRegistryName(Strange.MOD_ID, STRUCTURE_NAME);
     }
 
     @Override
     public String getStructureName()
     {
-        return STRUCTURE_NAME;
+        return getRegistryName().toString();
     }
 
     @Override
@@ -61,7 +61,6 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
         if (x == chunk.x && z == chunk.z) {
             Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
 
-            // TEST don't spawn underground ruin near blacklisted structure
             if (gen.hasStructure(biome, UndergroundRuins.structure)) {
                 for (int k = x - 10; k <= x + 10; ++k) {
                     for (int l = z - 10; l <= z + 10; ++l) {
@@ -148,7 +147,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
         {
             Biome.Category biomeCategory = biome.getCategory();
 
-            if ((gen instanceof OverworldChunkGenerator && rand.nextFloat() < 0.1F)
+            if ((gen instanceof OverworldChunkGenerator && biomeCategory != Biome.Category.OCEAN && rand.nextFloat() < 0.1F)
                 || !UndergroundRuins.ruins.containsKey(biomeCategory)
                 || UndergroundRuins.ruins.get(biomeCategory).isEmpty())
                 biomeCategory = Biome.Category.NONE; // chance of being a general overworld structure
@@ -174,7 +173,7 @@ public class UndergroundStructure extends ScatteredStructure<UndergroundConfig>
         public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos, Random rand)
         {
             if (biomeCategory == Biome.Category.OCEAN) {
-                return new BlockPos(pos.getX(), Math.min(pos.getY(), 30), pos.getZ());
+                return new BlockPos(pos.getX(), Math.min(pos.getY(), 20), pos.getZ());
             }
             if (biomeCategory == Biome.Category.NETHER) {
                 return new BlockPos(pos.getX(), Math.min(pos.getY(), 20), pos.getZ());
