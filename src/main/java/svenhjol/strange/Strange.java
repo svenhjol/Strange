@@ -1,5 +1,6 @@
 package svenhjol.strange;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.base.StrangeLoader;
@@ -8,20 +9,19 @@ import svenhjol.strange.base.StrangeLoader;
 public class Strange
 {
     public static final String MOD_ID = "strange";
-    public static StrangeLoader loader;
 
     public Strange()
     {
-        loader = new StrangeLoader();
+        new StrangeLoader();
     }
 
     public static boolean hasModule(Class<? extends MesonModule> module)
     {
-        return loader != null && loader.hasModule(module);
+        return StrangeLoader.hasModule(new ResourceLocation(Strange.MOD_ID, module.getSimpleName().toLowerCase()));
     }
 
     public static boolean hasModule(String module)
     {
-        return loader != null && loader.hasModule(module);
+        return StrangeLoader.hasModule(new ResourceLocation(Strange.MOD_ID, module));
     }
 }

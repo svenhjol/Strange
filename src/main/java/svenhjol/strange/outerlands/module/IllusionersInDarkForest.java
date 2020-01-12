@@ -56,7 +56,7 @@ public class IllusionersInDarkForest extends MesonModule
         ) {
             BlockPos pos = event.getEntityLiving().getPosition();
 
-            if (Strange.loader.hasModule(Outerlands.class) && !Outerlands.isOuterPos(pos)) {
+            if (Strange.hasModule(Outerlands.class) && !Outerlands.isOuterPos(pos)) {
                 Meson.debug("Not spawning Illusioner, not in Outerlands");
                 event.setResult(Event.Result.DENY);
             } else if (pos.getY() < event.getEntityLiving().world.getSeaLevel() - 5) {

@@ -37,7 +37,7 @@ public class TotemOfEnchanting extends MesonModule
         ItemStack right = event.getRight();
         ItemStack out;
 
-        int baseCost = Charm.loader.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
+        int baseCost = Charm.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
 
         if (left.isEmpty() || right.isEmpty()) return;
         if (right.getItem() != item) return;

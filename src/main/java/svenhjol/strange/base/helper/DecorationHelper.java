@@ -219,7 +219,7 @@ public class DecorationHelper
             Meson.warn("Error loading Quark compat class", e);
         }
 
-        if (Strange.loader.hasModule(Scrollkeepers.class))
+        if (Strange.hasModule(Scrollkeepers.class))
             decorationTypes.add(Scrollkeepers.block);
     }
 
@@ -504,7 +504,7 @@ public class DecorationHelper
 
         protected void rune()
         {
-            if (!Strange.loader.hasModule(Runestones.class) || !withChance(0.75F)) return;
+            if (!Strange.hasModule(Runestones.class) || !withChance(0.75F)) return;
             String type = getValue("type", this.data, "overworld");
 
             switch (type) {

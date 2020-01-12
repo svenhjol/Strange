@@ -31,7 +31,7 @@ public class Scrolls extends MesonModule
     @Override
     public void setup(FMLCommonSetupEvent event)
     {
-        if (Charm.loader.hasModule(BookshelfChests.class))
+        if (Charm.hasModule(BookshelfChests.class))
             BookshelfChests.validItems.add(ScrollItem.class);
     }
 

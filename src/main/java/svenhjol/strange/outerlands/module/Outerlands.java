@@ -126,7 +126,7 @@ public class Outerlands extends MesonModule
 
     public static float getScaledMultiplier(IWorld world, BlockPos pos)
     {
-        if (!Strange.loader.hasModule(Outerlands.class)
+        if (!Strange.hasModule(Outerlands.class)
             || !scaleDistance
             || isInnerPos(pos)
         ) {

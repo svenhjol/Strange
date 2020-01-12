@@ -36,8 +36,10 @@ public class AddSpellRandomly extends LootFunction
         Random rand = context.getRandom();
         Spell spell;
 
-        if (!(stack.getItem() instanceof SpellBookItem || !(stack.getItem() instanceof MoonstoneItem)
-        )) {
+        // don't apply if the module is disabled
+        if (!Strange.hasModule(Spells.class)) return stack;
+
+        if (!(stack.getItem() instanceof SpellBookItem || !(stack.getItem() instanceof MoonstoneItem))) {
             Meson.warn("Trying to add a spell to something invalid", stack);
             return stack;
         }

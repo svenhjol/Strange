@@ -69,7 +69,7 @@ public class IllusionersDropTotems extends MesonModule
             Entity entity = event.getEntity();
             World world = entity.getEntityWorld();
 
-            if (outerlands && (Strange.loader.hasModule(Outerlands.class) && !Outerlands.isOuterPos(entity.getPosition())))
+            if (outerlands && (Strange.hasModule(Outerlands.class) && !Outerlands.isOuterPos(entity.getPosition())))
                 return;
 
             if (!totems.isEmpty()) {

@@ -47,17 +47,17 @@ public class VillagersTradeTotems extends MesonModule
     public void setup(FMLCommonSetupEvent event)
     {
         availableTotems.add(Items.TOTEM_OF_UNDYING);
-        if (Strange.loader.hasModule(TotemOfReturning.class)) availableTotems.add(TotemOfReturning.item);
-        if (Strange.loader.hasModule(TotemOfShielding.class)) availableTotems.add(TotemOfShielding.item);
-        if (Strange.loader.hasModule(TotemOfPreserving.class)) availableTotems.add(TotemOfPreserving.item);
-        if (Strange.loader.hasModule(TotemOfFlying.class)) availableTotems.add(TotemOfFlying.item);
-        if (Strange.loader.hasModule(TotemOfEnchanting.class)) availableTotems.add(TotemOfEnchanting.item);
+        if (Strange.hasModule(TotemOfReturning.class)) availableTotems.add(TotemOfReturning.item);
+        if (Strange.hasModule(TotemOfShielding.class)) availableTotems.add(TotemOfShielding.item);
+        if (Strange.hasModule(TotemOfPreserving.class)) availableTotems.add(TotemOfPreserving.item);
+        if (Strange.hasModule(TotemOfFlying.class)) availableTotems.add(TotemOfFlying.item);
+        if (Strange.hasModule(TotemOfEnchanting.class)) availableTotems.add(TotemOfEnchanting.item);
     }
 
     @SubscribeEvent
     public void onVillagerTrades(VillagerTradesEvent event)
     {
-        String useProfession = Strange.loader.hasModule(Scrollkeepers.class) ? Scrollkeepers.SCROLLKEEPER : LIBRARIAN;
+        String useProfession = Strange.hasModule(Scrollkeepers.class) ? Scrollkeepers.SCROLLKEEPER : LIBRARIAN;
         Int2ObjectMap<List<ITrade>> trades = event.getTrades();
         VillagerProfession profession = event.getType();
 
@@ -68,7 +68,7 @@ public class VillagersTradeTotems extends MesonModule
 
     private static boolean isValidPosition(Entity merchant)
     {
-        if (!outerOnly || !Strange.loader.hasModule(Outerlands.class)) return true;
+        if (!outerOnly || !Strange.hasModule(Outerlands.class)) return true;
         return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
     }
 
