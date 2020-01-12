@@ -31,7 +31,7 @@ public class SlownessSpell extends Spell
 
             if (!e.isEntityEqual(player) && e instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) e;
-                living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 150, 2));
+                living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 150, 3));
                 didCast.accept(true);
                 return;
             }
