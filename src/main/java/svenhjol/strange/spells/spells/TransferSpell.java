@@ -18,7 +18,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.helper.WorldHelper;
-import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.module.Spells;
 
 import java.util.Objects;
@@ -37,7 +36,7 @@ public class TransferSpell extends Spell
     }
 
     @Override
-    public boolean activate(PlayerEntity player, ItemStack stone)
+    public boolean activate(PlayerEntity player, ItemStack holdable)
     {
         // get the block the player is looking at
         BlockRayTraceResult result = WorldHelper.getBlockLookedAt(player);
@@ -58,7 +57,7 @@ public class TransferSpell extends Spell
 
             if (invalid || Spells.transferBlacklist.contains(srcName)) {
                 world.playSound(null, player.getPosition(), SoundEvents.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                player.getCooldownTracker().setCooldown(stone.getItem(), 20);
+                player.getCooldownTracker().setCooldown(holdable.getItem(), 20);
                 return false;
             }
 
@@ -68,7 +67,7 @@ public class TransferSpell extends Spell
 
                 if (playerLevel < levelCost) {
                     player.sendStatusMessage(new TranslationTextComponent("event.strange.spellbook.not_enough_xp"), true);
-                    player.getCooldownTracker().setCooldown(stone.getItem(), 20);
+                    player.getCooldownTracker().setCooldown(holdable.getItem(), 20);
                     return false;
                 }
                 player.addExperienceLevel(-levelCost);
@@ -98,7 +97,7 @@ public class TransferSpell extends Spell
             ((ServerWorld)world).spawnParticle(Spells.enchantParticle, px, py, pz, 20, 0.1D, 0.1D, 0.1D, 0.5D);
         }
 
-        MoonstoneItem.putMeta(stone, meta);
+        Spells.putMeta(holdable, meta);
 
         return true;
     }
@@ -107,9 +106,7 @@ public class TransferSpell extends Spell
     public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         World world = player.world;
-
-        // TODO moonstones must have meta
-        CompoundNBT meta = MoonstoneItem.getMeta(stone);
+        CompoundNBT meta = Spells.getMeta(stone);
 
         if (!meta.contains("state")) return;
         INBT nbtState = meta.get("state");
