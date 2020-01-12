@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ", " # ", " # "
+  ],
+  "key": {
+    "#": {"item": "minecraft:stick"},
+    "X": {"item": "strange:moonstone"}
+  },
+  "result": {
+    "item": "strange:wooden_staff"
+  },
+  "conditions": [
+    {
+      "type": "strange:module_enabled",
+      "module": "spells"
+    }
+  ]
+}
