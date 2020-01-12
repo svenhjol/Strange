@@ -23,15 +23,15 @@ public class SummonSpell extends Spell
     {
         super("summon");
         this.color = DyeColor.GRAY;
-        this.affect = Affect.AREA;
+        this.affect = Affect.FOCUS;
         this.applyCost = 5;
     }
 
     @Override
     public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
-        int[] range = {16, 2, 16};
-        this.castArea(player, range, blocks -> {
+        int[] range = {6, 2, 6};
+        this.castFocus(player, pos -> {
             World world = player.world;
 
             List<MonsterEntity> entities;
@@ -57,6 +57,5 @@ public class SummonSpell extends Spell
 
             didCast.accept(false);
         });
-
     }
 }
