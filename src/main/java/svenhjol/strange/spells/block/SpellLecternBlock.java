@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LecternBlock;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -64,6 +65,19 @@ public class SpellLecternBlock extends LecternBlock implements IMesonBlock
     public TileEntity createNewTileEntity(IBlockReader worldIn)
     {
         return new SpellLecternTileEntity();
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (!(tile instanceof SpellLecternTileEntity)) return;
+
+        SpellLecternTileEntity lectern = (SpellLecternTileEntity)tile;
+        ItemStack book = lectern.getBook();
+        if (book == null) return;
+
+        worldIn.addEntity(new ItemEntity(worldIn, pos.getX(), pos.getY() + 0.5D, pos.getZ(), book));
     }
 
     @Override
