@@ -19,7 +19,7 @@
     "find_stone_circle": {
       "trigger": "minecraft:location",
       "conditions": {
-        "feature": "stone_circle"
+        "feature": "strange:stone_circle"
       }
     }
   },
