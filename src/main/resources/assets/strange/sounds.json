@@ -9,7 +9,10 @@
   "spell_cast": {
     "category": "players",
     "sounds": [
-      "strange:spell_cast"
+      "strange:spell_cast1",
+      "strange:spell_cast2",
+      "strange:spell_cast3",
+      "strange:spell_cast4"
     ]
   },
   "spell_fail": {
@@ -22,6 +25,12 @@
     "category": "players",
     "sounds": [
       "strange:spell_charge_short"
+    ]
+  },
+  "spell_charge_medium": {
+    "category": "players",
+    "sounds": [
+      "strange:spell_charge_medium"
     ]
   },
   "spell_no_more_uses": {
