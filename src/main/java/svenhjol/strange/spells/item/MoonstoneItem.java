@@ -57,10 +57,8 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         if (spell == null) return new ActionResult<>(ActionResultType.FAIL, stone);
 
         Spells.activate(player, stone, spell);
-        Spells.cast(player, stone, spell, s -> {
-            if (Spells.getUses(s) <= 0) {
-                s.shrink(1);
-            }
+        Spells.cast(player, stone, spell, used -> {
+            if (used) stone.shrink(1);
         });
         return new ActionResult<>(ActionResultType.SUCCESS, stone);
     }
