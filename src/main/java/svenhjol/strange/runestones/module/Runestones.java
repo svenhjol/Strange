@@ -70,20 +70,20 @@ public class Runestones extends MesonModule
 
         ordered.add(new Destination("spawn_point", false, 1.0F));
 
-        ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 1.0F));
-        ordered.add(new Destination(StoneCircles.NAME, "stone_circle", false, 0.8F));
+        ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.9F));
+        ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.7F));
 
-        ordered.add(new Destination("Village", "village", false, 0.8F));
-        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.7F));
-        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.7F));
-        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.6F));
+        ordered.add(new Destination("Village", "village", false, 0.5F));
+        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.45F));
+        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.4F));
+        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.4F));
 
-        ordered.add(new Destination("Village", "outer_village", true, 0.09F));
-        ordered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.14F));
-        ordered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.14F));
-        ordered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.14F));
+        ordered.add(new Destination("Village", "outer_village", true, 0.08F));
+        ordered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.12F));
+        ordered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.12F));
+        ordered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.12F));
 
-        ordered.add(new Destination(StoneCircles.NAME, "outer_stone_circle", true, 0.04F));
+        ordered.add(new Destination(StoneCircles.RESNAME, "outer_stone_circle", true, 0.02F));
     }
 
     public static IRunestonesCapability getCapability(PlayerEntity player)
@@ -128,7 +128,7 @@ public class Runestones extends MesonModule
 
     public static BlockPos getInnerPos(World world, Random rand)
     {
-        if (Strange.loader.hasModule(Outerlands.class)) {
+        if (Strange.hasModule(Outerlands.class)) {
             return Outerlands.getInnerPos(world, rand);
         } else {
             int max = 10000;
@@ -140,7 +140,7 @@ public class Runestones extends MesonModule
 
     public static BlockPos getOuterPos(World world, Random rand)
     {
-        if (Strange.loader.hasModule(Outerlands.class)) {
+        if (Strange.hasModule(Outerlands.class)) {
             return Outerlands.getOuterPos(world, rand);
         } else {
             int max = 100000;
@@ -405,7 +405,6 @@ public class Runestones extends MesonModule
 
             BlockPos target = outerlands ? getOuterPos(world, rand) : getInnerPos(world, rand);
             BlockPos dest = world.findNearestStructure(structure, target, dist, true);
-
 
             return dest == null ? world.getSpawnPoint() : dest;
         }
