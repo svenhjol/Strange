@@ -25,6 +25,7 @@ import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -52,6 +53,9 @@ public class SpellLecterns extends MesonModule
 
     @OnlyIn(Dist.CLIENT)
     public static SpellLecternsClient client;
+
+    @Config(name = "Damage spell books", description = "If true, spell books on lecterns take damage when enchanting moonstones.")
+    public static boolean damageSpellBooks = false;
 
     @Override
     public boolean isEnabled()
@@ -98,7 +102,7 @@ public class SpellLecterns extends MesonModule
             if (lookedAt.getBlock() == block) {
                 TileEntity tile1 = world.getTileEntity(p);
                 if (tile1 instanceof SpellLecternTileEntity) {
-                    SpellLecternTileEntity lectern1 = (SpellLecternTileEntity)tile1;
+                    SpellLecternTileEntity lectern1 = (SpellLecternTileEntity) tile1;
                     ItemStack book1 = lectern1.getBook();
                     if (book1.getItem() instanceof SpellBookItem) {
                         Spell spell1 = SpellBookItem.getSpell(book1);
@@ -120,7 +124,7 @@ public class SpellLecterns extends MesonModule
 
             ItemStack stone = player.getHeldItem(hand);
             if (MoonstoneItem.hasSpell(stone)) return; // don't try and add spell to Moonstone with spell
-            int[] range = new int[] { 1, 2, 1 };
+            int[] range = new int[]{1, 2, 1};
 
             BlockPos pos = player.getPosition();
             Stream<BlockPos> inRange = BlockPos.getAllInBox(pos.add(-range[0], -range[1], -range[2]), pos.add(range[0], range[1], range[2]));
@@ -150,7 +154,7 @@ public class SpellLecterns extends MesonModule
             TileEntity tile = world.getTileEntity(closestPos);
             if (!(tile instanceof SpellLecternTileEntity)) return;
 
-            SpellLecternTileEntity lectern = (SpellLecternTileEntity)tile;
+            SpellLecternTileEntity lectern = (SpellLecternTileEntity) tile;
             ItemStack book = lectern.getBook();
             if (book.getItem() != SpellBooks.book) return;
 
@@ -166,11 +170,13 @@ public class SpellLecterns extends MesonModule
             MoonstoneItem.putSpell(stone, spell);
 
             world.playSound(null, player.getPosition(), StrangeSounds.SPELL_BOOK_CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            Moonstones.effectEnchantStone((ServerPlayerEntity)player, spell, 15, 0.1D, 0.4D, 0.1D, 3.0D);
-            Spells.effectEnchant((ServerWorld)world, vec, spell, 15, 0D, 0.5D, 0D, 4.0D);
+            Moonstones.effectEnchantStone((ServerPlayerEntity) player, spell, 15, 0.1D, 0.4D, 0.1D, 3.0D);
+            Spells.effectEnchant((ServerWorld) world, vec, spell, 15, 0D, 0.5D, 0D, 4.0D);
 
-            if (book.attemptDamageItem(8, world.rand, (ServerPlayerEntity) player)) {
-                SpellLecternBlock.restoreLectern(world, closestPos, world.getBlockState(closestPos));
+            if (damageSpellBooks) {
+                if (book.attemptDamageItem(1, world.rand, (ServerPlayerEntity) player)) {
+                    SpellLecternBlock.restoreLectern(world, closestPos, world.getBlockState(closestPos));
+                }
             }
         }
     }
