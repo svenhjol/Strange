@@ -35,7 +35,7 @@ public class ExplosionSpell extends Spell
 
             if (pos != null) {
                 beam.remove();
-                player.world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 4.0F, Explosion.Mode.BREAK);
+                player.world.createExplosion(player, pos.getX(), pos.getY(), pos.getZ(), 4.0F, Explosion.Mode.BREAK);
                 didCast.accept(true);
                 return;
             }
