@@ -18,10 +18,7 @@ import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.item.MoonstoneItem;
-import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.module.Moonstones;
-import svenhjol.strange.spells.module.SpellBooks;
-import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
@@ -43,17 +40,13 @@ public class RewardGenerator extends BaseGenerator
     public static final String STONE_CIRCLE_TOTEM = "StoneCircleTotem";
     public static final String RANDOM_ENCHANTED_BOOK = "RandomEnchantedBook";
     public static final String RANDOM_RARE_ENCHANTED_BOOK = "RandomRareEnchantedBook";
-    public static final String RANDOM_SPELL_BOOK = "RandomSpellBook";
-    public static final String RANDOM_RARE_SPELL_BOOK = "RandomRareSpellBook";
     public static final String RANDOM_MOONSTONE = "RandomMoonstone";
     public static final String TRAVEL_JOURNAL = "TravelJournal";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
         STONE_CIRCLE_TOTEM,
         RANDOM_ENCHANTED_BOOK,
-        RANDOM_SPELL_BOOK,
         RANDOM_RARE_ENCHANTED_BOOK,
-        RANDOM_RARE_SPELL_BOOK,
         RANDOM_MOONSTONE,
         TRAVEL_JOURNAL
     ));
@@ -120,9 +113,9 @@ public class RewardGenerator extends BaseGenerator
 
         switch (item) {
             case STONE_CIRCLE_TOTEM:
-                if (Strange.loader.hasModule(Runestones.class) && Strange.loader.hasModule(TotemOfReturning.class)) {
+                if (Strange.hasModule(Runestones.class) && Strange.hasModule(TotemOfReturning.class)) {
                     out = new ItemStack(TotemOfReturning.item);
-                    BlockPos pos = world.findNearestStructure(StoneCircles.NAME, Runestones.getOuterPos(world, world.rand), 1000, true);
+                    BlockPos pos = world.findNearestStructure(StoneCircles.RESNAME, Runestones.getOuterPos(world, world.rand), 1000, true);
                     if (pos == null) return null;
 
                     TotemOfReturningItem.setPos(out, pos.add(0, world.getSeaLevel(), 0));
@@ -137,28 +130,17 @@ public class RewardGenerator extends BaseGenerator
                 out = EnchantmentHelper.addRandomEnchantment(rand, out, rand.nextInt(15) + (rare ? 15 : 1), rare);
                 break;
 
-            case RANDOM_SPELL_BOOK:
-            case RANDOM_RARE_SPELL_BOOK:
-                if (Strange.loader.hasModule(Spells.class)) {
-                    out = new ItemStack(SpellBooks.book);
-                    rare = item.equals(RANDOM_RARE_SPELL_BOOK);
-                    Spell spell = SpellsHelper.getRandomSpell(rand, rare);
-                    if (spell == null) return null;
-                    SpellBookItem.putSpell(out, spell);
-                }
-                break;
-
             case RANDOM_MOONSTONE:
-                if (Strange.loader.hasModule(Moonstones.class)) {
+                if (Strange.hasModule(Moonstones.class)) {
                     out = new ItemStack(Moonstones.item);
-                    Spell spell = SpellsHelper.getRandomSpell(rand, true);
+                    Spell spell = SpellsHelper.getRandomSpell(rand);
                     if (spell == null) return null;
                     MoonstoneItem.putSpell(out, spell);
                 }
                 break;
 
             case TRAVEL_JOURNAL:
-                if (Strange.loader.hasModule(TravelJournal.class)) {
+                if (Strange.hasModule(TravelJournal.class)) {
                     out = new ItemStack(TravelJournal.item);
                 }
                 break;
