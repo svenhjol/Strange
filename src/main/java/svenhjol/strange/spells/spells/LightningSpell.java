@@ -40,7 +40,11 @@ public class LightningSpell extends Spell
                 LightningBoltEntity lightning = new LightningBoltEntity(player.world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, false);
                 lightning.setCaster(player instanceof ServerPlayerEntity ? (ServerPlayerEntity)player : null);
                 ((ServerWorld)player.world).addLightningBolt(lightning);
+                didCast.accept(true);
+                return;
             }
+
+            didCast.accept(false);
         });
     }
 }
