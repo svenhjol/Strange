@@ -1,23 +1,24 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "strange:item/spell_book"
+    "layer0": "strange:item/spell_book_white"
   },
   "overrides": [
-    { "predicate": { "color": 0.0625 }, "model": "strange:item/spell_book_orange" },
-    { "predicate": { "color": 0.125 }, "model": "strange:item/spell_book_magenta" },
-    { "predicate": { "color": 0.1875 }, "model": "strange:item/spell_book_light_blue" },
-    { "predicate": { "color": 0.25 }, "model": "strange:item/spell_book_yellow" },
-    { "predicate": { "color": 0.3125 }, "model": "strange:item/spell_book_lime" },
-    { "predicate": { "color": 0.375 }, "model": "strange:item/spell_book_pink" },
-    { "predicate": { "color": 0.4375 }, "model": "strange:item/spell_book_gray" },
-    { "predicate": { "color": 0.5 }, "model": "strange:item/spell_book_light_gray" },
-    { "predicate": { "color": 0.5626 }, "model": "strange:item/spell_book_cyan" },
-    { "predicate": { "color": 0.625 }, "model": "strange:item/spell_book_purple" },
-    { "predicate": { "color": 0.6875 }, "model": "strange:item/spell_book_blue" },
-    { "predicate": { "color": 0.75 }, "model": "strange:item/spell_book_brown" },
-    { "predicate": { "color": 0.8125 }, "model": "strange:item/spell_book_green" },
-    { "predicate": { "color": 0.875 }, "model": "strange:item/spell_book_red" },
-    { "predicate": { "color": 0.9375 }, "model": "strange:item/spell_book_black" }
+    { "predicate": { "action": 0.0, "color": 0.0625 }, "model": "strange:item/spell_book_orange" },
+    { "predicate": { "action": 0.0, "color": 0.125 }, "model": "strange:item/spell_book_magenta" },
+    { "predicate": { "action": 0.0, "color": 0.1875 }, "model": "strange:item/spell_book_light_blue" },
+    { "predicate": { "action": 0.0, "color": 0.25 }, "model": "strange:item/spell_book_yellow" },
+    { "predicate": { "action": 0.0, "color": 0.3125 }, "model": "strange:item/spell_book_lime" },
+    { "predicate": { "action": 0.0, "color": 0.375 }, "model": "strange:item/spell_book_pink" },
+    { "predicate": { "action": 0.0, "color": 0.4375 }, "model": "strange:item/spell_book_gray" },
+    { "predicate": { "action": 0.0, "color": 0.5 }, "model": "strange:item/spell_book_light_gray" },
+    { "predicate": { "action": 0.0, "color": 0.5626 }, "model": "strange:item/spell_book_cyan" },
+    { "predicate": { "action": 0.0, "color": 0.625 }, "model": "strange:item/spell_book_purple" },
+    { "predicate": { "action": 0.0, "color": 0.6875 }, "model": "strange:item/spell_book_blue" },
+    { "predicate": { "action": 0.0, "color": 0.75 }, "model": "strange:item/spell_book_brown" },
+    { "predicate": { "action": 0.0, "color": 0.8125 }, "model": "strange:item/spell_book_green" },
+    { "predicate": { "action": 0.0, "color": 0.875 }, "model": "strange:item/spell_book_red" },
+    { "predicate": { "action": 0.0, "color": 0.9375 }, "model": "strange:item/spell_book_black" },
+    { "predicate": { "action": 1.0 }, "model": "strange:item/spell_book_open" }
   ]
 }

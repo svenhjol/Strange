@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "strange:item/water_spell_book"
+    "layer0": "strange:item/spell_book_light_blue"
   }
 }
