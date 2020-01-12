@@ -49,8 +49,9 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
         if (world.getDimension().getType() == DimensionType.THE_NETHER) {
 
-            config.runeChance = 0.8F;
             config.withChest = true;
+            config.runeTries = 3;
+            config.runeChance = 0.9F;
             config.radius = rand.nextInt(4) + 5;
             config.columnMinHeight = 3;
             config.columnVariation = 4;
@@ -72,8 +73,9 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
         } else if (world.getDimension().getType() == DimensionType.THE_END) {
 
-            config.runeChance = 0.9F;
             config.withChest = true;
+            config.runeTries = 4;
+            config.runeChance = 1.0F;
             config.radius = rand.nextInt(7) + 4;
             config.columnMinHeight = 3;
             config.columnVariation = 3;
@@ -93,9 +95,10 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
         } else {
 
-            config.runeChance = 0.7F;
             config.radius = rand.nextInt(6) + 5;
-            config.columnMinHeight = 3;
+            config.runeTries = 2;
+            config.runeChance = 0.8F;
+            config.columnMinHeight = 4;
             config.columnVariation = 2;
             config.blocks = new ArrayList<>(Arrays.asList(
                 Blocks.STONE.getDefaultState(),
@@ -123,7 +126,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
     {
         boolean generated = false;
         boolean generatedWithRune = false;
-        boolean runestonesEnabled = Strange.loader.hasModule(Runestones.class);
+        boolean runestonesEnabled = Strange.hasModule(Runestones.class);
 
         List<Integer> availableRunes = new ArrayList<>();
         if (runestonesEnabled) {
@@ -162,17 +165,22 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                     world.setBlockState(findPos, config.blocks.get(0), 2);
 
                     for (int l = 1; l < maxHeight; l++) {
-                        float f = rand.nextFloat();
                         BlockState state = config.blocks.get(rand.nextInt(config.blocks.size()));
 
-                        if (runestonesEnabled && l == maxHeight - 1 && f < config.runeChance) {
-                            int index = rand.nextInt(availableRunes.size());
-                            int rune = availableRunes.get(index);
+                        if (runestonesEnabled && l == maxHeight - 1 && rand.nextFloat() < config.runeChance) {
+                            for (int t = 0; t < config.runeTries; t++) {
+                                int index = rand.nextInt(availableRunes.size());
+                                int rune = availableRunes.get(index);
 
-                            if (rand.nextFloat() < Runestones.dests.get(index).weight) {
-                                availableRunes.remove(index);
-                                state = Runestones.getRunestoneBlock(world, rune);
-                                generatedWithRune = true;
+                                float f = rand.nextFloat();
+                                float weight = Runestones.dests.get(index).weight;
+
+                                if (f < weight) {
+                                    availableRunes.remove(index);
+                                    state = Runestones.getRunestoneBlock(world, rune);
+                                    generatedWithRune = true;
+                                    break;
+                                }
                             }
                         }
 
@@ -218,10 +226,11 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
     public static class GenerationConfig
     {
-        public float runeChance = 0.5F;
         public int radius = 4;
         public int columnMinHeight = 3;
         public int columnVariation = 3;
+        public int runeTries = 1;
+        public float runeChance = 0.8F;
         public boolean withChest = false;
         public List<BlockState> blocks = new ArrayList<>();
     }
