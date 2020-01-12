@@ -47,13 +47,13 @@ public class GrowthSpell extends Spell
                 }
                 if (block instanceof SugarCaneBlock && world.isAirBlock(pos.up()) && state.has(SugarCaneBlock.AGE)) {
                     BlockState newState = state.with(SugarCaneBlock.AGE, 15);
-                    SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)world.getBlockState(pos).getBlock();
+                    SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)block;
                     sugarCaneBlock.tick(newState, world, pos, world.rand);
                     didGrow = true;
                 }
                 if (block instanceof SaplingBlock) {
                     BlockState newState = state.with(SaplingBlock.STAGE, 1);
-                    SaplingBlock saplingBlock = (SaplingBlock)world.getBlockState(pos).getBlock();
+                    SaplingBlock saplingBlock = (SaplingBlock)block;
                     saplingBlock.tick(newState, world, pos, world.rand);
                     didGrow = true;
                 }
