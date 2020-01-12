@@ -54,7 +54,7 @@ public class SpellBooks extends MesonModule
     public void setup(FMLCommonSetupEvent event)
     {
         // spellbooks are valid bookshelf items
-        if (Charm.loader.hasModule(BookshelfChests.class)) {
+        if (Charm.hasModule(BookshelfChests.class)) {
             BookshelfChests.validItems.add(SpellBookItem.class);
         }
     }
@@ -66,20 +66,12 @@ public class SpellBooks extends MesonModule
 
         int weight = 0;
         int quality = 2;
-        boolean rare = false;
 
         ResourceLocation res = event.getName();
 
         if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
-            weight = 8;
-            rare = true;
-        } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TEMPLE)) {
             weight = 2;
-        } else if (res.equals(LootTables.CHESTS_WOODLAND_MANSION)) {
-            weight = 4;
         }
-
-        final boolean useRare = rare;
 
         if (weight > 0) {
             LootEntry entry = ItemLootEntry.builder(book)
@@ -87,7 +79,7 @@ public class SpellBooks extends MesonModule
                 .quality(quality)
                 .acceptFunction(() -> (stack, context) -> {
                     Random rand = context.getRandom();
-                    return attachRandomSpell(stack, rand, useRare);
+                    return attachRandomSpell(stack, rand);
                 })
                 .build();
 
@@ -108,21 +100,20 @@ public class SpellBooks extends MesonModule
             && left.getDamage() > 0
         ) {
             out = left.copy();
-            int maxDamage = left.getMaxDamage();
             int damage = left.getDamage();
-            int repairCost = left.getRepairCost();
 
             int cost = xpRepairCost == 0 && Charm.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
-            out.setDamage(damage - 2);
+            out.setDamage(damage - 1);
+
             event.setCost(cost);
             event.setMaterialCost(1);
             event.setOutput(out);
         }
     }
 
-    public static ItemStack attachRandomSpell(ItemStack book, Random rand, boolean useRare)
+    public static ItemStack attachRandomSpell(ItemStack book, Random rand)
     {
-        List<String> pool = useRare ? Spells.enabledSpells : Spells.commonSpells;
+        List<String> pool = Spells.enabledSpells;
         String id = pool.get(rand.nextInt(pool.size()));
         Meson.debug("Attaching spell " + id + " to spellbook");
         SpellBookItem.putSpell(book, Spells.spells.get(id));
