@@ -19,7 +19,7 @@
   "conditions": [
     {
       "type": "strange:module_enabled",
-      "module": "scrollkeepers"
+      "module": "scrolls"
     }
   ]
 }
