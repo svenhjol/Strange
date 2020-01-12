@@ -41,8 +41,13 @@ public class SpellBookItem extends MesonItem
             .maxStackSize(1)
             .maxDamage(16));
 
-        // allows different item icons to be shown. Each item icon has a float ref (see model)
-        addPropertyOverride(new ResourceLocation("element"), (stack, world, entity) -> {
+        addPropertyOverride(new ResourceLocation("action"), (stack, world, entity) -> {
+            if (entity != null && entity.getHeldItemOffhand() == stack)
+                return 1.0F;
+
+            return 0.0F;
+        });
+        addPropertyOverride(new ResourceLocation("color"), (stack, world, entity) -> {
             Spell spell = getSpell(stack);
             float out = spell != null ? spell.getColor().getId() : 0;
             return out / 16.0F;
