@@ -54,7 +54,6 @@ import java.util.*;
 public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
-    public static final int[] DEFAULT_XP = new int[]{0, 10, 70, 150, 250};
     public static final int[] QUEST_XP = new int[]{2, 11, 18, 27, 40};
     public static final UUID ANY_SELLER = UUID.fromString("0-0-0-0-1");
     public static VillagerProfession profession;
