@@ -24,6 +24,7 @@ public class StrangeSounds
     public static final SoundEvent SPELL_CAST = createSound("spell_cast");
     public static final SoundEvent SPELL_FAIL = createSound("spell_fail");
     public static final SoundEvent SPELL_CHARGE_SHORT = createSound("spell_charge_short");
+    public static final SoundEvent SPELL_CHARGE_MEDIUM = createSound("spell_charge_medium");
     public static final SoundEvent SPELL_NO_MORE_USES = createSound("spell_no_more_uses");
 
     public static SoundEvent createSound(String name)
