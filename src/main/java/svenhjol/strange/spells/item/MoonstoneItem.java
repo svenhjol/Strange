@@ -2,7 +2,6 @@ package svenhjol.strange.spells.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.module.Moonstones;
 import svenhjol.strange.spells.module.Spells;
@@ -35,8 +33,6 @@ import java.util.List;
 public class MoonstoneItem extends MesonItem implements IRuneColorProvider
 {
     public static final String SPELL = "spells";
-    public static final String USES = "uses";
-    public static final String META = "meta";
 
     public MoonstoneItem(MesonModule module)
     {
@@ -60,7 +56,12 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         Spell spell = getSpell(stone);
         if (spell == null) return new ActionResult<>(ActionResultType.FAIL, stone);
 
-        cast(player, stone);
+        Spells.activate(player, stone, spell);
+        Spells.cast(player, stone, spell, s -> {
+            if (Spells.getUses(s) <= 0) {
+                s.shrink(1);
+            }
+        });
         return new ActionResult<>(ActionResultType.SUCCESS, stone);
     }
 
@@ -76,64 +77,6 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         return true;
     }
 
-    public static void cast(PlayerEntity player, ItemStack stone)
-    {
-        if (player.world.isRemote) return;
-
-        Spell spell = getSpell(stone);
-        if (spell == null) return;
-
-        if (spell.needsActivation() && !hasMeta(stone)) {
-            player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_CHARGE_SHORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            spell.activate(player, stone);
-            return;
-        }
-
-        player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_CAST, SoundCategory.PLAYERS, 1.0F, 1.0F);
-        player.getCooldownTracker().setCooldown(stone.getItem(), 20);
-
-        spell.cast(player, stone, result -> {
-            if (result) {
-                Moonstones.effectEnchantStone((ServerPlayerEntity) player, spell, 5, 0.2D, 0.2D, 0.2, 2.2D);
-                if (!player.isCreative()) {
-                    boolean hasUses = decreaseUses(stone);
-                    if (!hasUses) {
-                        player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_NO_MORE_USES, SoundCategory.PLAYERS, 0.75F, hasUses ? 1.0F : 0.75F);
-                    }
-                }
-            } else {
-                player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_FAIL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            }
-        });
-    }
-
-    public static void clear(ItemStack stone)
-    {
-        CompoundNBT tag = stone.getOrCreateTag();
-        tag.remove(SPELL);
-        tag.remove(META);
-        tag.remove(USES);
-    }
-
-    public static boolean decreaseUses(ItemStack stone)
-    {
-        CompoundNBT tag = stone.getOrCreateTag();
-        int remaining = tag.getInt(USES) - 1;
-
-        if (remaining <= 0) {
-            stone.shrink(1);
-            return false;
-        } else {
-            tag.putInt(USES, remaining);
-            return true;
-        }
-    }
-
-    public static CompoundNBT getMeta(ItemStack stone)
-    {
-        return stone.getOrCreateChildTag(META);
-    }
-
     @Nullable
     public static Spell getSpell(ItemStack stone)
     {
@@ -141,42 +84,19 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         return Spells.spells.getOrDefault(id, null);
     }
 
-    public static int getUses(ItemStack stone)
-    {
-        return stone.getOrCreateTag().getInt(USES);
-    }
-
     public static boolean hasSpell(ItemStack stone)
     {
         return getSpell(stone) instanceof Spell;
-    }
-
-    public static boolean hasMeta(ItemStack stone)
-    {
-        CompoundNBT meta = getMeta(stone);
-        boolean b = meta.isEmpty();
-        return !b;
-    }
-
-    public static void putMeta(ItemStack stone, CompoundNBT tag)
-    {
-        CompoundNBT stoneTag = stone.getOrCreateTag();
-        stoneTag.put(META, tag);
     }
 
     public static void putSpell(ItemStack stone, Spell spell)
     {
         CompoundNBT tag = stone.getOrCreateTag();
         tag.putString(SPELL, spell.getId());
-        putUses(stone, spell.getUses());
+        Spells.putUses(stone, spell.getUses());
 
         // change the stone name
         stone.setDisplayName(SpellsHelper.getSpellInfoText(spell));
-    }
-
-    public static void putUses(ItemStack stone, int uses)
-    {
-        stone.getOrCreateTag().putInt(USES, uses);
     }
 
 
@@ -334,7 +254,7 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
 
         SpellsHelper.addSpellDescription(spell, tooltip);
 
-        TranslationTextComponent usesText = new TranslationTextComponent("moonstone.strange.uses", getUses(stone));
+        TranslationTextComponent usesText = new TranslationTextComponent("moonstone.strange.uses", Spells.getUses(stone));
         usesText.setStyle((new Style()).setColor(TextFormatting.YELLOW));
         tooltip.add(usesText);
     }
@@ -359,13 +279,11 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
         final LazyOptional<IRuneColorProvider> holder = LazyOptional.of(() -> this);
 
         return new ICapabilityProvider() {
-
             @Nonnull
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
                 return QuarkCapabilities.RUNE_COLOR.orEmpty(cap, holder);
             }
-
         };
     }
 }
