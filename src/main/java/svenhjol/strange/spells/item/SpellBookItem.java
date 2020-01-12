@@ -39,7 +39,7 @@ public class SpellBookItem extends MesonItem
     {
         super(module, "spell_book", new Item.Properties()
             .maxStackSize(1)
-            .maxDamage(16));
+            .maxDamage(32));
 
         addPropertyOverride(new ResourceLocation("action"), (stack, world, entity) -> {
             if (entity != null && entity.getHeldItemOffhand() == stack)
