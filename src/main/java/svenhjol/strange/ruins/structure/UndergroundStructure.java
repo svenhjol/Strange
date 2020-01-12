@@ -27,12 +27,11 @@ import java.util.Random;
 public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
 {
     public static final int SEED_MODIFIER = 135318;
-    public static final String STRUCTURE_NAME = "underground_ruin";
 
     public UndergroundStructure()
     {
         super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
-        setRegistryName(Strange.MOD_ID, STRUCTURE_NAME);
+        setRegistryName(Strange.MOD_ID, UndergroundRuins.NAME);
     }
 
     @Override
@@ -163,7 +162,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
             List<String> ruins = new ArrayList<>(UndergroundRuins.ruins.get(biomeCategory));
             Collections.shuffle(ruins, rand);
 
-            if (Strange.loader.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos)) {
+            if (Strange.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos)) {
                 return ruins.stream().filter(r -> r.contains("outerlands")).findFirst().orElse(ruins.get(0));
             } else {
                 return ruins.get(0);

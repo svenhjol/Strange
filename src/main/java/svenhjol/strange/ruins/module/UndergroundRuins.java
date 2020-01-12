@@ -40,6 +40,8 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true)
 public class UndergroundRuins extends MesonModule
 {
+    public static final String NAME = "underground_ruin";
+    public static final String RESNAME = "strange:underground_ruin";
     public static final String DIR = "underground";
     public static Structure<NoFeatureConfig> structure;
     public static Map<Biome.Category, List<String>> ruins = new HashMap<>();
@@ -67,7 +69,7 @@ public class UndergroundRuins extends MesonModule
     {
         structure = new UndergroundStructure();
 
-        RegistryHandler.registerStructure(structure, new ResourceLocation("underground_ruin"));
+        RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
 
         for (Biome biome : ForgeRegistries.BIOMES) {
@@ -128,7 +130,7 @@ public class UndergroundRuins extends MesonModule
                     BlockPos pos = context.get(LootParameters.POSITION);
                     if (pos != null) {
                         ServerWorld world = context.getWorld();
-                        BlockPos structurePos = world.findNearestStructure("underground_ruin", pos, 100, true);
+                        BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 100, true);
                         if (structurePos != null) {
                             ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, map);

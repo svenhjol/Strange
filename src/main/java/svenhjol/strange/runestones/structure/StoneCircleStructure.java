@@ -22,12 +22,11 @@ import java.util.Random;
 public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
 {
     public static final int SEED_MODIFIER = 247474720;
-    public static final String STRUCTURE_NAME = "stone_circle";
 
     public StoneCircleStructure()
     {
         super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
-        setRegistryName(Strange.MOD_ID, STRUCTURE_NAME);
+        setRegistryName(Strange.MOD_ID, StoneCircles.NAME);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
 
     private static boolean isVaultValid(BlockPos pos)
     {
-        if (!Strange.loader.hasModule(Outerlands.class) || !StoneCircles.outerOnly) return true;
-        return Strange.loader.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos);
+        if (!Strange.hasModule(Outerlands.class) || !StoneCircles.outerOnly) return true;
+        return Strange.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos);
     }
 }

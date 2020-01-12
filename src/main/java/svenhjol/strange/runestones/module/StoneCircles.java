@@ -31,8 +31,8 @@ import java.util.List;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, configureEnabled = false)
 public class StoneCircles extends MesonModule
 {
-    public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
-    public static final String NAME = "strange:stone_circle";
+    public static final String NAME = "stone_circle";
+    public static final String RESNAME = "strange:stone_circle";
     public static final String VAULTS_DIR = "vaults";
     public static Structure<NoFeatureConfig> structure;
 
@@ -78,7 +78,7 @@ public class StoneCircles extends MesonModule
     {
         structure = new StoneCircleStructure();
 
-        RegistryHandler.registerStructure(structure, new ResourceLocation("stone_circle"));
+        RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
         RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
