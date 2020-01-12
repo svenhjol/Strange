@@ -42,7 +42,8 @@ public class PortalSpell extends Spell
                                 pt.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
                             }
                         }
-                        pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 100, 0));
+                        pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 120, 0));
+                        pt.addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 120, 0));
                         pt.setPositionAndUpdate(pt.getPosition().getX() + 0.5D, pt.getPosition().getY() + 1.0D, pt.getPosition().getZ() + 0.5D);
                         Spells.effectEnchant((ServerWorld)pt.world, pt.getPositionVec(), this, 10, 0, 0, 0, 0.05D);
                         pt.world.playSound(null, pt.getPosition(), StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
