@@ -92,7 +92,7 @@ public class Moonstones extends MesonModule
         Spell spell = Spells.spells.get(id);
 
         MoonstoneItem.putSpell(stone, spell);
-        MoonstoneItem.putUses(stone, (int)(spell.getUses() * (1.0 + rand.nextFloat())));
+        Spells.putUses(stone, (int)(spell.getUses() * (1.0 + rand.nextFloat())));
         return stone;
     }
 }
