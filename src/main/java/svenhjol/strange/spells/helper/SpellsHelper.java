@@ -66,15 +66,9 @@ public class SpellsHelper
     }
 
     @Nullable
-    public static Spell getRandomSpell(Random rand, boolean rare)
+    public static Spell getRandomSpell(Random rand)
     {
-        String spellId;
-
-        if (!rare) {
-            spellId = Spells.commonSpells.get(rand.nextInt(Spells.commonSpells.size()));
-        } else {
-            spellId = Spells.enabledSpells.get(rand.nextInt(Spells.enabledSpells.size()));
-        }
+        String spellId = Spells.enabledSpells.get(rand.nextInt(Spells.enabledSpells.size()));
         if (spellId == null || spellId.isEmpty()) return null;
         if (!Spells.spells.containsKey(spellId)) return null;
         return Spells.spells.get(spellId);
