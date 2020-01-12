@@ -26,7 +26,6 @@ public class KnockbackSpell extends Spell
             Entity e = getClosestEntity(player.world, result);
             beam.remove();
             if (e instanceof LivingEntity) {
-                beam.remove();
                 LivingEntity living = (LivingEntity) e;
                 living.knockBack(player, 6.0F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)));
                 didCast.accept(true);
