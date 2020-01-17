@@ -55,8 +55,8 @@ public class UndergroundRuins extends MesonModule
     @Config(name = "Default size", description = "Default number of pieces that generate as part of a ruin.")
     public static int defaultSize = 2;
 
-    @Config(name = "Distance", description = "Distance between ruin structures. For reference, Shipwrecks are 16.")
-    public static int distance = 12;
+    @Config(name = "Distance", description = "Distance between ruin structures. For reference, shipwrecks are 16.")
+    public static int distance = 8;
 
     @Config(name = "Additional pieces", description = "Random number of extra pieces that may be added to a ruin.")
     public static int variation = 1;
@@ -134,7 +134,7 @@ public class UndergroundRuins extends MesonModule
                         if (structurePos != null) {
                             ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, map);
-                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
+                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.RED_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
                             return map;
                         }
