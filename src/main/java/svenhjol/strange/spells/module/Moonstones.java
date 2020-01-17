@@ -29,7 +29,7 @@ public class Moonstones extends MesonModule
 {
     public static MoonstoneItem item;
 
-    @Config(name = "Add moonstones to loot", description = "If true, enchanted moonstones will be added to dungeon loot and buried treasure.")
+    @Config(name = "Add moonstones to loot", description = "If true, enchanted moonstones will be added to dungeon loot, buried treasure and nether fortresses.")
     public static boolean addMoonstonesToLoot = true;
 
     @Config(name = "Enchantment glint", description = "If true, enchanted moonstones will have the glint effect.")
