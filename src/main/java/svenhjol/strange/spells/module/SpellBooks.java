@@ -29,11 +29,14 @@ import java.util.Random;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false)
 public class SpellBooks extends MesonModule
 {
-    @Config(name = "Add spell books to loot", description = "If true, common spell books will be added to dungeon loot and rare books to stronghold and vaults.")
+    @Config(name = "Add spell books to loot", description = "If true, common spell books will be added to Stronghold chests and Vaults bookshelves.")
     public static boolean addSpellBooksToLoot = true;
 
-    @Config(name = "XP repair cost", description = "Amount of levels required to repair a spellbook")
+    @Config(name = "XP repair cost", description = "Amount of levels required to repair a spellbook.")
     public static int xpRepairCost = 1;
+
+    @Config(name = "Spell book weight", description = "Chance of spellbook in Stronghold/Vaults loot.")
+    public static int strongholdWeight = 15;
 
     public static SpellBookItem book;
 
@@ -70,7 +73,7 @@ public class SpellBooks extends MesonModule
         ResourceLocation res = event.getName();
 
         if (res.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
-            weight = 2;
+            weight = strongholdWeight;
         }
 
         if (weight > 0) {
