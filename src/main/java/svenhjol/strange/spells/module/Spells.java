@@ -140,7 +140,7 @@ public class Spells extends MesonModule
         return false;
     }
 
-    public static void cast(PlayerEntity player, ItemStack holdable, Spell spell, Consumer<ItemStack> onCastSuccess)
+    public static void cast(PlayerEntity player, ItemStack holdable, Spell spell, Consumer<Boolean> onCastSuccess)
     {
         if (player.world.isRemote) return;
         if (spell == null) return;
@@ -152,10 +152,8 @@ public class Spells extends MesonModule
             if (result) {
                 clearMeta(holdable);
                 effectEnchant((ServerWorld)player.world, player.getPositionVec(), spell, 5, 0.2D, 0.2D, 0.2, 2.2D);
-                if (!player.isCreative()) {
-                    boolean hasUses = decreaseUses(holdable);
-                }
-                onCastSuccess.accept(holdable);
+                boolean hasUses = !player.isCreative() && decreaseUses(holdable);
+                onCastSuccess.accept(!hasUses);
             } else {
                 player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_FAIL, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
