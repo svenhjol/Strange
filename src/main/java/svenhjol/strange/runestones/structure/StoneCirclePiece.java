@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
+import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.ArrayList;
@@ -114,6 +115,9 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                 if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
                     && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
                 ) {
+                    if (Outerlands.isOuterPos(surfacePos))
+                        config.withChest = true;
+
                     return generateCircle(world, new BlockPos.MutableBlockPos(surfacePos), rand, config);
                 }
             }
