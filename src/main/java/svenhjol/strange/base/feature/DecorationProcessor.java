@@ -18,7 +18,6 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.DecorationHelper;
 
@@ -48,29 +47,18 @@ public class DecorationProcessor extends StructureProcessor
 
         if (world != null) {
             if (world.getChunk(pos) != null) {
-                if (world.getChunk(pos).getBiomes() != null) {
+                if (world.getChunk(pos).getBiomes() != null) { // it *is* possible for this to be null under certain circumstances
                     if (world.getChunk(pos).getBiomes().length > 0) {
                         biome = world.getChunk(pos).getBiome(pos);
-                    } else {
-                        Meson.debug("[DecorationProcessor] getBiomes().length == 0");
                     }
-                } else {
-                    Meson.debug("[DecorationProcessor] getBiomes() == null");
                 }
-            } else {
-                Meson.debug("[DecorationProcessor] getChunk(pos) == null");
             }
-        } else {
-            Meson.debug("[DecorationProcessor] world == null");
         }
 
         // remove air
         if (blockInfo.state.getMaterial() == Material.AIR) {
             if (biome != null && biome.getCategory() == Biome.Category.OCEAN)
                 return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
-
-//            if (world.getBlockState(blockInfo.pos.up()).getMaterial() == Material.WATER)
-//                return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
 
             if (pos.getY() < world.getSeaLevel())
                 return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
@@ -102,7 +90,14 @@ public class DecorationProcessor extends StructureProcessor
         if (blockInfo.state.getBlock() == Blocks.STRUCTURE_BLOCK) {
             StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
             if (mode == StructureMode.DATA) {
-                return DecorationHelper.STRUCTURE_BLOCK_INSTANCE.replace(placement.getRotation(), blockInfo, blockInfo.nbt.getString("metadata"), new Random(pos.toLong()));
+                BlockInfo result = DecorationHelper.STRUCTURE_BLOCK_INSTANCE.replace(placement.getRotation(), blockInfo, blockInfo.nbt.getString("metadata"), new Random(pos.toLong()));
+                if (result.state.getMaterial() == Material.AIR) {
+                    BlockState above = world.getBlockState(result.pos.up());
+                    if (above != null && above.getMaterial() == Material.WATER) {
+                        return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
+                    }
+                }
+                return result;
             }
         }
 
