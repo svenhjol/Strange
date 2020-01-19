@@ -22,6 +22,7 @@ import java.util.Random;
 public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
 {
     public static final int SEED_MODIFIER = 247474720;
+    public static final int SIZE = 8;
 
     public StoneCircleStructure()
     {
@@ -78,18 +79,21 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
         {
             BlockPos pos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
 
+            // add the stone circle
+            components.add(new StoneCirclePiece(this.rand, pos));
+            this.recalculateStructureSize();
+
             // create vaults beneath the circle
             if (isVaultValid(pos)
                 && gen instanceof OverworldChunkGenerator
                 && this.rand.nextFloat() < 1.0F) {
 
-                int size = 8;
                 ResourceLocation start = new ResourceLocation(Strange.MOD_ID, StoneCircles.VAULTS_DIR + "/starts");
-                JigsawManager.func_214889_a(start, size, VaultPiece::new, gen, templates, pos, components, rand);
+                JigsawManager.func_214889_a(start, SIZE, VaultPiece::new, gen, templates, pos, components, rand);
                 this.recalculateStructureSize();
 
                 // move components into the earth
-                int maxTop = 50;
+                int maxTop = 54;
                 if (bounds.maxY >= maxTop) {
                     int shift = 5 + (bounds.maxY - maxTop);
                     bounds.offset(0, -shift, 0);
@@ -103,10 +107,6 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
 //                  Meson.debug("[UndergroundRuinStructure] Shifting up by " + shift + " at " + pos);
                 }
             }
-
-            // add the stone circle
-            components.add(new StoneCirclePiece(this.rand, pos));
-            this.recalculateStructureSize();
         }
     }
 
