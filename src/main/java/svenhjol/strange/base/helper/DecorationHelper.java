@@ -249,7 +249,7 @@ public class DecorationHelper
 
             if (data.contains("|")) {
                 String[] split = data.split("\\|");
-                data = split[rand.nextInt(split.length)];
+                data = split[this.rand.nextInt(split.length)];
             }
 
             this.data = data.trim();
