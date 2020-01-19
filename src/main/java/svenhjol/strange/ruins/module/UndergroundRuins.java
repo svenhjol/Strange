@@ -52,14 +52,14 @@ public class UndergroundRuins extends MesonModule
         Feature.OCEAN_MONUMENT
     ));
 
-    @Config(name = "Default size", description = "Default number of pieces that generate as part of a ruin.")
+    @Config(name = "Default size", description = "Default ruin size.")
     public static int defaultSize = 2;
 
     @Config(name = "Distance", description = "Distance between ruin structures. For reference, shipwrecks are 16.")
-    public static int distance = 8;
+    public static int distance = 4;
 
-    @Config(name = "Additional pieces", description = "Random number of extra pieces that may be added to a ruin.")
-    public static int variation = 1;
+    @Config(name = "Additional pieces", description = "Ruin size is increased randomly by this amount.")
+    public static int variation = 2;
 
     @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests")
     public static boolean addMapsToLoot = true;
