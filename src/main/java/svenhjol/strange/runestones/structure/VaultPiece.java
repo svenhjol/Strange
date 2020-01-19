@@ -42,8 +42,6 @@ public class VaultPiece extends AbstractVillagePiece
 
         if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
             this.pos = StructureHelper.adjustForOceanFloor(world, this.pos, box);
-        } else {
-//            this.pos = new BlockPos(this.pos.getX(), 40, this.pos.getY());
         }
 
         try {
