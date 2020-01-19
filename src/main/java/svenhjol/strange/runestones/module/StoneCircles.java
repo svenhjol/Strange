@@ -89,7 +89,7 @@ public class StoneCircles extends MesonModule
 
         validBiomes.forEach(biome -> {
             biome.addFeature(
-                GenerationStage.Decoration.SURFACE_STRUCTURES,
+                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
             biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
