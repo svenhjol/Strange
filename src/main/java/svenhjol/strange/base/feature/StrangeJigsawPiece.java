@@ -5,20 +5,22 @@ import com.mojang.datafixers.Dynamic;
 import net.minecraft.util.IDynamicDeserializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
-import net.minecraft.world.gen.feature.template.JigsawReplacementStructureProcessor;
-import net.minecraft.world.gen.feature.template.NopProcessor;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraft.world.gen.feature.template.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class StrangeJigsawPiece extends SingleJigsawPiece
 {
+    public static final String FLOODED = "underwater";
+
     protected final ResourceLocation location;
     protected final ImmutableList<StructureProcessor> processors;
     public static IJigsawDeserializer STRANGE_POOL_ELEMENT;
@@ -61,5 +63,18 @@ public class StrangeJigsawPiece extends SingleJigsawPiece
     public IJigsawDeserializer getType()
     {
         return STRANGE_POOL_ELEMENT;
+    }
+
+    @Override
+    public boolean place(TemplateManager templateManagerIn, IWorld worldIn, BlockPos pos, Rotation rotationIn, MutableBoundingBox boundsIn, Random rand) {
+        // override place to bodge metadata into the author tag so we can determine what type of "air" to use for template
+        Template template = templateManagerIn.getTemplateDefaulted(this.location);
+        String loc = this.location.toString();
+        if (loc.contains("underwater")) {
+            template.setAuthor(DecorationProcessor.WATER);
+        } else if (loc.contains("underlava")) {
+            template.setAuthor(DecorationProcessor.LAVA);
+        }
+        return super.place(templateManagerIn, worldIn, pos, rotationIn, boundsIn, rand);
     }
 }

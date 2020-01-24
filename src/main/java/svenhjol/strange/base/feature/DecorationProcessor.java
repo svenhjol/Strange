@@ -27,6 +27,10 @@ import java.util.Random;
 
 public class DecorationProcessor extends StructureProcessor
 {
+    public static final String AIR = "air";
+    public static final String WATER = "water";
+    public static final String LAVA = "lava";
+
     private static final IStructureProcessorType TYPE = Registry.register(Registry.STRUCTURE_PROCESSOR, Strange.MOD_ID + ":air_block", DecorationProcessor::new);
 
     public DecorationProcessor()
@@ -41,28 +45,24 @@ public class DecorationProcessor extends StructureProcessor
 
     @Nullable
     @Override
+    @SuppressWarnings("ConstantConditions")
     public BlockInfo process(IWorldReader world, BlockPos pos, BlockInfo unused, BlockInfo blockInfo, PlacementSettings placement, @Nullable Template template)
     {
         Rotation rot = placement.getRotation();
         Biome biome = null;
 
-        if (world != null) {
-            if (world.getChunk(pos) != null) {
-                if (world.getChunk(pos).getBiomes() != null) { // it *is* possible for this to be null under certain circumstances
-                    if (world.getChunk(pos).getBiomes().length > 0) {
-                        biome = world.getChunk(pos).getBiome(pos);
-                    }
-                }
-            }
+        // it is possible for getBiomes() to be null in certain situations
+        if (world != null
+            && world.getChunk(pos) != null
+            && world.getChunk(pos).getBiomes() != null
+            && world.getChunk(pos).getBiomes().length > 0
+        ) {
+            biome = world.getChunk(pos).getBiome(pos);
         }
 
         // remove air
         if (blockInfo.state.getMaterial() == Material.AIR) {
-            if (biome != null && biome.getCategory() == Biome.Category.OCEAN)
-                return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
-
-            if (pos.getY() < world.getSeaLevel())
-                return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
+            return new BlockInfo(blockInfo.pos, getAirReplacement(template), null);
         }
 
         // remove cave roots - TODO probably isn't working
@@ -93,16 +93,40 @@ public class DecorationProcessor extends StructureProcessor
             if (mode == StructureMode.DATA) {
                 BlockInfo result = DecorationHelper.STRUCTURE_BLOCK_INSTANCE.replace(placement.getRotation(), blockInfo, blockInfo.nbt.getString("metadata"), new Random(pos.toLong()));
                 if (result.state.getMaterial() == Material.AIR) {
-                    BlockState above = world.getBlockState(result.pos.up());
-                    if (above != null && above.getMaterial() == Material.WATER) {
-                        return new BlockInfo(blockInfo.pos, Blocks.WATER.getDefaultState(), null);
-                    }
+                    return new BlockInfo(blockInfo.pos, getAirReplacement(template), null);
                 }
                 return result;
             }
         }
 
         return blockInfo;
+    }
+
+    protected BlockState getAirReplacement(@Nullable Template template)
+    {
+        BlockState replace;
+        String fill = AIR;
+
+        if (template != null) {
+            fill = template.getAuthor(); // TODO hack to get metadata into this method
+        }
+
+        switch (fill) {
+            case LAVA:
+                replace = Blocks.LAVA.getDefaultState();
+                break;
+
+            case WATER:
+                replace = Blocks.WATER.getDefaultState();
+                break;
+
+            case AIR:
+            default:
+                replace = Blocks.CAVE_AIR.getDefaultState();
+                break;
+        }
+
+        return replace;
     }
 
     @Override
