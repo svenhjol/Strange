@@ -3,9 +3,14 @@ package svenhjol.strange.base;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.compat.QuarkBigDungeons;
+import svenhjol.strange.base.compat.QuarkCaveRoots;
+import svenhjol.strange.base.compat.QuarkVariantChests;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
 import svenhjol.strange.base.loot.AddSpellRandomly;
 import svenhjol.strange.scrolls.message.*;
@@ -18,6 +23,10 @@ import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 
 public class StrangeLoader extends MesonLoader
 {
+    public static QuarkBigDungeons quarkBigDungeons;
+    public static QuarkCaveRoots quarkCaveRoots;
+    public static QuarkVariantChests quarkVariantChests;
+
     public StrangeLoader()
     {
         super(Strange.MOD_ID);
@@ -31,6 +40,17 @@ public class StrangeLoader extends MesonLoader
 
         // loot
         StrangeLoot.init();
+
+        // compat
+        try {
+            if (ForgeHelper.isModLoaded("quark")) {
+                quarkBigDungeons = QuarkBigDungeons.class.newInstance();
+                quarkCaveRoots = QuarkCaveRoots.class.newInstance();
+                quarkVariantChests = QuarkVariantChests.class.newInstance();
+            }
+        } catch (Exception e) {
+            Meson.warn("Error loading Quark compat class", e);
+        }
 
         StrangeJigsawPiece.STRANGE_POOL_ELEMENT = IJigsawDeserializer.register("strange_pool_element", StrangeJigsawPiece::new);
     }
