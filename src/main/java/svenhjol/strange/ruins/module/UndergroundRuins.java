@@ -86,14 +86,22 @@ public class UndergroundRuins extends MesonModule
     @Override
     public void serverAboutToStart(FMLServerAboutToStartEvent event)
     {
-        // don't spawn underground structures near Quark's big dungeons
+        // don't spawn near Quark's big dungeons
         if (StrangeLoader.quarkBigDungeons != null
             && StrangeLoader.quarkBigDungeons.hasModule()
         ) {
             Structure<?> structure = StrangeLoader.quarkBigDungeons.getStructure();
             if (!blacklist.contains(structure)) {
                 blacklist.add(structure);
-                Meson.debug("Added Quark's Big Dungeons to underground ruin blacklist");
+                Meson.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
+            }
+        }
+
+        // don't spawn near Vaults
+        if (Strange.hasModule(Vaults.class)) {
+            if (!blacklist.contains(Vaults.structure)) {
+                blacklist.add(Vaults.structure);
+                Meson.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
             }
         }
     }
