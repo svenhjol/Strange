@@ -20,10 +20,7 @@ import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class StoneCirclePiece extends ScatteredStructurePiece
 {
@@ -51,6 +48,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         if (world.getDimension().getType() == DimensionType.THE_NETHER) {
 
             config.withChest = true;
+            config.allRunes = true;
             config.runeTries = 3;
             config.runeChance = 0.9F;
             config.radius = rand.nextInt(4) + 5;
@@ -75,6 +73,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         } else if (world.getDimension().getType() == DimensionType.THE_END) {
 
             config.withChest = true;
+            config.allRunes = true;
             config.runeTries = 4;
             config.runeChance = 1.0F;
             config.radius = rand.nextInt(7) + 4;
@@ -115,8 +114,10 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                 if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
                     && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
                 ) {
-                    if (Outerlands.isOuterPos(surfacePos))
+                    if (Outerlands.isOuterPos(surfacePos)) {
                         config.withChest = true;
+                        config.allRunes = true;
+                    }
 
                     return generateCircle(world, new BlockPos.MutableBlockPos(surfacePos), rand, config);
                 }
@@ -132,10 +133,17 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         boolean generatedWithRune = false;
         boolean runestonesEnabled = Strange.hasModule(Runestones.class);
 
-        List<Integer> availableRunes = new ArrayList<>();
+        Map<Integer, Float> availableRunes = new HashMap<>();
         if (runestonesEnabled) {
-            for (int i = 0; i < Runestones.dests.size(); i++) {
-                availableRunes.add(i);
+
+            if (config.allRunes) {
+                for (int i = 0; i < Runestones.allDests.size(); i++) {
+                    availableRunes.put(i, Runestones.allDests.get(i).weight);
+                }
+            } else {
+                for (int i = 0; i < Runestones.innerDests.size(); i++) {
+                    availableRunes.put(i, Runestones.innerDests.get(i).weight);
+                }
             }
 
             if (availableRunes.size() == 0) {
@@ -173,14 +181,14 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
                         if (runestonesEnabled && l == maxHeight - 1 && rand.nextFloat() < config.runeChance) {
                             for (int t = 0; t < config.runeTries; t++) {
-                                int index = rand.nextInt(availableRunes.size());
-                                int rune = availableRunes.get(index);
+                                List<Integer> keys = new ArrayList<>(availableRunes.keySet());
+                                int rune = keys.get(rand.nextInt(keys.size()));
 
                                 float f = rand.nextFloat();
-                                float weight = Runestones.dests.get(index).weight;
+                                float weight = availableRunes.get(rune);
 
                                 if (f < weight) {
-                                    availableRunes.remove(index);
+                                    availableRunes.remove(rune);
                                     state = Runestones.getRunestoneBlock(world, rune);
                                     generatedWithRune = true;
                                     break;
@@ -236,6 +244,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         public int runeTries = 1;
         public float runeChance = 0.8F;
         public boolean withChest = false;
+        public boolean allRunes = false;
         public List<BlockState> blocks = new ArrayList<>();
     }
 }
