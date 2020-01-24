@@ -28,6 +28,7 @@ public class Generator
 
         // initialise generators
         List<Class<?>> generators = new ArrayList<>(Arrays.asList(
+            LangGenerator.class,
             CraftGenerator.class,
             EncounterGenerator.class,
             GatherGenerator.class,
