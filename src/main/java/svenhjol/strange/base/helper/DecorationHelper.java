@@ -230,7 +230,7 @@ public class DecorationHelper
             this.pos = blockInfo.pos;
             this.state = null;
             this.nbt = null;
-            this.rand = new Random(this.pos.toLong());
+            this.rand = new Random(blockInfo.hashCode());
 
             if (data.contains("|")) {
                 String[] split = data.split("\\|");
@@ -521,10 +521,17 @@ public class DecorationHelper
             if (!withChance(0.8F)) return;
             state = Blocks.SPAWNER.getDefaultState();
 
+            EntityType<?> ent;
+            String type = getValue("type", this.data, "");
+            if (type.isEmpty()) {
+                ent = DungeonHooks.getRandomDungeonMob(fixedRand);
+            } else {
+                ent = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(type));
+            }
             MobSpawnerTileEntity tile = TileEntityType.MOB_SPAWNER.create();
 
             if (tile != null) {
-                tile.getSpawnerBaseLogic().setEntityType(DungeonHooks.getRandomDungeonMob(fixedRand));
+                tile.getSpawnerBaseLogic().setEntityType(ent);
                 nbt = new CompoundNBT();
                 tile.write(this.nbt);
             }
