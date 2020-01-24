@@ -12,6 +12,10 @@
     "rune=9,type=0": { "model": "strange:block/runestone_stone_9" },
     "rune=10,type=0": { "model": "strange:block/runestone_stone_10" },
     "rune=11,type=0": { "model": "strange:block/runestone_stone_11" },
+    "rune=12,type=0": { "model": "strange:block/runestone_stone_12" },
+    "rune=13,type=0": { "model": "strange:block/runestone_stone_13" },
+    "rune=14,type=0": { "model": "strange:block/runestone_stone_14" },
+    "rune=15,type=0": { "model": "strange:block/runestone_stone_15" },
     "rune=0,type=1": { "model": "strange:block/runestone_netherbrick_0" },
     "rune=1,type=1": { "model": "strange:block/runestone_netherbrick_1" },
     "rune=2,type=1": { "model": "strange:block/runestone_netherbrick_2" },
@@ -24,6 +28,10 @@
     "rune=9,type=1": { "model": "strange:block/runestone_netherbrick_9" },
     "rune=10,type=1": { "model": "strange:block/runestone_netherbrick_10" },
     "rune=11,type=1": { "model": "strange:block/runestone_netherbrick_11" },
+    "rune=12,type=1": { "model": "strange:block/runestone_netherbrick_12" },
+    "rune=13,type=1": { "model": "strange:block/runestone_netherbrick_13" },
+    "rune=14,type=1": { "model": "strange:block/runestone_netherbrick_14" },
+    "rune=15,type=1": { "model": "strange:block/runestone_netherbrick_15" },
     "rune=0,type=2": { "model": "strange:block/runestone_obsidian_0" },
     "rune=1,type=2": { "model": "strange:block/runestone_obsidian_1" },
     "rune=2,type=2": { "model": "strange:block/runestone_obsidian_2" },
@@ -35,6 +43,10 @@
     "rune=8,type=2": { "model": "strange:block/runestone_obsidian_8" },
     "rune=9,type=2": { "model": "strange:block/runestone_obsidian_9" },
     "rune=10,type=2": { "model": "strange:block/runestone_obsidian_10" },
-    "rune=11,type=2": { "model": "strange:block/runestone_obsidian_11" }
+    "rune=11,type=2": { "model": "strange:block/runestone_obsidian_11" },
+    "rune=12,type=2": { "model": "strange:block/runestone_obsidian_12" },
+    "rune=13,type=2": { "model": "strange:block/runestone_obsidian_13" },
+    "rune=14,type=2": { "model": "strange:block/runestone_obsidian_14" },
+    "rune=15,type=2": { "model": "strange:block/runestone_obsidian_15" }
   }
 }
