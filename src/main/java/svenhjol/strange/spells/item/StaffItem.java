@@ -58,7 +58,7 @@ public class StaffItem extends ToolItem implements IMesonItem
 
         int level = getEfficiency(staff);
         SoundEvent sound = level < 3 ? StrangeSounds.SPELL_CHARGE_MEDIUM : StrangeSounds.SPELL_CHARGE_SHORT;
-        player.world.playSound(null, player.getPosition(), sound, SoundCategory.PLAYERS, 0.5F, 0.8F + (level * 0.1F));
+        player.world.playSound(null, player.getPosition(), sound, SoundCategory.PLAYERS, 0.35F, 0.8F + (level * 0.1F));
         return new ActionResult<>(result, staff);
     }
 
@@ -122,10 +122,10 @@ public class StaffItem extends ToolItem implements IMesonItem
                         int fortune = getFortune(staff);
                         int efficiency = getEfficiency(staff);
 
-                        if (world.rand.nextFloat() < fortune * 0.2F)
+                        if (world.rand.nextFloat() < Math.min(fortune, 4) * 0.18F)
                             xpCost = Math.min(0, xpCost - fortune);
 
-                        if (world.rand.nextFloat() < efficiency * 0.1F)
+                        if (world.rand.nextFloat() < Math.min(efficiency, 6) * 0.12F)
                             damageBook = false;
 
                         if (xpCost > 0)
