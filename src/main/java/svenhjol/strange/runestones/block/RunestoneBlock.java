@@ -10,7 +10,7 @@ import svenhjol.meson.block.MesonBlock;
 
 public class RunestoneBlock extends MesonBlock
 {
-    public static final IntegerProperty RUNE = IntegerProperty.create("rune", 0, 11);
+    public static final IntegerProperty RUNE = IntegerProperty.create("rune", 0, 15);
     public static final IntegerProperty TYPE = IntegerProperty.create("type", 0, 2);
 
     public RunestoneBlock(MesonModule module)
