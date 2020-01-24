@@ -276,7 +276,7 @@ public class Encounter implements IDelegate
     public boolean onEnded(PlayerEntity player)
     {
         QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
-        this.bossInfo.removePlayer((ServerPlayerEntity)player);
+        this.bossInfo.removeAllPlayers();
         World world = player.world;
         WorldHelper.clearWeather(world);
         return true;
@@ -314,6 +314,7 @@ public class Encounter implements IDelegate
 
             if (remainingHealth > 0 && totalHealth > 0) {
                 bossInfo.setVisible(true);
+                bossInfo.setName(new TranslationTextComponent(quest.getTitle()));
                 bossInfo.setPercent(remainingHealth / (float)totalHealth);
                 bossInfo.addPlayer((ServerPlayerEntity) player);
 
