@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
@@ -60,6 +61,10 @@ public class ScrollItem extends MesonItem
         ItemStack scroll = playerIn.getHeldItem(handIn);
 
         if (playerIn.isSneaking()) {
+
+            result = ActionResultType.FAIL;
+
+        } else if (worldIn.getDimension().getType() != DimensionType.OVERWORLD) {
 
             result = ActionResultType.FAIL;
 
