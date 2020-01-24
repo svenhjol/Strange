@@ -28,6 +28,7 @@ public class Definition
     private Map<String, String> mine = new HashMap<>();
     private Map<String, Map<String, String>> encounter = new HashMap<>();
     private Map<String, Map<String, String>> rewards = new HashMap<>();
+    private Map<String, Map<String, String>> lang = new HashMap<>();
 
     public int getTier()
     {
@@ -88,6 +89,8 @@ public class Definition
     {
         return rewards == null ? new HashMap<>() : rewards;
     }
+
+    public Map<String, Map<String, String>> getLang() { return lang == null ? new HashMap<>() : lang; }
 
     public void setTier(int tier)
     {
