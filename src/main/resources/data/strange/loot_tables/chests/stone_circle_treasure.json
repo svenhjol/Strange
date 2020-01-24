@@ -21,20 +21,6 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "strange:stone_circle",
-              "decoration": "red_x",
-              "zoom": 1,
-              "skip_existing_chunks": true
-            }
-          ]
-        },
-        {
-          "name": "minecraft:map",
-          "type": "minecraft:item",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "minecraft:exploration_map",
               "destination": "village",
               "decoration": "red_x",
               "zoom": 1,
