@@ -49,6 +49,9 @@ public class Quests extends MesonModule
     @Config(name = "Locate distance", description = "Distance from quest start (in blocks) that a treasure chest will spawn for 'locate' quests.")
     public static int locateDistance = 400;
 
+    @Config(name = "Language", description = "Language code to use for showing quest details.")
+    public static String language = "en";
+
     @CapabilityInject(IQuestsCapability.class)
     public static Capability<IQuestsCapability> QUESTS = null;
     public static Map<Integer, List<Definition>> available = new HashMap<>();
