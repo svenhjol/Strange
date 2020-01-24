@@ -56,10 +56,10 @@ public class Vaults extends MesonModule
     public static boolean outerOnly = true;
 
     @Config(name = "Generate below Y value", description = "Vaults will try and generate below this Y value.")
-    public static int generateBelow = 70;
+    public static int generateBelow = 68;
 
     @Config(name = "Generate above Y value", description = "Vaults will try and generate above this Y value.")
-    public static int generateAbove = 30;
+    public static int generateAbove = 24;
 
     public static List<Biome> validBiomes = new ArrayList<>();
 
