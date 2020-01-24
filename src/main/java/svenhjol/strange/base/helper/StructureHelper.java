@@ -56,6 +56,7 @@ public class StructureHelper
         public static final String CORRIDORS = "corridors";
         public static final String ROOMS = "rooms";
         public static final String SECRETS = "secrets";
+        public static final String AREAS = "areas";
         public static final String STARTS = "starts";
         public static final String ENDS = "ends";
 
@@ -63,7 +64,7 @@ public class StructureHelper
         public List<ResourceLocation> starts = new ArrayList<>();
         public Map<String, Integer> sizes = new HashMap<>();
 
-        protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, SECRETS, STARTS, ENDS);
+        protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, SECRETS, AREAS, STARTS, ENDS);
         protected final List<String> hasEnds = Arrays.asList(CORRIDORS, ROOMS);
 
         public RegisterJigsawPieces(IReloadableResourceManager rm, String structuresPath)
