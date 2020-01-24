@@ -21,6 +21,7 @@ import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.BiomeHelper;
@@ -46,8 +47,26 @@ public class StoneCircles extends MesonModule
     @Config(name = "Add stone circle maps to loot", description = "If true, stone circle maps will be added to village chests.")
     public static boolean addMapsToLoot = true;
 
+    @Config(name = "Chance of overworld stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable overworld location.")
+    public static double overworldSpawnChance = 1.0D;
+
+    @Config(name = "Chance of nether stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable nether location.")
+    public static double netherSpawnChance = 0.85D;
+
+    @Config(name = "Chance of End stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable End location.")
+    public static double endSpawnChance = 0.85D;
+
+    @Config(name = "Allow all runes in the Overworld", description = "If true, stone circles in the overworld may show all runes, including rare ones to the Outerlands.")
+    public static boolean allowAllOverworldRunes = false;
+
+    @Config(name = "Allow all runes in the Nether", description = "If true, stone circles in the nether may show all runes, including rare ones to the Outerlands.")
+    public static boolean allowAllNetherRunes = false;
+
+    @Config(name = "Allow all runes in the End", description = "If true, stone circles in the End may show all runes, including rare ones to the Outerlands.")
+    public static boolean allowAllEndRunes = false;
+
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
-    public static List<String> biomesConfig = new ArrayList<>(Arrays.asList(
+    public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.PLAINS),
         BiomeHelper.getBiomeName(Biomes.MUSHROOM_FIELDS),
         BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
@@ -62,6 +81,7 @@ public class StoneCircles extends MesonModule
         BiomeHelper.getBiomeName(Biomes.SAVANNA_PLATEAU),
         BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
         BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
+        BiomeHelper.getBiomeName(Biomes.FROZEN_RIVER),
         BiomeHelper.getBiomeName(Biomes.SWAMP),
         BiomeHelper.getBiomeName(Biomes.END_BARRENS),
         BiomeHelper.getBiomeName(Biomes.END_HIGHLANDS),
@@ -85,12 +105,12 @@ public class StoneCircles extends MesonModule
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
 
-        biomesConfig.forEach(biomeName -> {
+        validBiomesConfig.forEach(biomeName -> {
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-        validBiomes.forEach(biome -> {
+        ForgeRegistries.BIOMES.forEach(biome -> {
             biome.addFeature(
                 GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
