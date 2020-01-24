@@ -27,15 +27,19 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
+import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 
@@ -44,17 +48,23 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class Runestones extends MesonModule
 {
-    public static RunestoneBlock block;
-    public static List<Destination> dests = new ArrayList<>();
+    public static ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
+
+    public static List<Destination> innerDests = new ArrayList<>();
+    public static List<Destination> outerDests = new ArrayList<>();
+    public static List<Destination> allDests = new ArrayList<>();
     public static List<Destination> ordered = new ArrayList<>();
-    private static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
+    public static Map<UUID, BlockPos> playerTeleport = new HashMap<>();
+    public static RunestoneBlock block;
+    public long seed = 0;
+
+    @Config(name = "Runestone for Quark Big Dungeons", description = "If true, one of the runestones will link to a Big Dungeon from Quark.\n" +
+        "This module must be enabled in Quark for the feature to work.\n" +
+        "If false, or Quark is not available, this runestone destination will be a stone circle instead.")
+    public static boolean useQuarkBigDungeon = true;
 
     @CapabilityInject(IRunestonesCapability.class)
     public static Capability<IRunestonesCapability> RUNESTONES = null;
-
-    public static ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
-
-    public long seed = 0;
 
     @Override
     public void init()
@@ -67,23 +77,71 @@ public class Runestones extends MesonModule
     {
         // register cap, cap storage and implementation
         CapabilityManager.INSTANCE.register(IRunestonesCapability.class, new RunestonesStorage(), RunestonesCapability::new);
+    }
+
+    @Override
+    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    {
+        // add all destinations here; serverStarted shuffles them according to world seed
+        ordered = new ArrayList<>();
 
         ordered.add(new Destination("spawn_point", false, 1.0F));
-
+        ordered.add(new Destination("spawn_point", true, 1.0F));
         ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.9F));
-        ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.7F));
-
+        ordered.add(new Destination(StoneCircles.RESNAME, "outer_stone_circle", true, 0.9F));
         ordered.add(new Destination("Village", "village", false, 0.5F));
-        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.45F));
-        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.4F));
-        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.4F));
+        ordered.add(new Destination("Village", "outer_village", true, 0.7F));
+        ordered.add(new Destination("Pillager_Outpost", "pillager_outpost", false, 0.75F));
+        ordered.add(new Destination("Pillager_Outpost", "outer_pillager_outpost", true, 0.6F));
+        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.2F));
+        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.2F));
+        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.65F));
+        ordered.add(new Destination("Mineshaft", "mineshaft", false, 0.5F));
+        ordered.add(new Destination("Swamp_Hut", "swamp_hut", false, 0.3F));
+        ordered.add(new Destination("Igloo", "igloo", false, 0.3F));
 
-        ordered.add(new Destination("Village", "outer_village", true, 0.08F));
-        ordered.add(new Destination("Desert_Pyramid", "outer_desert_pyramid", true, 0.12F));
-        ordered.add(new Destination("Jungle_Pyramid", "outer_jungle_pyramid", true, 0.12F));
-        ordered.add(new Destination("Ocean_Ruin", "outer_ocean_ruin", true, 0.12F));
+        if (useQuarkBigDungeon
+            && StrangeLoader.quarkBigDungeons != null
+            && StrangeLoader.quarkBigDungeons.hasModule()
+        ) {
+            ordered.add(new Destination(StrangeLoader.quarkBigDungeons.getResName(), "big_dungeon", false, 0.3F));
+            Meson.debug("Added Quark's Big Dungeons as a runestone destination");
+        } else {
+            ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.3F));
+        }
 
-        ordered.add(new Destination(StoneCircles.RESNAME, "outer_stone_circle", true, 0.02F));
+        if (Strange.hasModule(UndergroundRuins.class)) {
+            ordered.add(new Destination(UndergroundRuins.RESNAME, "underground_ruin", false, 0.15F));
+        } else {
+            ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.15F));
+        }
+    }
+
+    @Override
+    public void serverStarted(FMLServerStartedEvent event)
+    {
+        super.serverStarted(event);
+        long seed = event.getServer().getWorld(DimensionType.OVERWORLD).getSeed();
+
+        if (seed != this.seed) {
+            Random rand = new Random();
+            rand.setSeed(seed);
+
+            for (Destination dest : ordered) {
+                if (dest.outerlands) {
+                    outerDests.add(dest);
+                } else {
+                    innerDests.add(dest);
+                }
+            }
+
+            Collections.shuffle(innerDests, rand);
+            Collections.shuffle(outerDests, rand);
+            allDests.addAll(innerDests);
+            allDests.addAll(outerDests);
+
+            this.seed = seed;
+        }
     }
 
     public static IRunestonesCapability getCapability(PlayerEntity player)
@@ -126,6 +184,12 @@ public class Runestones extends MesonModule
         return getRunestoneBlock(dim, new Random().nextInt(ordered.size()));
     }
 
+    public static BlockState getRandomBlock(DimensionType dim, BlockPos pos)
+    {
+        List<Destination> pool = Outerlands.isOuterPos(pos) ? allDests : innerDests;
+        return getRunestoneBlock(dim, new Random(pos.toLong()).nextInt(pool.size()));
+    }
+
     public static BlockPos getInnerPos(World world, Random rand)
     {
         if (Strange.hasModule(Outerlands.class)) {
@@ -161,21 +225,6 @@ public class Runestones extends MesonModule
         pos = pos.south(rand.nextFloat() < 0.5F ? s : -s);
         pos = pos.west(rand.nextFloat() < 0.5F ? w : -w);
         return pos;
-    }
-
-    @Override
-    public void serverStarted(FMLServerStartedEvent event)
-    {
-        super.serverStarted(event);
-
-        long seed = event.getServer().getWorld(DimensionType.OVERWORLD).getSeed();
-        if (seed != this.seed) {
-            Random rand = new Random();
-            rand.setSeed(seed);
-            dests = new ArrayList<>(ordered);
-            Collections.shuffle(dests, rand);
-            this.seed = seed;
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -225,7 +274,7 @@ public class Runestones extends MesonModule
                 int rune = lookedAt.get(RunestoneBlock.RUNE);
                 if (cap.getDiscoveredTypes().contains(rune)) {
                     TranslationTextComponent message;
-                    TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + dests.get(rune).description);
+                    TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + allDests.get(rune).description);
                     BlockPos dest = cap.getDestination(runePos);
                     if (dest != null) {
                         effectTravelled(world, runePos);
@@ -321,7 +370,6 @@ public class Runestones extends MesonModule
 
         int dim = player.dimension.getId();
         if (dim != 0) {
-            boolean wasInvulnerable = player.isInvulnerable();
             PlayerHelper.changeDimension(player, 0);
             serverWorld = serverPlayer.server.getWorld(DimensionType.OVERWORLD);
         }
@@ -331,9 +379,9 @@ public class Runestones extends MesonModule
 
     private void teleport(World world, BlockPos pos, PlayerEntity player, Random rand, int rune)
     {
-        Meson.debug("Rune is " + rune + ", dest is " + dests.get(rune));
+        Meson.debug("Rune is " + rune + ", dest is " + allDests.get(rune));
 
-        BlockPos destPos = dests.get(rune).getDest(world, pos, rand);
+        BlockPos destPos = allDests.get(rune).getDest(world, pos, rand);
         if (destPos == null) destPos = world.getSpawnPoint();
         BlockPos dest = addRandomOffset(destPos, rand, 8);
 
