@@ -29,6 +29,13 @@
 - [x] Efficiency and Fortune on staff
 - [x] "Undir" should play when in Nether < lava ocean
 - [x] TEST Add spawner type (for specialised ruins)
+- [x] Opening quests in the nether that look for distant vaults causes infinite badness
+- [x] Bound compass has error on frame 16
+- [x] Encounter boss bar doesn't clear when you die
+
+## Intermittent / warnings
+- [ ] Weird "air_block" errors sometimes when loading
+- [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos))
 
 ## Ruins
 - [x] Jungle chambers less glass
@@ -51,7 +58,8 @@
 - [ ] Chambers for Savanna
 
 ## Quests
-- [ ] Think about language strings as part of json
+- [x] Think about language strings as part of json
+- [x] TEST Move all lang strings into quests
 - [ ] Add some new quests - L and H
 
 ## Docs
