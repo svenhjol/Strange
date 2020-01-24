@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -133,7 +134,7 @@ public class Spells extends MesonModule
     public static boolean activate(PlayerEntity player, ItemStack holdable, Spell spell)
     {
         if (spell.needsActivation() && !hasMeta(holdable)) {
-            player.world.playSound(null, player.getPosition(), StrangeSounds.SPELL_CHARGE_SHORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.PLAYERS, 1.0F, 1.0F);
             spell.activate(player, holdable);
             return true;
         }
