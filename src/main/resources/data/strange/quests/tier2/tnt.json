@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "TNT",
+      "description": "Business is booming."
+    }
+  },
   "craft": {
     "minecraft:tnt": 6
   },

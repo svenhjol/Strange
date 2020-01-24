@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Zombie Race",
+      "description": "Kill zombies before the time runs out."
+    }
+  },
   "timeLimit": 10,
   "hunt": {
     "minecraft:zombie": 4

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "End Crystals",
+      "description": "Create end crystals."
+    }
+  },
   "craft": {
     "minecraft:end_crystal": 4
   },

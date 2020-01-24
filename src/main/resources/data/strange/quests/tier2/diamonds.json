@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Diamond Ore",
+      "description": "Find diamond ore and mine it."
+    }
+  },
   "mine": {
     "minecraft:diamond_ore": 3
   },

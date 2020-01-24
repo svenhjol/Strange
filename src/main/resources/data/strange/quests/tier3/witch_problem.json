@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Witch Problem",
+      "description": "Locate the group of witches and kill them."
+    }
+  },
   "encounter": {
     "minecraft:witch": {
       "count": 3,

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Skeleton Search",
+      "description": "Find and kill skeletons."
+    }
+  },
   "hunt": {
     "minecraft:skeleton": 10,
     "minecraft:wither_skeleton": 2

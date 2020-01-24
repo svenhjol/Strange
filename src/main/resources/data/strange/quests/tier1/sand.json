@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Sand",
+      "description": "Pickup sand."
+    }
+  },
   "gather": {
     "minecraft:sand": 40
   },

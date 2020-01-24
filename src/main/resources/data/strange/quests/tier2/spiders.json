@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Spider Hunt",
+      "description": "Find and kill spiders."
+    }
+  },
   "hunt": {
     "minecraft:spider": 5
   },

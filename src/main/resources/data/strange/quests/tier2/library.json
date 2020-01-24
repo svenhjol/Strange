@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Library",
+      "description": "Build a writing desk and a lectern."
+    }
+  },
   "craft": {
     "minecraft:writing_desk": 1,
     "minecraft:lectern": 1

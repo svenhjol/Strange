@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Stone",
+      "description": "Gather stone."
+    }
+  },
   "gather": {
     "minecraft:stone": 30
   },

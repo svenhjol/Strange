@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Charcoal",
+      "description": "Collect charcoal."
+    }
+  },
   "gather": {
     "minecraft:charcoal": 15
   },

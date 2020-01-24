@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Rotten Flesh",
+      "description": "Collect rotten flesh."
+    }
+  },
   "gather": {
     "minecraft:rotten_flesh": 4
   },

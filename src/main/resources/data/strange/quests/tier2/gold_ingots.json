@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Gold Ingots",
+      "description": "Gather gold ingots."
+    }
+  },
   "gather": {
     "minecraft:gold_ingot": 8
   },

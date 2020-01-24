@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Beaconstruction",
+      "description": "Craft all the beacons before the time runs out."
+    }
+  },
   "timeLimit": 30,
   "craft": {
     "minecraft:beacon": 4

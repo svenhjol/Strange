@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Skeleton Hunt",
+      "description": "Find and kill skeletons."
+    }
+  },
   "hunt": {
     "minecraft:skeleton": 5
   },

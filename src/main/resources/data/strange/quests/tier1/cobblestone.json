@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Cobblestone",
+      "description": "Gather cobblestone."
+    }
+  },
   "gather": {
     "minecraft:cobblestone": 60
   },

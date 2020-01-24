@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Emerald",
+      "description": "Pickup emeralds."
+    }
+  },
   "gather": {
     "minecraft:emerald": 4
   },

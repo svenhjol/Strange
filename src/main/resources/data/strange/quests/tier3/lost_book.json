@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Lost Book",
+      "description": "Bring back the book from the lost chest."
+    }
+  },
   "locate": [
     "minecraft:enchanted_book"
   ],

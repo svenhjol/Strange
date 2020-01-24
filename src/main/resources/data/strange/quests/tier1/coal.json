@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Coal",
+      "description": "Pickup coal."
+    }
+  },
   "gather": {
     "minecraft:coal": 20
   },

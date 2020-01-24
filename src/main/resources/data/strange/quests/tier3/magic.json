@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Magic",
+      "description": "Fetch iron and gold ingots to receive magical items."
+    }
+  },
   "gather": {
     "minecraft:iron_ingot": 60,
     "minecraft:gold_ingot": 30

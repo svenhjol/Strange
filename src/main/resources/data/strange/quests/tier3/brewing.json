@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Brewing",
+      "description": "Build the requirements for a brewing room."
+    }
+  },
   "craft": {
     "minecraft:brewing_stand": 2
   },

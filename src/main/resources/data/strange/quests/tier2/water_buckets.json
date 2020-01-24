@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Water Buckets",
+      "description": "The water is needed. You can have the buckets back."
+    }
+  },
   "gather": {
     "minecraft:water_bucket": 5
   },

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Zombie Hunt",
+      "description": "Find and kill zombies."
+    }
+  },
   "hunt": {
     "minecraft:zombie": 5
   },

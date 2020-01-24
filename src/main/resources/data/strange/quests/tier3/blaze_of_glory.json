@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Blaze of Glory",
+      "description": "Locate and defeat the group of blazes."
+    }
+  },
   "encounter": {
     "minecraft:blaze": {
       "count": 4,

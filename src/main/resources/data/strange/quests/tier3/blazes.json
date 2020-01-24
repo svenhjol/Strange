@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Blaze Battle",
+      "description": "Find and kill blazes."
+    }
+  },
   "hunt": {
     "minecraft:blaze": 8
   },

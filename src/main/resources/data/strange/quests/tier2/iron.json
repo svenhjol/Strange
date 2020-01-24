@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Iron",
+      "description": "Fetch iron ingots."
+    }
+  },
   "gather": {
     "minecraft:iron_ingot": 32
   },

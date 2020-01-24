@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Skeleton Race",
+      "description": "Find the group of skeletons and kill them before the time runs out."
+    }
+  },
   "timeLimit": 6,
   "encounter": {
     "minecraft:skeleton": {

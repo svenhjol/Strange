@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Sticks",
+      "description": "Gather sticks."
+    }
+  },
   "gather": {
     "minecraft:stick": 80
   },

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Endermen",
+      "description": "Find and kill endermen."
+    }
+  },
   "hunt": {
     "minecraft:enderman": 5
   },

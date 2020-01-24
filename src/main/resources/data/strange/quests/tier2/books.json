@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Books",
+      "description": "Make some books."
+    }
+  },
   "craft": {
     "minecraft:book": 6
   },

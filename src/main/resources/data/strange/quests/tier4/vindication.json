@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "qtitle": "Vindication",
+      "qdesc": "Find and kill Vindicators."
+    }
+  },
   "hunt": {
     "minecraft:vindicator": 20
   },

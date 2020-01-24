@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Fish",
+      "description": "Gather some fish."
+    }
+  },
   "gather": {
     "minecraft:salmon": 4
   },

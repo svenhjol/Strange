@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Chicken",
+      "description": "Bring a chicken back to the village."
+    }
+  },
   "fetch": {
     "minecraft:chicken": 1
   },

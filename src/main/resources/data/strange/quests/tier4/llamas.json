@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "No Drama Llama",
+      "description": "Locate and return llamas to the scrollkeeper."
+    }
+  },
   "fetch": {
     "minecraft:llama": 10
   },

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Dragon Fight",
+      "description": "Kill an Ender Dragon before the time runs out."
+    }
+  },
   "timeLimit": 15,
   "hunt": {
     "minecraft:ender_dragon": 1

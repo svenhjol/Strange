@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Dirt",
+      "description": "Gather dirt."
+    }
+  },
   "gather": {
     "minecraft:dirt": 50
   },

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Enchanting",
+      "description": "Build the requirements for an enchanting room."
+    }
+  },
   "craft": {
     "minecraft:enchanting_table": 1,
     "minecraft:bookshelf": 6

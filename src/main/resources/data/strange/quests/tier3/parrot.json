@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Parrot",
+      "description": "Bring a parrot back to the village."
+    }
+  },
   "fetch": {
     "minecraft:parrot": 1
   },

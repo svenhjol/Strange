@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Quartz",
+      "description": "Gather nether quartz."
+    }
+  },
   "gather": {
     "minecraft:quartz": 50
   },

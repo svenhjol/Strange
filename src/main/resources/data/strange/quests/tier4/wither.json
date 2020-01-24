@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Wither",
+      "description": "Create and destroy a Wither."
+    }
+  },
   "hunt": {
     "minecraft:wither": 1
   },

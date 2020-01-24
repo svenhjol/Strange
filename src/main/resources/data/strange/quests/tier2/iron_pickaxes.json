@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Iron Pickaxes",
+      "description": "Craft iron pickaxes."
+    }
+  },
   "craft": {
     "minecraft:iron_pickaxe": 6
   },

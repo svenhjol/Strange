@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Wheat",
+      "description": "Farm and pickup wheat."
+    }
+  },
   "gather": {
     "minecraft:wheat": 12
   },

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Lost Eye",
+      "description": "Bring back the Eye of Ender from the lost chest."
+    }
+  },
   "locate": [
     "minecraft:ender_eye"
   ],

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Zombie Cull",
+      "description": "Find and kill zombies."
+    }
+  },
   "hunt": {
     "minecraft:zombie": 10,
     "minecraft:zombie_villager": 5

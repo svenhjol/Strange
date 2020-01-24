@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Jungle Wood",
+      "description": "Gather jungle logs."
+    }
+  },
   "gather": {
     "minecraft:jungle_log": 50
   },

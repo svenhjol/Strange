@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Horses",
+      "description": "Bring horses back to the village."
+    }
+  },
   "fetch": {
     "minecraft:horse": 3
   },

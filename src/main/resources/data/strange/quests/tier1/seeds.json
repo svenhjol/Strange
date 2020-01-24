@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Seeds",
+      "description": "Pickup seeds."
+    }
+  },
   "gather": {
     "minecraft:wheat_seeds": 15
   },

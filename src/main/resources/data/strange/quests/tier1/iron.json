@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Iron Ore",
+      "description": "Find iron ore and mine it."
+    }
+  },
   "mine": {
     "minecraft:iron_ore": 10
   },

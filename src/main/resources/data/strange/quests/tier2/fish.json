@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Fish",
+      "description": "Do some fishing."
+    }
+  },
   "gather": {
     "minecraft:cod": 8,
     "minecraft:salmon": 8

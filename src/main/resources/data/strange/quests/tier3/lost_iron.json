@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Lost Iron",
+      "description": "Bring back the block of iron from the lost chest."
+    }
+  },
   "locate": [
     "minecraft:iron_block"
   ],

@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Magician",
+      "description": "Locate and defeat the dangerous Evoker."
+    }
+  },
   "timeLimit": 10,
   "encounter": {
     "minecraft:evoker": {
@@ -10,8 +16,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "RandomMoonstone": 1,
-      "RandomSpellBook": 1
+      "RandomMoonstone": 1
     },
     "xp": {
       "count": 100

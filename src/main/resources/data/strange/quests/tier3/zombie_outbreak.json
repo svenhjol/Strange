@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Zombie Outbreak",
+      "description": "Locate the outbreak of zombie villagers and kill them."
+    }
+  },
   "encounter": {
     "minecraft:zombie_villager": {
       "count": 5,

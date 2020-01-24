@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Elite Battle",
+      "description": "Defeat all the enemies before the time runs out."
+    }
+  },
   "timeLimit": 10,
   "encounter": {
     "minecraft:evoker": {

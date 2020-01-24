@@ -1,4 +1,10 @@
 {
+  "lang": {
+    "en": {
+      "title": "Iron and Coal",
+      "description": "Mine iron and coal."
+    }
+  },
   "mine": {
     "minecraft:iron_ore": 16,
     "minecraft:coal_ore": 16
