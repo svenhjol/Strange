@@ -19,6 +19,7 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.helper.DecorationHelper;
 
 import javax.annotation.Nullable;
@@ -65,8 +66,8 @@ public class DecorationProcessor extends StructureProcessor
         }
 
         // remove cave roots - TODO probably isn't working
-        if (DecorationHelper.quarkCaveRoots != null
-            && blockInfo.state.getBlock() == DecorationHelper.quarkCaveRoots.getRootBlock()
+        if (StrangeLoader.quarkCaveRoots != null
+            && blockInfo.state.getBlock() == StrangeLoader.quarkCaveRoots.getRootBlock()
         ) {
             return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
         }
