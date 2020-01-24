@@ -24,17 +24,14 @@ import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.charm.decoration.module.Crates;
 import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
-import svenhjol.meson.Meson;
 import svenhjol.meson.enums.WoodType;
-import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.compat.QuarkCaveRoots;
-import svenhjol.strange.base.compat.QuarkVariantChests;
+import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.ruins.module.EntitySpawner;
 import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
-import svenhjol.strange.ruins.module.EntitySpawner;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import java.util.*;
@@ -43,9 +40,6 @@ import java.util.regex.Pattern;
 
 public class DecorationHelper
 {
-    public static QuarkVariantChests quarkVariantChests;
-    public static QuarkCaveRoots quarkCaveRoots;
-
     public static final String ANVIL = "anvil";
     public static final String ARMOR = "armor";
     public static final String BLOCK = "block";
@@ -210,15 +204,6 @@ public class DecorationHelper
     public static List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
 
     static {
-        try {
-            if (ForgeHelper.isModLoaded("quark")) {
-                quarkVariantChests = QuarkVariantChests.class.newInstance();
-                quarkCaveRoots = QuarkCaveRoots.class.newInstance();
-            }
-        } catch (Exception e) {
-            Meson.warn("Error loading Quark compat class", e);
-        }
-
         if (Strange.hasModule(Scrollkeepers.class))
             decorationTypes.add(Scrollkeepers.block);
     }
@@ -245,7 +230,7 @@ public class DecorationHelper
             this.pos = blockInfo.pos;
             this.state = null;
             this.nbt = null;
-            this.rand = new Random(pos.toLong());
+            this.rand = new Random(this.pos.toLong());
 
             if (data.contains("|")) {
                 String[] split = data.split("\\|");
@@ -361,8 +346,10 @@ public class DecorationHelper
 
             if (!withChance(0.66F)) return;
 
-            if (quarkVariantChests != null && quarkVariantChests.hasModule() && rand.nextFloat() < 0.75F)
-                chest = quarkVariantChests.getRandomChest(rand);
+            if (StrangeLoader.quarkVariantChests != null
+                && StrangeLoader.quarkVariantChests.hasModule()
+                && rand.nextFloat() < 0.75F)
+                chest = StrangeLoader.quarkVariantChests.getRandomChest(rand);
 
             if (chest == null)
                 chest = Blocks.CHEST;
@@ -504,7 +491,10 @@ public class DecorationHelper
 
         protected void rune()
         {
-            if (!Strange.hasModule(Runestones.class) || !withChance(0.75F)) return;
+            if (!Strange.hasModule(Runestones.class) || !withChance(0.75F)) {
+                state = Blocks.STONE.getDefaultState();
+                return;
+            }
             String type = getValue("type", this.data, "overworld");
 
             switch (type) {
@@ -515,7 +505,7 @@ public class DecorationHelper
                     state = Runestones.getRandomBlock(DimensionType.THE_END);
                     break;
                 default:
-                    state = Runestones.getRandomBlock(DimensionType.OVERWORLD);
+                    state = Runestones.getRandomBlock(DimensionType.OVERWORLD, this.pos);
                     break;
             }
         }
