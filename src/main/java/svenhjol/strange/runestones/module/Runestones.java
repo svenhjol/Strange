@@ -123,6 +123,10 @@ public class Runestones extends MesonModule
         super.serverStarted(event);
         long seed = event.getServer().getWorld(DimensionType.OVERWORLD).getSeed();
 
+        allDests = new ArrayList<>();
+        outerDests = new ArrayList<>();
+        innerDests = new ArrayList<>();
+
         if (seed != this.seed) {
             Random rand = new Random();
             rand.setSeed(seed);
