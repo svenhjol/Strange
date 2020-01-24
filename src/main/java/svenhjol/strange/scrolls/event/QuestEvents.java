@@ -137,7 +137,7 @@ public class QuestEvents
         IQuestsCapability newCap = Quests.getCapability(event.getPlayer());
         newCap.readNBT(oldCap.writeNBT());
 
-        PlayerEntity player = event.getPlayer();
+        PlayerEntity player = event.getOriginal();
         if (player != null) {
             respondToEvent(player, event);
         }
@@ -206,7 +206,7 @@ public class QuestEvents
 
     private boolean respondToEvent(PlayerEntity player, Event event)
     {
-        if (player == null || !player.isAlive()) return false;
+        if (player == null) return false;
         boolean responded = false;
 
         ConcurrentLinkedDeque<IQuest> quests = new ConcurrentLinkedDeque<>(Quests.getCurrent(player));
