@@ -21,6 +21,7 @@ import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
@@ -31,6 +32,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
@@ -61,7 +63,7 @@ public class UndergroundRuins extends MesonModule
     @Config(name = "Additional pieces", description = "Ruin size is increased randomly by this amount.")
     public static int variation = 2;
 
-    @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests")
+    @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests.")
     public static boolean addMapsToLoot = true;
 
     @Override
@@ -78,6 +80,21 @@ public class UndergroundRuins extends MesonModule
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
             biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
+        }
+    }
+
+    @Override
+    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    {
+        // don't spawn underground structures near Quark's big dungeons
+        if (StrangeLoader.quarkBigDungeons != null
+            && StrangeLoader.quarkBigDungeons.hasModule()
+        ) {
+            Structure<?> structure = StrangeLoader.quarkBigDungeons.getStructure();
+            if (!blacklist.contains(structure)) {
+                blacklist.add(structure);
+                Meson.debug("Added Quark's Big Dungeons to underground ruin blacklist");
+            }
         }
     }
 
@@ -134,7 +151,7 @@ public class UndergroundRuins extends MesonModule
                         if (structurePos != null) {
                             ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, map);
-                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.RED_X);
+                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
                             return map;
                         }

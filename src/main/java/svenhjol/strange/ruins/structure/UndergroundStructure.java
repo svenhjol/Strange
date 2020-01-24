@@ -158,6 +158,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
         public String getRuin(Biome.Category biomeCategory, BlockPos pos)
         {
             if (UndergroundRuins.ruins.size() == 0) return null;
+            if (UndergroundRuins.ruins.get(biomeCategory) == null || UndergroundRuins.ruins.get(biomeCategory).size() == 0) return null;
 
             List<String> ruins = new ArrayList<>(UndergroundRuins.ruins.get(biomeCategory));
             Collections.shuffle(ruins, rand);

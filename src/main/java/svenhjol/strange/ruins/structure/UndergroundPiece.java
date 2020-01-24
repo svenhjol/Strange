@@ -6,14 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
-import svenhjol.meson.helper.WorldHelper;
-import svenhjol.strange.base.helper.StructureHelper;
 
 import java.util.Random;
 
@@ -39,9 +36,9 @@ public class UndergroundPiece extends AbstractVillagePiece
         boolean result;
         MutableBoundingBox box = this.jigsawPiece.getBoundingBox(this.templates, pos, this.rotation);
 
-        if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
-            this.pos = StructureHelper.adjustForOceanFloor(world, this.pos, box);
-        }
+//        if (WorldHelper.getBiomeAtPos(world.getWorld(), this.pos).getCategory() == Biome.Category.OCEAN) {
+//            this.pos = StructureHelper.adjustForOceanFloor(world, this.pos, box);
+//        }
 
         try {
             result = super.addComponentParts(world, rand, structureBox, chunk);
