@@ -63,3 +63,5 @@ Temporary Items
 runclient.sh
 debugclient.sh
 copycharm.sh
+
+src/main/resources/data/strange/structures/disabled/
