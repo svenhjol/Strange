@@ -19,8 +19,6 @@ import java.util.Random;
 
 public class StrangeJigsawPiece extends SingleJigsawPiece
 {
-    public static final String FLOODED = "underwater";
-
     protected final ResourceLocation location;
     protected final ImmutableList<StructureProcessor> processors;
     public static IJigsawDeserializer STRANGE_POOL_ELEMENT;
