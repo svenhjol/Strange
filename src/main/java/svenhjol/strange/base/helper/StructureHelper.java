@@ -5,10 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Blocks;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
@@ -35,19 +31,6 @@ public class StructureHelper
             if (m.find()) return Integer.parseInt(m.group(1));
         }
         return def;
-    }
-
-    public static BlockPos adjustForOceanFloor(IWorld world, BlockPos pos, MutableBoundingBox box)
-    {
-        Meson.debug("[StructureHelper] adjusting piece for ocean floor at " + pos);
-        int xsize = box.maxX - box.minX;
-        int ysize = box.maxY - box.minY;
-        int zsize = box.maxZ - box.minZ;
-        BlockPos blockpos = pos.add(xsize - 1, 0, zsize - 1);
-
-        int o = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, blockpos.getX(), blockpos.getZ());
-        int y = Math.min(pos.getY(), o - ysize - 2);
-        return new BlockPos(pos.getX(), y, pos.getZ());
     }
 
     public static class RegisterJigsawPieces
