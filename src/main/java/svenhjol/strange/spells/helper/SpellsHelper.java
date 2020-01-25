@@ -1,5 +1,6 @@
 package svenhjol.strange.spells.helper;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -72,5 +73,15 @@ public class SpellsHelper
         if (spellId == null || spellId.isEmpty()) return null;
         if (!Spells.spells.containsKey(spellId)) return null;
         return Spells.spells.get(spellId);
+    }
+
+    public static boolean checkEnoughXp(PlayerEntity player, int cost)
+    {
+        if (!player.isCreative() && player.experienceLevel < cost) {
+            player.sendStatusMessage(SpellsHelper.getSpellInfoText(spell, "event.strange.spellbook.not_enough_xp"), true);
+            return false;
+        }
+
+        return true;
     }
 }
