@@ -134,8 +134,9 @@ public class Spells extends MesonModule
     public static boolean activate(PlayerEntity player, ItemStack holdable, Spell spell)
     {
         if (spell.needsActivation() && !hasMeta(holdable)) {
-            player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.PLAYERS, 1.0F, 1.0F);
             spell.activate(player, holdable);
+            player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            player.getCooldownTracker().setCooldown(holdable.getItem(), 20);
             return true;
         }
         return false;
