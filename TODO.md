@@ -32,6 +32,7 @@
 - [x] Opening quests in the nether that look for distant vaults causes infinite badness
 - [x] Bound compass has error on frame 16
 - [x] Encounter boss bar doesn't clear when you die
+- [ ] Test change to `LivingDeathEvent` code
 
 ## Intermittent / warnings
 - [ ] Weird "air_block" errors sometimes when loading
@@ -41,25 +42,17 @@
 - [x] Jungle chambers less glass
 - [x] Fix ladders and lanterns
 - [x] (Chambers: Done) Jungle, Plains, Forest, Icy, Forest, Ocean, Swamp, Desert, Taiga
-- [ ] Mesa mineshafts
-- [ ] Bambi1 -> Extreme Hills
-- [ ] Forest dungeon
-- [ ] Forest large tree structure
-- [ ] Plains spider lair (needs spider and cave spider spawners)
-- [ ] Swamp witch lair
-- [ ] General dungeons, slightly more advanced versions
-- [ ] General ruined stone circle
-- [ ] Geodes + small mines
-- [ ] Sunken cabins (River, Beach)
+- [x] Mesa mineshafts
+- [x] Bambi1 -> Extreme Hills
+- [x] Forest dungeon
+- [x] Forest large tree structure
 - [ ] Swamp ruins don't have much loot at endpoints
-- [ ] Add some larger rooms for variation in "Undir"
-- [ ] Chambers for Extreme Hills
-- [ ] Chambers for Mesa
-- [ ] Chambers for Savanna
+- [x] Add larger room for variation in "Undir"
+- [x] Chambers for Savanna
 
 ## Quests
 - [x] Think about language strings as part of json
-- [x] TEST Move all lang strings into quests
+- [x] Move all lang strings into quests
 - [ ] Add some new quests - L and H
 
 ## Docs
