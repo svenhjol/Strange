@@ -2,7 +2,9 @@
   "lang": {
     "en": {
       "title": "Elite Battle",
-      "description": "Defeat all the enemies before the time runs out."
+      "description": "Defeat all the enemies before the time runs out.",
+      "description0": "A group of angry Illagers has been located nearby.\nFind and destroy them before they cause more harm.",
+      "description1": "There are a lot of Illagers out there today. Be careful!"
     }
   },
   "timeLimit": 10,
