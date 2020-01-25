@@ -282,7 +282,7 @@ public class Encounter implements IDelegate
         return true;
     }
 
-    public boolean onMobKilled(LivingDeathEvent event, PlayerEntity player)
+    public boolean onMobKilled(LivingDeathEvent event, @Nullable PlayerEntity player)
     {
         if (player == null) return false;
         LivingEntity killed = event.getEntityLiving();

@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.event;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -176,19 +177,21 @@ public class QuestEvents
         if (!(event.getEntity() instanceof PlayerEntity)
             && event.getEntityLiving() != null
         ) {
-            Entity source = event.getSource().getTrueSource();
-            if (source instanceof PlayerEntity) {
-                respondToEvent((PlayerEntity)source, event);
-            }
-            if (source == null) return;
+            LivingEntity killed = event.getEntityLiving();
 
             // needed to propagate out to all players in vicinity of encounter
-            if (event.getEntityLiving().getTags().contains(Encounter.ENCOUNTER_TAG)) {
-                source.world.getEntitiesWithinAABB(Entity.class, source.getBoundingBox().grow(Encounter.FIGHT_RANGE))
+            if (killed.getTags().contains(Encounter.ENCOUNTER_TAG)) {
+                killed.world.getEntitiesWithinAABB(Entity.class, killed.getBoundingBox().grow(Encounter.FIGHT_RANGE))
                     .stream()
-                    .filter(p -> p instanceof PlayerEntity && !p.isEntityEqual(source))
+                    .filter(p -> p instanceof PlayerEntity)
                     .forEach(p -> respondToEvent((PlayerEntity)p, event));
             }
+
+//            Entity source = event.getSource().getTrueSource();
+//            if (source instanceof PlayerEntity) {
+//                respondToEvent((PlayerEntity)source, event);
+//            }
+//            if (source == null) return;
         }
     }
 
