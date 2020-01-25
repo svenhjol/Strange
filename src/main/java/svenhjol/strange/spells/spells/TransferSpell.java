@@ -176,7 +176,7 @@ public class TransferSpell extends Spell
                 world.notifyNeighborsOfStateChange(destPos, srcBlock);
             }
 
-            didCast.accept(false);
+            didCast.accept(true);
         });
 
         didCast.accept(true);
