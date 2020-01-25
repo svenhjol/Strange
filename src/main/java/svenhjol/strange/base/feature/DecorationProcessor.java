@@ -4,9 +4,7 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.DynamicOps;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RailBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.state.properties.RailShape;
 import net.minecraft.state.properties.StructureMode;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -70,21 +68,6 @@ public class DecorationProcessor extends StructureProcessor
             && blockInfo.state.getBlock() == StrangeLoader.quarkCaveRoots.getRootBlock()
         ) {
             return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
-        }
-
-        // rotate rails properly
-        if (blockInfo.state.getBlock() == Blocks.RAIL) {
-            if (world.getBlockState(blockInfo.pos.up()).getMaterial().isLiquid())
-                return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
-
-            BlockState state;
-
-            if (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) {
-                state = blockInfo.state.with(RailBlock.SHAPE, RailShape.NORTH_SOUTH);
-            } else {
-                state = blockInfo.state.with(RailBlock.SHAPE, RailShape.EAST_WEST);
-            }
-            return new BlockInfo(blockInfo.pos, state, null);
         }
 
         // replace structure blocks with decoration
