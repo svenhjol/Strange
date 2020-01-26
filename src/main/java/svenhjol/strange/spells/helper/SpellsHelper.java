@@ -75,7 +75,7 @@ public class SpellsHelper
         return Spells.spells.get(spellId);
     }
 
-    public static boolean checkEnoughXp(PlayerEntity player, int cost)
+    public static boolean checkEnoughXp(PlayerEntity player, Spell spell, int cost)
     {
         if (!player.isCreative() && player.experienceLevel < cost) {
             player.sendStatusMessage(SpellsHelper.getSpellInfoText(spell, "event.strange.spellbook.not_enough_xp"), true);
