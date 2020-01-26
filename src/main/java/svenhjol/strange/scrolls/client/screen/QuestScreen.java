@@ -29,7 +29,7 @@ public class QuestScreen extends ScrollScreen implements IRenderable
         this.addButton(new Button((width / 2) + 20, y, w, h, I18n.format("gui.strange.scrolls.close"), (button) -> this.close()));
     }
 
-    private void quit()
+    private void quit() 
     {
         Meson.debug("[CLIENT] calling server to decline quest", quest.getId());
         PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.QUIT, quest.getId()));
