@@ -44,8 +44,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true, configureEnabled = false)
-public class SpellLecterns extends MesonModule
-{
+public class SpellLecterns extends MesonModule {
     public static SpellLecternBlock block;
 
     @ObjectHolder("strange:spell_lectern")
@@ -112,19 +111,24 @@ public class SpellLecterns extends MesonModule
                 }
             }
 
-            // check for moonstone charging
+            // check for player holding moonstone
             Hand hand = null;
             if (player.getHeldItemMainhand().getItem() instanceof MoonstoneItem) {
                 hand = Hand.MAIN_HAND;
             } else if (player.getHeldItemOffhand().getItem() instanceof MoonstoneItem) {
                 hand = Hand.OFF_HAND;
             }
-            if (hand == null) return;
-            if (player.world.rand.nextFloat() > 0.5F) return;
+            if (hand == null)
+                return;
+
+            if (player.world.rand.nextFloat() > 0.5F)
+                return;
 
             ItemStack stone = player.getHeldItem(hand);
-            if (MoonstoneItem.hasSpell(stone)) return; // don't try and add spell to Moonstone with spell
-            int[] range = new int[]{1, 2, 1};
+            if (MoonstoneItem.hasSpell(stone))
+                return; // don't try and add spell to Moonstone with spell
+
+            int[] range = new int[] { 1, 2, 1 };
 
             BlockPos pos = player.getPosition();
             Stream<BlockPos> inRange = BlockPos.getAllInBox(pos.add(-range[0], -range[1], -range[2]), pos.add(range[0], range[1], range[2]));
@@ -137,7 +141,9 @@ public class SpellLecterns extends MesonModule
                 }
             }
 
-            if (validPositions.isEmpty()) return;
+            if (validPositions.isEmpty())
+                return;
+
             double dist = 64;
             BlockPos closestPos = null;
 
@@ -148,25 +154,32 @@ public class SpellLecterns extends MesonModule
                     dist = between;
                 }
             }
-            if (closestPos == null) return;
+
+            if (closestPos == null)
+                return;
+
             Vec3d vec = new Vec3d(closestPos.getX() + 0.5D, closestPos.getY() + 0.5D, closestPos.getZ() + 0.5D);
 
             TileEntity tile = world.getTileEntity(closestPos);
-            if (!(tile instanceof SpellLecternTileEntity)) return;
+            if (!(tile instanceof SpellLecternTileEntity))
+                return;
 
             SpellLecternTileEntity lectern = (SpellLecternTileEntity) tile;
             ItemStack book = lectern.getBook();
-            if (book.getItem() != SpellBooks.book) return;
+            if (book.getItem() != SpellBooks.book)
+                return;
 
             Spell spell = SpellBookItem.getSpell(book);
-            if (spell == null) return;
-
-            if (!player.isCreative() && player.experienceLevel < spell.getApplyCost()) {
-                player.sendStatusMessage(SpellsHelper.getSpellInfoText(spell, "event.strange.spellbook.not_enough_xp"), true);
+            if (spell == null)
                 return;
-            }
 
-            player.addExperienceLevel(-spell.getApplyCost());
+            // applying spells to a moonstone costs half of what it would with a staff
+            int cost = Math.min(1, (spell.getApplyCost() * spell.getUses()) / 2);
+
+            if (!SpellsHelper.checkEnoughXp(player, spell, cost))
+                return;
+
+            player.addExperienceLevel(-cost);
             MoonstoneItem.putSpell(stone, spell);
 
             world.playSound(null, player.getPosition(), StrangeSounds.SPELL_BOOK_CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
