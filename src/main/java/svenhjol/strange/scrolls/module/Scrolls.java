@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.module;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.ItemLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -60,15 +61,25 @@ public class Scrolls extends MesonModule
             LootEntry entry = ItemLootEntry.builder(Scrolls.item)
                 .weight(weight)
                 .quality(quality)
-                .acceptFunction(() -> (scroll, context) -> {
-                    int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1;
-                    ScrollItem.putTier(scroll, tier);
-                    ScrollItem.putValue(scroll, 0.25F * context.getRandom().nextInt(4) + 2);
-                    return scroll;
-                })
+                .acceptFunction(() -> (scroll, context) -> createScroll(scroll,
+                    context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1,
+                    0.25F * context.getRandom().nextInt(4) + 2))
                 .build();
 
             LootHelper.addTableEntry(event.getTable(), entry);
         }
+    }
+
+    public static ItemStack createScroll(ItemStack scroll, int tier, float value)
+    {
+        ScrollItem.putTier(scroll, tier);
+        ScrollItem.putValue(scroll, value);
+        return scroll;
+    }
+
+    public static ItemStack createScroll(int tier, float value)
+    {
+        ItemStack scroll = new ItemStack(item);
+        return createScroll(scroll, tier, value);
     }
 }
