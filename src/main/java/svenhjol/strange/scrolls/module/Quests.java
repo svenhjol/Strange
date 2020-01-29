@@ -52,6 +52,9 @@ public class Quests extends MesonModule
     @Config(name = "Language", description = "Language code to use for showing quest details.")
     public static String language = "en";
 
+    @Config(name = "Tick check interval", description = "Interval between ticks that quest updates and checks occur.\nSet higher to decrease game loop processing at the expense of quest action lag.")
+    public static int tickInterval = 15;
+
     @CapabilityInject(IQuestsCapability.class)
     public static Capability<IQuestsCapability> QUESTS = null;
     public static Map<Integer, List<Definition>> available = new HashMap<>();
@@ -86,9 +89,17 @@ public class Quests extends MesonModule
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
 
-                    String mod = definition.getModuleEnabled();
-                    if (mod != null && !mod.isEmpty() && !MesonLoader.hasModule(new ResourceLocation(mod)))
-                        continue;
+                    List<String> mods = definition.getModules();
+                    if (!mods.isEmpty()) {
+                        boolean hasMods = true;
+                        for (String s : mods) {
+                            hasMods = hasMods && MesonLoader.hasModule(new ResourceLocation(s));
+                        }
+                        if (!hasMods) {
+                            Meson.log("Quest " + definition.getTitle() + " is missing required modules");
+                            continue;
+                        }
+                    }
 
                     String name = res.getPath().replace("/", ".").replace(".json", "");
                     definition.setTitle(name);
@@ -97,7 +108,7 @@ public class Quests extends MesonModule
                     Meson.debug(this, "Loaded quest " + definition.getTitle() + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.warn(this, "Could not load quest for " + res, e);
+                    Meson.warn(this, "Could not load quest for " + res + " because " + e.getMessage());
                 }
             }
         }
