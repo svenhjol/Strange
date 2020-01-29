@@ -15,6 +15,8 @@ public interface IDelegate
 
     boolean respondTo(Event event, @Nullable PlayerEntity player);
 
+    boolean shouldRemove();
+
     boolean isSatisfied();
 
     boolean isCompletable();
