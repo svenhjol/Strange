@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A Quest has an associated Criteria in a 1:1 relationship.
  *
  * Criteria consists of many Conditions.  Conditions may be filtered by
- * type (Limit, Action or Reward).
+ * type (Constraint, Action or Reward).
  *
  * Criteria uses the completion status of each condition to determine
  * the overall completion state of the quest.
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("UnusedReturnValue")
 public class Criteria
 {
-    public static final String LIMIT = "limit";
+    public static final String CONSTRAINT = "constraint";
     public static final String ACTION = "action";
     public static final String REWARD = "reward";
 
@@ -40,9 +40,18 @@ public class Criteria
     {
         CompoundNBT tag = new CompoundNBT();
         ListNBT conditions = new ListNBT();
+        List<Condition> removable = new ArrayList<>();
 
         for (Condition condition : this.conditions) {
-            conditions.add(condition.toNBT());
+            if (condition.getDelegate().shouldRemove()) {
+                removable.add(condition);
+            } else {
+                conditions.add(condition.toNBT());
+            }
+        }
+
+        for (Condition condition : removable) {
+            this.removeCondition(condition);
         }
 
         tag.put(CONDITIONS, conditions);
@@ -65,6 +74,12 @@ public class Criteria
     public Criteria addCondition(Condition condition)
     {
         this.conditions.add(condition);
+        return this;
+    }
+
+    public Criteria removeCondition(Condition condition)
+    {
+        this.conditions.remove(condition);
         return this;
     }
 
