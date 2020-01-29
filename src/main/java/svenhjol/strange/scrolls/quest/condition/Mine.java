@@ -138,6 +138,12 @@ public class Mine implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public Mine setCount(int count)
     {
         this.count = count;

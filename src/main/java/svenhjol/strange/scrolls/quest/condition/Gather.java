@@ -140,6 +140,12 @@ public class Gather implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public Gather setCount(int count)
     {
         this.count = count;

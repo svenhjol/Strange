@@ -229,6 +229,12 @@ public class Encounter implements IDelegate
         return this;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public Encounter setCount(int count)
     {
         this.count = count;

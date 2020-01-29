@@ -127,6 +127,12 @@ public class Craft implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public Craft setCount(int count)
     {
         this.count = count;
@@ -158,4 +164,5 @@ public class Craft implements IDelegate
     {
         return this.stack;
     }
+
 }

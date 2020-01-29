@@ -46,10 +46,6 @@ public class Hunt implements IDelegate
     public boolean respondTo(Event event, @Nullable PlayerEntity player)
     {
         if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
-        
-        if (player == null) return false;
-        if (isSatisfied()) return false;
-        if (killed >= count) return false;
 
         if (event instanceof LivingDeathEvent) {
             LivingDeathEvent killEvent = (LivingDeathEvent)event;
@@ -61,10 +57,13 @@ public class Hunt implements IDelegate
             if (!killedRes.equals(this.target)) return false;
 
             this.killed++;
-            showProgress(player);
+            if (player != null) {
+                showProgress(player);
+            }
 
             return true;
         }
+
         return false;
     }
 
@@ -111,6 +110,12 @@ public class Hunt implements IDelegate
         this.target = ResourceLocation.tryCreate(data.getString(TARGET));
         this.count = data.getInt(COUNT);
         this.killed = data.getInt(KILLED);
+    }
+
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
     }
 
     public Hunt setCount(int count)

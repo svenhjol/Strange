@@ -135,6 +135,12 @@ public class Reward implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public Reward addItem(ItemStack stack, int count)
     {
         this.items.put(stack, count);

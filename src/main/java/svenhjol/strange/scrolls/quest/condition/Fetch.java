@@ -116,6 +116,12 @@ public class Fetch implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     protected boolean onStarted(QuestEvent.Accept event, PlayerEntity player)
     {
         if (quest.getId().equals(this.quest.getId())) {

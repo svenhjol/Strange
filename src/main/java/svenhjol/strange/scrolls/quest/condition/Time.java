@@ -76,9 +76,15 @@ public class Time implements IDelegate
     }
 
     @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
+    @Override
     public String getType()
     {
-        return Criteria.LIMIT;
+        return Criteria.CONSTRAINT;
     }
 
     @Override

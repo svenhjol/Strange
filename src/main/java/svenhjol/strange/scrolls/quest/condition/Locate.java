@@ -131,6 +131,12 @@ public class Locate implements IDelegate
         this.quest = quest;
     }
 
+    @Override
+    public boolean shouldRemove()
+    {
+        return false;
+    }
+
     public boolean onStarted(IQuest quest, PlayerEntity player)
     {
         if (quest.getId().equals(this.quest.getId())) {
@@ -233,7 +239,7 @@ public class Locate implements IDelegate
                 lootStack.setTag(tag);
                 chest.setInventorySlotContents(rand.nextInt(chest.getSizeInventory()), lootStack);
 
-                Meson.debug("Spawned chest at " + spawnPos);
+                Meson.debug("[Locate] Spawned chest at " + spawnPos);
                 this.spawned = true;
             }
 
