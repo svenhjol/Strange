@@ -14,8 +14,6 @@ import java.util.Map;
 
 public class RewardsPanel extends BasePanel
 {
-    public static final int ROW_HEIGHT = 18; // height of each line
-
     public RewardsPanel(IQuest quest, int mid, int y, int width)
     {
         super(quest, mid, width);
@@ -29,7 +27,7 @@ public class RewardsPanel extends BasePanel
         drawCenteredTitle(I18n.format("gui.strange.quests.rewards"), y);
 
         for (int i = 0; i < rewards.size(); i++) {
-            y += ROW_HEIGHT;
+            y += rowHeight;
 
             Condition condition = rewards.get(i);
 
@@ -43,17 +41,17 @@ public class RewardsPanel extends BasePanel
                     String out = I18n.format("gui.strange.quests.reward_xp", xp);
                     blitItemIcon(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, y - 5);
                     this.drawString(fonts, out, mid - 36, y, primaryTextColor);
-                    y += ROW_HEIGHT;
+                    y += rowHeight;
                 }
 
                 if (rewardItems.size() > 0) {
                     // render items
                     for (ItemStack stack : rewardItems.keySet()) {
                         int count = rewardItems.get(stack);
-                        String out = I18n.format("gui.strange.quests.reward_item", count, stack.getDisplayName().getString());
+                        String out = I18n.format("gui.strange.quests.reward_item", stack.getDisplayName().getString(), count);
                         blitItemIcon(stack, mid - 60, y - 5);
                         this.drawString(fonts, out, mid - 36, y, primaryTextColor);
-                        y += ROW_HEIGHT;
+                        y += rowHeight;
                     }
                 }
             }

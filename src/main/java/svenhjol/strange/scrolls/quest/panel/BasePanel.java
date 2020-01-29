@@ -22,6 +22,7 @@ public abstract class BasePanel extends AbstractGui
     protected int secondaryTextColor = 0xAAAAAA;
     protected int titleColor = 0xFFFF00;
     protected int pad = 8;
+    protected int rowHeight = 16;
     protected int width;
     protected int mid;
 

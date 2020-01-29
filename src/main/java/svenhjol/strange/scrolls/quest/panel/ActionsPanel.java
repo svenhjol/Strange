@@ -68,10 +68,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.gather"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < toGather.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Gather gather = toGather.get(i).getDelegate();
                 ItemStack stack = gather.getStack();
@@ -99,10 +98,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.craft"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < toCraft.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Craft craft = toCraft.get(i).getDelegate();
                 ItemStack stack = craft.getStack();
@@ -130,10 +128,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.mine"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < toMine.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Mine mine = toMine.get(i).getDelegate();
                 Block block = mine.getBlock();
@@ -162,10 +159,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.hunt"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < actions.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Hunt hunt = actions.get(i).getDelegate();
                 ResourceLocation target = hunt.getTarget();
@@ -195,10 +191,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.encounter"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < actions.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Encounter encounter = actions.get(i).getDelegate();
                 int remaining = encounter.getCount() - encounter.getKilled();
@@ -225,9 +220,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.locate"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < toLocate.size(); i++) {
+                y += rowHeight;
 
                 Locate locate = toLocate.get(i).getDelegate();
                 ItemStack stack = locate.getStack();
@@ -238,8 +233,6 @@ public class ActionsPanel extends BasePanel
 
                 // show tick if complete
                 if (locate.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
-
-                y += 16; // height of each line
             }
         }
     }
@@ -258,10 +251,9 @@ public class ActionsPanel extends BasePanel
 
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.fetch"), y);
-            y += 16; // space between title and item list
 
             for (int i = 0; i < actions.size(); i++) {
-                y += i * 16; // height of each line
+                y += rowHeight;
 
                 Fetch fetch = actions.get(i).getDelegate();
                 ResourceLocation target = fetch.getTarget();
