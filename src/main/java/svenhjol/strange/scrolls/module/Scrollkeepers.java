@@ -55,6 +55,7 @@ public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
     public static final int[] QUEST_XP = new int[]{2, 11, 18, 27, 40};
+    public static final float VALUE_MULTIPLIER = 0.25F;
     public static final UUID ANY_SELLER = UUID.fromString("0-0-0-0-1");
     public static VillagerProfession profession;
 
@@ -244,7 +245,7 @@ public class Scrollkeepers extends MesonModule
             quest.setSeller(merchant.getUniqueID());
 
             ScrollItem.putQuest(out, quest);
-            ScrollItem.putValue(out,in1.getCount() * 0.25F);
+            ScrollItem.putValue(out,in1.getCount() * VALUE_MULTIPLIER);
             out.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
             return new MerchantOffer(in1, out, 7 - this.tier, 0, 0.0F);
         }
