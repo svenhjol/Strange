@@ -17,10 +17,11 @@ import java.util.Map;
 public class Definition
 {
     private int tier;
-    private String title;
-    private String moduleEnabled;
     private int timeLimit; // in minutes
+    private String title;
+    private List<String> modules;
     private List<String> locate = new ArrayList<>();
+    private Map<String, String> provide = new HashMap<>();
     private Map<String, String> fetch = new HashMap<>();
     private Map<String, String> craft = new HashMap<>();
     private Map<String, String> gather = new HashMap<>();
@@ -30,19 +31,9 @@ public class Definition
     private Map<String, Map<String, String>> rewards = new HashMap<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
 
-    public int getTier()
-    {
-        return tier;
-    }
-
     public String getTitle()
     {
         return title;
-    }
-
-    public String getModuleEnabled()
-    {
-        return moduleEnabled;
     }
 
     public int getTimeLimit()
@@ -50,9 +41,19 @@ public class Definition
         return timeLimit;
     }
 
+    public List<String> getModules()
+    {
+        return modules == null ? new ArrayList<>() : modules;
+    }
+
     public List<String> getLocate()
     {
         return locate == null ? new ArrayList<>() : locate;
+    }
+
+    public Map<String, String> getProvide()
+    {
+        return provide == null ? new HashMap<>() : provide;
     }
 
     public Map<String, String> getFetch()
