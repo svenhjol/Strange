@@ -17,7 +17,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.panel.ActionsPanel;
-import svenhjol.strange.scrolls.quest.panel.LimitsPanel;
+import svenhjol.strange.scrolls.quest.panel.ConstraintsPanel;
 import svenhjol.strange.scrolls.quest.panel.RewardsPanel;
 
 import java.util.ArrayList;
@@ -65,16 +65,27 @@ public class ScrollScreen extends Screen implements IRenderable
         if (this.minecraft == null || this.minecraft.world == null) return;
 
         this.renderBackground();
-        this.drawCenteredString(this.font, I18n.format(this.title.getFormattedText()), mid, 18, 0xFFFFFF);
+        this.drawCenteredString(this.font, I18n.format(this.title.getFormattedText()), mid, 12, 0xFFFFFF);
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
 
-        this.drawCenteredString(this.font, I18n.format(quest.getDescription()), mid, 36, 0xFFFFFF);
+        String description = quest.getDescription();
+
+        if (!description.isEmpty()) {
+
+            if (quest.getDescription().contains("%%")) {
+                String[] split = quest.getDescription().split("%%");
+                description = split[0];
+                this.drawCenteredString(this.font, I18n.format(split[1]), mid, 36, 0x00AAAA);
+            }
+
+            this.drawCenteredString(this.font, I18n.format(description), mid, 24, 0xAAAAAA);
+        }
 
         Criteria criteria = quest.getCriteria();
         final List<Condition<IDelegate>> actions = criteria.getConditions(Criteria.ACTION);
-        final List<Condition<IDelegate>> limits = criteria.getConditions(Criteria.LIMIT);
+        final List<Condition<IDelegate>> constraints = criteria.getConditions(Criteria.CONSTRAINT);
         final List<Condition<IDelegate>> rewards = criteria.getConditions(Criteria.REWARD);
 
         List<String> actionIds = new ArrayList<>();
@@ -82,7 +93,7 @@ public class ScrollScreen extends Screen implements IRenderable
             if (!actionIds.contains(action.getId())) actionIds.add(action.getId());
         }
 
-        int panelY = 54;
+        int panelY = 48;
         int panelMid;
         int panelWidth;
 
@@ -93,16 +104,16 @@ public class ScrollScreen extends Screen implements IRenderable
             new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
         }
 
-        boolean splitLimitsAndRewards = false;
-        if (limits.size() > 0 && rewards.size() > 0) {
-            splitLimitsAndRewards = true;
+        boolean splitConstraintsAndRewards = false;
+        if (constraints.size() > 0 && rewards.size() > 0) {
+            splitConstraintsAndRewards = true;
         }
 
-        if (splitLimitsAndRewards) {
-            new LimitsPanel(quest, width / 4, panelY + 84, 85);
-            new RewardsPanel(quest, 3 * (width / 4), panelY + 84, 85);
+        if (splitConstraintsAndRewards) {
+            new ConstraintsPanel(quest, 3 * (width / 4), panelY + 84, 85);
+            new RewardsPanel(quest, width / 4, panelY + 84, 85);
         } else {
-            if (limits.size() > 0) new LimitsPanel(quest, width / 2, panelY + 84, 170);
+            if (constraints.size() > 0) new ConstraintsPanel(quest, width / 2, panelY + 84, 170);
             if (rewards.size() > 0) new RewardsPanel(quest, width / 2, panelY + 84, 170);
         }
 
