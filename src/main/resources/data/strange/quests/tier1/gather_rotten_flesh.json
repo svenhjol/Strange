@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Rotten Flesh",
+      "description": "Did you know that rotten flesh is a delicacy in some villages? | Just leave it in the sun for a while and it's good enough to chew!",
+      "hint": "Usually dropped by zombies or found in dungeon chests."
+    }
+  },
+  "gather": {
+    "minecraft:rotten_flesh": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:leather[uncommon]": 1,
+      "minecraft:cooked_beef[common]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

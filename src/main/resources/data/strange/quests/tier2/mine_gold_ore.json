@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Gold Ore",
+      "description": "Locate gold ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:gold_ore": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:gold_ingot": 4,
+      "minecraft:emerald[common]": 1,
+      "minecraft:gold_shovel[uncommon]": 1,
+      "minecraft:golden_pickaxe[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

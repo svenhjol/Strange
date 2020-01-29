@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Flint",
+      "description": "Find flint from gravel and add it to your inventory.",
+      "hint": "Breaking gravel sometimes drops flint."
+    }
+  },
+  "gather": {
+    "minecraft:flint": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:flint": 1,
+      "minecraft:flint_and_steel[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

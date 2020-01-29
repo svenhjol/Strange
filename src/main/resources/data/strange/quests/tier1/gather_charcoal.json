@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Charcoal",
+      "description": "Gather charcoal to help cook food.",
+      "hint": "Obtained by burning wood in a furnace."
+    }
+  },
+  "gather": {
+    "minecraft:charcoal": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:cooked_beef[common]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

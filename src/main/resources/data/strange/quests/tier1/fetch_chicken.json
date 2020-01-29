@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Chicken",
+      "description": "Bring a chicken back to the village.",
+      "hint": "Lure the chicken using seeds."
+    }
+  },
+  "fetch": {
+    "minecraft:chicken": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:egg[common]": 3,
+      "minecraft:feather[common]": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

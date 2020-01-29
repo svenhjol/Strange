@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Gravel",
+      "description": "Find gravel and add it to your inventory.",
+      "hint": "Found at the bottom of pools of water or throughout the underground."
+    }
+  },
+  "gather": {
+    "minecraft:gravel": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:white_concrete_powder[common] | minecraft:light_gray_concrete_powder[common]": 3,
+      "minecraft:flint[common]": 3,
+      "minecraft:white_concrete[rare] | minecraft:light_gray_concrete[rare]": 3
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

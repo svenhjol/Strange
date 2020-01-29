@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Chests",
+      "description": "Craft chests from planks."
+    }
+  },
+  "craft": {
+    "minecraft:chest": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:chest": 1,
+      "minecraft:oak_planks[common]": 8
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

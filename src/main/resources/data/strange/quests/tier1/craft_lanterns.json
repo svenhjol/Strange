@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lanterns",
+      "description": "Craft lanterns from iron nuggets and torches."
+    }
+  },
+  "craft": {
+    "minecraft:lantern": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:lantern": 1,
+      "minecraft:iron_ingot[common]": 1,
+      "minecraft:torch[uncommon]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

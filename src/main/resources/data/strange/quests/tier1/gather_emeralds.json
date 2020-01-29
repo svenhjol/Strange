@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Emeralds",
+      "description": "Trade with a villager or find emerald ore in mountain biomes."
+    }
+  },
+  "gather": {
+    "minecraft:emerald": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[uncommon]": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

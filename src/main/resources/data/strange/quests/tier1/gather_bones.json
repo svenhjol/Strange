@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Bones",
+      "description": "Just what the plants need.",
+      "hint": "Usually dropped by skeletons or found in dungeon chests."
+    }
+  },
+  "gather": {
+    "minecraft:bone": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bone_meal[common]": 4,
+      "minecraft:white_dye[common]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

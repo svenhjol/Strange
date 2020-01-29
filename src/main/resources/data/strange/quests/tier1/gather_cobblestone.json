@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cobblestone",
+      "description": "Gather cobblestone and add it to your inventory.",
+      "hint": "A pickaxe will be provided to help you mine stone."
+    }
+  },
+  "gather": {
+    "minecraft:cobblestone": 30
+  },
+  "provide": {
+    "minecraft:wooden_pickaxe": 1,
+    "minecraft:wooden_pickaxe[enchanted][uncommon]": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:mossy_cobblestone[uncommon]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

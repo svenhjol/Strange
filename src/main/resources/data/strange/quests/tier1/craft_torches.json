@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Torches",
+      "description": "Craft torches from sticks and coal."
+    }
+  },
+  "craft": {
+    "minecraft:torch": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:torch": 8,
+      "minecraft:coal[common]": 2,
+      "minecraft:lantern[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

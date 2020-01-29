@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "Oak planks",
+      "description": "Craft oak planks.",
+      "hint": "An axe will be provided to help you chop down trees."
+    }
+  },
+  "craft": {
+    "minecraft:oak_planks": 16
+  },
+  "provide": {
+    "minecraft:wooden_axe": 1,
+    "minecraft:wooden_axe[enchanted][uncommon]": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:oak_log[common]": 2,
+      "minecraft:emerald[uncommon]": 1,
+      "minecraft:iron_axe[rare]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

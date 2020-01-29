@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Diorite",
+      "description": "Gather diorite to complete the quest. | The village is running short of diorite. Help us find more!",
+      "hint": "A pickaxe will be provided to help you mine it."
+    }
+  },
+  "provide": {
+    "minecraft:wooden_pickaxe": 1,
+    "minecraft:wooden_pickaxe[enchanted][uncommon]": 1
+  },
+  "gather": {
+    "minecraft:diorite": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:polished_diorite[uncommon]": 5
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

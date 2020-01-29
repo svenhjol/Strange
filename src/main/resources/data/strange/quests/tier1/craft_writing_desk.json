@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Writing desks",
+      "description": "Craft writing desks from wood planks and squid ink sacs."
+    }
+  },
+  "craft": {
+    "strange:writing_desk": 2
+  },
+  "rewards": {
+    "items": {
+      "strange:writing_desk": 1,
+      "minecraft:ink_sac[common]": 2,
+      "ScrollTier1[common]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "lang": {
+    "en": {
+      "title": "Sand",
+      "description": "The village needs more sandcastles.",
+      "hint": "A shovel will be provided to help you dig it up."
+    }
+  },
+  "gather": {
+    "minecraft:sand": 20
+  },
+  "provide": {
+    "minecraft:wooden_shovel | minecraft:wooden_shovel[enchanted][uncommon]": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:sandstone": 4,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

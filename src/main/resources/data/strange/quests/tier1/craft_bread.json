@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Bread",
+      "description": "Craft bread from wheat."
+    }
+  },
+  "craft": {
+    "minecraft:bread": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:wheat[common]": 3,
+      "minecraft:bread": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

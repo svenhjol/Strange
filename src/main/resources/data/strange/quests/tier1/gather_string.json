@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "String",
+      "description": "Gather string to complete this quest.",
+      "hint": "Usually dropped by spiders or found in dungeon chests."
+    }
+  },
+  "gather": {
+    "minecraft:string": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:string": 2,
+      "minecraft:white_wool[uncommon]": 2,
+      "minecraft:tripwire_hook[rare]": 2,
+      "minecraft:lead[rare]": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

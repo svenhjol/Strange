@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "Fish",
+      "description": "A relaxing fishing trip is just what you need. | Find some fish for the village.",
+      "hint": "A fishing rod will be provided for you."
+    }
+  },
+  "gather": {
+    "minecraft:salmon | minecraft:cod": 4
+  },
+  "provide": {
+    "minecraft:fishing_rod": 1,
+    "minecraft:fishing_rod[enchanted][uncommon]": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:cooked_salmon": 1,
+      "minecraft:cooked_cod": 1,
+      "minecraft:pufferfish[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

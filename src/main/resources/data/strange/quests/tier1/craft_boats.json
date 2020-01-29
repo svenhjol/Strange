@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Boats",
+      "description": "Craft oak boats from oak wood planks."
+    }
+  },
+  "craft": {
+    "minecraft:oak_boat": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:oak_boat": 1,
+      "minecraft:oak_planks[common]": 5
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

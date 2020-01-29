@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Seeds",
+      "description": "Pickup seeds by breaking grass or harvesting wheat."
+    }
+  },
+  "gather": {
+    "minecraft:wheat_seeds": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:wheat": 3
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Coal",
+      "description": "Find coal and add it to your inventory.",
+      "hint": "Found close to the surface and mined with a pickaxe."
+    }
+  },
+  "gather": {
+    "minecraft:coal": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:iron_ingot[uncommon]": 2,
+      "minecraft:cooked_beef[common]": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

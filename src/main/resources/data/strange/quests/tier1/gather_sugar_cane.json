@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Sugar Cane",
+      "description": "Gather sugar cane to complete the quest.",
+      "hint": "Often found on the banks of rivers and ponds."
+    }
+  },
+  "gather": {
+    "minecraft:sugar_cane": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:sugar_cane": 3,
+      "minecraft:sugar[common]": 2,
+      "minecraft:paper[common]": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

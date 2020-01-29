@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Wool",
+      "description": "Collect wool to complete this quest. | The village sheep are ready for shearing.",
+      "hint": "Use shears with sheep or kill to get drops"
+    }
+  },
+  "gather": {
+    "minecraft:white_wool": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:white_bed": 1,
+      "minecraft:string[uncommon]": 4,
+      "minecraft:white_wool[uncommon]": 3
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

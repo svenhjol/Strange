@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Kelp",
+      "description": "Help with the kelp.",
+      "hint": "Kelp can be found in oceans."
+    }
+  },
+  "gather": {
+    "minecraft:kelp": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:kelp": 4,
+      "minecraft:dried_kelp[common]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

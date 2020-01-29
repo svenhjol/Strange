@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Stone",
+      "description": "Stone is needed for the village foundations.",
+      "hint": "Smelt cobblestone or use a pickaxe with Silk Touch."
+    }
+  },
+  "gather": {
+    "minecraft:stone": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:smooth_stone": 2,
+      "minecraft:emerald[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

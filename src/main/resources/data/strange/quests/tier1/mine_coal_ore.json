@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Coal Ore",
+      "description": "Find coal ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:coal_ore": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:coal": 8,
+      "minecraft:emerald[common]": 1,
+      "minecraft:furnace[uncommon]": 1,
+      "minecraft:smoker[rare]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

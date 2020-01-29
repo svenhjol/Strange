@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Wheat",
+      "description": "Harvest wheat from farmland.",
+      "hint": "Plant seeds in farmland or search villages."
+    }
+  },
+  "gather": {
+    "minecraft:wheat": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bread": 4,
+      "minecraft:seeds[common]": 3,
+      "minecraft:cake[rare]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

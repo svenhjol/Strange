@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Ore",
+      "description": "Find iron ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:iron_ore": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:iron_ingot": 8,
+      "minecraft:emerald[common]": 1,
+      "minecraft:iron_pickaxe[uncommon]": 1,
+      "minecraft:flint_and_steel[rare]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

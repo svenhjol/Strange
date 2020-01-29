@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Eggs",
+      "description": "Collect eggs to complete this quest. | The village chickens are on strike and we need more eggs for a cake!",
+      "hint": "Find a chicken and wait for it to lay an egg."
+    }
+  },
+  "gather": {
+    "minecraft:egg": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:cake[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

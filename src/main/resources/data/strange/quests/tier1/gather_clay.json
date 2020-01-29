@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Clay",
+      "description": "Find clay and add it to your inventory.",
+      "hint": "Often found at the bottom of pools of water."
+    }
+  },
+  "gather": {
+    "minecraft:clay": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bricks[common]": 3,
+      "minecraft:terracotta[uncommon]": 3
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

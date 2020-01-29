@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Sheep",
+      "description": "Bring a sheep back to the village.",
+      "hint": "Lure the sheep using wheat."
+    }
+  },
+  "fetch": {
+    "minecraft:sheep": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:white_wool[common] | minecraft:pink_wool[common] | minecraft:gray_wool[common]": 3,
+      "minecraft:string[uncommon]": 6
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

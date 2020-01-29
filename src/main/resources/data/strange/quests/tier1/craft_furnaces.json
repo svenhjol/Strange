@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Furnaces",
+      "description": "Craft furnaces from cobblestone."
+    }
+  },
+  "craft": {
+    "minecraft:furnace": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:furnace": 1,
+      "minecraft:cobblestone[common]": 8,
+      "minecraft:coal[uncommon]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

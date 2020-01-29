@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Granite",
+      "description": "Gather granite to complete the quest. | More building materials are always appreciated.",
+      "hint": "A pickaxe will be provided to help you mine it."
+    }
+  },
+  "provide": {
+    "minecraft:wooden_pickaxe": 1,
+    "minecraft:wooden_pickaxe[enchanted][uncommon]": 1
+  },
+  "gather": {
+    "minecraft:granite": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:polished_granite[uncommon]": 5
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}
