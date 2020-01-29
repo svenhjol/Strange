@@ -64,6 +64,11 @@ public class QuestHelper
         PlayerHelper.addOrDropStack(player, stack);
     }
 
+    public static void giveQuestItemToPlayer(PlayerEntity player, IQuest quest, ItemStack stack)
+    {
+        PlayerHelper.addOrDropStack(player, stack);
+    }
+
     public static void removeQuestItemsFromPlayer(PlayerEntity player, IQuest quest)
     {
         // remove the quest helper equipment like compasses, maps, etc.
