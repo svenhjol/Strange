@@ -1,0 +1,18 @@
+{
+  "lang": {
+    "en": {
+      "title": "Gather Dye",
+      "description": "Find and pickup the required dye, or craft it from flowers."
+    }
+  },
+  "gather": {
+    "minecraft:red_dye | minecraft:yellow_dye": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:red_dye": 2,
+      "minecraft:orange_dye": 2,
+      "minecraft:diamond[rare]": 1
+    }
+  }
+}

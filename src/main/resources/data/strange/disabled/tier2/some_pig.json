@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Some Pig",
+      "description": "Bring a pig back to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:pig": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:lead": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

@@ -6,7 +6,7 @@
     }
   },
   "craft": {
-    "minecraft:end_crystal": 4
+    "minecraft:end_crystal": 3
   },
   "rewards": {
     "items": {

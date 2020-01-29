@@ -1,0 +1,36 @@
+{
+  "modules": [
+    "quark:slime_in_a_bucket",
+    "charm:bat_in_a_bucket"
+  ],
+  "lang": {
+    "en": {
+      "title": "Test",
+      "description": "Yep. | Nope. | Perhaps.",
+      "hint": "You suck."
+    }
+  },
+  "provide": {
+    "minecraft:sticks | minecraft:gravel": 1
+  },
+  "hunt": {
+    "minecraft:zombie | minecraft:skeleton": 1,
+    "minecraft:spider[common]": 1
+  },
+  "gather": {
+    "charm:bat_bucket": "1-3",
+    "quark:slime_in_a_bucket": "1-2"
+  },
+  "rewards": {
+    "items": {
+      "AncientTome[rare] | EnchantedBook | Moonstone": 1,
+      "minecraft:iron_sword[enchanted][rare] | minecraft:diamond_helmet[enchanted]": 1,
+      "StoneCircleTotem": 1,
+      "quark:apple_crate | quark:pickarang": 1,
+      "ScrollTier1 | ScrollTier2": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

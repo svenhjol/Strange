@@ -1,0 +1,17 @@
+{
+  "lang": {
+    "en": {
+      "title": "Flowers",
+      "description": "Find flowers."
+    }
+  },
+  "gather": {
+    "minecraft:blue_orchid | minecraft:allium | minecraft:azure_bluet | minecraft:cornflower": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:purple_dye | minecraft:light_blue_dye | minecraft:blue_dye": 16
+    }
+  }
+}

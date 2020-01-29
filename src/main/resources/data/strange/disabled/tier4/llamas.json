@@ -11,7 +11,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "minecraft:ender_pearl": 2
+      "minecraft:ender_pearl": 4,
+      "StoneCircleTotem[rare]": 1
     },
     "xp": {
       "count": 100

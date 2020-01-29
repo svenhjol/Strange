@@ -32,9 +32,11 @@
 - [x] Opening quests in the nether that look for distant vaults causes infinite badness
 - [x] Bound compass has error on frame 16
 - [x] Encounter boss bar doesn't clear when you die
-- [ ] Test change to `LivingDeathEvent` code
+- [x] Test change to `LivingDeathEvent` code
+- [ ] Replace lecterns with writing desks in village gen
 
 ## Intermittent / warnings
+- [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
 - [ ] Weird "air_block" errors sometimes when loading
 - [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos))
 
@@ -53,7 +55,18 @@
 ## Quests
 - [x] Think about language strings as part of json
 - [x] Move all lang strings into quests
-- [ ] Add some new quests - L and H
+- [ ] Add some new quests
+- [x] Handle `"description": "String1 | String2 | String3"`
+- [x] Handle output of `"minecraft:iron_pickaxe[enchanted]"`
+- [x] Handle `"modules": ["quark:thing_enabled"]`,
+- [x] Handle `"modules": ["charm:bookshelf_chests"]`
+- [x] Handle input/output of `"minecraft:thing1 | minecraft:thing2"`
+- [x] Handle output of `[common], [uncommon], [epic], [rare]`
+- [x] Handle `"hint"`
+- [x] Handle `"provide": {}` to give quest items on start
+- [x] TEST Handle `"ScrollTier1"` (etc)
+- [x] TEST Handle values of "x-y"
+- [x] TEST Luck should increase scroll value
 
 ## Docs
 - [ ] Update all docs

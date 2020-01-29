@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Break Spawners",
+      "description": "Find monster spawners and destroy them."
+    }
+  },
+  "mine": {
+    "minecraft:spawner": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:diamond": 2
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

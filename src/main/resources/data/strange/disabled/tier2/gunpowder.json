@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Gunpowder",
+      "description": "Collect gunpowder.",
+      "description_village0": "The village is running low on fireworks for the party!\nBring gunpowder to help make more."
+    }
+  },
+  "gather": {
+    "minecraft:gunpowder": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:firework_rocket": 1,
+      "minecraft:gunpowder": 2
+    }
+  }
+}

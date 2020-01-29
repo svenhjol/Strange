@@ -1,0 +1,18 @@
+{
+  "condition": "quark:jasper_enabled",
+  "lang": {
+    "en": {
+      "title": "Jasper",
+      "description": "Gather jasper."
+    }
+  },
+  "gather": {
+    "quark:jasper": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2
+    },
+    "xp": 40
+  }
+}

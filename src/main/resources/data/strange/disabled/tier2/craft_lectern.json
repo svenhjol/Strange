@@ -1,0 +1,20 @@
+{
+  "module_enabled": "charm:bookshelf_chests",
+  "lang": {
+    "en": {
+      "title": "Bookshelf Chest",
+      "description": "Craft a Bookshelf Chest for storing books within."
+    }
+  },
+  "craft": {
+    "charm:bookshelf_chest": 1
+  },
+  "rewards": {
+    "items": {
+      "charm:bookshelf_chest": 2
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

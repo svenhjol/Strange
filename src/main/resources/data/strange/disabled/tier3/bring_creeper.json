@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Bring Creeper",
+      "description": "Bring a creeper back to the village."
+    }
+  },
+  "fetch": {
+    "minecraft:creeper": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4
+    },
+    "xp": {
+      "count": 50
+    }
+  }
+}

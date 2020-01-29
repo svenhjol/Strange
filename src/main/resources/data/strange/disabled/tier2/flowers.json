@@ -1,12 +1,12 @@
 {
   "lang": {
     "en": {
-      "title": "Charcoal",
-      "description": "Collect charcoal."
+      "title": "Flowers",
+      "description": "Find flowers."
     }
   },
   "gather": {
-    "minecraft:charcoal": 15
+    "minecraft:dandelion | minecraft:poppy": 8
   },
   "rewards": {
     "items": {

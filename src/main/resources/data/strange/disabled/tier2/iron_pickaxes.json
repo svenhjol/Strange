@@ -6,11 +6,12 @@
     }
   },
   "craft": {
-    "minecraft:iron_pickaxe": 6
+    "minecraft:iron_pickaxe": 4
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 3
+      "minecraft:emerald": 2,
+      "minecraft:iron_pickaxe[enchanted]": 1
     },
     "xp": {
       "count": 20

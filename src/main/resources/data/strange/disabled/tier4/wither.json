@@ -11,7 +11,8 @@
   "rewards": {
     "items": {
       "minecraft:wither_skeleton_skull": 2,
-      "minecraft:diamond": 2
+      "minecraft:diamond": 3,
+      "StoneCircleTotem[rare]": 1
     },
     "xp": {
       "count": 100

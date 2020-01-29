@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Anvil",
+      "description_village": "I need an anvil for enchanting weapons to help the village prepare for attack.",
+      "description": "Create an anvil. You get some iron back in return."
+    }
+  },
+  "craft": {
+    "minecraft:anvil": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:iron_ingot": 12
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

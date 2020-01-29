@@ -2,15 +2,15 @@
   "lang": {
     "en": {
       "qtitle": "Vindication",
-      "qdesc": "Find and kill Vindicators."
+      "qdesc": "Find and kill vindicators."
     }
   },
   "hunt": {
-    "minecraft:vindicator": 20
+    "minecraft:vindicator": 10
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 6
+      "minecraft:emerald": 10
     },
     "xp": {
       "count": 100
