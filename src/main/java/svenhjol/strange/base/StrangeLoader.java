@@ -10,6 +10,7 @@ import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.compat.QuarkBigDungeons;
 import svenhjol.strange.base.compat.QuarkCaveRoots;
+import svenhjol.strange.base.compat.QuarkCompat;
 import svenhjol.strange.base.compat.QuarkVariantChests;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
 import svenhjol.strange.base.loot.AddSpellRandomly;
@@ -23,6 +24,7 @@ import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 
 public class StrangeLoader extends MesonLoader
 {
+    public static QuarkCompat quarkCompat;
     public static QuarkBigDungeons quarkBigDungeons;
     public static QuarkCaveRoots quarkCaveRoots;
     public static QuarkVariantChests quarkVariantChests;
@@ -44,6 +46,7 @@ public class StrangeLoader extends MesonLoader
         // compat
         try {
             if (ForgeHelper.isModLoaded("quark")) {
+                quarkCompat = QuarkCompat.class.newInstance();
                 quarkBigDungeons = QuarkBigDungeons.class.newInstance();
                 quarkCaveRoots = QuarkCaveRoots.class.newInstance();
                 quarkVariantChests = QuarkVariantChests.class.newInstance();
