@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * Handles server-side forge events related to quests.
  *
- * If you want your quest delegate to be able to respond to a specific type of event,
- * you must subscript to it it here and call `respondToEvent()`
+ * If you want your quest delegate to be able to respond to a specific type of Forge event,
+ * you must subscribe to it here and call `respondToEvent()`
  */
 @SuppressWarnings("unused")
 public class QuestEvents
@@ -43,6 +43,7 @@ public class QuestEvents
 
         if (respondToEvent(player, event)) {
             quest.setState(State.Started);
+
             PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
         } else {
             event.setCanceled(true);
@@ -187,11 +188,10 @@ public class QuestEvents
                     .forEach(p -> respondToEvent((PlayerEntity)p, event));
             }
 
-//            Entity source = event.getSource().getTrueSource();
-//            if (source instanceof PlayerEntity) {
-//                respondToEvent((PlayerEntity)source, event);
-//            }
-//            if (source == null) return;
+            Entity source = event.getSource().getTrueSource();
+            if (source instanceof PlayerEntity) {
+                respondToEvent((PlayerEntity)source, event);
+            }
         }
     }
 
@@ -200,7 +200,7 @@ public class QuestEvents
     {
         if (event.phase == Phase.END
             && event.player != null
-            && event.player.world.getGameTime() % 12 == 0
+            && event.player.world.getGameTime() % Quests.tickInterval == 0
             && event.player.isAlive()
         ) {
             respondToEvent(event.player, event);
