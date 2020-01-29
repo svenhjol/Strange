@@ -37,7 +37,8 @@ public class Generator
             MineGenerator.class,
             FetchGenerator.class,
             RewardGenerator.class,
-            TimeGenerator.class
+            TimeGenerator.class,
+            ProvideGenerator.class
         ));
 
         for (Class<?> clazz : generators) {
