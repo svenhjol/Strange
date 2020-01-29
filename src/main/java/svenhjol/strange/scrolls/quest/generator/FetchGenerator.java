@@ -23,10 +23,10 @@ public class FetchGenerator extends BaseGenerator
         Map<String, String> def = definition.getFetch();
 
         for (String key : def.keySet()) {
-            ResourceLocation target = new ResourceLocation(key);
-            int count = Integer.parseInt(def.get(key));
+            ResourceLocation target = getEntityResFromKey(key);
+            if (target == null) continue;
 
-            count = multiplyValue(count);
+            int count = getCountFromValue(def.get(key), true);
 
             Condition<Fetch> condition = Condition.factory(Fetch.class, quest);
             condition.getDelegate()

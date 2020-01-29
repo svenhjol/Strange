@@ -23,8 +23,10 @@ public class HuntGenerator extends BaseGenerator
         Map<String, String> def = definition.getHunt();
 
         for (String key : def.keySet()) {
-            ResourceLocation target = new ResourceLocation(key);
-            int count = Integer.parseInt(def.get(key));
+            ResourceLocation target = getEntityResFromKey(key);
+            if (target == null) continue;
+
+            int count = getCountFromValue(def.get(key), true);
 
             // amount increases based on distance
             count = multiplyValue(count);

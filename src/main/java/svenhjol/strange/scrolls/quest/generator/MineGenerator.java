@@ -1,9 +1,8 @@
 package svenhjol.strange.scrolls.quest.generator;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Mine;
@@ -24,13 +23,13 @@ public class MineGenerator extends BaseGenerator
         Map<String, String> def = definition.getMine();
 
         for (String key : def.keySet()) {
-            int count = Integer.parseInt(def.get(key));
+            Block block = getBlockFromKey(key);
+            if (block == null) continue;
 
-            // amount increases based on distance
-            count = multiplyValue(count);
+            int count = getCountFromValue(def.get(key), true);
 
             Condition<Mine> condition = Condition.factory(Mine.class, quest);
-            condition.getDelegate().setBlock(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key))).setCount(count);
+            condition.getDelegate().setBlock(block).setCount(count);
             quest.getCriteria().addCondition(condition);
         }
     }

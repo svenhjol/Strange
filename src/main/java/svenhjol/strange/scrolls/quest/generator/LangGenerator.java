@@ -14,6 +14,7 @@ public class LangGenerator extends BaseGenerator
 {
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
+    public static final String HINT = "hint";
 
     public LangGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
     {
@@ -29,23 +30,19 @@ public class LangGenerator extends BaseGenerator
         if (def.containsKey(Quests.language)) {
             Map<String, String> strings = def.get(Quests.language);
             List<String> keys = new ArrayList<>(strings.keySet());
-            List<String> descriptions = new ArrayList<>();
 
-            if (keys.contains(TITLE)) {
+            if (keys.contains(TITLE))
                 quest.setTitle(strings.get(TITLE));
-            }
+
             if (keys.contains(DESCRIPTION)) {
-                descriptions.add(strings.get(DESCRIPTION));
+                String description = strings.get(DESCRIPTION);
+                quest.setDescription(splitOptionalRandomly(description));
             }
 
-            for (int i = 0; i < 4; i++) {
-                String key = DESCRIPTION + i;
-                if (keys.contains(key))
-                    descriptions.add(strings.get(DESCRIPTION));
+            if (keys.contains(HINT)) {
+                String hint = quest.getDescription() + "%%" + strings.get(HINT);
+                quest.setDescription(hint);
             }
-
-            if (!descriptions.isEmpty())
-                quest.setDescription(descriptions.get(world.rand.nextInt(descriptions.size())));
         }
     }
 }

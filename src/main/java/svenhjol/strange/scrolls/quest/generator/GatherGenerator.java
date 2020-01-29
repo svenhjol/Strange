@@ -1,11 +1,8 @@
 package svenhjol.strange.scrolls.quest.generator;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Gather;
@@ -26,17 +23,10 @@ public class GatherGenerator extends BaseGenerator
         Map<String, String> def = definition.getGather();
 
         for (String key : def.keySet()) {
-            ResourceLocation res = ResourceLocation.tryCreate(key);
-            if (res == null) continue;
+            ItemStack stack = getItemFromKey(key);
+            if (stack == null) continue;
 
-            Item item = ForgeRegistries.ITEMS.getValue(res);
-            if (item == null) continue;
-
-            ItemStack stack = new ItemStack(item);
-            int count = Integer.parseInt(def.get(key));
-
-            // amount increases based on distance
-            count = multiplyValue(count);
+            int count = getCountFromValue(def.get(key), true);
 
             Condition<Gather> condition = Condition.factory(Gather.class, quest);
             condition.getDelegate().setStack(stack).setCount(count);
