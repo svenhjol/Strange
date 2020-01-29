@@ -64,4 +64,4 @@ runclient.sh
 debugclient.sh
 copycharm.sh
 
-src/main/resources/data/strange/structures/disabled/
+src/**/disabled
