@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Zombie Outbreak",
+      "description": "Locate and destroy the outbreak of zombie villagers.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "encounter": {
+    "minecraft:zombie_villager": {
+      "count": 5,
+      "health": 40
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:rotten_flesh[common]": 10,
+      "minecraft:zombie_skull[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

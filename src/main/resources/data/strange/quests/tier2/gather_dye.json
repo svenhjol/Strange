@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Dyes",
+      "description": "Collect yellow and red dyes.",
+      "hint": "Dye is crafted from flowers."
+    }
+  },
+  "gather": {
+    "minecraft:red_dye": 4,
+    "minecraft:yellow_dye": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:red_dye": 2,
+      "minecraft:yellow_dye": 2
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

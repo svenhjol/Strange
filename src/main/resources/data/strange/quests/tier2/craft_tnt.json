@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "TNT",
+      "description": "Business is booming.",
+      "hint": "Crafted from sand and gunpowder."
+    }
+  },
+  "craft": {
+    "minecraft:tnt": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:tnt[common]": 1,
+      "minecraft:gunpowder[uncommon]": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

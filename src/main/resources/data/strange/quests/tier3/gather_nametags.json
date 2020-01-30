@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Nametags",
+      "description": "Gather nametags.",
+      "hint": "Search dungeon and ruin chests."
+    }
+  },
+  "gather": {
+    "minecraft:name_tag": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:name_tag": 2,
+      "minecraft:diamond[uncommon]": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

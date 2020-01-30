@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Axes",
+      "description": "Craft iron axes."
+    }
+  },
+  "craft": {
+    "minecraft:iron_axe": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:iron_axe[common] | minecraft:iron_axe[enchanted][uncommon]": 1,
+      "minecraft:iron_axe[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

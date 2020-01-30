@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Birch Trapdoors",
+      "description": "Craft birch trapdoors."
+    }
+  },
+  "craft": {
+    "minecraft:birch_trapdoor": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:birch_trapdoor": 4,
+      "minecraft:birch_planks": 8,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "End Stone",
+      "description": "Gather End stone."
+    }
+  },
+  "gather": {
+    "minecraft:end_stone": 50,
+    "minecraft:end_stone_bricks": 50
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:ender_pearl": "10-20",
+      "minecraft:end_stone_bricks | minecraft:end_stone": "25-50"
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Sea Lanterns",
+      "description": "Gather sea lanterns.",
+      "hint": "Found in ocean monuments and some ruins."
+    }
+  },
+  "gather": {
+    "minecraft:sea_lantern": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:sea_lantern": 4,
+      "minecraft:prismarine_crystals[uncommon]": 4,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

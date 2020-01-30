@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mushrooms",
+      "description": "Collect mushrooms. | The village is running out of stew."
+    }
+  },
+  "gather": {
+    "minecraft:brown_mushroom | minecraft:red_mushroom": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:mushroom_stew[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

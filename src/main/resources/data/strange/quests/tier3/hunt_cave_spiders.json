@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cave Spiders",
+      "description": "Find and kill cave spiders.",
+      "hint": "Mineshafts contain cave spider spawners."
+    }
+  },
+  "hunt": {
+    "minecraft:cave_spider": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:string[uncommon]": 12
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

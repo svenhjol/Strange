@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "qtitle": "Vindication",
+      "qdesc": "Find and kill vindicators."
+    }
+  },
+  "hunt": {
+    "minecraft:vindicator": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:diamond_axe[enchanted][common]": 1,
+      "minecraft:diamond_sword[enchanted][common]": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

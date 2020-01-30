@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Smooth Stone",
+      "description": "The smoothest of stone.",
+      "hint": "Smelt stone in a furnace."
+    }
+  },
+  "gather": {
+    "minecraft:smooth_stone": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:smooth_stone": 5,
+      "minecraft:smooth_stone_slab[uncommon]": 1,
+      "minecraft:blast_furnace[epic]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "modules": [
+    "charm:block_of_ender_pearls"
+  ],
+  "lang": {
+    "en": {
+      "title": "Teleportation",
+      "description": "Gather and craft materials from the End."
+    }
+  },
+  "craft": {
+    "charm:ender_pearl_block": 2
+  },
+  "gather": {
+    "minecraft:chorus_fruit": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "charm:ender_pearl_block": 1,
+      "minecraft:ender_pearl[common]": 8
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

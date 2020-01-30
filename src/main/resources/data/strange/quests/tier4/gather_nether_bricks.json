@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Nether Bricks",
+      "description": "Gather nether bricks.",
+      "hint": "Nether fortresses constructed of nether bricks."
+    }
+  },
+  "gather": {
+    "minecraft:nether_bricks": 40
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:nether_bricks[uncommon]": 20,
+      "Potion[common]": 1
+    },
+    "xp": 80
+  }
+}

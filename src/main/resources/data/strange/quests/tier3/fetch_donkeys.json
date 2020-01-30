@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Donkeys",
+      "description": "Bring donkeys back to the village.",
+      "hint": "Tame donkeys can be ridden with saddles."
+    }
+  },
+  "fetch": {
+    "minecraft:donkey": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:saddle[rare]": 1,
+      "minecraft:lead[rare]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

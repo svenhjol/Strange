@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hearts",
+      "description": "Find hearts of the sea.",
+      "hint": "Found in buried treasure."
+    }
+  },
+  "gather": {
+    "minecraft:heart_of_the_sea": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:heart_of_the_sea": 2,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lava Buckets",
+      "description": "The village food isn't spicy enough."
+    }
+  },
+  "gather": {
+    "minecraft:lava_bucket": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:bucket": 2,
+      "minecraft:obsidian[rare]": 2
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

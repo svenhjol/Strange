@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Diamond Swords",
+      "description": "Craft diamond swords."
+    }
+  },
+  "craft": {
+    "minecraft:diamond_sword": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:diamond_sword[enchanted][uncommon]": 1,
+      "minecraft:diamond_sword[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

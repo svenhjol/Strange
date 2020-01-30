@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Library",
+      "description": "Build writing desks and lecterns"
+    }
+  },
+  "craft": {
+    "strange:writing_desk": 2,
+    "minecraft:lectern": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "strange:writing_desk[common]": 1,
+      "minecraft:lectern[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

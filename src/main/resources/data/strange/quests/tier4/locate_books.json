@@ -1,0 +1,24 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Book",
+      "description": "Bring back all books from the lost chests.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:enchanted_book",
+    "minecraft:written_book",
+    "minecraft:writable_book"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "EnchantedBook | RareEnchantedBook[rare]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

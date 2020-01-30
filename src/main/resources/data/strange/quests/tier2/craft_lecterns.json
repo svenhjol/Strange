@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lecterns",
+      "description": "The library needs more lecterns!"
+    }
+  },
+  "craft": {
+    "minecraft:lectern": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:lectern": 1,
+      "minecraft:book[common]": 3
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

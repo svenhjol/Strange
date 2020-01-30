@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Foxes",
+      "description": "Bring foxes back to the village."
+    }
+  },
+  "fetch": {
+    "minecraft:fox": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:fox_spawn_egg[uncommon]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

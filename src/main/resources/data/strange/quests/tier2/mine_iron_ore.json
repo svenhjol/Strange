@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Ore",
+      "description": "Locate iron ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:iron_ore": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:iron_ingot": 20,
+      "minecraft:emerald[common]": 1,
+      "minecraft:iron_pickaxe[enchanted][uncommon]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

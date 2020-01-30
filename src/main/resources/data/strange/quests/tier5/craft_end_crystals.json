@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "End Crystals",
+      "description": "Create End crystals."
+    }
+  },
+  "craft": {
+    "minecraft:end_crystal": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:end_crystal": 2,
+      "minecraft:emerald": 4,
+      "RareEnchantedBook | StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

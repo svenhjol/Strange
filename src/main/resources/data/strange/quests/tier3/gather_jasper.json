@@ -1,0 +1,20 @@
+{
+  "modules": [
+    "quark:more_stone_variants"
+  ],
+  "lang": {
+    "en": {
+      "title": "Jasper",
+      "description": "Gather jasper."
+    }
+  },
+  "gather": {
+    "quark:jasper": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2
+    },
+    "xp": 60
+  }
+}

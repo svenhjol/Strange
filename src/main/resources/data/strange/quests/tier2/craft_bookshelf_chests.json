@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "charm:bookshelf_chests"
+  ],
+  "lang": {
+    "en": {
+      "title": "Bookshelf Chests",
+      "description": "Craft bookshelf chests.",
+      "hint": "Created by surrounding a bookshelf with planks."
+    }
+  },
+  "craft": {
+    "charm:bookshelf_chest": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "charm:bookshelf_chest": 1,
+      "minecraft:book[common]": 3
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

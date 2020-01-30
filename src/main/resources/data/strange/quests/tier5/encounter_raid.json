@@ -1,0 +1,40 @@
+{
+  "lang": {
+    "en": {
+      "title": "The Raid",
+      "description": "Defeat all the enemies before the time runs out."
+    }
+  },
+  "timeLimit": 30,
+  "encounter": {
+    "minecraft:evoker": {
+      "count": 2,
+      "health": 50,
+      "effects": "regeneration"
+    },
+    "minecraft:pillager": {
+      "count": 3,
+      "health": 100,
+      "effects": "regeneration"
+    },
+    "minecraft:vindicator": {
+      "count": 3,
+      "health": 100,
+      "effects": "strength"
+    },
+    "minecraft:illusioner": {
+      "count": 2,
+      "health": 50
+    }
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleTotem": 1,
+      "minecraft:emerald": 4,
+      "minecraft:crossbow[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

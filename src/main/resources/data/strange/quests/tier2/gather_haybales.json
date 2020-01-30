@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hay Bales",
+      "description": "Gather hay bales.",
+      "hint": "Commonly found in villages."
+    }
+  },
+  "gather": {
+    "minecraft:hay_block": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:wheat": "10-20"
+    },
+    "xp": 40
+  }
+}

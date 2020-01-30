@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Music Discs",
+      "description": "Gather music discs.",
+      "hint": "Search dungeon and ruin chests."
+    }
+  },
+  "gather": {
+    "minecraft:music_disc_13": 2,
+    "minecraft:music_disc_cat": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:music_disc_blocks[uncommon] | minecraft:music_disc_mellohi[uncommon] | minecraft:music_disc_11[uncommon]": 1,
+      "StoneCircleTotem[epic]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

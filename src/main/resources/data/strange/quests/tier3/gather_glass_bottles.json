@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Glass Bottles",
+      "description": "Gather glass bottles."
+    }
+  },
+  "gather": {
+    "minecraft:glass_bottle": 18
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:glass_bottle": 9,
+      "Potion": 1
+    },
+    "xp": 60
+  }
+}

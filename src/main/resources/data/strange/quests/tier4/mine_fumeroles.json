@@ -1,0 +1,24 @@
+{
+  "modules": [
+    "charm:fumeroles"
+  ],
+  "lang": {
+    "en": {
+      "title": "Break Fumeroles",
+      "description": "Find fumeroles in the nether and mine them."
+    }
+  },
+  "mine": {
+    "charm:fumerole": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:gunpowder[common]": 8,
+      "charm:fumerole[uncommon]": 4
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

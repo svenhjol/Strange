@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Ender Chests",
+      "description": "Create ender chests from obsidian and ender eyes."
+    }
+  },
+  "craft": {
+    "minecraft:ender_chest": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:ender_chest": 1,
+      "minecraft:ender_pearl[uncommon]": 1,
+      "minecraft:obsidian[uncommon]": 8
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

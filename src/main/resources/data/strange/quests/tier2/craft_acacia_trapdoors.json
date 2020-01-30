@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Acacia Trapdoors",
+      "description": "Craft acacia trapdoors."
+    }
+  },
+  "craft": {
+    "minecraft:acacia_trapdoor": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:acacia_trapdoor": 4,
+      "minecraft:acacia_planks": 8,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

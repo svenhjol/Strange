@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Melons",
+      "description": "Gather melon slices."
+    }
+  },
+  "gather": {
+    "minecraft:melon_slice": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:melon_slice": 10,
+      "minecraft:glistering_melon_slice[rare]": 5
+    },
+    "xp": 60
+  }
+}

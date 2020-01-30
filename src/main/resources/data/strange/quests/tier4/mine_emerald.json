@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mine Emerald",
+      "description": "Locate emerald ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:emerald_ore": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

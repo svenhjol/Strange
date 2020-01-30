@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Phantoms",
+      "description": "Find and kill phantoms.",
+      "hint": "Spawn at night when you don't sleep"
+    }
+  },
+  "hunt": {
+    "minecraft:phantom": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:phantom_membrane[uncommon]": 2
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

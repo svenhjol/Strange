@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Spiders",
+      "description": "Find and kill spiders."
+    }
+  },
+  "hunt": {
+    "minecraft:spider": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:string[common]": 4,
+      "minecraft:spider_eye[rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

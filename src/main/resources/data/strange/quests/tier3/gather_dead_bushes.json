@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Dead bushes",
+      "description": "Gather dead bushes."
+    }
+  },
+  "gather": {
+    "minecraft:dead_bush": 15
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:sticks": 20
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

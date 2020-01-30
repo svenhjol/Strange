@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Spruce Trapdoors",
+      "description": "Craft spruce trapdoors."
+    }
+  },
+  "craft": {
+    "minecraft:spruce_trapdoor": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:spruce_trapdoor": 4,
+      "minecraft:spruce_planks": 8,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

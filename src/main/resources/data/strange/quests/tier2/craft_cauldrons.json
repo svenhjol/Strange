@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cauldrons",
+      "description": "Make some cauldrons."
+    }
+  },
+  "craft": {
+    "minecraft:cauldron": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:cauldron": 1,
+      "Potion": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

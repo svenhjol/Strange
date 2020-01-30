@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Ender pearls",
+      "description": "Gather ender pearls."
+    }
+  },
+  "gather": {
+    "minecraft:ender_pearl": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:ender_pearl": 2,
+      "minecraft:emerald": 2,
+      "minecraft:eye_of_ender[uncommon]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

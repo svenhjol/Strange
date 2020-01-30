@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Diamond Pickaxes",
+      "description": "Craft diamond pickaxes."
+    }
+  },
+  "craft": {
+    "minecraft:diamond_pickaxe": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:diamond_pickaxe[enchanted][uncommon]": 1,
+      "minecraft:diamond_pickaxe[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

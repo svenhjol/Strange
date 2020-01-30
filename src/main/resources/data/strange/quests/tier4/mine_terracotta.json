@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Terracotta",
+      "description": "Find terracotta blocks and mine them.",
+      "hint": "Found naturally in badlands biomes."
+    }
+  },
+  "mine": {
+    "minecraft:white_terracotta | minecraft:orange_terracotta | minecraft:brown_terracotta": 50
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:red_terracotta | minecraft:orange_terracotta | minecraft:yellow_terracotta": 25
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

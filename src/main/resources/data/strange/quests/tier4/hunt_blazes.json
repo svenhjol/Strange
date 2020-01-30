@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Blazes",
+      "description": "Find and kill blazes."
+    }
+  },
+  "hunt": {
+    "minecraft:blaze": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:blaze_rod[uncommon]": 4,
+      "minecraft:blaze_powder[common]": 4
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

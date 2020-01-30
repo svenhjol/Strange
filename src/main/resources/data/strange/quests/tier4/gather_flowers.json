@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Flowers",
+      "description": "Find flowers."
+    }
+  },
+  "gather": {
+    "minecraft:blue_orchid | minecraft:lily_of_the_valley | minecraft:white_tulip | minecraft:cornflower": 16,
+    "minecraft:lilac | minecraft:sunflower | minecraft:rose_bush | minecraft:peony": 16,
+    "minecraft:oxeye_daisy | minecraft:orange_tulip | minecraft:pink_tulip | minecraft:allium": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:purple_dye | minecraft:light_blue_dye | minecraft:blue_dye": 16,
+      "minecraft:red_dye | minecraft:orange_dye | minecraft:yellow": 16
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

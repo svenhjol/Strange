@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Horses",
+      "description": "Bring horses back to the village.",
+      "hint": "Tame horses can be ridden with saddles."
+    }
+  },
+  "fetch": {
+    "minecraft:horse": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:saddle[rare]": 1,
+      "minecraft:lead[rare]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

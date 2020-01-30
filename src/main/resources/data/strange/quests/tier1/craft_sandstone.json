@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Sandstone",
+      "description": "Craft sandstone from sand."
+    }
+  },
+  "craft": {
+    "minecraft:sandstone": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:sandstone": 4,
+      "minecraft:sand[uncommon]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

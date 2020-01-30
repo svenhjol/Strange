@@ -27,7 +27,8 @@
       "minecraft:iron_sword[enchanted][rare] | minecraft:diamond_helmet[enchanted]": 1,
       "StoneCircleTotem": 1,
       "quark:apple_crate | quark:pickarang": 1,
-      "ScrollTier1 | ScrollTier2": 1
+      "ScrollTier1 | ScrollTier2": 1,
+      "Potion": 1
     },
     "xp": {
       "count": 20

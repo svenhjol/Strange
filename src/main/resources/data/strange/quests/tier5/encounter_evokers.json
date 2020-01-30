@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "The Evokers",
+      "description": "Locate and defeat the evokers."
+    }
+  },
+  "timeLimit": 30,
+  "encounter": {
+    "minecraft:evoker": {
+      "count": 3,
+      "health": 80,
+      "effects": "regeneration"
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "Moonstone": 4,
+      "StoneCircleTotem | RareEnchantedBook": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

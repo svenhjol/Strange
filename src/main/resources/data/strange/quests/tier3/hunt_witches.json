@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Witches",
+      "description": "Find and kill witches."
+    }
+  },
+  "hunt": {
+    "minecraft:witch": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "Potion": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Eye",
+      "description": "Bring back the Eye of Ender from the lost chest.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:ender_eye"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:ender_pearl": 1,
+      "minecraft:ender_eye[rare]": 1,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

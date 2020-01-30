@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Book",
+      "description": "Bring back all scrolls from the lost chests.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "ScrollTier5",
+    "ScrollTier4",
+    "ScrollTier3",
+    "ScrollTier2"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "ScrollTier4": 2,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

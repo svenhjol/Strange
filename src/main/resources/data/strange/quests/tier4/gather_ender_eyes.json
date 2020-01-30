@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Eyes of Ender",
+      "description": "Gather Eyes of Ender in your inventory."
+    }
+  },
+  "gather": {
+    "minecraft:ender_eye": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:ender_eye": "4-6",
+      "minecraft:ender_pearl": "4-8",
+      "StoneCircleTotem[rare] | RareEnchantedBook": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

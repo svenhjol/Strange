@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Iron",
+      "description": "Bring back the block of iron from the lost chest.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:iron_block"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:iron_ingot": 4
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

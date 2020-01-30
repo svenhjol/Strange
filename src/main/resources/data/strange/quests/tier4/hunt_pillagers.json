@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Pillagers",
+      "description": "Find and kill pillagers."
+    }
+  },
+  "hunt": {
+    "minecraft:pillager": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": "3-6",
+      "minecraft:crossbow[common] | minecraft:crossbow[enchanted][uncommon]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

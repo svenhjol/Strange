@@ -1,0 +1,27 @@
+{
+  "lang": {
+    "en": {
+      "title": "Pillager Battle",
+      "description": "Defeat all the pillagers. | Pillagers have been spotted nearby.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "timeLimit": 45,
+  "encounter": {
+    "minecraft:pillager": {
+      "count": 4,
+      "health": 50,
+      "effects": "regeneration"
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:crossbow[enchanted]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

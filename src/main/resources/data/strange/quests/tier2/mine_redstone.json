@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Redstone Ore",
+      "description": "Locate redstone ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:redstone_ore": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:redstone": 12,
+      "minecraft:emerald[common]": 1,
+      "minecraft:redstone_torch": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

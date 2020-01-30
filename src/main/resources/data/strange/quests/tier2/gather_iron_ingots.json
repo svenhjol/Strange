@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Ingots",
+      "description": "Gather iron ingots.",
+      "hint": "Find iron ore and smelt it."
+    }
+  },
+  "gather": {
+    "minecraft:iron_ingot": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:iron_ingot": 10,
+      "minecraft:iron_nugget[common]": 8
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

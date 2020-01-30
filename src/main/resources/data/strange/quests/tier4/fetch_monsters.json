@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Monsters",
+      "description": "Bring monsters back to the village."
+    }
+  },
+  "fetch": {
+    "minecraft:creeper": 1,
+    "minecraft:zombie": 1,
+    "minecraft:skeleton": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:creeper_head[epic] | minecraft:skeleton_head[rare] | minecraft:zombie_head[rare]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

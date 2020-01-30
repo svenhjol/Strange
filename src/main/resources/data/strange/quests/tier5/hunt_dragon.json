@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Dragon",
+      "description": "Kill an Ender Dragon before the time runs out."
+    }
+  },
+  "timeLimit": 30,
+  "hunt": {
+    "minecraft:ender_dragon": 1
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleTotem": 1,
+      "minecraft:emerald": 4,
+      "minecraft:end_crystal": "2-4"
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "No Drama Llama",
+      "description": "Locate and return llamas to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:llama": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:lead[common]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

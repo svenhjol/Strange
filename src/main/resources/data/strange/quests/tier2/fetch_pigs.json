@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Pigs",
+      "description": "Bring pigs back to the village.",
+      "hint": "Lure the pig using carrots, potatoes or beetroot."
+    }
+  },
+  "fetch": {
+    "minecraft:pig": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:cooked_porkchop[rare]": 2,
+      "minecraft:lead[rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

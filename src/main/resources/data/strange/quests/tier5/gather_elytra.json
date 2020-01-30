@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Elytra",
+      "description": "Gather elytra."
+    }
+  },
+  "gather": {
+    "minecraft:elytra": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:elytra": 4,
+      "minecraft:phantom_membrane": "3-10"
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

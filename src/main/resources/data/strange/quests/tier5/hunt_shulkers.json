@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Shulkers",
+      "description": "Find and destroy shulkers."
+    }
+  },
+  "hunt": {
+    "minecraft:shulker": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:shulker_shell": 6,
+      "minecraft:emerald": 4,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

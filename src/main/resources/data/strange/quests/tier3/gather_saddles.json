@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Saddles",
+      "description": "Gather saddles.",
+      "hint": "Search dungeon and ruin chests."
+    }
+  },
+  "gather": {
+    "minecraft:saddle": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:saddle": 2,
+      "minecraft:diamond[uncommon]": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

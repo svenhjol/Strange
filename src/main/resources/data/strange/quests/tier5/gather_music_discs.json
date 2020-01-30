@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Music Discs",
+      "description": "Gather music discs.",
+      "hint": "Dropped by creepers when killed by skeletons."
+    }
+  },
+  "gather": {
+    "minecraft:record_chirp | minecraft:record_blocks | minecraft:record_stal | minecraft:record_mellohi": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:record_chirp | minecraft:record_blocks | minecraft:record_stal | minecraft:record_mellohi": 1,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

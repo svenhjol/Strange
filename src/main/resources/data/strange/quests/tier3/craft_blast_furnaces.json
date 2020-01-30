@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Blast Furnaces",
+      "description": "Blast furnaces for smelting ore faster."
+    }
+  },
+  "craft": {
+    "minecraft:blast_furnace": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:blast_furnace": 1,
+      "minecraft:emerald": 2,
+      "minecraft:smooth_stone[common]": 3
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

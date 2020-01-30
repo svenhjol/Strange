@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cactus",
+      "description": "Gather cactus."
+    }
+  },
+  "gather": {
+    "minecraft:cactus": 15
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:cactus": 8
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

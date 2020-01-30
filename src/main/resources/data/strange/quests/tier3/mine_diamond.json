@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Diamond Ore",
+      "description": "Locate diamond ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:diamond_ore": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:diamond": 6,
+      "minecraft:emerald": 2,
+      "minecraft:diamond_shovel[uncommon]": 1,
+      "minecraft:diamond_hoe[enchanted][epic]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

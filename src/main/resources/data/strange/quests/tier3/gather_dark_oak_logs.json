@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Dark Oak Logs",
+      "description": "Gather dark oak logs."
+    }
+  },
+  "gather": {
+    "minecraft:dark_oak_log": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:jungle_planks[common]": 30,
+      "minecraft:jungle_door[common]": 4,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

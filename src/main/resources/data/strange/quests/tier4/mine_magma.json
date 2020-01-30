@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mine Magma",
+      "description": "Find magma blocks and mine them."
+    }
+  },
+  "mine": {
+    "minecraft:magma_block": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:magma_block": 10,
+      "minecraft:lava_bucket[uncommon]": 2
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

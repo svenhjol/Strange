@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Evil Mages",
+      "description": "Locate the group of magicians and kill them.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "encounter": {
+    "minecraft:illusioner": {
+      "count": 2,
+      "health": 40
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "Moonstone": 3,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

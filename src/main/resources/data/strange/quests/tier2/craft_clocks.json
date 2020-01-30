@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Clocks",
+      "description": "Craft clocks.",
+      "hint": "Made from gold and redstone."
+    }
+  },
+  "craft": {
+    "minecraft:clock": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:clock": 1,
+      "minecraft:gold_ingots[uncommon]": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

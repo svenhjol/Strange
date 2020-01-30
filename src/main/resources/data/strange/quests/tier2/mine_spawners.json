@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Break Spawners",
+      "description": "Find any monster spawner and destroy it.",
+      "hint": "Search for a dungeon or ruin to find a spawner."
+    }
+  },
+  "mine": {
+    "minecraft:spawner": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:diamond[common]": 1,
+      "ScrollTier2[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

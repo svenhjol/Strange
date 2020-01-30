@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Packed Ice",
+      "description": "Gather packed ice.",
+      "hint": "Often found in ice spikes biomes."
+    }
+  },
+  "gather": {
+    "minecraft:packed_ice": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:packed_ice": 6
+    },
+    "xp": 80
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "modules": [
+    "quark:cave_crystal_underground_biome"
+  ],
+  "lang": {
+    "en": {
+      "title": "Cave Crystals",
+      "description": "Gather cave crystals.",
+      "hint": "Found in underground caves."
+    }
+  },
+  "gather": {
+    "quark:red_crystal | quark:orange_crystal | quark:yellow_crystal": 20,
+    "quark:green_crystal | quark:blue_crystal | quark:indigo_crystal | quark:violet_crystal": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "quark:red_crystal | quark:orange_crystal | quark:yellow_crystal | quark:green_crystal | quark:blue_crystal | quark:indigo_crystal | quark:violet_crystal": 10,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

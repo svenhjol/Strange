@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Armor",
+      "description": "Bring all diamond armor from the lost chests.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:diamond_chestplate[enchanted]",
+    "minecraft:diamond_leggings[enchanted]",
+    "minecraft:diamond_boots[enchanted]",
+    "minecraft:diamond_helmet[enchanted]"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "EnchantedBook | RareEnchantedBook": 2,
+      "minecraft:diamond_block": "1-3",
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

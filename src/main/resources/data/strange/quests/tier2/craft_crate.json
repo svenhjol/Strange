@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "charm:crates"
+  ],
+  "lang": {
+    "en": {
+      "title": "Oak Crates",
+      "description": "Make some oak crates.",
+      "hint": "Made from iron ingots and oak wood planks"
+    }
+  },
+  "craft": {
+    "charm:crates": 2
+  },
+  "rewards": {
+    "items": {
+      "charm:crate": 1,
+      "minecraft:oak_planks[common]": 4,
+      "minecraft:iron_ingots[common]": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

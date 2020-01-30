@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Milk Buckets",
+      "description": "Gather milk buckets.",
+      "hint": "Cows can be milked with an empty bucket."
+    }
+  },
+  "gather": {
+    "minecraft:milk_bucket": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:bucket": 4,
+      "minecraft:cake[rare]": 1,
+      "minecraft:milk_bucket[uncommon]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

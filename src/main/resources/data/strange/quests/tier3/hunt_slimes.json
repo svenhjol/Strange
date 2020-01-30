@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Slimes",
+      "description": "Find and kill slimes.",
+      "hint": "Found in swamp biomes or underground."
+    }
+  },
+  "hunt": {
+    "minecraft:slime": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:slime_ball[common]": 6
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

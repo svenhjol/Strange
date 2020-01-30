@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Jukeboxes",
+      "description": "Craft jukeboxes for the village party."
+    }
+  },
+  "craft": {
+    "minecraft:jukebox": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:jukebox": 1,
+      "minecraft:emerald": 2,
+      "minecraft:record_ward[uncommon] | minecraft:record_strad[uncommon] | minecraft:record_wait[uncommon]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

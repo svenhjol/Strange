@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Anvils",
+      "description": "Craft anvils to help the village make weapons."
+    }
+  },
+  "craft": {
+    "minecraft:anvil": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:anvil": 1,
+      "minecraft:emerald": 2,
+      "minecraft:iron_ingot[common]": 8,
+      "minecraft:iron_sword[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

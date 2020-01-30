@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Snow Golems",
+      "description": "Bring snow golems back to the village.",
+      "hint": "Assemble them near the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:snow_golem": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:snow_block[common]": 3,
+      "minecraft:pumpkin[common]": 3
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

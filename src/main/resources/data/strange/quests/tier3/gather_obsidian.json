@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Obsidian",
+      "description": "Gather obsidian.",
+      "hint": "Requires diamond pickaxe to mine."
+    }
+  },
+  "gather": {
+    "minecraft:obsidian": 15
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:obsidian": 10
+    },
+    "xp": 60
+  }
+}

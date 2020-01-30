@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "quark:compressed_blocks"
+  ],
+  "lang": {
+    "en": {
+      "title": "Blaze Lanterns",
+      "description": "Create blaze lanterns.",
+      "hint": "Craft from blaze rods and blaze powder."
+    }
+  },
+  "craft": {
+    "quark:blaze_lantern": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "quark:blaze_lantern": 1,
+      "minecraft:blaze_powder[uncommon]": "4-8"
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

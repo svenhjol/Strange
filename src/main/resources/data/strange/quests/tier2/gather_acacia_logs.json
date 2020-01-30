@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Acacia Logs",
+      "description": "Gather acacia logs."
+    }
+  },
+  "gather": {
+    "minecraft:acacia_log": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:acacia_planks[common]": 32,
+      "minecraft:acacia_door[uncommon]": 4,
+      "minecraft:acacia_trapdoor[uncommon]": 4,
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

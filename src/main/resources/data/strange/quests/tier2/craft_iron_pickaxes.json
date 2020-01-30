@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Pickaxes",
+      "description": "Craft iron pickaxes."
+    }
+  },
+  "craft": {
+    "minecraft:iron_pickaxe": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:iron_pickaxe[common] | minecraft:iron_pickaxe[enchanted][uncommon]": 1,
+      "minecraft:iron_pickaxe[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

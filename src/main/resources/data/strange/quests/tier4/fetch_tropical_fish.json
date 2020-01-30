@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Tropical Fish",
+      "description": "Bring tropical fish back to the village."
+    }
+  },
+  "fetch": {
+    "minecraft:tropical_fish": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

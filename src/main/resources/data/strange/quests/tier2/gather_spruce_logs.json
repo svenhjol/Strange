@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Spruce Logs",
+      "description": "Gather spruce logs."
+    }
+  },
+  "gather": {
+    "minecraft:spruce_log": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:spruce_planks[common]": 40,
+      "minecraft:spruce_door[common]": 4,
+      "minecraft:emerald": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

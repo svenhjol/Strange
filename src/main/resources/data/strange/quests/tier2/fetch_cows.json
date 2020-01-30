@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cows",
+      "description": "Bring cows back to the village.",
+      "hint": "Lure cows with wheat."
+    }
+  },
+  "fetch": {
+    "minecraft:cow": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:leather[common]": 2,
+      "minecraft:lead[rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

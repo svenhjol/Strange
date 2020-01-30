@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lapis Lazuli",
+      "description": "Locate lapiz lazuli ore and mine it."
+    }
+  },
+  "mine": {
+    "minecraft:lapis_ore": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:lapis_lazuli": 10
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

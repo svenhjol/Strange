@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Strays",
+      "description": "Find and kill strays.",
+      "hint": "Found in icy biomes."
+    }
+  },
+  "hunt": {
+    "minecraft:stray": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:packed_ice[common]": 10
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

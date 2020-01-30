@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Book",
+      "description": "Bring back the book from the lost chest.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:enchanted_book"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "EnchantedBook": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

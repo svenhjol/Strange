@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Quartz",
+      "description": "Gather nether quartz."
+    }
+  },
+  "gather": {
+    "minecraft:quartz": 50
+  },
+  "rewards": {
+    "items": {
+      "minecraft:quartz": 25,
+      "minecraft:emerald": 3
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

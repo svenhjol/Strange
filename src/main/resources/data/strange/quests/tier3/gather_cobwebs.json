@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cobwebs",
+      "description": "Gather cobwebs.",
+      "hint": "Requires shears."
+    }
+  },
+  "gather": {
+    "minecraft:cobweb": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:cobweb": 10,
+      "minecraft:string[common]": "5-10"
+    },
+    "xp": 60
+  }
+}

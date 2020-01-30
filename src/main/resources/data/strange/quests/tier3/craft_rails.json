@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Rails",
+      "description": "Making tracks."
+    }
+  },
+  "craft": {
+    "minecraft:rail": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:rail": 20,
+      "minecraft:powered_rail[uncommon]": 5,
+      "minecraft:iron_ingot[common] | minecraft:minecart[common]": 6
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Golem Attack",
+      "description": "Destroy the rogue Iron Golems.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "encounter": {
+    "minecraft:iron_golem": {
+      "count": 2,
+      "health": 100
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:iron_block[common]": "2-4",
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

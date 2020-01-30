@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Skeletons",
+      "description": "Find and kill skeletons."
+    }
+  },
+  "hunt": {
+    "minecraft:skeleton": 8,
+    "minecraft:wither_skeleton": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:skeleton_skull[uncommon] | minecraft:wither_skeleton_skull[epic]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

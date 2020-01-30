@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Silverfish",
+      "description": "Find and kill silverfish.",
+      "hint": "Strongholds contain silverfish spawners."
+    }
+  },
+  "hunt": {
+    "minecraft:silverfish": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:diamond_sword[enchanted][uncommon]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

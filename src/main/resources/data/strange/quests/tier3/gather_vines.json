@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Vines",
+      "description": "Gather vines.",
+      "hint": "Shears required for gathering vines."
+    }
+  },
+  "gather": {
+    "minecraft:vine": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:vine": 15,
+      "minecraft:shears[common]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

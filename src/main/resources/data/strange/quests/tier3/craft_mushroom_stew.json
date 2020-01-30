@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mushroom stew",
+      "description": "Craft mushroom stew."
+    }
+  },
+  "craft": {
+    "minecraft:mushroom_stew": 5
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:brown_mushroom": 5,
+      "minecraft:red_mushroom": 5
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

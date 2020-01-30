@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron and Coal",
+      "description": "Mine iron and coal."
+    }
+  },
+  "mine": {
+    "minecraft:iron_ore": 15,
+    "minecraft:coal_ore": 15
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:iron_ingots[common]": 4,
+      "minecraft:coal[common]": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

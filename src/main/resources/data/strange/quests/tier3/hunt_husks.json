@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Husks",
+      "description": "Find and kill husks.",
+      "hint": "Found in desert biomes."
+    }
+  },
+  "hunt": {
+    "minecraft:husk": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:sand[common]": 20
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

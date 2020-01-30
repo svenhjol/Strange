@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Iron Shovels",
+      "description": "Craft iron shovels."
+    }
+  },
+  "craft": {
+    "minecraft:iron_shovel": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:iron_shovel[common]": 4,
+      "minecraft:iron_shovel[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

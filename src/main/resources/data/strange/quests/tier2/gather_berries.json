@@ -1,0 +1,19 @@
+{
+  "lang": {
+    "en": {
+      "title": "Berries",
+      "description": "Gather berries.",
+      "hint": "Berry bushes can be found in Taiga biomes."
+    }
+  },
+  "gather": {
+    "minecraft:sweet_berries": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:sweet_berries": 5
+    },
+    "xp": 40
+  }
+}

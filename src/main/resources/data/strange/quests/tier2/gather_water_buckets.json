@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Water Buckets",
+      "description": "Gather water buckets."
+    }
+  },
+  "gather": {
+    "minecraft:water_bucket": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:bucket": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Parrots",
+      "description": "Bring parrots back to the village."
+    }
+  },
+  "fetch": {
+    "minecraft:parrot": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:parrot_spawn_egg[uncommon]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

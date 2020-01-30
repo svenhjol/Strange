@@ -1,0 +1,24 @@
+{
+  "modules": [
+    "strange:runestones"
+  ],
+  "lang": {
+    "en": {
+      "title": "Break Runestones",
+      "description": "No more spooky travel.",
+      "hint": "Runestones can be found in stone circles."
+    }
+  },
+  "mine": {
+    "strange:runestone": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "StoneCircleTotem[epic]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

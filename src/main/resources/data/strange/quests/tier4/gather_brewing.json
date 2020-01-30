@@ -1,0 +1,27 @@
+{
+  "lang": {
+    "en": {
+      "title": "Brewing Room",
+      "description": "Build the requirements for a brewing room."
+    }
+  },
+  "craft": {
+    "minecraft:brewing_stand": 4
+  },
+  "gather": {
+    "minecraft:blaze_powder": 6,
+    "minecraft:nether_wart": 6,
+    "minecraft:glass_bottle": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "EnchantedBook[uncommon]": 1,
+      "Potion": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

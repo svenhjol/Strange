@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Beacons",
+      "description": "Craft beacons."
+    }
+  },
+  "craft": {
+    "minecraft:beacon": 1
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleTotem": 1,
+      "minecraft:nether_star": 1,
+      "minecraft:emerald": 4
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

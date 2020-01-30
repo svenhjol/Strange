@@ -1,0 +1,24 @@
+{
+  "lang": {
+    "en": {
+      "title": "Colored Wool",
+      "description": "Collect wool to complete this quest.",
+      "hint": "Wool can be combined with dye."
+    }
+  },
+  "gather": {
+    "minecraft:orange_wool | minecraft:red_wool | minecraft:yellow_wool": 8,
+    "minecraft:blue_wool | minecraft:light_blue_wool | minecraft:cyan_wool": 8,
+    "minecraft:brown_wool | minecraft:green_wool | minecraft:lime_wool": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:white_wool": 8,
+      "minecraft:red_dye | minecraft:orange_dye | minecraft:yellow_dye": "4-8"
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

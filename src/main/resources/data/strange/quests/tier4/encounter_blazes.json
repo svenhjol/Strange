@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Blaze of Glory",
+      "description": "Locate and defeat the group of blazes.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "encounter": {
+    "minecraft:blaze": {
+      "count": 4,
+      "health": 60
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:blaze_rod[uncommon]": 4,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

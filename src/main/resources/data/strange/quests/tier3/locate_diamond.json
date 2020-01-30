@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lost Diamond",
+      "description": "Bring back the block of diamond from the lost chest.",
+      "hint": "Follow compass/map to approximate location."
+    }
+  },
+  "locate": [
+    "minecraft:diamond_block"
+  ],
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:diamond": 4
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

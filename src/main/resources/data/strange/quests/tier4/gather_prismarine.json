@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Prismarine",
+      "description": "Gather prismarine.",
+      "hint": "Found in ocean monuments and some ruins."
+    }
+  },
+  "gather": {
+    "minecraft:prismarine": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:prismarine": 10,
+      "minecraft:prismarine_shard[uncommon] | minecraft:prismarine_crystals[uncommon]": 10
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

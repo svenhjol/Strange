@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "Enchanting",
+      "description": "Build the requirements for an enchanting room."
+    }
+  },
+  "craft": {
+    "minecraft:enchanting_table": 1,
+    "minecraft:bookshelf": 15
+  },
+  "gather": {
+    "minecraft:lapis_lazuli": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "RareEnchantedBook[uncommon]": 1,
+      "EnchantedBook": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

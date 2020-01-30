@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Wolves",
+      "description": "Bring wolves back to the village.",
+      "hint": "Wolves can be tamed with bones."
+    }
+  },
+  "fetch": {
+    "minecraft:wolf": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:lead[uncommon]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

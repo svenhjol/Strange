@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Witch Problem",
+      "description": "Locate the group of witches and kill them.",
+      "hint": "Follow provided compass/map to the encounter."
+    }
+  },
+  "encounter": {
+    "minecraft:witch": {
+      "count": 3,
+      "health": 60
+    }
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "Potion": 2,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

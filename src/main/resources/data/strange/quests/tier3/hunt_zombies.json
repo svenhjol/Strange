@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Zombies",
+      "description": "Kill all zombies before the time runs out!"
+    }
+  },
+  "timeLimit": 6,
+  "hunt": {
+    "minecraft:zombie": "10-12"
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:rotten_flesh": 10
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

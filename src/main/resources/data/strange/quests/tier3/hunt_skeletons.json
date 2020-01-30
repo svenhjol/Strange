@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Skeletons",
+      "description": "Kill all skeletons before the time runs out!"
+    }
+  },
+  "timeLimit": 6,
+  "hunt": {
+    "minecraft:skeleton": "10-12"
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:bone_meal": 10
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

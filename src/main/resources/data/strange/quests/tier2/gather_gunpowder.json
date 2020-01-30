@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Gunpowder",
+      "description": "Collect gunpowder. | The village needs more fireworks.",
+      "hint": "Obtain from creepers or dungeon chests."
+    }
+  },
+  "gather": {
+    "minecraft:gunpowder": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:firework_rocket[uncommon]": 1,
+      "minecraft:gunpowder[common]": 2
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}
