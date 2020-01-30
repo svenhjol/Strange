@@ -5,11 +5,15 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.runestones.module.Runestones;
@@ -20,7 +24,10 @@ import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.spells.helper.SpellsHelper;
 import svenhjol.strange.spells.item.MoonstoneItem;
+import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.module.Moonstones;
+import svenhjol.strange.spells.module.SpellBooks;
+import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
@@ -29,6 +36,7 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public abstract class BaseGenerator
@@ -47,6 +55,7 @@ public abstract class BaseGenerator
     // special item tags
     public static final String ANCIENT_TOME = "AncientTome";
     public static final String ENCHANTED_BOOK = "EnchantedBook";
+    public static final String SPELL_BOOK = "SpellBook";
     public static final String MOONSTONE = "Moonstone";
     public static final String RARE_ENCHANTED_BOOK = "RareEnchantedBook";
     public static final String STONE_CIRCLE_TOTEM = "StoneCircleTotem";
@@ -56,6 +65,7 @@ public abstract class BaseGenerator
     public static final String SCROLL_TIER3 = "ScrollTier3";
     public static final String SCROLL_TIER4 = "ScrollTier4";
     public static final String SCROLL_TIER5 = "ScrollTier5";
+    public static final String POTION = "Potion";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
         STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, MOONSTONE, TRAVEL_JOURNAL, ANCIENT_TOME,
@@ -114,7 +124,7 @@ public abstract class BaseGenerator
         key = splitOptionalRandomly(key);
 
         boolean doEnchant = key.contains(ENCHANTED_LABEL);
-        boolean isRare = key.contains(RARE_LABEL);
+        boolean isRare = key.contains(RARE_LABEL) || key.contains(EPIC_LABEL);
 
         if (key.contains(ENCHANTED_LABEL))
             key = key.replace(ENCHANTED_LABEL, "");
@@ -252,6 +262,32 @@ public abstract class BaseGenerator
                 ) {
                     out = StrangeLoader.quarkCompat.getRandomAncientTome(rand);
                 }
+                break;
+
+            case SPELL_BOOK:
+                if (Strange.hasModule(Spells.class)) {
+                    out = new ItemStack(SpellBooks.book);
+                    Spell spell = SpellsHelper.getRandomSpell(rand);
+                    if (spell == null) return null;
+                    SpellBookItem.putSpell(out, spell);
+                }
+                break;
+
+            case POTION:
+                ItemStack bottle = PotionHelper.getFilledWaterBottle();
+                List<Potion> potions = Arrays.asList(
+                    Potions.LONG_FIRE_RESISTANCE,
+                    Potions.LONG_INVISIBILITY,
+                    Potions.LONG_LEAPING,
+                    Potions.LONG_REGENERATION,
+                    Potions.LONG_SLOW_FALLING,
+                    Potions.LONG_STRENGTH,
+                    Potions.LONG_SWIFTNESS,
+                    Potions.LONG_TURTLE_MASTER,
+                    Potions.LONG_WATER_BREATHING
+                );
+
+                out = PotionUtils.addPotionToItemStack(bottle, potions.get(rand.nextInt(potions.size())));
                 break;
 
             case SCROLL_TIER1:
