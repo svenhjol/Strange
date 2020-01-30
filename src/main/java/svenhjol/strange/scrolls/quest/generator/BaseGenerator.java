@@ -5,9 +5,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
+import net.minecraft.item.SuspiciousStewItem;
+import net.minecraft.potion.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -66,6 +65,7 @@ public abstract class BaseGenerator
     public static final String SCROLL_TIER4 = "ScrollTier4";
     public static final String SCROLL_TIER5 = "ScrollTier5";
     public static final String POTION = "Potion";
+    public static final String SUSPICIOUS_STEW = "SuspiciousStew";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
         STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, MOONSTONE, TRAVEL_JOURNAL, ANCIENT_TOME,
@@ -288,6 +288,15 @@ public abstract class BaseGenerator
                 );
 
                 out = PotionUtils.addPotionToItemStack(bottle, potions.get(rand.nextInt(potions.size())));
+                break;
+
+            case SUSPICIOUS_STEW:
+                out = new ItemStack(Items.SUSPICIOUS_STEW);
+                List<Effect> effects = Arrays.asList(
+                    Effects.FIRE_RESISTANCE, Effects.HEALTH_BOOST, Effects.SPEED, Effects.STRENGTH,
+                    Effects.REGENERATION, Effects.ABSORPTION, Effects.BLINDNESS, Effects.MINING_FATIGUE
+                );
+                SuspiciousStewItem.addEffect(out, effects.get(rand.nextInt(effects.size())), 120);
                 break;
 
             case SCROLL_TIER1:
