@@ -11,8 +11,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 2,
-      "minecraft:brown_mushroom": 5,
-      "minecraft:red_mushroom": 5
+      "minecraft:brown_mushroom | minecraft:red_mushroom": 5,
+      "SuspiciousStew": "2-4"
     },
     "xp": {
       "count": 60

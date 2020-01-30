@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Cartography",
+      "description": "Craft cartography tables.",
+      "hint": "Made from wood planks and paper"
+    }
+  },
+  "craft": {
+    "minecraft:cartography_table": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:cartography_table": 1,
+      "minecraft:map[common]": "1-2",
+      "minecraft:paper[uncommon]": "1-4"
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

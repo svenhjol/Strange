@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Pufferfish",
+      "description": "Gather pufferfish in a bucket.",
+      "hint": "Right-click a pufferfish with a bucket."
+    }
+  },
+  "gather": {
+    "minecraft:pufferfish_bucket": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:pufferfish_bucket": 1,
+      "minecraft:pufferfish[common] | minecraft:bucket": 2,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "charm:bat_in_a_bucket"
+  ],
+  "lang": {
+    "en": {
+      "title": "Bat Bucket",
+      "description": "Gather a bat in a bucket.",
+      "hint": "Right-click a bat with a bucket."
+    }
+  },
+  "gather": {
+    "charm:bat_bucket": 2
+  },
+  "rewards": {
+    "items": {
+      "charm:bat_bucket": 1,
+      "minecraft:leather[common] | minecraft:bucket": 2,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

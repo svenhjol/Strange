@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Bamboo",
+      "description": "Gather bamboo."
+    }
+  },
+  "gather": {
+    "minecraft:bamboo": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bamboo": 15,
+      "minecraft:scaffolding[uncommon]": 10,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

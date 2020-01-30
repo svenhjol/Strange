@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Crossbow",
+      "description": "Craft crossbows."
+    }
+  },
+  "craft": {
+    "minecraft:crossbow": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:crossbow[enchanted][common] | minecraft:crossbow": 1,
+      "minecraft:emerald": 1,
+      "minecraft:firework_rocket[rare]": 3
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

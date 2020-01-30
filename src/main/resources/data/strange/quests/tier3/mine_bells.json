@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Break Bells",
+      "description": "Find village bells and destroy them.",
+      "hint": "Bells are found in each village."
+    }
+  },
+  "mine": {
+    "minecraft:bell": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bell": 3,
+      "minecraft:emerald": 2,
+      "StoneCircleTotem[epic]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

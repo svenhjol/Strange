@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "quark:slime_in_a_bucket"
+  ],
+  "lang": {
+    "en": {
+      "title": "Slime Bucket",
+      "description": "Gather slime in a bucket.",
+      "hint": "Right-click a baby slime with a bucket."
+    }
+  },
+  "gather": {
+    "quark:slime_in_a_bucket": 2
+  },
+  "rewards": {
+    "items": {
+      "quark:slime_in_a_bucket": 1,
+      "minecraft:slime_ball[common] | minecraft:bucket": 2,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

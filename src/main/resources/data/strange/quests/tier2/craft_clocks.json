@@ -13,7 +13,7 @@
     "items": {
       "minecraft:emerald[common]": 1,
       "minecraft:clock": 1,
-      "minecraft:gold_ingots[uncommon]": 4
+      "minecraft:gold_ingot[uncommon]": 4
     },
     "xp": {
       "count": 40

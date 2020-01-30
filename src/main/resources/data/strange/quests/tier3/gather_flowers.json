@@ -12,7 +12,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 2,
-      "minecraft:purple_dye | minecraft:light_blue_dye | minecraft:blue_dye": 16
+      "minecraft:purple_dye | minecraft:light_blue_dye | minecraft:blue_dye": 16,
+      "SuspiciousStew": "3-5"
     },
     "xp": {
       "count": 60

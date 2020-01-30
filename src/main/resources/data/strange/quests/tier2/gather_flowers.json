@@ -12,8 +12,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald[common]": 1,
-      "minecraft:yellow_dye[common]": 2,
-      "minecraft:red_dye[common]": 2
+      "minecraft:yellow_dye[common] | minecraft:red_dye[common]": 2,
+      "SuspiciousStew": "2-4"
     },
     "xp": {
       "count": 40

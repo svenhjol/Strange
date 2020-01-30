@@ -12,7 +12,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "minecraft:podzol": 15
+      "minecraft:podzol": 15,
+      "SuspiciousStew[uncommon]": "2-4"
     },
     "xp": {
       "count": 80

@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "quark:tallow_and_candles"
+  ],
+  "lang": {
+    "en": {
+      "title": "Tallow",
+      "description": "Gather tallow.",
+      "hint": "Obtained from pigs."
+    }
+  },
+  "gather": {
+    "quark:tallow": 16
+  },
+  "rewards": {
+    "items": {
+      "quark:tallow": 8,
+      "minecraft:emerald": 2,
+      "minecraft:porkchop[uncommon]": 4
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

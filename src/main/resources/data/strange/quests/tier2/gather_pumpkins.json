@@ -11,7 +11,8 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "minecraft:pumpkin": 3
+      "minecraft:pumpkin": 3,
+      "SuspiciousStew": "1-3"
     },
     "xp": 40
   }

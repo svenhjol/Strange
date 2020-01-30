@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Slimeballs",
+      "description": "Gather slimeballs.",
+      "hint": "Slimes found in swamps or underground."
+    }
+  },
+  "gather": {
+    "minecraft:slime_ball": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:slime_ball": 4,
+      "StoneCircleTotem[epic]": 1
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Leads",
+      "description": "Craft leads."
+    }
+  },
+  "craft": {
+    "minecraft:lead": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:lead": 3,
+      "minecraft:slime_ball[common]": 3,
+      "minecraft:string[uncommon]": "3-6",
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

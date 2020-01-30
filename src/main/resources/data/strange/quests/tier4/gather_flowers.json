@@ -14,7 +14,8 @@
     "items": {
       "minecraft:emerald": 3,
       "minecraft:purple_dye | minecraft:light_blue_dye | minecraft:blue_dye": 16,
-      "minecraft:red_dye | minecraft:orange_dye | minecraft:yellow": 16
+      "minecraft:red_dye | minecraft:orange_dye | minecraft:yellow": 16,
+      "SuspiciousStew": "4-6"
     },
     "xp": {
       "count": 80

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Paper",
+      "description": "Craft paper from sugar cane."
+    }
+  },
+  "craft": {
+    "minecraft:paper": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:paper": 6,
+      "minecraft:book[common]": 4,
+      "minecraft:cartography_table[uncommon]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

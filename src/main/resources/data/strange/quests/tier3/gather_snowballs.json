@@ -1,0 +1,20 @@
+{
+  "lang": {
+    "en": {
+      "title": "Snowballs",
+      "description": "Gather snowballs."
+    }
+  },
+  "gather": {
+    "minecraft:snowball": 16
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 2,
+      "minecraft:snowball": 8
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

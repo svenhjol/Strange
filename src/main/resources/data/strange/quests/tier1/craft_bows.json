@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Bows",
+      "description": "Craft bows from sticks and string."
+    }
+  },
+  "craft": {
+    "minecraft:bow": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:bow": 1,
+      "minecraft:bow[enchanted][uncommon]": 1,
+      "minecraft:arrow[common]": 4
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Potatoes",
+      "description": "Gather potatoes."
+    }
+  },
+  "gather": {
+    "minecraft:potato": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:potato": 5,
+      "minecraft:baked_potato[uncommon]": 5,
+      "minecraft:emerald": 1,
+      "SuspiciousStew[uncommon]": "1-3"
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

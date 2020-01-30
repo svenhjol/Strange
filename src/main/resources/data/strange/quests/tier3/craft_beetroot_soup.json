@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Beetroot Soup",
+      "description": "Craft beetroot soup."
+    }
+  },
+  "craft": {
+    "minecraft:beetroot_soup": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:beetroot_soup": 3,
+      "SuspiciousStew": 3,
+      "minecraft:emerald": 2
+    },
+    "xp": {
+      "count": 60
+    }
+  }
+}

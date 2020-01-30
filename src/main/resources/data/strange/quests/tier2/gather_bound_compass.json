@@ -1,0 +1,23 @@
+{
+  "modules": [
+      "charm:compass_binding"
+  ],
+  "lang": {
+    "en": {
+      "title": "Bound Compass",
+      "description": "Bind a compass.",
+      "hint": "Shift click on banner with compass."
+    }
+  },
+  "gather": {
+    "charm:bound_compass": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:compass": 1,
+      "minecraft:white_banner[uncommon]": 1
+    },
+    "xp": 40
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Compasses",
+      "description": "Craft compasses.",
+      "hint": "Made from iron and redstone."
+    }
+  },
+  "craft": {
+    "minecraft:compass": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:compass": 1,
+      "minecraft:emerald": 2,
+      "minecraft:iron_ingot[uncommon]": 4
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}
