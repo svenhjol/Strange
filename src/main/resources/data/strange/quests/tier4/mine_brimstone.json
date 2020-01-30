@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "quark:brimstone_underground_biome"
+  ],
+  "lang": {
+    "en": {
+      "title": "Brimstone",
+      "description": "Find brimstone blocks and mine them.",
+      "hint": "Found underground in badlands biomes."
+    }
+  },
+  "mine": {
+    "quark:brimstone": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:brimstone": 15,
+      "minecraft:lava_bucket[rare]": 2
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

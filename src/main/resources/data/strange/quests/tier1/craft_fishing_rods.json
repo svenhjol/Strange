@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Fishing Rods",
+      "description": "Craft fishing rods."
+    }
+  },
+  "craft": {
+    "minecraft:fishing_rod": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:fishing_rod": 1,
+      "minecraft:string[common]": "1-2",
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

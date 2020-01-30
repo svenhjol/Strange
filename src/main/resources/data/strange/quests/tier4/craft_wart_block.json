@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Wart Block",
+      "description": "Craft nether wart blocks."
+    }
+  },
+  "craft": {
+    "minecraft:nether_wart_block": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:nether_wart_block": 1,
+      "minecraft:nether_wart[uncommon]": 9
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

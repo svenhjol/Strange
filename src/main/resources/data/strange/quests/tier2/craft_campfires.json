@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Campfires",
+      "description": "Craft campfires."
+    }
+  },
+  "craft": {
+    "minecraft:campfire": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:campfire": 1,
+      "minecraft:flint_and_steel[uncommon]": 1,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

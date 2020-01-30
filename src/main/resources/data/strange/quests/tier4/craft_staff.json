@@ -4,21 +4,21 @@
   ],
   "lang": {
     "en": {
-      "title": "Make Staff",
+      "title": "Staff",
       "description": "Create a staff from sticks and moonstone."
     }
   },
   "craft": {
-    "strange:staff": 1
+    "strange:staff": 4
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 2,
+      "minecraft:emerald": 3,
       "strange:staff": 1,
       "SpellBook": 1
     },
     "xp": {
-      "count": 60
+      "count": 80
     }
   }
 }

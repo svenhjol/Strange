@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Apples",
+      "description": "Gather apples in your inventory.",
+      "hint": "Apples sometimes drop from oak leaves."
+    }
+  },
+  "gather": {
+    "minecraft:apple": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald[common]": 1,
+      "minecraft:apple": 3,
+      "minecraft:golden_apple[rare]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}

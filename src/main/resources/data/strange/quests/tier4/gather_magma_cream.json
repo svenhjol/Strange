@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Magma Cream",
+      "description": "Gather magma cream."
+    }
+  },
+  "gather": {
+    "minecraft:magma_cream": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:magma_cream": 6,
+      "minecraft:slime_ball[uncommon]": 3,
+      "minecraft:blaze_powder[uncommon]": 3
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

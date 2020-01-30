@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Tridents",
+      "description": "Gather tridents."
+    }
+  },
+  "gather": {
+    "minecraft:trident": 12
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:trident[enchanted][common]": 1,
+      "minecraft:trident": 4
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

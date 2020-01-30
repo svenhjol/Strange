@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Podzol",
+      "description": "Find podzol blocks and harvest them.",
+      "hint": "Found in giant tree and bamboo biomes."
+    }
+  },
+  "mine": {
+    "podzol": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:podzol": 15
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

@@ -10,7 +10,7 @@
   },
   "rewards": {
     "items": {
-      "minecraft:emerald": 4
+      "minecraft:emerald": "3-12"
     },
     "xp": {
       "count": 40

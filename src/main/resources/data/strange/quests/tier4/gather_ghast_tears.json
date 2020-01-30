@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Ghast Tears",
+      "description": "Gather ghast tears."
+    }
+  },
+  "gather": {
+    "minecraft:ghast_tear": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:ghast_tear": 3,
+      "EnchantedBook[uncommon]": 1,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

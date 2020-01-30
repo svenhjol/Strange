@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "quark:stonelings"
+  ],
+  "lang": {
+    "en": {
+      "title": "Diamond Hearts",
+      "description": "Gather hearts of diamond.",
+      "hint": "Dropped by stonelings."
+    }
+  },
+  "gather": {
+    "quark:diamond_heart": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "quark:diamond_heart": 4,
+      "quark:pickarang[uncommon]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

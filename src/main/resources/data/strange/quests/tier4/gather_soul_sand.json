@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Soul Sand",
+      "description": "Gather soul sand.",
+      "hint": "Found throughout the Nether."
+    }
+  },
+  "gather": {
+    "minecraft:soul_sand": 40
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:soul_sand": 20
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "strange:spells"
+  ],
+  "lang": {
+    "en": {
+      "title": "Craft Moonstones",
+      "description": "Create moonstones.",
+      "hint": "Crafted from glowstone and quartz."
+    }
+  },
+  "craft": {
+    "strange:moonstone": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "Moonstone": 4,
+      "SpellBook[uncommon]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

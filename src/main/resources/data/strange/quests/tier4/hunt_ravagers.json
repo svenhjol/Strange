@@ -1,0 +1,24 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Ravagers",
+      "description": "Find and kill ravagers.",
+      "hint": "Ravagers appear during a raid."
+    }
+  },
+  "hunt": {
+    "minecraft:ravager": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": "3-6",
+      "minecraft:saddle": 2,
+      "minecraft:crossbow[enchanted][uncommon]": 1,
+      "minecraft:bell[common]": 2,
+      "StoneCircleTotem[rare]": 1
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

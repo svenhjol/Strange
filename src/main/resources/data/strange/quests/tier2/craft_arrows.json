@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Arrows",
+      "description": "Craft arrows."
+    }
+  },
+  "craft": {
+    "minecraft:arrow": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:arrow[common]": 5,
+      "minecraft:bow[enchanted][uncommon] | minecraft:bow": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

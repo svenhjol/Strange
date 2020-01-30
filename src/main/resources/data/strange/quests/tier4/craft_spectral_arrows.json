@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Spectral Arrows",
+      "description": "Craft spectral arrows."
+    }
+  },
+  "craft": {
+    "minecraft:spectral_arrow": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:spectral_arrow": 10,
+      "minecraft:glowstone_dust[uncommon]": 8
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunt Traders",
+      "description": "Find and kill wandering traders. | The traders are spies!"
+    }
+  },
+  "hunt": {
+    "minecraft:wandering_trader": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": "3-6",
+      "minecraft:blue_ice[rare]": 2,
+      "minecraft:diamond[rare]": 2,
+      "minecraft:brain_coral[rare]": 2,
+      "minecraft:horn_coral[rare]": 2,
+      "minecraft:wither_rose[rare]": 2,
+      "minecraft:milk_bucket[rare]": 2,
+      "minecraft:lead[rare]": 2
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}

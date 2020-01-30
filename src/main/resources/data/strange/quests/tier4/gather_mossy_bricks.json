@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mossy Bricks",
+      "description": "Gather mossy stone bricks."
+    }
+  },
+  "gather": {
+    "minecraft:mossy_stone_bricks": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 3,
+      "minecraft:mossy_stone_bricks": 10,
+      "minecraft:stone_bricks[uncommon]": 10
+    },
+    "xp": {
+      "count": 80
+    }
+  }
+}
