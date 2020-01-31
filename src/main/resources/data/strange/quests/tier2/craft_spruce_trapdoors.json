@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:spruce_trapdoor": 4,
       "minecraft:spruce_planks": 8,
       "minecraft:emerald[common]": 1
     },

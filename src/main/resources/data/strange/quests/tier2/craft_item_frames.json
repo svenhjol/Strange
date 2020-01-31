@@ -11,7 +11,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "minecraft:item_frame": 2,
+      "minecraft:item_frame": 1,
       "minecraft:painting[rare]": 2
     },
     "xp": {

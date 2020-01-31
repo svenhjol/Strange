@@ -12,7 +12,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald[common]": 1,
-      "minecraft:clock": 1,
       "minecraft:gold_ingot[uncommon]": 4
     },
     "xp": {

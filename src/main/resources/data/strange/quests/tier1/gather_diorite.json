@@ -7,8 +7,7 @@
     }
   },
   "provide": {
-    "minecraft:wooden_pickaxe": 1,
-    "minecraft:wooden_pickaxe[enchanted][uncommon]": 1
+    "minecraft:wooden_pickaxe | minecraft:wooden_pickaxe[enchanted]": 1
   },
   "gather": {
     "minecraft:diorite": 10

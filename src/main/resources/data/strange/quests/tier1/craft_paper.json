@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:paper": 1,
       "minecraft:book[common]": 1,
       "minecraft:map[uncommon]": 1
     },

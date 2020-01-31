@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Saplings",
+      "description": "Gather saplings."
+    }
+  },
+  "gather": {
+    "minecraft:acacia_sapling | spruce_sapling": 8,
+    "minecraft:birch_sapling": 8
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:acacia_logs | minecraft:birch_logs | minecraft:spruce_logs": 2,
+      "minecraft:apple[uncommon]": "2-4",
+      "minecraft:iron_axe[enchanted][rare]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}

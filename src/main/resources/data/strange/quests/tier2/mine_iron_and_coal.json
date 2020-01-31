@@ -12,7 +12,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "minecraft:iron_ingots[common]": 4,
+      "minecraft:iron_ingot[common]": 4,
       "minecraft:coal[common]": 4
     },
     "xp": {

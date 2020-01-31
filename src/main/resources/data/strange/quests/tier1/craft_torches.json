@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:torch": 8,
       "minecraft:coal[common]": 2,
       "minecraft:lantern[uncommon]": 1
     },

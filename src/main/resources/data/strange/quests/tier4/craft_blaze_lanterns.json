@@ -15,7 +15,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "quark:blaze_lantern": 1,
       "minecraft:blaze_powder[uncommon]": "4-8"
     },
     "xp": {

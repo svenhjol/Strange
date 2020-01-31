@@ -6,11 +6,10 @@
     }
   },
   "craft": {
-    "minecraft:lead": 6
+    "minecraft:lead": 3
   },
   "rewards": {
     "items": {
-      "minecraft:lead": 3,
       "minecraft:slime_ball[common]": 3,
       "minecraft:string[uncommon]": "3-6",
       "minecraft:emerald": 2

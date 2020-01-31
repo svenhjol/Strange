@@ -10,7 +10,7 @@
   },
   "rewards": {
     "items": {
-      "minecraft:fishing_rod": 1,
+      "minecraft:fishing_rod[enchanted][uncommon]": 1,
       "minecraft:string[common]": "1-2",
       "minecraft:emerald[common]": 1
     },

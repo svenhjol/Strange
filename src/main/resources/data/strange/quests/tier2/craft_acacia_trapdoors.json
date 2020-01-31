@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:acacia_trapdoor": 4,
       "minecraft:acacia_planks": 8,
       "minecraft:emerald[common]": 1
     },

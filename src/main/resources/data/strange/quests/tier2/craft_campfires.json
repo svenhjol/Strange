@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:campfire": 1,
       "minecraft:flint_and_steel[uncommon]": 1,
       "minecraft:emerald[common]": 1
     },

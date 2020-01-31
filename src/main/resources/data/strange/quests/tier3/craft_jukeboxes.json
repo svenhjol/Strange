@@ -6,11 +6,10 @@
     }
   },
   "craft": {
-    "minecraft:jukebox": 4
+    "minecraft:jukebox": 2
   },
   "rewards": {
     "items": {
-      "minecraft:jukebox": 1,
       "minecraft:emerald": 2,
       "minecraft:record_ward[uncommon] | minecraft:record_strad[uncommon] | minecraft:record_wait[uncommon]": 1
     },

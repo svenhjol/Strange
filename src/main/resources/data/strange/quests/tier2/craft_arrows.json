@@ -11,7 +11,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "minecraft:arrow[common]": 5,
       "minecraft:bow[enchanted][uncommon] | minecraft:bow": 1
     },
     "xp": {

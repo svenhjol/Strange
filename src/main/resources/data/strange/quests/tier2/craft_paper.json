@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:paper": 6,
       "minecraft:book[common]": 4,
       "minecraft:cartography_table[uncommon]": 1
     },

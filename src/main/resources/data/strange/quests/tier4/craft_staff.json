@@ -9,12 +9,11 @@
     }
   },
   "craft": {
-    "strange:staff": 4
+    "strange:staff": 2
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "strange:staff": 1,
       "SpellBook": 1
     },
     "xp": {

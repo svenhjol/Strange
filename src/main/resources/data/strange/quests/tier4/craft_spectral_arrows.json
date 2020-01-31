@@ -6,12 +6,12 @@
     }
   },
   "craft": {
-    "minecraft:spectral_arrow": 20
+    "minecraft:spectral_arrow": 10
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "minecraft:spectral_arrow": 10,
+      "minecraft:arrow[common]": 10,
       "minecraft:glowstone_dust[uncommon]": 8
     },
     "xp": {

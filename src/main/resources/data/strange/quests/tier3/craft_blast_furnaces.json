@@ -6,11 +6,10 @@
     }
   },
   "craft": {
-    "minecraft:blast_furnace": 3
+    "minecraft:blast_furnace": 2
   },
   "rewards": {
     "items": {
-      "minecraft:blast_furnace": 1,
       "minecraft:emerald": 2,
       "minecraft:smooth_stone[common]": 3
     },

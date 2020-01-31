@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:oak_boat": 1,
       "minecraft:oak_planks[common]": 5
     },
     "xp": {

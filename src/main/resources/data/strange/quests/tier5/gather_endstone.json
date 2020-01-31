@@ -12,7 +12,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "minecraft:ender_pearl": "10-20",
+      "minecraft:ender_pearl": "8-12",
       "minecraft:end_stone_bricks | minecraft:end_stone": "25-50"
     },
     "xp": {

@@ -10,7 +10,7 @@
   },
   "rewards": {
     "items": {
-      "minecraft:rail": 20,
+      "minecraft:rail": 10,
       "minecraft:powered_rail[uncommon]": 5,
       "minecraft:iron_ingot[common] | minecraft:minecart[common]": 6
     },

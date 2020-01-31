@@ -10,8 +10,8 @@
   },
   "rewards": {
     "items": {
-      "minecraft:ender_chest": 1,
-      "minecraft:ender_pearl[uncommon]": 1,
+      "minecraft:ender_eye": 1,
+      "minecraft:ender_pearl[common]": 1,
       "minecraft:obsidian[uncommon]": 8
     },
     "xp": {

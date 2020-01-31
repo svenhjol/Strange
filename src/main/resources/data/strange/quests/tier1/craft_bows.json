@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:bow": 1,
       "minecraft:bow[enchanted][uncommon]": 1,
       "minecraft:arrow[common]": 4
     },

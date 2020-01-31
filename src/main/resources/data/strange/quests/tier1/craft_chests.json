@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:chest": 1,
       "minecraft:oak_planks[common]": 8
     },
     "xp": {

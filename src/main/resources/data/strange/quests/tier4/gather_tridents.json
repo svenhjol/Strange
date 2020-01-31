@@ -6,13 +6,12 @@
     }
   },
   "gather": {
-    "minecraft:trident": 12
+    "minecraft:trident": 10
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "minecraft:trident[enchanted][common]": 1,
-      "minecraft:trident": 4
+      "minecraft:trident[enchanted][common]": 1
     },
     "xp": {
       "count": 80

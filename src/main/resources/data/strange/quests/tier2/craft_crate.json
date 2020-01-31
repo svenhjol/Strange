@@ -14,7 +14,6 @@
   },
   "rewards": {
     "items": {
-      "charm:crate": 1,
       "minecraft:oak_planks[common]": 4,
       "minecraft:iron_ingots[common]": 4
     },

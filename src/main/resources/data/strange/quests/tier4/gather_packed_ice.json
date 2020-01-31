@@ -14,6 +14,8 @@
       "minecraft:emerald": 3,
       "minecraft:packed_ice": 6
     },
-    "xp": 80
+    "xp": {
+      "count": 80
+    }
   }
 }

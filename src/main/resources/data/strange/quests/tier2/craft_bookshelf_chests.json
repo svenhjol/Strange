@@ -15,7 +15,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "charm:bookshelf_chest": 1,
       "minecraft:book[common]": 3
     },
     "xp": {

@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:furnace": 1,
       "minecraft:cobblestone[common]": 8,
       "minecraft:coal[uncommon]": 4
     },

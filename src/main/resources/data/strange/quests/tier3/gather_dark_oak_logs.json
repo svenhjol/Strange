@@ -10,8 +10,8 @@
   },
   "rewards": {
     "items": {
-      "minecraft:jungle_planks[common]": 30,
-      "minecraft:jungle_door[common]": 4,
+      "minecraft:dark_oak_planks[common]": 30,
+      "minecraft:dark_oak_door[common]": 4,
       "minecraft:emerald": 2
     },
     "xp": {

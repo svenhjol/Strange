@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:anvil": 1,
       "minecraft:emerald": 2,
       "minecraft:iron_ingot[common]": 8,
       "minecraft:iron_sword[enchanted][rare]": 1

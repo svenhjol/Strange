@@ -10,8 +10,7 @@
     "minecraft:dirt": 32
   },
   "provide": {
-    "minecraft:wooden_shovel": 1,
-    "minecraft:wooden_shovel[enchanted][uncommon]": 1
+    "minecraft:wooden_shovel | minecraft:wooden_shovel[enchanted]": 1
   },
   "rewards": {
     "items": {

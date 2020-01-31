@@ -14,6 +14,8 @@
       "minecraft:glass_bottle": 9,
       "Potion": 1
     },
-    "xp": 60
+    "xp": {
+      "count": 60
+    }
   }
 }

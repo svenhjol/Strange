@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:sandstone": 4,
       "minecraft:sand[uncommon]": 4
     },
     "xp": {

@@ -12,7 +12,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "minecraft:tnt[common]": 1,
       "minecraft:gunpowder[uncommon]": 4
     },
     "xp": {

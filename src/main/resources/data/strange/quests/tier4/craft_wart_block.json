@@ -11,7 +11,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 3,
-      "minecraft:nether_wart_block": 1,
       "minecraft:nether_wart[uncommon]": 9
     },
     "xp": {

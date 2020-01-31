@@ -11,7 +11,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:compass": 1,
       "minecraft:emerald": 2,
       "minecraft:iron_ingot[uncommon]": 4
     },

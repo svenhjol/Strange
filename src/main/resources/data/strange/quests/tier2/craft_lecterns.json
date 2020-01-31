@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:lectern": 1,
       "minecraft:book[common]": 3
     },
     "xp": {

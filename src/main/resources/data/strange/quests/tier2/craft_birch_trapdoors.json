@@ -10,7 +10,6 @@
   },
   "rewards": {
     "items": {
-      "minecraft:birch_trapdoor": 4,
       "minecraft:birch_planks": 8,
       "minecraft:emerald[common]": 1
     },

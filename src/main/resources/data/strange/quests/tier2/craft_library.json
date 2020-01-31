@@ -12,7 +12,6 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 1,
-      "strange:writing_desk[common]": 1,
       "minecraft:lectern[common]": 1
     },
     "xp": {

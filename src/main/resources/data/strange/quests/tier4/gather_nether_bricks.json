@@ -15,6 +15,8 @@
       "minecraft:nether_bricks[uncommon]": 20,
       "Potion[common]": 1
     },
-    "xp": 80
+    "xp": {
+      "count": 80
+    }
   }
 }

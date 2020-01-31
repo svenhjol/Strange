@@ -10,8 +10,7 @@
     "minecraft:salmon | minecraft:cod": 4
   },
   "provide": {
-    "minecraft:fishing_rod": 1,
-    "minecraft:fishing_rod[enchanted][uncommon]": 1
+    "minecraft:fishing_rod | minecraft:fishing_rod[enchanted]": 1
   },
   "rewards": {
     "items": {

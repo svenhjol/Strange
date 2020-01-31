@@ -10,8 +10,7 @@
   },
   "rewards": {
     "items": {
-      "strange:writing_desk": 1,
-      "minecraft:ink_sac[common]": 2,
+      "minecraft:book[uncommon]": 2,
       "ScrollTier1[common]": 1
     },
     "xp": {

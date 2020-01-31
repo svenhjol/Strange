@@ -6,12 +6,11 @@
     }
   },
   "craft": {
-    "minecraft:cake": 3
+    "minecraft:cake": 2
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 2,
-      "minecraft:cake": 1,
       "minecraft:bucket[common]": 3
     },
     "xp": {

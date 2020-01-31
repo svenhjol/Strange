@@ -12,7 +12,7 @@
   "rewards": {
     "items": {
       "minecraft:bread": 4,
-      "minecraft:seeds[common]": 3,
+      "minecraft:wheat_seeds[common]": 3,
       "minecraft:cake[rare]": 1
     },
     "xp": {

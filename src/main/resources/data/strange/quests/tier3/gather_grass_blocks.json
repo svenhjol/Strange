@@ -14,6 +14,8 @@
       "minecraft:emerald": 2,
       "minecraft:grass_block": 15
     },
-    "xp": 60
+    "xp": {
+      "count": 60
+    }
   }
 }
