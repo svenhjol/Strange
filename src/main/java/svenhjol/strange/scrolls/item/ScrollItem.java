@@ -82,8 +82,12 @@ public class ScrollItem extends MesonItem
                 }
 
                 if (!hasPopulatedQuest(scroll)) {
-                    float luck = (float)(playerIn.getLuck() / 1024D) * 1.5F;
-                    final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), getValue(scroll) * luck, getQuest(scroll));
+                    float value = Math.max(0.0F, getValue(scroll));
+
+                    if (playerIn.getLuck() > 0)
+                        value += worldIn.rand.nextFloat() + 0.25F;
+
+                    final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), value, getQuest(scroll));
                     putQuest(scroll, q);
 
                     scroll.setDisplayName(new TranslationTextComponent(getQuest(scroll).getTitle()));
