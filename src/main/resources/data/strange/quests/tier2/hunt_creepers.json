@@ -6,7 +6,7 @@
     }
   },
   "hunt": {
-    "minecraft:creeper": 2
+    "minecraft:creeper": 4
   },
   "rewards": {
     "items": {

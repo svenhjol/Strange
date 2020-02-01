@@ -2,12 +2,13 @@
   "lang": {
     "en": {
       "title": "Fish",
-      "description": "A relaxing fishing trip is just what you need. | Find some fish for the village.",
+      "description": "A relaxing fishing trip is what you need. | Find some fish for the village.",
       "hint": "A fishing rod will be provided for you."
     }
   },
   "gather": {
-    "minecraft:salmon | minecraft:cod": 4
+    "minecraft:salmon": 2,
+    "minecraft:cod": 2
   },
   "provide": {
     "minecraft:fishing_rod | minecraft:fishing_rod[enchanted]": 1

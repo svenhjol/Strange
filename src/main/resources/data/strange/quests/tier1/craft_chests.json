@@ -2,10 +2,10 @@
   "lang": {
     "en": {
       "title": "Chests",
-      "description": "Craft chests from planks."
+      "description": "Gather chests."
     }
   },
-  "craft": {
+  "gather": {
     "minecraft:chest": 2
   },
   "rewards": {

@@ -1,0 +1,25 @@
+{
+  "modules": [
+    "strange:travel_journal"
+  ],
+  "lang": {
+    "en": {
+      "title": "Travel Journal",
+      "description": "Make travel journals.",
+      "hint": "Made from compass and writable book."
+    }
+  },
+  "craft": {
+    "strange:travel_journal": 1
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:compass[common]": 1,
+      "minecraft:map[uncommon]": 1
+    },
+    "xp": {
+      "count": 40
+    }
+  }
+}
