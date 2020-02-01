@@ -105,7 +105,6 @@ public class TotemOfPreserving extends MesonModule
         if (noDespawn) totemEntity.setNoDespawn();
         totemEntity.setGlowing(true);
         totemEntity.setInvulnerable(true);
-        totemEntity.setOwnerId(player.getUniqueID());
 
         world.addEntity(totemEntity);
         event.setCanceled(true);
