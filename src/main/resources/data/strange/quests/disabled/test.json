@@ -11,7 +11,7 @@
     }
   },
   "provide": {
-    "minecraft:sticks | minecraft:gravel": 1
+    "minecraft:stick | minecraft:gravel": 1
   },
   "hunt": {
     "minecraft:zombie | minecraft:skeleton": 1,
@@ -23,7 +23,7 @@
   },
   "rewards": {
     "items": {
-      "AncientTome[rare] | EnchantedBook | Moonstone": 1,
+      "StoneCircleMap": 1,
       "minecraft:iron_sword[enchanted][rare] | minecraft:diamond_helmet[enchanted]": 1,
       "StoneCircleTotem": 1,
       "quark:apple_crate | quark:pickarang": 1,
