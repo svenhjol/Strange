@@ -1,4 +1,4 @@
-## General QA / Testing
+## Final QA / Testing
 - [x] Get staves working (holding books, casting etc)
 - [x] Wooden staff texture
 - [x] Open spellbook texture
@@ -33,11 +33,13 @@
 - [x] Bound compass has error on frame 16
 - [x] Encounter boss bar doesn't clear when you die
 - [x] Test change to `LivingDeathEvent` code
-- [ ] Replace lecterns with writing desks in village gen
+- [ ] IN PROGRESS Restore advancements
 
 ## Intermittent / warnings
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
-- [ ] Weird "air_block" errors sometimes when loading
+- [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
+- [ ] the "17" warning
+- [x] TEST "strange:module_enabled" error
 - [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos))
 
 ## Ruins
@@ -53,9 +55,8 @@
 - [x] Chambers for Savanna
 
 ## Quests
-- [x] Think about language strings as part of json
 - [x] Move all lang strings into quests
-- [ ] Add some new quests
+- [ ] IN PROGRESS - MORE T5 - Add some new quests
 - [x] Handle `"description": "String1 | String2 | String3"`
 - [x] Handle output of `"minecraft:iron_pickaxe[enchanted]"`
 - [x] Handle `"modules": ["quark:thing_enabled"]`,
@@ -65,8 +66,9 @@
 - [x] Handle `"hint"`
 - [x] Handle `"provide": {}` to give quest items on start
 - [x] TEST Handle `"ScrollTier1"` (etc)
-- [x] TEST Handle values of "x-y"
+- [x] Handle values of "x-y"
 - [x] TEST Luck should increase scroll value
+- [x] Handle "StoneCircleMap" - gen map randomly away from villager
 
 ## Docs
 - [ ] Update all docs
