@@ -64,7 +64,7 @@ public class SpellBookItem extends MesonItem
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
     {
-        if (group == ItemGroup.SEARCH) {
+        if (isEnabled() && group == ItemGroup.SEARCH) {
             for (String id : Spells.spells.keySet()) {
                 Spell spell = Spells.spells.get(id);
                 ItemStack book = SpellBookItem.putSpell(new ItemStack(SpellBooks.book), spell);

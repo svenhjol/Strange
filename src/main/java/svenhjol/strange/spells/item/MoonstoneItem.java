@@ -72,7 +72,7 @@ public class MoonstoneItem extends MesonItem implements IRuneColorProvider
     @Override
     public boolean isEnabled()
     {
-        return true;
+        return module.isEnabled();
     }
 
     @Nullable

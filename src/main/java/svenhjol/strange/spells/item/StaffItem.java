@@ -23,12 +23,29 @@ import javax.annotation.Nullable;
 
 public class StaffItem extends ToolItem implements IMesonItem
 {
+    protected MesonModule module;
+
     public StaffItem(MesonModule module, String type, IItemTier tier)
     {
         super(tier.getAttackDamage() + 2.0F, -1.0F, tier, Sets.newHashSet(), new Item.Properties()
             .group(ItemGroup.TOOLS));
 
         this.register(module, type + "_staff");
+        this.module = module;
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        if (isEnabled() && group == ItemGroup.SEARCH) {
+            super.fillItemGroup(group, items);
+        }
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return module.isEnabled();
     }
 
     @Override
@@ -160,12 +177,6 @@ public class StaffItem extends ToolItem implements IMesonItem
         }
         ItemStack book = player.getHeldItemOffhand();
         return SpellBookItem.getSpell(book);
-    }
-
-    @Override
-    public boolean isEnabled()
-    {
-        return true;
     }
 
     public int getEfficiency(ItemStack staff)
