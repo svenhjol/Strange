@@ -6,11 +6,9 @@ import svenhjol.strange.Strange;
 
 public class StrangeLoot
 {
-    public static final ResourceLocation CHESTS_VAULT_BOOKSHELVES = createLootTable("chests/vaults/vaults_bookshelf");
-    public static final ResourceLocation CHESTS_VAULT_STORAGE = createLootTable("chests/vaults/vaults_storage");
-    public static final ResourceLocation CHESTS_VAULT_TREASURE = createLootTable("chests/vaults/vaults_treasure");
-    public static final ResourceLocation CHESTS_SPELLS = createLootTable("chests/spells");
-    public static final ResourceLocation CHESTS_STONE_CIRCLE_TREASURE = createLootTable("chests/stone_circle_treasure");
+    public static final ResourceLocation CHESTS_VAULT_BOOKSHELVES;
+    public static final ResourceLocation CHESTS_VAULT_STORAGE;
+    public static final ResourceLocation CHESTS_VAULT_TREASURE;
 
     public static ResourceLocation createLootTable(String path)
     {
@@ -20,4 +18,11 @@ public class StrangeLoot
     }
 
     public static void init() {}
+
+    static
+    {
+        CHESTS_VAULT_BOOKSHELVES = createLootTable("chests/vaults/vaults_bookshelf");
+        CHESTS_VAULT_STORAGE = createLootTable("chests/vaults/vaults_storage");
+        CHESTS_VAULT_TREASURE = createLootTable("chests/vaults/vaults_treasure");
+    }
 }

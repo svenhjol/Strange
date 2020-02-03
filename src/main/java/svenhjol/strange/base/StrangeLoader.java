@@ -1,7 +1,6 @@
 package svenhjol.strange.base;
 
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonLoader;
@@ -13,7 +12,6 @@ import svenhjol.strange.base.compat.QuarkCaveRoots;
 import svenhjol.strange.base.compat.QuarkCompat;
 import svenhjol.strange.base.compat.QuarkVariantChests;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
-import svenhjol.strange.base.loot.AddSpellRandomly;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
@@ -78,8 +76,5 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
 
         super.setup(event);
-
-        // loot functions
-        LootFunctionManager.registerFunction(new AddSpellRandomly.Serializer());
     }
 }
