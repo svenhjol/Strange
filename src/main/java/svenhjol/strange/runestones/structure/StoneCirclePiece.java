@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -14,9 +15,9 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
@@ -55,6 +56,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             config.radius = rand.nextInt(4) + 5;
             config.columnMinHeight = 3;
             config.columnVariation = 4;
+            config.lootTable = LootTables.CHESTS_NETHER_BRIDGE;
             config.blocks = new ArrayList<>(Arrays.asList(
                 Blocks.NETHER_BRICKS.getDefaultState()
             ));
@@ -80,6 +82,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             config.radius = rand.nextInt(7) + 4;
             config.columnMinHeight = 3;
             config.columnVariation = 3;
+            config.lootTable = LootTables.CHESTS_END_CITY_TREASURE;
             config.blocks = new ArrayList<>(Arrays.asList(
                 Blocks.OBSIDIAN.getDefaultState()
             ));
@@ -102,6 +105,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             config.runeChance = 0.8F;
             config.columnMinHeight = 4;
             config.columnVariation = 2;
+            config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
             config.blocks = new ArrayList<>(Arrays.asList(
                 Blocks.STONE.getDefaultState(),
                 Blocks.COBBLESTONE.getDefaultState(),
@@ -217,10 +221,10 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                 BlockState findState = world.getBlockState(findPos);
                 BlockState findStateUp = world.getBlockState(findPosUp);
 
-                if (findState.isSolid() && findStateUp.isAir(world, findPosUp)) {
+                if (findState.isSolid() && findStateUp.isAir(world, findPosUp) && config.lootTable != null) {
                     BlockState chest = Blocks.CHEST.getDefaultState();
                     world.setBlockState(findPosUp, chest, 2);
-                    LockableLootTileEntity.setLootTable(world, rand, findPosUp, StrangeLoot.CHESTS_STONE_CIRCLE_TREASURE);
+                    LockableLootTileEntity.setLootTable(world, rand, findPosUp, config.lootTable);
                     Meson.debug("Generated with chest " + pos);
                     break;
                 }
@@ -247,6 +251,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         public float runeChance = 0.8F;
         public boolean withChest = false;
         public boolean allRunes = false;
+        public ResourceLocation lootTable = null;
         public List<BlockState> blocks = new ArrayList<>();
     }
 }
