@@ -7,14 +7,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SuspiciousStewItem;
 import net.minecraft.potion.*;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
 import svenhjol.strange.scrolls.module.Scrolls;
@@ -54,21 +57,22 @@ public abstract class BaseGenerator
     // special item tags
     public static final String ANCIENT_TOME = "AncientTome";
     public static final String ENCHANTED_BOOK = "EnchantedBook";
-    public static final String SPELL_BOOK = "SpellBook";
     public static final String MOONSTONE = "Moonstone";
+    public static final String POTION = "Potion";
     public static final String RARE_ENCHANTED_BOOK = "RareEnchantedBook";
-    public static final String STONE_CIRCLE_TOTEM = "StoneCircleTotem";
-    public static final String TRAVEL_JOURNAL = "TravelJournal";
     public static final String SCROLL_TIER1 = "ScrollTier1";
     public static final String SCROLL_TIER2 = "ScrollTier2";
     public static final String SCROLL_TIER3 = "ScrollTier3";
     public static final String SCROLL_TIER4 = "ScrollTier4";
     public static final String SCROLL_TIER5 = "ScrollTier5";
-    public static final String POTION = "Potion";
+    public static final String SPELL_BOOK = "SpellBook";
+    public static final String STONE_CIRCLE_MAP = "StoneCircleMap";
+    public static final String STONE_CIRCLE_TOTEM = "StoneCircleTotem";
     public static final String SUSPICIOUS_STEW = "SuspiciousStew";
+    public static final String TRAVEL_JOURNAL = "TravelJournal";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
-        STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, MOONSTONE, TRAVEL_JOURNAL, ANCIENT_TOME,
+        STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, MOONSTONE, TRAVEL_JOURNAL, ANCIENT_TOME, STONE_CIRCLE_MAP,
         SCROLL_TIER1, SCROLL_TIER2, SCROLL_TIER3, SCROLL_TIER4, SCROLL_TIER5
     ));
 
@@ -232,6 +236,18 @@ public abstract class BaseGenerator
                     TotemOfReturningItem.setPos(out, pos.add(0, world.getSeaLevel(), 0));
                     out.setDisplayName(new TranslationTextComponent("item.strange.quest_reward_totem"));
                 }
+                break;
+
+            case STONE_CIRCLE_MAP:
+                if (!world.isRemote) {
+                    List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST));
+
+                    out = LocationHelper.createMap(
+                        (ServerWorld) world,
+                        pos.offset(directions.get(rand.nextInt(directions.size())), rand.nextInt(2000)),
+                        new ResourceLocation(Strange.MOD_ID, StoneCircles.NAME));
+                }
+
                 break;
 
             case ENCHANTED_BOOK:
