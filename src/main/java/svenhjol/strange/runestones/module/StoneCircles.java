@@ -1,12 +1,9 @@
 package svenhjol.strange.runestones.module;
 
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
@@ -15,9 +12,6 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.MapData;
-import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,6 +24,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
 
@@ -146,17 +141,9 @@ public class StoneCircles extends MesonModule
                 .quality(quality)
                 .acceptFunction(() -> (stack, context) -> {
                     BlockPos pos = context.get(LootParameters.POSITION);
-                    if (pos != null) {
-                        ServerWorld world = context.getWorld();
-                        BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 100, true);
-                        if (structurePos != null) {
-                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
-                            FilledMapItem.renderBiomePreviewMap(world, map);
-                            MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
-                            map.setDisplayName(new TranslationTextComponent("filled_map.stone_circle"));
-                            return map;
-                        }
-                    }
+                    if (pos != null)
+                        stack = LocationHelper.createMap(context.getWorld(), pos, new ResourceLocation(Strange.MOD_ID, StoneCircles.NAME));
+
                     return stack;
                 })
                 .build();
