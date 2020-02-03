@@ -1,13 +1,14 @@
 {
+  "parent": "strange:root",
   "display": {
     "icon": {
       "item": "strange:runestone"
     },
     "title": {
-      "translate": "advancements.strange.runestones.find.title"
+      "translate": "advancements.strange.find_stone_circle.title"
     },
     "description": {
-      "translate": "advancements.strange.runestones.find.description"
+      "translate": "advancements.strange.find_stone_circle.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,7 +17,7 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "find_stone_circle": {
+    "find_circle": {
       "trigger": "minecraft:location",
       "conditions": {
         "feature": "strange:stone_circle"
@@ -25,7 +26,7 @@
   },
   "requirements": [
     [
-      "find_stone_circle"
+      "find_circle"
     ]
   ]
 }

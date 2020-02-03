@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "strange:writing_desk"
+    },
+    "title": {
+      "translate": "advancements.strange.place_writing_desk.title"
+    },
+    "description": {
+      "translate": "advancements.strange.place_writing_desk.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "place_writing_desk": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "strange:writing_desk"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place_writing_desk"
+    ]
+  ]
+}

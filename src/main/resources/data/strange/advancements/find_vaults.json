@@ -1,0 +1,72 @@
+{
+  "parent": "strange:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.strange.find_vaults.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_vaults.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "find_vaults_xpos": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:vaults",
+        "position": {
+          "x": {
+            "min": 12000000,
+            "max": 30000000
+          }
+        }
+      }
+    },
+    "find_vaults_xneg": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:vaults",
+        "position": {
+          "x": {
+            "min": -12000000,
+            "max": -30000000
+          }
+        }
+      }
+    },
+    "find_vaults_zpos": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:vaults",
+        "position": {
+          "z": {
+            "min": 12000000,
+            "max": 30000000
+          }
+        }
+      }
+    },
+    "find_vaults_zneg": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:vaults",
+        "position": {
+          "z": {
+            "min": -12000000,
+            "max": -30000000
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    ["find_vaults_xpos", "find_vaults_xneg","find_vaults_zpos", "find_vaults_zneg"]
+  ]
+}
