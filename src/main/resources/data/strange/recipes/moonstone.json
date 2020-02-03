@@ -12,8 +12,8 @@
   },
   "conditions": [
     {
-      "type": "strange:module_enabled",
-      "module": "spells"
+      "type": "meson:module_enabled",
+      "module": "strange:spells"
     }
   ]
 }

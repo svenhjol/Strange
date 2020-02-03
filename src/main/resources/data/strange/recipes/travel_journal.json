@@ -13,8 +13,8 @@
   },
   "conditions": [
     {
-      "type": "strange:module_enabled",
-      "module": "travel_journal"
+      "type": "meson:module_enabled",
+      "module": "strange:travel_journal"
     }
   ]
 }

@@ -18,8 +18,8 @@
   },
   "conditions": [
     {
-      "type": "strange:module_enabled",
-      "module": "scrolls"
+      "type": "meson:module_enabled",
+      "module": "strange:scrolls"
     }
   ]
 }
