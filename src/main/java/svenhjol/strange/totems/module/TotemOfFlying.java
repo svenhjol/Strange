@@ -1,13 +1,9 @@
 package svenhjol.strange.totems.module;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,17 +11,17 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
-import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.TotemHelper;
-import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
-import svenhjol.strange.totems.client.TotemOfFlyingSound;
+import svenhjol.strange.totems.client.TotemOfFlyingClient;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;
+import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
 public class TotemOfFlying extends MesonModule
@@ -38,10 +34,19 @@ public class TotemOfFlying extends MesonModule
     @Config(name = "XP cost", description = "Amount of XP consumed every second (20 ticks) while flying.")
     public static int xpCost = 1;
 
+    @OnlyIn(Dist.CLIENT)
+    public static TotemOfFlyingClient client;
+
     @Override
     public void init()
     {
         item = new TotemOfFlyingItem(this);
+    }
+
+    @Override
+    public void setupClient(FMLClientSetupEvent event)
+    {
+        client = new TotemOfFlyingClient();
     }
 
     @SubscribeEvent
@@ -65,7 +70,7 @@ public class TotemOfFlying extends MesonModule
 
             TotemHelper.damageOrDestroy(player, held, 1);
             if (player.world.isRemote) {
-                effectStartFlying(player);
+                client.effectStartFlying(player);
             }
             enableFlight(player);
         }
@@ -98,7 +103,7 @@ public class TotemOfFlying extends MesonModule
                         }
                     }
                     if (world.isRemote) {
-                        effectFlying(player);
+                        client.effectFlying(player);
                     }
                 }
                 return;
@@ -125,49 +130,6 @@ public class TotemOfFlying extends MesonModule
         } else {
             player.abilities.allowFlying = true;
             player.abilities.isFlying = true;
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void disableFlight()
-    {
-        PlayerEntity player = ClientHelper.getClientPlayer();
-        if (player.isCreative() || player.isSpectator()) {
-            player.abilities.allowFlying = true;
-        } else{
-            player.abilities.isFlying = false;
-            player.abilities.allowFlying = false;
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void enableFlight()
-    {
-        PlayerEntity player = ClientHelper.getClientPlayer();
-        if (player.isCreative() || player.isSpectator()) {
-            player.abilities.allowFlying = true;
-        } else {
-            player.abilities.allowFlying = true;
-            player.abilities.isFlying = true;
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void effectStartFlying(PlayerEntity player)
-    {
-        Minecraft.getInstance().getSoundHandler().play(new TotemOfFlyingSound((ClientPlayerEntity)player));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void effectFlying(PlayerEntity player)
-    {
-        double spread = 0.6D;
-        BlockPos pos = player.getPosition();
-        for (int i = 0; i < 8; i++) {
-            double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
-            double py = pos.getY() - 0.4D + (Math.random() - 0.5D) * spread;
-            double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            ClientHelper.getClientWorld().addParticle(ParticleTypes.CLOUD, px, py, pz, 0.0D, 0.1D, 0.0D);
         }
     }
 }

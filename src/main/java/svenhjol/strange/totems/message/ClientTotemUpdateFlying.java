@@ -34,10 +34,13 @@ public class ClientTotemUpdateFlying implements IMesonMessage
         public static void handle(final ClientTotemUpdateFlying msg, Supplier <NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
+                if (TotemOfFlying.client == null)
+                    return;
+
                 if (msg.status == ENABLE) {
-                    TotemOfFlying.enableFlight();
+                    TotemOfFlying.client.enableFlight();
                 } else if (msg.status == DISABLE) {
-                    TotemOfFlying.disableFlight();
+                    TotemOfFlying.client.disableFlight();
                 }
             });
             ctx.get().setPacketHandled(true);
