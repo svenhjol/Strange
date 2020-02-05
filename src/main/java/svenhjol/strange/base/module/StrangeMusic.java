@@ -52,7 +52,7 @@ public class StrangeMusic extends MesonModule
         AmbientMusicClient.conditions.add(new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_THARNA, 1200, 3600, mc -> {
             PlayerEntity player = ClientHelper.getClientPlayer();
             if (player == null || player.world == null) return false;
-            return player.world.rand.nextFloat() < 0.1F
+            return player.world.rand.nextFloat() < 0.08F
                 && player.world.getDimension().getType() == DimensionType.OVERWORLD;
         }));
 
@@ -62,7 +62,7 @@ public class StrangeMusic extends MesonModule
             if (player == null || player.world == null) return false;
             return player.getPosition().getY() < 48
                 && player.world.getDimension().getType() == DimensionType.OVERWORLD
-                && player.world.rand.nextFloat() < 0.2F;
+                && player.world.rand.nextFloat() < 0.1F;
         }));
 
         // play Mús in cold environments
