@@ -27,8 +27,8 @@ public class Fetch implements IDelegate
     public static final String ID = "Fetch";
     public static final String FETCHED_TAG = "strange:fetched_mob";
 
-    private final int TRIGGER_RANGE = 10;
-    private final int VILLAGER_RANGE = 10;
+    private final int TRIGGER_RANGE = 16;
+    private final int VILLAGER_RANGE = 12;
 
     private final String LOCATION = "location";
     private final String DIM = "dim";
