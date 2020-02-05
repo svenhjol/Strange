@@ -38,6 +38,9 @@ public class SpellBooks extends MesonModule
     @Config(name = "Spell book weight", description = "Chance of spellbook in Stronghold/Vaults loot.")
     public static int strongholdWeight = 15;
 
+    @Config(name = "Show spellbooks in JEI", description = "Shows all spellbooks (and spell details on hover over) in JEI.")
+    public static boolean showSpellbooksInJei = false;
+
     public static SpellBookItem book;
 
     @Override

@@ -22,7 +22,10 @@ public class StrangeJeiPlugin implements IModPlugin
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration)
     {
-        registration.useNbtForSubtypes(SpellBooks.book);
+        if (SpellBooks.showSpellbooksInJei) {
+            registration.useNbtForSubtypes(SpellBooks.book);
+        }
+        
         registration.useNbtForSubtypes(Scrolls.item);
     }
 }
