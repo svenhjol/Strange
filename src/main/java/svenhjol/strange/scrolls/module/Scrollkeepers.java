@@ -207,7 +207,8 @@ public class Scrollkeepers extends MesonModule
 
                 if (questTier >= villagerLevel) {
                     float value = quest.getValue();
-                    int newXp = villagerXp + (int)(QUEST_XP[questTier-1] * (1.0F + value));
+                    int tierXp = QUEST_XP[questTier-1];
+                    int newXp = villagerXp + Math.max(tierXp, (int)(tierXp * value));
                     villager.setCustomer(null);
                     villager.setXp(newXp);
                     if (villager.canLevelUp())
