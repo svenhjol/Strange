@@ -73,7 +73,7 @@ public class ServerScrollAction implements IMesonMessage
                         break;
 
                     case ACCEPT:
-                        if (Quests.getCurrent(player).size() < Quests.maxQuests) {
+                        if (Quests.getCurrent(player).size() < Quests.getMaxQuests()) {
                             quest = ScrollItem.getQuest(held);
                             if (!MinecraftForge.EVENT_BUS.post(new QuestEvent.Accept(player, quest)))
                                 shrinkStack(held);
