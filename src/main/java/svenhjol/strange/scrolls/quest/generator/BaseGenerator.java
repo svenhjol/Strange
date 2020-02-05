@@ -201,6 +201,10 @@ public abstract class BaseGenerator
     {
         int count;
 
+        if (value.contains("!")) {
+            return Integer.parseInt(value.replace("!", ""));
+        }
+
         if (value.contains("-")) {
             String[] split = value.split("-");
             count = world.rand.nextInt(Integer.parseInt(split[1])) + Integer.parseInt(split[0]);
