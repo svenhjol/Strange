@@ -40,8 +40,8 @@ public class Quests extends MesonModule
     public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
     public static final String QUEST_ID = "questId";
 
-    @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once.")
-    public static int maxQuests = 3;
+    @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once (Maximum 3)")
+    public static int maxQuests = 2; // don't get this value directly, use getMaxQuests()
 
     @Config(name = "Encounter distance", description = "Distance from quest start (in blocks) that a mob will spawn for 'encounter' quests.")
     public static int encounterDistance = 600;
@@ -146,5 +146,10 @@ public class Quests extends MesonModule
     public static void update(PlayerEntity player)
     {
         Quests.getCapability(player).updateCurrentQuests(player);
+    }
+
+    public static int getMaxQuests()
+    {
+        return Math.min(1, Math.max(maxQuests, 3));
     }
 }
