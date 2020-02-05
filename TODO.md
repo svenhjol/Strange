@@ -56,7 +56,7 @@
 
 ## Quests
 - [x] Move all lang strings into quests
-- [ ] IN PROGRESS - MORE T5 - Add some new quests
+- [x] IN PROGRESS - MORE T5 - Add some new quests
 - [x] Handle `"description": "String1 | String2 | String3"`
 - [x] Handle output of `"minecraft:iron_pickaxe[enchanted]"`
 - [x] Handle `"modules": ["quark:thing_enabled"]`,
@@ -69,6 +69,7 @@
 - [x] Handle values of "x-y"
 - [x] TEST Luck should increase scroll value
 - [x] Handle "StoneCircleMap" - gen map randomly away from villager
+- [x] TEST Don't modify values with an exclamation mark
 
 ## Docs
 - [ ] Update all docs
