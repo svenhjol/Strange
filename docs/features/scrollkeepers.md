@@ -31,7 +31,7 @@ The following **might** happen, depending on the situation:
 
 ### Scrollkeeper XP increase
 
-If the scrollkeeper has a level lower than "master", they are eligible for an XP increase when you hand in a quest.  If the XP increase hits the maximum for the scrollkeeper's current level, they will level up and offer you new tiers of scroll.
+If the scrollkeeper has a level lower than "master", they are eligible for an XP increase when you hand in a quest.  If the XP increase hits the maximum for the scrollkeeper's current level, they will level up and offer you scrolls of a higher tier.
 
 To increase the scrollkeeper's XP, you can hand in a quest of the **same tier** as the scrollkeeper - for example, an "expert" (green seal) scroll handed to an "expert" (emerald badge) scrollkeeper.
 
@@ -39,11 +39,13 @@ Handing in a quest of a **higher tier** - for example finding a "master" (blue s
 
 If you hand in a quest of a lower tier than the scrollkeeper they will not gain any XP.  You still receive quest rewards as normal.
 
+Quests from scrolls with a **high value** have a chance to increase scrollkeeper XP by a larger amount.  Read more about scroll value on the [Scrolls]({{ site.baseurl }}/features/scrolls) page.
+
 ### Scrollkeeper death
 
-If your scrollkeeper is killed while you are undertaking a quest from a scroll sold by the dead scrollkeeper, it is no longer possible to complete it.
+If your scrollkeeper is killed while you are undertaking a quest from a scroll sold by the dead scrollkeeper, it is no longer possible to complete it.  You can abandon the quest by going to your inventory, clicking on the name of the quest and then "Quit".
 
-Remember, it might take considerable effort and loyalty to increase the level of your scrollkeeper by questing for them, so try and protect them from harm!
+Remember, it could take considerable effort and loyalty to increase the level of your scrollkeeper by completing quests for them, so try and protect them from harm!
 
 ### The raid
 

@@ -7,6 +7,8 @@ title: All Spells
 
 Spells are meant to be discovered through exploration! If you must know what they are, use rot13 to view the contents of this page.
 
+You may also configure the mod to show all spellbooks in JEI by changing `SpellBooks -> Show spellbooks in JEI` to `true`.
+
 * **Nhen** - urny nyy perngherf va enatr (nern bs rssrpg)
 * **Oyvax** - whzc gb gur gnetrg ybpngvba (gnetrggrq)
 * **Obbfg** - nzcyvsl naq erfrg nyy npgvir cbgvba rssrpgf (frys)

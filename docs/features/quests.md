@@ -7,13 +7,17 @@ title: Quests
 
 Quests require you to take some kind of actions in return for a reward.  Quests are written on [Scrolls]({{ site.baseurl }}/features/scrolls) which are typically sold by [Scrollkeeper]({{ site.baseurl }}/features/scrollkeepers) villagers. You must **Accept** a quest from a scroll before it begins. Once the quest criteria has been fulfilled, you can complete the quest and gain its reward by returning to the scrollkeeper ("Handing in the quest").
 
-By default you may undertake 3 quests simultaneously.
+By default you may undertake 2 quests simultaneously.
 
 ## Keeping track of quests
 
 Quests that are in progress are viewable at the top of your inventory screen.  Each box represents a single quest and shows its name and progress (as a bar).  Click on the box to show a more detailed view including the necessary actions you need to complete the quest criteria. 
 
-From this screen you may also **Quit** a quest.  You do not get any partial reward for any progress you have made.
+From this screen you may also **Quit** a quest.  You do not get any reward for any progress you have made.
+
+## Provided items
+
+Some quests provide you with one or more items as soon as you accept them.  These items are often relevant to the quest, for example a fishing rod for a "gather fish" quest or a compass/map to help locate a chest or mob.
 
 ## Quest actions
 
@@ -31,13 +35,15 @@ Each quest is unique and might require you to undertake more than one action to 
 
 Some quests may also ask you to complete their actions **within a time limit**.  If you do not "hand in" the completed quest to the scrollkeeper within the time limit, the quest is failed and removed from your inventory.
 
-## Quest rewards
+## Rewards
 
-Once a completed quest is returned to a scrollkeeper for "hand in", you will receive the rewards listed on the quest scroll.  Rewards are either:
+Once a completed quest is returned to a scrollkeeper for hand in, you will receive the rewards listed on the quest scroll.  Rewards are either:
 * one or more items delivered to your inventory
 * experience points applied immediately
 
-As well as a physical reward, quest completion also causes [Scrollkeepers]({{ site.baseurl }}/features/scrollkeepers) to "level up". This is useful for obtaining more lucrative scrolls and therefore quest rewards.
+As well as an item reward, quest completion also causes [Scrollkeepers]({{ site.baseurl }}/features/scrollkeepers) to "level up". This is useful for obtaining more lucrative scrolls and therefore quest rewards.
+
+Quests with a higher **value** will increase the villager's experience more than a lower value quest.  Higher value quests also give a higher chance to provide rare items as a reward for completion.
 
 ## See also
 
