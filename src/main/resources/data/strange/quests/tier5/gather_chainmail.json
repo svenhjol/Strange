@@ -1,0 +1,25 @@
+{
+  "lang": {
+    "en": {
+      "title": "Chainmail",
+      "description": "Gather chainmail items."
+    }
+  },
+  "gather": {
+    "minecraft:chainmail_helmet": 2,
+    "minecraft:chainmail_chestplate": 2,
+    "minecraft:chainmail_leggings": 2,
+    "minecraft:chainmail_boots": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:diamond_chestplate[enchanted] | minecraft:diamond_leggings[enchanted] | minecraft:diamond_boots[enchanted] | minecraft:diamond_helmet[enchanted]": 1,
+      "StoneCircleTotem | StoneCircleMap": 1,
+      "RareEnchantedBook": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

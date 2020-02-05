@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Elder Guardians",
+      "description": "Locate and kill Elder Guardians."
+    }
+  },
+  "hunt": {
+    "minecraft:elder_guardian": 3
+  },
+  "rewards": {
+    "items": {
+      "StoneCircleMap | StoneCircleTotem": 1,
+      "minecraft:emerald": 4,
+      "Potion": 4,
+      "RareEnchantedBook": 1
+    },
+    "xp": {
+      "count": 120
+    }
+  }
+}

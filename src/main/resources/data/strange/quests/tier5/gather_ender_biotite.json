@@ -1,0 +1,27 @@
+{
+  "modules": [
+    "quark:biotite"
+  ],
+  "lang": {
+    "en": {
+      "title": "Ender Biotite",
+      "description": "Gather ender biotite.",
+      "hint": "Kill the dragon to seed biotite."
+    }
+  },
+  "gather": {
+    "quark:biotite": 30
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "quark:biotite": "10-20",
+      "quark:biotite_pillar": "10-20",
+      "RareEnchantedBook": "2!",
+      "Potion": 3
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Endermen",
+      "description": "Locate and bring endermen to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:enderman": 3
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:ender_pearl": 4,
+      "StoneCircleTotem | StoneCircleMap": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

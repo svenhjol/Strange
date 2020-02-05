@@ -1,18 +1,18 @@
 {
   "lang": {
     "en": {
-      "title": "Elytra",
-      "description": "Gather elytra."
+      "title": "Dragon's Breath",
+      "description": "Gather Dragon's Breath."
     }
   },
   "gather": {
-    "minecraft:elytra": 2
+    "minecraft:dragon_breath": 4
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "minecraft:elytra": "2-3",
-      "minecraft:phantom_membrane": "6-12"
+      "Potion": 4,
+      "StoneCircleTotem": 1
     },
     "xp": {
       "count": 100

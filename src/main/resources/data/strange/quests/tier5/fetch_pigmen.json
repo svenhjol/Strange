@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Pigmen",
+      "description": "Locate and bring zombie pigmen to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:zombie_pigman": 6
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:gold_ingot | minecraft:gold_sword[enchanted]": 2,
+      "StoneCircleTotem | StoneCircleMap": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

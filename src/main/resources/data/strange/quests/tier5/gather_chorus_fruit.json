@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Chainmail",
+      "description": "Gather chainmail items."
+    }
+  },
+  "gather": {
+    "minecraft:chorus_fruit": 20,
+    "minecraft:popped_chorus_fruit": 10
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:shulker_shell": 4,
+      "minecraft:elytra[epic]": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

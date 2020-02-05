@@ -1,0 +1,26 @@
+{
+  "modules": [
+    "quark:elder_prismarine_underground_biome"
+  ],
+  "lang": {
+    "en": {
+      "title": "Elder Prismarine",
+      "description": "Gather elder prismarine and lanterns.",
+      "hint": "Found below ocean biomes."
+    }
+  },
+  "gather": {
+    "quark:elder_prismarine": 30,
+    "quark:elder_sea_lantern": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "quark:elder_sea_lantern | quark:sea_lantern": 8,
+      "Potion": 4
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

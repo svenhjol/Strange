@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hounds",
+      "description": "Locate and bring mooshrooms to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "minecraft:mooshroom": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:mushroom_stew | SuspiciousStew": 4,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

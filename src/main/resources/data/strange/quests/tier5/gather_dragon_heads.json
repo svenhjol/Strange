@@ -1,0 +1,22 @@
+{
+  "lang": {
+    "en": {
+      "title": "Dragon Head",
+      "description": "Gather dragon heads.",
+      "hint": "Found on End City ships."
+    }
+  },
+  "gather": {
+    "minecraft:dragon_head": 2
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:elytra": 1,
+      "minecraft:dragon_head": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "lang": {
+    "en": {
+      "qtitle": "Ender Purge",
+      "qdesc": "Find and kill endermen."
+    }
+  },
+  "hunt": {
+    "minecraft:enderman": 50
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:diamond_chestplate[enchanted] | minecraft:diamond_sword[enchanted]": 1,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 120
+    }
+  }
+}

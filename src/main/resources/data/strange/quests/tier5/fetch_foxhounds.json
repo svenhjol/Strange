@@ -1,0 +1,24 @@
+{
+  "modules": [
+    "quark:foxhound"
+  ],
+  "lang": {
+    "en": {
+      "title": "Hounds",
+      "description": "Locate and bring foxhounds to the scrollkeeper."
+    }
+  },
+  "fetch": {
+    "quark:foxhound": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:coal | minecraft:lead[common]": 2,
+      "StoneCircleTotem": 1
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "modules": [
+    "charm:endermite_powder"
+  ],
+  "lang": {
+    "en": {
+      "title": "Endermite Powder",
+      "description": "Gather endermite powder.",
+      "hint": "Dropped by endermites."
+    }
+  },
+  "gather": {
+    "charm:endermite_powder": 4
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "charm:endermite_powder": 4,
+      "minecraft:ender_pearl": "5-10",
+      "RareEnchantedBook": "1!",
+      "Potion": 3
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "lang": {
+    "en": {
+      "title": "Mycelium",
+      "description": "Gather mycelium."
+    }
+  },
+  "gather": {
+    "minecraft:mycelium": 20,
+    "minecraft:podzol": 20,
+    "minecraft:brown_mushroom | minecraft:red_mushroom": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:emerald": 4,
+      "minecraft:mushroom_stew": 4,
+      "SuspiciousStew": 4
+    },
+    "xp": {
+      "count": 100
+    }
+  }
+}
