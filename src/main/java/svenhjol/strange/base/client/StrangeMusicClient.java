@@ -37,7 +37,7 @@ public class StrangeMusicClient
         AmbientMusicClient.conditions.add(new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_MUS, 1200, 3600, mc ->
             mc.player != null
                 && mc.player.world.getBiome(new BlockPos(mc.player)).getCategory() == Biome.Category.ICY
-                && mc.player.world.rand.nextFloat() < 0.33F
+                && mc.player.world.rand.nextFloat() < 0.28F
         ));
 
         // play Undir in nether underground
