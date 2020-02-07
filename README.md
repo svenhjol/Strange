@@ -1,25 +1,17 @@
 # Strange
 
-A Vanilla+++ Minecraft mod based on [Charm](https://www.curseforge.com/minecraft/mc-mods/charm).  For Minecraft **1.14.4**, recommended Forge version **28.0.45**, 
-and depends on **Charm 1.3.2**.
+**Strange** is a mod for Minecraft 1.14 that adds **exploration**, **adventure** and **treasure** to the game without dramatically altering the vanilla playstyle.
 
-"Strange" contains things that enhance vanilla Minecraft but are too exotic to be considered Vanilla+.
-The main focus is exploration and discovery with maybe some OP tools and treasure thrown in for good measure.
+Each feature is configurable and can be disabled, allowing you to customize your experience.
 
-This mod is incomplete and needs your help to playtest it!
-Please report any bugs in the [Github issues tracker](https://github.com/svenhjol/Strange/issues).  With your issue, include:
-1. Steps to reproduce the problem
-2. A stacktrace / crash report
-3. (Optional) screenshots
+Browse the [documentation and wiki](https://svenhjol.github.io/Strange/) here!
 
-New feature requests will not be accepted on the issue tracker.  We are currently working on porting as many 
-"Strange" features from Charm 1.12 before starting a highly secret roadmap of new features and functionality.
+## Main features
+* [Underground Ruins](https://svenhjol.github.io/Strange/features/underground_ruins) - found scattered below the surface
+* [Runestones](https://svenhjol.github.io/Strange/features/runestones) - standing stone circles that can take you to points of interest
+* [Scrolls](https://svenhjol.github.io/Strange/features/scrolls) - a scrollkeeper villager sells quest scrolls for you to complete
+* [Spells](https://svenhjol.github.io/Strange/features/spells) - magical artifacts and special enchantment books
+* [Totems](https://svenhjol.github.io/Strange/features/totems) - lost treasure that provides powerful actions
+* [Travel Journal](https://svenhjol.github.io/Strange/features/travel_journal) - a craftable journal to keep track of your findings
+* [The Outerlands](https://svenhjol.github.io/Strange/features/outerlands) - a distant area far from the safety of spawn
 
-### Totems
-
-* Totem of Returning
-* Totem of Shielding
-
-## Credits
-
-* All sound samples from [https://freesound.org](https://freesound.org).
