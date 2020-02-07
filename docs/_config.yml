@@ -22,8 +22,10 @@ baseurl: "/Strange" # the subpath of your site, e.g. /blog
 url: "https://svenhjol.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 mastodon_username: "svenhjol@mastodon.social"
 github_username: svenhjol
-  
+
 # Build settings
+sass:
+  sass_dir: _sass
 markdown: kramdown
 theme: jekyll-theme-hacker
 plugins:
