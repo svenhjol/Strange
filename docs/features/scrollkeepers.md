@@ -9,7 +9,7 @@ title: Scrollkeepers
 
 Their "job site block" is the **Writing Desk**, crafted from four planks like a crafting table with two books above it.  Currently, the writing desk has no interaction.
 
-Scrollkeepers only gain XP by completing quests for them.  The **do not gain XP when trading** with them.
+Scrollkeepers only gain XP by completing quests for them.  They **do not gain XP when trading** with them.
 
 ## Buying scrolls
 
