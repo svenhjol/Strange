@@ -29,6 +29,10 @@ Treasure chests often contain a [Totem]({{ site.baseurl }}/features/totems).  Th
 
 Sometimes you might come across a "ruined vault" in Mountain biomes closer to spawn point than the Outerlands.  These consist of a single large room with a [Stone Circle]({{ site.baseurl }}/features/stone_circles), some treasure and possibly some Pillagers guarding it.  While you may find rare dungeon items, these ruined vaults do not contain any special totems or treasure.
 
+## Notes
+
+With permissions enabled, you may search for the closest vault by using the command `/locate strange:vaults`.  In the "inner lands" this will lead you to a ruined vault; in the outer lands you should find the full-sized underground structure.
+
 ## See also
 
 [Underground Ruins]({{ site.baseurl }}/features/underground_ruins)

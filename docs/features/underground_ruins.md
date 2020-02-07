@@ -15,4 +15,4 @@ Ruins often have monster spawners so may be located by listening out for many si
 
 ## Notes
 
-With permissions enabled, you may search for the closest underground ruin by using the command `/locate underground_ruin`.
+With permissions enabled, you may search for the closest underground ruin by using the command `/locate strange:underground_ruin`.

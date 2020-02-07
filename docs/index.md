@@ -6,6 +6,8 @@ permalink: /
 **Strange** is a mod for Minecraft 1.14 that adds **exploration**, **adventure** and **treasure** to the game without dramatically altering the vanilla playstyle.
 Each feature is configurable and can be disabled, allowing you to customize your experience.
 
+**TODO**: pictures and videos of things.
+
 ## Main features
 * [Underground Ruins](features/underground_ruins) - found scattered below the surface
 * [Runestones](features/runestones) - standing stone circles that can take you to points of interest

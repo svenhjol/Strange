@@ -17,7 +17,7 @@ If you find a stone circle in [The Outerlands]({{ site.baseurl }}/features/outer
 
 ## Notes
 
-With permissions enabled, you may search for the closest stone circle by using the command `/locate stone_circle`.
+With permissions enabled, you may search for the closest stone circle by using the command `/locate strange:stone_circle`.
 
 ## See also
 
