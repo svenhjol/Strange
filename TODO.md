@@ -33,7 +33,7 @@
 - [x] Bound compass has error on frame 16
 - [x] Encounter boss bar doesn't clear when you die
 - [x] Test change to `LivingDeathEvent` code
-- [ ] IN PROGRESS Restore advancements
+- [x] IN PROGRESS Restore advancements
 
 ## Intermittent / warnings
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
@@ -72,4 +72,4 @@
 - [x] TEST Don't modify values with an exclamation mark
 
 ## Docs
-- [ ] Update all docs
+- [x] Update all docs

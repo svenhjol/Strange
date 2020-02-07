@@ -7,7 +7,7 @@ title: Scrollkeepers
 
 **Scrollkeepers** are villagers that sell [Scrolls]({{ site.baseurl }}/features/scrolls) and provide rewards for completed [Quests]({{ site.baseurl }}/features/quests).
 
-Their "job site block" is the [Writing Desk]({{ site.baseurl }}/features/writing_desk).
+Their "job site block" is the **Writing Desk**, crafted from four planks like a crafting table with two books above it.  Currently, the writing desk has no interaction.
 
 Scrollkeepers only gain XP by completing quests for them.  The **do not gain XP when trading** with them.
 
@@ -17,7 +17,7 @@ When a scrollkeeper is first employed (as a "novice" scrollkeeper) they will tra
 
 ## Handing in quests
 
-When you fulfill all the quest actions, return to the scrollkeeper.  They will have a green particle effect above their head if the quest is fulfilled correctly.  Right-click them to "hand in" the quest and the following will happen:
+When you complete all the quest actions, return to the scrollkeeper.  They will have a green particle effect above their head if the quest is completed correctly.  Right-click them to "hand in" the quest and the following will happen:
 * a toast message will appear saying "Quest Complete"
 * a jingle will play
 * you receive quest rewards
@@ -25,7 +25,7 @@ When you fulfill all the quest actions, return to the scrollkeeper.  They will h
 
 The following **might** happen, depending on the situation:
 * the villager's XP will increase, possibly increasing their level
-* a raid begins
+* a raid begins (normally this is super rare - see below)
 
 **NOTE**: When you accept a quest from a scroll sold by a particular scrollkeeper, you must return to the **same scrollkeeper** to hand in the quest.  If you find a scroll in the world somewhere, for example in dungeon loot, you can hand in the quest to **any scrollkeeper** to increase their XP.  
 

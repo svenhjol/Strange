@@ -18,8 +18,7 @@ Each feature is configurable and can be disabled, allowing you to customize your
 * [The Outerlands](features/outerlands) - a distant area far from the safety of spawn
 
 ## Installation
-This mod requires **Forge** (at least version 28.1.118) and **Charm** (version 1.5) as dependencies.
-*Charm* makes some small changes to the vanilla gameplay and is easy to configure.
+This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version 28.1.118) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (version 1.5) as dependencies.
 
 **PROBABLY IMPORTANT!** *Strange* is currently in alpha and will likely be for a while. It may break your world,
 your game, your cats, it might not play well with other mods etc. Please get in touch via the Github issue tracker if it's something

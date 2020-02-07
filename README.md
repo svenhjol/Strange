@@ -15,3 +15,5 @@ Browse the [documentation and wiki](https://svenhjol.github.io/Strange/) here!
 * [Travel Journal](https://svenhjol.github.io/Strange/features/travel_journal) - a craftable journal to keep track of your findings
 * [The Outerlands](https://svenhjol.github.io/Strange/features/outerlands) - a distant area far from the safety of spawn
 
+## Installation
+This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version 28.1.118) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (version 1.5) as dependencies.
