@@ -22,7 +22,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
@@ -81,20 +80,17 @@ public class TotemOfReturningItem extends MesonItem
     {
         // teleport the player
         if (!world.isRemote) {
-            player.setInvulnerable(true);
             PlayerHelper.teleport(player, pos, dim, t -> {
-                PlayerQueueHandler.add(t.world.getGameTime() + 10, t, pt -> {
-                    for (int i = 0; i < 3; i++) {
-                        BlockPos pp = pt.getPosition().add(0, i, 0);
-                        BlockState state = pt.world.getBlockState(pp);
-                        if (state.isSolid()) {
-                            pt.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
-                        }
+                for (int i = 0; i < 3; i++) {
+                    BlockPos pp = player.getPosition().add(0, i, 0);
+                    BlockState state = player.world.getBlockState(pp);
+                    if (state.isSolid()) {
+                        player.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
                     }
-                    pt.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
-                    pt.setPositionAndUpdate(pt.getPosition().getX() + 0.5D, pt.getPosition().getY() + 1.0D, pt.getPosition().getZ() + 0.5D);
-                    pt.world.playSound(null, pt.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                });
+                }
+                player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
+                player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D);
+                player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
             });
         }
         TotemHelper.destroy(player, stack);
