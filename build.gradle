@@ -19,7 +19,7 @@ archivesBaseName = "Strange"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-version = "${mc_version}-${version}.${build_number}"
+version = "mc${mc_version}-v${version}.${build_number}"
 
 minecraft {
     mappings channel: 'snapshot', version: "${mcp_mappings}"
@@ -38,7 +38,8 @@ minecraft {
         }
         server = {
             // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+//            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.markers': 'REGISTRIES'
             // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
