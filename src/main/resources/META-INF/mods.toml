@@ -17,7 +17,7 @@ Charm, but Stranger.
 [[dependencies.strange]]
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[28,)" #mandatory
+    versionRange="[28.1.118,)" #mandatory
     ordering="NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     side="BOTH" # Side this dependency is applied on - BOTH, CLIENT or SERVER
 
