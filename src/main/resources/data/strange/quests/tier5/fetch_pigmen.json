@@ -11,7 +11,7 @@
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "minecraft:gold_ingot | minecraft:gold_sword[enchanted]": 2,
+      "minecraft:gold_ingot | minecraft:golden_sword[enchanted]": 2,
       "StoneCircleTotem | StoneCircleMap": 1
     },
     "xp": {

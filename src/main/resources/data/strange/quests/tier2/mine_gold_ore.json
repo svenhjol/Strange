@@ -12,7 +12,7 @@
     "items": {
       "minecraft:gold_ingot": 4,
       "minecraft:emerald[common]": 1,
-      "minecraft:gold_shovel[uncommon]": 1,
+      "minecraft:golden_shovel[uncommon]": 1,
       "minecraft:golden_pickaxe[enchanted][rare]": 1
     },
     "xp": {

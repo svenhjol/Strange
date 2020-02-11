@@ -62,7 +62,7 @@ public class Craft implements IDelegate
             int countCrafted = craftedItem.getCount();
             int remaining = getRemaining();
 
-            if (countCrafted > remaining || remaining - 1 == 0) {
+            if (countCrafted > remaining) { // TEST
                 // set the count to the remainder
                 craftedItem.setCount(countCrafted - remaining);
                 countCrafted = remaining;

@@ -12,7 +12,7 @@
     "items": {
       "minecraft:ender_pearl": 2,
       "minecraft:emerald": 2,
-      "minecraft:eye_of_ender[uncommon]": 1
+      "minecraft:ender_eye[uncommon]": 1
     },
     "xp": {
       "count": 60
