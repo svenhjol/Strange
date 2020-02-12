@@ -1,6 +1,9 @@
 package svenhjol.strange.base.module;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.NameTagItem;
@@ -8,6 +11,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,6 +22,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.client.CaveAmbientSoundHandler;
 import svenhjol.strange.base.client.StrangeMusicClient;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
@@ -64,6 +69,18 @@ public class StrangeMusic extends MesonModule
             if (name.equals(NAME)) {
                 fox.setHeldItem(Hand.MAIN_HAND, new ItemStack(strangemusic));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void test(EntityJoinWorldEvent event)
+    {
+        if (event.getEntity() instanceof PlayerEntity
+            && event.getEntity().world.isRemote
+        ) {
+            Minecraft mc = Minecraft.getInstance();
+            ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
+            player.ambientSoundHandlers.add(new CaveAmbientSoundHandler(player, mc.getSoundHandler()));
         }
     }
 }
