@@ -5,12 +5,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -60,36 +59,8 @@ public class Gather implements IDelegate
         if (collected >= count) return false;
 
         if (event instanceof PlayerTickEvent) {
-            if (player.world.getGameTime() % 30 == 0)
+            if (player.world.getGameTime() % (Quests.tickInterval * 2) == 0)
                 pollInventory(player);
-        }
-
-        if (event instanceof EntityItemPickupEvent) {
-            EntityItemPickupEvent qe = (EntityItemPickupEvent)event;
-            ItemStack pickedUp = qe.getItem().getItem();
-
-            if (this.stack == null || pickedUp.getItem() != stack.getItem().getItem()) return false;
-
-            World world = player.world;
-
-            int pickedUpCount = pickedUp.getCount();
-            int remaining = getRemaining();
-
-            if (pickedUpCount > remaining || remaining - 1 == 0) {
-                // set the count to the remainder
-                pickedUp.setCount(pickedUpCount - remaining);
-                pickedUpCount = remaining;
-            } else {
-                // cancel the event, don't pick up any items
-                qe.getItem().remove();
-                qe.setResult(Event.Result.DENY);
-                qe.setCanceled(true);
-            }
-
-            collected += pickedUpCount;
-            showProgress(player);
-
-            return true;
         }
 
         return false;

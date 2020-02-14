@@ -276,8 +276,9 @@ public class Runestones extends MesonModule
             if (lookedAt.getBlock() == Runestones.block) {
                 IRunestonesCapability cap = Runestones.getCapability(player);
                 int rune = lookedAt.get(RunestoneBlock.RUNE);
+                TranslationTextComponent message;
+
                 if (cap.getDiscoveredTypes().contains(rune)) {
-                    TranslationTextComponent message;
                     TranslationTextComponent description = new TranslationTextComponent("runestone.strange." + allDests.get(rune).description);
                     BlockPos dest = cap.getDestination(runePos);
                     if (dest != null) {
@@ -287,8 +288,11 @@ public class Runestones extends MesonModule
                         effectDiscovered(world, runePos);
                         message = new TranslationTextComponent("runestone.strange.rune_connects", description);
                     }
-                    player.sendStatusMessage(message, true);
+                } else {
+                    message = new TranslationTextComponent("runestone.strange.rune_unknown");
                 }
+
+                player.sendStatusMessage(message, true);
             }
 
             // do teleport if queued
