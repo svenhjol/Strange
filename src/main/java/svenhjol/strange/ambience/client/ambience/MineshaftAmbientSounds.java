@@ -1,9 +1,8 @@
 package svenhjol.strange.ambience.client.ambience;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import svenhjol.strange.ambience.client.AmbienceHandler;
 import svenhjol.strange.base.StrangeSounds;
 
 public class MineshaftAmbientSounds extends BaseAmbientSounds
@@ -19,8 +18,7 @@ public class MineshaftAmbientSounds extends BaseAmbientSounds
     public boolean isValidPos()
     {
         if (world == null) return false;
-        BlockPos pos = player.getPosition().down();
-        return world.getBlockState(pos).getMaterial() == Material.WOOD;
+        return AmbienceHandler.isInMineshaft;
     }
 
     @Override
@@ -28,7 +26,7 @@ public class MineshaftAmbientSounds extends BaseAmbientSounds
     {
         if (isValidPos() && --shortDelay <= 0) {
             soundHandler.play(new ShortSound(player, StrangeSounds.AMBIENCE_MINESHAFT_SHORT, 0.5F));
-            shortDelay = world.rand.nextInt(100) + 60;
+            shortDelay = world.rand.nextInt(80) + 160;
         }
     }
 }

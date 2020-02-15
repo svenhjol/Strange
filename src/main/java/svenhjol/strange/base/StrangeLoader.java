@@ -7,6 +7,8 @@ import svenhjol.meson.MesonLoader;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.ambience.message.ClientUpdateStructures;
+import svenhjol.strange.ambience.message.ServerUpdateStructures;
 import svenhjol.strange.base.compat.QuarkBigDungeons;
 import svenhjol.strange.base.compat.QuarkCaveRoots;
 import svenhjol.strange.base.compat.QuarkCompat;
@@ -67,6 +69,7 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ServerScrollAction.class, ServerScrollAction::encode, ServerScrollAction::decode, ServerScrollAction.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ServerTravelJournalAction.class, ServerTravelJournalAction::encode, ServerTravelJournalAction::decode, ServerTravelJournalAction.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ServerTravelJournalMeta.class, ServerTravelJournalMeta::encode, ServerTravelJournalMeta::decode, ServerTravelJournalMeta.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(index++, ServerUpdateStructures.class, ServerUpdateStructures::encode, ServerUpdateStructures::decode, ServerUpdateStructures.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientQuestList.class, ClientQuestList::encode, ClientQuestList::decode, ClientQuestList.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientQuestAction.class, ClientQuestAction::encode, ClientQuestAction::decode, ClientQuestAction.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientScrollAction.class, ClientScrollAction::encode, ClientScrollAction::decode, ClientScrollAction.Handler::handle);
@@ -74,6 +77,7 @@ public class StrangeLoader extends MesonLoader
         PacketHandler.HANDLER.registerMessage(index++, ClientTotemUpdateFlying.class, ClientTotemUpdateFlying::encode, ClientTotemUpdateFlying::decode, ClientTotemUpdateFlying.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalEntries.class, ClientTravelJournalEntries::encode, ClientTravelJournalEntries::decode, ClientTravelJournalEntries.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
+        PacketHandler.HANDLER.registerMessage(index++, ClientUpdateStructures.class, ClientUpdateStructures::encode, ClientUpdateStructures::decode, ClientUpdateStructures.Handler::handle);
 
         super.setup(event);
     }

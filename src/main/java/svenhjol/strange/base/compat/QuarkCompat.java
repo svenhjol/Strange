@@ -5,8 +5,11 @@ import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonLoader;
 import vazkii.quark.tools.module.AncientTomesModule;
+import vazkii.quark.world.module.BigDungeonModule;
 
 import java.util.List;
 import java.util.Random;
@@ -27,5 +30,10 @@ public class QuarkCompat
         EnchantedBookItem.addEnchantment(tome, new EnchantmentData(enchantment, enchantment.getMaxLevel()));
 
         return tome;
+    }
+
+    public boolean isInsideBigDungeon(ServerWorld world, BlockPos pos)
+    {
+        return BigDungeonModule.structure.isPositionInsideStructure(world, pos);
     }
 }
