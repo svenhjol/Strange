@@ -36,12 +36,12 @@ public class DeepAmbientSounds extends BaseAmbientSounds
             isInDeep = false;
 
         if (!isInDeep && nowInDeep) {
-            soundHandler.play(new DeepAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_DEEP_LONG, 0.4F));
+            soundHandler.play(new DeepAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_DEEP_LONG, 0.3F));
             isInDeep = true;
         }
 
         if (nowInDeep && --shortDelay <= 0) {
-            soundHandler.play(new DeepAmbientSounds.ShortSound(player, StrangeSounds.AMBIENCE_DEEP_SHORT, 0.5F));
+            soundHandler.play(new DeepAmbientSounds.ShortSound(player, StrangeSounds.AMBIENCE_DEEP_SHORT, 0.44F));
             shortDelay = rand.nextInt(400) + 1000;
         }
     }

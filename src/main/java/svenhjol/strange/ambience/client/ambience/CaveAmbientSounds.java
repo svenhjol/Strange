@@ -22,7 +22,13 @@ public class CaveAmbientSounds extends BaseAmbientSounds
     {
         if (world == null) return false;
         BlockPos pos = player.getPosition();
-        return !world.isSkyLightMax(pos) && pos.getY() <= world.getSeaLevel();
+        int light = world.getLight(pos);
+
+        if (!world.isSkyLightMax(pos) && pos.getY() < world.getSeaLevel()) {
+            return pos.getY() <= 44 || light <= 13;
+        }
+
+        return false;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
             isInCave = false;
 
         if (!isInCave && nowInCave) {
-            soundHandler.play(new CaveAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_CAVE_LONG, 0.45F));
+            soundHandler.play(new CaveAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_CAVE_LONG, 0.4F));
             isInCave = true;
         }
 
