@@ -122,5 +122,38 @@
         "stream": true
       }
     ]
+  },
+  "ambience.cave.long": {
+    "sounds": [
+      {"name": "strange:ambience/cave/long/wind"}
+    ]
+  },
+  "ambience.cave.short": {
+    "sounds": [
+      {"name": "strange:ambience/cave/short/bat"},
+      {"name": "strange:ambience/cave/short/rocks1"},
+      {"name": "strange:ambience/cave/short/rocks2"}
+    ]
+  },
+  "ambience.deep.long": {
+    "sounds": [
+      {"name": "strange:ambience/deep/long/below"},
+      {"name": "strange:ambience/deep/long/voidechoes"}
+    ]
+  },
+  "ambience.deep.short": {
+    "sounds": [
+      {"name": "strange:ambience/deep/short/debris"},
+      {"name": "strange:ambience/deep/short/drips"}
+    ]
+  },
+  "ambience.mineshaft.short": {
+    "sounds": [
+      {"name": "strange:ambience/mineshaft/short/wood1"},
+      {"name": "strange:ambience/mineshaft/short/wood2"},
+      {"name": "strange:ambience/mineshaft/short/wood3"},
+      {"name": "strange:ambience/mineshaft/short/wood4"},
+      {"name": "strange:ambience/mineshaft/short/wood5"}
+    ]
   }
 }

@@ -1,4 +1,4 @@
-package svenhjol.strange.base.client;
+package svenhjol.strange.ambience.client;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,9 +10,9 @@ import svenhjol.charm.tweaks.module.AmbientMusicImprovements;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.strange.base.StrangeSounds;
 
-public class StrangeMusicClient
+public class MusicClient
 {
-    public StrangeMusicClient()
+    public MusicClient()
     {
         if (!Charm.hasModule(AmbientMusicImprovements.class)) return;
 

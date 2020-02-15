@@ -1,4 +1,4 @@
-package svenhjol.strange.base.module;
+package svenhjol.strange.ambience.module;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -22,21 +22,24 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.base.client.CaveAmbientSoundHandler;
-import svenhjol.strange.base.client.StrangeMusicClient;
+import svenhjol.strange.ambience.client.AmbienceHandler;
+import svenhjol.strange.ambience.client.MusicClient;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
-public class StrangeMusic extends MesonModule
+public class Ambience extends MesonModule
 {
     private static final String NAME = "svenhjol";
     private static CharmMusicDiscItem strangemusic;
 
-    @Config(name = "Play Strange music", description = "If true, allows for custom music tracks to play in certain situations.\n" +
+    @Config(name = "Play music", description = "If true, custom music tracks will play in certain situations.\n" +
         "Charm's 'Ambient Music Improvements' module must be enabled for this to work.")
     public static boolean music = true;
 
+    @Config(name = "Play ambient sounds", description = "If true, background ambient sounds play in biomes, caves and other dimensions.")
+    public static boolean ambience = true;
+
     @OnlyIn(Dist.CLIENT)
-    public static StrangeMusicClient client;
+    public static MusicClient client;
 
     @Override
     public void init()
@@ -48,8 +51,7 @@ public class StrangeMusic extends MesonModule
     @Override
     public void setupClient(FMLClientSetupEvent event)
     {
-        if (music)
-            client = new StrangeMusicClient();
+        client = new MusicClient();
     }
 
     @SubscribeEvent
@@ -80,7 +82,7 @@ public class StrangeMusic extends MesonModule
         ) {
             Minecraft mc = Minecraft.getInstance();
             ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
-            player.ambientSoundHandlers.add(new CaveAmbientSoundHandler(player, mc.getSoundHandler()));
+            player.ambientSoundHandlers.add(new AmbienceHandler(player, mc.getSoundHandler()));
         }
     }
 }

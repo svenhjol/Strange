@@ -12,11 +12,14 @@ public class StrangeSounds
 {
     public static List<SoundEvent> soundsToRegister = new ArrayList<>();
 
+    // music
     public static final SoundEvent MUSIC_THARNA = createSound("music.tharna");
     public static final SoundEvent MUSIC_STEINN = createSound("music.steinn");
     public static final SoundEvent MUSIC_MUS = createSound("music.mus");
     public static final SoundEvent MUSIC_UNDIR = createSound("music.undir");
     public static final SoundEvent MUSIC_DISC = createSound("music_disc.strange");
+
+    // action/event sounds
     public static final SoundEvent QUEST_ACTION_COMPLETE = createSound("quest_action_complete");
     public static final SoundEvent QUEST_ACTION_COUNT = createSound("quest_action_count");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");
@@ -27,6 +30,13 @@ public class StrangeSounds
     public static final SoundEvent SPELL_CHARGE_SHORT = createSound("spell_charge_short");
     public static final SoundEvent SPELL_CHARGE_MEDIUM = createSound("spell_charge_medium");
     public static final SoundEvent SPELL_NO_MORE_USES = createSound("spell_no_more_uses");
+
+    // ambience
+    public static final SoundEvent AMBIENCE_CAVE_LONG = createSound("ambience.cave.long");
+    public static final SoundEvent AMBIENCE_CAVE_SHORT = createSound("ambience.cave.short");
+    public static final SoundEvent AMBIENCE_DEEP_LONG = createSound("ambience.deep.long");
+    public static final SoundEvent AMBIENCE_DEEP_SHORT = createSound("ambience.deep.short");
+    public static final SoundEvent AMBIENCE_MINESHAFT_SHORT = createSound("ambience.mineshaft.short");
 
     public static SoundEvent createSound(String name)
     {
