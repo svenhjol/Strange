@@ -51,6 +51,8 @@ public class ServerUpdateStructures implements IMesonMessage
                 nbt.putBoolean("mineshaft", Feature.MINESHAFT.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("stronghold", Feature.STRONGHOLD.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("fortress", Feature.NETHER_BRIDGE.isPositionInsideStructure(world, pos));
+                nbt.putBoolean("shipwreck", Feature.SHIPWRECK.isPositionInsideStructure(world, pos));
+                nbt.putBoolean("village", Feature.VILLAGE.isPositionInsideStructure(world, pos));
 
                 if (Strange.hasModule(UndergroundRuins.class)) {
                     nbt.putBoolean("underground_ruin", UndergroundRuins.structure.isPositionInsideStructure(world, pos));
