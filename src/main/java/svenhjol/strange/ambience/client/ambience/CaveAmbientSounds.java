@@ -2,24 +2,23 @@ package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.strange.ambience.client.iface.IDaySounds;
 import svenhjol.strange.base.StrangeSounds;
 
-import java.util.Random;
+import javax.annotation.Nullable;
 
-public class CaveAmbientSounds extends BaseAmbientSounds
+public class CaveAmbientSounds extends BaseAmbientSounds implements IDaySounds
 {
-    private int shortDelay = 0;
-    private boolean isInCave = false;
-
     public CaveAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }
 
     @Override
-    public boolean isValidPos()
+    public boolean isValid()
     {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         BlockPos pos = player.getPosition();
@@ -33,22 +32,22 @@ public class CaveAmbientSounds extends BaseAmbientSounds
     }
 
     @Override
-    public void tick()
+    public int getShortSoundDelay()
     {
-        Random rand = world.rand;
-        boolean nowInCave = isValidPos();
+        return world.rand.nextInt(300) + 600;
+    }
 
-        if (!nowInCave)
-            isInCave = false;
+    @Nullable
+    @Override
+    public SoundEvent getLongSound()
+    {
+        return StrangeSounds.AMBIENCE_CAVE_LONG;
+    }
 
-        if (!isInCave && nowInCave) {
-            soundHandler.play(new CaveAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_CAVE_LONG, 0.45F));
-            isInCave = true;
-        }
-
-        if (nowInCave && --shortDelay <= 0) {
-            soundHandler.play(new CaveAmbientSounds.ShortSound(player, StrangeSounds.AMBIENCE_CAVE_SHORT, 0.5F));
-            shortDelay = rand.nextInt(300) + 600;
-        }
+    @Nullable
+    @Override
+    public SoundEvent getShortSound()
+    {
+        return StrangeSounds.AMBIENCE_CAVE_SHORT;
     }
 }

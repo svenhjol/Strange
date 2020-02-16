@@ -2,24 +2,23 @@ package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.strange.ambience.client.iface.IDaySounds;
 import svenhjol.strange.base.StrangeSounds;
 
-import java.util.Random;
+import javax.annotation.Nullable;
 
-public class DeepAmbientSounds extends BaseAmbientSounds
+public class DeepAmbientSounds extends BaseAmbientSounds implements IDaySounds
 {
     public DeepAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }
 
-    private int shortDelay = 0;
-    private boolean isInDeep = false;
-
     @Override
-    public boolean isValidPos()
+    public boolean isValid()
     {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         BlockPos pos = player.getPosition();
@@ -28,22 +27,22 @@ public class DeepAmbientSounds extends BaseAmbientSounds
     }
 
     @Override
-    public void tick()
+    public int getShortSoundDelay()
     {
-        Random rand = world.rand;
-        boolean nowInDeep = isValidPos();
+        return world.rand.nextInt(400) + 1000;
+    }
 
-        if (!nowInDeep)
-            isInDeep = false;
+    @Nullable
+    @Override
+    public SoundEvent getLongSound()
+    {
+        return StrangeSounds.AMBIENCE_DEEP_LONG;
+    }
 
-        if (!isInDeep && nowInDeep) {
-            soundHandler.play(new DeepAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_DEEP_LONG, 0.4F));
-            isInDeep = true;
-        }
-
-        if (nowInDeep && --shortDelay <= 0) {
-            soundHandler.play(new DeepAmbientSounds.ShortSound(player, StrangeSounds.AMBIENCE_DEEP_SHORT, 0.44F));
-            shortDelay = rand.nextInt(400) + 1000;
-        }
+    @Nullable
+    @Override
+    public SoundEvent getShortSound()
+    {
+        return StrangeSounds.AMBIENCE_DEEP_SHORT;
     }
 }

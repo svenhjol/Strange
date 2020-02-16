@@ -2,31 +2,44 @@ package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.SoundEvent;
 import svenhjol.strange.ambience.client.AmbienceHandler;
+import svenhjol.strange.ambience.client.iface.IDaySounds;
 import svenhjol.strange.base.StrangeSounds;
 
-public class MineshaftAmbientSounds extends BaseAmbientSounds
-{
-    private int shortDelay = 0;
+import javax.annotation.Nullable;
 
+public class MineshaftAmbientSounds extends BaseAmbientSounds implements IDaySounds
+{
     public MineshaftAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }
 
     @Override
-    public boolean isValidPos()
+    public boolean isValid()
     {
         if (world == null) return false;
         return AmbienceHandler.isInMineshaft;
     }
 
     @Override
-    public void tick()
+    public int getShortSoundDelay()
     {
-        if (isValidPos() && --shortDelay <= 0) {
-            soundHandler.play(new ShortSound(player, StrangeSounds.AMBIENCE_MINESHAFT_SHORT, 0.3F));
-            shortDelay = world.rand.nextInt(80) + 160;
-        }
+        return world.rand.nextInt(80) + 160;
+    }
+
+    @Nullable
+    @Override
+    public SoundEvent getLongSound()
+    {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public SoundEvent getShortSound()
+    {
+        return StrangeSounds.AMBIENCE_MINESHAFT_SHORT;
     }
 }

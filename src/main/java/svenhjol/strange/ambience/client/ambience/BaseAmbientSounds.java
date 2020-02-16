@@ -1,104 +1,71 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
+import svenhjol.strange.ambience.client.iface.IAmbientSounds;
 
-import java.util.function.Predicate;
-
-public abstract class BaseAmbientSounds
+public abstract class BaseAmbientSounds implements IAmbientSounds
 {
+    private int shortTicks = 0;
+    private boolean isValid = false;
+
     protected ClientPlayerEntity player;
+    protected ClientWorld world;
     protected SoundHandler soundHandler;
-    protected World world;
 
     public BaseAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
     {
         this.player = player;
         this.soundHandler = soundHandler;
-        this.world = player.world;
+        this.world = (ClientWorld)player.world;
     }
 
-    public abstract boolean isValidPos();
-
-    public abstract void tick();
-
-    public static class ShortSound extends TickableSound
+    @Override
+    public SoundHandler getSoundHandler()
     {
-        private final ClientPlayerEntity player;
+        return soundHandler;
+    }
 
-        protected ShortSound(ClientPlayerEntity player, SoundEvent sound, float volume)
-        {
-            super(sound, SoundCategory.AMBIENT);
-            this.player = player;
-            this.repeat = false;
-            this.repeatDelay = 0;
-            this.volume = volume;
-            this.priority = true;
-            this.global = true;
+    @Override
+    public ClientPlayerEntity getPlayer()
+    {
+        return player;
+    }
+
+    @Override
+    public ClientWorld getWorld()
+    {
+        return world;
+    }
+
+    public void tick()
+    {
+        boolean nowValid = isValid();
+
+        if (!nowValid)
+            isValid = false;
+
+        if (!isValid && nowValid) {
+            playLongSounds();
+            isValid = true;
         }
 
-        @Override
-        public void tick()
-        {
-            if (!this.player.isAlive())
-                this.donePlaying = true;
+        if (nowValid && --shortTicks <= 0) {
+            playShortSounds();
+            shortTicks = getShortSoundDelay();
         }
     }
 
-    public class LongSound extends TickableSound
+    @Override
+    public float getShortSoundVolume()
     {
-        private final ClientPlayerEntity player;
-        private int ticksUnderground;
-        private Predicate<ClientPlayerEntity> predicate;
+        return 0.5F;
+    }
 
-        public LongSound(ClientPlayerEntity player, SoundEvent sound, float volume, Predicate<ClientPlayerEntity> predicate)
-        {
-            super(sound, SoundCategory.AMBIENT);
-            this.player = player;
-            this.repeat = true;
-            this.repeatDelay = 0;
-            this.volume = volume;
-            this.priority = true;
-            this.global = true;
-            this.predicate = predicate;
-        }
-
-        public LongSound(ClientPlayerEntity player, SoundEvent sound, float volume)
-        {
-            super(sound, SoundCategory.AMBIENT);
-            this.player = player;
-            this.repeat = true;
-            this.repeatDelay = 0;
-            this.volume = volume;
-            this.priority = true;
-            this.global = true;
-        }
-
-        @Override
-        public void tick()
-        {
-            if (this.player.isAlive()) {
-
-                if (predicate.test(this.player)) {
-                    ++this.ticksUnderground;
-                } else {
-                    this.ticksUnderground -= 1;
-                }
-
-                this.ticksUnderground = Math.min(this.ticksUnderground, 70);
-                this.volume = Math.max(0.0F, Math.min((float)this.ticksUnderground / 70, 1.0F));
-
-                if (this.volume == 0.0F) {
-                    // this.donePlaying = true;
-                }
-
-            } else {
-                this.donePlaying = true;
-            }
-        }
+    @Override
+    public float getLongSoundVolume()
+    {
+        return 0.4F;
     }
 }
