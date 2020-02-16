@@ -147,6 +147,40 @@
       {"name": "strange:ambience/deep/short/drips"}
     ]
   },
+  "ambience.desert.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/desert/day_long/desert_day"}
+    ]
+  },
+  "ambience.desert.day_short": {
+    "sounds": [
+      {"name": "strange:ambience/desert/day_short/cicada1"},
+      {"name": "strange:ambience/desert/day_short/cicada2"},
+      {"name": "strange:ambience/desert/day_short/cicada3"}
+    ]
+  },
+  "ambience.desert.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/desert/night_long/desert_night"}
+    ]
+  },
+  "ambience.desert.night_short": {
+    "sounds": [
+      {"name": "strange:ambience/desert/night_short/short1"},
+      {"name": "strange:ambience/desert/night_short/short2"},
+      {"name": "strange:ambience/desert/night_short/short3"},
+      {"name": "strange:ambience/desert/night_short/short4"}
+    ]
+  },
+  "ambience.fortress.short": {
+    "sounds": [
+      {"name": "strange:ambience/fortress/short/vocal1"},
+      {"name": "strange:ambience/fortress/short/vocal2"},
+      {"name": "strange:ambience/fortress/short/wind1"},
+      {"name": "strange:ambience/fortress/short/wind2"},
+      {"name": "strange:ambience/fortress/short/wind3"}
+    ]
+  },
   "ambience.mineshaft.short": {
     "sounds": [
       {"name": "strange:ambience/mineshaft/short/wood1"},
@@ -154,6 +188,19 @@
       {"name": "strange:ambience/mineshaft/short/wood3"},
       {"name": "strange:ambience/mineshaft/short/wood4"},
       {"name": "strange:ambience/mineshaft/short/wood5"}
+    ]
+  },
+  "ambience.nether.long": {
+    "sounds": [
+      {"name": "strange:ambience/nether/long/underworld"}
+    ]
+  },
+  "ambience.nether.short": {
+    "sounds": [
+      {"name": "strange:ambience/nether/short/boom1"},
+      {"name": "strange:ambience/nether/short/boom2"},
+      {"name": "strange:ambience/nether/short/wind1"},
+      {"name": "strange:ambience/nether/short/wind2"}
     ]
   }
 }
