@@ -7,6 +7,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
+import java.util.function.Predicate;
+
 public abstract class BaseAmbientSounds
 {
     protected ClientPlayerEntity player;
@@ -51,6 +53,19 @@ public abstract class BaseAmbientSounds
     {
         private final ClientPlayerEntity player;
         private int ticksUnderground;
+        private Predicate<ClientPlayerEntity> predicate;
+
+        public LongSound(ClientPlayerEntity player, SoundEvent sound, float volume, Predicate<ClientPlayerEntity> predicate)
+        {
+            super(sound, SoundCategory.AMBIENT);
+            this.player = player;
+            this.repeat = true;
+            this.repeatDelay = 0;
+            this.volume = volume;
+            this.priority = true;
+            this.global = true;
+            this.predicate = predicate;
+        }
 
         public LongSound(ClientPlayerEntity player, SoundEvent sound, float volume)
         {
@@ -67,7 +82,8 @@ public abstract class BaseAmbientSounds
         public void tick()
         {
             if (this.player.isAlive()) {
-                if (isValidPos()) {
+
+                if (predicate.test(this.player)) {
                     ++this.ticksUnderground;
                 } else {
                     this.ticksUnderground -= 1;

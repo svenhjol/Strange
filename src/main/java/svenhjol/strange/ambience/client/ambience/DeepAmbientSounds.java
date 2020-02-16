@@ -3,6 +3,7 @@ package svenhjol.strange.ambience.client.ambience;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 import svenhjol.strange.base.StrangeSounds;
 
 import java.util.Random;
@@ -20,7 +21,7 @@ public class DeepAmbientSounds extends BaseAmbientSounds
     @Override
     public boolean isValidPos()
     {
-        if (world == null) return false;
+        if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
         return !world.isSkyLightMax(pos) && pos.getY() <= 32 && light < 10;
@@ -36,7 +37,7 @@ public class DeepAmbientSounds extends BaseAmbientSounds
             isInDeep = false;
 
         if (!isInDeep && nowInDeep) {
-            soundHandler.play(new DeepAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_DEEP_LONG, 0.3F));
+            soundHandler.play(new DeepAmbientSounds.LongSound(player, StrangeSounds.AMBIENCE_DEEP_LONG, 0.4F));
             isInDeep = true;
         }
 
