@@ -3,6 +3,9 @@ package svenhjol.strange.ambience.client.iface;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.SoundEvent;
+
+import javax.annotation.Nullable;
 
 public interface IAmbientSounds
 {
@@ -14,17 +17,9 @@ public interface IAmbientSounds
 
     boolean isValid();
 
-    boolean hasLongSound();
+    @Nullable
+    SoundEvent getLongSound();
 
-    boolean hasShortSound();
-
-    float getLongSoundVolume();
-
-    float getShortSoundVolume();
-
-    int getShortSoundDelay();
-
-    void playLongSounds();
-
-    void playShortSounds();
+    @Nullable
+    SoundEvent getShortSound();
 }

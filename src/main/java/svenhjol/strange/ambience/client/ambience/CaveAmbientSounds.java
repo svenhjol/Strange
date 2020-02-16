@@ -5,12 +5,11 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
-import svenhjol.strange.ambience.client.iface.IDaySounds;
 import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class CaveAmbientSounds extends BaseAmbientSounds implements IDaySounds
+public class CaveAmbientSounds extends BaseAmbientSounds
 {
     public CaveAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
     {

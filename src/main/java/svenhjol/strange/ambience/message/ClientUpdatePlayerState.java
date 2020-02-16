@@ -3,26 +3,29 @@ package svenhjol.strange.ambience.message;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
-import svenhjol.strange.ambience.client.AmbienceHandler;
+import svenhjol.strange.base.StrangeLoader;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
-public class ClientUpdateStructures implements IMesonMessage
+@OnlyIn(Dist.CLIENT)
+public class ClientUpdatePlayerState implements IMesonMessage
 {
     private CompoundNBT structures;
 
-    public ClientUpdateStructures(CompoundNBT structures)
+    public ClientUpdatePlayerState(CompoundNBT structures)
     {
         this.structures = structures;
     }
 
-    public static void encode(ClientUpdateStructures msg, PacketBuffer buf)
+    public static void encode(ClientUpdatePlayerState msg, PacketBuffer buf)
     {
         String serialized = "";
 
@@ -36,7 +39,7 @@ public class ClientUpdateStructures implements IMesonMessage
         buf.writeString(serialized);
     }
 
-    public static ClientUpdateStructures decode(PacketBuffer buf)
+    public static ClientUpdatePlayerState decode(PacketBuffer buf)
     {
         CompoundNBT structures = new CompoundNBT();
 
@@ -47,15 +50,15 @@ public class ClientUpdateStructures implements IMesonMessage
             Meson.warn("Failed to uncompress structures");
         }
 
-        return new ClientUpdateStructures(structures);
+        return new ClientUpdatePlayerState(structures);
     }
 
     public static class Handler
     {
-        public static void handle(final ClientUpdateStructures msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ClientUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
-                AmbienceHandler.updateStructures(msg.structures);
+                StrangeLoader.client.updateStructures(msg.structures);
             });
             ctx.get().setPacketHandled(true);
         }

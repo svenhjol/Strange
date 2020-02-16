@@ -23,6 +23,7 @@ public class LongSound extends TickableSound
         this.priority = true;
         this.global = true;
         this.predicate = predicate;
+        this.longTicks = -50;
     }
 
     @Override
@@ -36,12 +37,11 @@ public class LongSound extends TickableSound
                 this.longTicks -= 1;
             }
 
-            this.longTicks = Math.min(this.longTicks, 70);
-            this.volume = Math.max(0.0F, Math.min((float)this.longTicks / 70, 1.0F));
+            this.longTicks = Math.min(this.longTicks, 100);
+            this.volume = Math.max(0.0F, Math.min((float)this.longTicks / 100, 1.0F));
 
-            if (this.volume == 0.0F) {
-                // this.donePlaying = true;
-            }
+            if (!this.donePlaying && this.volume == 0.0F && this.longTicks < -100)
+                this.donePlaying = true;
 
         } else {
             this.donePlaying = true;

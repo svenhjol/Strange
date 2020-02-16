@@ -18,26 +18,26 @@ import svenhjol.strange.ruins.module.Vaults;
 import java.util.function.Supplier;
 
 /**
- * Server assembles list of structures that a player is inside
+ * Server assembles list of state for client, like inside structures, is day or night...
  */
-public class ServerUpdateStructures implements IMesonMessage
+public class ServerUpdatePlayerState implements IMesonMessage
 {
-    public ServerUpdateStructures()
+    public ServerUpdatePlayerState()
     {
     }
 
-    public static void encode(ServerUpdateStructures msg, PacketBuffer buf)
+    public static void encode(ServerUpdatePlayerState msg, PacketBuffer buf)
     {
     }
 
-    public static ServerUpdateStructures decode(PacketBuffer buf)
+    public static ServerUpdatePlayerState decode(PacketBuffer buf)
     {
-        return new ServerUpdateStructures();
+        return new ServerUpdatePlayerState();
     }
 
     public static class Handler
     {
-        public static void handle(final ServerUpdateStructures msg, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(final ServerUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
@@ -53,6 +53,7 @@ public class ServerUpdateStructures implements IMesonMessage
                 nbt.putBoolean("fortress", Feature.NETHER_BRIDGE.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("shipwreck", Feature.SHIPWRECK.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("village", Feature.VILLAGE.isPositionInsideStructure(world, pos));
+                nbt.putBoolean("day", world.isDaytime());
 
                 if (Strange.hasModule(UndergroundRuins.class)) {
                     nbt.putBoolean("underground_ruin", UndergroundRuins.structure.isPositionInsideStructure(world, pos));
@@ -64,7 +65,7 @@ public class ServerUpdateStructures implements IMesonMessage
                     nbt.putBoolean("big_dungeon", StrangeLoader.quarkCompat.isInsideBigDungeon(world, pos));
                 }
 
-                PacketHandler.sendTo(new ClientUpdateStructures(nbt), player);
+                PacketHandler.sendTo(new ClientUpdatePlayerState(nbt), player);
             });
             ctx.get().setPacketHandled(true);
         }

@@ -3,7 +3,7 @@ package svenhjol.strange.ambience.client.iface;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 
-public interface IBiome extends IAmbientSounds
+public interface IBiomeAmbience extends IAmbientSounds
 {
     @Override
     default boolean isValid()
@@ -13,8 +13,8 @@ public interface IBiome extends IAmbientSounds
         Biome biome = getWorld().getBiome(pos);
         if (biome == null) return false;
 
-        return biome.getCategory().equals(getBiomeCategory());
+        return validBiomeConditions(biome.getCategory());
     }
 
-    Biome.Category getBiomeCategory();
+    boolean validBiomeConditions(Biome.Category biomeCategory);
 }
