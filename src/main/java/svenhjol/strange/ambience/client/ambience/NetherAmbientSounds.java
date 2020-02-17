@@ -24,7 +24,7 @@ public class NetherAmbientSounds extends BaseAmbientSounds
     @Override
     public int getShortSoundDelay()
     {
-        return world.rand.nextInt(400) + 800;
+        return world.rand.nextInt(200) + 200;
     }
 
     @Nullable

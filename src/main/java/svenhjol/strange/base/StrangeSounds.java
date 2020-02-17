@@ -34,16 +34,18 @@ public class StrangeSounds
     // ambience
     public static final SoundEvent AMBIENCE_CAVE_LONG = createSound("ambience.cave.long");
     public static final SoundEvent AMBIENCE_CAVE_SHORT = createSound("ambience.cave.short");
+    public static final SoundEvent AMBIENCE_CRYSTALS_SHORT = createSound("ambience.crystals.short");
     public static final SoundEvent AMBIENCE_DEEP_LONG = createSound("ambience.deep.long");
     public static final SoundEvent AMBIENCE_DEEP_SHORT = createSound("ambience.deep.short");
     public static final SoundEvent AMBIENCE_DESERT_DAY_LONG = createSound("ambience.desert.day_long");
     public static final SoundEvent AMBIENCE_DESERT_DAY_SHORT = createSound("ambience.desert.day_short");
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_LONG = createSound("ambience.desert.night_long");
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_SHORT = createSound("ambience.desert.night_short");
-    public static final SoundEvent AMBIENCE_FORTRESS_SHORT = createSound("ambience.fortress.short");
     public static final SoundEvent AMBIENCE_MINESHAFT_SHORT = createSound("ambience.mineshaft.short");
     public static final SoundEvent AMBIENCE_NETHER_LONG = createSound("ambience.nether.long");
     public static final SoundEvent AMBIENCE_NETHER_SHORT = createSound("ambience.nether.short");
+    public static final SoundEvent AMBIENCE_SAVANNA_DAY_LONG = createSound("ambience.savanna.day_long");
+    public static final SoundEvent AMBIENCE_SAVANNA_NIGHT_LONG = createSound("ambience.savanna.night_long");
 
     public static SoundEvent createSound(String name)
     {

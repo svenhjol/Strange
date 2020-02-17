@@ -21,10 +21,14 @@ public class AmbienceHandler implements IAmbientSoundHandler
         ambientSounds.addAll(Arrays.asList(
             new CaveAmbientSounds(player, soundHandler),
             new DeepAmbientSounds(player, soundHandler),
+            new MineshaftAmbientSounds(player, soundHandler),
+            new NetherAmbientSounds(player, soundHandler),
+
+            new CaveAmbientSounds.CrystalCaves(player, soundHandler),
             new DesertAmbientSounds.Day(player, soundHandler),
             new DesertAmbientSounds.Night(player, soundHandler),
-            new MineshaftAmbientSounds(player, soundHandler),
-            new NetherAmbientSounds(player, soundHandler)
+            new SavannaAmbientSounds.Day(player, soundHandler),
+            new SavannaAmbientSounds.Night(player, soundHandler)
         ));
     }
 

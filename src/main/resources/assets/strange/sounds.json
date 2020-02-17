@@ -125,82 +125,96 @@
   },
   "ambience.cave.long": {
     "sounds": [
-      {"name": "strange:ambience/cave/long/wind"}
+      {"name": "strange:ambience/cave/long1"}
     ]
   },
   "ambience.cave.short": {
     "sounds": [
-      {"name": "strange:ambience/cave/short/bat"},
-      {"name": "strange:ambience/cave/short/rocks1"},
-      {"name": "strange:ambience/cave/short/rocks2"}
+      {"name": "strange:ambience/cave/short1"},
+      {"name": "strange:ambience/cave/short2"},
+      {"name": "strange:ambience/cave/short3"}
+    ]
+  },
+  "ambience.crystals.short": {
+    "sounds": [
+      {"name": "strange:ambience/crystals/short1"},
+      {"name": "strange:ambience/crystals/short2"},
+      {"name": "strange:ambience/crystals/short3"},
+      {"name": "strange:ambience/crystals/short4"}
     ]
   },
   "ambience.deep.long": {
     "sounds": [
-      {"name": "strange:ambience/deep/long/below"},
-      {"name": "strange:ambience/deep/long/voidechoes"}
+      {"name": "strange:ambience/deep/long1"},
+      {"name": "strange:ambience/deep/long2"}
     ]
   },
   "ambience.deep.short": {
     "sounds": [
-      {"name": "strange:ambience/deep/short/debris"},
-      {"name": "strange:ambience/deep/short/drips"}
+      {"name": "strange:ambience/deep/short1"},
+      {"name": "strange:ambience/deep/short2"}
     ]
   },
   "ambience.desert.day_long": {
     "sounds": [
-      {"name": "strange:ambience/desert/day_long/desert_day"}
+      {"name": "strange:ambience/general/wind"}
     ]
   },
   "ambience.desert.day_short": {
     "sounds": [
-      {"name": "strange:ambience/desert/day_short/cicada1"},
-      {"name": "strange:ambience/desert/day_short/cicada2"},
-      {"name": "strange:ambience/desert/day_short/cicada3"}
+      {"name": "strange:ambience/desert/day/short1"},
+      {"name": "strange:ambience/desert/day/short2"},
+      {"name": "strange:ambience/desert/day/short3"}
     ]
   },
   "ambience.desert.night_long": {
     "sounds": [
-      {"name": "strange:ambience/desert/night_long/desert_night"}
+      {"name": "strange:ambience/general/cicadas"}
     ]
   },
   "ambience.desert.night_short": {
     "sounds": [
-      {"name": "strange:ambience/desert/night_short/short1"},
-      {"name": "strange:ambience/desert/night_short/short2"},
-      {"name": "strange:ambience/desert/night_short/short3"},
-      {"name": "strange:ambience/desert/night_short/short4"}
-    ]
-  },
-  "ambience.fortress.short": {
-    "sounds": [
-      {"name": "strange:ambience/fortress/short/vocal1"},
-      {"name": "strange:ambience/fortress/short/vocal2"},
-      {"name": "strange:ambience/fortress/short/wind1"},
-      {"name": "strange:ambience/fortress/short/wind2"},
-      {"name": "strange:ambience/fortress/short/wind3"}
+      {"name": "strange:ambience/desert/night/short1"},
+      {"name": "strange:ambience/desert/night/short2"},
+      {"name": "strange:ambience/desert/night/short3"},
+      {"name": "strange:ambience/desert/night/short4"}
     ]
   },
   "ambience.mineshaft.short": {
     "sounds": [
-      {"name": "strange:ambience/mineshaft/short/wood1"},
-      {"name": "strange:ambience/mineshaft/short/wood2"},
-      {"name": "strange:ambience/mineshaft/short/wood3"},
-      {"name": "strange:ambience/mineshaft/short/wood4"},
-      {"name": "strange:ambience/mineshaft/short/wood5"}
+      {"name": "strange:ambience/mineshaft/short1"},
+      {"name": "strange:ambience/mineshaft/short2"},
+      {"name": "strange:ambience/mineshaft/short3"},
+      {"name": "strange:ambience/mineshaft/short4"},
+      {"name": "strange:ambience/mineshaft/short5"}
     ]
   },
   "ambience.nether.long": {
     "sounds": [
-      {"name": "strange:ambience/nether/long/underworld"}
+      {"name": "strange:ambience/nether/long1"}
     ]
   },
   "ambience.nether.short": {
     "sounds": [
-      {"name": "strange:ambience/nether/short/boom1"},
-      {"name": "strange:ambience/nether/short/boom2"},
-      {"name": "strange:ambience/nether/short/wind1"},
-      {"name": "strange:ambience/nether/short/wind2"}
+      {"name": "strange:ambience/nether/short1"},
+      {"name": "strange:ambience/nether/short2"},
+      {"name": "strange:ambience/nether/short3"},
+      {"name": "strange:ambience/nether/short4"},
+      {"name": "strange:ambience/nether/short5"},
+      {"name": "strange:ambience/nether/short6"},
+      {"name": "strange:ambience/nether/short7"},
+      {"name": "strange:ambience/nether/short8"},
+      {"name": "strange:ambience/nether/short9"}
+    ]
+  },
+  "ambience.savanna.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/savanna/long1"}
+    ]
+  },
+  "ambience.savanna.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/general/crickets"}
     ]
   }
 }
