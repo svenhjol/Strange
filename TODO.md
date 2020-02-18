@@ -71,5 +71,52 @@
 - [x] Handle "StoneCircleMap" - gen map randomly away from villager
 - [x] TEST Don't modify values with an exclamation mark
 
+## Ambience
+- [x] Taiga
+- [ ] Extreme Hills
+- [ ] Jungle
+- [ ] Mesa
+- [x] Plains
+- [x] Savanna
+- [ ] Icy
+- [ ] The End
+- [ ] Beach
+- [x] Forest
+- [ ] Ocean
+- [x] Desert
+- [ ] River
+- [x] Swamp
+- [ ] Mushroom
+- [x] Nether
+- [x] Caves
+  - [x] Crystals
+  - [ ] Raining at surface
+- [x] Deep caves
+- [x] Mineshafts
+- [ ] Villages
+
+## Spells to keep
+- Aura
+- Drain
+- Freeze
+- Growth
+- Heat
+- Repel
+- Summon
+
+## Spells to change to AOE
+- Boost
+- Levitate
+- Slowness
+
+## Spells to add
+- Extract
+- Protect
+- Recall
+- Displace
+
+## Totems
+- Totem of Transferring uses Transfer spell code
+
 ## Docs
 - [x] Update all docs
