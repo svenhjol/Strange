@@ -10,7 +10,7 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class SavannaAmbientSounds
+public class ForestAmbientSounds
 {
     public static class Day extends BaseAmbientSounds implements IBiomeAmbience
     {
@@ -23,7 +23,7 @@ public class SavannaAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_SAVANNA_DAY_LONG;
+            return StrangeSounds.AMBIENCE_FOREST_DAY_LONG;
         }
 
         @Nullable
@@ -40,11 +40,17 @@ public class SavannaAmbientSounds
         }
 
         @Override
+        public float getLongSoundVolume()
+        {
+            return 0.24F;
+        }
+
+        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.SAVANNA
-                && isOutside()
-                && StrangeLoader.client.isDaytime;
+            return biomeCategory == Biome.Category.FOREST
+                && StrangeLoader.client.isDaytime
+                && isOutside();
         }
     }
 
@@ -59,7 +65,7 @@ public class SavannaAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_SAVANNA_NIGHT_LONG;
+            return StrangeSounds.AMBIENCE_FOREST_NIGHT_LONG;
         }
 
         @Nullable
@@ -76,9 +82,15 @@ public class SavannaAmbientSounds
         }
 
         @Override
+        public float getLongSoundVolume()
+        {
+            return 0.24F;
+        }
+
+        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.SAVANNA
+            return biomeCategory == Biome.Category.FOREST
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }

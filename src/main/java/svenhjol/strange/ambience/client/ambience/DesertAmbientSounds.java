@@ -43,7 +43,7 @@ public class DesertAmbientSounds
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.DESERT
-                && world.isSkyLightMax(player.getPosition())
+                && isOutside()
                 && StrangeLoader.client.isDaytime;
         }
     }
@@ -79,7 +79,7 @@ public class DesertAmbientSounds
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.DESERT
-                && world.isSkyLightMax(player.getPosition())
+                && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }
     }

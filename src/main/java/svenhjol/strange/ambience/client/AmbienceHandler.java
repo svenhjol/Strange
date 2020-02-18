@@ -27,8 +27,16 @@ public class AmbienceHandler implements IAmbientSoundHandler
             new CaveAmbientSounds.CrystalCaves(player, soundHandler),
             new DesertAmbientSounds.Day(player, soundHandler),
             new DesertAmbientSounds.Night(player, soundHandler),
+            new ForestAmbientSounds.Day(player, soundHandler),
+            new ForestAmbientSounds.Night(player, soundHandler),
+            new PlainsAmbientSounds.Day(player, soundHandler),
+            new PlainsAmbientSounds.Night(player, soundHandler),
             new SavannaAmbientSounds.Day(player, soundHandler),
-            new SavannaAmbientSounds.Night(player, soundHandler)
+            new SavannaAmbientSounds.Night(player, soundHandler),
+            new SwampAmbientSounds.Day(player, soundHandler),
+            new SwampAmbientSounds.Night(player, soundHandler),
+            new TaigaAmbientSounds.Day(player, soundHandler),
+            new TaigaAmbientSounds.Night(player, soundHandler)
         ));
     }
 

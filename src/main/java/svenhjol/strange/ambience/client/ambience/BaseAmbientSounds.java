@@ -1,9 +1,12 @@
 package svenhjol.strange.ambience.client.ambience;
 
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.ambience.client.LongSound;
 import svenhjol.strange.ambience.client.ShortSound;
 import svenhjol.strange.ambience.client.iface.IAmbientSounds;
@@ -47,6 +50,35 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
             setLongSound();
             soundHandler.play(this.longSound);
         }
+    }
+
+    public boolean isOutside()
+    {
+        int blocks = 16;
+        int start = 1;
+
+        BlockPos playerPos = player.getPosition();
+
+        for (int i = start; i < start + blocks; i++) {
+            BlockPos check = new BlockPos(playerPos.getX(), playerPos.getY() + i, playerPos.getZ());
+            BlockState state = world.getBlockState(check);
+            Block block = state.getBlock();
+
+            if (world.canBlockSeeSky(check)) return true;
+
+            if (world.isAirBlock(check)) continue;
+            if (state.getMaterial() == Material.GLASS
+                || block instanceof LogBlock
+                || block instanceof MushroomBlock
+                || block instanceof HugeMushroomBlock
+            ) continue;
+
+            if (state.isSolid()) return false;
+        }
+
+        if (player.getPosition().getY() < 48) return false;
+
+        return true;
     }
 
     protected void setShortSound()

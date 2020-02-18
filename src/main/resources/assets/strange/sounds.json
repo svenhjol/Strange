@@ -180,6 +180,19 @@
       {"name": "strange:ambience/desert/night/short4"}
     ]
   },
+  "ambience.forest.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/forest/day/long1"},
+      {"name": "strange:ambience/forest/day/long2"},
+      {"name": "strange:ambience/forest/day/long3"}
+    ]
+  },
+  "ambience.forest.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/forest/night/long1"},
+      {"name": "strange:ambience/forest/night/long2"}
+    ]
+  },
   "ambience.mineshaft.short": {
     "sounds": [
       {"name": "strange:ambience/mineshaft/short1"},
@@ -207,6 +220,34 @@
       {"name": "strange:ambience/nether/short9"}
     ]
   },
+  "ambience.plains.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/plains/day/long1"},
+      {"name": "strange:ambience/plains/day/long2"},
+      {"name": "strange:ambience/plains/day/long3"}
+    ]
+  },
+  "ambience.plains.day_short": {
+    "sounds": [
+    ]
+  },
+  "ambience.plains.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/plains/night/long1"},
+      {"name": "strange:ambience/plains/night/long2"}
+    ]
+  },
+  "ambience.plains.night_short": {
+    "sounds": [
+      {"name": "strange:ambience/plains/night/short1"},
+      {"name": "strange:ambience/plains/night/short2"},
+      {"name": "strange:ambience/plains/night/short3"},
+      {"name": "strange:ambience/plains/night/short4"},
+      {"name": "strange:ambience/plains/night/short5"},
+      {"name": "strange:ambience/plains/night/short6"},
+      {"name": "strange:ambience/plains/night/short7"}
+    ]
+  },
   "ambience.savanna.day_long": {
     "sounds": [
       {"name": "strange:ambience/savanna/long1"}
@@ -215,6 +256,27 @@
   "ambience.savanna.night_long": {
     "sounds": [
       {"name": "strange:ambience/general/crickets"}
+    ]
+  },
+  "ambience.swamp.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/swamp/day/long1"}
+    ]
+  },
+  "ambience.swamp.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/swamp/night/long1"}
+    ]
+  },
+  "ambience.taiga.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/taiga/day/long1"},
+      {"name": "strange:ambience/taiga/day/long2"}
+    ]
+  },
+  "ambience.taiga.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/taiga/night/long1"}
     ]
   }
 }

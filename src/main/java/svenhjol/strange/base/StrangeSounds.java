@@ -41,11 +41,19 @@ public class StrangeSounds
     public static final SoundEvent AMBIENCE_DESERT_DAY_SHORT = createSound("ambience.desert.day_short");
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_LONG = createSound("ambience.desert.night_long");
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_SHORT = createSound("ambience.desert.night_short");
+    public static final SoundEvent AMBIENCE_FOREST_DAY_LONG = createSound("ambience.forest.day_long");
+    public static final SoundEvent AMBIENCE_FOREST_NIGHT_LONG = createSound("ambience.forest.night_long");
     public static final SoundEvent AMBIENCE_MINESHAFT_SHORT = createSound("ambience.mineshaft.short");
     public static final SoundEvent AMBIENCE_NETHER_LONG = createSound("ambience.nether.long");
     public static final SoundEvent AMBIENCE_NETHER_SHORT = createSound("ambience.nether.short");
+    public static final SoundEvent AMBIENCE_PLAINS_DAY_LONG = createSound("ambience.plains.day_long");
+    public static final SoundEvent AMBIENCE_PLAINS_NIGHT_LONG = createSound("ambience.plains.night_long");
     public static final SoundEvent AMBIENCE_SAVANNA_DAY_LONG = createSound("ambience.savanna.day_long");
     public static final SoundEvent AMBIENCE_SAVANNA_NIGHT_LONG = createSound("ambience.savanna.night_long");
+    public static final SoundEvent AMBIENCE_SWAMP_DAY_LONG = createSound("ambience.swamp.day_long");
+    public static final SoundEvent AMBIENCE_SWAMP_NIGHT_LONG = createSound("ambience.swamp.night_long");
+    public static final SoundEvent AMBIENCE_TAIGA_DAY_LONG = createSound("ambience.taiga.day_long");
+    public static final SoundEvent AMBIENCE_TAIGA_NIGHT_LONG = createSound("ambience.taiga.night_long");
 
     public static SoundEvent createSound(String name)
     {

@@ -28,8 +28,8 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
 
-        if (!world.isSkyLightMax(pos) && pos.getY() < world.getSeaLevel()) {
-            return pos.getY() <= 44 || light <= 13;
+        if (!world.isSkyLightMax(pos) && pos.getY() <= world.getSeaLevel()) {
+            return pos.getY() <= 44 || light <= 12;
         }
 
         return false;

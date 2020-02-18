@@ -37,8 +37,8 @@ public class LongSound extends TickableSound
                 this.longTicks -= 1;
             }
 
-            this.longTicks = Math.min(this.longTicks, 100);
-            this.volume = Math.max(0.0F, Math.min((float)this.longTicks / 100, 1.0F));
+            this.longTicks = Math.min(this.longTicks, 140);
+            this.volume = Math.max(0.0F, Math.min((float)this.longTicks / 140, 1.0F));
 
             if (!this.donePlaying && this.volume == 0.0F && this.longTicks < -100)
                 this.donePlaying = true;
