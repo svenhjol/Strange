@@ -24,7 +24,7 @@ public class SummonSpell extends Spell
     {
         super("summon");
         this.color = DyeColor.GRAY;
-        this.affect = Affect.FOCUS;
+        this.affect = Affect.AREA;
         this.applyCost = 5;
     }
 
@@ -32,12 +32,12 @@ public class SummonSpell extends Spell
     public void cast(PlayerEntity player, ItemStack stone, Consumer<Boolean> didCast)
     {
         int[] range = {6, 2, 6};
-        this.castFocus(player, result -> {
+        this.castArea(player, range, blocks -> {
             World world = player.world;
-            BlockPos pos = result.getPos();
 
             IronGolemEntity fighter = EntityType.IRON_GOLEM.create(world);
             if (fighter != null) {
+                BlockPos pos = player.getPosition();
                 fighter.getTags().add(SUMMONED);
                 fighter.moveToBlockPosAndAngles(pos.add(0, 1, 0), 0.0F, 0.0F);
                 fighter.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
@@ -52,9 +52,6 @@ public class SummonSpell extends Spell
                     MonsterEntity target = entities.get(world.rand.nextInt(entities.size()));
                     fighter.setAttackTarget(target);
                 }
-
-                didCast.accept(true);
-                return;
             }
 
             didCast.accept(false);

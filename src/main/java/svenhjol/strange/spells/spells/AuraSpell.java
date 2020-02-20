@@ -27,7 +27,6 @@ public class AuraSpell extends Spell
         int[] range = {8, 5, 8};
         this.castArea(player, range, blocks -> {
             World world = player.world;
-
             if (world.isRemote) return;
 
             List<LivingEntity> entities;

@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,7 +36,6 @@ import java.util.function.Consumer;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SPELLS, hasSubscriptions = true)
 public class Spells extends MesonModule
 {
-    public static final String META = "meta";
     public static final String USES = "uses";
 
     public static EntityType<? extends Entity> entity;
@@ -109,17 +107,6 @@ public class Spells extends MesonModule
         client = new SpellsClient();
     }
 
-    public static boolean activate(PlayerEntity player, ItemStack holdable, Spell spell)
-    {
-        if (spell.needsActivation() && !hasMeta(holdable)) {
-            spell.activate(player, holdable);
-            player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            player.getCooldownTracker().setCooldown(holdable.getItem(), 20);
-            return true;
-        }
-        return false;
-    }
-
     public static void cast(PlayerEntity player, ItemStack holdable, Spell spell, Consumer<Boolean> onCastSuccess)
     {
         if (player.world.isRemote) return;
@@ -130,7 +117,6 @@ public class Spells extends MesonModule
 
         spell.cast(player, holdable, result -> {
             if (result) {
-                clearMeta(holdable);
                 effectEnchant((ServerWorld)player.world, player.getPositionVec(), spell, 5, 0.2D, 0.2D, 0.2, 2.2D);
                 boolean hasUses = !player.isCreative() && decreaseUses(holdable);
                 onCastSuccess.accept(!hasUses);
@@ -151,30 +137,6 @@ public class Spells extends MesonModule
             tag.putInt(USES, remaining);
             return true;
         }
-    }
-
-    public static void clearMeta(ItemStack holdable)
-    {
-        CompoundNBT holdableTag = holdable.getOrCreateTag();
-        holdableTag.remove(META);
-    }
-
-    public static CompoundNBT getMeta(ItemStack holdable)
-    {
-        return holdable.getOrCreateChildTag(META);
-    }
-
-    public static void putMeta(ItemStack holdable, CompoundNBT tag)
-    {
-        CompoundNBT holdableTag = holdable.getOrCreateTag();
-        holdableTag.put(META, tag);
-    }
-
-    public static boolean hasMeta(ItemStack holdable)
-    {
-        CompoundNBT meta = getMeta(holdable);
-        boolean b = meta.isEmpty();
-        return !b;
     }
 
     public static int getUses(ItemStack holdable)

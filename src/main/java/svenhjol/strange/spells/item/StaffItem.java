@@ -127,10 +127,6 @@ public class StaffItem extends ToolItem implements IMesonItem
                     }
                 }
 
-                // check for activated spells first
-                boolean activated = Spells.activate(player, staff, spell);
-                if (activated) return staff;
-
                 Spells.cast(player, staff, spell, used -> {
                     if (!player.isCreative()) {
                         int xpCost = cost;
