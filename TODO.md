@@ -73,12 +73,12 @@
 
 ## Ambience
 - [x] Taiga
-- [ ] Extreme Hills
+- [x] Extreme Hills
 - [ ] Jungle
 - [ ] Mesa
 - [x] Plains
 - [x] Savanna
-- [ ] Icy
+- [x] Icy
 - [ ] The End
 - [ ] Beach
 - [x] Forest
