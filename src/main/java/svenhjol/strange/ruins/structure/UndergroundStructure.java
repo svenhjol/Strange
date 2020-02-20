@@ -146,10 +146,13 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
         {
             Biome.Category biomeCategory = biome.getCategory();
 
-            if ((gen instanceof OverworldChunkGenerator && biomeCategory != Biome.Category.OCEAN && rand.nextFloat() < 0.1F)
+            if (gen instanceof OverworldChunkGenerator
+                && ((biomeCategory != Biome.Category.OCEAN && rand.nextFloat() < 0.1F)
                 || !UndergroundRuins.ruins.containsKey(biomeCategory)
                 || UndergroundRuins.ruins.get(biomeCategory).isEmpty())
+            ) {
                 biomeCategory = Biome.Category.NONE; // chance of being a general overworld structure
+            }
 
             return biomeCategory;
         }
