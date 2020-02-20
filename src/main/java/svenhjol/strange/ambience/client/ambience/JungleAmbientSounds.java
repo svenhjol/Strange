@@ -10,7 +10,7 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class TaigaAmbientSounds
+public class JungleAmbientSounds
 {
     public static class Day extends BaseAmbientSounds implements IBiomeAmbience
     {
@@ -23,7 +23,7 @@ public class TaigaAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_TAIGA_DAY_LONG;
+            return StrangeSounds.AMBIENCE_JUNGLE_DAY_LONG;
         }
 
         @Nullable
@@ -48,9 +48,9 @@ public class TaigaAmbientSounds
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.TAIGA
-                && isOutside()
-                && StrangeLoader.client.isDaytime;
+            return biomeCategory == Biome.Category.JUNGLE
+                && StrangeLoader.client.isDaytime
+                && isOutside();
         }
     }
 
@@ -65,7 +65,7 @@ public class TaigaAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_TAIGA_NIGHT_LONG;
+            return StrangeSounds.AMBIENCE_JUNGLE_NIGHT_LONG;
         }
 
         @Nullable
@@ -90,7 +90,7 @@ public class TaigaAmbientSounds
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.TAIGA
+            return biomeCategory == Biome.Category.JUNGLE
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }

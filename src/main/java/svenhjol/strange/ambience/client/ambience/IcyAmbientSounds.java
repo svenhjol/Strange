@@ -30,7 +30,7 @@ public class IcyAmbientSounds
         @Override
         public SoundEvent getShortSound()
         {
-            return null;
+            return StrangeSounds.AMBIENCE_ICY_DAY_SHORT;
         }
 
         @Override
@@ -42,7 +42,7 @@ public class IcyAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override
@@ -84,7 +84,7 @@ public class IcyAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override

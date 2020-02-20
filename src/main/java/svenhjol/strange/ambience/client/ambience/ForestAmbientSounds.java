@@ -42,7 +42,7 @@ public class ForestAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override
@@ -84,7 +84,7 @@ public class ForestAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override

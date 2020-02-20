@@ -34,6 +34,8 @@ public class AmbienceHandler implements IAmbientSoundHandler
             new ForestAmbientSounds.Night(player, soundHandler),
             new IcyAmbientSounds.Day(player, soundHandler),
             new IcyAmbientSounds.Night(player, soundHandler),
+            new JungleAmbientSounds.Day(player, soundHandler),
+            new JungleAmbientSounds.Night(player, soundHandler),
             new PlainsAmbientSounds.Day(player, soundHandler),
             new PlainsAmbientSounds.Night(player, soundHandler),
             new SavannaAmbientSounds.Day(player, soundHandler),

@@ -74,7 +74,7 @@
 ## Ambience
 - [x] Taiga
 - [x] Extreme Hills
-- [ ] Jungle
+- [x] Jungle
 - [ ] Mesa
 - [x] Plains
 - [x] Savanna

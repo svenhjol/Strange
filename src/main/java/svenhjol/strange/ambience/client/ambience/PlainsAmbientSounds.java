@@ -42,7 +42,7 @@ public class PlainsAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.2F;
+            return 0.18F;
         }
 
         @Override
@@ -72,19 +72,19 @@ public class PlainsAmbientSounds
         @Override
         public SoundEvent getShortSound()
         {
-            return null;
+            return StrangeSounds.AMBIENCE_PLAINS_NIGHT_SHORT;
         }
 
         @Override
         public int getShortSoundDelay()
         {
-            return world.rand.nextInt(400) + 600;
+            return world.rand.nextInt(500) + 200;
         }
 
         @Override
         public float getLongSoundVolume()
         {
-            return 0.2F;
+            return 0.18F;
         }
 
         @Override
