@@ -157,7 +157,9 @@
   },
   "ambience.desert.day_long": {
     "sounds": [
-      {"name": "strange:ambience/general/wind"}
+      {"name": "strange:ambience/general/wind1"},
+      {"name": "strange:ambience/general/wind2"},
+      {"name": "strange:ambience/general/wind3"}
     ]
   },
   "ambience.desert.day_short": {
@@ -169,7 +171,8 @@
   },
   "ambience.desert.night_long": {
     "sounds": [
-      {"name": "strange:ambience/general/cicadas"}
+      {"name": "strange:ambience/general/cicadas"},
+      {"name": "strange:ambience/general/wind2"}
     ]
   },
   "ambience.desert.night_short": {
@@ -178,6 +181,39 @@
       {"name": "strange:ambience/desert/night/short2"},
       {"name": "strange:ambience/desert/night/short3"},
       {"name": "strange:ambience/desert/night/short4"}
+    ]
+  },
+  "ambience.extreme_hills.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/extreme_hills/day/long1"},
+      {"name": "strange:ambience/general/wind1"},
+      {"name": "strange:ambience/general/wind2"},
+      {"name": "strange:ambience/general/wind3"}
+    ]
+  },
+  "ambience.extreme_hills.day_short": {
+    "sounds": [
+      {"name": "strange:ambience/extreme_hills/day/short1"},
+      {"name": "strange:ambience/extreme_hills/day/short2"},
+      {"name": "strange:ambience/extreme_hills/day/short3"},
+      {"name": "strange:ambience/extreme_hills/day/short4"}
+    ]
+  },
+  "ambience.extreme_hills.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/general/wind1"},
+      {"name": "strange:ambience/general/wind2"},
+      {"name": "strange:ambience/general/wind3"}
+    ]
+  },
+  "ambience.extreme_hills.night_short": {
+    "sounds": [
+      {"name": "strange:ambience/extreme_hills/night/short1"},
+      {"name": "strange:ambience/extreme_hills/night/short2"},
+      {"name": "strange:ambience/extreme_hills/night/short3"},
+      {"name": "strange:ambience/extreme_hills/night/short4"},
+      {"name": "strange:ambience/extreme_hills/night/short5"},
+      {"name": "strange:ambience/extreme_hills/night/short6"}
     ]
   },
   "ambience.forest.day_long": {
@@ -191,6 +227,19 @@
     "sounds": [
       {"name": "strange:ambience/forest/night/long1"},
       {"name": "strange:ambience/forest/night/long2"}
+    ]
+  },
+  "ambience.icy.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/icy/day/long1"},
+      {"name": "strange:ambience/general/wind2"}
+    ]
+  },
+  "ambience.icy.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/general/wind1"},
+      {"name": "strange:ambience/general/wind2"},
+      {"name": "strange:ambience/general/wind3"}
     ]
   },
   "ambience.mineshaft.short": {
@@ -244,8 +293,7 @@
       {"name": "strange:ambience/plains/night/short3"},
       {"name": "strange:ambience/plains/night/short4"},
       {"name": "strange:ambience/plains/night/short5"},
-      {"name": "strange:ambience/plains/night/short6"},
-      {"name": "strange:ambience/plains/night/short7"}
+      {"name": "strange:ambience/plains/night/short6"}
     ]
   },
   "ambience.savanna.day_long": {
@@ -255,7 +303,8 @@
   },
   "ambience.savanna.night_long": {
     "sounds": [
-      {"name": "strange:ambience/general/crickets"}
+      {"name": "strange:ambience/general/crickets"},
+      {"name": "strange:ambience/general/cicadas"}
     ]
   },
   "ambience.swamp.day_long": {
@@ -271,12 +320,19 @@
   "ambience.taiga.day_long": {
     "sounds": [
       {"name": "strange:ambience/taiga/day/long1"},
-      {"name": "strange:ambience/taiga/day/long2"}
+      {"name": "strange:ambience/taiga/day/long2"},
+      {"name": "strange:ambience/taiga/day/long3"}
     ]
   },
   "ambience.taiga.night_long": {
     "sounds": [
       {"name": "strange:ambience/taiga/night/long1"}
+    ]
+  },
+  "ambience.high": {
+    "sounds": [
+      {"name": "strange:ambience/general/high1"},
+      {"name": "strange:ambience/general/high2"}
     ]
   }
 }
