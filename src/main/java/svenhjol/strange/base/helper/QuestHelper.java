@@ -31,7 +31,7 @@ public class QuestHelper
 {
     public static void effectCompleted(PlayerEntity player, @Nullable ITextComponent message)
     {
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COMPLETE, SoundCategory.PLAYERS, 0.6F, 1.0F);
 
         if (message != null) {
             player.sendStatusMessage(message, true);
@@ -40,7 +40,7 @@ public class QuestHelper
 
     public static void effectCounted(PlayerEntity player)
     {
-        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 1.0F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
+        player.world.playSound(null, player.getPosition(), StrangeSounds.QUEST_ACTION_COUNT, SoundCategory.PLAYERS, 0.6F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.0F) * 1.1F);
     }
 
     public static void giveLocationItemToPlayer(PlayerEntity player, IQuest quest, BlockPos location, int dim)
