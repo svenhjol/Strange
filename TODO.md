@@ -34,6 +34,7 @@
 - [x] Encounter boss bar doesn't clear when you die
 - [x] Test change to `LivingDeathEvent` code
 - [x] IN PROGRESS Restore advancements
+    - Rare totem advancement
 
 ## Intermittent / warnings
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
@@ -116,7 +117,7 @@
 - Displace
 
 ## Totems
-- Totem of Transferring uses Transfer spell code
+- [ ] Totem of Transferring uses Transfer spell code
 
 ## Docs
 - [x] Update all docs
