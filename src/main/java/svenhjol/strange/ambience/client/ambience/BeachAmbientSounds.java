@@ -10,7 +10,7 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class ForestAmbientSounds
+public class BeachAmbientSounds
 {
     public static class Day extends BaseAmbientSounds implements IBiomeAmbience
     {
@@ -23,7 +23,7 @@ public class ForestAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_FOREST_DAY_LONG;
+            return StrangeSounds.AMBIENCE_BEACH_DAY_LONG;
         }
 
         @Nullable
@@ -48,7 +48,7 @@ public class ForestAmbientSounds
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.FOREST
+            return biomeCategory == Biome.Category.BEACH
                 && StrangeLoader.client.isDaytime
                 && isOutside();
         }
@@ -65,7 +65,7 @@ public class ForestAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_FOREST_NIGHT_LONG;
+            return StrangeSounds.AMBIENCE_BEACH_NIGHT_LONG;
         }
 
         @Nullable
@@ -90,7 +90,7 @@ public class ForestAmbientSounds
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.FOREST
+            return biomeCategory == Biome.Category.BEACH
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }

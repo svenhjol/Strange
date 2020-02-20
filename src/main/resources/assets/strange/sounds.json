@@ -123,6 +123,16 @@
       }
     ]
   },
+  "ambience.beach.day_long": {
+    "sounds": [
+      {"name": "strange:ambience/beach/day/long1"}
+    ]
+  },
+  "ambience.beach.night_long": {
+    "sounds": [
+      {"name": "strange:ambience/beach/night/long1"}
+    ]
+  },
   "ambience.cave.long": {
     "sounds": [
       {"name": "strange:ambience/cave/long1"}

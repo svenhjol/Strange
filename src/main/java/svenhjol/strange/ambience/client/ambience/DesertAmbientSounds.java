@@ -43,6 +43,7 @@ public class DesertAmbientSounds
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.DESERT
+                || biomeCategory == Biome.Category.MESA
                 && isOutside()
                 && StrangeLoader.client.isDaytime;
         }
@@ -79,6 +80,7 @@ public class DesertAmbientSounds
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.DESERT
+                || biomeCategory == Biome.Category.MESA
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }

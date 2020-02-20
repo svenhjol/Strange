@@ -42,7 +42,7 @@ public class SwampAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.1F;
+            return 0.08F;
         }
 
         @Override
@@ -84,7 +84,7 @@ public class SwampAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.1F;
+            return 0.08F;
         }
 
         @Override

@@ -98,12 +98,12 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
 
     public float getShortSoundVolume()
     {
-        return 0.14F;
+        return 0.2F;
     }
 
     public float getLongSoundVolume()
     {
-        return 0.1F;
+        return 0.08F;
     }
 
     public abstract int getShortSoundDelay();

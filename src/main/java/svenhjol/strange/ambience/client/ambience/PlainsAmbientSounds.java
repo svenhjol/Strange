@@ -42,13 +42,14 @@ public class PlainsAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.1F;
+            return 0.08F;
         }
 
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.PLAINS
+                || biomeCategory == Biome.Category.MUSHROOM
                 && isOutside()
                 && StrangeLoader.client.isDaytime;
         }
@@ -84,13 +85,14 @@ public class PlainsAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.1F;
+            return 0.08F;
         }
 
         @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.PLAINS
+                || biomeCategory == Biome.Category.MUSHROOM
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }

@@ -76,18 +76,18 @@
 - [x] Taiga
 - [x] Extreme Hills
 - [x] Jungle
-- [ ] Mesa
+- [x] Mesa (shares with desert)
 - [x] Plains
 - [x] Savanna
 - [x] Icy
 - [ ] The End
-- [ ] Beach
+- [x] Beach
 - [x] Forest
 - [ ] Ocean
 - [x] Desert
 - [ ] River
 - [x] Swamp
-- [ ] Mushroom
+- [x] Mushroom (shares with plains)
 - [x] Nether
 - [x] Caves
   - [x] Crystals
