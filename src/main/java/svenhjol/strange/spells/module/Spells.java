@@ -46,37 +46,15 @@ public class Spells extends MesonModule
     @Config(name = "Enabled spells", description = "List of all available spells.")
     public static List<String> enabledSpells = Arrays.asList(
         "aura",
-        "blink",
         "boost",
         "drain",
-        "explosion",
         "freeze",
         "growth",
         "heat",
-        "knockback",
         "levitate",
-        "lightning",
-        "portal",
         "repel",
-        "rise",
-        "roots",
         "slowness",
-        "summon",
-        "transfer"
-    );
-
-    public static List<String> transferBlacklist = Arrays.asList(
-        "minecraft:bedrock",
-        "minecraft:end_portal_frame",
-        "minecraft:end_portal",
-        "minecraft:iron_door",
-        "charm:rune_portal_frame",
-        "charm:rune_portal"
-    );
-
-    public static List<String> transferHeavy = Arrays.asList(
-        "minecraft:spawner",
-        "minecraft:dragon_egg"
+        "summon"
     );
 
     @OnlyIn(Dist.CLIENT)

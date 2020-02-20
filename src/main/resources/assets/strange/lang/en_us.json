@@ -89,6 +89,7 @@
   "item.strange.totem_of_preserving": "Totem of Preserving",
   "item.strange.totem_of_returning": "Totem of Returning",
   "item.strange.totem_of_shielding": "Totem of Shielding",
+  "item.strange.totem_of_transferring": "Totem of Transferring",
   "item.strange.quest_reward_totem": "Distant Stone Circle",
   "item.strange.moonstone": "Moonstone",
   "item.strange.wooden_staff": "Wooden Staff",
@@ -166,7 +167,6 @@
   "spell.strange.roots.title": "Roots Spell",
   "spell.strange.slowness.title": "Slowness Spell",
   "spell.strange.summon.title": "Summon Spell",
-  "spell.strange.transfer.title": "Transfer Spell",
 
   "spell.strange.aura.desc": "Heals all friendly creatures.",
   "spell.strange.blink.desc": "Teleports to the target location.",
@@ -184,6 +184,5 @@
   "spell.strange.rise.desc": "Rises you into the air followed by a gentle descent.",
   "spell.strange.roots.desc": "Teleports to a tree that you are looking at.",
   "spell.strange.slowness.desc": "Gives slowness to the target creature.",
-  "spell.strange.summon.desc": "Summons an iron golem to fight enemies around you.",
-  "spell.strange.transfer.desc": "Transfer a block to a new location.\nClick once to hold the block to transfer, then again where you wish to place it."
+  "spell.strange.summon.desc": "Summons an iron golem to fight enemies around you."
 }
