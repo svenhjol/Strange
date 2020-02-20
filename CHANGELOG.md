@@ -1,3 +1,8 @@
+## 1.0.0 alpha 4
+* Experimental client-side ambient sounds. WIP
+* Spells are now AOE only
+* Restored Totem of Transferring
+
 ## 1.0.0 alpha 3
 * Changed rune hover text
 * Fixed issue with gather quests and magnetic tool

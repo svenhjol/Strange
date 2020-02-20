@@ -103,8 +103,6 @@
 - Heat
 - Repel
 - Summon
-
-## Spells to change to AOE
 - Boost
 - Levitate
 - Slowness
