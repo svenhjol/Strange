@@ -30,19 +30,19 @@ public class ExtremeHillsAmbientSounds
         @Override
         public SoundEvent getShortSound()
         {
-            return null;
+            return StrangeSounds.AMBIENCE_EXTREME_HILLS_DAY_SHORT;
         }
 
         @Override
         public int getShortSoundDelay()
         {
-            return world.rand.nextInt(400) + 400;
+            return world.rand.nextInt(400) + 300;
         }
 
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override
@@ -84,7 +84,7 @@ public class ExtremeHillsAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.24F;
+            return 0.18F;
         }
 
         @Override

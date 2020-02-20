@@ -42,6 +42,7 @@ public class StrangeSounds
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_LONG = createSound("ambience.desert.night_long");
     public static final SoundEvent AMBIENCE_DESERT_NIGHT_SHORT = createSound("ambience.desert.night_short");
     public static final SoundEvent AMBIENCE_EXTREME_HILLS_DAY_LONG = createSound("ambience.extreme_hills.day_long");
+    public static final SoundEvent AMBIENCE_EXTREME_HILLS_DAY_SHORT = createSound("ambience.extreme_hills.day_short");
     public static final SoundEvent AMBIENCE_EXTREME_HILLS_NIGHT_LONG = createSound("ambience.extreme_hills.night_long");
     public static final SoundEvent AMBIENCE_FOREST_DAY_LONG = createSound("ambience.forest.day_long");
     public static final SoundEvent AMBIENCE_FOREST_NIGHT_LONG = createSound("ambience.forest.night_long");
