@@ -39,9 +39,9 @@
 ## Intermittent / warnings
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
 - [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
-- [ ] the "17" warning
+- [ ] the "17" warning - Quark issue? Appears on quark's network channel
 - [x] TEST "strange:module_enabled" error
-- [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos))
+- [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos)) - MC bug?
 
 ## Ruins
 - [x] Jungle chambers less glass
@@ -91,7 +91,6 @@
 - [x] Nether
 - [x] Caves
   - [x] Crystals
-  - [ ] Raining at surface
 - [x] Deep caves
 - [x] Mineshafts
 - [ ] Villages
@@ -117,7 +116,7 @@
 - Displace
 
 ## Totems
-- [ ] Totem of Transferring uses Transfer spell code
+- [x] Totem of Transferring uses Transfer spell code
 
 ## Docs
-- [x] Update all docs
+- [ ] Update all docs
