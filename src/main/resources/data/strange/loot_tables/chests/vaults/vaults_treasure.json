@@ -33,6 +33,11 @@
           "name": "strange:totem_of_preserving",
           "type": "minecraft:item",
           "weight": 6
+        },
+        {
+          "name": "strange:totem_of_transferring",
+          "type": "minecraft:item",
+          "weight": 6
         }
       ]
     },
