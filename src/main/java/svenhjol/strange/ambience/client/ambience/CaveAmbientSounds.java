@@ -64,7 +64,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
     @Override
     public float getLongSoundVolume()
     {
-        return 0.18F;
+        return 0.1F;
     }
 
     public static class CrystalCaves extends BaseAmbientSounds
@@ -132,7 +132,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         @Override
         public float getShortSoundVolume()
         {
-            return 0.18F;
+            return 0.1F;
         }
     }
 }

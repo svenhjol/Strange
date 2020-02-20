@@ -42,7 +42,7 @@ public class JungleAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.18F;
+            return 0.1F;
         }
 
         @Override
@@ -84,7 +84,7 @@ public class JungleAmbientSounds
         @Override
         public float getLongSoundVolume()
         {
-            return 0.18F;
+            return 0.1F;
         }
 
         @Override

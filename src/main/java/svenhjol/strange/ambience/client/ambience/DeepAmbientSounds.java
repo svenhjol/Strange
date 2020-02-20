@@ -28,7 +28,7 @@ public class DeepAmbientSounds extends BaseAmbientSounds
     @Override
     public float getLongSoundVolume()
     {
-        return 0.16F;
+        return 0.1F;
     }
 
     @Override
