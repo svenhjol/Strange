@@ -126,6 +126,7 @@ public class TotemOfTransferringItem extends MesonItem
                 world.notifyNeighborsOfStateChange(destPos, srcBlock);
             }
 
+            putState(holdable, new CompoundNBT()); // clear the state for creative players
             TotemHelper.destroy(player, holdable);
 
             return new ActionResult<>(ActionResultType.SUCCESS, holdable);
