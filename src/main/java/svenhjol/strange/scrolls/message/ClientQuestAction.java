@@ -25,27 +25,28 @@ public class ClientQuestAction implements IMesonMessage
     public static final int FAILED = 4;
 
     private IQuest quest;
-    private String serialized = "";
     private int action;
 
     public ClientQuestAction(int action, IQuest quest)
     {
         this.action = action;
         this.quest = quest;
-
-        try {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CompressedStreamTools.writeCompressed(quest.toNBT(), out);
-            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
-        } catch (Exception e) {
-            Meson.warn("Failed to compress quest");
-        }
     }
 
     public static void encode(ClientQuestAction msg, PacketBuffer buf)
     {
+        String serialized = "";
+
+        try {
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CompressedStreamTools.writeCompressed(msg.quest.toNBT(), out);
+            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
+        } catch (Exception e) {
+            Meson.warn("Failed to compress quest");
+        }
+
         buf.writeInt(msg.action);
-        buf.writeString(msg.serialized);
+        buf.writeString(serialized);
     }
 
     public static ClientQuestAction decode(PacketBuffer buf)

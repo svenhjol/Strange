@@ -21,17 +21,22 @@ import java.util.function.Supplier;
 
 public class ClientQuestList implements IMesonMessage
 {
-    private String serialized = "";
     private List<IQuest> quests;
 
     public ClientQuestList(List<IQuest> quests)
     {
         this.quests = quests;
-        if (quests == null) quests = new ArrayList<>();
+    }
+
+    public static void encode(ClientQuestList msg, PacketBuffer buf)
+    {
+        String serialized = "";
+
+        if (msg.quests == null) msg.quests = new ArrayList<>();
         List<String> compressed = new ArrayList<>();
 
         // must serialize+compress each quest nbt first
-        for (IQuest quest : quests) {
+        for (IQuest quest : msg.quests) {
             try {
                 final ByteArrayOutputStream out = new ByteArrayOutputStream();
                 CompressedStreamTools.writeCompressed( quest.toNBT(), out );
@@ -52,11 +57,8 @@ public class ClientQuestList implements IMesonMessage
         } catch (Exception e) {
             Meson.warn("Failed to output quests stream", e.toString());
         }
-    }
 
-    public static void encode(ClientQuestList msg, PacketBuffer buf)
-    {
-        buf.writeString(msg.serialized);
+        buf.writeString(serialized);
     }
 
     public static ClientQuestList decode(PacketBuffer buf)

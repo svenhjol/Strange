@@ -14,25 +14,26 @@ import java.util.function.Supplier;
 
 public class ClientTravelJournalEntries implements IMesonMessage
 {
-    private String serialized = "";
     private CompoundNBT entries;
 
     public ClientTravelJournalEntries(CompoundNBT entries)
     {
         this.entries = entries;
-
-        try {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CompressedStreamTools.writeCompressed(entries, out);
-            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
-        } catch (Exception e) {
-            Meson.warn("Failed to compress entries");
-        }
     }
 
     public static void encode(ClientTravelJournalEntries msg, PacketBuffer buf)
     {
-        buf.writeString(msg.serialized);
+        String serialized = "";
+
+        try {
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CompressedStreamTools.writeCompressed(msg.entries, out);
+            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
+        } catch (Exception e) {
+            Meson.warn("Failed to compress entries");
+        }
+
+        buf.writeString(serialized);
     }
 
     public static ClientTravelJournalEntries decode(PacketBuffer buf)
@@ -61,12 +62,6 @@ public class ClientTravelJournalEntries implements IMesonMessage
                 updated = true;
             });
             ctx.get().setPacketHandled(true);
-        }
-
-        public static void clearUpdates()
-        {
-            entries = new CompoundNBT();
-            updated = false;
         }
     }
 }
