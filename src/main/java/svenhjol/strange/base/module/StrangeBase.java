@@ -2,6 +2,7 @@ package svenhjol.strange.base.module;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
@@ -14,14 +15,16 @@ import svenhjol.strange.base.StrangeCategories;
 public class StrangeBase extends MesonModule
 {
     @Config(name = "Client/Server update ticks", description = "Heartbeat interval to synchronise additional world state to the client.")
-    public static int clientServerUpdateTicks = 200;
+    public static int clientServerUpdateTicks = 120;
 
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event)
     {
-        if (event.player.world.isRemote
-            && event.player.world.getGameTime() % 120 == 0
+        if (event.phase == TickEvent.Phase.END
+            && event.player.world.isRemote
+            && event.player.world.getGameTime() % clientServerUpdateTicks == 0
         ) {
+            Meson.debug("UpdatePlayerState heartbeat request");
             PacketHandler.sendToServer(new ServerUpdatePlayerState());
         }
     }
