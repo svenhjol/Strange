@@ -25,6 +25,8 @@ public class CaveAmbientSounds extends BaseAmbientSounds
     public static boolean isValidCave(ClientWorld world, ClientPlayerEntity player)
     {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
+        if (player.canSwim()) return false;
+
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
 
