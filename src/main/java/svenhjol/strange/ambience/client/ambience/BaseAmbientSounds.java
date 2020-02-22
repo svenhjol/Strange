@@ -54,6 +54,8 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
 
     public boolean isOutside()
     {
+        if (player.canSwim()) return false;
+
         int blocks = 16;
         int start = 1;
 

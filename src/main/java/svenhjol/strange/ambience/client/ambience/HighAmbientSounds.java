@@ -19,7 +19,8 @@ public class HighAmbientSounds extends BaseAmbientSounds
     public boolean isValid()
     {
         return world.dimension.getType() == DimensionType.OVERWORLD
-            && player.getPosition().getY() > 150;
+            && player.getPosition().getY() > 150
+            && !player.canSwim();
     }
 
     @Nullable
