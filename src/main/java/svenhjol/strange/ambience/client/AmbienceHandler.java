@@ -19,12 +19,13 @@ public class AmbienceHandler implements IAmbientSoundHandler
         this.player = player;
 
         ambientSounds.addAll(Arrays.asList(
+            new BeachAmbientSounds(player, soundHandler),
             new CaveAmbientSounds(player, soundHandler),
             new DeepAmbientSounds(player, soundHandler),
             new HighAmbientSounds(player, soundHandler),
             new MineshaftAmbientSounds(player, soundHandler),
+            new OceanAmbientSounds(player, soundHandler),
             new NetherAmbientSounds(player, soundHandler),
-            new BeachAmbientSounds(player, soundHandler),
 
             new CaveAmbientSounds.CrystalCaves(player, soundHandler),
             new DesertAmbientSounds.Day(player, soundHandler),
