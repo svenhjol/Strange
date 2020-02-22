@@ -49,6 +49,12 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         return world.rand.nextInt(300) + 600;
     }
 
+    @Override
+    public float getLongSoundVolume()
+    {
+        return 0.35F;
+    }
+
     @Nullable
     @Override
     public SoundEvent getLongSound()
