@@ -66,7 +66,7 @@
 - [x] Handle output of `[common], [uncommon], [epic], [rare]`
 - [x] Handle `"hint"`
 - [x] Handle `"provide": {}` to give quest items on start
-- [x] TEST Handle `"ScrollTier1"` (etc)
+- [x] Handle `"ScrollTier1"` (etc)
 - [x] Handle values of "x-y"
 - [x] TEST Luck should increase scroll value
 - [x] Handle "StoneCircleMap" - gen map randomly away from villager
@@ -85,7 +85,7 @@
 - [x] Forest
 - [x] Ocean
 - [x] Desert
-- [ ] River
+- [x] River (shares with plains)
 - [x] Swamp
 - [x] Mushroom (shares with plains)
 - [x] Nether
@@ -93,7 +93,7 @@
   - [x] Crystals
 - [x] Deep caves
 - [x] Mineshafts
-- [ ] Villages
+- [x] Villages
 
 ## Spells to keep
 - Aura
