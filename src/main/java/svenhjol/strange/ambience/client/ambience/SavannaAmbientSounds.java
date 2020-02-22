@@ -23,7 +23,7 @@ public class SavannaAmbientSounds
         @Override
         public SoundEvent getLongSound()
         {
-            return StrangeSounds.AMBIENCE_SAVANNA_DAY_LONG;
+            return StrangeSounds.AMBIENCE_PLAINS_DAY_LONG;
         }
 
         @Nullable
@@ -31,12 +31,6 @@ public class SavannaAmbientSounds
         public SoundEvent getShortSound()
         {
             return null;
-        }
-
-        @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
         }
 
         @Override
@@ -67,12 +61,6 @@ public class SavannaAmbientSounds
         public SoundEvent getShortSound()
         {
             return null;
-        }
-
-        @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
         }
 
         @Override

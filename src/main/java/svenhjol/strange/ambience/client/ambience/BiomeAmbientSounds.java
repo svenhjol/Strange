@@ -13,8 +13,6 @@ public abstract class BiomeAmbientSounds extends BaseAmbientSounds
         super(player, soundHandler);
     }
 
-
-
     @Override
     public void setLongSound()
     {

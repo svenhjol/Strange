@@ -34,18 +34,6 @@ public class ForestAmbientSounds
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
-        }
-
-        @Override
-        public float getLongSoundVolume()
-        {
-            return 0.05F;
-        }
-
-        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.FOREST
@@ -73,18 +61,6 @@ public class ForestAmbientSounds
         public SoundEvent getShortSound()
         {
             return null;
-        }
-
-        @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
-        }
-
-        @Override
-        public float getLongSoundVolume()
-        {
-            return 0.05F;
         }
 
         @Override

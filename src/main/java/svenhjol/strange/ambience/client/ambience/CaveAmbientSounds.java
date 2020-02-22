@@ -63,12 +63,6 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         return StrangeSounds.AMBIENCE_CAVE_SHORT;
     }
 
-    @Override
-    public float getLongSoundVolume()
-    {
-        return 0.05F;
-    }
-
     public static class CrystalCaves extends BaseAmbientSounds
     {
         protected int delay = 0;
@@ -83,7 +77,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         public int getShortSoundDelay()
         {
             if (eagerCheck) {
-                Meson.debug("CrystalCaves: eagerly checking");
+                Meson.debug("[CrystalCaves] eagerly checking");
                 delay = world.rand.nextInt(100) + 120;
             } else {
                 delay = 400;
@@ -129,12 +123,6 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         public SoundEvent getShortSound()
         {
             return StrangeSounds.AMBIENCE_CRYSTALS_SHORT;
-        }
-
-        @Override
-        public float getShortSoundVolume()
-        {
-            return 0.25F;
         }
     }
 }

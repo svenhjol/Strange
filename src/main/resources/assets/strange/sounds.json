@@ -321,7 +321,7 @@
   },
   "ambience.savanna.day_long": {
     "sounds": [
-      {"name": "strange:ambience/savanna/long1"}
+      {"name": "strange:ambience/savanna/day/long1"}
     ]
   },
   "ambience.savanna.night_long": {

@@ -40,12 +40,6 @@ public class ExtremeHillsAmbientSounds
         }
 
         @Override
-        public float getLongSoundVolume()
-        {
-            return 0.12F;
-        }
-
-        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.EXTREME_HILLS
@@ -73,18 +67,6 @@ public class ExtremeHillsAmbientSounds
         public SoundEvent getShortSound()
         {
             return null;
-        }
-
-        @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
-        }
-
-        @Override
-        public float getLongSoundVolume()
-        {
-            return 0.12F;
         }
 
         @Override

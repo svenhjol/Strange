@@ -36,16 +36,4 @@ public class HighAmbientSounds extends BaseAmbientSounds
     {
         return null;
     }
-
-    @Override
-    public int getShortSoundDelay()
-    {
-        return 1000;
-    }
-
-    @Override
-    public float getLongSoundVolume()
-    {
-        return 0.05F;
-    }
 }

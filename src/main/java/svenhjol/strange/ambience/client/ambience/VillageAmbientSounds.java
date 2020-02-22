@@ -19,7 +19,8 @@ public class VillageAmbientSounds extends BaseAmbientSounds
     public boolean isValid()
     {
         if (world == null) return false;
-        return StrangeLoader.client.isInVillage && StrangeLoader.client.isDaytime;
+        return StrangeLoader.client.isInVillage
+            && StrangeLoader.client.isDaytime;
     }
 
     @Override
@@ -40,11 +41,5 @@ public class VillageAmbientSounds extends BaseAmbientSounds
     public SoundEvent getShortSound()
     {
         return StrangeSounds.AMBIENCE_VILLAGE_SHORT;
-    }
-
-    @Override
-    public float getShortSoundVolume()
-    {
-        return 0.2F;
     }
 }

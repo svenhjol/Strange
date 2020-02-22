@@ -75,7 +75,7 @@ public class Ambience extends MesonModule
     }
 
     @SubscribeEvent
-    public void test(EntityJoinWorldEvent event)
+    public void onPlayerJoin(EntityJoinWorldEvent event)
     {
         if (event.getEntity() instanceof PlayerEntity
             && event.getEntity().world.isRemote

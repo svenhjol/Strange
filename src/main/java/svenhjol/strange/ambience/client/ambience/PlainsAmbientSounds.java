@@ -34,22 +34,11 @@ public class PlainsAmbientSounds
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
-            return world.rand.nextInt(400) + 400;
-        }
-
-        @Override
-        public float getLongSoundVolume()
-        {
-            return 0.05F;
-        }
-
-        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.PLAINS
+            return (biomeCategory == Biome.Category.PLAINS
                 || biomeCategory == Biome.Category.MUSHROOM
+                || biomeCategory == Biome.Category.RIVER)
                 && isOutside()
                 && StrangeLoader.client.isDaytime;
         }
@@ -83,16 +72,11 @@ public class PlainsAmbientSounds
         }
 
         @Override
-        public float getLongSoundVolume()
-        {
-            return 0.05F;
-        }
-
-        @Override
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
-            return biomeCategory == Biome.Category.PLAINS
+            return (biomeCategory == Biome.Category.PLAINS
                 || biomeCategory == Biome.Category.MUSHROOM
+                || biomeCategory == Biome.Category.RIVER)
                 && isOutside()
                 && !StrangeLoader.client.isDaytime;
         }
