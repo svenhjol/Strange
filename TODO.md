@@ -83,7 +83,7 @@
 - [ ] The End
 - [x] Beach
 - [x] Forest
-- [ ] Ocean
+- [x] Ocean
 - [x] Desert
 - [ ] River
 - [x] Swamp

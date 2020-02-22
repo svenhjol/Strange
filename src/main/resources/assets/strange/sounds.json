@@ -123,14 +123,10 @@
       }
     ]
   },
-  "ambience.beach.day_long": {
+  "ambience.beach.long": {
     "sounds": [
-      {"name": "strange:ambience/beach/day/long1"}
-    ]
-  },
-  "ambience.beach.night_long": {
-    "sounds": [
-      {"name": "strange:ambience/beach/night/long1"}
+      {"name": "strange:ambience/beach/long1"},
+      {"name": "strange:ambience/beach/long2"}
     ]
   },
   "ambience.cave.long": {
@@ -288,6 +284,12 @@
       {"name": "strange:ambience/nether/short7"},
       {"name": "strange:ambience/nether/short8"},
       {"name": "strange:ambience/nether/short9"}
+    ]
+  },
+  "ambience.ocean.long": {
+    "sounds": [
+      {"name": "strange:ambience/ocean/long1"},
+      {"name": "strange:ambience/ocean/long2"}
     ]
   },
   "ambience.plains.day_long": {

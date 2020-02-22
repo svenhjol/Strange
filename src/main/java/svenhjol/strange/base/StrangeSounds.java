@@ -55,6 +55,7 @@ public class StrangeSounds
     public static final SoundEvent AMBIENCE_MINESHAFT_SHORT = createSound("ambience.mineshaft.short");
     public static final SoundEvent AMBIENCE_NETHER_LONG = createSound("ambience.nether.long");
     public static final SoundEvent AMBIENCE_NETHER_SHORT = createSound("ambience.nether.short");
+    public static final SoundEvent AMBIENCE_OCEAN_LONG = createSound("ambience.ocean.long");
     public static final SoundEvent AMBIENCE_PLAINS_DAY_LONG = createSound("ambience.plains.day_long");
     public static final SoundEvent AMBIENCE_PLAINS_NIGHT_LONG = createSound("ambience.plains.night_long");
     public static final SoundEvent AMBIENCE_PLAINS_NIGHT_SHORT = createSound("ambience.plains.night_short");
