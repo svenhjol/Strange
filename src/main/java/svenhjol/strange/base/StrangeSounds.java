@@ -65,6 +65,7 @@ public class StrangeSounds
     public static final SoundEvent AMBIENCE_SWAMP_NIGHT_LONG = createSound("ambience.swamp.night_long");
     public static final SoundEvent AMBIENCE_TAIGA_DAY_LONG = createSound("ambience.taiga.day_long");
     public static final SoundEvent AMBIENCE_TAIGA_NIGHT_LONG = createSound("ambience.taiga.night_long");
+    public static final SoundEvent AMBIENCE_VILLAGE_SHORT = createSound("ambience.village.short");
     public static final SoundEvent AMBIENCE_HIGH = createSound("ambience.high");
 
     public static SoundEvent createSound(String name)

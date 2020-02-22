@@ -26,6 +26,7 @@ public class AmbienceHandler implements IAmbientSoundHandler
             new MineshaftAmbientSounds(player, soundHandler),
             new OceanAmbientSounds(player, soundHandler),
             new NetherAmbientSounds(player, soundHandler),
+            new VillageAmbientSounds(player, soundHandler),
 
             new CaveAmbientSounds.CrystalCaves(player, soundHandler),
             new DesertAmbientSounds.Day(player, soundHandler),

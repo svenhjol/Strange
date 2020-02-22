@@ -353,6 +353,23 @@
       {"name": "strange:ambience/taiga/night/long1"}
     ]
   },
+  "ambience.village.short": {
+    "sounds": [
+      {"name": "strange:ambience/village/short1"},
+      {"name": "strange:ambience/village/short2"},
+      {"name": "strange:ambience/village/short3"},
+      {"name": "strange:ambience/village/short4"},
+      {"name": "strange:ambience/village/short5"},
+      {"name": "strange:ambience/village/short6"},
+      {"name": "strange:ambience/village/short7"},
+      {"name": "strange:ambience/village/short8"},
+      {"name": "strange:ambience/village/short9"},
+      {"name": "strange:ambience/village/short10"},
+      {"name": "strange:ambience/village/short11"},
+      {"name": "strange:ambience/village/short12"},
+      {"name": "strange:ambience/village/short13"}
+    ]
+  },
   "ambience.high": {
     "sounds": [
       {"name": "strange:ambience/general/high1"},
