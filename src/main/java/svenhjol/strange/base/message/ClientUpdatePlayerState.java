@@ -1,4 +1,4 @@
-package svenhjol.strange.ambience.message;
+package svenhjol.strange.base.message;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -55,6 +55,7 @@ public class ClientUpdatePlayerState implements IMesonMessage
         public static void handle(final ClientUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
+//                Meson.debug("UpdatePlayerState heartbeat response");
                 StrangeLoader.client.updateStructures(msg.structures);
             });
             ctx.get().setPacketHandled(true);

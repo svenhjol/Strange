@@ -2,13 +2,12 @@ package svenhjol.strange.base.module;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.ambience.message.ServerUpdatePlayerState;
+import svenhjol.strange.base.message.ServerUpdatePlayerState;
 import svenhjol.strange.base.StrangeCategories;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
@@ -24,7 +23,7 @@ public class StrangeBase extends MesonModule
             && event.player.world.isRemote
             && event.player.world.getGameTime() % clientServerUpdateTicks == 0
         ) {
-            Meson.debug("UpdatePlayerState heartbeat request");
+//            Meson.debug("UpdatePlayerState heartbeat request");
             PacketHandler.sendToServer(new ServerUpdatePlayerState());
         }
     }

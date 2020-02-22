@@ -1,4 +1,4 @@
-package svenhjol.strange.ambience.message;
+package svenhjol.strange.base.message;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
