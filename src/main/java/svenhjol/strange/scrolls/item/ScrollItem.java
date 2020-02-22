@@ -11,6 +11,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
@@ -88,6 +89,11 @@ public class ScrollItem extends MesonItem
                         value += worldIn.rand.nextFloat() + 0.25F;
 
                     final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), value, getQuest(scroll));
+                    if (q == null) {
+                        Meson.warn("No quests available, cannot generate!");
+                        return new ActionResult<>(ActionResultType.FAIL, scroll);
+                    }
+
                     putQuest(scroll, q);
 
                     scroll.setDisplayName(new TranslationTextComponent(getQuest(scroll).getTitle()));

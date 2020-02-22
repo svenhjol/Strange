@@ -32,6 +32,7 @@ import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, configureEnabled = false)
@@ -138,6 +139,7 @@ public class Quests extends MesonModule
             .findFirst();
     }
 
+    @Nullable
     public static IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest)
     {
         return Generator.INSTANCE.generate(world, pos, valueMultiplier, quest);
