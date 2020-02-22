@@ -32,8 +32,7 @@ public class StrangeSounds
     public static final SoundEvent SPELL_NO_MORE_USES = createSound("spell_no_more_uses");
 
     // ambience
-    public static final SoundEvent AMBIENCE_BEACH_DAY_LONG = createSound("ambience.beach.day_long");
-    public static final SoundEvent AMBIENCE_BEACH_NIGHT_LONG = createSound("ambience.beach.night_long");
+    public static final SoundEvent AMBIENCE_BEACH_LONG = createSound("ambience.beach.long");
     public static final SoundEvent AMBIENCE_CAVE_LONG = createSound("ambience.cave.long");
     public static final SoundEvent AMBIENCE_CAVE_SHORT = createSound("ambience.cave.short");
     public static final SoundEvent AMBIENCE_CRYSTALS_SHORT = createSound("ambience.crystals.short");

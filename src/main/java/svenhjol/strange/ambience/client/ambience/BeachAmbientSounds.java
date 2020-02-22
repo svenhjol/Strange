@@ -20,7 +20,7 @@ public class BeachAmbientSounds extends BaseAmbientSounds implements IBiomeAmbie
     @Override
     public SoundEvent getLongSound()
     {
-        return StrangeSounds.AMBIENCE_BEACH_NIGHT_LONG;
+        return StrangeSounds.AMBIENCE_BEACH_LONG;
     }
 
     @Nullable
