@@ -7,7 +7,7 @@
     }
   },
   "hunt": {
-    "minecraft:ravager": 4
+    "minecraft:ravager": 2
   },
   "rewards": {
     "items": {
