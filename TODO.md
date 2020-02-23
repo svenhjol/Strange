@@ -35,11 +35,16 @@
 - [x] Test change to `LivingDeathEvent` code
 - [x] IN PROGRESS Restore advancements
     - Rare totem advancement
+- [ ] "Monument" on surface above a ruin
+- [ ] Charm's bound compasses not working with quests any more
+- [x] Totem of Transferring uses Transfer spell code
+- [ ] Update all docs
 
 ## Intermittent / warnings
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
 - [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
 - [ ] the "17" warning - Quark issue? Appears on quark's network channel
+- [ ] Strange + Charm recipe and item deregistering - SERIOUS
 - [x] TEST "strange:module_enabled" error
 - [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos)) - MC bug?
 
@@ -112,9 +117,3 @@
 - Protect
 - Recall
 - Displace
-
-## Totems
-- [x] Totem of Transferring uses Transfer spell code
-
-## Docs
-- [ ] Update all docs
