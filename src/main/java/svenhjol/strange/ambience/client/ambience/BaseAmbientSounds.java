@@ -6,6 +6,7 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.ambience.client.LongSound;
 import svenhjol.strange.ambience.client.ShortSound;
@@ -17,11 +18,11 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
     protected boolean isValid = false;
     protected TickableSound longSound = null;
 
-    protected ClientPlayerEntity player;
+    protected PlayerEntity player;
     protected ClientWorld world;
     protected SoundHandler soundHandler;
 
-    public BaseAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
+    public BaseAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
     {
         this.player = player;
         this.soundHandler = soundHandler;
@@ -85,7 +86,7 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
 
     protected void setShortSound()
     {
-        soundHandler.play(new ShortSound(player, getShortSound(), getShortSoundVolume()));
+        soundHandler.play(new ShortSound((ClientPlayerEntity)player, getShortSound(), getShortSoundVolume()));
     }
 
     protected void setLongSound()
@@ -130,7 +131,7 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
     }
 
     @Override
-    public ClientPlayerEntity getPlayer()
+    public PlayerEntity getPlayer()
     {
         return player;
     }

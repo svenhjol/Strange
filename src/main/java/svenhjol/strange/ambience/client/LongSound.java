@@ -1,7 +1,7 @@
 package svenhjol.strange.ambience.client;
 
 import net.minecraft.client.audio.TickableSound;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
@@ -9,12 +9,12 @@ import java.util.function.Predicate;
 
 public class LongSound extends TickableSound
 {
-    private final ClientPlayerEntity player;
+    private final PlayerEntity player;
     private int longTicks;
-    private Predicate<ClientPlayerEntity> predicate;
+    private Predicate<PlayerEntity> predicate;
     private float maxVolume;
 
-    public LongSound(ClientPlayerEntity player, SoundEvent sound, float volume, Predicate<ClientPlayerEntity> predicate)
+    public LongSound(PlayerEntity player, SoundEvent sound, float volume, Predicate<PlayerEntity> predicate)
     {
         super(sound, SoundCategory.AMBIENT);
         this.maxVolume = volume;

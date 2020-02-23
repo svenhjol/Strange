@@ -1,7 +1,7 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
 import svenhjol.strange.ambience.client.iface.IBiomeAmbience;
@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class BeachAmbientSounds extends BaseAmbientSounds implements IBiomeAmbience
 {
-    public BeachAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
+    public BeachAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }

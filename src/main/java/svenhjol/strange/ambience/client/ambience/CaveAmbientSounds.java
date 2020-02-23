@@ -1,8 +1,8 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -17,12 +17,12 @@ import java.util.stream.Stream;
 
 public class CaveAmbientSounds extends BaseAmbientSounds
 {
-    public CaveAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
+    public CaveAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }
 
-    public static boolean isValidCave(ClientWorld world, ClientPlayerEntity player)
+    public static boolean isValidCave(ClientWorld world, PlayerEntity player)
     {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         if (player.canSwim()) return false;
@@ -74,7 +74,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         protected int delay = 0;
         protected boolean eagerCheck = true;
 
-        public CrystalCaves(ClientPlayerEntity player, SoundHandler soundHandler)
+        public CrystalCaves(PlayerEntity player, SoundHandler soundHandler)
         {
             super(player, soundHandler);
         }

@@ -1,7 +1,7 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
 import svenhjol.strange.ambience.client.iface.IBiomeAmbience;
@@ -14,7 +14,7 @@ public class ExtremeHillsAmbientSounds
 {
     public static class Day extends BaseAmbientSounds implements IBiomeAmbience
     {
-        public Day(ClientPlayerEntity player, SoundHandler soundHandler)
+        public Day(PlayerEntity player, SoundHandler soundHandler)
         {
             super(player, soundHandler);
         }
@@ -50,7 +50,7 @@ public class ExtremeHillsAmbientSounds
 
     public static class Night extends BaseAmbientSounds implements IBiomeAmbience
     {
-        public Night(ClientPlayerEntity player, SoundHandler soundHandler)
+        public Night(PlayerEntity player, SoundHandler soundHandler)
         {
             super(player, soundHandler);
         }

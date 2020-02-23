@@ -1,7 +1,7 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class DeepAmbientSounds extends BaseAmbientSounds
 {
-    public DeepAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
+    public DeepAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }

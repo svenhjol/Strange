@@ -1,7 +1,6 @@
 package svenhjol.strange.ambience.module;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -11,6 +10,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,10 +20,10 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
+import svenhjol.strange.ambience.client.AmbienceClient;
+import svenhjol.strange.ambience.client.MusicClient;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.ambience.client.AmbienceHandler;
-import svenhjol.strange.ambience.client.MusicClient;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
 public class Ambience extends MesonModule
@@ -39,7 +39,10 @@ public class Ambience extends MesonModule
     public static boolean ambience = true;
 
     @OnlyIn(Dist.CLIENT)
-    public static MusicClient client;
+    public static MusicClient musicClient;
+
+    @OnlyIn(Dist.CLIENT)
+    public static AmbienceClient ambienceClient;
 
     @Override
     public void init()
@@ -51,7 +54,8 @@ public class Ambience extends MesonModule
     @Override
     public void setupClient(FMLClientSetupEvent event)
     {
-        client = new MusicClient();
+        musicClient = new MusicClient();
+        ambienceClient = new AmbienceClient();
     }
 
     @SubscribeEvent
@@ -81,8 +85,20 @@ public class Ambience extends MesonModule
             && event.getEntity().world.isRemote
         ) {
             Minecraft mc = Minecraft.getInstance();
-            ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
-            player.ambientSoundHandlers.add(new AmbienceHandler(player, mc.getSoundHandler()));
+            PlayerEntity player = (PlayerEntity)event.getEntity();
+            ambienceClient.handler = new AmbienceClient.Handler(player, mc.getSoundHandler());
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+//        Meson.debug(event.phase == TickEvent.Phase.END, event.player.world.isRemote);
+        if (event.phase == TickEvent.Phase.END
+            && event.player.world.isRemote
+            && ambienceClient.handler != null
+        ) {
+            ambienceClient.handler.tick();
         }
     }
 }

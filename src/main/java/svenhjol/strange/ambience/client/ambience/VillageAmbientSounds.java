@@ -1,7 +1,7 @@
 package svenhjol.strange.ambience.client.ambience;
 
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.StrangeSounds;
@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 public class VillageAmbientSounds extends BaseAmbientSounds
 {
-    public VillageAmbientSounds(ClientPlayerEntity player, SoundHandler soundHandler)
+    public VillageAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
     {
         super(player, soundHandler);
     }
