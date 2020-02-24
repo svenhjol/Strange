@@ -16,4 +16,4 @@ Browse the [documentation and wiki](https://svenhjol.github.io/Strange/) here!
 * [The Outerlands](https://svenhjol.github.io/Strange/features/outerlands) - a distant area far from the safety of spawn
 
 ## Installation
-This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version 28.1.118) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (version 1.5) as dependencies.
+This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version 28.2.0) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (at least version 1.5.2) as dependencies.
