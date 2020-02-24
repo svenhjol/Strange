@@ -4,6 +4,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 import net.minecraft.world.server.ServerWorld;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -22,7 +23,7 @@ public class Staves extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Spells.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
     }
 
     @Override

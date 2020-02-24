@@ -166,7 +166,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
             List<String> ruins = new ArrayList<>(UndergroundRuins.ruins.get(biomeCategory));
             Collections.shuffle(ruins, rand);
 
-            if (Strange.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos)) {
+            if (Meson.isModuleEnabled("strange:outerlands") && Outerlands.isOuterPos(pos)) {
                 return ruins.stream().filter(r -> r.contains("outerlands")).findFirst().orElse(ruins.get(0));
             } else {
                 return ruins.get(0);

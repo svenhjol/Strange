@@ -16,6 +16,7 @@ import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.BiomeHelper;
@@ -89,7 +90,7 @@ public class StoneCircles extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Runestones.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:runestones");
     }
 
     @Override

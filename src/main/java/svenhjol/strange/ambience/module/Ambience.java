@@ -25,7 +25,7 @@ import svenhjol.strange.ambience.client.MusicClient;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.AMBIENCE, hasSubscriptions = true)
 public class Ambience extends MesonModule
 {
     private static final String NAME = "svenhjol";
@@ -52,7 +52,7 @@ public class Ambience extends MesonModule
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         musicClient = new MusicClient();
         ambienceClient = new AmbienceClient();
@@ -93,7 +93,6 @@ public class Ambience extends MesonModule
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-//        Meson.debug(event.phase == TickEvent.Phase.END, event.player.world.isRemote);
         if (event.phase == TickEvent.Phase.END
             && event.player.world.isRemote
             && ambienceClient.handler != null

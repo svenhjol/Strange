@@ -32,6 +32,7 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Config;
@@ -71,7 +72,7 @@ public class Scrollkeepers extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Scrolls.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:scrolls");
     }
 
     @Override
@@ -88,9 +89,9 @@ public class Scrollkeepers extends MesonModule
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
-        super.setup(event);
+        super.onCommonSetup(event);
     }
 
     @SubscribeEvent

@@ -10,7 +10,6 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.feature.DecorationProcessor;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
@@ -60,7 +59,8 @@ public class StructureHelper
 
         public RegisterJigsawPieces(IReloadableResourceManager rm, String dir, List<StructureProcessor> processors)
         {
-            try {
+            try
+            {
                 String structurePath = STRUCTURES + "/" + dir;
                 Map<String, Map<String, List<String>>> pieces = new HashMap<>();
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations(structurePath, file -> file.endsWith(".nbt"));
@@ -126,8 +126,10 @@ public class StructureHelper
 
                     sizes.put(structure, Math.max(2, size));
                 }
-            } catch (Exception e) {
-                Meson.warn("[StructureHelper] exception loading structures", e);
+            }
+            catch (Exception e)
+            {
+                Strange.LOG.error("Exception loading structures: " + e);
             }
         }
     }

@@ -6,8 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.AnvilUpdateEvent;
-import svenhjol.charm.Charm;
-import svenhjol.charm.tweaks.module.NoAnvilMinimumXp;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -37,7 +36,7 @@ public class TotemOfEnchanting extends MesonModule
         ItemStack right = event.getRight();
         ItemStack out;
 
-        int baseCost = Charm.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
+        int baseCost = Meson.isModuleEnabled("charm:no_anvil_minimum_xp") ? 0 : 1;
 
         if (left.isEmpty() || right.isEmpty()) return;
         if (right.getItem() != item) return;

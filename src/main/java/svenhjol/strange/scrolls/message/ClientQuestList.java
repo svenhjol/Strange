@@ -43,7 +43,7 @@ public class ClientQuestList implements IMesonMessage
                 String str = DatatypeConverter.printBase64Binary( out.toByteArray() );
                 compressed.add(str);
             } catch (Exception e) {
-                Meson.warn("Failed to compress quest", e.toString());
+                Meson.warn("Failed to compress quest: " + e.toString());
             }
         }
 
@@ -55,7 +55,7 @@ public class ClientQuestList implements IMesonMessage
             serialized = DatatypeConverter.printBase64Binary( out.toByteArray() );
             so.close();
         } catch (Exception e) {
-            Meson.warn("Failed to output quests stream", e.toString());
+            Meson.warn("Failed to output quests stream: " + e.toString());
         }
 
         buf.writeString(serialized);
@@ -73,7 +73,7 @@ public class ClientQuestList implements IMesonMessage
             compressed = (List<String>)si.readObject();
             si.close();
         } catch (Exception e) {
-            Meson.warn("Failed to input quests stream", e.toString());
+            Meson.warn("Failed to input quests stream: " + e.toString());
         }
 
         for (String s : compressed) {
@@ -85,7 +85,7 @@ public class ClientQuestList implements IMesonMessage
                 quest.fromNBT(nbt);
                 quests.add(quest);
             } catch (Exception e) {
-                Meson.warn("Failed to uncompress quest", e.toString());
+                Meson.warn("Failed to uncompress quest: " + e.toString());
             }
         }
 

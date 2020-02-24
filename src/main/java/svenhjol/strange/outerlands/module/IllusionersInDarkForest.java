@@ -33,7 +33,7 @@ public class IllusionersInDarkForest extends MesonModule
      * Register illusioner as a mob in dark forest biome and variants
      */
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         Biome.SpawnListEntry illusioner = new Biome.SpawnListEntry(EntityType.ILLUSIONER, weight, 1, 1);
         List<Biome> validBiomes = Arrays.asList(Biomes.DARK_FOREST, Biomes.DARK_FOREST_HILLS);
@@ -56,7 +56,7 @@ public class IllusionersInDarkForest extends MesonModule
         ) {
             BlockPos pos = event.getEntityLiving().getPosition();
 
-            if (Strange.hasModule(Outerlands.class) && !Outerlands.isOuterPos(pos)) {
+            if (Meson.isModuleEnabled("strange:outerlands") && !Outerlands.isOuterPos(pos)) {
                 Meson.debug("Not spawning Illusioner, not in Outerlands");
                 event.setResult(Event.Result.DENY);
             } else if (pos.getY() < event.getEntityLiving().world.getSeaLevel() - 5) {

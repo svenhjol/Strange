@@ -16,7 +16,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.meson.Meson;
-import svenhjol.meson.MesonLoader;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -66,18 +65,18 @@ public class Quests extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Scrolls.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:scrolls");
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         CapabilityManager.INSTANCE.register(IQuestsCapability.class, new QuestsStorage(), QuestsCapability::new); // register the interface, storage, and implementation
         MinecraftForge.EVENT_BUS.register(new QuestEvents()); // add all quest-related events to the bus
     }
 
     @Override
-    public void serverStarted(FMLServerStartedEvent event)
+    public void onServerStarted(FMLServerStartedEvent event)
     {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
@@ -94,7 +93,7 @@ public class Quests extends MesonModule
                     if (!mods.isEmpty()) {
                         boolean hasMods = true;
                         for (String s : mods) {
-                            hasMods = hasMods && MesonLoader.hasModule(new ResourceLocation(s));
+                            hasMods = hasMods && Meson.isModuleEnabled(new ResourceLocation(s));
                         }
                         if (!hasMods) {
                             Meson.log("Quest " + definition.getTitle() + " is missing required modules");
@@ -106,17 +105,17 @@ public class Quests extends MesonModule
                     definition.setTitle(name);
                     definition.setTier(tier);
                     Quests.available.get(tier).add(definition);
-                    Meson.debug(this, "Loaded quest " + definition.getTitle() + " for tier " + tier);
+                    Meson.debug("Loaded quest " + definition.getTitle() + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.warn(this, "Could not load quest for " + res + " because " + e.getMessage());
+                    Meson.warn("Could not load quest for " + res + " because " + e.getMessage());
                 }
             }
         }
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         client = new QuestClient();
         MinecraftForge.EVENT_BUS.register(client);

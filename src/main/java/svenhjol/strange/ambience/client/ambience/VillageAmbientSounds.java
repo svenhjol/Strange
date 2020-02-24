@@ -3,7 +3,7 @@ package svenhjol.strange.ambience.client.ambience;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
-import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
@@ -19,8 +19,8 @@ public class VillageAmbientSounds extends BaseAmbientSounds
     public boolean isValid()
     {
         if (world == null) return false;
-        return StrangeLoader.client.isInVillage
-            && StrangeLoader.client.isDaytime;
+        return Strange.client.isInVillage
+            && Strange.client.isDaytime;
     }
 
     @Override

@@ -4,8 +4,8 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
+import svenhjol.strange.Strange;
 import svenhjol.strange.ambience.client.iface.IBiomeAmbience;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
@@ -43,7 +43,7 @@ public class IcyAmbientSounds
         public boolean validBiomeConditions(Biome.Category biomeCategory)
         {
             return biomeCategory == Biome.Category.ICY
-                && StrangeLoader.client.isDaytime
+                && Strange.client.isDaytime
                 && isOutside();
         }
     }
@@ -74,7 +74,7 @@ public class IcyAmbientSounds
         {
             return biomeCategory == Biome.Category.ICY
                 && isOutside()
-                && !StrangeLoader.client.isDaytime;
+                && !Strange.client.isDaytime;
         }
     }
 }

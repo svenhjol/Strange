@@ -97,9 +97,9 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
         boolean result = trySpawn(pos);
         if (result) {
-            Meson.debug("EntitySpawner spawned entity at pos", pos);
+            Meson.debug("EntitySpawner spawned entity at pos: " + pos);
         } else {
-            Meson.warn("EntitySpawner failed to spawn entity at pos", pos);
+            Meson.warn("EntitySpawner failed to spawn entity at pos: " + pos);
         }
     }
 

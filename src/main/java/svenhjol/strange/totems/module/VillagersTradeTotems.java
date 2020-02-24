@@ -11,6 +11,7 @@ import net.minecraft.item.MerchantOffer;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -44,20 +45,21 @@ public class VillagersTradeTotems extends MesonModule
     public static boolean outerOnly = true;
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         availableTotems.add(Items.TOTEM_OF_UNDYING);
-        if (Strange.hasModule(TotemOfReturning.class)) availableTotems.add(TotemOfReturning.item);
-        if (Strange.hasModule(TotemOfShielding.class)) availableTotems.add(TotemOfShielding.item);
-        if (Strange.hasModule(TotemOfPreserving.class)) availableTotems.add(TotemOfPreserving.item);
-        if (Strange.hasModule(TotemOfFlying.class)) availableTotems.add(TotemOfFlying.item);
-        if (Strange.hasModule(TotemOfEnchanting.class)) availableTotems.add(TotemOfEnchanting.item);
+        if (Meson.isModuleEnabled("strange:totem_of_returning")) availableTotems.add(TotemOfReturning.item);
+        if (Meson.isModuleEnabled("strange:totem_of_shielding")) availableTotems.add(TotemOfShielding.item);
+        if (Meson.isModuleEnabled("strange:totem_of_preserving")) availableTotems.add(TotemOfPreserving.item);
+        if (Meson.isModuleEnabled("strange:totem_of_flying")) availableTotems.add(TotemOfFlying.item);
+        if (Meson.isModuleEnabled("strange:totem_of_enchanting")) availableTotems.add(TotemOfEnchanting.item);
+        if (Meson.isModuleEnabled("strange:totem_of_transferring")) availableTotems.add(TotemOfTransferring.item);
     }
 
     @SubscribeEvent
     public void onVillagerTrades(VillagerTradesEvent event)
     {
-        String useProfession = Strange.hasModule(Scrollkeepers.class) ? Scrollkeepers.SCROLLKEEPER : LIBRARIAN;
+        String useProfession = Meson.isModuleEnabled("strange:spells") ? Scrollkeepers.SCROLLKEEPER : LIBRARIAN;
         Int2ObjectMap<List<ITrade>> trades = event.getTrades();
         VillagerProfession profession = event.getType();
 
@@ -68,7 +70,7 @@ public class VillagersTradeTotems extends MesonModule
 
     private static boolean isValidPosition(Entity merchant)
     {
-        if (!outerOnly || !Strange.hasModule(Outerlands.class)) return true;
+        if (!outerOnly || !Meson.isModuleEnabled("strange:outerlands")) return true;
         return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
     }
 

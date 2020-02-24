@@ -4,9 +4,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import svenhjol.charm.Charm;
 import svenhjol.charm.tweaks.client.AmbientMusicClient;
-import svenhjol.charm.tweaks.module.AmbientMusicImprovements;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.strange.base.StrangeSounds;
 
@@ -14,7 +13,7 @@ public class MusicClient
 {
     public MusicClient()
     {
-        if (!Charm.hasModule(AmbientMusicImprovements.class)) return;
+        if (!Meson.isModuleEnabled("charm:ambient_music_improvements")) return;
 
         // play Þarna in overworld anywhere
         AmbientMusicClient.conditions.add(new AmbientMusicClient.AmbientMusicCondition(StrangeSounds.MUSIC_THARNA, 1200, 3600, mc -> {

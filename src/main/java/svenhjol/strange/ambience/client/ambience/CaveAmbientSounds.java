@@ -7,7 +7,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import svenhjol.meson.Meson;
-import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
@@ -114,7 +114,9 @@ public class CaveAmbientSounds extends BaseAmbientSounds
             List<BlockPos> blocks = inRange.map(BlockPos::toImmutable).collect(Collectors.toList());
 
             for (BlockPos pp : blocks) {
-                if (StrangeLoader.quarkCompat.isCrystal(world, pp)) {
+                if (Strange.quarkCompat != null
+                    && Strange.quarkCompat.isCrystal(world, pp)
+                ) {
                     super.setShortSound();
                     this.eagerCheck = true;
                     return;

@@ -13,9 +13,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import svenhjol.charm.Charm;
 import svenhjol.charm.tools.item.BoundCompassItem;
 import svenhjol.charm.tools.module.CompassBinding;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.scrolls.module.Quests;
@@ -48,7 +48,7 @@ public class QuestHelper
         ItemStack stack;
         TranslationTextComponent title = new TranslationTextComponent(quest.getTitle());
 
-        if (Charm.hasModule(CompassBinding.class)) {
+        if (Meson.isModuleEnabled("charm:compass_binding")) {
             stack = new ItemStack(CompassBinding.item);
             BoundCompassItem.setPos(stack, location);
             BoundCompassItem.setDim(stack, dim);

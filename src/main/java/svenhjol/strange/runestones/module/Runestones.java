@@ -36,7 +36,6 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
@@ -73,14 +72,14 @@ public class Runestones extends MesonModule
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         // register cap, cap storage and implementation
         CapabilityManager.INSTANCE.register(IRunestonesCapability.class, new RunestonesStorage(), RunestonesCapability::new);
     }
 
     @Override
-    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event)
     {
         // add all destinations here; serverStarted shuffles them according to world seed
         ordered = new ArrayList<>();
@@ -101,16 +100,16 @@ public class Runestones extends MesonModule
         ordered.add(new Destination("Igloo", "igloo", false, 0.3F));
 
         if (useQuarkBigDungeon
-            && StrangeLoader.quarkBigDungeons != null
-            && StrangeLoader.quarkBigDungeons.hasModule()
+            && Strange.quarkCompat != null
+            && Strange.quarkCompat.hasBigDungeons()
         ) {
-            ordered.add(new Destination(StrangeLoader.quarkBigDungeons.getResName(), "big_dungeon", false, 0.3F));
+            ordered.add(new Destination(Strange.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
             Meson.debug("Added Quark's Big Dungeons as a runestone destination");
         } else {
             ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.3F));
         }
 
-        if (Strange.hasModule(UndergroundRuins.class)) {
+        if (Meson.isModuleEnabled("strange:underground_ruins")) {
             ordered.add(new Destination(UndergroundRuins.RESNAME, "underground_ruin", false, 0.15F));
         } else {
             ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.15F));
@@ -118,9 +117,9 @@ public class Runestones extends MesonModule
     }
 
     @Override
-    public void serverStarted(FMLServerStartedEvent event)
+    public void onServerStarted(FMLServerStartedEvent event)
     {
-        super.serverStarted(event);
+        super.onServerStarted(event);
         long seed = event.getServer().getWorld(DimensionType.OVERWORLD).getSeed();
 
         allDests = new ArrayList<>();
@@ -196,7 +195,7 @@ public class Runestones extends MesonModule
 
     public static BlockPos getInnerPos(World world, Random rand)
     {
-        if (Strange.hasModule(Outerlands.class)) {
+        if (Meson.isModuleEnabled("strange:outerlands")) {
             return Outerlands.getInnerPos(world, rand);
         } else {
             int max = 10000;
@@ -208,7 +207,7 @@ public class Runestones extends MesonModule
 
     public static BlockPos getOuterPos(World world, Random rand)
     {
-        if (Strange.hasModule(Outerlands.class)) {
+        if (Meson.isModuleEnabled("strange:outerlands")) {
             return Outerlands.getOuterPos(world, rand);
         } else {
             int max = 100000;

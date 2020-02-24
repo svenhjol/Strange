@@ -8,8 +8,8 @@ import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.module.BookshelfChests;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Module;
@@ -30,9 +30,9 @@ public class Scrolls extends MesonModule
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
-        if (Charm.hasModule(BookshelfChests.class))
+        if (Meson.isModuleEnabled("charm:bookshelf_chests"))
             BookshelfChests.validItems.add(ScrollItem.class);
     }
 

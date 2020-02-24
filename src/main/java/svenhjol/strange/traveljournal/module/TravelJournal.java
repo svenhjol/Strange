@@ -29,7 +29,7 @@ public class TravelJournal extends MesonModule
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         client = new TravelJournalClient();
     }

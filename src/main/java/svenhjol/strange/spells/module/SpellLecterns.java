@@ -22,6 +22,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ObjectHolder;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.WorldHelper;
@@ -59,7 +60,7 @@ public class SpellLecterns extends MesonModule {
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Spells.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
     }
 
     @Override
@@ -73,10 +74,10 @@ public class SpellLecterns extends MesonModule {
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         client = new SpellLecternsClient();
-        client.setupClient(event);
+        client.onClientSetup(event);
     }
 
     @SubscribeEvent

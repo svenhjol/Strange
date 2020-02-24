@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -130,7 +131,7 @@ public class Outerlands extends MesonModule
 
     public static float getScaledMultiplier(IWorld world, BlockPos pos)
     {
-        if (!Strange.hasModule(Outerlands.class)
+        if (!Meson.isModuleEnabled("strange:outerlands")
             || !scaleDistance
             || isInnerPos(pos)
         ) {

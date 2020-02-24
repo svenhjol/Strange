@@ -17,7 +17,6 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.helper.DecorationHelper;
 
 import javax.annotation.Nullable;
@@ -43,7 +42,7 @@ public class DecorationProcessor extends StructureProcessor
 
     @Nullable
     @Override
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"unused", "ConstantConditions"})
     public BlockInfo process(IWorldReader world, BlockPos pos, BlockInfo unused, BlockInfo blockInfo, PlacementSettings placement, @Nullable Template template)
     {
         Rotation rot = placement.getRotation();
@@ -64,8 +63,9 @@ public class DecorationProcessor extends StructureProcessor
         }
 
         // remove cave roots - TODO probably isn't working
-        if (StrangeLoader.quarkCaveRoots != null
-            && blockInfo.state.getBlock() == StrangeLoader.quarkCaveRoots.getRootBlock()
+        if (Strange.quarkCompat != null
+            && Strange.quarkCompat.hasCaveRoots()
+            && blockInfo.state.getBlock() == Strange.quarkCompat.getCaveRootBlock()
         ) {
             return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
         }

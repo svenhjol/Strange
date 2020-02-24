@@ -17,17 +17,16 @@ import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.block.BookshelfChestBlock;
 import svenhjol.charm.decoration.module.AllTheBarrels;
 import svenhjol.charm.decoration.module.BookshelfChests;
 import svenhjol.charm.decoration.module.Crates;
 import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
+import svenhjol.meson.Meson;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.ruins.module.EntitySpawner;
 import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
@@ -204,7 +203,7 @@ public class DecorationHelper
     public static List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
 
     static {
-        if (Strange.hasModule(Scrollkeepers.class))
+        if (Meson.isModuleEnabled("strange:scrolls"))
             decorationTypes.add(Scrollkeepers.block);
     }
 
@@ -309,7 +308,7 @@ public class DecorationHelper
         protected void bookshelf()
         {
             // TODO variant bookshelves
-            if (Charm.hasModule(BookshelfChests.class) && withChance(0.22F)) {
+            if (Meson.isModuleEnabled("charm:bookshelf_chests") && withChance(0.22F)) {
                 state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
                     .with(BookshelfChestBlock.SLOTS, 9);
 
@@ -346,10 +345,10 @@ public class DecorationHelper
 
             if (!withChance(0.66F)) return;
 
-            if (StrangeLoader.quarkVariantChests != null
-                && StrangeLoader.quarkVariantChests.hasModule()
+            if (Strange.quarkCompat != null
+                && Strange.quarkCompat.hasVariantChests()
                 && rand.nextFloat() < 0.75F)
-                chest = StrangeLoader.quarkVariantChests.getRandomChest(rand);
+                chest = Strange.quarkCompat.getRandomChest(rand);
 
             if (chest == null)
                 chest = Blocks.CHEST;
@@ -420,13 +419,11 @@ public class DecorationHelper
 
             state = Blocks.LANTERN.getDefaultState();
 
-            if (Charm.hasModule(GoldLanterns.class) && rand.nextFloat() < 0.25F) {
+            if (Meson.isModuleEnabled("charm:gold_lanterns") && rand.nextFloat() < 0.25F)
                 state = GoldLanterns.block.getDefaultState();
-            }
 
-            if (data.contains("hanging")) {
+            if (data.contains("hanging"))
                 state = state.with(LanternBlock.HANGING, true);
-            }
         }
 
         protected void lava()
@@ -491,7 +488,7 @@ public class DecorationHelper
 
         protected void rune()
         {
-            if (!Strange.hasModule(Runestones.class) || !withChance(0.75F)) {
+            if (!Meson.isModuleEnabled("strange:runestones") || !withChance(0.75F)) {
                 state = Blocks.STONE.getDefaultState();
                 return;
             }
@@ -546,13 +543,13 @@ public class DecorationHelper
             List<BlockState> barrels = new ArrayList<>(Arrays.asList(
                 Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)
             ));
-            if (Charm.hasModule(AllTheBarrels.class)) {
+            if (Meson.isModuleEnabled("charm:all_the_barrels")) {
                 barrels.add(AllTheBarrels.barrels.get(rand.nextInt(AllTheBarrels.barrels.size())).getDefaultState()
                     .with(BarrelBlock.PROPERTY_FACING, Direction.UP));
             }
 
             List<BlockState> crates = new ArrayList<>();
-            if (Charm.hasModule(Crates.class)) {
+            if (Meson.isModuleEnabled("charm:crates")) {
                 crates.add(Crates.openTypes.get(woodType).getDefaultState());
                 crates.add(Crates.sealedTypes.get(woodType).getDefaultState());
             }

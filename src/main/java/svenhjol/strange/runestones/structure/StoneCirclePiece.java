@@ -17,7 +17,6 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
-import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
@@ -137,7 +136,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
     {
         boolean generated = false;
         boolean generatedWithRune = false;
-        boolean runestonesEnabled = Strange.hasModule(Runestones.class);
+        boolean runestonesEnabled = Meson.isModuleEnabled("strange:runestones");
 
         Map<Integer, Float> availableRunes = new HashMap<>();
         if (runestonesEnabled) {

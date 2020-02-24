@@ -14,9 +14,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
@@ -29,7 +29,6 @@ import svenhjol.strange.spells.item.MoonstoneItem;
 import svenhjol.strange.spells.item.SpellBookItem;
 import svenhjol.strange.spells.module.Moonstones;
 import svenhjol.strange.spells.module.SpellBooks;
-import svenhjol.strange.spells.module.Spells;
 import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
@@ -232,7 +231,7 @@ public abstract class BaseGenerator
 
         switch (item) {
             case STONE_CIRCLE_TOTEM:
-                if (Strange.hasModule(Runestones.class) && Strange.hasModule(TotemOfReturning.class)) {
+                if (Meson.isModuleEnabled("strange:runestones") && Meson.isModuleEnabled("strange:totem_of_resturning")) {
                     out = new ItemStack(TotemOfReturning.item);
                     BlockPos pos = world.findNearestStructure(StoneCircles.RESNAME, Runestones.getOuterPos(world, world.rand), 1000, true);
                     if (pos == null) return null;
@@ -262,7 +261,7 @@ public abstract class BaseGenerator
                 break;
 
             case MOONSTONE:
-                if (Strange.hasModule(Moonstones.class)) {
+                if (Meson.isModuleEnabled("strange:spells")) {
                     out = new ItemStack(Moonstones.item);
                     Spell spell = SpellsHelper.getRandomSpell(rand);
                     if (spell == null) return null;
@@ -271,21 +270,21 @@ public abstract class BaseGenerator
                 break;
 
             case TRAVEL_JOURNAL:
-                if (Strange.hasModule(TravelJournal.class)) {
+                if (Meson.isModuleEnabled("strange:travel_journal")) {
                     out = new ItemStack(TravelJournal.item);
                 }
                 break;
 
             case ANCIENT_TOME:
-                if (StrangeLoader.quarkCompat != null
-                    && StrangeLoader.quarkCompat.hasModule(new ResourceLocation("quark:ancient_tomes"))
+                if (Strange.quarkCompat != null
+                    && Meson.isModuleEnabled("quark:ancient_tomes")
                 ) {
-                    out = StrangeLoader.quarkCompat.getRandomAncientTome(rand);
+                    out = Strange.quarkCompat.getRandomAncientTome(rand);
                 }
                 break;
 
             case SPELL_BOOK:
-                if (Strange.hasModule(Spells.class)) {
+                if (Meson.isModuleEnabled("strange:spells")) {
                     out = new ItemStack(SpellBooks.book);
                     Spell spell = SpellsHelper.getRandomSpell(rand);
                     if (spell == null) return null;

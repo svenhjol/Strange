@@ -8,10 +8,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.ruins.module.Vaults;
 
@@ -55,14 +55,14 @@ public class ServerUpdatePlayerState implements IMesonMessage
                 nbt.putBoolean("village", Feature.VILLAGE.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("day", world.isDaytime());
 
-                if (Strange.hasModule(UndergroundRuins.class)) {
+                if (Meson.isModuleEnabled("strange:underground_ruins")) {
                     nbt.putBoolean("underground_ruin", UndergroundRuins.structure.isPositionInsideStructure(world, pos));
                 }
-                if (Strange.hasModule(Vaults.class)) {
+                if (Meson.isModuleEnabled("strange:vaults")) {
                     nbt.putBoolean("vaults", Vaults.structure.isPositionInsideStructure(world, pos));
                 }
-                if (StrangeLoader.quarkCompat != null && StrangeLoader.quarkCompat.hasModule(new ResourceLocation("quark:big_dungeons"))) {
-                    nbt.putBoolean("big_dungeon", StrangeLoader.quarkCompat.isInsideBigDungeon(world, pos));
+                if (Strange.quarkCompat != null && Strange.quarkCompat.hasModule(new ResourceLocation("quark:big_dungeons"))) {
+                    nbt.putBoolean("big_dungeon", Strange.quarkCompat.isInsideBigDungeon(world, pos));
                 }
 
                 PacketHandler.sendTo(new ClientUpdatePlayerState(nbt), player);

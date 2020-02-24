@@ -3,6 +3,7 @@ package svenhjol.strange.ruins.module;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ObjectHolder;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
@@ -22,7 +23,7 @@ public class EntitySpawner extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(UndergroundRuins.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:underground_ruins");
     }
 
     @Override

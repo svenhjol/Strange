@@ -23,6 +23,7 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.LootHelper;
@@ -85,7 +86,7 @@ public class Vaults extends MesonModule
     }
 
     @Override
-    public void serverStarted(FMLServerStartedEvent event)
+    public void onServerStarted(FMLServerStartedEvent event)
     {
         final IReloadableResourceManager rm = event.getServer().getResourceManager();
         new StructureHelper.RegisterJigsawPieces(rm, VAULTS_DIR); // for normal vault pieces
@@ -134,7 +135,7 @@ public class Vaults extends MesonModule
 
     public static boolean isValidPosition(BlockPos pos)
     {
-        if (!Strange.hasModule(Outerlands.class) || !Vaults.outerOnly) return true;
-        return Strange.hasModule(Outerlands.class) && Outerlands.isOuterPos(pos);
+        if (!Meson.isModuleEnabled("strange:outerlands") || !Vaults.outerOnly) return true;
+        return Meson.isModuleEnabled("strange:outerlands") && Outerlands.isOuterPos(pos);
     }
 }

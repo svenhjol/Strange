@@ -31,7 +31,7 @@ public class QuestScreen extends ScrollScreen implements IRenderable
 
     private void quit() 
     {
-        Meson.debug("[CLIENT] calling server to decline quest", quest.getId());
+        Meson.debug("[CLIENT] calling server to decline quest: " + quest.getId());
         PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.QUIT, quest.getId()));
         this.close();
     }

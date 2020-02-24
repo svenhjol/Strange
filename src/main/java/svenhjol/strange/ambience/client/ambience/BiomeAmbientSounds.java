@@ -3,8 +3,8 @@ package svenhjol.strange.ambience.client.ambience;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.biome.Biome;
+import svenhjol.strange.Strange;
 import svenhjol.strange.ambience.client.LongSound;
-import svenhjol.strange.base.StrangeLoader;
 
 public abstract class BiomeAmbientSounds extends BaseAmbientSounds
 {
@@ -25,12 +25,12 @@ public abstract class BiomeAmbientSounds extends BaseAmbientSounds
 
     public boolean isDay()
     {
-        return isValid() && StrangeLoader.client.isDaytime;
+        return isValid() && Strange.client.isDaytime;
     }
 
     public boolean isNight()
     {
-        return isValid() && !StrangeLoader.client.isDaytime;
+        return isValid() && !Strange.client.isDaytime;
     }
 
     public abstract Biome.Category getBiomeCategory();

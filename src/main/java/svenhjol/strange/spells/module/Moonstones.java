@@ -38,7 +38,7 @@ public class Moonstones extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Spells.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
     }
 
     @Override

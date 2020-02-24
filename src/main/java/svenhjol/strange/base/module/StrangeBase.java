@@ -7,8 +7,8 @@ import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.message.ServerUpdatePlayerState;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.message.ServerUpdatePlayerState;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
 public class StrangeBase extends MesonModule
@@ -23,7 +23,6 @@ public class StrangeBase extends MesonModule
             && event.player.world.isRemote
             && event.player.world.getGameTime() % clientServerUpdateTicks == 0
         ) {
-//            Meson.debug("UpdatePlayerState heartbeat request");
             PacketHandler.sendToServer(new ServerUpdatePlayerState());
         }
     }

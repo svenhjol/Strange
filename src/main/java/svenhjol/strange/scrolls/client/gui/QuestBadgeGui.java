@@ -64,7 +64,7 @@ public class QuestBadgeGui extends AbstractGui
 
     public void onLeftClick()
     {
-        Meson.debug("[CLIENT] clicked quest badge", quest.getId());
+        Meson.debug("[CLIENT] clicked quest badge: " + quest.getId());
         Quests.client.showQuest(quest);
 //        Optional<IQuest> qq = QuestClient.currentQuests.stream().filter(q -> q.getId().equals(quest.getId())).findFirst();
 //        PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.SHOW, quest.getId(), Hand.MAIN_HAND));

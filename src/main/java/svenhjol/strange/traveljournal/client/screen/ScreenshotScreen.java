@@ -71,7 +71,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
                     }
 
                 } catch (Exception e) {
-                    Meson.warn("Error loading screenshot", e);
+                    Meson.warn("Error loading screenshot: " + e);
                     this.close();
                 }
             }

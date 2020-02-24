@@ -32,7 +32,6 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.StrangeLoader;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
@@ -84,13 +83,13 @@ public class UndergroundRuins extends MesonModule
     }
 
     @Override
-    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event)
     {
         // don't spawn near Quark's big dungeons
-        if (StrangeLoader.quarkBigDungeons != null
-            && StrangeLoader.quarkBigDungeons.hasModule()
+        if (Strange.quarkCompat != null
+            && Strange.quarkCompat.hasBigDungeons()
         ) {
-            Structure<?> structure = StrangeLoader.quarkBigDungeons.getStructure();
+            Structure<?> structure = Strange.quarkCompat.getBigDungeonStructure();
             if (!blacklist.contains(structure)) {
                 blacklist.add(structure);
                 Meson.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
@@ -98,7 +97,7 @@ public class UndergroundRuins extends MesonModule
         }
 
         // don't spawn near Vaults
-        if (Strange.hasModule(Vaults.class)) {
+        if (Meson.isModuleEnabled("strange:vaults")) {
             if (!blacklist.contains(Vaults.structure)) {
                 blacklist.add(Vaults.structure);
                 Meson.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
@@ -107,7 +106,7 @@ public class UndergroundRuins extends MesonModule
     }
 
     @Override
-    public void serverStarted(FMLServerStartedEvent event)
+    public void onServerStarted(FMLServerStartedEvent event)
     {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
@@ -128,7 +127,7 @@ public class UndergroundRuins extends MesonModule
             sizes.get(cat).putAll(register.sizes);
         }
 
-        Meson.log(ruins);
+        Meson.log(ruins.toString());
     }
 
     @SubscribeEvent

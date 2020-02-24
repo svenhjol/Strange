@@ -39,7 +39,7 @@ public class VaultPiece extends AbstractVillagePiece
         try {
             result = super.addComponentParts(world, rand, structureBox, chunk);
         } catch (NullPointerException e) {
-            Meson.warn("NullPointer when generating piece, FIXME", e);
+            Meson.warn("NullPointer when generating piece, FIXME: " + e);
             result = false;
         }
 

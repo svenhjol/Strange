@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -49,7 +50,7 @@ public class IllusionersDropTotems extends MesonModule
     public static List<Item> totems = new ArrayList<>();
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         totemsConfig.forEach(name -> {
             Optional<Item> itemValue = Registry.ITEM.getValue(new ResourceLocation(name));
@@ -69,7 +70,7 @@ public class IllusionersDropTotems extends MesonModule
             Entity entity = event.getEntity();
             World world = entity.getEntityWorld();
 
-            if (outerlands && (Strange.hasModule(Outerlands.class) && !Outerlands.isOuterPos(entity.getPosition())))
+            if (outerlands && (Meson.isModuleEnabled("strange:outerlands") && !Outerlands.isOuterPos(entity.getPosition())))
                 return;
 
             if (!totems.isEmpty()) {

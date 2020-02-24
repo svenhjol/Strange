@@ -31,6 +31,12 @@ public class DeepAmbientSounds extends BaseAmbientSounds
         return world.rand.nextInt(400) + 1000;
     }
 
+    @Override
+    public float getLongSoundVolume()
+    {
+        return 0.65F;
+    }
+
     @Nullable
     @Override
     public SoundEvent getLongSound()

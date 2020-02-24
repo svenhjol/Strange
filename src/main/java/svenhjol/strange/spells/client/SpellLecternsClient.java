@@ -9,7 +9,7 @@ import svenhjol.strange.spells.tile.SpellLecternTileEntity;
 @OnlyIn(Dist.CLIENT)
 public class SpellLecternsClient
 {
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         ClientRegistry.bindTileEntitySpecialRenderer(SpellLecternTileEntity.class, new SpellLecternTileEntityRenderer());
     }

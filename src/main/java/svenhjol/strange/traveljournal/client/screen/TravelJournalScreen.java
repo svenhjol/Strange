@@ -15,8 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.charm.Charm;
-import svenhjol.charm.tools.module.CompassBinding;
+import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
@@ -82,7 +81,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             for (ItemStack stack : itemStacks) {
                 if (stack.isEmpty()) continue;
                 if (!hasTotem) hasTotem = stack.getItem() == TotemOfReturning.item;
-                if (!hasCompass) hasCompass = Charm.hasModule(CompassBinding.class) && stack.getItem() == Items.COMPASS;
+                if (!hasCompass) hasCompass = Meson.isModuleEnabled("charm:compass_binding") && stack.getItem() == Items.COMPASS;
                 if (!hasMap) hasMap = stack.getItem() == Items.MAP;
             }
         }

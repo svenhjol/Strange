@@ -11,9 +11,7 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.module.BookshelfChests;
-import svenhjol.charm.tweaks.module.NoAnvilMinimumXp;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.LootHelper;
@@ -46,7 +44,7 @@ public class SpellBooks extends MesonModule
     @Override
     public boolean isEnabled()
     {
-        return super.isEnabled() && Strange.hasModule(Spells.class);
+        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
     }
 
     @Override
@@ -57,12 +55,11 @@ public class SpellBooks extends MesonModule
     }
 
     @Override
-    public void setup(FMLCommonSetupEvent event)
+    public void onCommonSetup(FMLCommonSetupEvent event)
     {
         // spellbooks are valid bookshelf items
-        if (Charm.hasModule(BookshelfChests.class)) {
+        if (Meson.isModuleEnabled("charm:bookshelf_chests"))
             BookshelfChests.validItems.add(SpellBookItem.class);
-        }
     }
 
     @SubscribeEvent
@@ -108,7 +105,7 @@ public class SpellBooks extends MesonModule
             out = left.copy();
             int damage = left.getDamage();
 
-            int cost = xpRepairCost == 0 && Charm.hasModule(NoAnvilMinimumXp.class) ? 0 : 1;
+            int cost = xpRepairCost == 0 && Meson.isModuleEnabled("charm:no_anvil_minimum_xp") ? 0 : 1;
             out.setDamage(damage - 1);
 
             event.setCost(cost);

@@ -1,3 +1,7 @@
+## 1.0.0 alpha 6
+* Fixed issue with players not being visible to each other in multiplayer
+* Rework loader in line with Charm 1.5.2
+
 ## 1.0.0 alpha 5
 * Added sounds for more biome categories
 * Fixed ambient volume and location issues

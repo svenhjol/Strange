@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
-import svenhjol.strange.base.StrangeLoader;
+import svenhjol.strange.Strange;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
@@ -56,7 +56,7 @@ public class ClientUpdatePlayerState implements IMesonMessage
         {
             ctx.get().enqueueWork(() -> {
 //                Meson.debug("UpdatePlayerState heartbeat response");
-                StrangeLoader.client.updateStructures(msg.structures);
+                Strange.client.updateStructures(msg.structures);
             });
             ctx.get().setPacketHandled(true);
         }

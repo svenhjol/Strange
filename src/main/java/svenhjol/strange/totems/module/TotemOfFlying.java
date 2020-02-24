@@ -44,7 +44,7 @@ public class TotemOfFlying extends MesonModule
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         client = new TotemOfFlyingClient();
     }

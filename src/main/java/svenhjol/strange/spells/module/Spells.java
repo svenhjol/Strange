@@ -75,7 +75,7 @@ public class Spells extends MesonModule
                 Spell instance = (Spell)clazz.getConstructor().newInstance();
                 spells.put(id, instance);
             } catch (Exception e) {
-                Meson.warn("Could not load spell " + id, e);
+                Meson.warn("Could not load spell " + id + ": " + e);
             }
         }
 
@@ -102,7 +102,7 @@ public class Spells extends MesonModule
     }
 
     @Override
-    public void setupClient(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         client = new SpellsClient();
     }
