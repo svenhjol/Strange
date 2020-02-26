@@ -19,7 +19,6 @@ import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.runestones.module.StoneCircles;
 
 import java.util.*;
 
@@ -49,7 +48,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         if (world.getDimension().getType() == DimensionType.THE_NETHER) {
 
             config.withChest = true;
-            config.allRunes = StoneCircles.allowAllNetherRunes;
+            config.allRunes = false;
             config.runeTries = 3;
             config.runeChance = 0.9F;
             config.radius = rand.nextInt(4) + 5;
@@ -75,7 +74,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         } else if (world.getDimension().getType() == DimensionType.THE_END) {
 
             config.withChest = true;
-            config.allRunes = StoneCircles.allowAllEndRunes;
+            config.allRunes = false;
             config.runeTries = 4;
             config.runeChance = 1.0F;
             config.radius = rand.nextInt(7) + 4;
@@ -98,7 +97,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
         } else {
 
-            config.allRunes = StoneCircles.allowAllOverworldRunes;
+            config.allRunes = false;
             config.radius = rand.nextInt(6) + 5;
             config.runeTries = 2;
             config.runeChance = 0.8F;

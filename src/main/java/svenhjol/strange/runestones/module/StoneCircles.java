@@ -1,21 +1,30 @@
 package svenhjol.strange.runestones.module;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.charm.tools.item.BoundCompassItem;
+import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
@@ -43,23 +52,12 @@ public class StoneCircles extends MesonModule
     @Config(name = "Add stone circle maps to loot", description = "If true, stone circle maps will be added to village chests.")
     public static boolean addMapsToLoot = true;
 
-    @Config(name = "Chance of overworld stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable overworld location.")
-    public static double overworldSpawnChance = 1.0D;
+    @Config(name = "Allow compasses to detect stone circles", description = "Holding a compass and an iron ingot under a full moon makes the compass point toward the closest stone circle.\n" +
+        "Charm's 'Compass Binding' feature must be enabled for this to work.")
+    public static boolean compassDetection = true;
 
-    @Config(name = "Chance of nether stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable nether location.")
-    public static double netherSpawnChance = 0.85D;
-
-    @Config(name = "Chance of End stone circle", description = "Chance (out of 1.0) of a stone circle spawning when the game finds a suitable End location.")
-    public static double endSpawnChance = 0.85D;
-
-    @Config(name = "Allow all runes in the Overworld", description = "If true, stone circles in the overworld may show all runes, including rare ones to the Outerlands.")
-    public static boolean allowAllOverworldRunes = false;
-
-    @Config(name = "Allow all runes in the Nether", description = "If true, stone circles in the nether may show all runes, including rare ones to the Outerlands.")
-    public static boolean allowAllNetherRunes = false;
-
-    @Config(name = "Allow all runes in the End", description = "If true, stone circles in the End may show all runes, including rare ones to the Outerlands.")
-    public static boolean allowAllEndRunes = false;
+    @Config(name = "Distance", description = "Distance between stone cicles. For reference, shipwrecks are 16.")
+    public static int distance = 16;
 
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
@@ -151,6 +149,52 @@ public class StoneCircles extends MesonModule
 
             LootTable table = event.getTable();
             LootHelper.addTableEntry(table, entry);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if (!compassDetection) return;
+
+        int interval = 20;
+
+        if (event.player != null
+            && !event.player.world.isRemote
+            && event.player.world.getGameTime() % interval == 0
+            && event.player.world.getDimension().getType() == DimensionType.OVERWORLD
+            && event.player.world.getCurrentMoonPhaseFactor() == 1.0F
+            && Meson.isModuleEnabled("charm:compass_binding")
+        ) {
+            ServerWorld serverWorld = (ServerWorld)event.player.world;
+            ServerPlayerEntity player = (ServerPlayerEntity)event.player;
+
+            // get the nearest stone circle to the player
+            BlockPos circlePos = serverWorld.findNearestStructure(RESNAME, player.getPosition(), 500, true);
+            if (circlePos == null)
+                return;
+
+            // check if player holding a compass and an ingot
+            Hand compassHand = null;
+
+            if (player.getHeldItemMainhand().getItem() == Items.COMPASS
+                && player.getHeldItemOffhand().getItem() == Items.IRON_INGOT
+            ) {
+                compassHand = Hand.MAIN_HAND;
+            } else if (player.getHeldItemOffhand().getItem() == Items.IRON_INGOT
+                && player.getHeldItemMainhand().getItem() == Items.COMPASS
+            ) {
+                compassHand = Hand.OFF_HAND;
+            }
+
+            if (compassHand == null)
+                return;
+
+            // put the bound compass in the player's hand
+            ItemStack boundCompass = new ItemStack(CompassBinding.item);
+            boundCompass.setDisplayName(new TranslationTextComponent("item.strange.strange_compass"));
+            BoundCompassItem.setPos(boundCompass, circlePos);
+            player.setHeldItem(compassHand, boundCompass);
         }
     }
 }
