@@ -140,6 +140,9 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
                 components.forEach(p -> p.offset(0, shift, 0));
 //                Meson.debug("[UndergroundRuinStructure] Shifting up by " + shift + " at " + pos);
             }
+
+            if (UndergroundRuins.addMarker)
+                components.add(new MarkerPiece(this.rand, pos));
         }
 
         public Biome.Category getBiomeCategory(Biome biome, ChunkGenerator<?> gen)

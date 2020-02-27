@@ -33,6 +33,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
+import svenhjol.strange.ruins.structure.MarkerPiece;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
 
@@ -57,10 +58,13 @@ public class UndergroundRuins extends MesonModule
     public static int defaultSize = 2;
 
     @Config(name = "Distance", description = "Distance between ruin structures. For reference, shipwrecks are 16.")
-    public static int distance = 10;
+    public static int distance = 12;
 
     @Config(name = "Additional pieces", description = "Ruin size is increased randomly by this amount.")
     public static int variation = 2;
+
+    @Config(name = "Add marker", description = "Add a stone marker on the surface above a ruin.")
+    public static boolean addMarker = true;
 
     @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests.")
     public static boolean addMapsToLoot = true;
@@ -72,6 +76,7 @@ public class UndergroundRuins extends MesonModule
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
+        RegistryHandler.registerStructurePiece(MarkerPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "ump"));
 
         for (Biome biome : ForgeRegistries.BIOMES) {
             biome.addFeature(
