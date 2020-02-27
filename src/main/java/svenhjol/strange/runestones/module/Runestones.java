@@ -256,9 +256,11 @@ public class Runestones extends MesonModule
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent event)
     {
+        int interval = 10;
+
         if (event.phase == Phase.END
             && !event.player.world.isRemote
-            && event.player.world.getGameTime() % 10 == 0
+            && event.player.world.getGameTime() % interval == 0
         ) {
             // see Entity.java:1433
             PlayerEntity player = event.player;
