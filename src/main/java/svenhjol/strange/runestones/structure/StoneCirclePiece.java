@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 
@@ -40,12 +41,14 @@ public class StoneCirclePiece extends ScatteredStructurePiece
     @Override
     public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos)
     {
-        int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, this.boundingBox.minX, this.boundingBox.minZ);
-        BlockPos.MutableBlockPos pos;
-        BlockPos surfacePos, surfacePosDown;
+        BlockPos foundPos = null;
+        DimensionType dim = world.getDimension().getType();
         GenerationConfig config = new GenerationConfig();
+        int x = this.boundingBox.minX;
+        int z = this.boundingBox.minZ;
+        int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
-        if (world.getDimension().getType() == DimensionType.THE_NETHER) {
+        if (dim == DimensionType.THE_NETHER) {
 
             config.withChest = true;
             config.allRunes = false;
@@ -59,19 +62,20 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                 Blocks.NETHER_BRICKS.getDefaultState()
             ));
 
-            for (int i = 100; i > 20; i--) {
+            for (int i = world.getMaxHeight() - 40; i > 32; i--) {
                 for (int ii = 1; ii < TRIES; ii++) {
-                    pos = new BlockPos.MutableBlockPos(this.boundingBox.minX, i, this.boundingBox.minZ);
-                    surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                    surfacePosDown = surfacePos.down();
+                    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, i, z);
+                    BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+                    BlockPos surfacePosDown = surfacePos.down();
 
                     if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.NETHERRACK)) {
-                        return generateCircle(world, new BlockPos.MutableBlockPos(surfacePos), rand, config);
+                        foundPos = surfacePos;
+                        break;
                     }
                 }
             }
 
-        } else if (world.getDimension().getType() == DimensionType.THE_END) {
+        } else if (dim == DimensionType.THE_END) {
 
             config.withChest = true;
             config.allRunes = false;
@@ -86,12 +90,13 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             ));
 
             for (int ii = 1; ii < TRIES; ii++) {
-                pos = new BlockPos.MutableBlockPos(this.boundingBox.minX, y, this.boundingBox.minZ);
-                surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                surfacePosDown = surfacePos.down();
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+                BlockPos surfacePosDown = surfacePos.down();
 
                 if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
-                    return generateCircle(world, new BlockPos.MutableBlockPos(surfacePos), rand, config);
+                    foundPos = surfacePos;
+                    break;
                 }
             }
 
@@ -111,9 +116,9 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             ));
 
             for (int ii = 1; ii < TRIES; ii++) {
-                pos = new BlockPos.MutableBlockPos(this.boundingBox.minX, y, this.boundingBox.minZ);
-                surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                surfacePosDown = surfacePos.down();
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+                BlockPos surfacePosDown = surfacePos.down();
 
                 if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
                     && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
@@ -122,11 +127,14 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                         config.withChest = true;
                         config.allRunes = true;
                     }
-
-                    return generateCircle(world, new BlockPos.MutableBlockPos(surfacePos), rand, config);
+                    foundPos = surfacePos;
+                    break;
                 }
             }
         }
+
+        if (foundPos != null)
+            return generateCircle(world, new BlockPos.MutableBlockPos(foundPos), rand, config);
 
         return false;
     }
@@ -151,13 +159,13 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             }
 
             if (availableRunes.size() == 0) {
-                Meson.warn("No available runes to generate");
+                Strange.LOG.warn("No available runes to generate");
                 return false;
             }
         }
 
         if (config.blocks.isEmpty()) {
-            Meson.warn("You must pass blockstates to generate a circle");
+            Strange.LOG.warn("You must pass blockstates to generate a circle");
             return false;
         }
 
@@ -223,19 +231,17 @@ public class StoneCirclePiece extends ScatteredStructurePiece
                     BlockState chest = Blocks.CHEST.getDefaultState();
                     world.setBlockState(findPosUp, chest, 2);
                     LockableLootTileEntity.setLootTable(world, rand, findPosUp, config.lootTable);
-                    Meson.debug("Generated with chest " + pos);
+                    Strange.LOG.debug("Generated with chest " + pos);
                     break;
                 }
             }
         }
 
-        if (generatedWithRune) {
-            Meson.debug("Generated with rune " + pos);
-        }
+        if (generatedWithRune)
+            Strange.LOG.debug("Generated with rune " + pos);
 
-        if (!generated) {
-            Meson.debug("Did not generate");
-        }
+        if (!generated)
+            Strange.LOG.debug("Did not generate");
 
         return generated;
     }
