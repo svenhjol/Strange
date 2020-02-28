@@ -42,9 +42,9 @@ public class SpellBooks extends MesonModule
     public static SpellBookItem book;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
+        return Meson.isModuleEnabled("strange:spells");
     }
 
     @Override

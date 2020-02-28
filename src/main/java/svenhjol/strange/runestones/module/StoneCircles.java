@@ -21,6 +21,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.charm.tools.item.BoundCompassItem;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, configureEnabled = false)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true, configureEnabled = false)
 public class StoneCircles extends MesonModule
 {
     public static final String NAME = "stone_circle";
@@ -86,9 +87,9 @@ public class StoneCircles extends MesonModule
     public static List<Biome> validBiomes = new ArrayList<>();
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:runestones");
+        return Meson.isModuleEnabled("strange:runestones");
     }
 
     @Override
@@ -153,17 +154,17 @@ public class StoneCircles extends MesonModule
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    public void onPlayerTick(PlayerTickEvent event)
     {
         if (!compassDetection) return;
-
         int interval = 20;
 
-        if (event.player != null
+        if (event.phase == TickEvent.Phase.END
             && !event.player.world.isRemote
             && event.player.world.getGameTime() % interval == 0
             && event.player.world.getDimension().getType() == DimensionType.OVERWORLD
-            && event.player.world.getCurrentMoonPhaseFactor() == 1.0F
+            && event.player.world.getDayTime() > 17900
+            && event.player.world.getCurrentMoonPhaseFactor() > 0.95F
             && Meson.isModuleEnabled("charm:compass_binding")
         ) {
             ServerWorld serverWorld = (ServerWorld)event.player.world;

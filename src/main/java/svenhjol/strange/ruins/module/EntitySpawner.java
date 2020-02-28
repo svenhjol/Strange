@@ -21,9 +21,9 @@ public class EntitySpawner extends MesonModule
     public static EntitySpawnerBlock block;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:underground_ruins");
+        return Meson.isModuleEnabled("strange:underground_ruins");
     }
 
     @Override

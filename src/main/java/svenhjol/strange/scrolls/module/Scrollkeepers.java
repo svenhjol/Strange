@@ -70,9 +70,9 @@ public class Scrollkeepers extends MesonModule
     public static WritingDeskBlock block;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:scrolls");
+        return Meson.isModuleEnabled("strange:scrolls");
     }
 
     @Override

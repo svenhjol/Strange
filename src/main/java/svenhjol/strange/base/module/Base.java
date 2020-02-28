@@ -11,7 +11,7 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.message.ServerUpdatePlayerState;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, hasSubscriptions = true)
-public class StrangeBase extends MesonModule
+public class Base extends MesonModule
 {
     @Config(name = "Client/Server update ticks", description = "Heartbeat interval to synchronise additional world state to the client.")
     public static int clientServerUpdateTicks = 120;

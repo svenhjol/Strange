@@ -63,9 +63,9 @@ public class Quests extends MesonModule
     public static QuestClient client;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:scrolls");
+        return Meson.isModuleEnabled("strange:scrolls");
     }
 
     @Override

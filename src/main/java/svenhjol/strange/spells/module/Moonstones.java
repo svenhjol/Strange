@@ -36,9 +36,9 @@ public class Moonstones extends MesonModule
     public static boolean glint = true;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
+        return Meson.isModuleEnabled("strange:spells");
     }
 
     @Override

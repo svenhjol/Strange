@@ -21,9 +21,9 @@ public class Staves extends MesonModule
     public static List<Item> staves = new ArrayList<>();
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
+        return Meson.isModuleEnabled("strange:spells");
     }
 
     @Override

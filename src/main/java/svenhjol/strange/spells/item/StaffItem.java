@@ -45,7 +45,7 @@ public class StaffItem extends ToolItem implements IMesonItem
     @Override
     public boolean isEnabled()
     {
-        return module.isEnabled();
+        return module.enabled;
     }
 
     @Override

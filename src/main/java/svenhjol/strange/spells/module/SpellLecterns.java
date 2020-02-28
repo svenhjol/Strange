@@ -58,9 +58,9 @@ public class SpellLecterns extends MesonModule {
     public static boolean damageSpellBooks = false;
 
     @Override
-    public boolean isEnabled()
+    public boolean shouldBeEnabled()
     {
-        return super.isEnabled() && Meson.isModuleEnabled("strange:spells");
+        return Meson.isModuleEnabled("strange:spells");
     }
 
     @Override
