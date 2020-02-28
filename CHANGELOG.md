@@ -1,5 +1,9 @@
 ## 1.0.0 alpha 6
 * Fixed issue with players not being visible to each other in multiplayer
+* Fixed stone circles not generating in biomes other than extreme hills
+* Remove duplicate spawnpoint runestone
+* Added stone markers on surface above underground ruins
+* Added compasses that point to stone circles under a full moon
 * Rework loader in line with Charm 1.5.2
 
 ## 1.0.0 alpha 5

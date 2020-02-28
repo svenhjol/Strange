@@ -1,22 +1,19 @@
 # TODO
-- [ ] IN PROGRESS Restore advancements
+- [ ] IN PROGRESS Restore/add advancements
     - Rare totem advancement
 - [ ] IN PROGRESS - Add more T5 quests
-- [ ] "Monument" on surface above a ruin
+- [x] Marker stone on surface above a ruin
 - [ ] Charm's bound compasses not working with quests any more
 - [ ] Update all docs
 - [ ] Swamp ruins don't have much loot at endpoints
 - [ ] Ambience for The End
 - [ ] Unique ambience for Savanna and Rivers
-- [ ] Add spells:
-    - Extract
-    - Protect
-    - Recall
-    - Displace
+- [ ] Should not play "night" sounds during bad weather
+- [ ] BIG - treasure items
 
 ## Testing
-- [ ] Strange + Charm recipe and item deregistering - should be fixed in alpha.6
-- [ ] meson:module_enabled error - recipes don't always work when world crashes
+- [x] Strange + Charm recipe and item deregistering - should be fixed in alpha.6
+- [x] meson:module_enabled error - recipes don't always work when world crashes
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
 - [ ] Luck should increase scroll value
 - [ ] TEST Don't modify Quest values with an exclamation mark
