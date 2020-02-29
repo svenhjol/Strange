@@ -12,6 +12,8 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
@@ -19,28 +21,45 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.TotemHelper;
+import svenhjol.strange.base.loot.TreasureTotem;
 import svenhjol.strange.totems.client.TotemOfFlyingClient;
+import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfFlying extends MesonModule
+public class TotemOfFlying extends MesonModule implements ITreasureTotem
 {
     public static TotemOfFlyingItem item;
 
-    @Config(name = "Durability", description = "Durability of the Totem.")
+    @Config(name = "Durability", description = "Durability of the totem. The totem takes a point of damage every time you take off.")
     public static int durability = 32;
 
-    @Config(name = "XP cost", description = "Amount of XP consumed every second (20 ticks) while flying.")
-    public static int xpCost = 1;
+    @Config(name = "XP amount", description = "Amount of XP consumed while flying.")
+    public static int xpAmount = 1;
+
+    @Config(name = "XP interval", description = "Number of seconds of flying before some XP is consumed.")
+    public static double xpInterval = 1.0D;
 
     @OnlyIn(Dist.CLIENT)
     public static TotemOfFlyingClient client;
 
     @Override
+    public boolean shouldBeEnabled()
+    {
+        return Meson.isModuleEnabled("strange:treasure_totems");
+    }
+
+    @Override
     public void init()
     {
         item = new TotemOfFlyingItem(this);
+    }
+
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event)
+    {
+        TreasureTotem.availableTotems.add(this);
     }
 
     @Override
@@ -88,7 +107,7 @@ public class TotemOfFlying extends MesonModule
 
             if (player.getHeldItemMainhand().getItem() == item || player.getHeldItemOffhand().getItem() == item) {
                 if (player.abilities.isFlying) {
-                    if (!world.isRemote && world.getGameTime() % 20 == 0) {
+                    if (!world.isRemote && world.getGameTime() % (xpInterval * 20) == 0) {
                         int xp = player.experienceTotal;
                         if (xp <= 0) {
                             disableFlight(player);
@@ -99,7 +118,7 @@ public class TotemOfFlying extends MesonModule
                         for (Hand hand : Hand.values()) {
                             ItemStack held = player.getHeldItem(hand);
                             if (held.getItem() != item) continue;
-                            player.giveExperiencePoints(-xpCost);
+                            player.giveExperiencePoints(-xpAmount);
                         }
                     }
                     if (world.isRemote) {
@@ -131,5 +150,11 @@ public class TotemOfFlying extends MesonModule
             player.abilities.allowFlying = true;
             player.abilities.isFlying = true;
         }
+    }
+
+    @Override
+    public ItemStack getTreasureItem()
+    {
+        return new ItemStack(item);
     }
 }

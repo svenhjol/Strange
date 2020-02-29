@@ -4,7 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -14,10 +16,13 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.meson.enums.WoodType;
+import svenhjol.meson.helper.ItemNBTHelper;
 import vazkii.quark.base.Quark;
 import vazkii.quark.base.module.ModuleLoader;
 import vazkii.quark.building.module.VariantChestsModule;
 import vazkii.quark.tools.module.AncientTomesModule;
+import vazkii.quark.vanity.item.RuneItem;
+import vazkii.quark.vanity.module.ColorRunesModule;
 import vazkii.quark.world.block.CaveCrystalBlock;
 import vazkii.quark.world.module.BigDungeonModule;
 import vazkii.quark.world.module.CaveRootsModule;
@@ -101,5 +106,21 @@ public class QuarkCompat
         WoodType type = types.get(rand.nextInt(types.size()));
         ResourceLocation res = new ResourceLocation(Quark.MOD_ID, type.name().toLowerCase() + "_chest");
         return ForgeRegistries.BLOCKS.getValue(res);
+    }
+
+    public boolean hasColorRuneModule()
+    {
+        return ModuleLoader.INSTANCE.isModuleEnabled(ColorRunesModule.class);
+    }
+
+    public void applyColor(ItemStack stack, DyeColor color)
+    {
+        // get the rune
+        Item runeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Quark.MOD_ID, color.getName() + "_rune"));
+        if (runeItem instanceof RuneItem) {
+            ItemStack rune = new ItemStack(runeItem);
+            ItemNBTHelper.setBoolean(stack, ColorRunesModule.TAG_RUNE_ATTACHED, true);
+            ItemNBTHelper.setCompound(stack, ColorRunesModule.TAG_RUNE_COLOR, rune.serializeNBT());
+        }
     }
 }

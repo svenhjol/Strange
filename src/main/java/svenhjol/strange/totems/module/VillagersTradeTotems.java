@@ -45,6 +45,12 @@ public class VillagersTradeTotems extends MesonModule
     public static boolean outerOnly = true;
 
     @Override
+    public boolean shouldBeEnabled()
+    {
+        return Meson.isModuleEnabled("strange:treasure_totems");
+    }
+
+    @Override
     public void onCommonSetup(FMLCommonSetupEvent event)
     {
         availableTotems.add(Items.TOTEM_OF_UNDYING);

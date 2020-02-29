@@ -1,3 +1,8 @@
+## 1.0.0 alpha 7
+* Removed spells, spellbooks and moonstones
+* Added legendary items and treasure enchantments - WIP
+* Scrollkeepers now change maximum of 2 emeralds for a scroll
+
 ## 1.0.0 alpha 6
 * Fixed issue with players not being visible to each other in multiplayer
 * Fixed stone circles not generating in biomes other than extreme hills

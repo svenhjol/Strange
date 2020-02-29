@@ -5,16 +5,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.TotemHelper;
+import svenhjol.strange.base.loot.TreasureTotem;
+import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfShielding extends MesonModule
+public class TotemOfShielding extends MesonModule implements ITreasureTotem
 {
     public static TotemOfShieldingItem item;
 
@@ -25,9 +29,21 @@ public class TotemOfShielding extends MesonModule
     public static double damageMultiplier = 0.5D;
 
     @Override
+    public boolean shouldBeEnabled()
+    {
+        return Meson.isModuleEnabled("strange:treasure_totems");
+    }
+
+    @Override
     public void init()
     {
         item = new TotemOfShieldingItem(this);
+    }
+
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event)
+    {
+        TreasureTotem.availableTotems.add(this);
     }
 
     @SubscribeEvent
@@ -49,5 +65,11 @@ public class TotemOfShielding extends MesonModule
                 }
             }
         }
+    }
+
+    @Override
+    public ItemStack getTreasureItem()
+    {
+        return new ItemStack(item);
     }
 }

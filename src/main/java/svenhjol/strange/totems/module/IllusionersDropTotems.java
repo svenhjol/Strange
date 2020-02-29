@@ -50,6 +50,12 @@ public class IllusionersDropTotems extends MesonModule
     public static List<Item> totems = new ArrayList<>();
 
     @Override
+    public boolean shouldBeEnabled()
+    {
+        return Meson.isModuleEnabled("strange:treasure_totems");
+    }
+
+    @Override
     public void onCommonSetup(FMLCommonSetupEvent event)
     {
         totemsConfig.forEach(name -> {

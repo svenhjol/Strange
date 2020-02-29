@@ -10,12 +10,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.loot.TreasureTotem;
+import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfPreservingItem;
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfPreserving extends MesonModule
+public class TotemOfPreserving extends MesonModule implements ITreasureTotem
 {
     public static TotemOfPreservingItem item;
 
@@ -38,9 +41,21 @@ public class TotemOfPreserving extends MesonModule
     public static boolean noGravity = true;
 
     @Override
+    public boolean shouldBeEnabled()
+    {
+        return Meson.isModuleEnabled("strange:treasure_totems");
+    }
+
+    @Override
     public void init()
     {
         item = new TotemOfPreservingItem(this);
+    }
+
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event)
+    {
+        TreasureTotem.availableTotems.add(this);
     }
 
     @SubscribeEvent
@@ -109,5 +124,11 @@ public class TotemOfPreserving extends MesonModule
         world.addEntity(totemEntity);
         event.setCanceled(true);
         Meson.debug("Added Totem of Preserving at " + new BlockPos(x, y, z));
+    }
+
+    @Override
+    public ItemStack getTreasureItem()
+    {
+        return new ItemStack(item);
     }
 }

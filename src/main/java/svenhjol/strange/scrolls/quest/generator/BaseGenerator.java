@@ -24,12 +24,6 @@ import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
-import svenhjol.strange.spells.helper.SpellsHelper;
-import svenhjol.strange.spells.item.MoonstoneItem;
-import svenhjol.strange.spells.item.SpellBookItem;
-import svenhjol.strange.spells.module.Moonstones;
-import svenhjol.strange.spells.module.SpellBooks;
-import svenhjol.strange.spells.spells.Spell;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.module.TravelJournal;
@@ -56,7 +50,6 @@ public abstract class BaseGenerator
     // special item tags
     public static final String ANCIENT_TOME = "AncientTome";
     public static final String ENCHANTED_BOOK = "EnchantedBook";
-    public static final String MOONSTONE = "Moonstone";
     public static final String POTION = "Potion";
     public static final String RARE_ENCHANTED_BOOK = "RareEnchantedBook";
     public static final String SCROLL_TIER1 = "ScrollTier1";
@@ -64,14 +57,13 @@ public abstract class BaseGenerator
     public static final String SCROLL_TIER3 = "ScrollTier3";
     public static final String SCROLL_TIER4 = "ScrollTier4";
     public static final String SCROLL_TIER5 = "ScrollTier5";
-    public static final String SPELL_BOOK = "SpellBook";
     public static final String STONE_CIRCLE_MAP = "StoneCircleMap";
     public static final String STONE_CIRCLE_TOTEM = "StoneCircleTotem";
     public static final String SUSPICIOUS_STEW = "SuspiciousStew";
     public static final String TRAVEL_JOURNAL = "TravelJournal";
 
     public static final ArrayList<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(
-        STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, MOONSTONE, TRAVEL_JOURNAL, ANCIENT_TOME, STONE_CIRCLE_MAP,
+        STONE_CIRCLE_TOTEM, ENCHANTED_BOOK, RARE_ENCHANTED_BOOK, TRAVEL_JOURNAL, ANCIENT_TOME, STONE_CIRCLE_MAP,
         SCROLL_TIER1, SCROLL_TIER2, SCROLL_TIER3, SCROLL_TIER4, SCROLL_TIER5
     ));
 
@@ -260,15 +252,6 @@ public abstract class BaseGenerator
                 out = EnchantmentHelper.addRandomEnchantment(rand, out, rand.nextInt(15) + (rare ? 15 : 1), rare);
                 break;
 
-            case MOONSTONE:
-                if (Meson.isModuleEnabled("strange:spells")) {
-                    out = new ItemStack(Moonstones.item);
-                    Spell spell = SpellsHelper.getRandomSpell(rand);
-                    if (spell == null) return null;
-                    MoonstoneItem.putSpell(out, spell);
-                }
-                break;
-
             case TRAVEL_JOURNAL:
                 if (Meson.isModuleEnabled("strange:travel_journal")) {
                     out = new ItemStack(TravelJournal.item);
@@ -280,15 +263,6 @@ public abstract class BaseGenerator
                     && Meson.isModuleEnabled("quark:ancient_tomes")
                 ) {
                     out = Strange.quarkCompat.getRandomAncientTome(rand);
-                }
-                break;
-
-            case SPELL_BOOK:
-                if (Meson.isModuleEnabled("strange:spells")) {
-                    out = new ItemStack(SpellBooks.book);
-                    Spell spell = SpellsHelper.getRandomSpell(rand);
-                    if (spell == null) return null;
-                    SpellBookItem.putSpell(out, spell);
                 }
                 break;
 

@@ -24,12 +24,6 @@ public class StrangeSounds
     public static final SoundEvent QUEST_ACTION_COUNT = createSound("quest_action_count");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");
     public static final SoundEvent SCREENSHOT = createSound("screenshot");
-    public static final SoundEvent SPELL_BOOK_CHARGE = createSound("spell_book_charge");
-    public static final SoundEvent SPELL_CAST = createSound("spell_cast");
-    public static final SoundEvent SPELL_FAIL = createSound("spell_fail");
-    public static final SoundEvent SPELL_CHARGE_SHORT = createSound("spell_charge_short");
-    public static final SoundEvent SPELL_CHARGE_MEDIUM = createSound("spell_charge_medium");
-    public static final SoundEvent SPELL_NO_MORE_USES = createSound("spell_no_more_uses");
 
     // ambience
     public static final SoundEvent AMBIENCE_BEACH_LONG = createSound("ambience.beach.long");

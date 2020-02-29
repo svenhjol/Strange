@@ -125,14 +125,14 @@ public class StoneCircles extends MesonModule
         ResourceLocation res = event.getName();
 
         if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_CARTOGRAPHER)) {
-            weight = 40;
+            weight = 10;
         } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SAVANNA_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE)
             || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)
         ) {
-            weight = 12;
+            weight = 2;
         }
 
         if (weight > 0) {

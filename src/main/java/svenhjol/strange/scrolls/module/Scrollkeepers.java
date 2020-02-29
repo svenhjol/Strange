@@ -240,7 +240,7 @@ public class Scrollkeepers extends MesonModule
         @Override
         public MerchantOffer getOffer(Entity merchant, Random rand)
         {
-            ItemStack in1 = new ItemStack(Items.EMERALD, 1 + (rand.nextInt(tier + 1)));
+            ItemStack in1 = new ItemStack(Items.EMERALD, Math.max(2, 1 + rand.nextInt(2)));
             ItemStack out = ScrollItem.putTier(new ItemStack(Scrolls.item), tier);
 
             IQuest quest = new Quest();

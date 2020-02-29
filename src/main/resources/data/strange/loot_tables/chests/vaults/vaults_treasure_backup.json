@@ -5,24 +5,39 @@
       "rolls": 1,
       "entries": [
         {
-          "name": "minecraft:diamond",
+          "name": "strange:totem_of_returning",
           "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "strange:treasure_enchantment"
-            }
-          ]
+          "weight": 10
         },
         {
-          "name": "minecraft:diamond",
+          "name": "strange:totem_of_shielding",
           "type": "minecraft:item",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "strange:treasure_totem"
-            }
-          ]
+          "weight": 10
+        },
+        {
+          "name": "strange:totem_of_enchanting",
+          "type": "minecraft:item",
+          "weight": 7
+        },
+        {
+          "name": "minecraft:totem_of_undying",
+          "type": "minecraft:item",
+          "weight": 6
+        },
+        {
+          "name": "strange:totem_of_flying",
+          "type": "minecraft:item",
+          "weight": 6
+        },
+        {
+          "name": "strange:totem_of_preserving",
+          "type": "minecraft:item",
+          "weight": 6
+        },
+        {
+          "name": "strange:totem_of_transferring",
+          "type": "minecraft:item",
+          "weight": 6
         }
       ]
     },

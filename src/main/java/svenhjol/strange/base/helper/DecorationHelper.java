@@ -308,7 +308,7 @@ public class DecorationHelper
         protected void bookshelf()
         {
             // TODO variant bookshelves
-            if (Meson.isModuleEnabled("charm:bookshelf_chests") && withChance(0.22F)) {
+            if (Meson.isModuleEnabled("charm:bookshelf_chests") && withChance(0.1F)) {
                 state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
                     .with(BookshelfChestBlock.SLOTS, 9);
 
