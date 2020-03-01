@@ -1,6 +1,5 @@
 package svenhjol.strange.ambience.module;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -84,9 +83,7 @@ public class Ambience extends MesonModule
         if (event.getEntity() instanceof PlayerEntity
             && event.getEntity().world.isRemote
         ) {
-            Minecraft mc = Minecraft.getInstance();
-            PlayerEntity player = (PlayerEntity)event.getEntity();
-            ambienceClient.handler = new AmbienceClient.Handler(player, mc.getSoundHandler());
+            ambienceClient.playerJoined((PlayerEntity)event.getEntity());
         }
     }
 

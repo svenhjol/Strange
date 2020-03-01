@@ -1,6 +1,8 @@
 package svenhjol.strange.ambience.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import svenhjol.strange.ambience.client.ambience.*;
 
@@ -8,11 +10,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static svenhjol.strange.ambience.module.Ambience.ambienceClient;
+
 public class AmbienceClient
 {
     public Handler handler;
 
     public AmbienceClient() { }
+
+    public void playerJoined(PlayerEntity player)
+    {
+        // we only care about ClientPlayerEntity (the actual player)
+        // not RemoteClientPlayerEntity (other players relative to the actual player)
+        if (player instanceof ClientPlayerEntity) {
+            Minecraft mc = Minecraft.getInstance();
+            ambienceClient.handler = new AmbienceClient.Handler(player, mc.getSoundHandler());
+        }
+    }
 
     public static class Handler
     {
