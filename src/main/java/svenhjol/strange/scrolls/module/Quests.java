@@ -96,7 +96,7 @@ public class Quests extends MesonModule
                             hasMods = hasMods && Meson.isModuleEnabled(new ResourceLocation(s));
                         }
                         if (!hasMods) {
-                            Meson.log("Quest " + definition.getTitle() + " is missing required modules");
+                            Meson.log("Quest " + res.toString() + " is missing required modules");
                             continue;
                         }
                     }
@@ -105,10 +105,10 @@ public class Quests extends MesonModule
                     definition.setTitle(name);
                     definition.setTier(tier);
                     Quests.available.get(tier).add(definition);
-                    Meson.debug("Loaded quest " + definition.getTitle() + " for tier " + tier);
+                    Meson.debug("Loaded quest " + res.toString()+ " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.warn("Could not load quest for " + res + " because " + e.getMessage());
+                    Meson.warn("Could not load quest for " + res.toString() + " because " + e.getMessage());
                 }
             }
         }

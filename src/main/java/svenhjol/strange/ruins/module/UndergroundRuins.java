@@ -58,7 +58,7 @@ public class UndergroundRuins extends MesonModule
     public static int defaultSize = 2;
 
     @Config(name = "Distance", description = "Distance between ruin structures. For reference, shipwrecks are 16.")
-    public static int distance = 12;
+    public static int distance = 20;
 
     @Config(name = "Additional pieces", description = "Ruin size is increased randomly by this amount.")
     public static int variation = 2;

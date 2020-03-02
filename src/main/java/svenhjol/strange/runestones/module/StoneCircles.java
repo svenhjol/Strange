@@ -58,7 +58,7 @@ public class StoneCircles extends MesonModule
     public static boolean compassDetection = true;
 
     @Config(name = "Distance", description = "Distance between stone cicles. For reference, shipwrecks are 16.")
-    public static int distance = 16;
+    public static int distance = 20;
 
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
