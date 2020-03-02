@@ -15,7 +15,7 @@ public class StrangeMessages
 {
     public static void init()
     {
-        int index = 0;
+        int index = 20;
 
         PacketHandler.HANDLER.registerMessage(index++, ServerQuestList.class, ServerQuestList::encode, ServerQuestList::decode, ServerQuestList.Handler::handle);
         PacketHandler.HANDLER.registerMessage(index++, ServerQuestAction.class, ServerQuestAction::encode, ServerQuestAction::decode, ServerQuestAction.Handler::handle);
