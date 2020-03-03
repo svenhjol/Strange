@@ -2,7 +2,7 @@
   "parent": "strange:root",
   "display": {
     "icon": {
-      "item": "strange:runestone"
+      "item": "strange:runestone_0"
     },
     "title": {
       "translate": "advancements.strange.find_stone_circle.title"

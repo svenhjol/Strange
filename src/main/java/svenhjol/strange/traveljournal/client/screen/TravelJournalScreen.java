@@ -218,7 +218,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             I18n.format("gui.strange.travel_journal.new_biome_entry", biomeName),
             player.getPosition(),
             WorldHelper.getDimensionId(player.world),
-            0
+            15
         );
 
         TravelJournalItem.addEntry(held, entry);

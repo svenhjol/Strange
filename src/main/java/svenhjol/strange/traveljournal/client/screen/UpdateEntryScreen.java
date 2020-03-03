@@ -1,5 +1,7 @@
 package svenhjol.strange.traveljournal.client.screen;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
@@ -9,6 +11,8 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -25,17 +29,20 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     protected int color;
     protected Entry entry;
     protected String message = "";
+    protected char[] runicName;
     protected List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
     );
+    protected FontRenderer glyphs;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand)
     {
         super(entry.name, player, hand);
         this.entry = entry;
         this.name = entry.name;
-        this.color = entry.color;
+        this.color = entry.color > 0 ? entry.color : 15;
         this.passEvents = false;
+        this.runicName = new char[] {};
     }
 
     @Override
@@ -44,6 +51,29 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         super.init();
         if (mc == null) return;
         if (!mc.world.isRemote) return;
+
+
+        if (!Strange.client.discoveredRunes.isEmpty()){
+        this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
+            String hex = Long.toHexString(entry.pos.toLong());
+            StringBuilder assembled = new StringBuilder();
+
+            char[] chars = hex.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                String letter;
+                char c = chars[i];
+                int rune = Character.getNumericValue(c);
+
+                if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
+                    letter = Runestones.runeChars.get(c).toString();
+                } else {
+                    letter = "?";
+                }
+                assembled.append(letter);
+            }
+    //        assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
+            this.runicName = assembled.toString().toCharArray();
+        }
 
         mc.keyboardListener.enableRepeatEvents(true);
         nameField = new TextFieldWidget(font, (width / 2) - 50, 42, 103, 12, "NameField");
@@ -85,13 +115,26 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         }
 
         if (entry.pos != null) {
-            this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), y + 76, TEXT_COLOR);
+            if (player.isCreative())
+                this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), y + 76, TEXT_COLOR);
+
+            //this.drawCenteredString(this.glyphs, runicName, (width / 2), y + 94, TEXT_COLOR);
+            int offset = y - 2;
+
+            if (entry.dim == 0 && runicName.length > 0) {
+                for (int j = 0; j < runicName.length; j++) {
+                    String s = String.valueOf(runicName[j]);
+                    FontRenderer f = (s.equals("?") ? this.font : this.glyphs);
+                    int color = (s.equals("?")) ? 0xC0C0C0 : 0x888888;
+                    this.drawCenteredString(f, s, (width / 2) + 93, offset + (j * 9), color);
+                }
+            }
         }
 
         if (atEntryPosition || hasScreenshot()) {
             String key = "gui.strange.travel_journal.show_screenshot";
             if (atEntryPosition && !hasScreenshot()) key = "gui.strange.travel_journal.new_screenshot";
-            this.addButton(new Button((width / 2) - 60, y + 96, 120, 20, I18n.format(key), (button) -> this.screenshot()));
+            this.addButton(new Button((width / 2) - 60, y + 110, 120, 20, I18n.format(key), (button) -> this.screenshot()));
         }
 
         if (!this.message.isEmpty()) {

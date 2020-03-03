@@ -67,6 +67,6 @@
     }
   },
   "requirements": [
-    ["find_vaults_xpos", "find_vaults_xneg","find_vaults_zpos", "find_vaults_zneg"]
+    ["find_vaults_xpos", "find_vaults_xneg", "find_vaults_zpos", "find_vaults_zneg"]
   ]
 }

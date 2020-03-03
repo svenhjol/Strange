@@ -15,11 +15,11 @@ import java.util.function.Supplier;
 
 public class ClientUpdatePlayerState implements IMesonMessage
 {
-    private CompoundNBT structures;
+    private CompoundNBT input;
 
-    public ClientUpdatePlayerState(CompoundNBT structures)
+    public ClientUpdatePlayerState(CompoundNBT input)
     {
-        this.structures = structures;
+        this.input = input;
     }
 
     public static void encode(ClientUpdatePlayerState msg, PacketBuffer buf)
@@ -28,7 +28,7 @@ public class ClientUpdatePlayerState implements IMesonMessage
 
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CompressedStreamTools.writeCompressed(msg.structures, out);
+            CompressedStreamTools.writeCompressed(msg.input, out);
             serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
         } catch (Exception e) {
             Meson.warn("Failed to compress structures");
@@ -38,16 +38,16 @@ public class ClientUpdatePlayerState implements IMesonMessage
 
     public static ClientUpdatePlayerState decode(PacketBuffer buf)
     {
-        CompoundNBT structures = new CompoundNBT();
+        CompoundNBT input = new CompoundNBT();
 
         try {
             final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
-            structures = CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData));
+            input = CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData));
         } catch (Exception e) {
             Meson.warn("Failed to uncompress structures");
         }
 
-        return new ClientUpdatePlayerState(structures);
+        return new ClientUpdatePlayerState(input);
     }
 
     public static class Handler
@@ -56,7 +56,8 @@ public class ClientUpdatePlayerState implements IMesonMessage
         {
             ctx.get().enqueueWork(() -> {
 //                Meson.debug("UpdatePlayerState heartbeat response");
-                Strange.client.updateStructures(msg.structures);
+                Strange.client.updateStructures(msg.input);
+                Strange.client.updateDiscoveries(msg.input);
             });
             ctx.get().setPacketHandled(true);
         }

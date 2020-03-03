@@ -42,9 +42,11 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
 
-//        if (!hasScreenshot()) {
-//            takeScreenshot(this.entry, hand);
-//        }
+        if (!hasScreenshot()) {
+            this.close(); // TODO this is copy pasted from below, make method prepareScreenshot
+            player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
+            takeScreenshot(entry, hand);
+        }
     }
 
     @Override

@@ -48,88 +48,33 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         int z = this.boundingBox.minZ;
         int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
-        if (dim == DimensionType.THE_NETHER) {
+        config.allRunes = false;
+        config.radius = rand.nextInt(6) + 5;
+        config.runeTries = 2;
+        config.runeChance = 0.8F;
+        config.columnMinHeight = 4;
+        config.columnVariation = 2;
+        config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
+        config.blocks = new ArrayList<>(Arrays.asList(
+            Blocks.STONE.getDefaultState(),
+            Blocks.COBBLESTONE.getDefaultState(),
+            Blocks.MOSSY_COBBLESTONE.getDefaultState()
+        ));
 
-            config.withChest = true;
-            config.allRunes = false;
-            config.runeTries = 3;
-            config.runeChance = 0.9F;
-            config.radius = rand.nextInt(4) + 5;
-            config.columnMinHeight = 3;
-            config.columnVariation = 4;
-            config.lootTable = LootTables.CHESTS_NETHER_BRIDGE;
-            config.blocks = new ArrayList<>(Arrays.asList(
-                Blocks.NETHER_BRICKS.getDefaultState()
-            ));
+        for (int ii = 1; ii < TRIES; ii++) {
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+            BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+            BlockPos surfacePosDown = surfacePos.down();
 
-            for (int i = world.getMaxHeight() - 40; i > 32; i--) {
-                for (int ii = 1; ii < TRIES; ii++) {
-                    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, i, z);
-                    BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                    BlockPos surfacePosDown = surfacePos.down();
-
-                    if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.NETHERRACK)) {
-                        foundPos = surfacePos;
-                        break;
-                    }
+            if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
+                && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
+            ) {
+                if (Outerlands.isOuterPos(surfacePos)) {
+                    config.withChest = true;
+                    config.allRunes = true;
                 }
-            }
-
-        } else if (dim == DimensionType.THE_END) {
-
-            config.withChest = true;
-            config.allRunes = false;
-            config.runeTries = 4;
-            config.runeChance = 1.0F;
-            config.radius = rand.nextInt(7) + 4;
-            config.columnMinHeight = 3;
-            config.columnVariation = 3;
-            config.lootTable = LootTables.CHESTS_END_CITY_TREASURE;
-            config.blocks = new ArrayList<>(Arrays.asList(
-                Blocks.OBSIDIAN.getDefaultState()
-            ));
-
-            for (int ii = 1; ii < TRIES; ii++) {
-                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                BlockPos surfacePosDown = surfacePos.down();
-
-                if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
-                    foundPos = surfacePos;
-                    break;
-                }
-            }
-
-        } else {
-
-            config.allRunes = false;
-            config.radius = rand.nextInt(6) + 5;
-            config.runeTries = 2;
-            config.runeChance = 0.8F;
-            config.columnMinHeight = 4;
-            config.columnVariation = 2;
-            config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
-            config.blocks = new ArrayList<>(Arrays.asList(
-                Blocks.STONE.getDefaultState(),
-                Blocks.COBBLESTONE.getDefaultState(),
-                Blocks.MOSSY_COBBLESTONE.getDefaultState()
-            ));
-
-            for (int ii = 1; ii < TRIES; ii++) {
-                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                BlockPos surfacePosDown = surfacePos.down();
-
-                if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
-                    && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
-                ) {
-                    if (Outerlands.isOuterPos(surfacePos)) {
-                        config.withChest = true;
-                        config.allRunes = true;
-                    }
-                    foundPos = surfacePos;
-                    break;
-                }
+                foundPos = surfacePos;
+                break;
             }
         }
 
@@ -201,7 +146,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
 
                                 if (f < weight) {
                                     availableRunes.remove(rune);
-                                    state = Runestones.getRunestoneBlock(world, rune);
+                                    state = Runestones.getRunestoneBlock(rune);
                                     generatedWithRune = true;
                                     break;
                                 }

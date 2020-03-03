@@ -12,7 +12,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
@@ -492,19 +491,7 @@ public class DecorationHelper
                 state = Blocks.STONE.getDefaultState();
                 return;
             }
-            String type = getValue("type", this.data, "overworld");
-
-            switch (type) {
-                case "nether":
-                    state = Runestones.getRandomBlock(DimensionType.THE_NETHER);
-                    break;
-                case "end":
-                    state = Runestones.getRandomBlock(DimensionType.THE_END);
-                    break;
-                default:
-                    state = Runestones.getRandomBlock(DimensionType.OVERWORLD, this.pos);
-                    break;
-            }
+            state = Runestones.getRandomBlock(this.pos);
         }
 
         protected void sapling()

@@ -3,6 +3,10 @@ package svenhjol.strange.base;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import svenhjol.meson.Meson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class StrangeClient
@@ -17,16 +21,29 @@ public class StrangeClient
     public boolean isInBigDungeon = false;
     public boolean isDaytime = true;
 
-    public void updateStructures(CompoundNBT structures)
+    public List<Integer> discoveredRunes = new ArrayList<>();
+
+    public void updateStructures(CompoundNBT input)
     {
-        isInMineshaft = structures.getBoolean("mineshaft");
-        isInStronghold = structures.getBoolean("stronghold");
-        isInFortress = structures.getBoolean("fortress");
-        isInShipwreck = structures.getBoolean("shipwreck");
-        isInVillage = structures.getBoolean("village");
-        isInBigDungeon = structures.getBoolean("big_dungeon");
-        isInUndergroundRuin = structures.getBoolean("underground_ruin");
-        isInVaults = structures.getBoolean("vaults");
-        isDaytime = structures.getBoolean("day");
+        isInMineshaft = input.getBoolean("mineshaft");
+        isInStronghold = input.getBoolean("stronghold");
+        isInFortress = input.getBoolean("fortress");
+        isInShipwreck = input.getBoolean("shipwreck");
+        isInVillage = input.getBoolean("village");
+        isInBigDungeon = input.getBoolean("big_dungeon");
+        isInUndergroundRuin = input.getBoolean("underground_ruin");
+        isInVaults = input.getBoolean("vaults");
+        isDaytime = input.getBoolean("day");
+    }
+
+    public void updateDiscoveries(CompoundNBT input)
+    {
+        if (Meson.isModuleEnabled("strange:runestones") && input.contains("discoveredRunes")) {
+            discoveredRunes = new ArrayList<>();
+            int[] ii = input.getIntArray("discoveredRunes"); // TODO better way to convert?
+            for (int i : ii) {
+                discoveredRunes.add(i);
+            }
+        }
     }
 }

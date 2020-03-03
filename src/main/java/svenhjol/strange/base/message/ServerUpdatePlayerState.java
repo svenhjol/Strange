@@ -14,6 +14,8 @@ import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.ruins.module.Vaults;
+import svenhjol.strange.runestones.capability.IRunestonesCapability;
+import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.function.Supplier;
 
@@ -47,6 +49,7 @@ public class ServerUpdatePlayerState implements IMesonMessage
                 ServerWorld world = player.getServerWorld();
                 BlockPos pos = player.getPosition();
 
+
                 CompoundNBT nbt = new CompoundNBT();
                 nbt.putBoolean("mineshaft", Feature.MINESHAFT.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("stronghold", Feature.STRONGHOLD.isPositionInsideStructure(world, pos));
@@ -54,6 +57,11 @@ public class ServerUpdatePlayerState implements IMesonMessage
                 nbt.putBoolean("shipwreck", Feature.SHIPWRECK.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("village", Feature.VILLAGE.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("day", world.isDaytime());
+
+                if (Meson.isModuleEnabled("strange:runestones")) {
+                    IRunestonesCapability runeCap = Runestones.getCapability(player);
+                    nbt.putIntArray("discoveredRunes", runeCap.getDiscoveredTypes());
+                }
 
                 if (Meson.isModuleEnabled("strange:underground_ruins")) {
                     nbt.putBoolean("underground_ruin", UndergroundRuins.structure.isPositionInsideStructure(world, pos));

@@ -116,8 +116,12 @@ public class MarkerPiece extends ScatteredStructurePiece
 
         world.setBlockState(pos, blocks.get(rand.nextInt(blocks.size())).getDefaultState(), 2);
 
-        if (Meson.isModuleEnabled("strange:runestones") && rand.nextFloat() < 0.25F)
-            world.setBlockState(pos.up(), Runestones.getRandomBlock(dim), 2);
+        if (dim == DimensionType.OVERWORLD
+            && Meson.isModuleEnabled("strange:runestones")
+            && rand.nextFloat() < 0.25F
+        ) {
+            world.setBlockState(pos.up(), Runestones.getRandomBlock(pos), 2);
+        }
 
         return true;
     }
