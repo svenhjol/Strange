@@ -63,7 +63,6 @@ public class StoneCircles extends MesonModule
     @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.PLAINS),
-        BiomeHelper.getBiomeName(Biomes.MUSHROOM_FIELDS),
         BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
         BiomeHelper.getBiomeName(Biomes.BADLANDS),
         BiomeHelper.getBiomeName(Biomes.BADLANDS_PLATEAU),
