@@ -108,20 +108,36 @@ public class Outerlands extends MesonModule
 
     public static BlockPos getInnerPos(World world, Random rand)
     {
-        int x = rand.nextInt(threshold * 2) - threshold;
-        int z = rand.nextInt(threshold * 2) - threshold;
-        return new BlockPos(x, 0, z);
+        if (Meson.isModuleEnabled("strange:outerlands")) {
+            int x = rand.nextInt(threshold * 2) - threshold;
+            int z = rand.nextInt(threshold * 2) - threshold;
+            return new BlockPos(x, 0, z);
+        } else {
+            // some random local coords
+            int max = 5000;
+            int x = rand.nextInt(max * 2) - max;
+            int z = rand.nextInt(max * 2) - max;
+            return new BlockPos(x, 0, z);
+        }
     }
 
     public static BlockPos getOuterPos(World world, Random rand)
     {
-        int x = rand.nextInt(world.getWorldBorder().getSize() - threshold) + threshold;
-        int z = rand.nextInt(world.getWorldBorder().getSize() - threshold) + threshold;
+        if (Meson.isModuleEnabled("strange:outerlands")) {
+            int x = rand.nextInt(world.getWorldBorder().getSize() - threshold) + threshold;
+            int z = rand.nextInt(world.getWorldBorder().getSize() - threshold) + threshold;
 
-        x = rand.nextFloat() < 0.5 ? x : -x;
-        z = rand.nextFloat() < 0.5 ? z : -z;
+            x = rand.nextFloat() < 0.5 ? x : -x;
+            z = rand.nextFloat() < 0.5 ? z : -z;
 
-        return new BlockPos(x, 0, z);
+            return new BlockPos(x, 0, z);
+        } else {
+            // some random coords that are a bit further from spawn
+            int max = 10000;
+            int x = rand.nextInt(max * 2) - max;
+            int z = rand.nextInt(max * 2) - max;
+            return new BlockPos(x, 0, z);
+        }
     }
 
     public static int getMaxDistance(IWorld world)

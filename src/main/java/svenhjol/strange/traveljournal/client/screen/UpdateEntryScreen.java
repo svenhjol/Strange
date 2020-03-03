@@ -12,7 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -65,7 +65,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
                 int rune = Character.getNumericValue(c);
 
                 if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                    letter = Runestones.runeChars.get(c).toString();
+                    letter = RunestoneHelper.getRuneChars().get(c).toString();
                 } else {
                     letter = "?";
                 }

@@ -3,12 +3,11 @@ package svenhjol.strange.runestones.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.block.MesonBlock;
 
-public class RunestoneBlock extends MesonBlock
+public class RunestoneBlock extends BaseRunestoneBlock
 {
-    public RunestoneBlock(MesonModule module, int val, boolean mined)
+    public RunestoneBlock(MesonModule module, int runeValue)
     {
-        super(module, "runestone_" + (mined ? "mined_" : "") + val, Block.Properties.from(Blocks.STONE));
+        super(module, "runestone", runeValue, Block.Properties.from(Blocks.STONE));
     }
 }
