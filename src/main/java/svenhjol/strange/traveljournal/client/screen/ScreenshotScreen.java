@@ -10,9 +10,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -39,14 +39,12 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     protected void init()
     {
         super.init();
+
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
 
-        if (!hasScreenshot()) {
-            this.close(); // TODO this is copy pasted from below, make method prepareScreenshot
-            player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
-            takeScreenshot(entry, hand);
-        }
+        if (!hasScreenshot())
+            prepareScreenshot();
     }
 
     @Override
@@ -68,12 +66,12 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
                     stream.close();
 
                     if (tex == null || res == null) {
-                        Meson.warn("Failed to load screenshot");
+                        Strange.LOG.warn("Failed to load screenshot");
                         this.close();
                     }
 
                 } catch (Exception e) {
-                    Meson.warn("Error loading screenshot: " + e);
+                    Strange.LOG.warn("Error loading screenshot: " + e);
                     this.close();
                 }
             }
@@ -99,9 +97,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
 
         if (WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
             this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> {
-                this.close();
-                player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
-                takeScreenshot(entry, hand);
+                prepareScreenshot();
             }));
             buttonOffsetX = 10;
         }
@@ -116,6 +112,13 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     public static File getScreenshot(Entry entry)
     {
         return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), entry.id);
+    }
+
+    private void prepareScreenshot()
+    {
+        this.close();
+        player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
+        takeScreenshot(entry, hand);
     }
 
     private boolean hasScreenshot()
