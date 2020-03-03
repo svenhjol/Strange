@@ -11,6 +11,7 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import svenhjol.strange.Strange;
 import svenhjol.strange.totems.iface.ITreasureTotem;
+import svenhjol.strange.totems.module.TreasureTotems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,8 @@ public class TreasureTotem extends LootFunction
     @Override
     protected ItemStack doApply(ItemStack stack, LootContext context)
     {
-        ITreasureTotem totem = availableTotems.get(context.getRandom().nextInt(availableTotems.size()));
-        return totem.getTreasureItem();
+        ItemStack treasure = TreasureTotems.getTreasureItem(context.getRandom());
+        return treasure != null ? treasure : stack;
     }
 
     public static class Builder extends LootFunction.Builder<TreasureTotem.Builder>

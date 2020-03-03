@@ -34,8 +34,7 @@ public class TreasureEnchantments extends MesonModule
         "books or tools on an enchanting table or anvil.")
     public static boolean obtainable = false;
 
-    @Config(name = "Only in vaults", description = "If true, Strange treasure enchantments can not be found in dungeon loot\n" +
-        "other than the underground vault structures.")
+    @Config(name = "Only in vaults", description = "If true, Strange treasure enchantments can only be found in Vaults, not normal dungeon loot.")
     public static boolean onlyVaults = true;
 
     @Config(name = "Legendary levels", description = "The potential number of additional levels above the enchantment's maximum level.\n" +
