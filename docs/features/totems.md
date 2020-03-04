@@ -12,6 +12,7 @@ Expanding on the vanilla "Totem of Undying", *Strange* offers a number of new to
 * [Totem of Enchanting]({{ site.baseurl }}/features/totem_of_enchanting) - sneak-click while holding to transfer and store all your experience points in the totem.  Click again to break the totem and restore them.
 * [Totem of Preserving]({{ site.baseurl }}/features/totem_of_preserving) - sneak-click while holding to transfer and store all your items in the totem.  Click again to break the totem and restore them.
 * [Totem of Flying]({{ site.baseurl }}/features/totem_of_flying) - hold in your **off-hand** to allow flight (jump to activate). Flying consumes experience points.
+* [Totem of Transferring]({{ site.baseurl }}/features/totem_of_transferring) - sneak-click while holding to store any block in the totem.  Click again to place the block down.
 
 ## Finding totems
 

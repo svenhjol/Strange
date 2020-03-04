@@ -28,6 +28,10 @@ Click the "Take photo" button if you want to record a picture of this location.
 
 Once you are happy with the information, click "Save" to return back to the main journal.  Your new entry will appear in the list, colored accordingly.
 
+## Editing a location
+
+You can click the paper and quill icon next to the location you want to edit.  The screen changes to show information about the location entry.  You can change the name and color.  If your player is standing at the same position of the entry location, you will also be able to take a photo (or change the existing photo).
+
 ## Finding your way back
 
 With lots of location entries in your journal it can be difficult to remember where they are.
@@ -43,6 +47,12 @@ With an empty map in your inventory, open the journal and click the map icon nex
 ### By totem
 
 If you are lucky enough to have a [Totem of Returning]({{ site.baseurl }}/features/totem_of_returning) in your inventory, open the journal and click the totem icon next to the location you want to return to.  You will be immediately teleported and the totem will be destroyed.
+
+## Runic co-ordinates
+
+Once you travel through your first [Runestone]({{ site.baseurl }}/features/runestones) and learn its glyph, location entries will show a series of rune symbols on the right-hand side of the edit location page (accessed by the paper and quill icon).  If you have not yet discovered one of the glyphs that describe this location, a question mark (?) will appear instead of the rune.
+
+When you have discovered all the glyphs necessary to descibe the location, you can harvest runestones from [Stone Circles]({{ site.baseurl }}/features/stone_circles) and build them into an [Obelisk]({{ site.baseurl }}/features/obelisks).  A correctly built obelisk lets you teleport back to the position recorded in your travel journal.
 
 ## Notes
 
