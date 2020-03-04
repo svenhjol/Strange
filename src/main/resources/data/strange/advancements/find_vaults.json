@@ -23,7 +23,7 @@
         "feature": "strange:vaults",
         "position": {
           "x": {
-            "min": 12000000,
+            "min": 15000000,
             "max": 30000000
           }
         }
@@ -35,7 +35,7 @@
         "feature": "strange:vaults",
         "position": {
           "x": {
-            "min": -12000000,
+            "min": -15000000,
             "max": -30000000
           }
         }
@@ -47,7 +47,7 @@
         "feature": "strange:vaults",
         "position": {
           "z": {
-            "min": 12000000,
+            "min": 15000000,
             "max": 30000000
           }
         }
@@ -59,7 +59,7 @@
         "feature": "strange:vaults",
         "position": {
           "z": {
-            "min": -12000000,
+            "min": -15000000,
             "max": -30000000
           }
         }

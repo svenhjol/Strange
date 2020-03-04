@@ -25,7 +25,7 @@ import java.util.Random;
 public class Outerlands extends MesonModule
 {
     @Config(name = "Threshold", description = "X or Z axis values greater than this value are considered 'outer lands'.")
-    public static int threshold = 12000000;
+    public static int threshold = 15000000;
 
     @Config(name = "Scale by distance", description = "If true, some features will scale their difficulty or reward based on distance from spawn point.")
     public static boolean scaleDistance = true;
