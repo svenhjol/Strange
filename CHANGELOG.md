@@ -1,3 +1,11 @@
+## 1.0.0 alpha 8
+* Added Obelisks
+* Master scrolls no longer found in loot
+* Stone circles no longer spawn on Mushroom Islands
+* Fixed network message log spamming issue
+* Increased distance between stone circles and underground ruins
+* Increased outerlands thresholds from 12 million to 15 million blocks
+
 ## 1.0.0 alpha 7
 * Removed spells, spellbooks and moonstones
 * Added legendary items and treasure enchantments - WIP
