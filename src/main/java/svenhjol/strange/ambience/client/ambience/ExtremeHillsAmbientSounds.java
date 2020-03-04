@@ -36,7 +36,7 @@ public class ExtremeHillsAmbientSounds
         @Override
         public int getShortSoundDelay()
         {
-            return world.rand.nextInt(400) + 300;
+            return world.rand.nextInt(600) + 500;
         }
 
         @Override
