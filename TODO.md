@@ -6,12 +6,14 @@
 - [ ] Charm's bound compasses not working with quests any more
 - [x] Remove broken quests
 - [x] Config options for obelisks
-- [ ] Update all docs
+- [x] Update all docs
 - [ ] Swamp ruins don't have much loot at endpoints
 - [ ] Ambience for The End
 - [ ] Unique ambience for Savanna and Rivers
 - [ ] Should not play "night" sounds during bad weather
 - [x] Config option for Treasure Totems to be added to normal loot
+- [x] Scrolls found in loot should prefer lower tiers; should never be a master scroll
+- [ ] Zombies should not be able to pick up Totems of preserving
 
 ## Testing
 - [x] Strange + Charm recipe and item deregistering - should be fixed in alpha.6
