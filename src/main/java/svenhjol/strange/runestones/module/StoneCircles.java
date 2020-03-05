@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true, configureEnabled = false)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true, childOf = "Runestones")
 public class StoneCircles extends MesonModule
 {
     public static final String NAME = "stone_circle";
@@ -84,12 +84,6 @@ public class StoneCircles extends MesonModule
     ));
 
     public static List<Biome> validBiomes = new ArrayList<>();
-
-    @Override
-    public boolean shouldBeEnabled()
-    {
-        return Meson.isModuleEnabled("strange:runestones");
-    }
 
     @Override
     public void init()
