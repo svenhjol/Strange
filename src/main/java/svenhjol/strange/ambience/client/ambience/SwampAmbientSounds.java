@@ -26,6 +26,12 @@ public class SwampAmbientSounds
             return StrangeSounds.AMBIENCE_SWAMP_DAY_LONG;
         }
 
+        @Override
+        public float getLongSoundVolume()
+        {
+            return super.getLongSoundVolume() - 0.1F;
+        }
+
         @Nullable
         @Override
         public SoundEvent getShortSound()

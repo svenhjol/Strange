@@ -34,6 +34,12 @@ public class ExtremeHillsAmbientSounds
         }
 
         @Override
+        public float getShortSoundVolume()
+        {
+            return super.getShortSoundVolume() - 0.1F;
+        }
+
+        @Override
         public int getShortSoundDelay()
         {
             return world.rand.nextInt(600) + 500;

@@ -36,7 +36,7 @@ public class IcyAmbientSounds
         @Override
         public int getShortSoundDelay()
         {
-            return world.rand.nextInt(400) + 400;
+            return world.rand.nextInt(400) + 500;
         }
 
         @Override
