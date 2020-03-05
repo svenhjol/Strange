@@ -141,7 +141,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
 //                Meson.debug("[UndergroundRuinStructure] Shifting up by " + shift + " at " + pos);
             }
 
-            if (UndergroundRuins.addMarker)
+            if (UndergroundRuins.addMarker && this.rand.nextFloat() < 0.75F)
                 components.add(new MarkerPiece(this.rand, pos));
         }
 
