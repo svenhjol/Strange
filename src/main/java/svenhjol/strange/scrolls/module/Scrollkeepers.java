@@ -32,7 +32,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Config;
@@ -51,7 +50,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, configureEnabled = false)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, childOf = "Scrolls")
 public class Scrollkeepers extends MesonModule
 {
     public static final String SCROLLKEEPER = "scrollkeeper";
@@ -68,12 +67,6 @@ public class Scrollkeepers extends MesonModule
     public static int interestRange = 16;
 
     public static WritingDeskBlock block;
-
-    @Override
-    public boolean shouldBeEnabled()
-    {
-        return Meson.isModuleEnabled("strange:scrolls");
-    }
 
     @Override
     public void init()
@@ -209,7 +202,12 @@ public class Scrollkeepers extends MesonModule
                 if (questTier >= villagerLevel) {
                     float value = quest.getValue();
                     int tierXp = QUEST_XP[questTier-1];
-                    int newXp = villagerXp + Math.max(tierXp, (int)(tierXp * value));
+
+                    if (questTier > villagerLevel)
+                        tierXp /= 2;
+
+                    int valueXp = (int)(tierXp * value);
+                    int newXp = villagerXp + Math.max(tierXp, valueXp);
                     villager.setCustomer(null);
                     villager.setXp(newXp);
                     if (villager.canLevelUp())

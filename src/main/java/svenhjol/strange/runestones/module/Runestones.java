@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -217,12 +218,21 @@ public class Runestones extends MesonModule
                     sb.append(Integer.toHexString(o));
                 }
                 String s = sb.toString();
-                if (s.length() < 5) {
-                    player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
+                if (s.length() < 5 || s.length() > 16) {
+                    runeError(world, pos, player);
                     return;
                 }
 
-                BlockPos dest = BlockPos.fromLong(Long.parseLong(s, 16));
+                long l;
+
+                try {
+                    l = Long.parseUnsignedLong(s, 16);
+                } catch (Exception e) {
+                    runeError(world, pos, player);
+                    return;
+                }
+
+                BlockPos dest = BlockPos.fromLong(l);
                 Strange.LOG.debug(dest.toString());
 
                 playerTeleportObelisk.put(player.getUniqueID(), dest);
@@ -298,7 +308,6 @@ public class Runestones extends MesonModule
 
             UUID id = player.getUniqueID();
             BlockPos pos = playerTeleportObelisk.get(id);
-            boolean normalizeY = true;
 
             if (player.dimension.getId() != 0)
                 PlayerHelper.changeDimension(player, 0);
@@ -416,16 +425,23 @@ public class Runestones extends MesonModule
         if (player.dimension.getId() != 0)
             PlayerHelper.changeDimension(player, 0);
 
-        Strange.LOG.debug("Rune: " + rune + ", dest: " + allDests.get(rune));
-        BlockPos destPos = allDests.get(rune).getDest(world, pos, rand);
+        Destination dest = allDests.get(rune);
+        Strange.LOG.debug("Rune: " + rune + ", dest: " + dest.description);
+        BlockPos destPos = dest.getDest(world, pos, rand);
 
         if (destPos == null) {
             Strange.LOG.warn("Dest position invalid, defaulting to spawn position");
             destPos = world.getSpawnPoint();
         }
 
-        BlockPos dest = addRandomOffset(destPos, rand);
-        PlayerHelper.teleportSurface(player, dest, 0, p -> Runestones.getCapability(player).recordDestination(pos, dest));
+        BlockPos destOffset = addRandomOffset(destPos, rand);
+        PlayerHelper.teleportSurface(player, destOffset, 0, p -> Runestones.getCapability(player).recordDestination(pos, destOffset));
+    }
+
+    private void runeError(World world, BlockPos pos, PlayerEntity player)
+    {
+        player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
+        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1.5F, Explosion.Mode.NONE);
     }
 
     public static void effectActivate(World world, BlockPos pos)

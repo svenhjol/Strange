@@ -34,7 +34,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, configureEnabled = false)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, childOf = "Scrolls")
 public class Quests extends MesonModule
 {
     public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
@@ -61,12 +61,6 @@ public class Quests extends MesonModule
 
     @OnlyIn(Dist.CLIENT)
     public static QuestClient client;
-
-    @Override
-    public boolean shouldBeEnabled()
-    {
-        return Meson.isModuleEnabled("strange:scrolls");
-    }
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event)
