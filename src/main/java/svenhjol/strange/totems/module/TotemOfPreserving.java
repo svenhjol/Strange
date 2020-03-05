@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -84,6 +86,9 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
         World world = player.world;
 
         ItemStack totem = new ItemStack(item);
+        ITextComponent displayName = totem.getDisplayName();
+        totem.setDisplayName(new TranslationTextComponent(displayName.toString(), player.getDisplayName()));
+
         CompoundNBT serialized = new CompoundNBT();
         List<ItemStack> holdable = new ArrayList<>();
 
@@ -104,7 +109,7 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
         }
 
         double x = player.posX + 0.5D;
-        double y = player.posY + 1.25D;
+        double y = player.posY + 2.25D;
         double z = player.posZ + 0.5D;
 
         if (y < 0) y = 64;
