@@ -223,7 +223,7 @@ public abstract class BaseGenerator
 
         switch (item) {
             case STONE_CIRCLE_TOTEM:
-                if (Meson.isModuleEnabled("strange:runestones") && Meson.isModuleEnabled("strange:totem_of_resturning")) {
+                if (Meson.isModuleEnabled("strange:runestones") && Meson.isModuleEnabled("strange:totem_of_returning")) {
                     out = new ItemStack(TotemOfReturning.item);
                     BlockPos pos = world.findNearestStructure(StoneCircles.RESNAME, Runestones.getOuterPos(world, world.rand), 1000, true);
                     if (pos == null) return null;
