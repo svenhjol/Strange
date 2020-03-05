@@ -52,9 +52,8 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         if (mc == null) return;
         if (!mc.world.isRemote) return;
 
-
-        if (!Strange.client.discoveredRunes.isEmpty()){
-        this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
+        if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
+            this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
             String hex = Long.toHexString(entry.pos.toLong());
             StringBuilder assembled = new StringBuilder();
 
