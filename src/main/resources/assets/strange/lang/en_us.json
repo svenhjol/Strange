@@ -125,6 +125,8 @@
   "gui.strange.travel_journal.hold_shift_to_delete": "Hold shift and click delete to confirm.",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
 
+  "item.strange.music_disc_strange": "Strange Music Disc",
+  "item.strange.music_disc_strange.desc": "svenhjol - Strange",
   "item.strange.quest_reward_totem": "Distant Stone Circle",
   "item.strange.runestone": "Runestone",
   "item.strange.travel_journal": "Travel Journal",
@@ -134,6 +136,7 @@
   "item.strange.scroll_tier3": "Journeyman Scroll",
   "item.strange.scroll_tier4": "Expert Scroll",
   "item.strange.scroll_tier5": "Master Scroll",
+  "item.strange.strange_compass": "Strange Compass",
   "item.strange.totem_of_enchanting": "Totem of Enchanting",
   "item.strange.totem_of_flying": "Totem of Flying",
   "item.strange.totem_of_preserving": "Totem of Preserving",
@@ -146,9 +149,6 @@
   "item.strange.treasure.legendary": "%s %s",
   "item.strange.treasure.repel": "%s of Repelling",
   "item.strange.treasure.shulking": "Shulking %s",
-  "item.strange.music_disc_strange": "Strange Music Disc",
-  "item.strange.music_disc_strange.desc": "svenhjol - Strange",
-  "item.strange.strange_compass": "Strange Compass",
 
   "legendary.strange.word1": "Legendary",
   "legendary.strange.word2": "Ancient",
@@ -190,6 +190,7 @@
 
   "totem.strange.preserving.item": "Preserving one item",
   "totem.strange.preserving.items": "Preserving %s items",
+  "totem.strange.preserving.item_name": "%s (%s)",
   "totem.strange.enchanting.contains": "Contains %s XP",
   "totem.strange.returning.bound": "%s in dimension %s",
   "totem.strange.returning.unbound": "Shift-right click to set the totem's location"
