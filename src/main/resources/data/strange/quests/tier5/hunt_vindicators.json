@@ -1,8 +1,8 @@
 {
   "lang": {
     "en": {
-      "qtitle": "Vindication",
-      "qdesc": "Find and kill vindicators."
+      "title": "Vindication",
+      "description": "Find and kill vindicators."
     }
   },
   "hunt": {

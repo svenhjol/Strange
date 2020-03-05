@@ -12,7 +12,7 @@
     "items": {
       "minecraft:rail[rare]": 8,
       "minecraft:powered_rail[rare]": 2,
-      "minecraft:iron_ingots[common]": 5
+      "minecraft:iron_ingot[common]": 5
     },
     "xp": {
       "count": 40

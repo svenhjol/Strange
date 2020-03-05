@@ -15,7 +15,7 @@
   "rewards": {
     "items": {
       "minecraft:oak_planks[common]": 4,
-      "minecraft:iron_ingots[common]": 4
+      "minecraft:iron_ingot[common]": 4
     },
     "xp": {
       "count": 40

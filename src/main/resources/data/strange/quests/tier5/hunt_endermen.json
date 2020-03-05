@@ -1,8 +1,8 @@
 {
   "lang": {
     "en": {
-      "qtitle": "Ender Purge",
-      "qdesc": "Find and kill endermen."
+      "title": "Ender Purge",
+      "description": "Find and kill endermen."
     }
   },
   "hunt": {
