@@ -18,7 +18,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.scrolls.Scrollkeepers;
+import svenhjol.strange.scrolls.module.Scrollkeepers;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class VillagersTradeTotems extends MesonModule
     public static boolean outerOnly = true;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

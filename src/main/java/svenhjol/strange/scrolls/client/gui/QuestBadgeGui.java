@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.resources.I18n;
 import svenhjol.meson.Meson;
-import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestBadgeGui extends AbstractGui

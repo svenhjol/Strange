@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Optional;

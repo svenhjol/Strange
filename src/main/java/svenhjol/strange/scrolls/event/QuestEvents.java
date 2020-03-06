@@ -18,8 +18,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsProvider;
 import svenhjol.strange.scrolls.message.ClientQuestAction;
-import svenhjol.strange.scrolls.Quests;
-import svenhjol.strange.scrolls.module.Scrolls;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.condition.Encounter;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 import svenhjol.strange.scrolls.quest.iface.IQuest.State;
@@ -90,7 +89,7 @@ public class QuestEvents
     public void onAttachCaps(AttachCapabilitiesEvent<Entity> event)
     {
         if (!(event.getObject() instanceof PlayerEntity)) return;
-        event.addCapability(Scrolls.QUESTS_CAP_ID, new QuestsProvider()); // Attach cap and provider to Forge's player capabilities. Provider has the implementation.
+        event.addCapability(Quests.QUESTS_CAP_ID, new QuestsProvider()); // Attach cap and provider to Forge's player capabilities. Provider has the implementation.
     }
 
     @SubscribeEvent
@@ -99,7 +98,7 @@ public class QuestEvents
         final PlayerEntity player = event.getPlayer();
 
         player.getPersistentData().put(
-            Scrolls.QUESTS_CAP_ID.toString(),
+            Quests.QUESTS_CAP_ID.toString(),
             Quests.getCapability(player).writeNBT());
     }
 
@@ -110,7 +109,7 @@ public class QuestEvents
 
         Quests.getCapability(player).readNBT(
             player.getPersistentData()
-                .get(Scrolls.QUESTS_CAP_ID.toString()));
+                .get(Quests.QUESTS_CAP_ID.toString()));
     }
 
     @SubscribeEvent
@@ -120,7 +119,7 @@ public class QuestEvents
 
         Quests.getCapability(player).readNBT(
             player.getPersistentData()
-                .get(Scrolls.QUESTS_CAP_ID.toString()));
+                .get(Quests.QUESTS_CAP_ID.toString()));
     }
 
     @SubscribeEvent
@@ -129,7 +128,7 @@ public class QuestEvents
         final PlayerEntity player = event.getPlayer();
 
         player.getPersistentData().put(
-            Scrolls.QUESTS_CAP_ID.toString(),
+            Quests.QUESTS_CAP_ID.toString(),
             Quests.getCapability(player).writeNBT());
     }
 

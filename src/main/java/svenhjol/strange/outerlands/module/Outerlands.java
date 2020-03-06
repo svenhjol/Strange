@@ -21,7 +21,9 @@ import svenhjol.strange.base.StrangeCategories;
 
 import java.util.Random;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.OUTERLANDS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.OUTERLANDS, hasSubscriptions = true,
+    description = "A distant area of the overworld with more difficult mobs and better treasure." +
+        "Can be found by completing quests for a scrollkeeper villager.")
 public class Outerlands extends MesonModule
 {
     @Config(name = "Threshold", description = "X or Z axis values greater than this value are considered 'outer lands'.")

@@ -21,8 +21,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.Quests;
-import svenhjol.strange.scrolls.module.Scrolls;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -142,7 +141,7 @@ public class Locate implements IDelegate
     {
         if (quest.getId().equals(this.quest.getId())) {
             Random rand = player.world.rand;
-            int dist = Scrolls.locateDistance;
+            int dist = Quests.locateDistance;
 
             int x = -(dist/2) + rand.nextInt(dist);
             int z = -(dist/2) + rand.nextInt(dist);

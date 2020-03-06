@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.structure;
+package svenhjol.strange.runestones.structure;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -11,7 +11,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
-import svenhjol.strange.stonecircles.module.StoneCircles;
+import svenhjol.strange.runestones.module.StoneCircles;
 
 import java.util.Random;
 

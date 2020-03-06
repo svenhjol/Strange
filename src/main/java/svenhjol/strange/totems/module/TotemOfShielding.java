@@ -29,7 +29,7 @@ public class TotemOfShielding extends MesonModule implements ITreasureTotem
     public static double damageMultiplier = 0.5D;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

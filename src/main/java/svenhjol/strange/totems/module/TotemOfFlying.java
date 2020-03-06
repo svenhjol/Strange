@@ -44,7 +44,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
     public static TotemOfFlyingClient client;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

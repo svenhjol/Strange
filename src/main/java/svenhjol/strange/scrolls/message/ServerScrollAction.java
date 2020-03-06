@@ -12,7 +12,7 @@ import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.function.Supplier;

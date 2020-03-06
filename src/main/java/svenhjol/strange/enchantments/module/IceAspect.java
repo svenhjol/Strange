@@ -46,7 +46,7 @@ public class IceAspect extends MesonModule implements ITreasureEnchantment
     public static int[] range = new int[] {3, 2, 3};
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }

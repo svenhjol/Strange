@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.meson.Meson;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.generator.*;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -57,7 +57,7 @@ public class Generator
     public IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest)
     {
         List<Definition> definitions = Quests.available.get(quest.getTier());
-        if (definitions.isEmpty()) return null;
+        if (definitions == null || definitions.isEmpty()) return null;
 
         Definition definition = definitions.get(world.rand.nextInt(definitions.size()));
 

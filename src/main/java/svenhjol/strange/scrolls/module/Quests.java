@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls;
+package svenhjol.strange.scrolls.module;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -16,13 +16,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import svenhjol.meson.Meson;
+import svenhjol.meson.MesonModule;
+import svenhjol.meson.iface.Config;
+import svenhjol.meson.iface.Module;
+import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.scrolls.capability.DummyCapability;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsStorage;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvents;
-import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.Generator;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -30,10 +34,12 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class Quests
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, alwaysEnabled = true)
+public class Quests extends MesonModule
 {
     public static final String QUEST_ID = "questId";
     public static final int INTERVAL = 15;
+    public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
 
     @CapabilityInject(IQuestsCapability.class)
     public static Capability<IQuestsCapability> QUESTS = null;
@@ -42,8 +48,23 @@ public class Quests
     @OnlyIn(Dist.CLIENT)
     public static QuestClient client;
 
-    public Quests(Scrolls scrolls)
-    { }
+    @Config(name = "Maximum quests", description = "Maximum number of quests a player can do at once (Maximum 3)")
+    public static int maxQuests = 2; // don't get this value directly, use getMaxQuests()
+
+    @Config(name = "Encounter distance", description = "Distance from quest start (in blocks) that a mob will spawn for 'encounter' quests.")
+    public static int encounterDistance = 600;
+
+    @Config(name = "Locate distance", description = "Distance from quest start (in blocks) that a treasure chest will spawn for 'locate' quests.")
+    public static int locateDistance = 400;
+
+    @Config(name = "Language", description = "Language code to use for showing quest details.")
+    public static String language = "en";
+
+    @Override
+    public boolean shouldRunSetup()
+    {
+        return Meson.isModuleEnabled("strange:scrolls");
+    }
 
     public void onCommonSetup(FMLCommonSetupEvent event)
     {
@@ -125,6 +146,6 @@ public class Quests
 
     public static int getMaxQuests()
     {
-        return Math.max(1, Math.max(Scrolls.maxQuests, 3));
+        return Math.max(1, Math.max(maxQuests, 3));
     }
 }

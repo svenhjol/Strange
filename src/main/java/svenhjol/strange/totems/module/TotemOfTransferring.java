@@ -29,7 +29,7 @@ public class TotemOfTransferring extends MesonModule implements ITreasureTotem
     );
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

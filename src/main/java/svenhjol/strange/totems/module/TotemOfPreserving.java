@@ -43,7 +43,7 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
     public static boolean noGravity = true;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

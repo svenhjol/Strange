@@ -4,7 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.scrolls.Scrollkeepers;
+import svenhjol.strange.scrolls.module.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;

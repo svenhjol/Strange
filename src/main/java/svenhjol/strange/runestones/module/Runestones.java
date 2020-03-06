@@ -43,7 +43,6 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
-import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.runestones.block.BaseRunestoneBlock;
 import svenhjol.strange.runestones.block.ObeliskBlock;
 import svenhjol.strange.runestones.block.RunestoneBlock;
@@ -51,7 +50,8 @@ import svenhjol.strange.runestones.capability.*;
 
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
+    description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends MesonModule
 {
     public static ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");

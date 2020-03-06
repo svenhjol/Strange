@@ -30,7 +30,7 @@ public class LegendaryTools extends MesonModule implements ILegendaryItem
     ));
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }

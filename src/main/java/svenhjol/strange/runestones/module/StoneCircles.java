@@ -1,4 +1,4 @@
-package svenhjol.strange.stonecircles.module;
+package svenhjol.strange.runestones.module;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,14 +36,16 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.LocationHelper;
-import svenhjol.strange.stonecircles.structure.StoneCirclePiece;
-import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
+import svenhjol.strange.runestones.structure.StoneCirclePiece;
+import svenhjol.strange.runestones.structure.StoneCircleStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true, childOf = "Runestones")
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
+    description = "Stone circles are surface structures of stone pillars with a runestone on top.\n" +
+        "This module depends on the Runestones module.")
 public class StoneCircles extends MesonModule
 {
     public static final String NAME = "stone_circle";
@@ -84,6 +86,12 @@ public class StoneCircles extends MesonModule
     ));
 
     public static List<Biome> validBiomes = new ArrayList<>();
+
+    @Override
+    public boolean shouldRunSetup()
+    {
+        return Meson.isModuleEnabled("strange:runestones");
+    }
 
     @Override
     public void init()

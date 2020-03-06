@@ -17,7 +17,7 @@ public class TotemOfReturning extends MesonModule implements ITreasureTotem
     public static TotemOfReturningItem item;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true,
-    description = "An Illusioner drops a Totem when killed by a player.")
+    description = "An Illusioner drops a totem when killed by a player.")
 public class IllusionersDropTotems extends MesonModule
 {
     @Config(name = "Drop chance",
@@ -43,6 +43,7 @@ public class IllusionersDropTotems extends MesonModule
             "If these totems are disabled, the Illusioner will drop a Totem of Undying."
     )
     public static List<String> totemsConfig = new ArrayList<>(Arrays.asList(
+        "strange:totem_of_undying",
         "strange:totem_of_returning",
         "strange:totem_of_shielding"
     ));
@@ -50,7 +51,7 @@ public class IllusionersDropTotems extends MesonModule
     public static List<Item> totems = new ArrayList<>();
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }

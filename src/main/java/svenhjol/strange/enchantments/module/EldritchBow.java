@@ -21,7 +21,7 @@ import java.util.Map;
 public class EldritchBow extends MesonModule implements ITreasureEnchantment
 {
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }

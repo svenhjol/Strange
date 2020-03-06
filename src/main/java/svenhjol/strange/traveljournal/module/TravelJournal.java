@@ -11,7 +11,8 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.traveljournal.client.TravelJournalClient;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_JOURNAL, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_JOURNAL, hasSubscriptions = true,
+    description = "Records interesting places around your world.")
 public class TravelJournal extends MesonModule
 {
     public static TravelJournalItem item;

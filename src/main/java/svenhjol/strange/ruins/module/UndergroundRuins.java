@@ -39,7 +39,8 @@ import svenhjol.strange.ruins.structure.UndergroundStructure;
 
 import java.util.*;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
+    description = "Ruins that spawn underground with different types according to biome.")
 public class UndergroundRuins extends MesonModule
 {
     public static final String NAME = "underground_ruin";

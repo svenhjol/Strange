@@ -90,7 +90,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         ) return;
 
         BlockPos pos = getPos();
-        List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(16.0D));
+        List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(EntitySpawner.triggerDistance));
         if (players.size() == 0) return;
 
         // remove the spawner, create the entity

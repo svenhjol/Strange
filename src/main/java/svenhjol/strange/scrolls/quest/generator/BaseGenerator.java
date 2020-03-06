@@ -19,7 +19,7 @@ import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.stonecircles.module.StoneCircles;
+import svenhjol.strange.runestones.module.StoneCircles;
 import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;

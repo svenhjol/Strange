@@ -24,7 +24,8 @@ import svenhjol.strange.ambience.client.MusicClient;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.AMBIENCE, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.AMBIENCE, hasSubscriptions = true,
+    description = "Ambient background sounds according to the biome, time of day and depth below surface.")
 public class Ambience extends MesonModule
 {
     private static final String NAME = "svenhjol";

@@ -1,4 +1,4 @@
-package svenhjol.strange.scrolls;
+package svenhjol.strange.scrolls.module;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -31,25 +31,28 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import svenhjol.meson.Meson;
+import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.iface.Config;
+import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
-import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class Scrollkeepers
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, alwaysEnabled = true)
+public class Scrollkeepers extends MesonModule
 {
-    private Scrolls scrolls;
-
     public static final String SCROLLKEEPER = "scrollkeeper";
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35};
     public static final float VALUE_MULTIPLIER = 0.25F;
@@ -57,14 +60,23 @@ public class Scrollkeepers
     public static VillagerProfession profession;
     public static WritingDeskBlock block;
 
-    public Scrollkeepers(Scrolls scrolls)
+    @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
+        "The chance and severity of the Bad Omen effect increases with Scrollkeeper level and distance from spawn.  Set to zero to disable Bad Omen effect.")
+    public static double badOmenChance = 0.025D;
+
+    @Config(name = "Villager interest range", description = "Range (in blocks) that a scrollkeeper will indicate that they are ready to accept a completed quest.")
+    public static int interestRange = 16;
+
+    @Override
+    public boolean shouldRunSetup()
     {
-        this.scrolls = scrolls;
+        return Meson.isModuleEnabled("strange:scrolls");
     }
 
+    @Override
     public void init()
     {
-        block = new WritingDeskBlock(scrolls);
+        block = new WritingDeskBlock(this);
         ImmutableSet<BlockState> states = ImmutableSet.copyOf(block.getStateContainer().getValidStates());
         PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1);
         ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
@@ -98,7 +110,7 @@ public class Scrollkeepers
             double z = player.posZ;
 
             List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(
-                x - Scrolls.interestRange, y - Scrolls.interestRange, z - Scrolls.interestRange, x + Scrolls.interestRange, y + Scrolls.interestRange, z + Scrolls.interestRange));
+                x - interestRange, y - interestRange, z - interestRange, x + interestRange, y + interestRange, z + interestRange));
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == profession) {
@@ -204,7 +216,7 @@ public class Scrollkeepers
             }
 
             // apply bad omen effect according to villager level and distance from spawn
-            if (Scrolls.badOmenChance > 0 && world.rand.nextFloat() < (Scrolls.badOmenChance + ((villagerLevel-1) * Scrolls.badOmenChance * Outerlands.getScaledMultiplier(world, pos)))) {
+            if (badOmenChance > 0 && world.rand.nextFloat() < (badOmenChance + ((villagerLevel-1) * badOmenChance * Outerlands.getScaledMultiplier(world, pos)))) {
                 EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, Math.max(0, villagerLevel-2), false, false, true);
                 player.addPotionEffect(badOmen);
             }

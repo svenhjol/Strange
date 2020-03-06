@@ -36,7 +36,7 @@ public class Shulking extends MesonModule implements ITreasureEnchantment
     public static double duration = 5.0D;
 
     @Override
-    public boolean shouldBeEnabled()
+    public boolean shouldRunSetup()
     {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }

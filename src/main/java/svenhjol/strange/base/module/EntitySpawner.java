@@ -5,15 +5,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.base.block.EntitySpawnerBlock;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, alwaysEnabled = true)
 public class EntitySpawner extends MesonModule
 {
+    @Config(name = "Trigger distance", description = "Player will trigger EntitySpawner blocks when closer than this distance.")
+    public static int triggerDistance = 16;
+
     @ObjectHolder("strange:entity_spawner")
     public static TileEntityType<EntitySpawnerTileEntity> tile;
 

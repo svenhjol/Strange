@@ -40,7 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
+    description = "Large underground complexes with rare treasure.")
 public class Vaults extends MesonModule
 {
     public static final String NAME = "vaults";

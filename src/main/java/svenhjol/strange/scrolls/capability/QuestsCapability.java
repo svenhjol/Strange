@@ -8,7 +8,7 @@ import net.minecraft.nbt.ListNBT;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.message.ClientQuestList;
-import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
