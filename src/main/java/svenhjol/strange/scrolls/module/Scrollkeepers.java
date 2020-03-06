@@ -62,7 +62,7 @@ public class Scrollkeepers extends MesonModule
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of a Bad Omen effect being applied after quest completion.\n" +
         "The chance and severity of the Bad Omen effect increases with Scrollkeeper level and distance from spawn.  Set to zero to disable Bad Omen effect.")
-    public static double badOmenChance = 0.025D;
+    public static double badOmenChance = 0.03D;
 
     @Config(name = "Villager interest range", description = "Range (in blocks) that a scrollkeeper will indicate that they are ready to accept a completed quest.")
     public static int interestRange = 16;
