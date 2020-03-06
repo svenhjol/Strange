@@ -14,8 +14,8 @@ import net.minecraft.world.dimension.DimensionType;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.handler.PlayerQueueHandler;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.message.ClientScrollAction;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.module.Scrolls;
@@ -99,7 +99,7 @@ public class ScrollItem extends MesonItem
                     scroll.setDisplayName(new TranslationTextComponent(getQuest(scroll).getTitle()));
 
                     PlayerQueueHandler.add(worldIn.getGameTime(), playerIn,
-                        p -> PacketHandler.sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity)p));
+                        p -> Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity)p));
 
                     return new ActionResult<>(ActionResultType.SUCCESS, scroll);
                 }
@@ -107,7 +107,7 @@ public class ScrollItem extends MesonItem
                 quest = getQuest(scroll);
 
                 if (!quest.getId().isEmpty())
-                    PacketHandler.sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn); // open the screen
+                    Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn); // open the screen
 
                 result = ActionResultType.SUCCESS;
 

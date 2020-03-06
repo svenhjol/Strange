@@ -9,7 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.message.ServerScrollAction;
 import svenhjol.strange.scrolls.quest.Condition;
@@ -134,13 +135,13 @@ public class ScrollScreen extends Screen implements IRenderable
 
     private void accept()
     {
-        PacketHandler.sendToServer(new ServerScrollAction(ServerScrollAction.ACCEPT, quest.getId(), hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerScrollAction(ServerScrollAction.ACCEPT, quest.getId(), hand));
         this.close();
     }
 
     private void decline()
     {
-        PacketHandler.sendToServer(new ServerScrollAction(ServerScrollAction.DECLINE, quest.getId(), hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerScrollAction(ServerScrollAction.DECLINE, quest.getId(), hand));
         this.close();
     }
 

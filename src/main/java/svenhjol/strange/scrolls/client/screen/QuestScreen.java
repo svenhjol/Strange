@@ -6,7 +6,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import svenhjol.meson.Meson;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.message.ServerQuestAction;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -32,7 +32,7 @@ public class QuestScreen extends ScrollScreen implements IRenderable
     private void quit() 
     {
         Meson.debug("[CLIENT] calling server to decline quest: " + quest.getId());
-        PacketHandler.sendToServer(new ServerQuestAction(ServerQuestAction.QUIT, quest.getId()));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerQuestAction(ServerQuestAction.QUIT, quest.getId()));
         this.close();
     }
 }

@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import svenhjol.meson.MesonInstance;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.loot.TreasureEnchantment;
@@ -20,10 +21,12 @@ public class StrangeLoot
         return res;
     }
 
-    public static void init()
+    public static void init(MesonInstance instance)
     {
         LootFunctionManager.registerFunction(new TreasureEnchantment.Serializer());
         LootFunctionManager.registerFunction(new TreasureTotem.Serializer());
+
+        instance.log.debug("Registered loot handlers");
     }
 
     static

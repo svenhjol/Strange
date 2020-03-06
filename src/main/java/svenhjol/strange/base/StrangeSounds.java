@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import svenhjol.meson.MesonInstance;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.strange.Strange;
 
@@ -70,8 +71,9 @@ public class StrangeSounds
         return sound;
     }
 
-    public static void init()
+    public static void init(MesonInstance instance)
     {
         soundsToRegister.forEach(RegistryHandler::registerSound);
+        instance.log.debug("Registered sounds");
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.traveljournal.Entry;
@@ -106,7 +106,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
 
     public static void takeScreenshot(Entry entry, Hand hand)
     {
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.SCREENSHOT, entry, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.SCREENSHOT, entry, hand));
     }
 
     public static File getScreenshot(Entry entry)

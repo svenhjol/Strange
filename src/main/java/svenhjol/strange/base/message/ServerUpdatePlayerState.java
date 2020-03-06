@@ -9,7 +9,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.Meson;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.UndergroundRuins;
@@ -72,7 +71,7 @@ public class ServerUpdatePlayerState implements IMesonMessage
                     nbt.putBoolean("big_dungeon", Strange.quarkCompat.isInsideBigDungeon(world, pos));
                 }
 
-                PacketHandler.sendTo(new ClientUpdatePlayerState(nbt), player);
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientUpdatePlayerState(nbt), player);
             });
             ctx.get().setPacketHandled(true);
         }

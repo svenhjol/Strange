@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
@@ -186,7 +186,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         updated.color = this.color;
 
         TravelJournalItem.updateEntry(player.getHeldItem(hand), updated);
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.UPDATE, updated, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.UPDATE, updated, hand));
         player.playSound(SoundEvents.ITEM_BOOK_PUT, 1.0F, 1.0F);
 
         this.entry = updated;
@@ -207,7 +207,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     {
         if (hasShiftDown()) {
             TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
-            PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
             player.playSound(SoundEvents.BLOCK_WOOD_BREAK, 1.0F, 1.0F);
             this.back();
         } else {

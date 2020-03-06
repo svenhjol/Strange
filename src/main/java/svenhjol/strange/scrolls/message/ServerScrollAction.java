@@ -7,8 +7,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.module.Quests;
@@ -68,7 +69,7 @@ public class ServerScrollAction implements IMesonMessage
                     case SHOW:
                         Quests.getCurrentQuestById(player, msg.id)
                             .ifPresent(q -> {
-                                PacketHandler.sendTo(new ClientScrollAction(msg.id, msg.hand), player);
+                                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(msg.id, msg.hand), player);
                             });
                         break;
 

@@ -18,11 +18,12 @@ import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.charm.tools.item.BoundCompassItem;
 import svenhjol.charm.tools.module.CompassBinding;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.IMesonMessage;
+import svenhjol.strange.Strange;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
@@ -201,7 +202,7 @@ public class ServerTravelJournalAction implements IMesonMessage
         {
             PlayerQueueHandler.add(player.world.getGameTime() + 60, player, (p) -> {
                 player.sendStatusMessage(new StringTextComponent(""), true);
-                PacketHandler.sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
             });
         }
 

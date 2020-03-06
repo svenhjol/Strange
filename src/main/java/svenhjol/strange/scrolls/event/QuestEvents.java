@@ -13,7 +13,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.capability.IQuestsCapability;
 import svenhjol.strange.scrolls.capability.QuestsProvider;
 import svenhjol.strange.scrolls.message.ClientQuestAction;
@@ -44,7 +45,7 @@ public class QuestEvents
         if (respondToEvent(player, event)) {
             quest.setState(State.Started);
 
-            PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
         } else {
             event.setCanceled(true);
             Quests.getCapability(player).removeQuest(player, quest);
@@ -59,7 +60,7 @@ public class QuestEvents
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.COMPLETED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.COMPLETED, quest), (ServerPlayerEntity)player);
     }
 
     @SubscribeEvent
@@ -70,7 +71,7 @@ public class QuestEvents
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.DECLINED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.DECLINED, quest), (ServerPlayerEntity)player);
     }
 
     @SubscribeEvent
@@ -81,7 +82,7 @@ public class QuestEvents
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        PacketHandler.sendTo(new ClientQuestAction(ClientQuestAction.FAILED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.FAILED, quest), (ServerPlayerEntity)player);
     }
 
     @SubscribeEvent

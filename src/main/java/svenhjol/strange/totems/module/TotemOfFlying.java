@@ -15,7 +15,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -111,7 +110,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
                         int xp = player.experienceTotal;
                         if (xp <= 0) {
                             disableFlight(player);
-                            PacketHandler.sendTo(new ClientTotemUpdateFlying(ClientTotemUpdateFlying.DISABLE), (ServerPlayerEntity) player);
+                            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientTotemUpdateFlying(ClientTotemUpdateFlying.DISABLE), (ServerPlayerEntity) player);
                             return;
                         }
 

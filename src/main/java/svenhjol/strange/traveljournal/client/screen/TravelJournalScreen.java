@@ -16,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.meson.Meson;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
@@ -222,7 +221,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         );
 
         TravelJournalItem.addEntry(held, entry);
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.ADD, entry, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.ADD, entry, hand));
         mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
@@ -234,19 +233,19 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     private void teleport(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
     }
 
     private void bindCompass(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
     }
 
     private void makeMap(Entry entry)
     {
         this.close();
-        PacketHandler.sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
     }
 
     private void screenshot(Entry entry)
@@ -257,6 +256,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
 
     private void updateServerPage(int page)
     {
-        PacketHandler.sendToServer(new ServerTravelJournalMeta(ServerTravelJournalMeta.SETPAGE, hand, page));
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalMeta(ServerTravelJournalMeta.SETPAGE, hand, page));
     }
 }

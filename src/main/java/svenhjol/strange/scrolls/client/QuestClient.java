@@ -9,8 +9,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.meson.helper.ClientHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 import svenhjol.strange.scrolls.client.screen.QuestScreen;
 import svenhjol.strange.scrolls.client.screen.ScrollScreen;
@@ -59,7 +60,7 @@ public class QuestClient
             questBadges.clear();
 
             if (QuestClient.lastQuery + delayTicks < mc.world.getGameTime()) {
-                PacketHandler.sendToServer(new ServerQuestList());
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerQuestList());
                 QuestClient.lastQuery = mc.world.getGameTime();
             }
 

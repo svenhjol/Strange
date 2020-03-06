@@ -2,14 +2,16 @@ package svenhjol.strange.scrolls.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
@@ -22,11 +24,7 @@ public class WritingDeskBlock extends MesonBlock
 
     public WritingDeskBlock(MesonModule module)
     {
-        super(module, "writing_desk", Block.Properties
-            .create(Material.WOOD)
-            .hardnessAndResistance(2.5F)
-            .sound(SoundType.WOOD));
-
+        super(module, "writing_desk", Block.Properties.from(Blocks.CRAFTING_TABLE));
         this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.NORTH));
     }
 
@@ -35,6 +33,18 @@ public class WritingDeskBlock extends MesonBlock
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
         return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
+    @Override
+    public ItemGroup getItemGroup()
+    {
+        return ItemGroup.DECORATIONS;
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        super.fillItemGroup(group, items);
     }
 
     @Override
@@ -47,6 +57,12 @@ public class WritingDeskBlock extends MesonBlock
     public BlockState mirror(BlockState state, Mirror mirror)
     {
         return state.rotate(mirror.toRotation(state.get(FACING)));
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        throw new RuntimeException(this.module.enabled ? "YEP" : "NOPE");
     }
 
     @Override

@@ -2,8 +2,8 @@ package svenhjol.strange.base.module;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.handler.PacketHandler;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -23,7 +23,7 @@ public class Base extends MesonModule
             && event.player.world.isRemote
             && event.player.world.getGameTime() % clientServerUpdateTicks == 0
         ) {
-            PacketHandler.sendToServer(new ServerUpdatePlayerState());
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerUpdatePlayerState());
         }
     }
 }

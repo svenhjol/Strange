@@ -3,8 +3,9 @@ package svenhjol.strange.scrolls.message;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
-import svenhjol.meson.handler.PacketHandler;
+import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
+import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -38,7 +39,7 @@ public class ServerQuestList implements IMesonMessage
                 if (player == null) return;
 
                 List<IQuest> currentQuests = Quests.getCapability(player).getCurrentQuests(player);
-                PacketHandler.sendTo(new ClientQuestList(currentQuests), player);
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestList(currentQuests), player);
             });
             ctx.get().setPacketHandled(true);
         }
