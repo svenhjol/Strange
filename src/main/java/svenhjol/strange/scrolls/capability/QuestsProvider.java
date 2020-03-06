@@ -4,7 +4,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.Quests;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

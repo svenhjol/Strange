@@ -26,11 +26,11 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.ruins.module.EntitySpawner;
-import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.module.EntitySpawner;
+import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
-import svenhjol.strange.scrolls.module.Scrollkeepers;
+import svenhjol.strange.scrolls.Scrollkeepers;
 
 import java.util.*;
 import java.util.regex.Matcher;

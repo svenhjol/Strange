@@ -2,7 +2,7 @@ package svenhjol.strange.scrolls.quest.generator;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
@@ -27,8 +27,8 @@ public class LangGenerator extends BaseGenerator
         Map<String, Map<String, String>> def = definition.getLang();
         if (def.isEmpty()) return;
 
-        if (def.containsKey(Quests.language)) {
-            Map<String, String> strings = def.get(Quests.language);
+        if (def.containsKey(Scrolls.language)) {
+            Map<String, String> strings = def.get(Scrolls.language);
             List<String> keys = new ArrayList<>(strings.keySet());
 
             if (keys.contains(TITLE))

@@ -8,8 +8,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.helper.QuestHelper;
+import svenhjol.strange.scrolls.Quests;
 import svenhjol.strange.scrolls.event.QuestEvent;
-import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -59,7 +59,7 @@ public class Gather implements IDelegate
         if (collected >= count) return false;
 
         if (event instanceof PlayerTickEvent) {
-            if (player.world.getGameTime() % (Quests.tickInterval * 2) == 0)
+            if (player.world.getGameTime() % (Quests.INTERVAL * 2) == 0)
                 pollInventory(player);
         }
 

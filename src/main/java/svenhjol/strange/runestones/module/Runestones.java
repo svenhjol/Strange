@@ -43,6 +43,7 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.runestones.block.BaseRunestoneBlock;
 import svenhjol.strange.runestones.block.ObeliskBlock;
 import svenhjol.strange.runestones.block.RunestoneBlock;

@@ -1,4 +1,4 @@
-package svenhjol.strange.runestones.structure;
+package svenhjol.strange.stonecircles.structure;
 
 
 import net.minecraft.block.BlockState;

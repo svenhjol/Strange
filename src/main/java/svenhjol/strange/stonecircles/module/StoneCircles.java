@@ -1,4 +1,4 @@
-package svenhjol.strange.runestones.module;
+package svenhjol.strange.stonecircles.module;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,8 +36,8 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.LocationHelper;
-import svenhjol.strange.runestones.structure.StoneCirclePiece;
-import svenhjol.strange.runestones.structure.StoneCircleStructure;
+import svenhjol.strange.stonecircles.structure.StoneCirclePiece;
+import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;

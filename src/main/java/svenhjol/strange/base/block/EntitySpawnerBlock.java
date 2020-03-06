@@ -1,4 +1,4 @@
-package svenhjol.strange.ruins.block;
+package svenhjol.strange.base.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -10,7 +10,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockReader;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
-import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 
 import javax.annotation.Nullable;
 

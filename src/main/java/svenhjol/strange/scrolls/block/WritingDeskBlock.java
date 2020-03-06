@@ -6,12 +6,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
@@ -42,12 +40,6 @@ public class WritingDeskBlock extends MesonBlock
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
-    {
-        super.fillItemGroup(group, items);
-    }
-
-    @Override
     public BlockState rotate(BlockState state, Rotation rotation)
     {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
@@ -57,12 +49,6 @@ public class WritingDeskBlock extends MesonBlock
     public BlockState mirror(BlockState state, Mirror mirror)
     {
         return state.rotate(mirror.toRotation(state.get(FACING)));
-    }
-
-    @Override
-    public boolean isEnabled()
-    {
-        throw new RuntimeException(this.module.enabled ? "YEP" : "NOPE");
     }
 
     @Override

@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.meson.Meson;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.Quests;
 import svenhjol.strange.scrolls.quest.generator.*;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 

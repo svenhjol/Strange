@@ -1,4 +1,4 @@
-package svenhjol.strange.ruins.tile;
+package svenhjol.strange.base.tile;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -27,7 +27,7 @@ import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.strange.base.helper.DecorationHelper;
-import svenhjol.strange.ruins.module.EntitySpawner;
+import svenhjol.strange.base.module.EntitySpawner;
 
 import java.util.ArrayList;
 import java.util.Arrays;

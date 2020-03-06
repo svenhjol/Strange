@@ -17,7 +17,7 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.message.ClientScrollAction;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.Quests;
 import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;

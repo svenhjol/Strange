@@ -1,4 +1,4 @@
-package svenhjol.strange.ruins.module;
+package svenhjol.strange.base.module;
 
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -8,10 +8,10 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.ruins.block.EntitySpawnerBlock;
-import svenhjol.strange.ruins.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.block.EntitySpawnerBlock;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, childOf = "UndergroundRuins")
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS)
 public class EntitySpawner extends MesonModule
 {
     @ObjectHolder("strange:entity_spawner")

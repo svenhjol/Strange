@@ -18,7 +18,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.scrolls.module.Scrollkeepers;
+import svenhjol.strange.scrolls.Scrollkeepers;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

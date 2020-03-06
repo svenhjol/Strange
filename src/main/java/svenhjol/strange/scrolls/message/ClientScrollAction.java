@@ -4,7 +4,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
-import svenhjol.strange.scrolls.module.Quests;
+import svenhjol.strange.scrolls.Quests;
 
 import java.util.function.Supplier;
 

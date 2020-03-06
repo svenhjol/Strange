@@ -18,8 +18,8 @@ import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.scrolls.module.Quests;
-import svenhjol.strange.scrolls.module.Scrollkeepers;
+import svenhjol.strange.scrolls.Quests;
+import svenhjol.strange.scrolls.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;
