@@ -18,23 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class EldritchBow extends MesonModule implements ITreasureEnchantment
-{
+public class EldritchBow extends MesonModule implements ITreasureEnchantment {
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments()
-    {
+    public Map<Enchantment, Integer> getEnchantments() {
         HashMap<Enchantment, Integer> map = new HashMap<>();
         map.put(Enchantments.INFINITY, 1);
         map.put(Enchantments.MENDING, 1);
@@ -42,16 +38,14 @@ public class EldritchBow extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         ItemStack treasure = new ItemStack(Items.BOW);
         treasure.setDisplayName(new TranslationTextComponent("item.strange.treasure.eldritch_bow"));
         return treasure;
     }
 
     @Override
-    public DyeColor getColor()
-    {
+    public DyeColor getColor() {
         return DyeColor.BROWN;
     }
 }

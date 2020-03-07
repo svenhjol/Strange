@@ -6,8 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Map;
 
-public interface ITreasureEnchantment
-{
+public interface ITreasureEnchantment {
     Map<Enchantment, Integer> getEnchantments();
 
     ItemStack getTreasureItem();

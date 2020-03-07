@@ -16,8 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class LegendaryBow extends MesonModule implements ILegendaryItem
-{
+public class LegendaryBow extends MesonModule implements ILegendaryItem {
     @Config(name = "Valid enchantments", description = "Valid enchantments that can be applied to Legendary bows.")
     public static List<String> validEnchantments = new ArrayList<>(Arrays.asList(
         "minecraft:power",
@@ -25,32 +24,27 @@ public class LegendaryBow extends MesonModule implements ILegendaryItem
     ));
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @Override
-    public ItemStack getItemStack()
-    {
+    public ItemStack getItemStack() {
         return new ItemStack(Items.BOW);
     }
 
     @Override
-    public List<String> getValidEnchantments()
-    {
+    public List<String> getValidEnchantments() {
         return validEnchantments;
     }
 
     @Override
-    public int getMaxAdditionalLevels()
-    {
+    public int getMaxAdditionalLevels() {
         return TreasureEnchantments.legendaryLevels;
     }
 }

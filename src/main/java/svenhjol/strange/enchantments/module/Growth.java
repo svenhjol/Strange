@@ -31,38 +31,33 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class Growth extends MesonModule implements ITreasureEnchantment
-{
+public class Growth extends MesonModule implements ITreasureEnchantment {
     public static GrowthEnchantment enchantment;
-    public static int[] range = new int[] {5, 3, 5};
+    public static int[] range = new int[]{5, 3, 5};
     public static int damageOnActivate = 15;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         enchantment = new GrowthEnchantment(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @SubscribeEvent
-    public void onRightClick(RightClickBlock event)
-    {
+    public void onRightClick(RightClickBlock event) {
         if (event.getEntityLiving() != null
             && !event.getEntityLiving().world.isRemote
             && EnchantmentsHelper.hasEnchantment(enchantment, event.getItemStack())
         ) {
-            ServerWorld world = (ServerWorld)event.getEntityLiving().world;
+            ServerWorld world = (ServerWorld) event.getEntityLiving().world;
             BlockPos pos = event.getPos();
             ItemStack stack = event.getItemStack();
 
@@ -75,7 +70,7 @@ public class Growth extends MesonModule implements ITreasureEnchantment
                 Block block = state.getBlock();
                 if (block instanceof IPlantable) {
                     if (block instanceof IGrowable) {
-                        IGrowable growable = (IGrowable)state.getBlock();
+                        IGrowable growable = (IGrowable) state.getBlock();
                         if (growable.canGrow(world, blockPos, state, world.isRemote)) {
                             growable.grow(world, world.rand, blockPos, state);
                             didGrow = true;
@@ -91,20 +86,19 @@ public class Growth extends MesonModule implements ITreasureEnchantment
                 }
                 if (block instanceof SugarCaneBlock && world.isAirBlock(blockPos.up()) && state.has(SugarCaneBlock.AGE)) {
                     BlockState newState = state.with(SugarCaneBlock.AGE, 15);
-                    SugarCaneBlock sugarCaneBlock = (SugarCaneBlock)block;
+                    SugarCaneBlock sugarCaneBlock = (SugarCaneBlock) block;
                     sugarCaneBlock.tick(newState, world, blockPos, world.rand);
                     didGrow = true;
                 }
                 if (block instanceof SaplingBlock) {
                     BlockState newState = state.with(SaplingBlock.STAGE, 1);
-                    SaplingBlock saplingBlock = (SaplingBlock)block;
+                    SaplingBlock saplingBlock = (SaplingBlock) block;
                     saplingBlock.tick(newState, world, blockPos, world.rand);
                     didGrow = true;
                 }
 
                 if (didGrow) {
                     world.playEvent(2005, blockPos, 0);
-
                     world.playSound(null, pos, SoundEvents.BLOCK_COMPOSTER_FILL_SUCCESS, SoundCategory.BLOCKS, 1.0F, 0.9F);
 
                     if (stack.attemptDamageItem(damageOnActivate, world.rand, null))
@@ -115,14 +109,14 @@ public class Growth extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments()
-    {
-        return new HashMap<Enchantment, Integer>() {{ put(enchantment, 1); }};
+    public Map<Enchantment, Integer> getEnchantments() {
+        return new HashMap<Enchantment, Integer>() {{
+            put(enchantment, 1);
+        }};
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         ItemStack treasure;
         Random rand = new Random();
 
@@ -137,8 +131,7 @@ public class Growth extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public DyeColor getColor()
-    {
+    public DyeColor getColor() {
         return DyeColor.GREEN;
     }
 }

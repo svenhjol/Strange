@@ -37,35 +37,30 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class IceAspect extends MesonModule implements ITreasureEnchantment
-{
+public class IceAspect extends MesonModule implements ITreasureEnchantment {
     public static IceAspectEnchantment enchantment;
     public static int damageOnActivate = 5;
     public static double duration = 5.0D;
     public static int amplifier = 2;
-    public static int[] range = new int[] {3, 2, 3};
+    public static int[] range = new int[]{3, 2, 3};
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         enchantment = new IceAspectEnchantment(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @SubscribeEvent
-    public void onAttack(LivingHurtEvent event)
-    {
+    public void onAttack(LivingHurtEvent event) {
         if (!event.isCanceled()
             && event.getEntityLiving() != null
             && !event.getEntityLiving().world.isRemote
@@ -79,7 +74,7 @@ public class IceAspect extends MesonModule implements ITreasureEnchantment
 
                 if (EnchantmentsHelper.hasEnchantment(enchantment, held)) {
                     int level = EnchantmentHelper.getEnchantmentLevel(enchantment, held);
-                    ServerWorld world = (ServerWorld)target.world;
+                    ServerWorld world = (ServerWorld) target.world;
                     BlockPos pos = target.getPosition();
                     Stream<BlockPos> inRange = BlockPos.getAllInBox(pos.add(-range[0], -range[1], -range[2]), pos.add(range[0], range[1], range[2]));
                     List<BlockPos> blocks = inRange.map(BlockPos::toImmutable).collect(Collectors.toList());
@@ -111,14 +106,14 @@ public class IceAspect extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments()
-    {
-        return new HashMap<Enchantment, Integer>() {{ put(enchantment, new Random().nextInt(enchantment.getMaxLevel()) + 1); }};
+    public Map<Enchantment, Integer> getEnchantments() {
+        return new HashMap<Enchantment, Integer>() {{
+            put(enchantment, new Random().nextInt(enchantment.getMaxLevel()) + 1);
+        }};
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         ItemStack treasure;
         Random rand = new Random();
 
@@ -133,8 +128,7 @@ public class IceAspect extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public DyeColor getColor()
-    {
+    public DyeColor getColor() {
         return DyeColor.LIGHT_BLUE;
     }
 }

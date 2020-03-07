@@ -29,33 +29,28 @@ import java.util.Map;
 import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class Shulking extends MesonModule implements ITreasureEnchantment
-{
+public class Shulking extends MesonModule implements ITreasureEnchantment {
     public static ShulkingEnchantment enchantment;
     public static int damageOnActivate = 5;
     public static double duration = 5.0D;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         enchantment = new ShulkingEnchantment(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @SubscribeEvent
-    public void onAttack(LivingHurtEvent event)
-    {
+    public void onAttack(LivingHurtEvent event) {
         if (!event.isCanceled()) {
             Entity trueSource = event.getSource().getTrueSource();
             LivingEntity target = event.getEntityLiving();
@@ -77,14 +72,14 @@ public class Shulking extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments()
-    {
-        return new HashMap<Enchantment, Integer>() {{ put(enchantment, 1); }};
+    public Map<Enchantment, Integer> getEnchantments() {
+        return new HashMap<Enchantment, Integer>() {{
+            put(enchantment, 1);
+        }};
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         ItemStack treasure;
         Random rand = new Random();
 
@@ -99,8 +94,7 @@ public class Shulking extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public DyeColor getColor()
-    {
+    public DyeColor getColor() {
         return DyeColor.WHITE;
     }
 }

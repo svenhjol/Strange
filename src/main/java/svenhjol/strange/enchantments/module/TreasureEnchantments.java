@@ -28,8 +28,7 @@ import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true,
     description = "Treasure items and Legendary items are specially enchanted weapons and tools found in Vaults.")
-public class TreasureEnchantments extends MesonModule
-{
+public class TreasureEnchantments extends MesonModule {
     @Config(name = "Obtainable enchantments", description = "If true, Strange treasure enchantments can be applied to\n" +
         "books or tools on an enchanting table or anvil.")
     public static boolean obtainable = false;
@@ -44,8 +43,7 @@ public class TreasureEnchantments extends MesonModule
     public static List<ITreasureEnchantment> availableEnchantments = new ArrayList<>();
 
     @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
+    public void onLootTableLoad(LootTableLoadEvent event) {
         if (onlyVaults) return;
 
         int weight = 0;
@@ -80,8 +78,7 @@ public class TreasureEnchantments extends MesonModule
     }
 
     @Nullable
-    public static ItemStack getTreasureItem(Random rand)
-    {
+    public static ItemStack getTreasureItem(Random rand) {
         ITreasureEnchantment ench = TreasureEnchantments.availableEnchantments.get(rand.nextInt(TreasureEnchantments.availableEnchantments.size()));
 
         // test

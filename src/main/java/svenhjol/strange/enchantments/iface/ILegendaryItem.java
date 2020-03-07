@@ -7,18 +7,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-public interface ILegendaryItem extends ITreasureEnchantment
-{
+public interface ILegendaryItem extends ITreasureEnchantment {
     List<String> getValidEnchantments();
 
     ItemStack getItemStack();
 
     int getMaxAdditionalLevels();
 
-    default Map<Enchantment, Integer> getEnchantments()
-    {
+    default Map<Enchantment, Integer> getEnchantments() {
         List<String> validEnchantments = getValidEnchantments();
         Random rand = new Random();
 
@@ -32,8 +33,7 @@ public interface ILegendaryItem extends ITreasureEnchantment
         return map;
     }
 
-    default ItemStack getTreasureItem()
-    {
+    default ItemStack getTreasureItem() {
         ItemStack treasure = getItemStack();
         int i = new Random().nextInt(16) + 1;
 
@@ -42,8 +42,7 @@ public interface ILegendaryItem extends ITreasureEnchantment
         return treasure;
     }
 
-    default DyeColor getColor()
-    {
+    default DyeColor getColor() {
         return DyeColor.byId(new Random().nextInt(13) + 2);
     }
 }

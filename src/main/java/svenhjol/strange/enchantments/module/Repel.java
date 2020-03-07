@@ -29,38 +29,33 @@ import java.util.*;
 import java.util.function.Predicate;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class Repel extends MesonModule implements ITreasureEnchantment
-{
+public class Repel extends MesonModule implements ITreasureEnchantment {
     public static RepelEnchantment enchantment;
-    public static int[] range = new int[] {5, 3, 5};
+    public static int[] range = new int[]{5, 3, 5};
     public static int damageOnActivate = 15;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_enchantments");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         enchantment = new RepelEnchantment(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureEnchantments.availableEnchantments.add(this);
     }
 
     @SubscribeEvent
-    public void onRightClick(RightClickBlock event)
-    {
+    public void onRightClick(RightClickBlock event) {
         if (event.getEntityLiving() != null
             && !event.getEntityLiving().world.isRemote
             && EnchantmentsHelper.hasEnchantment(enchantment, event.getItemStack())
         ) {
-            ServerWorld world = (ServerWorld)event.getEntityLiving().world;
+            ServerWorld world = (ServerWorld) event.getEntityLiving().world;
             LivingEntity entity = event.getEntityLiving();
             ItemStack stack = event.getItemStack();
             int level = EnchantmentHelper.getEnchantmentLevel(enchantment, stack);
@@ -71,7 +66,7 @@ public class Repel extends MesonModule implements ITreasureEnchantment
             entities = world.getEntitiesWithinAABB(LivingEntity.class, area, selector);
 
             for (LivingEntity e : entities) {
-                e.knockBack(entity, level * 2.0F, MathHelper.sin(entity.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(entity.rotationYaw * ((float)Math.PI / 180F)));
+                e.knockBack(entity, level * 2.0F, MathHelper.sin(entity.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(entity.rotationYaw * ((float) Math.PI / 180F)));
             }
 
             world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.BLOCKS, 0.4F, 0.88F);
@@ -84,14 +79,14 @@ public class Repel extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments()
-    {
-        return new HashMap<Enchantment, Integer>() {{ put(enchantment, 1); }};
+    public Map<Enchantment, Integer> getEnchantments() {
+        return new HashMap<Enchantment, Integer>() {{
+            put(enchantment, 1);
+        }};
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         ItemStack treasure;
         Random rand = new Random();
 
@@ -106,8 +101,7 @@ public class Repel extends MesonModule implements ITreasureEnchantment
     }
 
     @Override
-    public DyeColor getColor()
-    {
+    public DyeColor getColor() {
         return DyeColor.MAGENTA;
     }
 }
