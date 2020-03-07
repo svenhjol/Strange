@@ -10,20 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LangGenerator extends BaseGenerator
-{
+public class LangGenerator extends BaseGenerator {
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
     public static final String HINT = "hint";
 
-    public LangGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+    public LangGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         Map<String, Map<String, String>> def = definition.getLang();
         if (def.isEmpty()) return;
 

@@ -37,8 +37,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Encounter implements IDelegate
-{
+public class Encounter implements IDelegate {
     public static final String ID = "Encounter";
     public static final String ENCOUNTER_TAG = "strange:encounter_mob";
     public static final int TRIGGER_RANGE = 8;
@@ -69,20 +68,17 @@ public class Encounter implements IDelegate
     private final String TOTAL_HEALTH = "totalHealth";
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (player == null) return false;
 
         if (event instanceof QuestEvent.Accept) {
@@ -90,48 +86,40 @@ public class Encounter implements IDelegate
             return onStarted(qe.getQuest(), player);
         }
 
-        if (event instanceof QuestEvent.Complete || event instanceof QuestEvent.Fail || event instanceof QuestEvent.Decline) {
+        if (event instanceof QuestEvent.Complete || event instanceof QuestEvent.Fail || event instanceof QuestEvent.Decline)
             return onEnded(player);
-        }
 
-        if (event instanceof PlayerTickEvent) {
+        if (event instanceof PlayerTickEvent)
             return onTick(player);
-        }
 
-        if (event instanceof PlayerEvent.Clone) {
+        if (event instanceof PlayerEvent.Clone)
             return onDeath(player);
-        }
 
-        if (event instanceof LivingDeathEvent) {
-            return onMobKilled((LivingDeathEvent)event, player);
-        }
+        if (event instanceof LivingDeathEvent)
+            return onMobKilled((LivingDeathEvent) event, player);
 
         return false;
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count != 0 && count <= killed;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         int defeated = Math.min(this.killed, this.count);
         if (defeated == 0 || count == 0) return 0;
-        return ((float)defeated / (float)count) * 100;
+        return ((float) defeated / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT targetsTag = new CompoundNBT();
         CompoundNBT targetCountTag = new CompoundNBT();
         CompoundNBT targetHealthTag = new CompoundNBT();
@@ -171,9 +159,8 @@ public class Encounter implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.count = data.getInt(COUNT);
         this.killed = data.getInt(KILLED);
         this.totalHealth = data.getInt(TOTAL_HEALTH);
@@ -181,10 +168,10 @@ public class Encounter implements IDelegate
         this.spawned = data.getBoolean(SPAWNED);
         this.location = BlockPos.fromLong(data.getLong(LOCATION));
 
-        CompoundNBT targetsTag = (CompoundNBT)data.get(TARGETS);
-        CompoundNBT targetCountTag = (CompoundNBT)data.get(TARGET_COUNT);
-        CompoundNBT targetHealthTag = (CompoundNBT)data.get(TARGET_HEALTH);
-        CompoundNBT targetEffectsTag = (CompoundNBT)data.get(TARGET_EFFECTS);
+        CompoundNBT targetsTag = (CompoundNBT) data.get(TARGETS);
+        CompoundNBT targetCountTag = (CompoundNBT) data.get(TARGET_COUNT);
+        CompoundNBT targetHealthTag = (CompoundNBT) data.get(TARGET_HEALTH);
+        CompoundNBT targetEffectsTag = (CompoundNBT) data.get(TARGET_EFFECTS);
 
         this.targets = new ArrayList<>();
         this.targetCount = new HashMap<>();
@@ -198,10 +185,12 @@ public class Encounter implements IDelegate
                 String s = target.toString();
 
                 this.targets.add(target);
-                if (targetCountTag != null && targetCountTag.size() > 0) this.targetCount.put(target, targetCountTag.getInt(s));
-                if (targetHealthTag != null && targetHealthTag.size() > 0) this.targetHealth.put(target, targetHealthTag.getInt(s));
+                if (targetCountTag != null && targetCountTag.size() > 0)
+                    this.targetCount.put(target, targetCountTag.getInt(s));
+                if (targetHealthTag != null && targetHealthTag.size() > 0)
+                    this.targetHealth.put(target, targetHealthTag.getInt(s));
                 if (targetEffectsTag != null && targetEffectsTag.size() > 0) {
-                    CompoundNBT effectsTag = (CompoundNBT)targetEffectsTag.get(s);
+                    CompoundNBT effectsTag = (CompoundNBT) targetEffectsTag.get(s);
                     this.targetEffects.put(target, new ArrayList<>());
                     if (effectsTag != null && effectsTag.size() > 0) {
                         for (int j = 0; j < effectsTag.size(); j++) {
@@ -214,13 +203,11 @@ public class Encounter implements IDelegate
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
-    public Encounter addTarget(ResourceLocation target, int count, int health, List<String> effects)
-    {
+    public Encounter addTarget(ResourceLocation target, int count, int health, List<String> effects) {
         this.targets.add(target);
         this.targetHealth.put(target, health);
         this.targetCount.put(target, count);
@@ -230,45 +217,38 @@ public class Encounter implements IDelegate
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Encounter setCount(int count)
-    {
+    public Encounter setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public int getKilled()
-    {
+    public int getKilled() {
         return this.killed;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public List<ResourceLocation> getTargets()
-    {
+    public List<ResourceLocation> getTargets() {
         return this.targets;
     }
 
-    public void fail(PlayerEntity player)
-    {
+    public void fail(PlayerEntity player) {
         MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest));
     }
 
-    public boolean onStarted(IQuest quest, PlayerEntity player)
-    {
+    public boolean onStarted(IQuest quest, PlayerEntity player) {
         if (quest.getId().equals(this.quest.getId())) {
             Random rand = player.world.rand;
             int dist = Quests.encounterDistance;
 
-            int x = -(dist/2) + rand.nextInt(dist);
-            int z = -(dist/2) + rand.nextInt(dist);
+            int x = -(dist / 2) + rand.nextInt(dist);
+            int z = -(dist / 2) + rand.nextInt(dist);
             this.location = player.getPosition().add(x, 0, z);
             this.dim = WorldHelper.getDimensionId(player.world);
 
@@ -279,8 +259,7 @@ public class Encounter implements IDelegate
         return false;
     }
 
-    public boolean onEnded(PlayerEntity player)
-    {
+    public boolean onEnded(PlayerEntity player) {
         QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
         this.bossInfo.removeAllPlayers();
         World world = player.world;
@@ -288,8 +267,7 @@ public class Encounter implements IDelegate
         return true;
     }
 
-    public boolean onMobKilled(LivingDeathEvent event, @Nullable PlayerEntity player)
-    {
+    public boolean onMobKilled(LivingDeathEvent event, @Nullable PlayerEntity player) {
         if (player == null) return false;
         LivingEntity killed = event.getEntityLiving();
 
@@ -304,8 +282,7 @@ public class Encounter implements IDelegate
         return true;
     }
 
-    public boolean onTick(PlayerEntity player)
-    {
+    public boolean onTick(PlayerEntity player) {
         World world = player.world;
         BlockPos playerPos = player.getPosition();
         boolean atLocation = WorldHelper.getDistanceSq(playerPos, this.location) < TRIGGER_RANGE;
@@ -321,10 +298,11 @@ public class Encounter implements IDelegate
             if (remainingHealth > 0 && totalHealth > 0) {
                 bossInfo.setVisible(true);
                 bossInfo.setName(new TranslationTextComponent(quest.getTitle()));
-                bossInfo.setPercent(remainingHealth / (float)totalHealth);
+                bossInfo.setPercent(remainingHealth / (float) totalHealth);
                 bossInfo.addPlayer((ServerPlayerEntity) player);
 
-                if (!world.getWorldInfo().isThundering() || !world.getWorldInfo().isRaining()) WorldHelper.stormyWeather(world);
+                if (!world.getWorldInfo().isThundering() || !world.getWorldInfo().isRaining())
+                    WorldHelper.stormyWeather(world);
                 if (world.rand.nextFloat() < 0.05F) PlayerHelper.doLightningNearPlayer(player);
             } else {
                 bossInfo.setVisible(false);
@@ -356,7 +334,7 @@ public class Encounter implements IDelegate
                             DrownedEntity drowned = EntityType.DROWNED.create(world);
                             if (drowned != null) {
                                 drowned.setPositionAndUpdate(m.posX, m.posY, m.posZ);
-                                drowned.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, (ILivingEntityData)null, (CompoundNBT)null);
+                                drowned.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
                                 world.addEntity(drowned);
                                 m.setHealth(0);
                                 m.remove();
@@ -394,9 +372,8 @@ public class Encounter implements IDelegate
         return false;
     }
 
-    public boolean onDeath(PlayerEntity player)
-    {
-        this.bossInfo.removePlayer((ServerPlayerEntity)player);
+    public boolean onDeath(PlayerEntity player) {
+        this.bossInfo.removePlayer((ServerPlayerEntity) player);
         return false;
     }
 }

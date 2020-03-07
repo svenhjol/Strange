@@ -17,8 +17,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Hunt implements IDelegate
-{
+public class Hunt implements IDelegate {
     public final static String ID = "Hunt";
 
     private IQuest quest;
@@ -31,24 +30,21 @@ public class Hunt implements IDelegate
     private final String KILLED = "killed";
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
 
         if (event instanceof LivingDeathEvent) {
-            LivingDeathEvent killEvent = (LivingDeathEvent)event;
+            LivingDeathEvent killEvent = (LivingDeathEvent) event;
             LivingEntity killedEntity = killEvent.getEntityLiving();
             if (killedEntity.getEntityString() == null) return false;
 
@@ -68,28 +64,24 @@ public class Hunt implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count <= killed;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         int collected = Math.min(this.killed, this.count);
         if (collected == 0 || count == 0) return 0;
-        return ((float)collected / (float)count) * 100;
+        return ((float) collected / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putString(TARGET, target.toString());
         tag.putInt(KILLED, killed);
@@ -98,55 +90,46 @@ public class Hunt implements IDelegate
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.target = ResourceLocation.tryCreate(data.getString(TARGET));
         this.count = data.getInt(COUNT);
         this.killed = data.getInt(KILLED);
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Hunt setCount(int count)
-    {
+    public Hunt setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public Hunt setTarget(ResourceLocation target)
-    {
+    public Hunt setTarget(ResourceLocation target) {
         this.target = target;
         return this;
     }
 
-    public int getKilled()
-    {
+    public int getKilled() {
         return this.killed;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public ResourceLocation getTarget()
-    {
+    public ResourceLocation getTarget() {
         return this.target;
     }
 
-    private void showProgress(PlayerEntity player)
-    {
+    private void showProgress(PlayerEntity player) {
         if (isSatisfied()) {
             QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.hunted_all"));
         } else {

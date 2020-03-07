@@ -7,16 +7,13 @@ import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.condition.Time;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public class TimeGenerator extends BaseGenerator
-{
-    public TimeGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+public class TimeGenerator extends BaseGenerator {
+    public TimeGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         int timeLimit = definition.getTimeLimit();
         if (timeLimit == 0) return;
 

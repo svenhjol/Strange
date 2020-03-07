@@ -18,8 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Craft implements IDelegate
-{
+public class Craft implements IDelegate {
     public final static String ID = "Craft";
 
     private IQuest quest;
@@ -32,20 +31,17 @@ public class Craft implements IDelegate
     private final String CRAFTED = "crafted";
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
 
         if (isSatisfied()) return false;
@@ -53,7 +49,7 @@ public class Craft implements IDelegate
         if (player == null) return false;
 
         if (event instanceof ItemCraftedEvent) {
-            ItemCraftedEvent qe = (ItemCraftedEvent)event;
+            ItemCraftedEvent qe = (ItemCraftedEvent) event;
             ItemStack craftedItem = qe.getCrafting();
             if (this.stack == null || craftedItem.getItem() != stack.getItem().getItem()) return false;
 
@@ -62,7 +58,7 @@ public class Craft implements IDelegate
             int countCrafted = craftedItem.getCount();
             int remaining = getRemaining();
 
-            if (countCrafted > remaining) { // TEST
+            if (countCrafted > remaining) {
                 // set the count to the remainder
                 craftedItem.setCount(countCrafted - remaining);
                 countCrafted = remaining;
@@ -83,28 +79,24 @@ public class Craft implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count <= crafted;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         int collected = Math.min(this.crafted, this.count);
         if (collected == 0 || count == 0) return 0;
-        return ((float)collected / (float)count) * 100;
+        return ((float) collected / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.put(STACK, stack.serializeNBT());
         tag.putInt(CRAFTED, crafted);
@@ -113,55 +105,46 @@ public class Craft implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
         this.count = data.getInt(COUNT);
         this.crafted = data.getInt(CRAFTED);
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Craft setCount(int count)
-    {
+    public Craft setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public Craft setStack(ItemStack stack)
-    {
+    public Craft setStack(ItemStack stack) {
         this.stack = stack;
         return this;
     }
 
-    public int getCrafted()
-    {
+    public int getCrafted() {
         return this.crafted;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public int getRemaining()
-    {
+    public int getRemaining() {
         return count - crafted;
     }
 
-    public ItemStack getStack()
-    {
+    public ItemStack getStack() {
         return this.stack;
     }
 

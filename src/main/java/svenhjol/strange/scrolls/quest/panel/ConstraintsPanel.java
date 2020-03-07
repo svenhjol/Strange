@@ -13,10 +13,9 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConstraintsPanel extends BasePanel
-{
-    public ConstraintsPanel(IQuest quest, int mid, int y, int width)
-    {
+@SuppressWarnings("rawtypes")
+public class ConstraintsPanel extends BasePanel {
+    public ConstraintsPanel(IQuest quest, int mid, int y, int width) {
         super(quest, mid, width);
 
         final List<Condition<IDelegate>> constraints = quest.getCriteria().getConditions(Criteria.CONSTRAINT);
@@ -32,13 +31,13 @@ public class ConstraintsPanel extends BasePanel
         for (Condition constraint : constraints) {
 
             if (constraint.getDelegate() instanceof Time) {
-                Time time = (Time)constraint.getDelegate();
+                Time time = (Time) constraint.getDelegate();
                 String out;
                 final long remaining = (time.getRemaining() / 20);
 
                 if (remaining > 60) {
-                    int mins = (int) Math.floor((float)remaining / 60);
-                    int secs = (int)(remaining % 60);
+                    int mins = (int) Math.floor((float) remaining / 60);
+                    int secs = (int) (remaining % 60);
 
                     final String minsStr = String.valueOf(mins);
                     final String secsStr = (secs < 10 ? "0" : "") + secs;
@@ -53,7 +52,7 @@ public class ConstraintsPanel extends BasePanel
             }
 
             if (constraint.getDelegate() instanceof Provide) {
-                provides.add((Provide)constraint.getDelegate());
+                provides.add((Provide) constraint.getDelegate());
             }
         }
 

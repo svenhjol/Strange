@@ -11,8 +11,7 @@ import net.minecraft.item.ItemStack;
 import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public abstract class BasePanel extends AbstractGui
-{
+public abstract class BasePanel extends AbstractGui {
     protected IQuest quest;
     protected Minecraft mc;
     protected FontRenderer fonts;
@@ -26,8 +25,7 @@ public abstract class BasePanel extends AbstractGui
     protected int width;
     protected int mid;
 
-    public BasePanel(IQuest quest, int mid, int width)
-    {
+    public BasePanel(IQuest quest, int mid, int width) {
         this.quest = quest;
         this.width = width;
         this.mid = mid;
@@ -37,19 +35,16 @@ public abstract class BasePanel extends AbstractGui
         this.textures = mc.getTextureManager();
     }
 
-    public void drawBackground(int x0, int x1, int y0, int y1)
-    {
+    public void drawBackground(int x0, int x1, int y0, int y1) {
         // draw background rect
         AbstractGui.fill(x0, y0, x1, y1, 0x88000000);
     }
 
-    public void drawCenteredTitle(String title, int y)
-    {
+    public void drawCenteredTitle(String title, int y) {
         this.drawCenteredString(fonts, title, mid, y, titleColor);
     }
 
-    public void blitIcon(int[] icon, int x, int y)
-    {
+    public void blitIcon(int[] icon, int x, int y) {
         int w = QuestIcons.ICON_WIDTH;
         int h = QuestIcons.ICON_HEIGHT;
 
@@ -58,8 +53,7 @@ public abstract class BasePanel extends AbstractGui
         blit(x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 
-    public void blitItemIcon(ItemStack stack, int x, int y)
-    {
+    public void blitItemIcon(ItemStack stack, int x, int y) {
         RenderHelper.enableGUIStandardItemLighting();
         items.renderItemIntoGUI(stack, x, y);
     }

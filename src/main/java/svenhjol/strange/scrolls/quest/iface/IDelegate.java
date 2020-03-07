@@ -7,8 +7,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nullable;
 
-public interface IDelegate
-{
+public interface IDelegate {
     String getId();
 
     String getType();

@@ -2,7 +2,7 @@ package svenhjol.strange.scrolls.quest;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.generator.*;
@@ -13,12 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Generator
-{
+public class Generator {
     public static Generator INSTANCE = new Generator();
 
-    public IQuest generate(World world, BlockPos pos, Definition definition, float valueMultiplier, @Nullable IQuest quest)
-    {
+    public IQuest generate(World world, BlockPos pos, Definition definition, float valueMultiplier, @Nullable IQuest quest) {
         if (quest == null) quest = new Quest();
 
         quest.generateId();
@@ -46,7 +44,7 @@ public class Generator
                 BaseGenerator gen = (BaseGenerator) clazz.getConstructor(World.class, BlockPos.class, IQuest.class, Definition.class).newInstance(world, pos, quest, definition);
                 gen.generate();
             } catch (Exception e) {
-                Meson.warn("Could not initialize generator " + clazz + ", skipping");
+                Strange.LOG.warn("Could not initialize generator " + clazz + ", skipping");
             }
         }
 
@@ -54,8 +52,7 @@ public class Generator
     }
 
     @Nullable
-    public IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest)
-    {
+    public IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest) {
         List<Definition> definitions = Quests.available.get(quest.getTier());
         if (definitions == null || definitions.isEmpty()) return null;
 

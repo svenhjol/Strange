@@ -17,8 +17,8 @@ import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
-import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.event.QuestEvent;
 import svenhjol.strange.scrolls.module.Quests;
@@ -32,8 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Locate implements IDelegate
-{
+public class Locate implements IDelegate {
     public static final String ID = "Locate";
 
     private final String STACK = "stack";
@@ -50,20 +49,17 @@ public class Locate implements IDelegate
     private boolean spawned;
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) {
             final QuestEvent.Accept qe = (QuestEvent.Accept) event;
             return onStarted(qe.getQuest(), player);
@@ -84,26 +80,22 @@ public class Locate implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return this.located;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         return this.located ? 100 : 0;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.put(STACK, stack.serializeNBT());
         tag.putLong(LOCATION, location != null ? location.toLong() : 0);
@@ -115,9 +107,8 @@ public class Locate implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
         this.location = BlockPos.fromLong(data.getLong(LOCATION));
         this.dim = data.getInt(DIM);
@@ -126,25 +117,22 @@ public class Locate implements IDelegate
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public boolean onStarted(IQuest quest, PlayerEntity player)
-    {
+    public boolean onStarted(IQuest quest, PlayerEntity player) {
         if (quest.getId().equals(this.quest.getId())) {
             Random rand = player.world.rand;
             int dist = Quests.locateDistance;
 
-            int x = -(dist/2) + rand.nextInt(dist);
-            int z = -(dist/2) + rand.nextInt(dist);
+            int x = -(dist / 2) + rand.nextInt(dist);
+            int z = -(dist / 2) + rand.nextInt(dist);
             this.location = player.getPosition().add(x, 0, z);
             this.dim = WorldHelper.getDimensionId(player.world);
 
@@ -155,8 +143,7 @@ public class Locate implements IDelegate
         return false;
     }
 
-    public boolean onTick(PlayerEntity player)
-    {
+    public boolean onTick(PlayerEntity player) {
         World world = player.world;
         BlockPos playerPos = player.getPosition();
         boolean atLocation = WorldHelper.getDistanceSq(playerPos, this.location) < 8;
@@ -192,9 +179,9 @@ public class Locate implements IDelegate
             int start = 16 + rand.nextInt(16);
             List<BlockPos> validPositions = new ArrayList<>();
 
-            for(int y = start; y < world.getSeaLevel(); y++) {
-                for(int i = 2; i < range; i++) {
-                    for(int c = 1; c < tries; ++c) {
+            for (int y = start; y < world.getSeaLevel(); y++) {
+                for (int i = 2; i < range; i++) {
+                    for (int c = 1; c < tries; ++c) {
                         BlockPos p = new BlockPos(playerPos.getX() - (range / 2) + rand.nextInt(range), y, playerPos.getZ() - (range / 2) + rand.nextInt(range));
                         BlockState floor = world.getBlockState(p.down());
                         boolean valid = (world.isAirBlock(p) || world.getBlockState(p).getMaterial() == Material.WATER);
@@ -212,7 +199,7 @@ public class Locate implements IDelegate
                 if (!world.getBlockState(spawnPos.down()).isSolid()) {
                     world.setBlockState(spawnPos.down(), Blocks.STONE.getDefaultState(), 2);
                 }
-            } else  {
+            } else {
                 spawnPos = validPositions.get(rand.nextInt(validPositions.size()));
             }
 
@@ -239,7 +226,7 @@ public class Locate implements IDelegate
                 lootStack.setTag(tag);
                 chest.setInventorySlotContents(rand.nextInt(chest.getSizeInventory()), lootStack);
 
-                Meson.debug("[Locate] Spawned chest at " + spawnPos);
+                Strange.LOG.debug("[Locate] Spawned chest at " + spawnPos);
                 this.spawned = true;
             }
 
@@ -254,25 +241,21 @@ public class Locate implements IDelegate
         return false;
     }
 
-    public boolean onEnded(PlayerEntity player)
-    {
+    public boolean onEnded(PlayerEntity player) {
         QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
         return true;
     }
 
-    public void fail(PlayerEntity player)
-    {
+    public void fail(PlayerEntity player) {
         MinecraftForge.EVENT_BUS.post(new QuestEvent.Fail(player, quest));
     }
 
-    public Locate setStack(ItemStack stack)
-    {
+    public Locate setStack(ItemStack stack) {
         this.stack = stack;
         return this;
     }
 
-    public ItemStack getStack()
-    {
+    public ItemStack getStack() {
         return this.stack;
     }
 }

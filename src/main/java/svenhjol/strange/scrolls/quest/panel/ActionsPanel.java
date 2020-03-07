@@ -14,10 +14,9 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 
-public class ActionsPanel extends BasePanel
-{
-    public ActionsPanel(IQuest quest, String actionId, int mid, int y, int width)
-    {
+@SuppressWarnings("deprecation")
+public class ActionsPanel extends BasePanel {
+    public ActionsPanel(IQuest quest, String actionId, int mid, int y, int width) {
         super(quest, mid, width);
 
         // TODO gammy switch needs replacing with something better
@@ -56,10 +55,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class GatherPanel extends BasePanel
-    {
-        public GatherPanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class GatherPanel extends BasePanel {
+        public GatherPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
             List<Condition<Gather>> toGather = quest.getCriteria().getConditions(Gather.class);
             if (toGather.isEmpty()) return;
@@ -69,10 +66,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.gather"), y);
 
-            for (int i = 0; i < toGather.size(); i++) {
+            for (Condition<Gather> gatherCondition : toGather) {
                 y += rowHeight;
 
-                Gather gather = toGather.get(i).getDelegate();
+                Gather gather = gatherCondition.getDelegate();
                 ItemStack stack = gather.getStack();
                 int remaining = gather.getRemaining();
 
@@ -86,10 +83,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class CraftPanel extends BasePanel
-    {
-        public CraftPanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class CraftPanel extends BasePanel {
+        public CraftPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
             List<Condition<Craft>> toCraft = quest.getCriteria().getConditions(Craft.class);
             if (toCraft.isEmpty()) return;
@@ -99,10 +94,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.craft"), y);
 
-            for (int i = 0; i < toCraft.size(); i++) {
+            for (Condition<Craft> craftCondition : toCraft) {
                 y += rowHeight;
 
-                Craft craft = toCraft.get(i).getDelegate();
+                Craft craft = craftCondition.getDelegate();
                 ItemStack stack = craft.getStack();
                 int remaining = craft.getRemaining();
 
@@ -116,10 +111,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class MinePanel extends BasePanel
-    {
-        public MinePanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class MinePanel extends BasePanel {
+        public MinePanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
             List<Condition<Mine>> toMine = quest.getCriteria().getConditions(Mine.class);
             if (toMine.isEmpty()) return;
@@ -129,10 +122,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.mine"), y);
 
-            for (int i = 0; i < toMine.size(); i++) {
+            for (Condition<Mine> mineCondition : toMine) {
                 y += rowHeight;
 
-                Mine mine = toMine.get(i).getDelegate();
+                Mine mine = mineCondition.getDelegate();
                 Block block = mine.getBlock();
                 int remaining = mine.getRemaining();
 
@@ -146,10 +139,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class HuntPanel extends BasePanel
-    {
-        public HuntPanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class HuntPanel extends BasePanel {
+        public HuntPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
 
             List<Condition<Hunt>> actions = quest.getCriteria().getConditions(Hunt.class);
@@ -160,10 +151,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.hunt"), y);
 
-            for (int i = 0; i < actions.size(); i++) {
+            for (Condition<Hunt> action : actions) {
                 y += rowHeight;
 
-                Hunt hunt = actions.get(i).getDelegate();
+                Hunt hunt = action.getDelegate();
                 ResourceLocation target = hunt.getTarget();
                 int remaining = hunt.getCount() - hunt.getKilled();
                 EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);
@@ -178,10 +169,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class EncounterPanel extends BasePanel
-    {
-        public EncounterPanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class EncounterPanel extends BasePanel {
+        public EncounterPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
 
             List<Condition<Encounter>> actions = quest.getCriteria().getConditions(Encounter.class);
@@ -192,10 +181,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.encounter"), y);
 
-            for (int i = 0; i < actions.size(); i++) {
+            for (Condition<Encounter> action : actions) {
                 y += rowHeight;
 
-                Encounter encounter = actions.get(i).getDelegate();
+                Encounter encounter = action.getDelegate();
                 int remaining = encounter.getCount() - encounter.getKilled();
 
                 // draw remaining count and item icon
@@ -208,10 +197,8 @@ public class ActionsPanel extends BasePanel
         }
     }
 
-    public static class LocatePanel extends BasePanel
-    {
-        public LocatePanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class LocatePanel extends BasePanel {
+        public LocatePanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
             List<Condition<Locate>> toLocate = quest.getCriteria().getConditions(Locate.class);
             if (toLocate.isEmpty()) return;
@@ -221,10 +208,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.locate"), y);
 
-            for (int i = 0; i < toLocate.size(); i++) {
+            for (Condition<Locate> locateCondition : toLocate) {
                 y += rowHeight;
 
-                Locate locate = toLocate.get(i).getDelegate();
+                Locate locate = locateCondition.getDelegate();
                 ItemStack stack = locate.getStack();
 
                 // draw remaining count and item icon
@@ -238,10 +225,8 @@ public class ActionsPanel extends BasePanel
     }
 
 
-    public static class FetchPanel extends BasePanel
-    {
-        public FetchPanel(IQuest quest, int mid, int y, int width)
-        {
+    public static class FetchPanel extends BasePanel {
+        public FetchPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
 
             List<Condition<Fetch>> actions = quest.getCriteria().getConditions(Fetch.class);
@@ -252,10 +237,10 @@ public class ActionsPanel extends BasePanel
             // draw title
             drawCenteredTitle(I18n.format("gui.strange.quests.fetch"), y);
 
-            for (int i = 0; i < actions.size(); i++) {
+            for (Condition<Fetch> action : actions) {
                 y += rowHeight;
 
-                Fetch fetch = actions.get(i).getDelegate();
+                Fetch fetch = action.getDelegate();
                 ResourceLocation target = fetch.getTarget();
                 int remaining = fetch.getCount() - fetch.getFetched();
                 EntityType<?> entity = Registry.ENTITY_TYPE.getOrDefault(target);

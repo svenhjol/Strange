@@ -22,8 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Fetch implements IDelegate
-{
+public class Fetch implements IDelegate {
     public static final String ID = "Fetch";
     public static final String FETCHED_TAG = "strange:fetched_mob";
 
@@ -44,20 +43,17 @@ public class Fetch implements IDelegate
     private int dim;
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) {
             return onStarted((QuestEvent.Accept) event, player);
         }
@@ -70,26 +66,22 @@ public class Fetch implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count != 0 && count <= fetched;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
-        return ((float)fetched / (float)count) * 100;
+    public float getCompletion() {
+        return ((float) fetched / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putLong(LOCATION, location != null ? location.toLong() : 0);
         tag.putString(TARGET, target.toString());
@@ -100,9 +92,8 @@ public class Fetch implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.location = BlockPos.fromLong(data.getLong(LOCATION));
         this.dim = data.getInt(DIM);
         this.target = ResourceLocation.tryCreate(data.getString(TARGET));
@@ -111,19 +102,17 @@ public class Fetch implements IDelegate
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    protected boolean onStarted(QuestEvent.Accept event, PlayerEntity player)
-    {
+    @SuppressWarnings("unused")
+    protected boolean onStarted(QuestEvent.Accept event, PlayerEntity player) {
         if (quest.getId().equals(this.quest.getId())) {
 
             BlockPos pos = QuestHelper.getScrollkeeperNearPlayer(player, quest, VILLAGER_RANGE);
@@ -137,8 +126,7 @@ public class Fetch implements IDelegate
         return false;
     }
 
-    protected boolean onTick(PlayerEntity player)
-    {
+    protected boolean onTick(PlayerEntity player) {
         if (player == null) return false;
         World world = player.world;
 
@@ -170,30 +158,25 @@ public class Fetch implements IDelegate
         return false;
     }
 
-    public Fetch setCount(int count)
-    {
+    public Fetch setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public Fetch setTarget(ResourceLocation target)
-    {
+    public Fetch setTarget(ResourceLocation target) {
         this.target = target;
         return this;
     }
 
-    public int getFetched()
-    {
+    public int getFetched() {
         return this.fetched;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public ResourceLocation getTarget()
-    {
+    public ResourceLocation getTarget() {
         return this.target;
     }
 }

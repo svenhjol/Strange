@@ -12,10 +12,8 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import java.util.List;
 import java.util.Map;
 
-public class RewardsPanel extends BasePanel
-{
-    public RewardsPanel(IQuest quest, int mid, int y, int width)
-    {
+public class RewardsPanel extends BasePanel {
+    public RewardsPanel(IQuest quest, int mid, int y, int width) {
         super(quest, mid, width);
 
         List<Condition<IDelegate>> rewards = quest.getCriteria().getConditions(Criteria.REWARD);
@@ -26,13 +24,11 @@ public class RewardsPanel extends BasePanel
         // draw title
         drawCenteredTitle(I18n.format("gui.strange.quests.rewards"), y);
 
-        for (int i = 0; i < rewards.size(); i++) {
+        for (Condition<IDelegate> iDelegateCondition : rewards) {
             y += rowHeight;
 
-            Condition condition = rewards.get(i);
-
-            if (condition.getDelegate() instanceof Reward) {
-                Reward reward = (Reward)condition.getDelegate();
+            if (iDelegateCondition.getDelegate() instanceof Reward) {
+                Reward reward = (Reward) iDelegateCondition.getDelegate();
                 final int xp = reward.getXP();
                 final Map<ItemStack, Integer> rewardItems = reward.getItems();
 

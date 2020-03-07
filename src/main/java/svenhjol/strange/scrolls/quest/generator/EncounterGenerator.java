@@ -14,20 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class EncounterGenerator extends BaseGenerator
-{
+public class EncounterGenerator extends BaseGenerator {
     public static final String COUNT = "count";
     public static final String HEALTH = "health";
     public static final String EFFECTS = "effects";
 
-    public EncounterGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+    public EncounterGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         Map<String, Map<String, String>> def = definition.getEncounter();
         if (def.isEmpty()) return;
 

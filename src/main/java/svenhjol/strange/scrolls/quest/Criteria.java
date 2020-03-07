@@ -12,16 +12,15 @@ import java.util.stream.Collectors;
 
 /**
  * A Quest has an associated Criteria in a 1:1 relationship.
- *
+ * <p>
  * Criteria consists of many Conditions.  Conditions may be filtered by
  * type (Constraint, Action or Reward).
- *
+ * <p>
  * Criteria uses the completion status of each condition to determine
  * the overall completion state of the quest.
  */
-@SuppressWarnings("UnusedReturnValue")
-public class Criteria
-{
+@SuppressWarnings({"UnusedReturnValue", "rawtypes"})
+public class Criteria {
     public static final String CONSTRAINT = "constraint";
     public static final String ACTION = "action";
     public static final String REWARD = "reward";
@@ -31,13 +30,11 @@ public class Criteria
     private List<Condition> conditions = new ArrayList<>();
     private IQuest quest;
 
-    public Criteria(IQuest quest)
-    {
+    public Criteria(IQuest quest) {
         this.quest = quest;
     }
 
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         ListNBT conditions = new ListNBT();
         List<Condition> removable = new ArrayList<>();
@@ -58,9 +55,8 @@ public class Criteria
         return tag;
     }
 
-    public void fromNBT(CompoundNBT tag)
-    {
-        ListNBT tagConditions = (ListNBT)tag.get(CONDITIONS);
+    public void fromNBT(CompoundNBT tag) {
+        ListNBT tagConditions = (ListNBT) tag.get(CONDITIONS);
 
         this.conditions.clear();
 
@@ -71,25 +67,21 @@ public class Criteria
         }
     }
 
-    public Criteria addCondition(Condition condition)
-    {
+    public Criteria addCondition(Condition condition) {
         this.conditions.add(condition);
         return this;
     }
 
-    public Criteria removeCondition(Condition condition)
-    {
+    public Criteria removeCondition(Condition condition) {
         this.conditions.remove(condition);
         return this;
     }
 
-    public List<Condition> getConditions()
-    {
+    public List<Condition> getConditions() {
         return conditions;
     }
 
-    public <T extends IDelegate> List<Condition<T>> getConditions(Class<T> clazz)
-    {
+    public <T extends IDelegate> List<Condition<T>> getConditions(Class<T> clazz) {
         // noinspection unchecked
         return conditions.stream()
             .filter(c -> clazz.isInstance(c.getDelegate()))
@@ -97,8 +89,7 @@ public class Criteria
             .collect(Collectors.toList());
     }
 
-    public <T extends IDelegate> List<Condition<T>> getConditions(String type)
-    {
+    public <T extends IDelegate> List<Condition<T>> getConditions(String type) {
         // noinspection unchecked
         return conditions.stream()
             .filter(c -> c.getType().equals(type))
@@ -106,13 +97,11 @@ public class Criteria
             .collect(Collectors.toList());
     }
 
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return conditions.stream().allMatch(Condition::isSatisfied);
     }
 
-    public float getCompletion()
-    {
+    public float getCompletion() {
         float complete = 0.0F;
         int completable = 0;
 

@@ -23,8 +23,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Mine implements IDelegate
-{
+public class Mine implements IDelegate {
     public final static String ID = "Mine";
 
     private IQuest quest;
@@ -37,20 +36,17 @@ public class Mine implements IDelegate
     private final String MINED = "mined";
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
 
         if (player == null) return false;
@@ -58,7 +54,7 @@ public class Mine implements IDelegate
         if (mined >= count) return false;
 
         if (event instanceof BreakEvent) {
-            BreakEvent blockEvent = (BreakEvent)event;
+            BreakEvent blockEvent = (BreakEvent) event;
             BlockPos blockPos = blockEvent.getPos();
             BlockState state = blockEvent.getWorld().getBlockState(blockEvent.getPos());
             Block block = state.getBlock();
@@ -66,7 +62,7 @@ public class Mine implements IDelegate
 
             if (this.block == null || blockRes == null || !blockRes.equals(this.block.getRegistryName())) return false;
 
-            World world = (World)blockEvent.getWorld();
+            World world = (World) blockEvent.getWorld();
 
             int count = 1;
             int remaining = getRemaining();
@@ -94,28 +90,24 @@ public class Mine implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count <= mined;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         int collected = Math.min(this.mined, this.count);
         if (collected == 0 || count == 0) return 0;
-        return ((float)collected / (float)count) * 100;
+        return ((float) collected / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putString(BLOCK, Objects.requireNonNull(block.getRegistryName()).toString());
         tag.putInt(MINED, mined);
@@ -124,55 +116,46 @@ public class Mine implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(data.getString(BLOCK)));
         this.count = data.getInt(COUNT);
         this.mined = data.getInt(MINED);
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Mine setCount(int count)
-    {
+    public Mine setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public Mine setBlock(Block block)
-    {
+    public Mine setBlock(Block block) {
         this.block = block;
         return this;
     }
 
-    public int getMined()
-    {
+    public int getMined() {
         return this.mined;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public int getRemaining()
-    {
+    public int getRemaining() {
         return count - mined;
     }
 
-    public Block getBlock()
-    {
+    public Block getBlock() {
         return this.block;
     }
 }

@@ -10,16 +10,13 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 
-public class LocateGenerator extends BaseGenerator
-{
-    public LocateGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+public class LocateGenerator extends BaseGenerator {
+    public LocateGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         List<String> def = definition.getLocate();
 
         for (String key : def) {

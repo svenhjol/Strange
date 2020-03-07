@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reward implements IDelegate
-{
+@SuppressWarnings({"unused", "UnusedReturnValue"})
+public class Reward implements IDelegate {
     public static final String ID = "Reward";
     public static final String XP = "xp";
     public static final String ITEM_DATA = "itemData";
@@ -27,20 +27,17 @@ public class Reward implements IDelegate
     private IQuest quest;
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.REWARD;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (event instanceof QuestEvent.Accept) return true; // allow quest to begin with no preconditions
         if (player == null) return false;
 
@@ -64,26 +61,22 @@ public class Reward implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return true;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return false;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         return 0;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT itemDataTag = new CompoundNBT();
         CompoundNBT itemCountTag = new CompoundNBT();
 
@@ -106,13 +99,12 @@ public class Reward implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.xp = data.getInt(XP);
 
-        CompoundNBT itemDataTag = (CompoundNBT)data.get(ITEM_DATA);
-        CompoundNBT itemCountTag = (CompoundNBT)data.get(ITEM_COUNT);
+        CompoundNBT itemDataTag = (CompoundNBT) data.get(ITEM_DATA);
+        CompoundNBT itemCountTag = (CompoundNBT) data.get(ITEM_COUNT);
 
         this.items = new HashMap<>();
 
@@ -122,6 +114,7 @@ public class Reward implements IDelegate
                 INBT inbt = itemDataTag.get(sindex);
                 if (inbt == null) continue;
                 ItemStack stack = ItemStack.read((CompoundNBT) inbt);
+                if (itemCountTag == null) continue;
                 int count = Math.max(itemCountTag.getInt(sindex), 1);
 
                 this.items.put(stack, count);
@@ -130,36 +123,30 @@ public class Reward implements IDelegate
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Reward addItem(ItemStack stack, int count)
-    {
+    public Reward addItem(ItemStack stack, int count) {
         this.items.put(stack, count);
         return this;
     }
 
-    public Reward setXP(int xp)
-    {
+    public Reward setXP(int xp) {
         this.xp = xp;
         return this;
     }
 
-    public int getXP()
-    {
+    public int getXP() {
         return this.xp;
     }
 
-    public Map<ItemStack, Integer> getItems()
-    {
+    public Map<ItemStack, Integer> getItems() {
         return this.items;
     }
 }

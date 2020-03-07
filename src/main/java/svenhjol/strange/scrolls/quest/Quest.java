@@ -11,8 +11,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class Quest implements IQuest
-{
+public class Quest implements IQuest {
     private static final String SELLER = "seller";
     private static final String QUEST_ID = "questId";
     private static final String TITLE = "title";
@@ -31,14 +30,12 @@ public class Quest implements IQuest
     private int tier;
     private float value;
 
-    public Quest()
-    {
+    public Quest() {
         this.generateId();
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
 
         tag.putInt(TIER, tier);
@@ -54,8 +51,7 @@ public class Quest implements IQuest
     }
 
     @Override
-    public void fromNBT(CompoundNBT tag)
-    {
+    public void fromNBT(CompoundNBT tag) {
         questId = tag.getString(QUEST_ID);
         seller = tag.getString(SELLER);
         title = tag.getString(TITLE);
@@ -69,14 +65,13 @@ public class Quest implements IQuest
     }
 
     @Override
-    public void generateId()
-    {
+    public void generateId() {
         this.setId(RandomStringUtils.randomAlphabetic(10));
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         boolean responded = false;
 
         final List<Condition> conditions = this.criteria.getConditions();
@@ -89,99 +84,83 @@ public class Quest implements IQuest
     }
 
     @Override
-    public State getState()
-    {
+    public State getState() {
         return state;
     }
 
     @Override
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.questId = id;
     }
 
     @Override
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
     @Override
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     @Override
-    public void setSeller(UUID sellerId)
-    {
+    public void setSeller(UUID sellerId) {
         this.seller = sellerId.toString();
     }
 
     @Override
-    public void setTier(int tier)
-    {
+    public void setTier(int tier) {
         this.tier = tier;
     }
 
     @Override
-    public void setCriteria(Criteria criteria)
-    {
+    public void setCriteria(Criteria criteria) {
         this.criteria = criteria;
     }
 
     @Override
-    public void setState(State state)
-    {
+    public void setState(State state) {
         this.state = state;
     }
 
     @Override
-    public void setValue(float value)
-    {
+    public void setValue(float value) {
         this.value = value;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return questId;
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return this.title;
     }
 
     @Override
-    public float getValue()
-    {
+    public float getValue() {
         return this.value;
     }
 
     @Override
-    public Criteria getCriteria()
-    {
+    public Criteria getCriteria() {
         return criteria;
     }
 
     @Override
-    public UUID getSeller()
-    {
+    public UUID getSeller() {
         if (seller.isEmpty()) return Scrollkeepers.ANY_SELLER;
         return UUID.fromString(seller);
     }
 
     @Override
-    public int getTier()
-    {
+    public int getTier() {
         return tier;
     }
 }

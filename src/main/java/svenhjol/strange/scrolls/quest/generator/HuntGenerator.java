@@ -10,16 +10,13 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Map;
 
-public class HuntGenerator extends BaseGenerator
-{
-    public HuntGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+public class HuntGenerator extends BaseGenerator {
+    public HuntGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         Map<String, String> def = definition.getHunt();
 
         for (String key : def.keySet()) {

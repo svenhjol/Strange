@@ -10,16 +10,13 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.Map;
 
-public class FetchGenerator extends BaseGenerator
-{
-    public FetchGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+public class FetchGenerator extends BaseGenerator {
+    public FetchGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         Map<String, String> def = definition.getFetch();
 
         for (String key : def.keySet()) {

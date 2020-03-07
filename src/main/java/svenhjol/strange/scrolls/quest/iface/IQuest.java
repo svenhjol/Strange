@@ -9,8 +9,7 @@ import svenhjol.strange.scrolls.quest.Criteria;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public interface IQuest
-{
+public interface IQuest {
     String getId();
 
     String getDescription();
@@ -51,8 +50,7 @@ public interface IQuest
 
     void setState(State state);
 
-    enum State implements IMesonEnum
-    {
+    enum State implements IMesonEnum {
         NotStarted,
         Started,
         Failed,

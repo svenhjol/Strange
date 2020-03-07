@@ -10,20 +10,17 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.*;
 
-public class RewardGenerator extends BaseGenerator
-{
+public class RewardGenerator extends BaseGenerator {
     public static final String COUNT = "count";
     public static final String ITEMS = "items";
     public static final String XP = "xp";
 
-    public RewardGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+    public RewardGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         super(world, pos, quest, definition);
     }
 
     @Override
-    public void generate()
-    {
+    public void generate() {
         Map<String, Map<String, String>> def = definition.getRewards();
         if (def.isEmpty())
             return;

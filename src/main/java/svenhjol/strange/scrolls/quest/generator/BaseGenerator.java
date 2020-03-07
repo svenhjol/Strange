@@ -34,8 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BaseGenerator
-{
+public abstract class BaseGenerator {
     public static final float EPIC_CHANCE_BASE = 0.02F;
     public static final float RARE_CHANCE_BASE = 0.15F;
     public static final float UNCOMMON_CHANCE_BASE = 0.45F;
@@ -72,26 +71,23 @@ public abstract class BaseGenerator
     protected IQuest quest;
     protected Definition definition;
 
-    public BaseGenerator(World world, BlockPos pos, IQuest quest, Definition definition)
-    {
+    public BaseGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         this.world = world;
         this.pos = pos;
         this.quest = quest;
         this.definition = definition;
     }
 
-    public void addCondition(Condition condition)
-    {
+    @SuppressWarnings("rawtypes")
+    public void addCondition(Condition condition) {
         quest.getCriteria().addCondition(condition);
     }
 
-    public int multiplyValue(int original)
-    {
-        return (int)(original * quest.getValue());
+    public int multiplyValue(int original) {
+        return (int) (original * quest.getValue());
     }
 
-    public String splitOptionalRandomly(String key)
-    {
+    public String splitOptionalRandomly(String key) {
         if (key.contains("|")) {
             String[] split = key.split("\\|");
             key = split[world.rand.nextInt(split.length)];
@@ -102,8 +98,7 @@ public abstract class BaseGenerator
     }
 
     @Nullable
-    public Block getBlockFromKey(String key)
-    {
+    public Block getBlockFromKey(String key) {
         key = splitOptionalRandomly(key);
         ResourceLocation res = ResourceLocation.tryCreate(key);
         if (res == null)
@@ -113,8 +108,7 @@ public abstract class BaseGenerator
     }
 
     @Nullable
-    public ItemStack getItemFromKey(String key)
-    {
+    public ItemStack getItemFromKey(String key) {
         ItemStack stack;
         key = splitOptionalRandomly(key);
 
@@ -150,8 +144,7 @@ public abstract class BaseGenerator
     }
 
     @Nullable
-    public ResourceLocation getEntityResFromKey(String key)
-    {
+    public ResourceLocation getEntityResFromKey(String key) {
         key = splitOptionalRandomly(key);
 
         key = filterRarity(key);
@@ -162,8 +155,7 @@ public abstract class BaseGenerator
     }
 
     @Nullable
-    public String filterRarity(String key)
-    {
+    public String filterRarity(String key) {
         if (key.contains(EPIC_LABEL)) {
             // epic items only have a small chance to pass, boosted by quest value
             if (world.rand.nextFloat() > (EPIC_CHANCE_BASE + (0.02F * quest.getValue()))) return null;
@@ -188,8 +180,7 @@ public abstract class BaseGenerator
         return key;
     }
 
-    public int getCountFromValue(String value, boolean scale)
-    {
+    public int getCountFromValue(String value, boolean scale) {
         int count;
 
         if (value.contains("!")) {
@@ -207,14 +198,12 @@ public abstract class BaseGenerator
         return scale ? multiplyValue(count) : count;
     }
 
-    public boolean isSpecialItem(String item)
-    {
+    public boolean isSpecialItem(String item) {
         return SPECIAL_ITEMS.contains(item);
     }
 
     @Nullable
-    private ItemStack createSpecialItem(String item)
-    {
+    private ItemStack createSpecialItem(String item) {
         if (world == null) return null;
 
         Random rand = world.rand;

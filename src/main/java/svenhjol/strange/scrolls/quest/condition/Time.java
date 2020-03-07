@@ -15,8 +15,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Time implements IDelegate
-{
+public class Time implements IDelegate {
     public final static String ID = "Time";
 
     private IQuest quest;
@@ -29,27 +28,23 @@ public class Time implements IDelegate
     private final String LAST_TIME = "lastTime";
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         if (start == 0 || lastTime == 0 || limit == 0) return true;
         return lastTime - start < limit;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return false;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         return 0;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (player == null) return false;
 
         World world = player.world;
@@ -76,26 +71,22 @@ public class Time implements IDelegate
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.CONSTRAINT;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putLong(START, start);
         tag.putLong(LIMIT, limit);
@@ -104,39 +95,33 @@ public class Time implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.start = data.getLong(START);
         this.limit = data.getLong(LIMIT);
         this.lastTime = data.getLong(LAST_TIME);
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
-    public Time setLimit(long limit)
-    {
+    public Time setLimit(long limit) {
         this.limit = limit;
         return this;
     }
 
-    public Time setStart(long start)
-    {
+    public Time setStart(long start) {
         this.start = start;
         return this;
     }
 
-    public long getLimit()
-    {
+    public long getLimit() {
         return this.limit;
     }
 
-    public long getRemaining()
-    {
+    public long getRemaining() {
         if (this.start == 0) return this.limit;
 
         return this.limit - (this.lastTime - this.start);

@@ -8,8 +8,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.base.helper.QuestHelper;
-import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.event.QuestEvent;
+import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
@@ -18,8 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class Gather implements IDelegate
-{
+public class Gather implements IDelegate {
     public final static String ID = "Gather";
 
     private IQuest quest;
@@ -32,20 +31,17 @@ public class Gather implements IDelegate
     private final String COLLECTED = "collected";
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return Criteria.ACTION;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return ID;
     }
 
     @Override
-    public boolean respondTo(Event event, @Nullable PlayerEntity player)
-    {
+    public boolean respondTo(Event event, @Nullable PlayerEntity player) {
         if (player == null) return false;
 
         if (event instanceof QuestEvent.Accept) {
@@ -67,28 +63,24 @@ public class Gather implements IDelegate
     }
 
     @Override
-    public boolean isSatisfied()
-    {
+    public boolean isSatisfied() {
         return count <= collected;
     }
 
     @Override
-    public boolean isCompletable()
-    {
+    public boolean isCompletable() {
         return true;
     }
 
     @Override
-    public float getCompletion()
-    {
+    public float getCompletion() {
         int collected = Math.min(this.collected, this.count);
         if (collected == 0 || count == 0) return 0;
-        return ((float)collected / (float)count) * 100;
+        return ((float) collected / (float) count) * 100;
     }
 
     @Override
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.put(STACK, stack.serializeNBT());
         tag.putInt(COLLECTED, collected);
@@ -97,60 +89,50 @@ public class Gather implements IDelegate
     }
 
     @Override
-    public void fromNBT(INBT nbt)
-    {
-        CompoundNBT data = (CompoundNBT)nbt;
+    public void fromNBT(INBT nbt) {
+        CompoundNBT data = (CompoundNBT) nbt;
         this.stack = ItemStack.read((CompoundNBT) Objects.requireNonNull(data.get(STACK)));
         this.count = data.getInt(COUNT);
         this.collected = data.getInt(COLLECTED);
     }
 
     @Override
-    public void setQuest(IQuest quest)
-    {
+    public void setQuest(IQuest quest) {
         this.quest = quest;
     }
 
     @Override
-    public boolean shouldRemove()
-    {
+    public boolean shouldRemove() {
         return false;
     }
 
-    public Gather setCount(int count)
-    {
+    public Gather setCount(int count) {
         this.count = count;
         return this;
     }
 
-    public Gather setStack(ItemStack stack)
-    {
+    public Gather setStack(ItemStack stack) {
         this.stack = stack;
         return this;
     }
 
-    public int getCollected()
-    {
+    public int getCollected() {
         return this.collected;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return this.count;
     }
 
-    public int getRemaining()
-    {
+    public int getRemaining() {
         return count - collected;
     }
 
-    public ItemStack getStack()
-    {
+    public ItemStack getStack() {
         return this.stack;
     }
 
-    private void showProgress(PlayerEntity player)
-    {
+    private void showProgress(PlayerEntity player) {
         if (isSatisfied()) {
             QuestHelper.effectCompleted(player, new TranslationTextComponent("event.strange.quests.gathered_all"));
         } else {
@@ -158,8 +140,7 @@ public class Gather implements IDelegate
         }
     }
 
-    private void pollInventory(PlayerEntity player)
-    {
+    private void pollInventory(PlayerEntity player) {
         for (ItemStack invStack : player.inventory.mainInventory) {
             if (invStack.isEmpty()) continue;
             if (invStack.getItem() != stack.getItem()) continue;
