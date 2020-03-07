@@ -26,6 +26,7 @@ public class ServerUpdatePlayerState implements IMesonMessage {
     public ServerUpdatePlayerState() {
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void encode(ServerUpdatePlayerState msg, PacketBuffer buf) {
     }
 

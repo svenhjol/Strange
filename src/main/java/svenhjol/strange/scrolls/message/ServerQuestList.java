@@ -18,6 +18,7 @@ public class ServerQuestList implements IMesonMessage {
         // no op
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void encode(ServerQuestList msg, PacketBuffer buf) {
         // no op
     }

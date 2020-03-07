@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+@SuppressWarnings("UnusedReturnValue")
 public class Locate implements IDelegate {
     public static final String ID = "Locate";
 

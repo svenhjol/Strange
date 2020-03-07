@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnusedReturnValue")
 public class Fetch implements IDelegate {
     public static final String ID = "Fetch";
     public static final String FETCHED_TAG = "strange:fetched_mob";
