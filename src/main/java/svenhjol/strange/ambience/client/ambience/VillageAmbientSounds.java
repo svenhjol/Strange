@@ -22,7 +22,7 @@ public class VillageAmbientSounds extends BaseAmbientSounds {
 
     @Override
     public int getShortSoundDelay() {
-        return world.rand.nextInt(120) + 120;
+        return world.rand.nextInt(120) + 200;
     }
 
     @Nullable
@@ -35,5 +35,10 @@ public class VillageAmbientSounds extends BaseAmbientSounds {
     @Override
     public SoundEvent getShortSound() {
         return StrangeSounds.AMBIENCE_VILLAGE_SHORT;
+    }
+
+    @Override
+    public float getShortSoundVolume() {
+        return super.getShortSoundVolume() - 0.1F;
     }
 }

@@ -24,7 +24,7 @@ public class SwampAmbientSounds {
 
         @Override
         public float getLongSoundVolume() {
-            return super.getLongSoundVolume() - 0.1F;
+            return super.getLongSoundVolume() - 0.2F;
         }
 
         @Nullable

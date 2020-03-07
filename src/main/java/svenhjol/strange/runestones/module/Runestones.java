@@ -360,6 +360,7 @@ public class Runestones extends MesonModule {
         newCap.readNBT(oldCap.writeNBT());
     }
 
+    @SuppressWarnings("ALL") // what
     public static IRunestonesCapability getCapability(PlayerEntity player) {
         return player.getCapability(RUNESTONES, null).orElse(new DummyCapability());
     }

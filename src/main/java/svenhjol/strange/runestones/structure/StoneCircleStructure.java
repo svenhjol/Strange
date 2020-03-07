@@ -11,6 +11,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
 
 import java.util.Objects;
@@ -54,6 +55,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
             Biome biome = gen.getBiomeProvider().getBiome(pos);
 
             return StoneCircles.validBiomes.contains(biome)
+                && !Runestones.allDests.isEmpty()
                 && gen.hasStructure(biome, StoneCircles.structure)
                 && Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE;

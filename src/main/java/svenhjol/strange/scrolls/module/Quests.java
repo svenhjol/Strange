@@ -88,7 +88,7 @@ public class Quests extends MesonModule {
                             hasMods = hasMods && Meson.isModuleEnabled(new ResourceLocation(s));
                         }
                         if (!hasMods) {
-                            Strange.LOG.info("Quest " + res.toString() + " is missing required modules");
+                            Strange.LOG.info("Quest " + res.toString() + " is missing required modules, disabling");
                             continue;
                         }
                     }
