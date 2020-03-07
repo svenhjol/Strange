@@ -24,26 +24,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class QuestClient
-{
+public class QuestClient {
     public static List<IQuest> currentQuests = new ArrayList<>();
 
     public static long lastQuery;
 
-    public void showQuest(IQuest quest)
-    {
+    public void showQuest(IQuest quest) {
         PlayerEntity player = ClientHelper.getClientPlayer();
         Minecraft.getInstance().displayGuiScreen(new QuestScreen(player, quest));
     }
 
-    public void showScroll(Hand hand)
-    {
+    public void showScroll(Hand hand) {
         PlayerEntity player = ClientHelper.getClientPlayer();
         Minecraft.getInstance().displayGuiScreen(new ScrollScreen(player, hand));
     }
 
-    public void toast(IQuest quest, QuestToastTypes.Type type, String title)
-    {
+    public void toast(IQuest quest, QuestToastTypes.Type type, String title) {
         Minecraft.getInstance().getToastGui().add(new QuestToast(quest, type, title, quest.getTitle()));
     }
 
@@ -51,8 +47,7 @@ public class QuestClient
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onBackgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event)
-    {
+    public void onBackgroundDrawn(GuiScreenEvent.BackgroundDrawnEvent event) {
         Minecraft mc = Minecraft.getInstance();
         int delayTicks = 101;
 
@@ -68,7 +63,7 @@ public class QuestClient
             int numQuests = QuestClient.currentQuests.size();
             if (numQuests == 0) return;
 
-            int xPos = (mc.mainWindow.getScaledWidth() / 2) - (numQuests*w/2);
+            int xPos = (mc.mainWindow.getScaledWidth() / 2) - (numQuests * w / 2);
             int yPos = (mc.mainWindow.getScaledHeight() / 4) - 50;
 
             for (int i = 0; i < numQuests; i++) {
@@ -79,8 +74,7 @@ public class QuestClient
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onMouseClicked(GuiScreenEvent.MouseClickedEvent event)
-    {
+    public void onMouseClicked(GuiScreenEvent.MouseClickedEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (isValidQuestBadgeScreen(mc)) {
             double x = event.getMouseX();
@@ -88,14 +82,14 @@ public class QuestClient
 
             if (event.getButton() == 0) {
                 for (QuestBadgeGui badge : questBadges) {
-                    if (badge.isInBox(x, y)) badge.onLeftClick();
+                    if (badge.isInBox(x, y))
+                        badge.onLeftClick();
                 }
             }
         }
     }
 
-    private boolean isValidQuestBadgeScreen(Minecraft mc)
-    {
+    private boolean isValidQuestBadgeScreen(Minecraft mc) {
         return mc.currentScreen instanceof InventoryScreen || mc.currentScreen instanceof CreativeScreen;
     }
 }

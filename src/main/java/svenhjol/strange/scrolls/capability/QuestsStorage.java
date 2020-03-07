@@ -7,23 +7,20 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
 
-public class QuestsStorage implements Capability.IStorage<IQuestsCapability>
-{
+public class QuestsStorage implements Capability.IStorage<IQuestsCapability> {
     @Nullable
     @Override
-    public INBT writeNBT(Capability<IQuestsCapability> capability, IQuestsCapability instance, Direction side)
-    {
+    public INBT writeNBT(Capability<IQuestsCapability> capability, IQuestsCapability instance, Direction side) {
         return instance.writeNBT();
     }
 
     @Override
-    public void readNBT(Capability<IQuestsCapability> capability, IQuestsCapability instance, Direction side, INBT nbt)
-    {
+    public void readNBT(Capability<IQuestsCapability> capability, IQuestsCapability instance, Direction side, INBT nbt) {
         if (instance == null) return;
         CompoundNBT tag = null;
 
         if (nbt instanceof CompoundNBT) {
-            tag = (CompoundNBT)nbt;
+            tag = (CompoundNBT) nbt;
         }
 
         instance.readNBT(tag);

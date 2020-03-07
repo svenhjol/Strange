@@ -27,16 +27,13 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Handles server-side forge events related to quests.
- *
  * If you want your quest delegate to be able to respond to a specific type of Forge event,
  * you must subscribe to it here and call `respondToEvent()`
  */
 @SuppressWarnings("unused")
-public class QuestEvents
-{
+public class QuestEvents {
     @SubscribeEvent
-    public void onQuestAccept(QuestEvent.Accept event)
-    {
+    public void onQuestAccept(QuestEvent.Accept event) {
         final PlayerEntity player = event.getPlayer();
         final IQuest quest = event.getQuest();
 
@@ -45,7 +42,7 @@ public class QuestEvents
         if (respondToEvent(player, event)) {
             quest.setState(State.Started);
 
-            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity)player);
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity) player);
         } else {
             event.setCanceled(true);
             Quests.getCapability(player).removeQuest(player, quest);
@@ -53,48 +50,43 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onQuestComplete(QuestEvent.Complete event)
-    {
+    public void onQuestComplete(QuestEvent.Complete event) {
         final PlayerEntity player = event.getPlayer();
         final IQuest quest = event.getQuest();
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.COMPLETED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.COMPLETED, quest), (ServerPlayerEntity) player);
     }
 
     @SubscribeEvent
-    public void onQuestDecline(QuestEvent.Decline event)
-    {
+    public void onQuestDecline(QuestEvent.Decline event) {
         final PlayerEntity player = event.getPlayer();
         final IQuest quest = event.getQuest();
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.DECLINED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.DECLINED, quest), (ServerPlayerEntity) player);
     }
 
     @SubscribeEvent
-    public void onQuestFail(QuestEvent.Fail event)
-    {
+    public void onQuestFail(QuestEvent.Fail event) {
         final PlayerEntity player = event.getPlayer();
         final IQuest quest = event.getQuest();
 
         respondToEvent(player, event);
         Quests.getCapability(player).removeQuest(player, quest);
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.FAILED, quest), (ServerPlayerEntity)player);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.FAILED, quest), (ServerPlayerEntity) player);
     }
 
     @SubscribeEvent
-    public void onAttachCaps(AttachCapabilitiesEvent<Entity> event)
-    {
+    public void onAttachCaps(AttachCapabilitiesEvent<Entity> event) {
         if (!(event.getObject() instanceof PlayerEntity)) return;
         event.addCapability(Quests.QUESTS_CAP_ID, new QuestsProvider()); // Attach cap and provider to Forge's player capabilities. Provider has the implementation.
     }
 
     @SubscribeEvent
-    public void onPlayerSave(PlayerEvent.SaveToFile event)
-    {
+    public void onPlayerSave(PlayerEvent.SaveToFile event) {
         final PlayerEntity player = event.getPlayer();
 
         player.getPersistentData().put(
@@ -103,8 +95,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onPlayerLoad(PlayerEvent.LoadFromFile event)
-    {
+    public void onPlayerLoad(PlayerEvent.LoadFromFile event) {
         final PlayerEntity player = event.getPlayer();
 
         Quests.getCapability(player).readNBT(
@@ -113,8 +104,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
-    {
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         final PlayerEntity player = event.getPlayer();
 
         Quests.getCapability(player).readNBT(
@@ -123,8 +113,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
-    {
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         final PlayerEntity player = event.getPlayer();
 
         player.getPersistentData().put(
@@ -133,8 +122,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onPlayerDeath(PlayerEvent.Clone event)
-    {
+    public void onPlayerDeath(PlayerEvent.Clone event) {
         if (!event.isWasDeath()) return;
         IQuestsCapability oldCap = Quests.getCapability(event.getOriginal());
         IQuestsCapability newCap = Quests.getCapability(event.getPlayer());
@@ -147,8 +135,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event)
-    {
+    public void onBlockBreak(BlockEvent.BreakEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player != null) {
             respondToEvent(player, event);
@@ -156,8 +143,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onItemPickup(EntityItemPickupEvent event)
-    {
+    public void onItemPickup(EntityItemPickupEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player != null) {
             respondToEvent(player, event);
@@ -165,8 +151,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
-    {
+    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player != null) {
             respondToEvent(player, event);
@@ -174,8 +159,7 @@ public class QuestEvents
     }
 
     @SubscribeEvent
-    public void onMobKilled(LivingDeathEvent event)
-    {
+    public void onMobKilled(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof PlayerEntity)
             && event.getEntityLiving() != null
         ) {
@@ -186,19 +170,18 @@ public class QuestEvents
                 killed.world.getEntitiesWithinAABB(Entity.class, killed.getBoundingBox().grow(Encounter.FIGHT_RANGE))
                     .stream()
                     .filter(p -> p instanceof PlayerEntity)
-                    .forEach(p -> respondToEvent((PlayerEntity)p, event));
+                    .forEach(p -> respondToEvent((PlayerEntity) p, event));
             }
 
             Entity source = event.getSource().getTrueSource();
             if (source instanceof PlayerEntity) {
-                respondToEvent((PlayerEntity)source, event);
+                respondToEvent((PlayerEntity) source, event);
             }
         }
     }
 
     @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent event)
-    {
+    public void onPlayerTick(PlayerTickEvent event) {
         if (event.phase == Phase.END
             && event.player != null
             && event.player.world.getGameTime() % Quests.INTERVAL == 0
@@ -208,8 +191,7 @@ public class QuestEvents
         }
     }
 
-    private boolean respondToEvent(PlayerEntity player, Event event)
-    {
+    private boolean respondToEvent(PlayerEntity player, Event event) {
         if (player == null) return false;
         boolean responded = false;
 

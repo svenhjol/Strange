@@ -16,8 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
-public class ClientQuestAction implements IMesonMessage
-{
+public class ClientQuestAction implements IMesonMessage {
     public static final int SHOW = 0;
     public static final int ACCEPTED = 1;
     public static final int COMPLETED = 2;
@@ -27,14 +26,12 @@ public class ClientQuestAction implements IMesonMessage
     private IQuest quest;
     private int action;
 
-    public ClientQuestAction(int action, IQuest quest)
-    {
+    public ClientQuestAction(int action, IQuest quest) {
         this.action = action;
         this.quest = quest;
     }
 
-    public static void encode(ClientQuestAction msg, PacketBuffer buf)
-    {
+    public static void encode(ClientQuestAction msg, PacketBuffer buf) {
         String serialized = "";
 
         try {
@@ -42,15 +39,14 @@ public class ClientQuestAction implements IMesonMessage
             CompressedStreamTools.writeCompressed(msg.quest.toNBT(), out);
             serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
         } catch (Exception e) {
-            Meson.warn("Failed to compress quest");
+            Strange.LOG.warn("Failed to compress quest");
         }
 
         buf.writeInt(msg.action);
         buf.writeString(serialized);
     }
 
-    public static ClientQuestAction decode(PacketBuffer buf)
-    {
+    public static ClientQuestAction decode(PacketBuffer buf) {
         IQuest quest = new Quest();
 
         int action = buf.readInt();
@@ -58,16 +54,14 @@ public class ClientQuestAction implements IMesonMessage
             final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
             quest.fromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData)));
         } catch (Exception e) {
-            Meson.warn("Failed to uncompress quest");
+            Strange.LOG.warn("Failed to uncompress quest");
         }
 
         return new ClientQuestAction(action, quest);
     }
 
-    public static class Handler
-    {
-        public static void handle(final ClientQuestAction msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ClientQuestAction msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
 
                 Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerQuestList());

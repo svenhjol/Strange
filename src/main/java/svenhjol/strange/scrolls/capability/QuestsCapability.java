@@ -15,15 +15,14 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestsCapability implements IQuestsCapability
-{
+@SuppressWarnings("SameParameterValue")
+public class QuestsCapability implements IQuestsCapability {
     private static final String CURRENT_QUESTS = "currentQuests";
 
     private List<IQuest> currentQuests = new ArrayList<>();
 
     @Override
-    public void acceptQuest(PlayerEntity player, IQuest quest)
-    {
+    public void acceptQuest(PlayerEntity player, IQuest quest) {
         if (currentQuests.stream().noneMatch(q -> q.getId().equals(quest.getId()))
             && currentQuests.size() <= Quests.getMaxQuests()
         ) {
@@ -32,58 +31,51 @@ public class QuestsCapability implements IQuestsCapability
         }
     }
 
-    public void removeQuest(PlayerEntity player, IQuest quest)
-    {
+    public void removeQuest(PlayerEntity player, IQuest quest) {
         currentQuests.removeIf(q -> q.getId().equals(quest.getId()));
         updateCurrentQuests(player);
     }
 
     @Override
-    public List<IQuest> getCurrentQuests(PlayerEntity player)
-    {
+    public List<IQuest> getCurrentQuests(PlayerEntity player) {
         return currentQuests;
     }
 
     @Override
-    public void updateCurrentQuests(PlayerEntity player)
-    {
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestList(getCurrentQuests(player)), (ServerPlayerEntity)player);
+    public void updateCurrentQuests(PlayerEntity player) {
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestList(getCurrentQuests(player)), (ServerPlayerEntity) player);
     }
 
     @Override
-    public void readNBT(INBT tag)
-    {
+    public void readNBT(INBT tag) {
         currentQuests = readQuestList(tag, CURRENT_QUESTS);
     }
 
     @Override
-    public INBT writeNBT()
-    {
+    public INBT writeNBT() {
         CompoundNBT tag = new CompoundNBT();
         writeQuestList(tag, CURRENT_QUESTS, currentQuests);
         return tag;
     }
 
-    private List<IQuest> readQuestList(INBT tag, String name)
-    {
+    private List<IQuest> readQuestList(INBT tag, String name) {
         List<IQuest> list = new ArrayList<>();
         if (tag == null) return list;
 
-        CompoundNBT ctag = (CompoundNBT)tag;
+        CompoundNBT ctag = (CompoundNBT) tag;
         INBT inbt = ctag.get(name);
         if (inbt == null) return list;
 
-        for (INBT q : (ListNBT)inbt) {
+        for (INBT q : (ListNBT) inbt) {
             Quest quest = new Quest();
-            quest.fromNBT((CompoundNBT)q);
+            quest.fromNBT((CompoundNBT) q);
             list.add(quest);
         }
 
         return list;
     }
 
-    private void writeQuestList(CompoundNBT tag, String name, List<IQuest> questList)
-    {
+    private void writeQuestList(CompoundNBT tag, String name, List<IQuest> questList) {
         ListNBT list = new ListNBT();
         for (IQuest quest : questList) {
             list.add(quest.toNBT());

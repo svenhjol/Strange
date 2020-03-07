@@ -24,20 +24,17 @@ import svenhjol.strange.scrolls.quest.panel.RewardsPanel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrollScreen extends Screen implements IRenderable
-{
+public class ScrollScreen extends Screen implements IRenderable {
     protected PlayerEntity player;
     protected IQuest quest;
     private Hand hand;
     private ItemStack stack;
 
-    public ScrollScreen(StringTextComponent title)
-    {
+    public ScrollScreen(StringTextComponent title) {
         super(title);
     }
 
-    public ScrollScreen(PlayerEntity player, Hand hand)
-    {
+    public ScrollScreen(PlayerEntity player, Hand hand) {
         super(new StringTextComponent(ScrollItem.getQuest(player.getHeldItem(hand)).getTitle()));
         this.player = player;
         this.hand = hand;
@@ -46,24 +43,20 @@ public class ScrollScreen extends Screen implements IRenderable
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
         renderButtons();
     }
 
     @Override
-    public void onClose()
-    {
+    public void onClose() {
         this.close();
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
-        int mid = (width / 2);
-
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.minecraft == null || this.minecraft.world == null) return;
+        int mid = (width / 2);
 
         this.renderBackground();
         this.drawCenteredString(this.font, I18n.format(this.title.getFormattedText()), mid, 12, 0xFFFFFF);
@@ -74,13 +67,11 @@ public class ScrollScreen extends Screen implements IRenderable
         String description = quest.getDescription();
 
         if (!description.isEmpty()) {
-
             if (quest.getDescription().contains("%%")) {
                 String[] split = quest.getDescription().split("%%");
                 description = split[0];
                 this.drawCenteredString(this.font, I18n.format(split[1]), mid, 36, 0x00AAAA);
             }
-
             this.drawCenteredString(this.font, I18n.format(description), mid, 24, 0xAAAAAA);
         }
 
@@ -106,24 +97,24 @@ public class ScrollScreen extends Screen implements IRenderable
         }
 
         boolean splitConstraintsAndRewards = false;
-        if (constraints.size() > 0 && rewards.size() > 0) {
+        if (constraints.size() > 0 && rewards.size() > 0)
             splitConstraintsAndRewards = true;
-        }
 
         if (splitConstraintsAndRewards) {
             new ConstraintsPanel(quest, 3 * (width / 4), panelY + 84, 85);
             new RewardsPanel(quest, width / 4, panelY + 84, 85);
         } else {
-            if (constraints.size() > 0) new ConstraintsPanel(quest, width / 2, panelY + 84, 170);
-            if (rewards.size() > 0) new RewardsPanel(quest, width / 2, panelY + 84, 170);
+            if (constraints.size() > 0)
+                new ConstraintsPanel(quest, width / 2, panelY + 84, 170);
+            if (rewards.size() > 0)
+                new RewardsPanel(quest, width / 2, panelY + 84, 170);
         }
 
         GlStateManager.popMatrix();
         super.render(mouseX, mouseY, partialTicks);
     }
 
-    public void renderButtons()
-    {
+    public void renderButtons() {
         int y = (height / 4) + 160;
         int w = 80;
         int h = 20;
@@ -133,22 +124,18 @@ public class ScrollScreen extends Screen implements IRenderable
         this.addButton(new Button((width / 2) + 60, y, w, h, I18n.format("gui.strange.scrolls.accept"), (button) -> this.accept()));
     }
 
-    private void accept()
-    {
+    private void accept() {
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerScrollAction(ServerScrollAction.ACCEPT, quest.getId(), hand));
         this.close();
     }
 
-    private void decline()
-    {
+    private void decline() {
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerScrollAction(ServerScrollAction.DECLINE, quest.getId(), hand));
         this.close();
     }
 
-    public void close()
-    {
-        if (this.minecraft != null) {
+    public void close() {
+        if (this.minecraft != null)
             this.minecraft.displayGuiScreen(null);
-        }
     }
 }

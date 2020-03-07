@@ -22,14 +22,12 @@ import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-public class ScrollItem extends MesonItem
-{
+public class ScrollItem extends MesonItem {
     private static final String QUEST = "quest";
     private static final String TIER = "tier";
     private static final String VALUE = "value";
 
-    public ScrollItem(MesonModule module)
-    {
+    public ScrollItem(MesonModule module) {
         super(module, "scroll", new Item.Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
@@ -44,10 +42,9 @@ public class ScrollItem extends MesonItem
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
-    {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         if (group == ItemGroup.SEARCH) {
-            for (int i = 1; i <= Scrolls.MAX_TIERS; i++) { ;
+            for (int i = 1; i <= Scrolls.MAX_TIERS; i++) {
                 ItemStack scroll = ScrollItem.putTier(new ItemStack(Scrolls.item), i);
                 items.add(scroll);
             }
@@ -55,8 +52,7 @@ public class ScrollItem extends MesonItem
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         IQuest quest;
         ActionResultType result;
         ItemStack scroll = playerIn.getHeldItem(handIn);
@@ -90,7 +86,7 @@ public class ScrollItem extends MesonItem
 
                     final IQuest q = Quests.generate(worldIn, playerIn.getPosition(), value, getQuest(scroll));
                     if (q == null) {
-                        Meson.warn("No quests available, cannot generate!");
+                        Strange.LOG.warn("No quests available, cannot generate!");
                         return new ActionResult<>(ActionResultType.FAIL, scroll);
                     }
 
@@ -99,7 +95,7 @@ public class ScrollItem extends MesonItem
                     scroll.setDisplayName(new TranslationTextComponent(getQuest(scroll).getTitle()));
 
                     PlayerQueueHandler.add(worldIn.getGameTime(), playerIn,
-                        p -> Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity)p));
+                        p -> Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(q.getId(), handIn), (ServerPlayerEntity) p));
 
                     return new ActionResult<>(ActionResultType.SUCCESS, scroll);
                 }
@@ -107,7 +103,7 @@ public class ScrollItem extends MesonItem
                 quest = getQuest(scroll);
 
                 if (!quest.getId().isEmpty())
-                    Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity)playerIn); // open the screen
+                    Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity) playerIn); // open the screen
 
                 result = ActionResultType.SUCCESS;
 
@@ -120,55 +116,46 @@ public class ScrollItem extends MesonItem
         return new ActionResult<>(result, scroll);
     }
 
-    public static IQuest getQuest(ItemStack scroll)
-    {
+    public static IQuest getQuest(ItemStack scroll) {
         IQuest quest = new Quest();
-        quest.fromNBT( getQuestTag(scroll) );
+        quest.fromNBT(getQuestTag(scroll));
         return quest;
     }
 
-    public static CompoundNBT getQuestTag(ItemStack scroll)
-    {
+    public static CompoundNBT getQuestTag(ItemStack scroll) {
         CompoundNBT tag = scroll.getOrCreateTag();
-        return (CompoundNBT)tag.get(QUEST);
+        return (CompoundNBT) tag.get(QUEST);
     }
 
-    public static int getTier(ItemStack scroll)
-    {
+    public static int getTier(ItemStack scroll) {
         return scroll.getOrCreateTag().getInt(TIER);
     }
 
-    public static float getValue(ItemStack scroll)
-    {
+    public static float getValue(ItemStack scroll) {
         return scroll.getOrCreateTag().getFloat(VALUE);
     }
 
-    public static boolean hasPopulatedQuest(ItemStack stack)
-    {
+    public static boolean hasPopulatedQuest(ItemStack stack) {
         IQuest quest = getQuest(stack);
         return !quest.getCriteria().getConditions().isEmpty();
     }
 
-    public static boolean hasQuestTag(ItemStack scroll)
-    {
+    public static boolean hasQuestTag(ItemStack scroll) {
         return scroll.getOrCreateTag().contains(QUEST);
     }
 
-    public static void putQuest(ItemStack scroll, IQuest quest)
-    {
+    public static void putQuest(ItemStack scroll, IQuest quest) {
         CompoundNBT tag = scroll.getOrCreateTag();
         tag.put(QUEST, quest.toNBT());
     }
 
-    public static ItemStack putTier(ItemStack scroll, int tier)
-    {
+    public static ItemStack putTier(ItemStack scroll, int tier) {
         scroll.getOrCreateTag().putInt(TIER, tier);
         scroll.setDisplayName(new TranslationTextComponent("item.strange.scroll_tier" + tier));
         return scroll;
     }
 
-    public static void putValue(ItemStack scroll, float value)
-    {
+    public static void putValue(ItemStack scroll, float value) {
         CompoundNBT tag = scroll.getOrCreateTag();
         tag.putFloat(VALUE, value);
     }

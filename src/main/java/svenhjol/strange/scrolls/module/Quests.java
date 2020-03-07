@@ -35,8 +35,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.SCROLLS, hasSubscriptions = true, alwaysEnabled = true)
-public class Quests extends MesonModule
-{
+public class Quests extends MesonModule {
     public static final String QUEST_ID = "questId";
     public static final int INTERVAL = 15;
     public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
@@ -61,19 +60,16 @@ public class Quests extends MesonModule
     public static String language = "en";
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:scrolls");
     }
 
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(IQuestsCapability.class, new QuestsStorage(), QuestsCapability::new); // register the interface, storage, and implementation
         MinecraftForge.EVENT_BUS.register(new QuestEvents()); // add all quest-related events to the bus
     }
 
-    public void onServerStarted(FMLServerStartedEvent event)
-    {
+    public void onServerStarted(FMLServerStartedEvent event) {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
         for (int tier = 1; tier <= Scrolls.MAX_TIERS; tier++) {
@@ -92,7 +88,7 @@ public class Quests extends MesonModule
                             hasMods = hasMods && Meson.isModuleEnabled(new ResourceLocation(s));
                         }
                         if (!hasMods) {
-                            Meson.log("Quest " + res.toString() + " is missing required modules");
+                            Strange.LOG.info("Quest " + res.toString() + " is missing required modules");
                             continue;
                         }
                     }
@@ -101,51 +97,44 @@ public class Quests extends MesonModule
                     definition.setTitle(name);
                     definition.setTier(tier);
                     Quests.available.get(tier).add(definition);
-                    Meson.debug("Loaded quest " + res.toString()+ " for tier " + tier);
+                    Strange.LOG.debug("Loaded quest " + res.toString() + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.warn("Could not load quest for " + res.toString() + " because " + e.getMessage());
+                    Strange.LOG.warn("Could not load quest for " + res.toString() + " because " + e.getMessage());
                 }
             }
         }
     }
 
-    public void onClientSetup(FMLClientSetupEvent event)
-    {
+    public void onClientSetup(FMLClientSetupEvent event) {
         client = new QuestClient();
         MinecraftForge.EVENT_BUS.register(client);
     }
 
-    public static IQuestsCapability getCapability(PlayerEntity player)
-    {
+    public static IQuestsCapability getCapability(PlayerEntity player) {
         return player.getCapability(QUESTS, null).orElse(new DummyCapability());
     }
 
-    public static List<IQuest> getCurrent(PlayerEntity player)
-    {
+    public static List<IQuest> getCurrent(PlayerEntity player) {
         return getCapability(player).getCurrentQuests(player);
     }
 
-    public static Optional<IQuest> getCurrentQuestById(PlayerEntity player, String id)
-    {
+    public static Optional<IQuest> getCurrentQuestById(PlayerEntity player, String id) {
         return Quests.getCurrent(player).stream()
             .filter(q -> q.getId().equals(id))
             .findFirst();
     }
 
     @Nullable
-    public static IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest)
-    {
+    public static IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest) {
         return Generator.INSTANCE.generate(world, pos, valueMultiplier, quest);
     }
 
-    public static void update(PlayerEntity player)
-    {
+    public static void update(PlayerEntity player) {
         Quests.getCapability(player).updateCurrentQuests(player);
     }
 
-    public static int getMaxQuests()
-    {
+    public static int getMaxQuests() {
         return Math.max(1, Math.max(maxQuests, 3));
     }
 }

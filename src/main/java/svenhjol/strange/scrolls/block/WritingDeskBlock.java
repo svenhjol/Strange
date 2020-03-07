@@ -16,44 +16,38 @@ import svenhjol.meson.block.MesonBlock;
 
 import javax.annotation.Nullable;
 
-public class WritingDeskBlock extends MesonBlock
-{
+@SuppressWarnings("deprecation")
+public class WritingDeskBlock extends MesonBlock {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
-    public WritingDeskBlock(MesonModule module)
-    {
+    public WritingDeskBlock(MesonModule module) {
         super(module, "writing_desk", Block.Properties.from(Blocks.CRAFTING_TABLE));
         this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.NORTH));
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
-    {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
-    public ItemGroup getItemGroup()
-    {
+    public ItemGroup getItemGroup() {
         return ItemGroup.DECORATIONS;
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation)
-    {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirror)
-    {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.toRotation(state.get(FACING)));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 }

@@ -3,8 +3,8 @@ package svenhjol.strange.scrolls.client;
 import net.minecraft.util.ResourceLocation;
 import svenhjol.strange.Strange;
 
-public class QuestIcons
-{
+@SuppressWarnings("unused")
+public class QuestIcons {
     public final static ResourceLocation ICONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/icons.png");
     public final static int ICON_WIDTH = 9;
     public final static int ICON_HEIGHT = 9;

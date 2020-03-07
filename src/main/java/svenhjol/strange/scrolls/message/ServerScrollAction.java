@@ -20,8 +20,7 @@ import java.util.function.Supplier;
 /**
  * Server interprets actions taken on a quest by the client.
  */
-public class ServerScrollAction implements IMesonMessage
-{
+public class ServerScrollAction implements IMesonMessage {
     public static final int SHOW = 0;
     public static final int ACCEPT = 1;
     public static final int DECLINE = 2;
@@ -30,22 +29,19 @@ public class ServerScrollAction implements IMesonMessage
     private String id;
     private Hand hand;
 
-    public ServerScrollAction(int action, String id, Hand hand)
-    {
+    public ServerScrollAction(int action, String id, Hand hand) {
         this.id = id;
         this.action = action;
         this.hand = hand;
     }
 
-    public static void encode(ServerScrollAction msg, PacketBuffer buf)
-    {
+    public static void encode(ServerScrollAction msg, PacketBuffer buf) {
         buf.writeInt(msg.action);
         buf.writeString(msg.id);
         buf.writeEnumValue(msg.hand);
     }
 
-    public static ServerScrollAction decode(PacketBuffer buf)
-    {
+    public static ServerScrollAction decode(PacketBuffer buf) {
         return new ServerScrollAction(
             buf.readInt(),
             buf.readString(32),
@@ -53,10 +49,8 @@ public class ServerScrollAction implements IMesonMessage
         );
     }
 
-    public static class Handler
-    {
-        public static void handle(final ServerScrollAction msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ServerScrollAction msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
                 ServerPlayerEntity player = context.getSender();
@@ -68,9 +62,7 @@ public class ServerScrollAction implements IMesonMessage
                 switch (msg.action) {
                     case SHOW:
                         Quests.getCurrentQuestById(player, msg.id)
-                            .ifPresent(q -> {
-                                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(msg.id, msg.hand), player);
-                            });
+                            .ifPresent(q -> Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(msg.id, msg.hand), player));
                         break;
 
                     case ACCEPT:
@@ -93,8 +85,7 @@ public class ServerScrollAction implements IMesonMessage
             ctx.get().setPacketHandled(true);
         }
 
-        private static void shrinkStack(ItemStack stack)
-        {
+        private static void shrinkStack(ItemStack stack) {
             if (!stack.isEmpty()) stack.shrink(1);
         }
     }

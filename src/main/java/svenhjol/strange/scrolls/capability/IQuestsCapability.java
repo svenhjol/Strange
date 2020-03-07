@@ -6,8 +6,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.List;
 
-public interface IQuestsCapability
-{
+public interface IQuestsCapability {
     void acceptQuest(PlayerEntity player, IQuest quest);
 
     void removeQuest(PlayerEntity player, IQuest quest);
