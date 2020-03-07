@@ -6,8 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface IRunestonesCapability
-{
+public interface IRunestonesCapability {
     void discoverType(int rune);
 
     void recordDestination(BlockPos runePos, BlockPos destPos);

@@ -9,14 +9,12 @@ import svenhjol.strange.runestones.module.Runestones;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RunestonesProvider implements ICapabilityProvider
-{
+public class RunestonesProvider implements ICapabilityProvider {
     IRunestonesCapability instance = new RunestonesCapability();
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
-    {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return Runestones.RUNESTONES.orEmpty(cap, LazyOptional.of(() -> instance));
     }
 }

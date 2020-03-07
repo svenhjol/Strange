@@ -46,8 +46,7 @@ import java.util.List;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
     description = "Stone circles are surface structures of stone pillars with a runestone on top.\n" +
         "This module depends on the Runestones module.")
-public class StoneCircles extends MesonModule
-{
+public class StoneCircles extends MesonModule {
     public static final String NAME = "stone_circle";
     public static final String RESNAME = "strange:stone_circle";
     public static Structure<NoFeatureConfig> structure;
@@ -88,20 +87,19 @@ public class StoneCircles extends MesonModule
     public static List<Biome> validBiomes = new ArrayList<>();
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:runestones");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         structure = new StoneCircleStructure();
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
 
         validBiomesConfig.forEach(biomeName -> {
+            //noinspection deprecation
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
@@ -116,8 +114,7 @@ public class StoneCircles extends MesonModule
     }
 
     @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
+    public void onLootTableLoad(LootTableLoadEvent event) {
         if (!addMapsToLoot) return;
 
         int weight = 0;
@@ -155,8 +152,7 @@ public class StoneCircles extends MesonModule
     }
 
     @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent event)
-    {
+    public void onPlayerTick(PlayerTickEvent event) {
         if (!compassDetection) return;
         int interval = 20;
 
@@ -168,8 +164,8 @@ public class StoneCircles extends MesonModule
             && event.player.world.getCurrentMoonPhaseFactor() > 0.95F
             && Meson.isModuleEnabled("charm:compass_binding")
         ) {
-            ServerWorld serverWorld = (ServerWorld)event.player.world;
-            ServerPlayerEntity player = (ServerPlayerEntity)event.player;
+            ServerWorld serverWorld = (ServerWorld) event.player.world;
+            ServerPlayerEntity player = (ServerPlayerEntity) event.player;
 
             // get the nearest stone circle to the player
             BlockPos circlePos = serverWorld.findNearestStructure(RESNAME, player.getPosition(), 500, true);

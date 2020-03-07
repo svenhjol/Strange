@@ -6,42 +6,35 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DummyCapability implements IRunestonesCapability
-{
+public class DummyCapability implements IRunestonesCapability {
     @Override
-    public void discoverType(int rune)
-    {
+    public void discoverType(int rune) {
 
     }
 
     @Override
-    public void recordDestination(BlockPos runePos, BlockPos destPos)
-    {
+    public void recordDestination(BlockPos runePos, BlockPos destPos) {
 
     }
 
     @Override
-    public List<Integer> getDiscoveredTypes()
-    {
+    public List<Integer> getDiscoveredTypes() {
         return null;
     }
 
     @Nullable
     @Override
-    public BlockPos getDestination(BlockPos runePos)
-    {
+    public BlockPos getDestination(BlockPos runePos) {
         return null;
     }
 
     @Override
-    public void readNBT(INBT tag)
-    {
+    public void readNBT(INBT tag) {
         // no op
     }
 
     @Override
-    public INBT writeNBT()
-    {
+    public INBT writeNBT() {
         return null;
     }
 }

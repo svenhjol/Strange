@@ -5,24 +5,24 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class RunestonesCapability implements IRunestonesCapability
-{
+public class RunestonesCapability implements IRunestonesCapability {
     private List<Integer> discoveredTypes = new ArrayList<>();
     private Map<Long, Long> destinations = new HashMap<>();
 
     @Override
-    public void discoverType(int rune)
-    {
+    public void discoverType(int rune) {
         if (!discoveredTypes.contains(rune)) {
             discoveredTypes.add(rune);
         }
     }
 
     @Override
-    public void recordDestination(BlockPos runePos, BlockPos destPos)
-    {
+    public void recordDestination(BlockPos runePos, BlockPos destPos) {
         long r = runePos.toLong();
         long d = destPos.toLong();
 
@@ -32,15 +32,13 @@ public class RunestonesCapability implements IRunestonesCapability
     }
 
     @Override
-    public List<Integer> getDiscoveredTypes()
-    {
+    public List<Integer> getDiscoveredTypes() {
         return discoveredTypes;
     }
 
     @Nullable
     @Override
-    public BlockPos getDestination(BlockPos runePos)
-    {
+    public BlockPos getDestination(BlockPos runePos) {
         long r = runePos.toLong();
         if (destinations.containsKey(r)) {
             return BlockPos.fromLong(destinations.get(r));
@@ -49,10 +47,9 @@ public class RunestonesCapability implements IRunestonesCapability
     }
 
     @Override
-    public void readNBT(INBT tag)
-    {
+    public void readNBT(INBT tag) {
         if (tag == null) tag = new CompoundNBT();
-        CompoundNBT nbt = (CompoundNBT)tag;
+        CompoundNBT nbt = (CompoundNBT) tag;
 
         if (!nbt.contains("destinations")) {
             nbt.put("destinations", new CompoundNBT());
@@ -78,8 +75,7 @@ public class RunestonesCapability implements IRunestonesCapability
     }
 
     @Override
-    public INBT writeNBT()
-    {
+    public INBT writeNBT() {
         CompoundNBT tag = new CompoundNBT();
 
         CompoundNBT dests = new CompoundNBT();

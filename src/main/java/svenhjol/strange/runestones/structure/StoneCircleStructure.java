@@ -13,46 +13,40 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.StoneCircles;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
-{
+public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 1684681;
     public static final int MIN_DISTANCE = 150;
 
-    public StoneCircleStructure()
-    {
+    public StoneCircleStructure() {
         super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
         setRegistryName(Strange.MOD_ID, StoneCircles.NAME);
     }
 
     @Override
-    public String getStructureName()
-    {
-        return getRegistryName().toString();
+    public String getStructureName() {
+        return Objects.requireNonNull(getRegistryName()).toString();
     }
 
     @Override
-    public int getSize()
-    {
+    public int getSize() {
         return 1;
     }
 
     @Override
-    protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
-    {
+    protected int getBiomeFeatureDistance(ChunkGenerator<?> gen) {
         return StoneCircles.distance;
     }
 
     @Override
-    protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
-    {
+    protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen) {
         return StoneCircles.distance / 2;
     }
 
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
-    {
+    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
@@ -69,27 +63,22 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig>
     }
 
     @Override
-    protected int getSeedModifier()
-    {
+    protected int getSeedModifier() {
         return SEED_MODIFIER;
     }
 
     @Override
-    public IStartFactory getStartFactory()
-    {
+    public IStartFactory getStartFactory() {
         return StoneCircleStructure.Start::new;
     }
 
-    public static class Start extends StructureStart
-    {
-        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed)
-        {
+    public static class Start extends StructureStart {
+        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed) {
             super(structure, chunkX, chunkZ, biome, bb, ref, seed);
         }
 
         @Override
-        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biomeIn)
-        {
+        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biomeIn) {
             BlockPos pos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
             components.add(new StoneCirclePiece(this.rand, pos));
             this.recalculateStructureSize();

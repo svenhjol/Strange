@@ -23,24 +23,20 @@ import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.*;
 
-public class StoneCirclePiece extends ScatteredStructurePiece
-{
+public class StoneCirclePiece extends ScatteredStructurePiece {
     public static IStructurePieceType PIECE = StoneCirclePiece::new;
     public static final int TRIES = 64;
 
-    public StoneCirclePiece(Random rand, BlockPos pos)
-    {
+    public StoneCirclePiece(Random rand, BlockPos pos) {
         super(PIECE, rand, pos.getX(), 64, pos.getZ(), 16, 6, 16);
     }
 
-    public StoneCirclePiece(TemplateManager templateManager, CompoundNBT tag)
-    {
+    public StoneCirclePiece(TemplateManager templateManager, CompoundNBT tag) {
         super(PIECE, tag);
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos)
-    {
+    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         GenerationConfig config = new GenerationConfig();
@@ -84,8 +80,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         return false;
     }
 
-    public boolean generateCircle(IWorld world, BlockPos.MutableBlockPos pos, Random rand, GenerationConfig config)
-    {
+    public boolean generateCircle(IWorld world, BlockPos.MutableBlockPos pos, Random rand, GenerationConfig config) {
         boolean generated = false;
         boolean generatedWithRune = false;
         boolean runestonesEnabled = Meson.isModuleEnabled("strange:runestones");
@@ -114,8 +109,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
             return false;
         }
 
-        for (int i = 0; i < 360; i += 45)
-        {
+        for (int i = 0; i < 360; i += 45) {
             double x1 = config.radius * Math.cos(i * Math.PI / 180);
             double z1 = config.radius * Math.sin(i * Math.PI / 180);
 
@@ -191,8 +185,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece
         return generated;
     }
 
-    public static class GenerationConfig
-    {
+    public static class GenerationConfig {
         public int radius = 4;
         public int columnMinHeight = 3;
         public int columnVariation = 3;
