@@ -24,8 +24,7 @@ import java.util.List;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.OUTERLANDS, hasSubscriptions = true,
     description = "Illusioners may spawn in Dark Forests in the Outerlands.\n" +
         "If Outerlands is disabled, Illusioners may spawn anywhere.")
-public class IllusionersInDarkForest extends MesonModule
-{
+public class IllusionersInDarkForest extends MesonModule {
     @Config(name = "Spawn weight", description = "The higher this value, the more Illusioners will spawn. For comparison, zombie weight is 100.")
     public static int weight = 50;
 
@@ -33,8 +32,7 @@ public class IllusionersInDarkForest extends MesonModule
      * Register illusioner as a mob in dark forest biome and variants
      */
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         Biome.SpawnListEntry illusioner = new Biome.SpawnListEntry(EntityType.ILLUSIONER, weight, 1, 1);
         List<Biome> validBiomes = Arrays.asList(Biomes.DARK_FOREST, Biomes.DARK_FOREST_HILLS);
 
@@ -47,8 +45,7 @@ public class IllusionersInDarkForest extends MesonModule
      * Don't allow spawns underground (beneath sea level).
      */
     @SubscribeEvent
-    public void onSpawn(LivingSpawnEvent.CheckSpawn event)
-    {
+    public void onSpawn(LivingSpawnEvent.CheckSpawn event) {
         if (!event.isSpawner()
             && event.getEntityLiving() instanceof IllusionerEntity
             && event.getResult() != Event.Result.DENY
@@ -57,13 +54,13 @@ public class IllusionersInDarkForest extends MesonModule
             BlockPos pos = event.getEntityLiving().getPosition();
 
             if (Meson.isModuleEnabled("strange:outerlands") && !Outerlands.isOuterPos(pos)) {
-                Meson.debug("Not spawning Illusioner, not in Outerlands");
+                Strange.LOG.debug("Not spawning Illusioner, not in Outerlands");
                 event.setResult(Event.Result.DENY);
             } else if (pos.getY() < event.getEntityLiving().world.getSeaLevel() - 5) {
-                Meson.debug("Not spawning Illusioner, pos is below sea level");
+                Strange.LOG.debug("Not spawning Illusioner, pos is below sea level");
                 event.setResult(Event.Result.DENY);
             } else {
-                Meson.debug("Spawning Illusioner at " + pos);
+                Strange.LOG.debug("Spawning Illusioner at " + pos);
             }
         }
     }
