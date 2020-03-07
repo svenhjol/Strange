@@ -8,16 +8,13 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class HighAmbientSounds extends BaseAmbientSounds
-{
-    public HighAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class HighAmbientSounds extends BaseAmbientSounds {
+    public HighAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return world.dimension.getType() == DimensionType.OVERWORLD
             && player.getPosition().getY() > 150
             && !player.canSwim();
@@ -25,15 +22,13 @@ public class HighAmbientSounds extends BaseAmbientSounds
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return StrangeSounds.AMBIENCE_HIGH;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return null;
     }
 }

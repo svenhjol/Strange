@@ -18,12 +18,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StructureHelper
-{
+public class StructureHelper {
     public static List<ResourceLocation> registeredPieces = new ArrayList<>();
 
-    public static int getWeight(String prefix, String name, int def)
-    {
+    public static int getWeight(String prefix, String name, int def) {
         if (name.contains(prefix)) {
             Pattern p = Pattern.compile(prefix + "(\\d+)");
             Matcher m = p.matcher(name);
@@ -32,8 +30,7 @@ public class StructureHelper
         return def;
     }
 
-    public static class RegisterJigsawPieces
-    {
+    public static class RegisterJigsawPieces {
         public static final String STRUCTURES = "structures";
         public static final String CORRIDORS = "corridors";
         public static final String ROOMS = "rooms";
@@ -49,18 +46,15 @@ public class StructureHelper
         protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, SECRETS, AREAS, STARTS, ENDS);
         protected final List<String> hasEnds = Arrays.asList(CORRIDORS, ROOMS);
 
-        public RegisterJigsawPieces(IReloadableResourceManager rm, String structuresPath)
-        {
+        public RegisterJigsawPieces(IReloadableResourceManager rm, String structuresPath) {
             this(rm, structuresPath, Arrays.asList(
                 new DecorationProcessor(),
                 new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.GRAY_STAINED_GLASS))
             ));
         }
 
-        public RegisterJigsawPieces(IReloadableResourceManager rm, String dir, List<StructureProcessor> processors)
-        {
-            try
-            {
+        public RegisterJigsawPieces(IReloadableResourceManager rm, String dir, List<StructureProcessor> processors) {
+            try {
                 String structurePath = STRUCTURES + "/" + dir;
                 Map<String, Map<String, List<String>>> pieces = new HashMap<>();
                 Collection<ResourceLocation> resources = rm.getAllResourceLocations(structurePath, file -> file.endsWith(".nbt"));
@@ -126,9 +120,7 @@ public class StructureHelper
 
                     sizes.put(structure, Math.max(2, size));
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Strange.LOG.error("Exception loading structures: " + e);
             }
         }

@@ -1,7 +1,6 @@
 package svenhjol.strange.base;
 
-public class StrangeCategories
-{
+public class StrangeCategories {
     public static final String BASE = "Base";
     public static final String AMBIENCE = "Ambience";
     public static final String ENCHANTMENTS = "Enchantments";

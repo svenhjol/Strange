@@ -14,10 +14,8 @@ import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 
 import javax.annotation.Nullable;
 
-public class EntitySpawnerBlock extends MesonBlock
-{
-    public EntitySpawnerBlock(MesonModule module)
-    {
+public class EntitySpawnerBlock extends MesonBlock {
+    public EntitySpawnerBlock(MesonModule module) {
         super(module, "entity_spawner", Block.Properties
             .create(Material.IRON, MaterialColor.BLACK)
             .hardnessAndResistance(-1.0F, 3600000.0F)
@@ -26,26 +24,23 @@ public class EntitySpawnerBlock extends MesonBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new EntitySpawnerTileEntity();
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer()
-    {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public BlockRenderType getRenderType(BlockState state)
-    {
+    public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 }

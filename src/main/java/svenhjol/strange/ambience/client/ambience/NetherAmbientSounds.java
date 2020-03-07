@@ -8,36 +8,30 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class NetherAmbientSounds extends BaseAmbientSounds
-{
-    public NetherAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class NetherAmbientSounds extends BaseAmbientSounds {
+    public NetherAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         if (world == null) return false;
         return world.getDimension().getType() == DimensionType.THE_NETHER;
     }
 
     @Override
-    public int getShortSoundDelay()
-    {
+    public int getShortSoundDelay() {
         return world.rand.nextInt(200) + 200;
     }
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return StrangeSounds.AMBIENCE_NETHER_LONG;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return StrangeSounds.AMBIENCE_NETHER_SHORT;
     }
 }

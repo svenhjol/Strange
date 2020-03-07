@@ -21,25 +21,20 @@ import java.util.function.Supplier;
 /**
  * Server assembles list of state for client, like inside structures, is day or night...
  */
-public class ServerUpdatePlayerState implements IMesonMessage
-{
-    public ServerUpdatePlayerState()
-    {
+@SuppressWarnings("unused")
+public class ServerUpdatePlayerState implements IMesonMessage {
+    public ServerUpdatePlayerState() {
     }
 
-    public static void encode(ServerUpdatePlayerState msg, PacketBuffer buf)
-    {
+    public static void encode(ServerUpdatePlayerState msg, PacketBuffer buf) {
     }
 
-    public static ServerUpdatePlayerState decode(PacketBuffer buf)
-    {
+    public static ServerUpdatePlayerState decode(PacketBuffer buf) {
         return new ServerUpdatePlayerState();
     }
 
-    public static class Handler
-    {
-        public static void handle(final ServerUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ServerUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
                 ServerPlayerEntity player = context.getSender();

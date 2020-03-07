@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class RunestoneHelper
-{
+public class RunestoneHelper {
     private static Map<Character, Character> runeChars = new HashMap<>();
 
-    public static Map<Character, Character> getRuneChars()
-    {
+    public static Map<Character, Character> getRuneChars() {
         return runeChars;
     }
 
-    public static BlockPos addRandomOffset(BlockPos pos, Random rand, int max)
-    {
+    public static BlockPos addRandomOffset(BlockPos pos, Random rand, int max) {
         int n = rand.nextInt(max);
         int e = rand.nextInt(max);
         int s = rand.nextInt(max);
@@ -28,8 +25,7 @@ public class RunestoneHelper
         return pos;
     }
 
-    static
-    {
+    static {
         runeChars.put('0', 'a');
         runeChars.put('1', 'b');
         runeChars.put('2', 'd');

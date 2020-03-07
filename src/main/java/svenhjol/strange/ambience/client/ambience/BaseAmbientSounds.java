@@ -12,8 +12,7 @@ import svenhjol.strange.ambience.client.LongSound;
 import svenhjol.strange.ambience.client.ShortSound;
 import svenhjol.strange.ambience.client.iface.IAmbientSounds;
 
-public abstract class BaseAmbientSounds implements IAmbientSounds
-{
+public abstract class BaseAmbientSounds implements IAmbientSounds {
     protected int shortTicks = 0;
     protected boolean isValid = false;
     protected TickableSound longSound = null;
@@ -22,15 +21,13 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
     protected ClientWorld world;
     protected SoundHandler soundHandler;
 
-    public BaseAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+    public BaseAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         this.player = player;
         this.soundHandler = soundHandler;
-        this.world = (ClientWorld)player.world;
+        this.world = (ClientWorld) player.world;
     }
 
-    public void tick()
-    {
+    public void tick() {
         boolean nowValid = isValid();
 
         if (isValid && !nowValid) {
@@ -53,8 +50,7 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
         }
     }
 
-    public boolean isOutside()
-    {
+    public boolean isOutside() {
         if (player.canSwim()) return false;
 
         int blocks = 16;
@@ -79,66 +75,53 @@ public abstract class BaseAmbientSounds implements IAmbientSounds
             if (state.isSolid()) return false;
         }
 
-        if (player.getPosition().getY() < 48) return false;
-
-        return true;
+        return player.getPosition().getY() >= 48;
     }
 
-    protected void setShortSound()
-    {
-        soundHandler.play(new ShortSound((ClientPlayerEntity)player, getShortSound(), getShortSoundVolume()));
+    protected void setShortSound() {
+        soundHandler.play(new ShortSound((ClientPlayerEntity) player, getShortSound(), getShortSoundVolume()));
     }
 
-    protected void setLongSound()
-    {
+    protected void setLongSound() {
         this.longSound = new LongSound(player, getLongSound(), getLongSoundVolume(), p -> isValid());
     }
 
-    public boolean isPlayingLongSound()
-    {
+    public boolean isPlayingLongSound() {
         return this.longSound != null && !this.longSound.isDonePlaying();
     }
 
-    public float getShortSoundVolume()
-    {
+    public float getShortSoundVolume() {
         return 0.65F;
     }
 
-    public float getLongSoundVolume()
-    {
+    public float getLongSoundVolume() {
         return 0.5F;
     }
 
-    public int getShortSoundDelay()
-    {
+    public int getShortSoundDelay() {
         return world.rand.nextInt(400) + 400;
     }
 
-    public boolean hasLongSound()
-    {
+    public boolean hasLongSound() {
         return getLongSound() != null;
     }
 
-    public boolean hasShortSound()
-    {
+    public boolean hasShortSound() {
         return getShortSound() != null;
     }
 
     @Override
-    public ClientWorld getWorld()
-    {
+    public ClientWorld getWorld() {
         return world;
     }
 
     @Override
-    public PlayerEntity getPlayer()
-    {
+    public PlayerEntity getPlayer() {
         return player;
     }
 
     @Override
-    public SoundHandler getSoundHandler()
-    {
+    public SoundHandler getSoundHandler() {
         return soundHandler;
     }
 }

@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 
@@ -15,15 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CaveAmbientSounds extends BaseAmbientSounds
-{
-    public CaveAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class CaveAmbientSounds extends BaseAmbientSounds {
+    public CaveAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
-    public static boolean isValidCave(ClientWorld world, PlayerEntity player)
-    {
+    public static boolean isValidCave(ClientWorld world, PlayerEntity player) {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         if (player.canSwim()) return false;
 
@@ -38,52 +34,44 @@ public class CaveAmbientSounds extends BaseAmbientSounds
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return isValidCave(world, player);
     }
 
     @Override
-    public int getShortSoundDelay()
-    {
+    public int getShortSoundDelay() {
         return world.rand.nextInt(300) + 600;
     }
 
     @Override
-    public float getLongSoundVolume()
-    {
+    public float getLongSoundVolume() {
         return 0.35F;
     }
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return StrangeSounds.AMBIENCE_CAVE_LONG;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return StrangeSounds.AMBIENCE_CAVE_SHORT;
     }
 
-    public static class CrystalCaves extends BaseAmbientSounds
-    {
+    public static class CrystalCaves extends BaseAmbientSounds {
         protected int delay = 0;
         protected boolean eagerCheck = true;
 
-        public CrystalCaves(PlayerEntity player, SoundHandler soundHandler)
-        {
+        public CrystalCaves(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
+        public int getShortSoundDelay() {
             if (eagerCheck) {
-                Meson.debug("[CrystalCaves] eagerly checking");
+                Strange.LOG.debug("[CrystalCaves] eagerly checking");
                 delay = world.rand.nextInt(100) + 120;
             } else {
                 delay = 400;
@@ -92,21 +80,18 @@ public class CaveAmbientSounds extends BaseAmbientSounds
         }
 
         @Override
-        public boolean isValid()
-        {
+        public boolean isValid() {
             return isValidCave(world, player);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return null;
         }
 
         @Override
-        protected void setShortSound()
-        {
+        protected void setShortSound() {
             BlockPos pos = player.getPosition();
 
             int range = 16;
@@ -128,8 +113,7 @@ public class CaveAmbientSounds extends BaseAmbientSounds
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return StrangeSounds.AMBIENCE_CRYSTALS_SHORT;
         }
     }

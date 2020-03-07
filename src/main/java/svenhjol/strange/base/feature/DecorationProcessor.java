@@ -22,52 +22,31 @@ import svenhjol.strange.base.helper.DecorationHelper;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class DecorationProcessor extends StructureProcessor
-{
+public class DecorationProcessor extends StructureProcessor {
     public static final String AIR = "air";
     public static final String WATER = "water";
     public static final String LAVA = "lava";
 
     private static final IStructureProcessorType TYPE = Registry.register(Registry.STRUCTURE_PROCESSOR, Strange.MOD_ID + ":air_block", DecorationProcessor::new);
 
-    public DecorationProcessor()
-    {
+    public DecorationProcessor() {
         // no op
     }
 
-    public DecorationProcessor(Dynamic<?> dynamic)
-    {
+    public DecorationProcessor(Dynamic<?> dynamic) {
         this();
     }
 
     @Nullable
     @Override
-    @SuppressWarnings({"unused", "ConstantConditions"})
-    public BlockInfo process(IWorldReader world, BlockPos pos, BlockInfo unused, BlockInfo blockInfo, PlacementSettings placement, @Nullable Template template)
-    {
+    @SuppressWarnings({"unused"})
+    public BlockInfo process(IWorldReader world, BlockPos pos, BlockInfo unused, BlockInfo blockInfo, PlacementSettings placement, @Nullable Template template) {
         Rotation rot = placement.getRotation();
         Biome biome = null;
-
-        // it is possible for getBiomes() to be null in certain situations
-        if (world != null
-            && world.getChunk(pos) != null
-            && world.getChunk(pos).getBiomes() != null
-            && world.getChunk(pos).getBiomes().length > 0
-        ) {
-            biome = world.getChunk(pos).getBiome(pos);
-        }
 
         // remove air
         if (blockInfo.state.getMaterial() == Material.AIR) {
             return new BlockInfo(blockInfo.pos, getAirReplacement(template), null);
-        }
-
-        // remove cave roots - TODO probably isn't working
-        if (Strange.quarkCompat != null
-            && Strange.quarkCompat.hasCaveRoots()
-            && blockInfo.state.getBlock() == Strange.quarkCompat.getCaveRootBlock()
-        ) {
-            return new BlockInfo(blockInfo.pos, Blocks.CAVE_AIR.getDefaultState(), null);
         }
 
         // replace structure blocks with decoration
@@ -85,14 +64,17 @@ public class DecorationProcessor extends StructureProcessor
         return blockInfo;
     }
 
-    protected BlockState getAirReplacement(@Nullable Template template)
-    {
+    /**
+     * @see StrangeJigsawPiece::place()
+     * @param template Template so we can get the "author"
+     * @return replace blockstate
+     */
+    protected BlockState getAirReplacement(@Nullable Template template) {
         BlockState replace;
         String fill = AIR;
 
-        if (template != null) {
-            fill = template.getAuthor(); // TODO hack to get metadata into this method
-        }
+        if (template != null)
+            fill = template.getAuthor(); // this is a hack to get metadata into this method.
 
         switch (fill) {
             case LAVA:
@@ -113,14 +95,12 @@ public class DecorationProcessor extends StructureProcessor
     }
 
     @Override
-    protected IStructureProcessorType getType()
-    {
+    protected IStructureProcessorType getType() {
         return TYPE;
     }
 
     @Override
-    protected <T> Dynamic<T> serialize0(DynamicOps<T> ops)
-    {
+    protected <T> Dynamic<T> serialize0(DynamicOps<T> ops) {
         return new Dynamic<>(ops);
     }
 }

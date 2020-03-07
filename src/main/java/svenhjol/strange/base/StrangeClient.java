@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class StrangeClient
-{
+public class StrangeClient {
     public boolean isInMineshaft = false;
     public boolean isInStronghold = false;
     public boolean isInFortress = false;
@@ -23,8 +22,7 @@ public class StrangeClient
 
     public List<Integer> discoveredRunes = new ArrayList<>();
 
-    public void updateStructures(CompoundNBT input)
-    {
+    public void updateStructures(CompoundNBT input) {
         isInMineshaft = input.getBoolean("mineshaft");
         isInStronghold = input.getBoolean("stronghold");
         isInFortress = input.getBoolean("fortress");
@@ -36,11 +34,10 @@ public class StrangeClient
         isDaytime = input.getBoolean("day");
     }
 
-    public void updateDiscoveries(CompoundNBT input)
-    {
+    public void updateDiscoveries(CompoundNBT input) {
         if (Meson.isModuleEnabled("strange:runestones") && input.contains("discoveredRunes")) {
             discoveredRunes = new ArrayList<>();
-            int[] ii = input.getIntArray("discoveredRunes"); // TODO better way to convert?
+            int[] ii = input.getIntArray("discoveredRunes");
             for (int i : ii) {
                 discoveredRunes.add(i);
             }

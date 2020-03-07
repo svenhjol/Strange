@@ -26,8 +26,7 @@ import svenhjol.strange.base.StrangeSounds;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.AMBIENCE, hasSubscriptions = true,
     description = "Ambient background sounds according to the biome, time of day and depth below surface.")
-public class Ambience extends MesonModule
-{
+public class Ambience extends MesonModule {
     private static final String NAME = "svenhjol";
     private static CharmMusicDiscItem strangemusic;
 
@@ -45,28 +44,25 @@ public class Ambience extends MesonModule
     public static AmbienceClient ambienceClient;
 
     @Override
-    public void init()
-    {
+    public void init() {
         Item.Properties props = new Item.Properties().maxStackSize(1).rarity(Rarity.RARE);
-        strangemusic = new CharmMusicDiscItem(this, "music_disc_strange", StrangeSounds.MUSIC_DISC, props,0);
+        strangemusic = new CharmMusicDiscItem(this, "music_disc_strange", StrangeSounds.MUSIC_DISC, props, 0);
     }
 
     @Override
-    public void onClientSetup(FMLClientSetupEvent event)
-    {
+    public void onClientSetup(FMLClientSetupEvent event) {
         musicClient = new MusicClient();
         ambienceClient = new AmbienceClient();
     }
 
     @SubscribeEvent
-    public void onName(PlayerInteractEvent.EntityInteract event)
-    {
+    public void onName(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof FoxEntity
             && music
             && event.getPlayer() != null
-            && ((FoxEntity)event.getTarget()).getVariantType() == FoxEntity.Type.SNOW
+            && ((FoxEntity) event.getTarget()).getVariantType() == FoxEntity.Type.SNOW
         ) {
-            FoxEntity fox = (FoxEntity)event.getTarget();
+            FoxEntity fox = (FoxEntity) event.getTarget();
             ItemStack held = event.getPlayer().getHeldItem(event.getHand());
             if (!(held.getItem() instanceof NameTagItem)) return;
             if (fox.getDisplayName().getUnformattedComponentText().equals(NAME)) return;
@@ -79,18 +75,16 @@ public class Ambience extends MesonModule
     }
 
     @SubscribeEvent
-    public void onPlayerJoin(EntityJoinWorldEvent event)
-    {
+    public void onPlayerJoin(EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof PlayerEntity
             && event.getEntity().world.isRemote
         ) {
-            ambienceClient.playerJoined((PlayerEntity)event.getEntity());
+            ambienceClient.playerJoined((PlayerEntity) event.getEntity());
         }
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event)
-    {
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.END
             && event.player.world.isRemote
             && ambienceClient.handler != null

@@ -9,10 +9,8 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.strange.base.StrangeSounds;
 
-public class MusicClient
-{
-    public MusicClient()
-    {
+public class MusicClient {
+    public MusicClient() {
         if (!Meson.isModuleEnabled("charm:ambient_music_improvements")) return;
 
         // play Þarna in overworld anywhere

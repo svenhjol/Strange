@@ -8,19 +8,16 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.module.Scrolls;
 
 @JeiPlugin
-public class StrangeJeiPlugin implements IModPlugin
-{
+public class StrangeJeiPlugin implements IModPlugin {
     private static final ResourceLocation UID = new ResourceLocation(Strange.MOD_ID, "jei_plugin");
 
     @Override
-    public ResourceLocation getPluginUid()
-    {
+    public ResourceLocation getPluginUid() {
         return UID;
     }
 
     @Override
-    public void registerItemSubtypes(ISubtypeRegistration registration)
-    {
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.useNbtForSubtypes(Scrolls.item);
     }
 }

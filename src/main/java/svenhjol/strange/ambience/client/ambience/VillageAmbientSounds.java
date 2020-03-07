@@ -8,38 +8,32 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class VillageAmbientSounds extends BaseAmbientSounds
-{
-    public VillageAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class VillageAmbientSounds extends BaseAmbientSounds {
+    public VillageAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         if (world == null) return false;
         return Strange.client.isInVillage
             && Strange.client.isDaytime;
     }
 
     @Override
-    public int getShortSoundDelay()
-    {
+    public int getShortSoundDelay() {
         return world.rand.nextInt(120) + 120;
     }
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return null;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return StrangeSounds.AMBIENCE_VILLAGE_SHORT;
     }
 }

@@ -6,16 +6,14 @@ import net.minecraft.world.biome.Biome;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ambience.client.LongSound;
 
-public abstract class BiomeAmbientSounds extends BaseAmbientSounds
-{
-    public BiomeAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+@SuppressWarnings("unused")
+public abstract class BiomeAmbientSounds extends BaseAmbientSounds {
+    public BiomeAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
     @Override
-    public void setLongSound()
-    {
+    public void setLongSound() {
         if (isDay()) {
             this.longSound = new LongSound(player, getLongSound(), getLongSoundVolume(), p -> isDay());
         } else if (isNight()) {
@@ -23,13 +21,11 @@ public abstract class BiomeAmbientSounds extends BaseAmbientSounds
         }
     }
 
-    public boolean isDay()
-    {
+    public boolean isDay() {
         return isValid() && Strange.client.isDaytime;
     }
 
-    public boolean isNight()
-    {
+    public boolean isNight() {
         return isValid() && !Strange.client.isDaytime;
     }
 

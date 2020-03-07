@@ -10,38 +10,31 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class DesertAmbientSounds
-{
-    public static class Day extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Day(PlayerEntity player, SoundHandler soundHandler)
-        {
+public class DesertAmbientSounds {
+    public static class Day extends BaseAmbientSounds implements IBiomeAmbience {
+        public Day(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_DESERT_DAY_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return StrangeSounds.AMBIENCE_DESERT_DAY_SHORT;
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
+        public int getShortSoundDelay() {
             return world.rand.nextInt(500) + 600;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return (biomeCategory == Biome.Category.DESERT
                 || biomeCategory == Biome.Category.MESA)
                 && isOutside()
@@ -49,36 +42,30 @@ public class DesertAmbientSounds
         }
     }
 
-    public static class Night extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Night(PlayerEntity player, SoundHandler soundHandler)
-        {
+    public static class Night extends BaseAmbientSounds implements IBiomeAmbience {
+        public Night(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_DESERT_NIGHT_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return StrangeSounds.AMBIENCE_DESERT_NIGHT_SHORT;
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
+        public int getShortSoundDelay() {
             return world.rand.nextInt(400) + 400;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return (biomeCategory == Biome.Category.DESERT
                 || biomeCategory == Biome.Category.MESA)
                 && isOutside()

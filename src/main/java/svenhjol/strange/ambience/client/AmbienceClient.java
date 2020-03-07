@@ -12,14 +12,13 @@ import java.util.List;
 
 import static svenhjol.strange.ambience.module.Ambience.ambienceClient;
 
-public class AmbienceClient
-{
+public class AmbienceClient {
     public Handler handler;
 
-    public AmbienceClient() { }
+    public AmbienceClient() {
+    }
 
-    public void playerJoined(PlayerEntity player)
-    {
+    public void playerJoined(PlayerEntity player) {
         // we only care about ClientPlayerEntity (the actual player)
         // not RemoteClientPlayerEntity (other players relative to the actual player)
         if (player instanceof ClientPlayerEntity) {
@@ -28,13 +27,11 @@ public class AmbienceClient
         }
     }
 
-    public static class Handler
-    {
+    public static class Handler {
         private PlayerEntity player;
         private List<BaseAmbientSounds> ambientSounds = new ArrayList<>();
 
-        public Handler(PlayerEntity player, SoundHandler soundHandler)
-        {
+        public Handler(PlayerEntity player, SoundHandler soundHandler) {
             this.player = player;
 
             ambientSounds.addAll(Arrays.asList(
@@ -69,8 +66,7 @@ public class AmbienceClient
             ));
         }
 
-        public void tick()
-        {
+        public void tick() {
             if (!player.isAlive() || player.world == null) return;
             ambientSounds.forEach(BaseAmbientSounds::tick);
         }

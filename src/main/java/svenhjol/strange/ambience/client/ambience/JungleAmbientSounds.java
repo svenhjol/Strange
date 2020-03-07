@@ -10,62 +10,51 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class JungleAmbientSounds
-{
-    public static class Day extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Day(PlayerEntity player, SoundHandler soundHandler)
-        {
+public class JungleAmbientSounds {
+    public static class Day extends BaseAmbientSounds implements IBiomeAmbience {
+        public Day(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_JUNGLE_DAY_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return null;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.JUNGLE
                 && Strange.client.isDaytime
                 && isOutside();
         }
     }
 
-    public static class Night extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Night(PlayerEntity player, SoundHandler soundHandler)
-        {
+    public static class Night extends BaseAmbientSounds implements IBiomeAmbience {
+        public Night(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_JUNGLE_NIGHT_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return null;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.JUNGLE
                 && isOutside()
                 && !Strange.client.isDaytime;

@@ -9,10 +9,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.meson.helper.ClientHelper;
 
-public class TotemHelper
-{
-    public static boolean damageOrDestroy(PlayerEntity player, ItemStack totem, int amount)
-    {
+public class TotemHelper {
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean damageOrDestroy(PlayerEntity player, ItemStack totem, int amount) {
         int damage = damage(player, totem, amount);
         if (damage > totem.getMaxDamage()) {
             destroy(player, totem);
@@ -21,8 +20,7 @@ public class TotemHelper
         return false;
     }
 
-    public static void destroy(PlayerEntity player, ItemStack totem)
-    {
+    public static void destroy(PlayerEntity player, ItemStack totem) {
         if (player.isSpectator() || player.isCreative()) return;
 
         totem.shrink(1);
@@ -30,8 +28,7 @@ public class TotemHelper
         if (player.world.isRemote) effectDestroyTotem(player.getPosition());
     }
 
-    public static int damage(PlayerEntity player, ItemStack totem, int amount)
-    {
+    public static int damage(PlayerEntity player, ItemStack totem, int amount) {
         if (player.isSpectator() || player.isCreative()) return 0;
 
         int damage = totem.getDamage() + amount;
@@ -43,8 +40,7 @@ public class TotemHelper
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void effectActivateTotem(BlockPos pos)
-    {
+    public static void effectActivateTotem(BlockPos pos) {
         PlayerEntity player = ClientHelper.getClientPlayer();
         player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.25F);
 
@@ -58,8 +54,7 @@ public class TotemHelper
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void effectDamageTotem(BlockPos pos)
-    {
+    public static void effectDamageTotem(BlockPos pos) {
         PlayerEntity player = ClientHelper.getClientPlayer();
         player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 1.25F);
 
@@ -73,8 +68,7 @@ public class TotemHelper
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void effectDestroyTotem(BlockPos pos)
-    {
+    public static void effectDestroyTotem(BlockPos pos) {
         PlayerEntity player = ClientHelper.getClientPlayer();
         player.playSound(SoundEvents.ITEM_TOTEM_USE, 0.8F, 1.0F);
 

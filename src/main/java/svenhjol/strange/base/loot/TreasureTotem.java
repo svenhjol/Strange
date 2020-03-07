@@ -16,55 +16,47 @@ import svenhjol.strange.totems.module.TreasureTotems;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreasureTotem extends LootFunction
-{
+@SuppressWarnings("unused")
+public class TreasureTotem extends LootFunction {
     public static List<ITreasureTotem> availableTotems = new ArrayList<>();
 
-    private TreasureTotem(ILootCondition[] conditions)
-    {
+    private TreasureTotem(ILootCondition[] conditions) {
         super(conditions);
     }
 
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context)
-    {
+    protected ItemStack doApply(ItemStack stack, LootContext context) {
         ItemStack treasure = TreasureTotems.getTreasureItem(context.getRandom());
         return treasure != null ? treasure : stack;
     }
 
-    public static class Builder extends LootFunction.Builder<TreasureTotem.Builder>
-    {
-        public Builder() {}
+    public static class Builder extends LootFunction.Builder<TreasureTotem.Builder> {
+        public Builder() {
+        }
 
         @Override
-        protected Builder doCast()
-        {
+        protected Builder doCast() {
             return this;
         }
 
         @Override
-        public ILootFunction build()
-        {
+        public ILootFunction build() {
             return new TreasureTotem(this.getConditions());
         }
     }
 
-    public static class Serializer extends LootFunction.Serializer<TreasureTotem>
-    {
-        public Serializer()
-        {
+    public static class Serializer extends LootFunction.Serializer<TreasureTotem> {
+        public Serializer() {
             super(new ResourceLocation(Strange.MOD_ID, "treasure_totem"), TreasureTotem.class);
         }
 
         @Override
-        public void serialize(JsonObject object, TreasureTotem functionClazz, JsonSerializationContext serializationContext)
-        {
+        public void serialize(JsonObject object, TreasureTotem functionClazz, JsonSerializationContext serializationContext) {
             super.serialize(object, functionClazz, serializationContext);
         }
 
         @Override
-        public TreasureTotem deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn)
-        {
+        public TreasureTotem deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
             return new TreasureTotem(conditionsIn);
         }
     }

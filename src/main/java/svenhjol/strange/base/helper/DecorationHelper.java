@@ -36,8 +36,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DecorationHelper
-{
+public class DecorationHelper {
     public static final String ANVIL = "anvil";
     public static final String ARMOR = "armor";
     public static final String BLOCK = "block";
@@ -208,8 +207,7 @@ public class DecorationHelper
 
     public static StructureBlockReplacement STRUCTURE_BLOCK_INSTANCE = new StructureBlockReplacement();
 
-    public static class StructureBlockReplacement
-    {
+    public static class StructureBlockReplacement {
         protected String data;
         protected Rotation rotation;
         protected BlockState state;
@@ -220,8 +218,7 @@ public class DecorationHelper
         protected BlockInfo blockInfo;
         protected float chance;
 
-        public BlockInfo replace(Rotation rotation, BlockInfo blockInfo, String data, Random rand)
-        {
+        public BlockInfo replace(Rotation rotation, BlockInfo blockInfo, String data, Random rand) {
             this.fixedRand = rand;
             this.rotation = rotation;
             this.blockInfo = blockInfo;
@@ -266,8 +263,7 @@ public class DecorationHelper
             return new BlockInfo(this.pos, this.state, this.nbt);
         }
 
-        protected void anvil()
-        {
+        protected void anvil() {
             float f = rand.nextFloat();
             if (f < 0.33F) {
                 this.state = Blocks.ANVIL.getDefaultState();
@@ -278,8 +274,7 @@ public class DecorationHelper
             }
         }
 
-        protected void armorStand()
-        {
+        protected void armorStand() {
             EntitySpawnerTileEntity tile = EntitySpawner.tile.create();
             if (tile == null) return;
             nbt = new CompoundNBT();
@@ -292,8 +287,7 @@ public class DecorationHelper
             this.state = EntitySpawner.block.getDefaultState();
         }
 
-        protected void block()
-        {
+        protected void block() {
             if (!withChance(0.8F)) return;
             String type = getValue("type", this.data, "");
             if (type.isEmpty()) return;
@@ -304,8 +298,7 @@ public class DecorationHelper
             this.state = block.getDefaultState();
         }
 
-        protected void bookshelf()
-        {
+        protected void bookshelf() {
             // TODO variant bookshelves
             if (Meson.isModuleEnabled("charm:bookshelf_chests") && withChance(0.1F)) {
                 state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
@@ -322,8 +315,7 @@ public class DecorationHelper
             }
         }
 
-        protected void carpet()
-        {
+        protected void carpet() {
             List<Block> types = new ArrayList<>(carpetTypes);
             Collections.shuffle(types, fixedRand);
 
@@ -332,14 +324,12 @@ public class DecorationHelper
             state = types.get(type).getDefaultState();
         }
 
-        protected void cauldron()
-        {
+        protected void cauldron() {
             state = Blocks.CAULDRON.getDefaultState()
-                .with(CauldronBlock.LEVEL, (int)Math.max(3.0F, 4.0F * rand.nextFloat()));
+                .with(CauldronBlock.LEVEL, (int) Math.max(3.0F, 4.0F * rand.nextFloat()));
         }
 
-        protected void chest()
-        {
+        protected void chest() {
             Block chest = null;
 
             if (!withChance(0.66F)) return;
@@ -364,8 +354,7 @@ public class DecorationHelper
             }
         }
 
-        protected void decoration()
-        {
+        protected void decoration() {
             if (!withChance(0.85F)) return;
 
             Direction facing = getFacing(getValue("facing", this.data, "north"));
@@ -386,8 +375,7 @@ public class DecorationHelper
             if (block == Scrollkeepers.block) state = state.with(WritingDeskBlock.FACING, facing);
         }
 
-        protected void entity()
-        {
+        protected void entity() {
             EntitySpawnerTileEntity tile = EntitySpawner.tile.create();
             if (tile == null) return;
             nbt = new CompoundNBT();
@@ -406,14 +394,12 @@ public class DecorationHelper
             this.state = EntitySpawner.block.getDefaultState();
         }
 
-        protected void flower()
-        {
+        protected void flower() {
             if (!withChance(0.8F)) return;
             state = flowerTypes.get(rand.nextInt(flowerTypes.size())).getDefaultState();
         }
 
-        protected void lantern()
-        {
+        protected void lantern() {
             if (!withChance(0.9F)) return;
 
             state = Blocks.LANTERN.getDefaultState();
@@ -425,8 +411,7 @@ public class DecorationHelper
                 state = state.with(LanternBlock.HANGING, true);
         }
 
-        protected void lava()
-        {
+        protected void lava() {
             state = Blocks.MAGMA_BLOCK.getDefaultState();
 
             if (fixedRand.nextFloat() < 0.5F) {
@@ -434,16 +419,14 @@ public class DecorationHelper
             }
         }
 
-        protected void lectern()
-        {
+        protected void lectern() {
             if (!withChance(0.8F)) return;
 
             state = Blocks.LECTERN.getDefaultState();
             state = setFacing(state, LecternBlock.FACING, getValue("facing", this.data, "north"));
         }
 
-        protected void mob()
-        {
+        protected void mob() {
             if (!withChance(0.75F)) return;
 
             EntitySpawnerTileEntity tile = EntitySpawner.tile.create();
@@ -463,8 +446,7 @@ public class DecorationHelper
             this.state = EntitySpawner.block.getDefaultState();
         }
 
-        protected void ore()
-        {
+        protected void ore() {
             if (!withChance(0.8F)) return;
 
             String type = getValue("type", this.data, "");
@@ -479,14 +461,12 @@ public class DecorationHelper
             state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
         }
 
-        protected void potted()
-        {
+        protected void potted() {
             if (!withChance(0.8F)) return;
             state = pottedTypes.get(rand.nextInt(pottedTypes.size())).getDefaultState();
         }
 
-        protected void rune()
-        {
+        protected void rune() {
             if (!Meson.isModuleEnabled("strange:runestones") || !withChance(0.75F)) {
                 state = Blocks.STONE.getDefaultState();
                 return;
@@ -494,40 +474,39 @@ public class DecorationHelper
             state = Runestones.getRandomBlock(this.pos);
         }
 
-        protected void sapling()
-        {
+        protected void sapling() {
             if (!withChance(0.8F)) return;
             state = saplingTypes.get(rand.nextInt(saplingTypes.size())).getDefaultState();
         }
 
-        protected void spawner()
-        {
+        protected void spawner() {
             if (!withChance(0.8F)) return;
             state = Blocks.SPAWNER.getDefaultState();
 
-            EntityType<?> ent;
+            EntityType<?> entity;
             String type = getValue("type", this.data, "");
             if (type.isEmpty()) {
-                ent = DungeonHooks.getRandomDungeonMob(fixedRand);
+                entity = DungeonHooks.getRandomDungeonMob(fixedRand);
             } else {
-                ent = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(type));
+                entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(type));
+                if (entity == null)
+                    return;
             }
             MobSpawnerTileEntity tile = TileEntityType.MOB_SPAWNER.create();
 
             if (tile != null) {
-                tile.getSpawnerBaseLogic().setEntityType(ent);
+                tile.getSpawnerBaseLogic().setEntityType(entity);
                 nbt = new CompoundNBT();
                 tile.write(this.nbt);
             }
         }
 
-        protected void storage()
-        {
+        protected void storage() {
             if (!withChance(0.7F)) return;
             LockableLootTileEntity tile;
             WoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
 
-            List<BlockState> barrels = new ArrayList<>(Arrays.asList(
+            List<BlockState> barrels = new ArrayList<>(Collections.singletonList(
                 Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)
             ));
             if (Meson.isModuleEnabled("charm:all_the_barrels")) {
@@ -558,29 +537,25 @@ public class DecorationHelper
             }
         }
 
-        public boolean withChance(float chance)
-        {
+        public boolean withChance(float chance) {
             float f = this.rand.nextFloat();
             return this.chance > 0 ? f < this.chance : f < chance;
         }
 
-        public float getChance(String data, float def)
-        {
+        public float getChance(String data, float def) {
             int i = getValue("chance", data, 0);
-            return i == 0 ? def : ((float)i)/100.0F;
+            return i == 0 ? def : ((float) i) / 100.0F;
         }
     }
 
-    public static Direction getFacing(String direction)
-    {
+    public static Direction getFacing(String direction) {
         if (direction.equals("east")) return Direction.EAST;
         if (direction.equals("south")) return Direction.SOUTH;
         if (direction.equals("west")) return Direction.WEST;
         return Direction.NORTH;
     }
 
-    public static BlockState setFacing(BlockState state, DirectionProperty prop, String direction)
-    {
+    public static BlockState setFacing(BlockState state, DirectionProperty prop, String direction) {
         if (direction.equals("north")) state = state.with(prop, Direction.NORTH);
         if (direction.equals("east")) state = state.with(prop, Direction.EAST);
         if (direction.equals("south")) state = state.with(prop, Direction.SOUTH);
@@ -588,26 +563,22 @@ public class DecorationHelper
         return state;
     }
 
-    public static boolean getValue(String key, String name, boolean def)
-    {
+    public static boolean getValue(String key, String name, boolean def) {
         String val = getValue(key, name, "false");
         return val.isEmpty() ? def : Boolean.parseBoolean(val);
     }
 
-    public static int getValue(String key, String name, int def)
-    {
+    public static int getValue(String key, String name, int def) {
         int i = Integer.parseInt(getValue(key, name, "0"));
         return i == 0 ? def : i;
     }
 
-    public static double getValue(String key, String name, double def)
-    {
+    public static double getValue(String key, String name, double def) {
         double d = Double.parseDouble(getValue(key, name, "0"));
         return d == 0 ? def : d;
     }
 
-    public static String getValue(String key, String data, String def)
-    {
+    public static String getValue(String key, String data, String def) {
         String lookFor = key.endsWith("=") ? key : key + "=";
         if (data.contains(lookFor)) {
             Pattern p = Pattern.compile(lookFor + "([a-zA-Z0-9_:\\-]+)");
@@ -617,8 +588,7 @@ public class DecorationHelper
         return def;
     }
 
-    public static ResourceLocation getLootTable(String data, ResourceLocation def)
-    {
+    public static ResourceLocation getLootTable(String data, ResourceLocation def) {
         ResourceLocation lootTable = def;
         String loot = getValue("loot", data, "");
         if (!loot.isEmpty()) {

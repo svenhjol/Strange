@@ -17,14 +17,12 @@ import net.minecraft.world.gen.feature.template.*;
 import java.util.List;
 import java.util.Random;
 
-public class StrangeJigsawPiece extends SingleJigsawPiece
-{
+public class StrangeJigsawPiece extends SingleJigsawPiece {
     protected final ResourceLocation location;
     protected final ImmutableList<StructureProcessor> processors;
     public static IJigsawDeserializer STRANGE_POOL_ELEMENT;
 
-    public StrangeJigsawPiece(String location, List<StructureProcessor> processors)
-    {
+    public StrangeJigsawPiece(String location, List<StructureProcessor> processors) {
         super(location, processors, JigsawPattern.PlacementBehaviour.RIGID);
         this.location = new ResourceLocation(location);
         this.processors = ImmutableList.copyOf(processors);
@@ -33,14 +31,12 @@ public class StrangeJigsawPiece extends SingleJigsawPiece
     public StrangeJigsawPiece(Dynamic<?> dyn) {
         super(dyn);
         this.location = new ResourceLocation(dyn.get("location").asString(""));
-        this.processors = ImmutableList.copyOf(dyn.get("processors").asList((p_214858_0_) -> {
-            return IDynamicDeserializer.func_214907_a(p_214858_0_, Registry.STRUCTURE_PROCESSOR, "processor_type", NopProcessor.INSTANCE);
-        }));
+        this.processors = ImmutableList.copyOf(dyn.get("processors").asList((p_214858_0_)
+            -> IDynamicDeserializer.func_214907_a(p_214858_0_, Registry.STRUCTURE_PROCESSOR, "processor_type", NopProcessor.INSTANCE)));
     }
 
     @Override
-    protected PlacementSettings createPlacementSettings(Rotation rotationIn, MutableBoundingBox boundsIn)
-    {
+    protected PlacementSettings createPlacementSettings(Rotation rotationIn, MutableBoundingBox boundsIn) {
         PlacementSettings placementsettings = new PlacementSettings();
         placementsettings.setBoundingBox(boundsIn);
         placementsettings.setRotation(rotationIn);
@@ -52,20 +48,18 @@ public class StrangeJigsawPiece extends SingleJigsawPiece
         return placementsettings;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "Strange[" + this.location + "]";
     }
 
     @Override
-    public IJigsawDeserializer getType()
-    {
+    public IJigsawDeserializer getType() {
         return STRANGE_POOL_ELEMENT;
     }
 
     @Override
     public boolean place(TemplateManager templateManagerIn, IWorld worldIn, BlockPos pos, Rotation rotationIn, MutableBoundingBox boundsIn, Random rand) {
-        // override place to bodge metadata into the author tag so we can determine what type of "air" to use for template
+        // bodge metadata into the author tag so we can determine what type of "air" to use for template
         Template template = templateManagerIn.getTemplateDefaulted(this.location);
         String loc = this.location.toString();
         if (loc.contains("underwater")) {

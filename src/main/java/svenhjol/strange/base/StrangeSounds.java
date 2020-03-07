@@ -9,8 +9,8 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StrangeSounds
-{
+@SuppressWarnings("unused")
+public class StrangeSounds {
     public static List<SoundEvent> soundsToRegister = new ArrayList<>();
 
     // music
@@ -63,16 +63,14 @@ public class StrangeSounds
     public static final SoundEvent AMBIENCE_VILLAGE_SHORT = createSound("ambience.village.short");
     public static final SoundEvent AMBIENCE_HIGH = createSound("ambience.high");
 
-    public static SoundEvent createSound(String name)
-    {
+    public static SoundEvent createSound(String name) {
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, name);
         SoundEvent sound = new SoundEvent(res).setRegistryName(res);
         soundsToRegister.add(sound);
         return sound;
     }
 
-    public static void init(MesonInstance instance)
-    {
+    public static void init(MesonInstance instance) {
         soundsToRegister.forEach(RegistryHandler::registerSound);
         instance.log.debug("Registered sounds");
     }

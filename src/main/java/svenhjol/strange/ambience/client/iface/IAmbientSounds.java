@@ -7,8 +7,7 @@ import net.minecraft.util.SoundEvent;
 
 import javax.annotation.Nullable;
 
-public interface IAmbientSounds
-{
+public interface IAmbientSounds {
     ClientWorld getWorld();
 
     PlayerEntity getPlayer();

@@ -5,12 +5,10 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
-public class ShortSound extends TickableSound
-{
+public class ShortSound extends TickableSound {
     private final ClientPlayerEntity player;
 
-    public ShortSound(ClientPlayerEntity player, SoundEvent sound, float volume)
-    {
+    public ShortSound(ClientPlayerEntity player, SoundEvent sound, float volume) {
         super(sound, SoundCategory.AMBIENT);
         this.player = player;
         this.repeat = false;
@@ -21,8 +19,7 @@ public class ShortSound extends TickableSound
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
         if (!this.player.isAlive())
             this.donePlaying = true;
     }

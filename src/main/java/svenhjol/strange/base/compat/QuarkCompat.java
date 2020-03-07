@@ -25,22 +25,18 @@ import vazkii.quark.vanity.item.RuneItem;
 import vazkii.quark.vanity.module.ColorRunesModule;
 import vazkii.quark.world.block.CaveCrystalBlock;
 import vazkii.quark.world.module.BigDungeonModule;
-import vazkii.quark.world.module.CaveRootsModule;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class QuarkCompat
-{
-    public boolean hasModule(ResourceLocation res)
-    {
+public class QuarkCompat {
+    public boolean hasModule(ResourceLocation res) {
         return Meson.isModuleEnabled(res);
     }
 
-    public ItemStack getRandomAncientTome(Random rand)
-    {
+    public ItemStack getRandomAncientTome(Random rand) {
         List<Enchantment> validEnchants = AncientTomesModule.validEnchants;
         ItemStack tome = new ItemStack(AncientTomesModule.ancient_tome);
 
@@ -50,34 +46,24 @@ public class QuarkCompat
         return tome;
     }
 
-    public boolean isInsideBigDungeon(ServerWorld world, BlockPos pos)
-    {
+    public boolean isInsideBigDungeon(ServerWorld world, BlockPos pos) {
         return BigDungeonModule.structure.isPositionInsideStructure(world, pos);
     }
 
-    public boolean isCrystal(World world, BlockPos pos)
-    {
+    public boolean isCrystal(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         return state.getBlock() instanceof CaveCrystalBlock;
     }
 
-    public boolean hasCaveRoots()
-    {
-        return ModuleLoader.INSTANCE.isModuleEnabled(CaveRootsModule.class);
-    }
-
-    public boolean hasVariantChests()
-    {
+    public boolean hasVariantChests() {
         return ModuleLoader.INSTANCE.isModuleEnabled(VariantChestsModule.class);
     }
 
-    public boolean hasBigDungeons()
-    {
+    public boolean hasBigDungeons() {
         return ModuleLoader.INSTANCE.isModuleEnabled(BigDungeonModule.class);
     }
 
-    public String getBigDungeonResName()
-    {
+    public String getBigDungeonResName() {
         if (BigDungeonModule.structure != null) {
             return BigDungeonModule.structure.getStructureName();
         } else {
@@ -85,36 +71,23 @@ public class QuarkCompat
         }
     }
 
-    public Structure<?> getBigDungeonStructure()
-    {
+    public Structure<?> getBigDungeonStructure() {
         return BigDungeonModule.structure;
     }
 
     @Nullable
-    public Block getCaveRootBlock()
-    {
-        if (hasCaveRoots())
-            return CaveRootsModule.root;
-
-        return null;
-    }
-
-    @Nullable
-    public Block getRandomChest(Random rand)
-    {
+    public Block getRandomChest(Random rand) {
         List<WoodType> types = Arrays.asList(WoodType.values());
         WoodType type = types.get(rand.nextInt(types.size()));
         ResourceLocation res = new ResourceLocation(Quark.MOD_ID, type.name().toLowerCase() + "_chest");
         return ForgeRegistries.BLOCKS.getValue(res);
     }
 
-    public boolean hasColorRuneModule()
-    {
+    public boolean hasColorRuneModule() {
         return ModuleLoader.INSTANCE.isModuleEnabled(ColorRunesModule.class);
     }
 
-    public void applyColor(ItemStack stack, DyeColor color)
-    {
+    public void applyColor(ItemStack stack, DyeColor color) {
         // get the rune
         Item runeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Quark.MOD_ID, color.getName() + "_rune"));
         if (runeItem instanceof RuneItem) {

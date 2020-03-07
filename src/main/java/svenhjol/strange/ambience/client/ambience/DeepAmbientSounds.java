@@ -9,16 +9,13 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class DeepAmbientSounds extends BaseAmbientSounds
-{
-    public DeepAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class DeepAmbientSounds extends BaseAmbientSounds {
+    public DeepAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
@@ -26,28 +23,24 @@ public class DeepAmbientSounds extends BaseAmbientSounds
     }
 
     @Override
-    public int getShortSoundDelay()
-    {
+    public int getShortSoundDelay() {
         return world.rand.nextInt(400) + 1000;
     }
 
     @Override
-    public float getLongSoundVolume()
-    {
+    public float getLongSoundVolume() {
         return 0.65F;
     }
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return StrangeSounds.AMBIENCE_DEEP_LONG;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return StrangeSounds.AMBIENCE_DEEP_SHORT;
     }
 }

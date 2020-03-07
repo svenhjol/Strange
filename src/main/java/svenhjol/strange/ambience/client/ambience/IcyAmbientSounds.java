@@ -10,68 +10,56 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class IcyAmbientSounds
-{
-    public static class Day extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Day(PlayerEntity player, SoundHandler soundHandler)
-        {
+public class IcyAmbientSounds {
+    public static class Day extends BaseAmbientSounds implements IBiomeAmbience {
+        public Day(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_ICY_DAY_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return StrangeSounds.AMBIENCE_ICY_DAY_SHORT;
         }
 
         @Override
-        public int getShortSoundDelay()
-        {
+        public int getShortSoundDelay() {
             return world.rand.nextInt(400) + 500;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.ICY
                 && Strange.client.isDaytime
                 && isOutside();
         }
     }
 
-    public static class Night extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Night(PlayerEntity player, SoundHandler soundHandler)
-        {
+    public static class Night extends BaseAmbientSounds implements IBiomeAmbience {
+        public Night(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_ICY_NIGHT_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return null;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.ICY
                 && isOutside()
                 && !Strange.client.isDaytime;

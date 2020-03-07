@@ -8,29 +8,25 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.loot.TreasureEnchantment;
 import svenhjol.strange.base.loot.TreasureTotem;
 
-public class StrangeLoot
-{
+public class StrangeLoot {
     public static final ResourceLocation CHESTS_VAULT_BOOKSHELVES;
     public static final ResourceLocation CHESTS_VAULT_STORAGE;
     public static final ResourceLocation CHESTS_VAULT_TREASURE;
 
-    public static ResourceLocation createLootTable(String path)
-    {
+    public static ResourceLocation createLootTable(String path) {
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, path);
         LootHelper.customTables.add(res);
         return res;
     }
 
-    public static void init(MesonInstance instance)
-    {
+    public static void init(MesonInstance instance) {
         LootFunctionManager.registerFunction(new TreasureEnchantment.Serializer());
         LootFunctionManager.registerFunction(new TreasureTotem.Serializer());
 
         instance.log.debug("Registered loot handlers");
     }
 
-    static
-    {
+    static {
         CHESTS_VAULT_BOOKSHELVES = createLootTable("chests/vaults/vaults_bookshelf");
         CHESTS_VAULT_STORAGE = createLootTable("chests/vaults/vaults_storage");
         CHESTS_VAULT_TREASURE = createLootTable("chests/vaults/vaults_treasure");

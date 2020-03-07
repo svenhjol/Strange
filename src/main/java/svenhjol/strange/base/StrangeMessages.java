@@ -12,10 +12,8 @@ import svenhjol.strange.traveljournal.message.ClientTravelJournalEntries;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 
-public class StrangeMessages
-{
-    public static void init(MesonInstance instance)
-    {
+public class StrangeMessages {
+    public static void init(MesonInstance instance) {
         PacketHandler handler = instance.getPacketHandler();
 
         handler.register(ServerQuestList.class, ServerQuestList::encode, ServerQuestList::decode, ServerQuestList.Handler::handle);

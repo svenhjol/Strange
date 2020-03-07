@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.registries.ForgeRegistries;
-import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.DecorationHelper;
 import svenhjol.strange.base.module.EntitySpawner;
 
@@ -34,8 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class EntitySpawnerTileEntity extends TileEntity implements ITickableTileEntity
-{
+public class EntitySpawnerTileEntity extends TileEntity implements ITickableTileEntity {
     private final static String ENTITY = "entity";
     private final static String PERSIST = "persist";
     private final static String HEALTH = "health";
@@ -50,14 +49,12 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
     public int count = 1;
     public String meta = "";
 
-    public EntitySpawnerTileEntity()
-    {
+    public EntitySpawnerTileEntity() {
         super(EntitySpawner.tile);
     }
 
     @Override
-    public void read(CompoundNBT tag)
-    {
+    public void read(CompoundNBT tag) {
         super.read(tag);
         this.entity = ResourceLocation.tryCreate(tag.getString(ENTITY));
         this.persist = tag.getBoolean(PERSIST);
@@ -69,8 +66,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag)
-    {
+    public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
         tag.putString(ENTITY, entity.toString());
         tag.putString(ROTATION, rotation.name());
@@ -82,8 +78,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
         if (world == null
             || world.getGameTime() % 10 == 0
             || world.getDifficulty() == Difficulty.PEACEFUL
@@ -97,14 +92,13 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
         boolean result = trySpawn(pos);
         if (result) {
-            Meson.debug("EntitySpawner spawned entity at pos: " + pos);
+            Strange.LOG.debug("EntitySpawner spawned entity at pos: " + pos);
         } else {
-            Meson.warn("EntitySpawner failed to spawn entity at pos: " + pos);
+            Strange.LOG.warn("EntitySpawner failed to spawn entity at pos: " + pos);
         }
     }
 
-    public boolean trySpawn(BlockPos pos)
-    {
+    public boolean trySpawn(BlockPos pos) {
         Entity ent;
         EntityType<?> type;
 
@@ -124,13 +118,12 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         for (int i = 0; i < this.count; i++) {
             ent = type.create(world);
             if (ent == null) return false;
-
             ent.moveToBlockPosAndAngles(pos, 0.0F, 0.0F);
 
             if (ent instanceof MobEntity) {
-                MobEntity m = (MobEntity)ent;
+                MobEntity m = (MobEntity) ent;
                 if (persist) m.enablePersistence();
-                if (health > 0) m.setHealth((float)health);
+                if (health > 0) m.setHealth((float) health);
                 m.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
             }
 
@@ -139,15 +132,14 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         return true;
     }
 
-    public boolean tryCreateMinecart(EntityType<?> type, BlockPos pos)
-    {
+    public boolean tryCreateMinecart(EntityType<?> type, BlockPos pos) {
         AbstractMinecartEntity minecart = null;
         if (world == null) return false;
 
         if (type == EntityType.CHEST_MINECART) {
             minecart = new ChestMinecartEntity(world.getWorld(), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
             ResourceLocation lootTable = DecorationHelper.getLootTable(this.meta, LootTables.CHESTS_ABANDONED_MINESHAFT);
-            ((ChestMinecartEntity)minecart).setLootTable(lootTable, world.rand.nextLong());
+            ((ChestMinecartEntity) minecart).setLootTable(lootTable, world.rand.nextLong());
         } else if (type == EntityType.MINECART) {
             minecart = new MinecartEntity(world.getWorld(), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
         }
@@ -157,8 +149,7 @@ public class EntitySpawnerTileEntity extends TileEntity implements ITickableTile
         return true;
     }
 
-    public boolean tryCreateArmorStand(BlockPos pos)
-    {
+    public boolean tryCreateArmorStand(BlockPos pos) {
         if (world == null) return false;
         Random rand = world.rand;
 

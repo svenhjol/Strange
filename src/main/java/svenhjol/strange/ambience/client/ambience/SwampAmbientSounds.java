@@ -10,68 +10,56 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class SwampAmbientSounds
-{
-    public static class Day extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Day(PlayerEntity player, SoundHandler soundHandler)
-        {
+public class SwampAmbientSounds {
+    public static class Day extends BaseAmbientSounds implements IBiomeAmbience {
+        public Day(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_SWAMP_DAY_LONG;
         }
 
         @Override
-        public float getLongSoundVolume()
-        {
+        public float getLongSoundVolume() {
             return super.getLongSoundVolume() - 0.1F;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return null;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.SWAMP
                 && isOutside()
                 && Strange.client.isDaytime;
         }
     }
 
-    public static class Night extends BaseAmbientSounds implements IBiomeAmbience
-    {
-        public Night(PlayerEntity player, SoundHandler soundHandler)
-        {
+    public static class Night extends BaseAmbientSounds implements IBiomeAmbience {
+        public Night(PlayerEntity player, SoundHandler soundHandler) {
             super(player, soundHandler);
         }
 
         @Nullable
         @Override
-        public SoundEvent getLongSound()
-        {
+        public SoundEvent getLongSound() {
             return StrangeSounds.AMBIENCE_SWAMP_NIGHT_LONG;
         }
 
         @Nullable
         @Override
-        public SoundEvent getShortSound()
-        {
+        public SoundEvent getShortSound() {
             return null;
         }
 
         @Override
-        public boolean validBiomeConditions(Biome.Category biomeCategory)
-        {
+        public boolean validBiomeConditions(Biome.Category biomeCategory) {
             return biomeCategory == Biome.Category.SWAMP
                 && isOutside()
                 && !Strange.client.isDaytime;

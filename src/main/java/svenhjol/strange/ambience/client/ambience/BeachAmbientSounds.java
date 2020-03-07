@@ -9,30 +9,25 @@ import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
 
-public class BeachAmbientSounds extends BaseAmbientSounds implements IBiomeAmbience
-{
-    public BeachAmbientSounds(PlayerEntity player, SoundHandler soundHandler)
-    {
+public class BeachAmbientSounds extends BaseAmbientSounds implements IBiomeAmbience {
+    public BeachAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         super(player, soundHandler);
     }
 
     @Nullable
     @Override
-    public SoundEvent getLongSound()
-    {
+    public SoundEvent getLongSound() {
         return StrangeSounds.AMBIENCE_BEACH_LONG;
     }
 
     @Nullable
     @Override
-    public SoundEvent getShortSound()
-    {
+    public SoundEvent getShortSound() {
         return null;
     }
 
     @Override
-    public boolean validBiomeConditions(Biome.Category biomeCategory)
-    {
+    public boolean validBiomeConditions(Biome.Category biomeCategory) {
         return biomeCategory == Biome.Category.BEACH
             && isOutside();
     }

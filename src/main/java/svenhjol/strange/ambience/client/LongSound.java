@@ -7,15 +7,13 @@ import net.minecraft.util.SoundEvent;
 
 import java.util.function.Predicate;
 
-public class LongSound extends TickableSound
-{
+public class LongSound extends TickableSound {
     private final PlayerEntity player;
     private int longTicks;
     private Predicate<PlayerEntity> predicate;
     private float maxVolume;
 
-    public LongSound(PlayerEntity player, SoundEvent sound, float volume, Predicate<PlayerEntity> predicate)
-    {
+    public LongSound(PlayerEntity player, SoundEvent sound, float volume, Predicate<PlayerEntity> predicate) {
         super(sound, SoundCategory.AMBIENT);
         this.maxVolume = volume;
         this.player = player;
@@ -29,8 +27,7 @@ public class LongSound extends TickableSound
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
         if (this.player.isAlive()) {
 
             if (predicate.test(this.player)) {
@@ -40,7 +37,7 @@ public class LongSound extends TickableSound
             }
 
             this.longTicks = Math.min(this.longTicks, 140);
-            this.volume = Math.max(0.0F, Math.min((float)this.longTicks / 140, 1.0F)) * maxVolume;
+            this.volume = Math.max(0.0F, Math.min((float) this.longTicks / 140, 1.0F)) * maxVolume;
 
             if (!this.donePlaying && this.volume == 0.0F && this.longTicks < -100)
                 this.donePlaying = true;

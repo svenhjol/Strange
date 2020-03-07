@@ -12,53 +12,45 @@ import net.minecraft.world.storage.loot.functions.ILootFunction;
 import svenhjol.strange.Strange;
 import svenhjol.strange.enchantments.module.TreasureEnchantments;
 
-public class TreasureEnchantment extends LootFunction
-{
-    private TreasureEnchantment(ILootCondition[] conditions)
-    {
+@SuppressWarnings("unused")
+public class TreasureEnchantment extends LootFunction {
+    private TreasureEnchantment(ILootCondition[] conditions) {
         super(conditions);
     }
 
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context)
-    {
+    protected ItemStack doApply(ItemStack stack, LootContext context) {
         ItemStack treasure = TreasureEnchantments.getTreasureItem(context.getRandom());
         return treasure != null ? treasure : stack;
     }
 
-    public static class Builder extends LootFunction.Builder<TreasureEnchantment.Builder>
-    {
-        public Builder() {}
+    public static class Builder extends LootFunction.Builder<TreasureEnchantment.Builder> {
+        public Builder() {
+        }
 
         @Override
-        protected Builder doCast()
-        {
+        protected Builder doCast() {
             return this;
         }
 
         @Override
-        public ILootFunction build()
-        {
+        public ILootFunction build() {
             return new TreasureEnchantment(this.getConditions());
         }
     }
 
-    public static class Serializer extends LootFunction.Serializer<TreasureEnchantment>
-    {
-        public Serializer()
-        {
+    public static class Serializer extends LootFunction.Serializer<TreasureEnchantment> {
+        public Serializer() {
             super(new ResourceLocation(Strange.MOD_ID, "treasure_enchantment"), TreasureEnchantment.class);
         }
 
         @Override
-        public void serialize(JsonObject object, TreasureEnchantment functionClazz, JsonSerializationContext serializationContext)
-        {
+        public void serialize(JsonObject object, TreasureEnchantment functionClazz, JsonSerializationContext serializationContext) {
             super.serialize(object, functionClazz, serializationContext);
         }
 
         @Override
-        public TreasureEnchantment deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn)
-        {
+        public TreasureEnchantment deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
             return new TreasureEnchantment(conditionsIn);
         }
     }
