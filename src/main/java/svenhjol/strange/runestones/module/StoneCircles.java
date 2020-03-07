@@ -84,7 +84,7 @@ public class StoneCircles extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.NETHER)
     ));
 
-    public static List<Biome> validBiomes = new ArrayList<>();
+    public static final List<Biome> validBiomes = new ArrayList<>();
 
     @Override
     public boolean shouldRunSetup() {

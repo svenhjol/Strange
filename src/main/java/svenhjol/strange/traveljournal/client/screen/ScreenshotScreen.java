@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class ScreenshotScreen extends BaseTravelJournalScreen {
-    protected Entry entry;
+    protected final Entry entry;
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;

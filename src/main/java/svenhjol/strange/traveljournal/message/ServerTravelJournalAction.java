@@ -41,12 +41,12 @@ public class ServerTravelJournalAction implements IMesonMessage {
     public static final int BIND_COMPASS = 5;
     public static final int MAKE_MAP = 6;
 
-    private String id;
-    private BlockPos pos;
-    private Hand hand;
-    private int action;
-    private int color;
-    private int dim;
+    private final String id;
+    private final BlockPos pos;
+    private final Hand hand;
+    private final int action;
+    private final int color;
+    private final int dim;
     private String name;
 
     public ServerTravelJournalAction(int action, Entry entry, Hand hand) {

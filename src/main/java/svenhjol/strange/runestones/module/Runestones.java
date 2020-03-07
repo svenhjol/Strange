@@ -53,15 +53,15 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
     description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends MesonModule {
-    public static ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
-    public static List<RunestoneBlock> normalBlocks = new ArrayList<>();
-    public static List<ObeliskBlock> obeliskBlocks = new ArrayList<>();
+    public static final ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
+    public static final List<RunestoneBlock> normalBlocks = new ArrayList<>();
+    public static final List<ObeliskBlock> obeliskBlocks = new ArrayList<>();
     public static List<Destination> innerDests = new ArrayList<>();
     public static List<Destination> outerDests = new ArrayList<>();
     public static List<Destination> allDests = new ArrayList<>();
     public static List<Destination> ordered = new ArrayList<>();
-    public static Map<UUID, BlockPos> playerTeleportRunestone = new HashMap<>();
-    public static Map<UUID, BlockPos> playerTeleportObelisk = new HashMap<>();
+    public static final Map<UUID, BlockPos> playerTeleportRunestone = new HashMap<>();
+    public static final Map<UUID, BlockPos> playerTeleportObelisk = new HashMap<>();
     private static final int INTERVAL = 10;
 
     @Config(name = "Runestone for Quark Big Dungeons", description = "If true, one of the runestones will link to a Big Dungeon from Quark.\n" +
@@ -74,7 +74,7 @@ public class Runestones extends MesonModule {
     public static boolean allowObelisks = true;
 
     @CapabilityInject(IRunestonesCapability.class)
-    public static Capability<IRunestonesCapability> RUNESTONES = null;
+    public static final Capability<IRunestonesCapability> RUNESTONES = null;
 
     @Override
     public void init() {

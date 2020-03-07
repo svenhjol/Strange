@@ -18,8 +18,8 @@ import java.util.function.Supplier;
 public class ServerQuestAction implements IMesonMessage {
     public static final int QUIT = 0;
 
-    private int action;
-    private String id;
+    private final int action;
+    private final String id;
 
     public ServerQuestAction(int action, String id) {
         this.id = id;

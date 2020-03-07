@@ -27,8 +27,8 @@ public class Criteria {
 
     private static final String CONDITIONS = "conditions";
 
-    private List<Condition> conditions = new ArrayList<>();
-    private IQuest quest;
+    private final List<Condition> conditions = new ArrayList<>();
+    private final IQuest quest;
 
     public Criteria(IQuest quest) {
         this.quest = quest;

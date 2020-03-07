@@ -22,10 +22,10 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class QuestToast implements IToast {
     private boolean hasPlayedSound;
-    private IQuest quest;
-    private String title;
-    private String subTitle;
-    private Type type;
+    private final IQuest quest;
+    private final String title;
+    private final String subTitle;
+    private final Type type;
 
     public QuestToast(IQuest quest, Type type, String title, String subTitle) {
         this.quest = quest;

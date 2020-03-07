@@ -66,10 +66,10 @@ public abstract class BaseGenerator {
         SCROLL_TIER1, SCROLL_TIER2, SCROLL_TIER3, SCROLL_TIER4, SCROLL_TIER5
     ));
 
-    protected World world;
-    protected BlockPos pos;
-    protected IQuest quest;
-    protected Definition definition;
+    protected final World world;
+    protected final BlockPos pos;
+    protected final IQuest quest;
+    protected final Definition definition;
 
     public BaseGenerator(World world, BlockPos pos, IQuest quest, Definition definition) {
         this.world = world;

@@ -29,7 +29,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected Entry entry;
     protected String message = "";
     protected char[] runicName;
-    protected List<DyeColor> colors = Arrays.asList(
+    protected final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
     );
     protected FontRenderer glyphs;

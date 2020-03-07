@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 public class ServerTravelJournalMeta implements IMesonMessage {
     public static final int SETPAGE = 0;
 
-    private Hand hand;
-    private int action;
-    private int page;
+    private final Hand hand;
+    private final int action;
+    private final int page;
 
     public ServerTravelJournalMeta(int action, Hand hand) {
         this.action = action;

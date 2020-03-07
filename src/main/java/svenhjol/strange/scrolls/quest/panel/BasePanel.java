@@ -12,18 +12,18 @@ import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public abstract class BasePanel extends AbstractGui {
-    protected IQuest quest;
-    protected Minecraft mc;
-    protected FontRenderer fonts;
-    protected ItemRenderer items;
-    protected TextureManager textures;
-    protected int primaryTextColor = 0xFFFFFF;
+    protected final IQuest quest;
+    protected final Minecraft mc;
+    protected final FontRenderer fonts;
+    protected final ItemRenderer items;
+    protected final TextureManager textures;
+    protected final int primaryTextColor = 0xFFFFFF;
     protected int secondaryTextColor = 0xAAAAAA;
-    protected int titleColor = 0xFFFF00;
-    protected int pad = 8;
-    protected int rowHeight = 16;
-    protected int width;
-    protected int mid;
+    protected final int titleColor = 0xFFFF00;
+    protected final int pad = 8;
+    protected final int rowHeight = 16;
+    protected final int width;
+    protected final int mid;
 
     public BasePanel(IQuest quest, int mid, int width) {
         this.quest = quest;

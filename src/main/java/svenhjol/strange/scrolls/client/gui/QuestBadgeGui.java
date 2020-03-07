@@ -8,13 +8,16 @@ import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestBadgeGui extends AbstractGui {
-    private int x0, x1, y0, y1;
+    private final int x0;
+    private final int x1;
+    private final int y0;
+    private final int y1;
     private int buttonX0, buttonY0, buttonX1, buttonY1;
-    private IQuest quest;
-    private Minecraft mc;
-    public static int WIDTH = 100;
-    public static int HEIGHT = 14;
-    public static int BUTTON_PADDING = 2;
+    private final IQuest quest;
+    private final Minecraft mc;
+    public static final int WIDTH = 100;
+    public static final int HEIGHT = 14;
+    public static final int BUTTON_PADDING = 2;
 
     public QuestBadgeGui(IQuest quest, int x, int y) {
         this.quest = quest;

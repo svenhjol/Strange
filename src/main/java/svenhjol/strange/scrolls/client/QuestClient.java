@@ -43,7 +43,7 @@ public class QuestClient {
         Minecraft.getInstance().getToastGui().add(new QuestToast(quest, type, title, quest.getTitle()));
     }
 
-    private List<QuestBadgeGui> questBadges = new ArrayList<>();
+    private final List<QuestBadgeGui> questBadges = new ArrayList<>();
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

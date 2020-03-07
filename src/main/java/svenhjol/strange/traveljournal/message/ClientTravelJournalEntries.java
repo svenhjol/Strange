@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
 public class ClientTravelJournalEntries implements IMesonMessage {
-    private CompoundNBT entries;
+    private final CompoundNBT entries;
 
     public ClientTravelJournalEntries(CompoundNBT entries) {
         this.entries = entries;

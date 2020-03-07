@@ -5,8 +5,8 @@ import net.minecraftforge.eventbus.api.Event;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 public class QuestEvent extends Event {
-    private IQuest quest;
-    private PlayerEntity player;
+    private final IQuest quest;
+    private final PlayerEntity player;
 
     public QuestEvent(PlayerEntity player, IQuest quest) {
         this.player = player;

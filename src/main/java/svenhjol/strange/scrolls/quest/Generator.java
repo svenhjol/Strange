@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Generator {
-    public static Generator INSTANCE = new Generator();
+    public static final Generator INSTANCE = new Generator();
 
     public IQuest generate(World world, BlockPos pos, Definition definition, float valueMultiplier, @Nullable IQuest quest) {
         if (quest == null) quest = new Quest();

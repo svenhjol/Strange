@@ -9,8 +9,8 @@ import svenhjol.strange.scrolls.module.Quests;
 import java.util.function.Supplier;
 
 public class ClientScrollAction implements IMesonMessage {
-    private String id;
-    private Hand hand;
+    private final String id;
+    private final Hand hand;
 
     public ClientScrollAction(String id, Hand hand) {
         this.id = id;

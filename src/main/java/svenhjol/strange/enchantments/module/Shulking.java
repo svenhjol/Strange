@@ -31,8 +31,8 @@ import java.util.Random;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
 public class Shulking extends MesonModule implements ITreasureEnchantment {
     public static ShulkingEnchantment enchantment;
-    public static int damageOnActivate = 5;
-    public static double duration = 5.0D;
+    public static final int damageOnActivate = 5;
+    public static final double duration = 5.0D;
 
     @Override
     public boolean shouldRunSetup() {

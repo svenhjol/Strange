@@ -33,12 +33,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class TravelJournalScreen extends BaseTravelJournalScreen {
-    public static int PER_PAGE = 5;
+    public static final int PER_PAGE = 5;
 
     protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
     protected List<String> hasScreenshots = new ArrayList<>();
-    protected CompoundNBT journalEntries;
+    protected final CompoundNBT journalEntries;
     protected boolean hasTotem = false;
     protected boolean hasCompass = false;
     protected boolean hasMap = false;

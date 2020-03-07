@@ -25,9 +25,9 @@ public class ServerScrollAction implements IMesonMessage {
     public static final int ACCEPT = 1;
     public static final int DECLINE = 2;
 
-    private int action;
-    private String id;
-    private Hand hand;
+    private final int action;
+    private final String id;
+    private final Hand hand;
 
     public ServerScrollAction(int action, String id, Hand hand) {
         this.id = id;

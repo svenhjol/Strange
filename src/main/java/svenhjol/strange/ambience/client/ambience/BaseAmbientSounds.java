@@ -17,9 +17,9 @@ public abstract class BaseAmbientSounds implements IAmbientSounds {
     protected boolean isValid = false;
     protected TickableSound longSound = null;
 
-    protected PlayerEntity player;
-    protected ClientWorld world;
-    protected SoundHandler soundHandler;
+    protected final PlayerEntity player;
+    protected final ClientWorld world;
+    protected final SoundHandler soundHandler;
 
     public BaseAmbientSounds(PlayerEntity player, SoundHandler soundHandler) {
         this.player = player;

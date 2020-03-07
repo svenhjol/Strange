@@ -62,7 +62,7 @@ public class Vaults extends MesonModule {
     @Config(name = "Generate above Y value", description = "Vaults will try and generate above this Y value.")
     public static int generateAbove = 24;
 
-    public static List<Biome> validBiomes = new ArrayList<>();
+    public static final List<Biome> validBiomes = new ArrayList<>();
 
     @Override
     public void init() {

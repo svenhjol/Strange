@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class RunestoneHelper {
-    private static Map<Character, Character> runeChars = new HashMap<>();
+    private static final Map<Character, Character> runeChars = new HashMap<>();
 
     public static Map<Character, Character> getRuneChars() {
         return runeChars;

@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
 public class ClientUpdatePlayerState implements IMesonMessage {
-    private CompoundNBT input;
+    private final CompoundNBT input;
 
     public ClientUpdatePlayerState(CompoundNBT input) {
         this.input = input;
@@ -48,7 +48,6 @@ public class ClientUpdatePlayerState implements IMesonMessage {
     public static class Handler {
         public static void handle(final ClientUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-//                Strange.LOG.debug("UpdatePlayerState heartbeat response");
                 Strange.client.updateStructures(msg.input);
                 Strange.client.updateDiscoveries(msg.input);
             });

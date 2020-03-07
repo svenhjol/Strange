@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TotemOfTransferringItem extends MesonItem {
-    public static String STATE = "state";
+    public static final String STATE = "state";
 
     public TotemOfTransferringItem(MesonModule module) {
         super(module, "totem_of_transferring", new Properties()

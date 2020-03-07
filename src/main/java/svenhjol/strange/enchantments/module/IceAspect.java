@@ -39,10 +39,10 @@ import java.util.stream.Stream;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
 public class IceAspect extends MesonModule implements ITreasureEnchantment {
     public static IceAspectEnchantment enchantment;
-    public static int damageOnActivate = 5;
-    public static double duration = 5.0D;
-    public static int amplifier = 2;
-    public static int[] range = new int[]{3, 2, 3};
+    public static final int damageOnActivate = 5;
+    public static final double duration = 5.0D;
+    public static final int amplifier = 2;
+    public static final int[] range = new int[]{3, 2, 3};
 
     @Override
     public boolean shouldRunSetup() {

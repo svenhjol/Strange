@@ -28,8 +28,8 @@ public class AmbienceClient {
     }
 
     public static class Handler {
-        private PlayerEntity player;
-        private List<BaseAmbientSounds> ambientSounds = new ArrayList<>();
+        private final PlayerEntity player;
+        private final List<BaseAmbientSounds> ambientSounds = new ArrayList<>();
 
         public Handler(PlayerEntity player, SoundHandler soundHandler) {
             this.player = player;

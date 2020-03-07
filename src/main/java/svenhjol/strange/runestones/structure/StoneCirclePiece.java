@@ -24,7 +24,7 @@ import svenhjol.strange.runestones.module.Runestones;
 import java.util.*;
 
 public class StoneCirclePiece extends ScatteredStructurePiece {
-    public static IStructurePieceType PIECE = StoneCirclePiece::new;
+    public static final IStructurePieceType PIECE = StoneCirclePiece::new;
     public static final int TRIES = 64;
 
     public StoneCirclePiece(Random rand, BlockPos pos) {

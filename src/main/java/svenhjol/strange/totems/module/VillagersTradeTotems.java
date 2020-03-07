@@ -28,7 +28,7 @@ import java.util.Random;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
 public class VillagersTradeTotems extends MesonModule {
     public static final String LIBRARIAN = "librarian";
-    public static List<Item> availableTotems = new ArrayList<>();
+    public static final List<Item> availableTotems = new ArrayList<>();
 
     @Config(name = "Trade level", description = "Level at which a merchant will trade totems.")
     public static int tradeLevel = 1;

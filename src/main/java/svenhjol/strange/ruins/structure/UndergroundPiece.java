@@ -15,8 +15,8 @@ import svenhjol.strange.Strange;
 import java.util.Random;
 
 public class UndergroundPiece extends AbstractVillagePiece {
-    public static IStructurePieceType PIECE = UndergroundPiece::new;
-    protected TemplateManager templates;
+    public static final IStructurePieceType PIECE = UndergroundPiece::new;
+    protected final TemplateManager templates;
 
     public UndergroundPiece(TemplateManager templates, JigsawPiece piece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds) {
         super(PIECE, templates, piece, pos, groundLevelDelta, rotation, bounds);

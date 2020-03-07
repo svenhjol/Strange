@@ -27,7 +27,7 @@ public class TreasureTotems extends MesonModule {
     @Config(name = "Only in vaults", description = "If true, Strange treasure totems can only be found in Vaults, not normal dungeon loot.")
     public static boolean onlyVaults = true;
 
-    public static List<ITreasureTotem> availableTotems = new ArrayList<>();
+    public static final List<ITreasureTotem> availableTotems = new ArrayList<>();
 
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent event) {

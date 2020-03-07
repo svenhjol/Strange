@@ -21,7 +21,7 @@ import svenhjol.strange.scrolls.item.ScrollItem;
     description = "Scrolls contain information about quests.\n" +
         "They can be found in chests or bought from scrollkeeper villagers.")
 public class Scrolls extends MesonModule {
-    public static int MAX_TIERS = 5;
+    public static final int MAX_TIERS = 5;
     public static ScrollItem item;
 
     @Override

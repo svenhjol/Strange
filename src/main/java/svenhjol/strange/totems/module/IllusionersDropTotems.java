@@ -47,7 +47,7 @@ public class IllusionersDropTotems extends MesonModule {
         "strange:totem_of_shielding"
     ));
 
-    public static List<Item> totems = new ArrayList<>();
+    public static final List<Item> totems = new ArrayList<>();
 
     @Override
     public boolean shouldRunSetup() {

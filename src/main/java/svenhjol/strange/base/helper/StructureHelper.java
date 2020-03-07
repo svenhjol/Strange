@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StructureHelper {
-    public static List<ResourceLocation> registeredPieces = new ArrayList<>();
+    public static final List<ResourceLocation> registeredPieces = new ArrayList<>();
 
     public static int getWeight(String prefix, String name, int def) {
         if (name.contains(prefix)) {
@@ -39,9 +39,9 @@ public class StructureHelper {
         public static final String STARTS = "starts";
         public static final String ENDS = "ends";
 
-        public List<String> structures = new ArrayList<>();
-        public List<ResourceLocation> starts = new ArrayList<>();
-        public Map<String, Integer> sizes = new HashMap<>();
+        public final List<String> structures = new ArrayList<>();
+        public final List<ResourceLocation> starts = new ArrayList<>();
+        public final Map<String, Integer> sizes = new HashMap<>();
 
         protected final List<String> pieceTypes = Arrays.asList(CORRIDORS, ROOMS, SECRETS, AREAS, STARTS, ENDS);
         protected final List<String> hasEnds = Arrays.asList(CORRIDORS, ROOMS);

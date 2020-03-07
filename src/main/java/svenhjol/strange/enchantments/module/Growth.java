@@ -33,8 +33,8 @@ import java.util.stream.Stream;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
 public class Growth extends MesonModule implements ITreasureEnchantment {
     public static GrowthEnchantment enchantment;
-    public static int[] range = new int[]{5, 3, 5};
-    public static int damageOnActivate = 15;
+    public static final int[] range = new int[]{5, 3, 5};
+    public static final int damageOnActivate = 15;
 
     @Override
     public boolean shouldRunSetup() {

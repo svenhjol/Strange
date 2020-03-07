@@ -58,7 +58,7 @@ public class DecorationHelper {
     public static final String SPAWNER = "spawner";
     public static final String STORAGE = "storage";
 
-    public static List<Block> flowerTypes = Arrays.asList(
+    public static final List<Block> flowerTypes = Arrays.asList(
         Blocks.POPPY,
         Blocks.AZURE_BLUET,
         Blocks.WHITE_TULIP,
@@ -75,7 +75,7 @@ public class DecorationHelper {
         Blocks.LILY_OF_THE_VALLEY
     );
 
-    public static List<Block> pottedTypes = Arrays.asList(
+    public static final List<Block> pottedTypes = Arrays.asList(
         Blocks.POTTED_ACACIA_SAPLING,
         Blocks.POTTED_BIRCH_SAPLING,
         Blocks.POTTED_DARK_OAK_SAPLING,
@@ -98,7 +98,7 @@ public class DecorationHelper {
         Blocks.POTTED_LILY_OF_THE_VALLEY
     );
 
-    public static List<Block> saplingTypes = Arrays.asList(
+    public static final List<Block> saplingTypes = Arrays.asList(
         Blocks.OAK_SAPLING,
         Blocks.SPRUCE_SAPLING,
         Blocks.BIRCH_SAPLING,
@@ -107,7 +107,7 @@ public class DecorationHelper {
         Blocks.JUNGLE_SAPLING
     );
 
-    public static List<Block> oreTypes = Arrays.asList(
+    public static final List<Block> oreTypes = Arrays.asList(
         Blocks.DIAMOND_ORE,
         Blocks.EMERALD_ORE,
         Blocks.GOLD_ORE,
@@ -117,7 +117,7 @@ public class DecorationHelper {
         Blocks.LAPIS_ORE
     );
 
-    public static List<Block> carpetTypes = Arrays.asList(
+    public static final List<Block> carpetTypes = Arrays.asList(
         Blocks.ORANGE_CARPET,
         Blocks.RED_CARPET,
         Blocks.YELLOW_CARPET,
@@ -135,7 +135,7 @@ public class DecorationHelper {
         Blocks.BROWN_CARPET
     );
 
-    public static List<ResourceLocation> storageLootTables = Arrays.asList(
+    public static final List<ResourceLocation> storageLootTables = Arrays.asList(
         LootTables.CHESTS_SHIPWRECK_SUPPLY,
         LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
         LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE,
@@ -145,12 +145,12 @@ public class DecorationHelper {
         LootTables.CHESTS_VILLAGE_VILLAGE_BUTCHER
     );
 
-    public static List<ResourceLocation> chestLootTables = Arrays.asList(
+    public static final List<ResourceLocation> chestLootTables = Arrays.asList(
         LootTables.CHESTS_SIMPLE_DUNGEON,
         LootTables.CHESTS_SHIPWRECK_TREASURE
     );
 
-    public static List<Block> decorationTypes = new ArrayList<>(Arrays.asList(
+    public static final List<Block> decorationTypes = new ArrayList<>(Arrays.asList(
         Blocks.BLAST_FURNACE,
         Blocks.FURNACE,
         Blocks.SMOKER,
@@ -198,14 +198,14 @@ public class DecorationHelper {
         Blocks.SLIME_BLOCK
     ));
 
-    public static List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
+    public static final List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
 
     static {
         if (Meson.isModuleEnabled("strange:scrolls"))
             decorationTypes.add(Scrollkeepers.block);
     }
 
-    public static StructureBlockReplacement STRUCTURE_BLOCK_INSTANCE = new StructureBlockReplacement();
+    public static final StructureBlockReplacement STRUCTURE_BLOCK_INSTANCE = new StructureBlockReplacement();
 
     public static class StructureBlockReplacement {
         protected String data;

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MarkerPiece extends ScatteredStructurePiece {
-    public static IStructurePieceType PIECE = MarkerPiece::new;
+    public static final IStructurePieceType PIECE = MarkerPiece::new;
     public static final int TRIES = 64;
 
     public MarkerPiece(Random rand, BlockPos pos) {

@@ -14,13 +14,13 @@ public class ClientTravelJournalAction implements IMesonMessage {
     public static final int SCREENSHOT = 0;
     public static final int ADD = 1;
 
-    public int action;
-    public String id;
-    public String name;
-    public BlockPos pos;
-    public int dim;
-    public int color;
-    public Hand hand;
+    public final int action;
+    public final String id;
+    public final String name;
+    public final BlockPos pos;
+    public final int dim;
+    public final int color;
+    public final Hand hand;
 
     public ClientTravelJournalAction(int action, Entry entry, Hand hand) {
         this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);

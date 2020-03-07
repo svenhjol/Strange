@@ -18,7 +18,7 @@ import java.util.List;
 public class TotemOfTransferring extends MesonModule implements ITreasureTotem {
     public static TotemOfTransferringItem item;
 
-    public static List<String> transferBlacklist = Arrays.asList(
+    public static final List<String> transferBlacklist = Arrays.asList(
         "minecraft:bedrock",
         "minecraft:end_portal_frame",
         "minecraft:end_portal",

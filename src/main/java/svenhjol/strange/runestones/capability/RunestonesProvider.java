@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class RunestonesProvider implements ICapabilityProvider {
-    IRunestonesCapability instance = new RunestonesCapability();
+    final IRunestonesCapability instance = new RunestonesCapability();
 
     @Nonnull
     @Override

@@ -40,7 +40,7 @@ public class TreasureEnchantments extends MesonModule {
         "An item can never be enchanted higher than level 10.")
     public static int legendaryLevels = 3;
 
-    public static List<ITreasureEnchantment> availableEnchantments = new ArrayList<>();
+    public static final List<ITreasureEnchantment> availableEnchantments = new ArrayList<>();
 
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent event) {

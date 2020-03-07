@@ -10,8 +10,8 @@ import java.util.function.Predicate;
 public class LongSound extends TickableSound {
     private final PlayerEntity player;
     private int longTicks;
-    private Predicate<PlayerEntity> predicate;
-    private float maxVolume;
+    private final Predicate<PlayerEntity> predicate;
+    private final float maxVolume;
 
     public LongSound(PlayerEntity player, SoundEvent sound, float volume, Predicate<PlayerEntity> predicate) {
         super(sound, SoundCategory.AMBIENT);

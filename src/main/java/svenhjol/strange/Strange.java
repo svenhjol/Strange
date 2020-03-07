@@ -14,11 +14,11 @@ import svenhjol.strange.base.feature.StrangeJigsawPiece;
 @Mod(Strange.MOD_ID)
 public class Strange extends MesonInstance {
     public static final String MOD_ID = "strange";
-    public static LogHandler LOG = new LogHandler(Strange.MOD_ID);
+    public static final LogHandler LOG = new LogHandler(Strange.MOD_ID);
     public static QuarkCompat quarkCompat;
     public static StrangeClient client;
 
-    public static Marker CLIENT = MarkerManager.getMarker("CLIENT");
+    public static final Marker CLIENT = MarkerManager.getMarker("CLIENT");
 
     public Strange() {
         super(Strange.MOD_ID, LOG);

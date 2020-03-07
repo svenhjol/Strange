@@ -15,9 +15,9 @@ import svenhjol.strange.Strange;
 import java.util.Random;
 
 public class VaultPiece extends AbstractVillagePiece {
-    public static IStructurePieceType PIECE = VaultPiece::new;
+    public static final IStructurePieceType PIECE = VaultPiece::new;
 
-    protected TemplateManager templates;
+    protected final TemplateManager templates;
 
     public VaultPiece(TemplateManager templates, JigsawPiece piece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds) {
         super(PIECE, templates, piece, pos, groundLevelDelta, rotation, bounds);

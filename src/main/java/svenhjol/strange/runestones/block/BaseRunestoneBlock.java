@@ -4,7 +4,7 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
 
 public abstract class BaseRunestoneBlock extends MesonBlock {
-    private int runeValue;
+    private final int runeValue;
 
     public BaseRunestoneBlock(MesonModule module, String name, int runeValue, Properties props) {
         super(module, name + "_" + runeValue, props);

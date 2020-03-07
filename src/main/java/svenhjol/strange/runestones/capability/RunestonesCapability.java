@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RunestonesCapability implements IRunestonesCapability {
-    private List<Integer> discoveredTypes = new ArrayList<>();
-    private Map<Long, Long> destinations = new HashMap<>();
+    private final List<Integer> discoveredTypes = new ArrayList<>();
+    private final Map<Long, Long> destinations = new HashMap<>();
 
     @Override
     public void discoverType(int rune) {

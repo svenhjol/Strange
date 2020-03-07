@@ -41,8 +41,8 @@ public class Quests extends MesonModule {
     public static final ResourceLocation QUESTS_CAP_ID = new ResourceLocation(Strange.MOD_ID, "quest_capability");
 
     @CapabilityInject(IQuestsCapability.class)
-    public static Capability<IQuestsCapability> QUESTS = null;
-    public static Map<Integer, List<Definition>> available = new HashMap<>();
+    public static final Capability<IQuestsCapability> QUESTS = null;
+    public static final Map<Integer, List<Definition>> available = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
     public static QuestClient client;

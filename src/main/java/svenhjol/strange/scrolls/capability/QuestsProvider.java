@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class QuestsProvider implements ICapabilityProvider {
-    IQuestsCapability instance = new QuestsCapability();
+    final IQuestsCapability instance = new QuestsCapability();
 
     @Nonnull
     @Override

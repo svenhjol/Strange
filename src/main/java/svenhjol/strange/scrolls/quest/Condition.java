@@ -28,7 +28,7 @@ public class Condition<T extends IDelegate> {
     protected IQuest quest;
     private String type;
     private String id;
-    private T delegate;
+    private final T delegate;
 
     public Condition(IQuest quest, T delegate) {
         this.quest = quest;

@@ -23,8 +23,8 @@ public class ClientQuestAction implements IMesonMessage {
     public static final int DECLINED = 3;
     public static final int FAILED = 4;
 
-    private IQuest quest;
-    private int action;
+    private final IQuest quest;
+    private final int action;
 
     public ClientQuestAction(int action, IQuest quest) {
         this.action = action;

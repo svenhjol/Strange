@@ -46,10 +46,10 @@ public class UndergroundRuins extends MesonModule {
     public static final String RESNAME = "strange:underground_ruin";
     public static final String DIR = "underground";
     public static Structure<NoFeatureConfig> structure;
-    public static Map<Biome.Category, List<String>> ruins = new HashMap<>();
-    public static Map<Biome.Category, Map<String, Integer>> sizes = new HashMap<>();
-    public static Map<Biome.Category, List<ResourceLocation>> starts = new HashMap<>();
-    public static List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
+    public static final Map<Biome.Category, List<String>> ruins = new HashMap<>();
+    public static final Map<Biome.Category, Map<String, Integer>> sizes = new HashMap<>();
+    public static final Map<Biome.Category, List<ResourceLocation>> starts = new HashMap<>();
+    public static final List<Structure<?>> blacklist = new ArrayList<>(Arrays.asList(
         Feature.STRONGHOLD,
         Feature.OCEAN_MONUMENT
     ));
