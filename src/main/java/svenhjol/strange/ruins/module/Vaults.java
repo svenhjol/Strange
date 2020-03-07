@@ -42,8 +42,7 @@ import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
     description = "Large underground complexes with rare treasure.")
-public class Vaults extends MesonModule
-{
+public class Vaults extends MesonModule {
     public static final String NAME = "vaults";
     public static final String RESNAME = "strange:vaults";
     public static final String VAULTS_DIR = "vaults";
@@ -66,8 +65,7 @@ public class Vaults extends MesonModule
     public static List<Biome> validBiomes = new ArrayList<>();
 
     @Override
-    public void init()
-    {
+    public void init() {
         structure = new VaultStructure();
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
@@ -87,16 +85,14 @@ public class Vaults extends MesonModule
     }
 
     @Override
-    public void onServerStarted(FMLServerStartedEvent event)
-    {
+    public void onServerStarted(FMLServerStartedEvent event) {
         final IReloadableResourceManager rm = event.getServer().getResourceManager();
         new StructureHelper.RegisterJigsawPieces(rm, VAULTS_DIR); // for normal vault pieces
         new StructureHelper.RegisterJigsawPieces(rm, VAULTS_LOCAL); // these are pieces for vaults that are part of the innerlands
     }
 
     @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
+    public void onLootTableLoad(LootTableLoadEvent event) {
         int weight = 0;
         int quality = 1;
 
@@ -118,7 +114,7 @@ public class Vaults extends MesonModule
                         ServerWorld world = context.getWorld();
                         BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 200, true);
                         if (structurePos != null) {
-                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
+                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte) 2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, map);
                             MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.RED_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.vaults"));
@@ -134,8 +130,7 @@ public class Vaults extends MesonModule
         }
     }
 
-    public static boolean isValidPosition(BlockPos pos)
-    {
+    public static boolean isValidPosition(BlockPos pos) {
         if (!Meson.isModuleEnabled("strange:outerlands") || !Vaults.outerOnly) return true;
         return Meson.isModuleEnabled("strange:outerlands") && Outerlands.isOuterPos(pos);
     }

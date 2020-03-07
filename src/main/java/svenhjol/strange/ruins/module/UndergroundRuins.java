@@ -41,8 +41,7 @@ import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
     description = "Ruins that spawn underground with different types according to biome.")
-public class UndergroundRuins extends MesonModule
-{
+public class UndergroundRuins extends MesonModule {
     public static final String NAME = "underground_ruin";
     public static final String RESNAME = "strange:underground_ruin";
     public static final String DIR = "underground";
@@ -70,9 +69,11 @@ public class UndergroundRuins extends MesonModule
     @Config(name = "Add underground ruin maps to loot", description = "If true, underground ruin maps will be added to dungeon loot and nether fortress chests.")
     public static boolean addMapsToLoot = true;
 
+    @Config(name = "Marker chance", description = "Chance (out of 1.0) of a marker spawning on the surface above a ruin.")
+    public static double markerChance = 0.75D;
+
     @Override
-    public void init()
-    {
+    public void init() {
         structure = new UndergroundStructure();
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
@@ -89,8 +90,7 @@ public class UndergroundRuins extends MesonModule
     }
 
     @Override
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event)
-    {
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         // don't spawn near Quark's big dungeons
         if (Strange.quarkCompat != null
             && Strange.quarkCompat.hasBigDungeons()
@@ -98,7 +98,7 @@ public class UndergroundRuins extends MesonModule
             Structure<?> structure = Strange.quarkCompat.getBigDungeonStructure();
             if (!blacklist.contains(structure)) {
                 blacklist.add(structure);
-                Meson.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
+                Strange.LOG.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
             }
         }
 
@@ -106,14 +106,13 @@ public class UndergroundRuins extends MesonModule
         if (Meson.isModuleEnabled("strange:vaults")) {
             if (!blacklist.contains(Vaults.structure)) {
                 blacklist.add(Vaults.structure);
-                Meson.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
+                Strange.LOG.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
             }
         }
     }
 
     @Override
-    public void onServerStarted(FMLServerStartedEvent event)
-    {
+    public void onServerStarted(FMLServerStartedEvent event) {
         IReloadableResourceManager rm = event.getServer().getResourceManager();
 
         for (Biome.Category cat : Biome.Category.values()) {
@@ -133,12 +132,11 @@ public class UndergroundRuins extends MesonModule
             sizes.get(cat).putAll(register.sizes);
         }
 
-        Meson.log(ruins.toString());
+        Strange.LOG.debug("Ruins data: " + ruins.toString());
     }
 
     @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
+    public void onLootTableLoad(LootTableLoadEvent event) {
         if (!addMapsToLoot) return;
 
         int weight = 0;
@@ -162,7 +160,7 @@ public class UndergroundRuins extends MesonModule
                         ServerWorld world = context.getWorld();
                         BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 100, true);
                         if (structurePos != null) {
-                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte)2, true, true);
+                            ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte) 2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, map);
                             MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
