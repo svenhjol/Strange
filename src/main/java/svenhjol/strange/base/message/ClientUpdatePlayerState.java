@@ -48,7 +48,7 @@ public class ClientUpdatePlayerState implements IMesonMessage {
     public static class Handler {
         public static void handle(final ClientUpdatePlayerState msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-//                Meson.debug("UpdatePlayerState heartbeat response");
+//                Strange.LOG.debug("UpdatePlayerState heartbeat response");
                 Strange.client.updateStructures(msg.input);
                 Strange.client.updateDiscoveries(msg.input);
             });

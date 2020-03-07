@@ -10,12 +10,11 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
 
 import java.util.Random;
 
-public class VaultPiece extends AbstractVillagePiece
-{
+public class VaultPiece extends AbstractVillagePiece {
     public static IStructurePieceType PIECE = VaultPiece::new;
 
     protected TemplateManager templates;
@@ -25,21 +24,19 @@ public class VaultPiece extends AbstractVillagePiece
         this.templates = templates;
     }
 
-    public VaultPiece(TemplateManager templates, CompoundNBT nbt)
-    {
+    public VaultPiece(TemplateManager templates, CompoundNBT nbt) {
         super(templates, nbt, PIECE);
         this.templates = templates;
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk)
-    {
+    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk) {
         boolean result;
 
         try {
             result = super.addComponentParts(world, rand, structureBox, chunk);
         } catch (NullPointerException e) {
-            Meson.warn("NullPointer when generating piece, FIXME: " + e);
+            Strange.LOG.warn("NullPointer when generating piece, FIXME: " + e);
             result = false;
         }
 

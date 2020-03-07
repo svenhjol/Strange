@@ -21,24 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class MarkerPiece extends ScatteredStructurePiece
-{
+public class MarkerPiece extends ScatteredStructurePiece {
     public static IStructurePieceType PIECE = MarkerPiece::new;
     public static final int TRIES = 64;
 
-    public MarkerPiece(Random rand, BlockPos pos)
-    {
+    public MarkerPiece(Random rand, BlockPos pos) {
         super(PIECE, rand, pos.getX(), 64, pos.getZ(), 1, 2, 2);
     }
 
-    public MarkerPiece(TemplateManager templateManager, CompoundNBT tag)
-    {
+    public MarkerPiece(TemplateManager templateManager, CompoundNBT tag) {
         super(PIECE, tag);
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunk)
-    {
+    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunk) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         int x = this.boundingBox.minX;
@@ -99,8 +95,7 @@ public class MarkerPiece extends ScatteredStructurePiece
         return false;
     }
 
-    private boolean generateMarker(IWorld world, DimensionType dim, BlockPos pos, Random rand)
-    {
+    private boolean generateMarker(IWorld world, DimensionType dim, BlockPos pos, Random rand) {
         List<Block> blocks = new ArrayList<>();
 
         if (dim == DimensionType.OVERWORLD) {

@@ -19,42 +19,33 @@ import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
-{
+public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 135318;
 
-    public UndergroundStructure()
-    {
+    public UndergroundStructure() {
         super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
         setRegistryName(Strange.MOD_ID, UndergroundRuins.NAME);
     }
 
     @Override
-    public String getStructureName()
-    {
-        return getRegistryName().toString();
+    public String getStructureName() {
+        return Objects.requireNonNull(getRegistryName()).toString();
     }
 
     @Override
-    public int getSize()
-    {
+    public int getSize() {
         return 1;
     }
 
     @Override
-    protected int getSeedModifier()
-    {
+    protected int getSeedModifier() {
         return SEED_MODIFIER;
     }
 
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
-    {
+    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
@@ -65,7 +56,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {
                             if (structure.hasStartAt(gen, rand, k, l)) {
-                                Meson.debug("[UndergroundStructure] too close to " + structure.getStructureName());
+                                Strange.LOG.debug("[UndergroundStructure] too close to " + structure.getStructureName());
                                 return false;
                             }
                         }
@@ -78,34 +69,29 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
     }
 
     @Override
-    protected int getBiomeFeatureDistance(ChunkGenerator<?> gen)
-    {
+    protected int getBiomeFeatureDistance(ChunkGenerator<?> gen) {
         return UndergroundRuins.distance;
     }
 
     @Override
-    protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen)
-    {
+    protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen) {
         return UndergroundRuins.distance / 2;
     }
 
     @Override
-    public IStartFactory getStartFactory()
-    {
+    public IStartFactory getStartFactory() {
         return UndergroundStructure.Start::new;
     }
 
-    public static class Start extends StructureStart
-    {
-        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed)
-        {
+    @SuppressWarnings("unused")
+    public static class Start extends StructureStart {
+        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed) {
             super(structure, chunkX, chunkZ, biome, bb, ref, seed);
         }
 
         @Override
-        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biome)
-        {
-            BlockPos pos = new BlockPos(chunkX * 16,  rand.nextInt(16) + 42, chunkZ * 16);
+        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biome) {
+            BlockPos pos = new BlockPos(chunkX * 16, rand.nextInt(16) + 42, chunkZ * 16);
             if (pos.getY() == 0 || pos.getY() > 48) return;
 
             Biome.Category biomeCategory = getBiomeCategory(biome, gen);
@@ -122,7 +108,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
             size += rand.nextInt(UndergroundRuins.variation + 1);
             ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + catName + "/" + ruin + "/starts");
 
-            Meson.debug("[UndergroundStructure] create ruin " + ruin + " at " + pos);
+            Strange.LOG.debug("[UndergroundStructure] create ruin " + ruin + " at " + pos);
             JigsawManager.func_214889_a(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
 
@@ -131,22 +117,19 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
                 int shift = 5 + (bounds.maxY - maxTop);
                 bounds.offset(0, -shift, 0);
                 components.forEach(p -> p.offset(0, -shift, 0));
-//                Meson.debug("[UndergroundRuinStructure] Shifting down by " + shift + " at " + pos);
             }
 
             if (bounds.minY < 6) {
                 int shift = 6 - bounds.minY;
                 bounds.offset(0, shift, 0);
                 components.forEach(p -> p.offset(0, shift, 0));
-//                Meson.debug("[UndergroundRuinStructure] Shifting up by " + shift + " at " + pos);
             }
 
-            if (UndergroundRuins.addMarker && this.rand.nextFloat() < 0.75F)
+            if (UndergroundRuins.addMarker && this.rand.nextFloat() < (float)UndergroundRuins.markerChance)
                 components.add(new MarkerPiece(this.rand, pos));
         }
 
-        public Biome.Category getBiomeCategory(Biome biome, ChunkGenerator<?> gen)
-        {
+        public Biome.Category getBiomeCategory(Biome biome, ChunkGenerator<?> gen) {
             Biome.Category biomeCategory = biome.getCategory();
 
             if (gen instanceof OverworldChunkGenerator
@@ -161,10 +144,10 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
         }
 
         @Nullable
-        public String getRuin(Biome.Category biomeCategory, BlockPos pos)
-        {
+        public String getRuin(Biome.Category biomeCategory, BlockPos pos) {
             if (UndergroundRuins.ruins.size() == 0) return null;
-            if (UndergroundRuins.ruins.get(biomeCategory) == null || UndergroundRuins.ruins.get(biomeCategory).size() == 0) return null;
+            if (UndergroundRuins.ruins.get(biomeCategory) == null || UndergroundRuins.ruins.get(biomeCategory).size() == 0)
+                return null;
 
             List<String> ruins = new ArrayList<>(UndergroundRuins.ruins.get(biomeCategory));
             Collections.shuffle(ruins, rand);
@@ -176,8 +159,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
             }
         }
 
-        public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos, Random rand)
-        {
+        public BlockPos adjustPosForBiome(Biome.Category biomeCategory, BlockPos pos, Random rand) {
             if (biomeCategory == Biome.Category.OCEAN) {
                 return new BlockPos(pos.getX(), Math.min(pos.getY(), 20), pos.getZ());
             }
@@ -187,8 +169,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig>
             return pos;
         }
 
-        public int getMaxTopForBiome(Biome.Category biomeCategory, Random rand)
-        {
+        public int getMaxTopForBiome(Biome.Category biomeCategory, Random rand) {
             if (biomeCategory == Biome.Category.NETHER) {
                 return 32;
             }

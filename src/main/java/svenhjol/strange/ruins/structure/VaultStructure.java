@@ -16,34 +16,30 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.Vaults;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class VaultStructure extends ScatteredStructure<NoFeatureConfig>
-{
+public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 188492881;
     public static final int MIN_DISTANCE = 8000;
 
-    public VaultStructure()
-    {
+    public VaultStructure() {
         super(config -> NoFeatureConfig.NO_FEATURE_CONFIG);
         setRegistryName(Strange.MOD_ID, Vaults.NAME);
     }
 
     @Override
-    public String getStructureName()
-    {
-        return getRegistryName().toString();
+    public String getStructureName() {
+        return Objects.requireNonNull(getRegistryName()).toString();
     }
 
     @Override
-    public int getSize()
-    {
+    public int getSize() {
         return 1;
     }
 
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z)
-    {
+    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
@@ -59,27 +55,22 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig>
     }
 
     @Override
-    protected int getSeedModifier()
-    {
+    protected int getSeedModifier() {
         return SEED_MODIFIER;
     }
 
     @Override
-    public IStartFactory getStartFactory()
-    {
+    public IStartFactory getStartFactory() {
         return VaultStructure.Start::new;
     }
 
-    public static class Start extends StructureStart
-    {
-        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed)
-        {
+    public static class Start extends StructureStart {
+        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed) {
             super(structure, chunkX, chunkZ, biome, bb, ref, seed);
         }
 
         @Override
-        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biomeIn)
-        {
+        public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biomeIn) {
             final BlockPos pos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
 
             // create vaults beneath the circle
@@ -101,7 +92,7 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig>
                     int shift = Vaults.generateAbove - bounds.minY;
                     bounds.offset(0, shift, 0);
                     components.forEach(p -> p.offset(0, shift, 0));
-                    //  Meson.debug("[VaultStructure] Shifting up by " + shift + " at " + pos);
+                    //  Strange.LOG.debug("[VaultStructure] Shifting up by " + shift + " at " + pos);
                 }
             }
         }
