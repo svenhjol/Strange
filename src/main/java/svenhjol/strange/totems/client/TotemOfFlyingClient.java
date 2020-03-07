@@ -10,23 +10,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.meson.helper.ClientHelper;
 
 @OnlyIn(Dist.CLIENT)
-public class TotemOfFlyingClient
-{
+public class TotemOfFlyingClient {
     @OnlyIn(Dist.CLIENT)
-    public void disableFlight()
-    {
+    public void disableFlight() {
         PlayerEntity player = ClientHelper.getClientPlayer();
         if (player.isCreative() || player.isSpectator()) {
             player.abilities.allowFlying = true;
-        } else{
+        } else {
             player.abilities.isFlying = false;
             player.abilities.allowFlying = false;
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void enableFlight()
-    {
+    public void enableFlight() {
         PlayerEntity player = ClientHelper.getClientPlayer();
         if (player.isCreative() || player.isSpectator()) {
             player.abilities.allowFlying = true;
@@ -37,14 +34,12 @@ public class TotemOfFlyingClient
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void effectStartFlying(PlayerEntity player)
-    {
-        Minecraft.getInstance().getSoundHandler().play(new TotemOfFlyingSound((ClientPlayerEntity)player));
+    public void effectStartFlying(PlayerEntity player) {
+        Minecraft.getInstance().getSoundHandler().play(new TotemOfFlyingSound((ClientPlayerEntity) player));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void effectFlying(PlayerEntity player)
-    {
+    public void effectFlying(PlayerEntity player) {
         double spread = 0.6D;
         BlockPos pos = player.getPosition();
         for (int i = 0; i < 8; i++) {

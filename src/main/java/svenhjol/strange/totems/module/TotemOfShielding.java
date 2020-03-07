@@ -18,41 +18,36 @@ import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfShielding extends MesonModule implements ITreasureTotem
-{
+public class TotemOfShielding extends MesonModule implements ITreasureTotem {
     public static TotemOfShieldingItem item;
 
     @Config(name = "Durability", description = "Durability of the totem.")
     public static int durability = 128;
 
-    @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the totem." )
+    @Config(name = "Damage multiplier", description = "Player damage is multiplied by this amount before being transferred to the totem.")
     public static double damageMultiplier = 0.5D;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TotemOfShieldingItem(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureTotem.availableTotems.add(this);
     }
 
     @SubscribeEvent
-    public void onDamage(LivingDamageEvent event)
-    {
+    public void onDamage(LivingDamageEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity
             && !event.isCanceled()
         ) {
-            PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             for (Hand hand : Hand.values()) {
                 ItemStack held = player.getHeldItem(hand);
@@ -68,8 +63,7 @@ public class TotemOfShielding extends MesonModule implements ITreasureTotem
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         return new ItemStack(item);
     }
 }

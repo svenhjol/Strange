@@ -9,8 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TotemOfFlyingSound extends TickableSound
-{
+public class TotemOfFlyingSound extends TickableSound {
     private final ClientPlayerEntity player;
     private int time;
 
@@ -24,12 +23,12 @@ public class TotemOfFlyingSound extends TickableSound
 
     public void tick() {
         ++this.time;
-        if (!this.player.removed && (this.time <= 20 || this.player.abilities.isFlying)) {
-            this.x = (float)this.player.posX;
-            this.y = (float)this.player.posY;
-            this.z = (float)this.player.posZ;
-            float f = (float)this.player.getMotion().lengthSquared();
-            if ((double)f >= 1.0E-7D) {
+        if (this.player.isAlive() && (this.time <= 20 || this.player.abilities.isFlying)) {
+            this.x = (float) this.player.posX;
+            this.y = (float) this.player.posY;
+            this.z = (float) this.player.posZ;
+            float f = (float) this.player.getMotion().lengthSquared();
+            if ((double) f >= 1.0E-7D) {
                 this.volume = MathHelper.clamp(f / 4.0F, 0.0F, 1.0F);
             } else {
                 this.volume = 0.0F;
@@ -38,7 +37,7 @@ public class TotemOfFlyingSound extends TickableSound
             if (this.time < 20) {
                 this.volume = 0.0F;
             } else if (this.time < 40) {
-                this.volume = (float)((double)this.volume * ((double)(this.time - 20) / 20.0D));
+                this.volume = (float) ((double) this.volume * ((double) (this.time - 20) / 20.0D));
             }
 
             if (this.volume > 0.8F) {

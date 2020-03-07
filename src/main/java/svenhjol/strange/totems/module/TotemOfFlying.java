@@ -27,8 +27,7 @@ import svenhjol.strange.totems.item.TotemOfFlyingItem;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfFlying extends MesonModule implements ITreasureTotem
-{
+public class TotemOfFlying extends MesonModule implements ITreasureTotem {
     public static TotemOfFlyingItem item;
 
     @Config(name = "Durability", description = "Durability of the totem. The totem takes a point of damage every time you take off.")
@@ -44,37 +43,32 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
     public static TotemOfFlyingClient client;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TotemOfFlyingItem(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureTotem.availableTotems.add(this);
     }
 
     @Override
-    public void onClientSetup(FMLClientSetupEvent event)
-    {
+    public void onClientSetup(FMLClientSetupEvent event) {
         client = new TotemOfFlyingClient();
     }
 
     @SubscribeEvent
-    public void onJump(LivingJumpEvent event)
-    {
+    public void onJump(LivingJumpEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity
             && (event.getEntityLiving().getHeldItemMainhand().getItem() == item
             || event.getEntityLiving().getHeldItemOffhand().getItem() == item)
         ) {
-            PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             ItemStack held = null;
 
             if (player.experienceTotal <= 0) return;
@@ -95,8 +89,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
     }
 
     @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent event)
-    {
+    public void onPlayerTick(PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START
             && event.player != null
             && event.player.world.getGameTime() % 4 == 0
@@ -131,18 +124,16 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
         }
     }
 
-    private void disableFlight(PlayerEntity player)
-    {
+    private void disableFlight(PlayerEntity player) {
         if (player.isCreative() || player.isSpectator()) {
             player.abilities.allowFlying = true;
-        } else{
+        } else {
             player.abilities.isFlying = false;
             player.abilities.allowFlying = false;
         }
     }
 
-    private void enableFlight(PlayerEntity player)
-    {
+    private void enableFlight(PlayerEntity player) {
         if (player.isCreative() || player.isSpectator()) {
             player.abilities.allowFlying = true;
         } else {
@@ -152,8 +143,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         return new ItemStack(item);
     }
 }

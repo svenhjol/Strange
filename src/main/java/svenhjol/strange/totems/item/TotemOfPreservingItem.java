@@ -17,23 +17,21 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.module.TotemOfPreserving;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TotemOfPreservingItem extends MesonItem
-{
+public class TotemOfPreservingItem extends MesonItem {
     private static final String MESSAGE = "message";
     private static final String ITEMS = "items";
 
-    public TotemOfPreservingItem(MesonModule module)
-    {
+    public TotemOfPreservingItem(MesonModule module) {
         super(module, "totem_of_preserving", new Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
@@ -42,14 +40,12 @@ public class TotemOfPreservingItem extends MesonItem
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack held = player.getHeldItem(hand);
         CompoundNBT items = getItems(held);
 
@@ -81,7 +77,7 @@ public class TotemOfPreservingItem extends MesonItem
             for (int i = 0; i < items.size(); i++) {
                 INBT itemTag = items.get(String.valueOf(i));
                 if (itemTag == null) {
-                    Meson.warn("Item tag missing from totem");
+                    Strange.LOG.warn("Item tag missing from totem");
                     continue;
                 }
                 ItemStack stack = ItemStack.read((CompoundNBT) itemTag);
@@ -92,29 +88,24 @@ public class TotemOfPreservingItem extends MesonItem
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void setMessage(ItemStack stack, String message)
-    {
+    public static void setMessage(ItemStack stack, String message) {
         ItemNBTHelper.setString(stack, MESSAGE, message);
     }
 
-    public static void setItems(ItemStack stack, CompoundNBT items)
-    {
+    public static void setItems(ItemStack stack, CompoundNBT items) {
         ItemNBTHelper.setCompound(stack, ITEMS, items);
     }
 
-    public static String getMessage(ItemStack stack)
-    {
+    public static String getMessage(ItemStack stack) {
         return ItemNBTHelper.getString(stack, MESSAGE, "");
     }
 
-    public static CompoundNBT getItems(ItemStack stack)
-    {
+    public static CompoundNBT getItems(ItemStack stack) {
         return ItemNBTHelper.getCompound(stack, ITEMS);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
-    {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag) {
         String message = getMessage(stack);
         CompoundNBT items = getItems(stack);
 

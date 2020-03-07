@@ -27,8 +27,7 @@ import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true,
     description = "An Illusioner drops a totem when killed by a player.")
-public class IllusionersDropTotems extends MesonModule
-{
+public class IllusionersDropTotems extends MesonModule {
     @Config(name = "Drop chance",
         description = "Chance (out of 1.0) of an Illusioner dropping a totem when killed by the player."
     )
@@ -51,14 +50,13 @@ public class IllusionersDropTotems extends MesonModule
     public static List<Item> totems = new ArrayList<>();
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         totemsConfig.forEach(name -> {
             Optional<Item> itemValue = Registry.ITEM.getValue(new ResourceLocation(name));
             if (!itemValue.isPresent()) return;
@@ -67,11 +65,10 @@ public class IllusionersDropTotems extends MesonModule
     }
 
     @SubscribeEvent
-    public void onIllusionerDrops(LivingDropsEvent event)
-    {
+    public void onIllusionerDrops(LivingDropsEvent event) {
         if (!event.getEntityLiving().world.isRemote
             && event.getEntityLiving() instanceof IllusionerEntity
-            && (double)event.getEntityLiving().world.rand.nextFloat() <= chance
+            && (double) event.getEntityLiving().world.rand.nextFloat() <= chance
         ) {
             Item totemItem;
             Entity entity = event.getEntity();

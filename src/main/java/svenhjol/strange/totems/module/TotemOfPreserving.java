@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfPreserving extends MesonModule implements ITreasureTotem
-{
+public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
     public static TotemOfPreservingItem item;
 
     @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.")
@@ -43,26 +42,22 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
     public static boolean noGravity = true;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TotemOfPreservingItem(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureTotem.availableTotems.add(this);
     }
 
     @SubscribeEvent
-    public void onItemExpire(ItemExpireEvent event)
-    {
+    public void onItemExpire(ItemExpireEvent event) {
         if (noDespawn
             && event.getEntityItem() != null
             && event.getEntityItem().getItem().getItem() == item
@@ -73,8 +68,7 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
     }
 
     @SubscribeEvent
-    public void onPlayerDrops(LivingDropsEvent event)
-    {
+    public void onPlayerDrops(LivingDropsEvent event) {
         if (!saveItems) return;
         DamageSource source = event.getSource();
 
@@ -82,7 +76,7 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
         if (drops.isEmpty()) return;
         if (!(event.getEntityLiving() instanceof PlayerEntity)) return;
 
-        PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         World world = player.world;
 
         ItemStack totem = new ItemStack(item);
@@ -128,12 +122,11 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem
 
         world.addEntity(totemEntity);
         event.setCanceled(true);
-        Meson.debug("Added Totem of Preserving at " + new BlockPos(x, y, z));
+        Strange.LOG.debug("Added Totem of Preserving at " + new BlockPos(x, y, z));
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         return new ItemStack(item);
     }
 }

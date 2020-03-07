@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class VillagersTradeTotems extends MesonModule
-{
+public class VillagersTradeTotems extends MesonModule {
     public static final String LIBRARIAN = "librarian";
     public static List<Item> availableTotems = new ArrayList<>();
 
@@ -45,14 +44,12 @@ public class VillagersTradeTotems extends MesonModule
     public static boolean outerOnly = true;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         availableTotems.add(Items.TOTEM_OF_UNDYING);
         if (Meson.isModuleEnabled("strange:totem_of_returning")) availableTotems.add(TotemOfReturning.item);
         if (Meson.isModuleEnabled("strange:totem_of_shielding")) availableTotems.add(TotemOfShielding.item);
@@ -63,29 +60,26 @@ public class VillagersTradeTotems extends MesonModule
     }
 
     @SubscribeEvent
-    public void onVillagerTrades(VillagerTradesEvent event)
-    {
+    public void onVillagerTrades(VillagerTradesEvent event) {
         String useProfession = Meson.isModuleEnabled("strange:spells") ? Scrollkeepers.SCROLLKEEPER : LIBRARIAN;
         Int2ObjectMap<List<ITrade>> trades = event.getTrades();
         VillagerProfession profession = event.getType();
 
-        if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(useProfession)) return;
+        if (profession.getRegistryName() == null || !profession.getRegistryName().getPath().equals(useProfession))
+            return;
 
         trades.get(tradeLevel).add(new EmeraldsForTotem());
     }
 
-    private static boolean isValidPosition(Entity merchant)
-    {
+    private static boolean isValidPosition(Entity merchant) {
         if (!outerOnly || !Meson.isModuleEnabled("strange:outerlands")) return true;
         return merchant.getPosition().getX() > Outerlands.threshold || merchant.getPosition().getZ() > Outerlands.threshold;
     }
 
-    public static class EmeraldsForTotem implements ITrade
-    {
+    public static class EmeraldsForTotem implements ITrade {
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, Random rand)
-        {
+        public MerchantOffer getOffer(Entity merchant, Random rand) {
             if (!isValidPosition(merchant)) return null;
             ItemStack in1 = new ItemStack(availableTotems.get(rand.nextInt(availableTotems.size())));
             ItemStack out = new ItemStack(Items.EMERALD, baseBuy + (rand.nextInt(additional)));

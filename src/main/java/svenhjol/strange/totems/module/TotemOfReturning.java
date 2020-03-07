@@ -12,31 +12,26 @@ import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfReturning extends MesonModule implements ITreasureTotem
-{
+public class TotemOfReturning extends MesonModule implements ITreasureTotem {
     public static TotemOfReturningItem item;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TotemOfReturningItem(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureTotem.availableTotems.add(this);
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         return new ItemStack(item);
     }
 }

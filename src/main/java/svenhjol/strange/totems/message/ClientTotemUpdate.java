@@ -8,35 +8,29 @@ import svenhjol.strange.base.helper.TotemHelper;
 
 import java.util.function.Supplier;
 
-public class ClientTotemUpdate implements IMesonMessage
-{
+public class ClientTotemUpdate implements IMesonMessage {
     public static int DAMAGE = 0;
     public static int DESTROY = 1;
 
     private int status;
     private BlockPos pos;
 
-    public ClientTotemUpdate(int status, BlockPos pos)
-    {
+    public ClientTotemUpdate(int status, BlockPos pos) {
         this.status = status;
         this.pos = pos;
     }
 
-    public static void encode(ClientTotemUpdate msg, PacketBuffer buf)
-    {
+    public static void encode(ClientTotemUpdate msg, PacketBuffer buf) {
         buf.writeInt(msg.status);
         buf.writeLong(msg.pos.toLong());
     }
 
-    public static ClientTotemUpdate decode(PacketBuffer buf)
-    {
+    public static ClientTotemUpdate decode(PacketBuffer buf) {
         return new ClientTotemUpdate(buf.readInt(), BlockPos.fromLong(buf.readLong()));
     }
 
-    public static class Handler
-    {
-        public static void handle(final ClientTotemUpdate msg, Supplier <NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ClientTotemUpdate msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 if (msg.status == DAMAGE) {
                     TotemHelper.effectDamageTotem(msg.pos);

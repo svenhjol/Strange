@@ -7,32 +7,26 @@ import svenhjol.strange.totems.module.TotemOfFlying;
 
 import java.util.function.Supplier;
 
-public class ClientTotemUpdateFlying implements IMesonMessage
-{
+public class ClientTotemUpdateFlying implements IMesonMessage {
     public static int DISABLE = 0;
     public static int ENABLE = 1;
 
     private int status;
 
-    public ClientTotemUpdateFlying(int status)
-    {
+    public ClientTotemUpdateFlying(int status) {
         this.status = status;
     }
 
-    public static void encode(ClientTotemUpdateFlying msg, PacketBuffer buf)
-    {
+    public static void encode(ClientTotemUpdateFlying msg, PacketBuffer buf) {
         buf.writeInt(msg.status);
     }
 
-    public static ClientTotemUpdateFlying decode(PacketBuffer buf)
-    {
+    public static ClientTotemUpdateFlying decode(PacketBuffer buf) {
         return new ClientTotemUpdateFlying(buf.readInt());
     }
 
-    public static class Handler
-    {
-        public static void handle(final ClientTotemUpdateFlying msg, Supplier <NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ClientTotemUpdateFlying msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 if (TotemOfFlying.client == null)
                     return;

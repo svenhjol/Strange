@@ -28,11 +28,10 @@ import svenhjol.strange.totems.module.TotemOfTransferring;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TotemOfTransferringItem extends MesonItem
-{
+public class TotemOfTransferringItem extends MesonItem {
     public static String STATE = "state";
-    public TotemOfTransferringItem(MesonModule module)
-    {
+
+    public TotemOfTransferringItem(MesonModule module) {
         super(module, "totem_of_transferring", new Properties()
             .group(ItemGroup.TOOLS)
             .rarity(Rarity.UNCOMMON)
@@ -41,20 +40,17 @@ public class TotemOfTransferringItem extends MesonItem
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack)
-    {
+    public boolean hasEffect(ItemStack stack) {
         return hasState(stack);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack holdable = player.getHeldItem(hand);
         if (hasState(holdable)) {
             CompoundNBT savedState = getState(holdable);
@@ -88,7 +84,7 @@ public class TotemOfTransferringItem extends MesonItem
             if (savedState.contains("tile")) {
                 INBT tileNbt = savedState.get("tile");
                 if (tileNbt != null) {
-                    destTile = TileEntity.create((CompoundNBT)tileNbt);
+                    destTile = TileEntity.create((CompoundNBT) tileNbt);
                     if (destTile != null) {
                         destTile.setPos(destPos);
                         destTile.validate();
@@ -99,7 +95,8 @@ public class TotemOfTransferringItem extends MesonItem
             BlockState destState = world.getBlockState(destPos);
 
             if (destTile != null) {
-                if (!srcBlock.isValidPosition(destState, world, destPos)) {
+
+                if (!finalSrcState.isValidPosition(world, destPos)) {
                     world.setBlockState(destPos, destState, 2);
                     world.setTileEntity(destPos, destTile);
                     Block.spawnDrops(destState, world, destPos, destTile);
@@ -175,25 +172,22 @@ public class TotemOfTransferringItem extends MesonItem
         }
     }
 
-    public static CompoundNBT getState(ItemStack totem)
-    {
+    public static CompoundNBT getState(ItemStack totem) {
         return totem.getOrCreateChildTag(STATE);
     }
 
-    public static boolean hasState(ItemStack totem)
-    {
+    public static boolean hasState(ItemStack totem) {
         CompoundNBT state = getState(totem);
         boolean b = state.isEmpty();
         return !b;
     }
 
-    public static void putState(ItemStack totem, CompoundNBT state)
-    {
+    public static void putState(ItemStack totem, CompoundNBT state) {
         ItemNBTHelper.setCompound(totem, STATE, state);
     }
 
-    private boolean isValidState(BlockState state)
-    {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isValidState(BlockState state) {
         boolean invalid = state.getMaterial() == Material.AIR
             || state.has(BlockStateProperties.BED_PART)
             || state.has(BlockStateProperties.HALF)

@@ -30,13 +30,11 @@ import svenhjol.strange.base.helper.TotemHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TotemOfReturningItem extends MesonItem
-{
+public class TotemOfReturningItem extends MesonItem {
     private static final String POS = "pos";
     private static final String DIM = "dim";
 
-    public TotemOfReturningItem(MesonModule module)
-    {
+    public TotemOfReturningItem(MesonModule module) {
         super(module, "totem_of_returning", new Item.Properties()
             .group(ItemGroup.TRANSPORTATION)
             .rarity(Rarity.UNCOMMON)
@@ -45,14 +43,12 @@ public class TotemOfReturningItem extends MesonItem
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack)
-    {
+    public boolean hasEffect(ItemStack stack) {
         return getPos(stack) != null;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         BlockPos pos = getPos(stack); // the position to teleport to
         int dim = getDim(stack); // the dimension to teleport to
@@ -76,8 +72,7 @@ public class TotemOfReturningItem extends MesonItem
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack)
-    {
+    public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack) {
         // teleport the player
         if (!world.isRemote) {
             PlayerHelper.teleport(player, pos, dim, t -> {
@@ -97,30 +92,25 @@ public class TotemOfReturningItem extends MesonItem
     }
 
     @Nullable
-    public static BlockPos getPos(ItemStack stack)
-    {
+    public static BlockPos getPos(ItemStack stack) {
         long pos = ItemNBTHelper.getLong(stack, POS, 0);
         return pos == 0 ? null : BlockPos.fromLong(pos);
     }
 
-    public static int getDim(ItemStack stack)
-    {
+    public static int getDim(ItemStack stack) {
         return ItemNBTHelper.getInt(stack, DIM, 0);
     }
 
-    public static void setPos(ItemStack stack, BlockPos pos)
-    {
+    public static void setPos(ItemStack stack, BlockPos pos) {
         ItemNBTHelper.setLong(stack, POS, pos.toLong());
     }
 
-    public static void setDim(ItemStack stack, int dim)
-    {
+    public static void setDim(ItemStack stack, int dim) {
         ItemNBTHelper.setInt(stack, DIM, dim);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
-    {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag) {
         BlockPos pos = getPos(stack);
         if (pos != null) {
             String strDim = String.valueOf(getDim(stack));

@@ -20,12 +20,10 @@ import svenhjol.strange.base.helper.TotemHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TotemOfEnchantingItem extends MesonItem
-{
+public class TotemOfEnchantingItem extends MesonItem {
     private static final String XP = "xp";
 
-    public TotemOfEnchantingItem(MesonModule module)
-    {
+    public TotemOfEnchantingItem(MesonModule module) {
         super(module, "totem_of_enchanting", new Properties()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
@@ -34,20 +32,17 @@ public class TotemOfEnchantingItem extends MesonItem
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack)
-    {
+    public boolean hasEffect(ItemStack stack) {
         return TotemOfEnchantingItem.getXp(stack) > 0;
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack held = player.getHeldItem(hand);
         if (player.isSneaking()) {
             int xp = player.experienceTotal;
@@ -71,20 +66,17 @@ public class TotemOfEnchantingItem extends MesonItem
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void addXp(ItemStack stack, int amount)
-    {
+    public static void addXp(ItemStack stack, int amount) {
         int current = ItemNBTHelper.getInt(stack, XP, 0);
         ItemNBTHelper.setInt(stack, XP, current + amount);
     }
 
-    public static int getXp(ItemStack stack)
-    {
+    public static int getXp(ItemStack stack) {
         return ItemNBTHelper.getInt(stack, XP, 0);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag)
-    {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag) {
         strings.add(new StringTextComponent(I18n.format("totem.strange.enchanting.contains", getXp(stack))));
         super.addInformation(stack, world, strings, flag);
     }

@@ -22,31 +22,26 @@ import java.util.Map;
 import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TotemOfEnchanting extends MesonModule implements ITreasureTotem
-{
+public class TotemOfEnchanting extends MesonModule implements ITreasureTotem {
     public static TotemOfEnchantingItem item;
 
     @Override
-    public boolean shouldRunSetup()
-    {
+    public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:treasure_totems");
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TotemOfEnchantingItem(this);
     }
 
     @Override
-    public void onCommonSetup(FMLCommonSetupEvent event)
-    {
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         TreasureTotem.availableTotems.add(this);
     }
 
     // disabled for now
-    public void onAnvilUpdate(AnvilUpdateEvent event)
-    {
+    public void onAnvilUpdate(AnvilUpdateEvent event) {
         ItemStack left = event.getLeft();
         ItemStack right = event.getRight();
         ItemStack out;
@@ -97,8 +92,7 @@ public class TotemOfEnchanting extends MesonModule implements ITreasureTotem
     }
 
     @Override
-    public ItemStack getTreasureItem()
-    {
+    public ItemStack getTreasureItem() {
         return new ItemStack(item);
     }
 }

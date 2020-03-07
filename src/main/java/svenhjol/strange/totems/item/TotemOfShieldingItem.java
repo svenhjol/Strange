@@ -8,10 +8,8 @@ import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.totems.module.TotemOfShielding;
 
-public class TotemOfShieldingItem extends MesonItem
-{
-    public TotemOfShieldingItem(MesonModule module)
-    {
+public class TotemOfShieldingItem extends MesonItem {
+    public TotemOfShieldingItem(MesonModule module) {
         super(module, "totem_of_shielding", new Item.Properties()
             .group(ItemGroup.COMBAT)
             .rarity(Rarity.UNCOMMON)
@@ -21,8 +19,7 @@ public class TotemOfShieldingItem extends MesonItem
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 }

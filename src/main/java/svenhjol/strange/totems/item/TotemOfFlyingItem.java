@@ -8,10 +8,8 @@ import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.totems.module.TotemOfFlying;
 
-public class TotemOfFlyingItem extends MesonItem
-{
-    public TotemOfFlyingItem(MesonModule module)
-    {
+public class TotemOfFlyingItem extends MesonItem {
+    public TotemOfFlyingItem(MesonModule module) {
         super(module, "totem_of_flying", new Item.Properties()
             .group(ItemGroup.TRANSPORTATION)
             .rarity(Rarity.RARE)
@@ -21,8 +19,7 @@ public class TotemOfFlyingItem extends MesonItem
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 }

@@ -23,16 +23,14 @@ import java.util.List;
 import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
-public class TreasureTotems extends MesonModule
-{
+public class TreasureTotems extends MesonModule {
     @Config(name = "Only in vaults", description = "If true, Strange treasure totems can only be found in Vaults, not normal dungeon loot.")
     public static boolean onlyVaults = true;
 
     public static List<ITreasureTotem> availableTotems = new ArrayList<>();
 
     @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event)
-    {
+    public void onLootTableLoad(LootTableLoadEvent event) {
         if (onlyVaults) return;
 
         int weight = 0;
@@ -67,8 +65,7 @@ public class TreasureTotems extends MesonModule
     }
 
     @Nullable
-    public static ItemStack getTreasureItem(Random rand)
-    {
+    public static ItemStack getTreasureItem(Random rand) {
         ITreasureTotem totem = availableTotems.get(rand.nextInt(availableTotems.size()));
         return totem.getTreasureItem();
     }
