@@ -8,10 +8,10 @@ import svenhjol.strange.totems.module.TotemOfFlying;
 import java.util.function.Supplier;
 
 public class ClientTotemUpdateFlying implements IMesonMessage {
-    public static int DISABLE = 0;
-    public static int ENABLE = 1;
+    public static final int DISABLE = 0;
+    public static final int ENABLE = 1;
 
-    private int status;
+    private final int status;
 
     public ClientTotemUpdateFlying(int status) {
         this.status = status;

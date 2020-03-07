@@ -9,11 +9,11 @@ import svenhjol.strange.base.helper.TotemHelper;
 import java.util.function.Supplier;
 
 public class ClientTotemUpdate implements IMesonMessage {
-    public static int DAMAGE = 0;
-    public static int DESTROY = 1;
+    public static final int DAMAGE = 0;
+    public static final int DESTROY = 1;
 
-    private int status;
-    private BlockPos pos;
+    private final int status;
+    private final BlockPos pos;
 
     public ClientTotemUpdate(int status, BlockPos pos) {
         this.status = status;
