@@ -10,37 +10,32 @@ import svenhjol.strange.traveljournal.item.TravelJournalItem;
 
 import java.util.function.Supplier;
 
-public class ServerTravelJournalMeta implements IMesonMessage
-{
+public class ServerTravelJournalMeta implements IMesonMessage {
     public static final int SETPAGE = 0;
 
     private Hand hand;
     private int action;
     private int page;
 
-    public ServerTravelJournalMeta(int action, Hand hand)
-    {
+    public ServerTravelJournalMeta(int action, Hand hand) {
         this.action = action;
         this.hand = hand;
         this.page = 1;
     }
 
-    public ServerTravelJournalMeta(int action, Hand hand, int page)
-    {
+    public ServerTravelJournalMeta(int action, Hand hand, int page) {
         this.action = action;
         this.hand = hand;
         this.page = page;
     }
 
-    public static void encode(ServerTravelJournalMeta msg, PacketBuffer buf)
-    {
+    public static void encode(ServerTravelJournalMeta msg, PacketBuffer buf) {
         buf.writeInt(msg.action);
         buf.writeEnumValue(msg.hand);
         buf.writeInt(msg.page);
     }
 
-    public static ServerTravelJournalMeta decode(PacketBuffer buf)
-    {
+    public static ServerTravelJournalMeta decode(PacketBuffer buf) {
         return new ServerTravelJournalMeta(
             buf.readInt(),
             buf.readEnumValue(Hand.class),
@@ -48,10 +43,8 @@ public class ServerTravelJournalMeta implements IMesonMessage
         );
     }
 
-    public static class Handler
-    {
-        public static void handle(final ServerTravelJournalMeta msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ServerTravelJournalMeta msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 NetworkEvent.Context context = ctx.get();
                 ServerPlayerEntity player = context.getSender();

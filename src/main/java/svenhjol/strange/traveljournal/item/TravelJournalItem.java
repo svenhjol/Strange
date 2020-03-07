@@ -17,16 +17,14 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import javax.annotation.Nullable;
 
-public class TravelJournalItem extends MesonItem
-{
+public class TravelJournalItem extends MesonItem {
     public static final int MAX_NAME_LENGTH = 24;
     public static final int SCREENSHOT_DISTANCE = 10;
 
     public static final String ENTRIES = "entries";
     public static final String PAGE = "page";
 
-    public TravelJournalItem(MesonModule module)
-    {
+    public TravelJournalItem(MesonModule module) {
         super(module, "travel_journal", new Item.Properties()
             .group(ItemGroup.MISC)
             .maxStackSize(1)
@@ -34,8 +32,7 @@ public class TravelJournalItem extends MesonItem
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack held = player.getHeldItem(hand);
         ActionResultType result;
 
@@ -51,18 +48,15 @@ public class TravelJournalItem extends MesonItem
         return new ActionResult<>(result, held);
     }
 
-    public static int getPage(ItemStack stack)
-    {
+    public static int getPage(ItemStack stack) {
         return ItemNBTHelper.getInt(stack, PAGE, 1);
     }
 
-    public static void setPage(ItemStack stack, int page)
-    {
+    public static void setPage(ItemStack stack, int page) {
         ItemNBTHelper.setInt(stack, PAGE, page);
     }
 
-    public static void addEntry(ItemStack stack, Entry entry)
-    {
+    public static void addEntry(ItemStack stack, Entry entry) {
         CompoundNBT tag = entry.toNBT();
         CompoundNBT entries = ItemNBTHelper.getCompound(stack, ENTRIES);
 
@@ -72,11 +66,10 @@ public class TravelJournalItem extends MesonItem
         }
     }
 
-    public static void updateEntry(ItemStack stack, Entry entry)
-    {
+    public static void updateEntry(ItemStack stack, Entry entry) {
         CompoundNBT entries = getEntries(stack);
         if (entries.get(entry.id) != null) {
-            CompoundNBT nbt = (CompoundNBT)entries.get(entry.id);
+            CompoundNBT nbt = (CompoundNBT) entries.get(entry.id);
             if (nbt != null) {
                 CompoundNBT updated = entry.toNBT();
                 entries.put(entry.id, updated);
@@ -85,8 +78,7 @@ public class TravelJournalItem extends MesonItem
         }
     }
 
-    public static void deleteEntry(ItemStack stack, Entry entry)
-    {
+    public static void deleteEntry(ItemStack stack, Entry entry) {
         CompoundNBT entries = getEntries(stack);
         if (entries.get(entry.id) != null) {
             entries.remove(entry.id);
@@ -95,17 +87,15 @@ public class TravelJournalItem extends MesonItem
     }
 
     @Nullable
-    public static CompoundNBT getEntry(ItemStack stack, String id)
-    {
+    public static CompoundNBT getEntry(ItemStack stack, String id) {
         CompoundNBT entries = getEntries(stack);
         if (entries.get(id) != null) {
-            return (CompoundNBT)entries.get(id);
+            return (CompoundNBT) entries.get(id);
         }
         return null;
     }
 
-    public static CompoundNBT getEntries(ItemStack stack)
-    {
+    public static CompoundNBT getEntries(ItemStack stack) {
         return ItemNBTHelper.getCompound(stack, ENTRIES);
     }
 }

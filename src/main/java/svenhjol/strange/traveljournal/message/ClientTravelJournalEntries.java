@@ -4,25 +4,22 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
-import svenhjol.meson.Meson;
 import svenhjol.meson.iface.IMesonMessage;
+import svenhjol.strange.Strange;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.function.Supplier;
 
-public class ClientTravelJournalEntries implements IMesonMessage
-{
+public class ClientTravelJournalEntries implements IMesonMessage {
     private CompoundNBT entries;
 
-    public ClientTravelJournalEntries(CompoundNBT entries)
-    {
+    public ClientTravelJournalEntries(CompoundNBT entries) {
         this.entries = entries;
     }
 
-    public static void encode(ClientTravelJournalEntries msg, PacketBuffer buf)
-    {
+    public static void encode(ClientTravelJournalEntries msg, PacketBuffer buf) {
         String serialized = "";
 
         try {
@@ -30,33 +27,30 @@ public class ClientTravelJournalEntries implements IMesonMessage
             CompressedStreamTools.writeCompressed(msg.entries, out);
             serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
         } catch (Exception e) {
-            Meson.warn("Failed to compress entries");
+            Strange.LOG.warn("Failed to compress entries");
         }
 
         buf.writeString(serialized);
     }
 
-    public static ClientTravelJournalEntries decode(PacketBuffer buf)
-    {
+    public static ClientTravelJournalEntries decode(PacketBuffer buf) {
         CompoundNBT entries = new CompoundNBT();
 
         try {
             final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
             entries = CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData));
         } catch (Exception e) {
-            Meson.warn("Failed to uncompress entries");
+            Strange.LOG.warn("Failed to uncompress entries");
         }
 
         return new ClientTravelJournalEntries(entries);
     }
 
-    public static class Handler
-    {
+    public static class Handler {
         public static CompoundNBT entries = new CompoundNBT();
         public static boolean updated = false;
 
-        public static void handle(final ClientTravelJournalEntries msg, Supplier <NetworkEvent.Context> ctx)
-        {
+        public static void handle(final ClientTravelJournalEntries msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 entries = msg.entries;
                 updated = true;

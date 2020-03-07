@@ -14,8 +14,8 @@ import svenhjol.strange.Strange;
 
 import java.util.function.Consumer;
 
-public abstract class BaseTravelJournalScreen extends Screen implements IRenderable
-{
+@SuppressWarnings("unused")
+public abstract class BaseTravelJournalScreen extends Screen implements IRenderable {
     protected PlayerEntity player;
     protected Hand hand;
     protected ItemStack stack;
@@ -31,8 +31,7 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     public static final ResourceLocation BUTTONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/gui_buttons.png");
     public static final ResourceLocation COLORS = new ResourceLocation(Strange.MOD_ID, "textures/gui/gui_colors.png");
 
-    public BaseTravelJournalScreen(String title, PlayerEntity player, Hand hand)
-    {
+    public BaseTravelJournalScreen(String title, PlayerEntity player, Hand hand) {
         super(new StringTextComponent(title));
         this.player = player;
         this.hand = hand;
@@ -42,71 +41,64 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         redraw();
         refreshData();
     }
 
     @Override
-    public boolean isPauseScreen()
-    {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public void onClose()
-    {
+    public void onClose() {
         this.close();
     }
 
-    protected void close()
-    {
+    protected void close() {
         if (this.minecraft != null) {
             this.minecraft.displayGuiScreen(null);
         }
     }
 
-    protected void close(Consumer<Minecraft> onClose)
-    {
+    protected void close(Consumer<Minecraft> onClose) {
         if (this.minecraft != null) {
             this.minecraft.displayGuiScreen(null);
             onClose.accept(this.minecraft);
         }
     }
 
-    protected void redraw()
-    {
+    protected void redraw() {
         this.buttons.clear();
         this.children.clear();
         this.renderButtons();
     }
 
-    protected void renderButtons()
-    {
+    protected void renderButtons() {
         // no op
     }
 
-    protected void renderBackgroundTexture()
-    {
+    protected void renderBackgroundTexture() {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(BACKGROUND);
-        int w = (this.width - BGWIDTH) / 2;
-        this.blit(w, 2, 0, 0, BGWIDTH, BGHEIGHT);
+        if (this.minecraft != null) {
+            this.minecraft.getTextureManager().bindTexture(BACKGROUND);
+            int w = (this.width - BGWIDTH) / 2;
+            this.blit(w, 2, 0, 0, BGWIDTH, BGHEIGHT);
+        }
     }
 
-    protected void refreshData()
-    {
+    protected void refreshData() {
         // no op
     }
 
     @Override
     public void drawCenteredString(FontRenderer renderer, String str, int x, int y, int color) {
-        renderer.drawString(str, (float)(x - renderer.getStringWidth(str) / 2), (float)y, color);
+        renderer.drawString(str, (float) (x - renderer.getStringWidth(str) / 2), (float) y, color);
     }
 
     @Override
     public void drawRightAlignedString(FontRenderer renderer, String str, int x, int y, int color) {
-        renderer.drawString(str, (float)(x - renderer.getStringWidth(str)), (float)y, color);
+        renderer.drawString(str, (float) (x - renderer.getStringWidth(str)), (float) y, color);
     }
 }

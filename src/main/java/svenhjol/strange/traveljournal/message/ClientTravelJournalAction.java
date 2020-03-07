@@ -10,8 +10,7 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import java.util.function.Supplier;
 
-public class ClientTravelJournalAction implements IMesonMessage
-{
+public class ClientTravelJournalAction implements IMesonMessage {
     public static final int SCREENSHOT = 0;
     public static final int ADD = 1;
 
@@ -23,13 +22,11 @@ public class ClientTravelJournalAction implements IMesonMessage
     public int color;
     public Hand hand;
 
-    public ClientTravelJournalAction(int action, Entry entry, Hand hand)
-    {
+    public ClientTravelJournalAction(int action, Entry entry, Hand hand) {
         this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);
     }
 
-    public ClientTravelJournalAction(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
-    {
+    public ClientTravelJournalAction(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand) {
         this.action = action;
         this.id = id;
         this.name = name;
@@ -39,8 +36,7 @@ public class ClientTravelJournalAction implements IMesonMessage
         this.hand = hand;
     }
 
-    public static void encode(ClientTravelJournalAction msg, PacketBuffer buf)
-    {
+    public static void encode(ClientTravelJournalAction msg, PacketBuffer buf) {
         long pos = msg.pos == null ? 0 : msg.pos.toLong();
 
         buf.writeInt(msg.action);
@@ -52,8 +48,7 @@ public class ClientTravelJournalAction implements IMesonMessage
         buf.writeEnumValue(msg.hand);
     }
 
-    public static ClientTravelJournalAction decode(PacketBuffer buf)
-    {
+    public static ClientTravelJournalAction decode(PacketBuffer buf) {
         int action = buf.readInt();
         String id = buf.readString();
         String title = buf.readString();
@@ -64,10 +59,8 @@ public class ClientTravelJournalAction implements IMesonMessage
         return new ClientTravelJournalAction(action, id, title, pos, dim, color, hand);
     }
 
-    public static class Handler
-    {
-        public static void handle(final ClientTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ClientTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
 

@@ -22,8 +22,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class UpdateEntryScreen extends BaseTravelJournalScreen
-{
+public class UpdateEntryScreen extends BaseTravelJournalScreen {
     private TextFieldWidget nameField;
     protected String name;
     protected int color;
@@ -35,19 +34,17 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     );
     protected FontRenderer glyphs;
 
-    public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand)
-    {
+    public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
         this.entry = entry;
         this.name = entry.name;
         this.color = entry.color > 0 ? entry.color : 15;
         this.passEvents = false;
-        this.runicName = new char[] {};
+        this.runicName = new char[]{};
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
         if (mc == null) return;
         if (!mc.world.isRemote) return;
@@ -58,19 +55,18 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
             StringBuilder assembled = new StringBuilder();
 
             char[] chars = hex.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
+            for (char aChar : chars) {
                 String letter;
-                char c = chars[i];
-                int rune = Character.getNumericValue(c);
+                int rune = Character.getNumericValue(aChar);
 
                 if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                    letter = RunestoneHelper.getRuneChars().get(c).toString();
+                    letter = RunestoneHelper.getRuneChars().get(aChar).toString();
                 } else {
                     letter = "?";
                 }
                 assembled.append(letter);
             }
-    //        assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
+            //        assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
             this.runicName = assembled.toString().toCharArray();
         }
 
@@ -90,8 +86,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
         boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
 
@@ -143,28 +138,24 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         super.render(mouseX, mouseY, partialTicks);
     }
 
-    protected void setColor(DyeColor color)
-    {
+    protected void setColor(DyeColor color) {
         this.color = color.getId();
     }
 
     @Override
-    public void removed()
-    {
+    public void removed() {
         super.removed();
         mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean keyPressed(int i1, int i2, int i3)
-    {
+    public boolean keyPressed(int i1, int i2, int i3) {
         if (i1 == 256) player.closeScreen();
         return this.nameField.keyPressed(i1, i2, i3) || this.nameField.func_212955_f() || super.keyPressed(i1, i2, i3);
     }
 
     @Override
-    protected void renderButtons()
-    {
+    protected void renderButtons() {
         int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
@@ -179,8 +170,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.cancel"), (button) -> this.back()));
     }
 
-    private void saveProgress()
-    {
+    private void saveProgress() {
         Entry updated = new Entry(this.entry);
         updated.name = this.name;
         updated.color = this.color;
@@ -192,19 +182,16 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         this.entry = updated;
     }
 
-    private void save()
-    {
+    private void save() {
         this.saveProgress();
         this.back();
     }
 
-    private void back()
-    {
+    private void back() {
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
-    private void delete()
-    {
+    private void delete() {
         if (hasShiftDown()) {
             TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
             Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
@@ -215,21 +202,18 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen
         }
     }
 
-    private void screenshot()
-    {
+    private void screenshot() {
         this.saveProgress();
         TravelJournal.client.updateAfterScreenshot = true;
         mc.displayGuiScreen(new ScreenshotScreen(this.entry, player, hand));
     }
 
-    private boolean hasScreenshot()
-    {
+    private boolean hasScreenshot() {
         File file = ScreenshotScreen.getScreenshot(entry);
         return file.exists();
     }
 
-    private void responder(String str)
-    {
+    private void responder(String str) {
         this.name = str;
     }
 }

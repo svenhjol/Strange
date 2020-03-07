@@ -22,22 +22,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class ScreenshotScreen extends BaseTravelJournalScreen
-{
+public class ScreenshotScreen extends BaseTravelJournalScreen {
     protected Entry entry;
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
 
-    public ScreenshotScreen(Entry entry, PlayerEntity player, Hand hand)
-    {
+    public ScreenshotScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
         this.entry = entry;
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
 
         if (!mc.world.isRemote) return;
@@ -48,8 +45,7 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
         if (hasScreenshot()) {
             this.renderBackground();
@@ -88,46 +84,40 @@ public class ScreenshotScreen extends BaseTravelJournalScreen
     }
 
     @Override
-    protected void renderButtons()
-    {
+    protected void renderButtons() {
         int y = (height / 4) + 160;
         int w = 100;
         int h = 20;
         int buttonOffsetX = -50;
 
         if (WorldHelper.getDistanceSq(player.getPosition(), entry.pos) < TravelJournalItem.SCREENSHOT_DISTANCE) {
-            this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> {
-                prepareScreenshot();
-            }));
+            this.addButton(new Button((width / 2) - 110, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"),
+                (button) -> prepareScreenshot()));
             buttonOffsetX = 10;
         }
-        this.addButton(new Button((width / 2) + buttonOffsetX, y, w, h, I18n.format("gui.strange.travel_journal.back"), (button) -> this.back()));
+        this.addButton(new Button((width / 2) + buttonOffsetX, y, w, h, I18n.format("gui.strange.travel_journal.back"),
+            (button) -> this.back()));
     }
 
-    public static void takeScreenshot(Entry entry, Hand hand)
-    {
+    public static void takeScreenshot(Entry entry, Hand hand) {
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.SCREENSHOT, entry, hand));
     }
 
-    public static File getScreenshot(Entry entry)
-    {
+    public static File getScreenshot(Entry entry) {
         return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), entry.id);
     }
 
-    private void prepareScreenshot()
-    {
+    private void prepareScreenshot() {
         this.close();
         player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
         takeScreenshot(entry, hand);
     }
 
-    private boolean hasScreenshot()
-    {
+    private boolean hasScreenshot() {
         return file != null && file.exists();
     }
 
-    private void back()
-    {
+    private void back() {
         TravelJournal.client.returnAfterScreenshot(mc, entry, player, hand);
     }
 }

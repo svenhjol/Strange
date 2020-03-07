@@ -13,8 +13,7 @@ import svenhjol.strange.traveljournal.item.TravelJournalItem;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_JOURNAL, hasSubscriptions = true,
     description = "Records interesting places around your world.")
-public class TravelJournal extends MesonModule
-{
+public class TravelJournal extends MesonModule {
     public static TravelJournalItem item;
 
     @OnlyIn(Dist.CLIENT)
@@ -24,14 +23,12 @@ public class TravelJournal extends MesonModule
     public static int maxEntries = 30;
 
     @Override
-    public void init()
-    {
+    public void init() {
         item = new TravelJournalItem(this);
     }
 
     @Override
-    public void onClientSetup(FMLClientSetupEvent event)
-    {
+    public void onClientSetup(FMLClientSetupEvent event) {
         client = new TravelJournalClient();
     }
 }

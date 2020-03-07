@@ -32,30 +32,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TravelJournalScreen extends BaseTravelJournalScreen
-{
+public class TravelJournalScreen extends BaseTravelJournalScreen {
     public static int PER_PAGE = 5;
 
     protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
     protected List<String> hasScreenshots = new ArrayList<>();
-    protected CompoundNBT journalEntries = new CompoundNBT();
+    protected CompoundNBT journalEntries;
     protected boolean hasTotem = false;
     protected boolean hasCompass = false;
     protected boolean hasMap = false;
     protected int page;
     protected String message = "";
 
-    public TravelJournalScreen(PlayerEntity player, Hand hand)
-    {
+    public TravelJournalScreen(PlayerEntity player, Hand hand) {
         super(I18n.format("item.strange.travel_journal"), player, hand);
         this.page = TravelJournalItem.getPage(stack);
         this.journalEntries = TravelJournalItem.getEntries(stack);
     }
 
     @Override
-    protected void refreshData()
-    {
+    protected void refreshData() {
         this.ids = new ArrayList<>();
         this.sortedEntries = new TreeMap<>();
         this.hasScreenshots = new ArrayList<>();
@@ -63,7 +60,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         for (String id : journalEntries.keySet()) {
             INBT entryTag = journalEntries.get(id);
             if (entryTag == null) continue;
-            Entry entry = new Entry((CompoundNBT)entryTag);
+            Entry entry = new Entry((CompoundNBT) entryTag);
 
             this.ids.add(id);
             this.sortedEntries.put(id, entry);
@@ -80,15 +77,15 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             for (ItemStack stack : itemStacks) {
                 if (stack.isEmpty()) continue;
                 if (!hasTotem) hasTotem = stack.getItem() == TotemOfReturning.item;
-                if (!hasCompass) hasCompass = Meson.isModuleEnabled("charm:compass_binding") && stack.getItem() == Items.COMPASS;
+                if (!hasCompass)
+                    hasCompass = Meson.isModuleEnabled("charm:compass_binding") && stack.getItem() == Items.COMPASS;
                 if (!hasMap) hasMap = stack.getItem() == Items.MAP;
             }
         }
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
         renderBackground();
         renderBackgroundTexture();
@@ -159,7 +156,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
             // map button
             if (hasMap && entry.pos != null) {
                 this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 100, 0, 19, BUTTONS, (r) -> makeMap(entry)));
-                buttonOffsetX -= buttonSpacing;
             }
 
             y += rowHeight;
@@ -189,8 +185,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
     }
 
     @Override
-    protected void renderButtons()
-    {
+    protected void renderButtons() {
         int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
@@ -199,8 +194,7 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         this.addButton(new Button((width / 2) + 10, y, w, h, I18n.format("gui.strange.travel_journal.close"), (button) -> this.close()));
     }
 
-    private void add()
-    {
+    private void add() {
         ItemStack held = player.getHeldItem(hand);
         CompoundNBT entries = TravelJournalItem.getEntries(held);
         if (entries.keySet().size() >= TravelJournal.maxEntries) {
@@ -225,37 +219,31 @@ public class TravelJournalScreen extends BaseTravelJournalScreen
         mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
-    private void update(Entry entry)
-    {
+    private void update(Entry entry) {
         mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 
-    private void teleport(Entry entry)
-    {
+    private void teleport(Entry entry) {
         this.close();
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
     }
 
-    private void bindCompass(Entry entry)
-    {
+    private void bindCompass(Entry entry) {
         this.close();
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
     }
 
-    private void makeMap(Entry entry)
-    {
+    private void makeMap(Entry entry) {
         this.close();
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
     }
 
-    private void screenshot(Entry entry)
-    {
+    private void screenshot(Entry entry) {
         TravelJournal.client.updateAfterScreenshot = false;
         mc.displayGuiScreen(new ScreenshotScreen(entry, player, hand));
     }
 
-    private void updateServerPage(int page)
-    {
+    private void updateServerPage(int page) {
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalMeta(ServerTravelJournalMeta.SETPAGE, hand, page));
     }
 }

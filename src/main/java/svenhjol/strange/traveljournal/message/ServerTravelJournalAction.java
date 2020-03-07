@@ -32,8 +32,7 @@ import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ServerTravelJournalAction implements IMesonMessage
-{
+public class ServerTravelJournalAction implements IMesonMessage {
     public static final int ADD = 0;
     public static final int UPDATE = 1;
     public static final int DELETE = 2;
@@ -50,13 +49,11 @@ public class ServerTravelJournalAction implements IMesonMessage
     private int dim;
     private String name;
 
-    public ServerTravelJournalAction(int action, Entry entry, Hand hand)
-    {
+    public ServerTravelJournalAction(int action, Entry entry, Hand hand) {
         this(action, entry.id, entry.name, entry.pos, entry.dim, entry.color, hand);
     }
 
-    private ServerTravelJournalAction(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand)
-    {
+    private ServerTravelJournalAction(int action, String id, String name, BlockPos pos, int dim, int color, Hand hand) {
         this.action = action;
         this.hand = hand;
         this.id = id;
@@ -66,8 +63,7 @@ public class ServerTravelJournalAction implements IMesonMessage
         this.color = color;
     }
 
-    public static void encode(ServerTravelJournalAction msg, PacketBuffer buf)
-    {
+    public static void encode(ServerTravelJournalAction msg, PacketBuffer buf) {
         String name = msg.name == null ? "" : msg.name;
         long pos = msg.pos == null ? 0 : msg.pos.toLong();
 
@@ -80,8 +76,7 @@ public class ServerTravelJournalAction implements IMesonMessage
         buf.writeEnumValue(msg.hand);
     }
 
-    public static ServerTravelJournalAction decode(PacketBuffer buf)
-    {
+    public static ServerTravelJournalAction decode(PacketBuffer buf) {
         return new ServerTravelJournalAction(
             buf.readInt(),
             buf.readString(32),
@@ -93,10 +88,8 @@ public class ServerTravelJournalAction implements IMesonMessage
         );
     }
 
-    public static class Handler
-    {
-        public static void handle(final ServerTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx)
-        {
+    public static class Handler {
+        public static void handle(final ServerTravelJournalAction msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 World world;
                 ItemStack held;
@@ -182,7 +175,7 @@ public class ServerTravelJournalAction implements IMesonMessage
 
                             map.shrink(1);
                             BlockPos pos = entry.pos;
-                            ItemStack filled = FilledMapItem.setupNewMap(world, pos.getX(), pos.getZ(), (byte)2, true, true);
+                            ItemStack filled = FilledMapItem.setupNewMap(world, pos.getX(), pos.getZ(), (byte) 2, true, true);
                             FilledMapItem.renderBiomePreviewMap(world, filled);
                             MapData.addTargetDecoration(filled, pos, "+", decoration);
 
@@ -198,17 +191,15 @@ public class ServerTravelJournalAction implements IMesonMessage
             ctx.get().setPacketHandled(true);
         }
 
-        private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player)
-        {
+        private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player) {
             PlayerQueueHandler.add(player.world.getGameTime() + 60, player, (p) -> {
                 player.sendStatusMessage(new StringTextComponent(""), true);
-                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity)player);
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity) player);
             });
         }
 
         @Nullable
-        private static ItemStack getItemFromInventory(ImmutableList<NonNullList<ItemStack>> inventories, Item item)
-        {
+        private static ItemStack getItemFromInventory(ImmutableList<NonNullList<ItemStack>> inventories, Item item) {
             for (NonNullList<ItemStack> itemStacks : inventories) {
                 for (ItemStack stack : itemStacks) {
                     if (!stack.isEmpty() && stack.getItem() == item) {

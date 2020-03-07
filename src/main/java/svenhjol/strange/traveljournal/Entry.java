@@ -3,8 +3,7 @@ package svenhjol.strange.traveljournal;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-public class Entry
-{
+public class Entry {
     public String id = "";
     public String name = "";
     public BlockPos pos;
@@ -17,15 +16,13 @@ public class Entry
     public static final String NAME = "name";
     public static final String COLOR = "color";
 
-    public Entry(String id, BlockPos pos, int dim)
-    {
+    public Entry(String id, BlockPos pos, int dim) {
         this.id = id;
         this.pos = pos;
         this.dim = dim;
     }
 
-    public Entry(String id, String name, BlockPos pos, int dim, int color)
-    {
+    public Entry(String id, String name, BlockPos pos, int dim, int color) {
         this.id = id;
         this.name = name;
         this.pos = pos;
@@ -33,18 +30,15 @@ public class Entry
         this.color = color;
     }
 
-    public Entry(CompoundNBT nbt)
-    {
+    public Entry(CompoundNBT nbt) {
         fromNBT(nbt);
     }
 
-    public Entry(Entry entry)
-    {
+    public Entry(Entry entry) {
         fromEntry(entry);
     }
 
-    public CompoundNBT toNBT()
-    {
+    public CompoundNBT toNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putString(ID, id);
         nbt.putString(NAME, name);
@@ -54,8 +48,7 @@ public class Entry
         return nbt;
     }
 
-    public void fromNBT(CompoundNBT nbt)
-    {
+    public void fromNBT(CompoundNBT nbt) {
         long posLong = nbt.getLong(POS);
         id = nbt.getString(ID);
         name = nbt.getString(NAME);
@@ -64,8 +57,7 @@ public class Entry
         color = nbt.getInt(COLOR);
     }
 
-    public void fromEntry(Entry entry)
-    {
+    public void fromEntry(Entry entry) {
         id = entry.id;
         name = entry.name;
         pos = entry.pos;
