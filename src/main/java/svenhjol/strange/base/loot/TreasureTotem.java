@@ -10,16 +10,10 @@ import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import svenhjol.strange.Strange;
-import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.module.TreasureTotems;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("unused")
 public class TreasureTotem extends LootFunction {
-    public static List<ITreasureTotem> availableTotems = new ArrayList<>();
-
     private TreasureTotem(ILootCondition[] conditions) {
         super(conditions);
     }

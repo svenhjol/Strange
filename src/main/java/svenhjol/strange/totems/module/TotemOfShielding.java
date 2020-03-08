@@ -39,7 +39,7 @@ public class TotemOfShielding extends MesonModule implements ITreasureTotem {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        TreasureTotem.availableTotems.add(this);
+        TreasureTotems.availableTotems.add(this);
     }
 
     @SubscribeEvent

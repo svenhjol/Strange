@@ -7,7 +7,6 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.loot.TreasureTotem;
 import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfTransferringItem;
 
@@ -39,7 +38,7 @@ public class TotemOfTransferring extends MesonModule implements ITreasureTotem {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        TreasureTotem.availableTotems.add(this);
+        TreasureTotems.availableTotems.add(this);
     }
 
     @Override
