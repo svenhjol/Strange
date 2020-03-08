@@ -17,13 +17,13 @@
 - [x] Sometimes scroll doesn't disappear from inventory when accepting / quitting - Seems ok...
 - [x] Luck should increase scroll value
 - [ ] Don't modify Quest values with an exclamation mark
-- [ ] Treasure Enchantments added to normal loot when enabled in config
-- [ ] treasure items
+- [x] Treasure Enchantments added to normal loot when enabled in config
+- [ ] Treasure items
 - [x] Should not play "night" sounds during bad weather
 - [x] Charm's bound compasses not working with quests any more
 - [x] Swamp ruins don't have much loot at endpoints
 
 ## Intermittent / unknown
 - [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
-- [ ] the "17" warning - Quark issue? Appears on quark's network channel
+- [ ] the "17/null" client message warning - Quark issue? Appears on quark's network channel
 - [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos)) - MC bug?
