@@ -1,5 +1,6 @@
 ## 1.0.0 alpha 10
 * Fixed rare enchantments being applied outside of vaults
+* Fixed totems not being picked properly in loot
 * Reduce all ambient sound volume
 * Swamp ruins have more loot
 
