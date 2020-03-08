@@ -17,16 +17,6 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "find_totem_of_preserving": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "item": "strange:totem_of_preserving"
-          }
-        ]
-      }
-    },
     "find_totem_of_enchanting": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {

@@ -6,8 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -19,7 +17,6 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.loot.TreasureTotem;
 import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfPreservingItem;
 
@@ -80,8 +77,6 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
         World world = player.world;
 
         ItemStack totem = new ItemStack(item);
-        ITextComponent displayName = totem.getDisplayName();
-        totem.setDisplayName(new TranslationTextComponent(displayName.toString(), player.getDisplayName()));
 
         CompoundNBT serialized = new CompoundNBT();
         List<ItemStack> holdable = new ArrayList<>();
