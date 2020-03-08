@@ -1,18 +1,16 @@
 # TODO
-- [ ] IN PROGRESS Restore/add advancements
-    - Rare totem advancement
 - [ ] IN PROGRESS - Add more T5 quests
 - [x] Marker stone on surface above a ruin
 - [x] Remove broken quests
 - [x] Config options for obelisks
 - [x] Update all docs
-- [ ] Swamp ruins don't have much loot at endpoints
 - [ ] Ambience for The End
 - [ ] Unique ambience for Savanna and Rivers
 - [x] Config option for Treasure Totems to be added to normal loot
 - [x] Scrolls found in loot should prefer lower tiers; should never be a master scroll
 
 ## Testing
+- [ ] Advancements
 - [x] Strange + Charm recipe and item deregistering - should be fixed in alpha.6
 - [x] meson:module_enabled error - recipes don't always work when world crashes
 - [ ] Sometimes scroll doesn't disappear from inventory when accepting / quitting
@@ -22,6 +20,7 @@
 - [ ] treasure items
 - [x] Should not play "night" sounds during bad weather
 - [x] Charm's bound compasses not working with quests any more
+- [ ] Swamp ruins don't have much loot at endpoints
 
 ## Intermittent / unknown
 - [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
