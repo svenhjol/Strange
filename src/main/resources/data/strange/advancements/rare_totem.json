@@ -1,5 +1,5 @@
 {
-  "parent": "strange:rare_totem",
+  "parent": "strange:find_vaults",
   "display": {
     "icon": {
       "item": "strange:totem_of_flying"
