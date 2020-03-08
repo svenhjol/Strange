@@ -1,3 +1,11 @@
+## 1.0.0 alpha 10
+* Fixed rare enchantments being applied outside of vaults
+* Reduce all ambient sound volume
+* Swamp ruins have more loot
+
+## 1.0.0 alpha 9
+* Loader refactor, code cleanup
+
 ## 1.0.0 alpha 8
 * Added Obelisks
 * Master scrolls no longer found in loot
