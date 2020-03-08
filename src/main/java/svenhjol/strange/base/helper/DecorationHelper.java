@@ -108,13 +108,16 @@ public class DecorationHelper {
     );
 
     public static final List<Block> oreTypes = Arrays.asList(
-        Blocks.DIAMOND_ORE,
-        Blocks.EMERALD_ORE,
-        Blocks.GOLD_ORE,
         Blocks.IRON_ORE,
         Blocks.COAL_ORE,
-        Blocks.REDSTONE_ORE,
-        Blocks.LAPIS_ORE
+        Blocks.REDSTONE_ORE
+    );
+
+    public static final List<Block> rareOreTypes = Arrays.asList(
+        Blocks.DIAMOND_ORE,
+        Blocks.EMERALD_ORE,
+        Blocks.LAPIS_ORE,
+        Blocks.GOLD_ORE
     );
 
     public static final List<Block> carpetTypes = Arrays.asList(
@@ -472,7 +475,11 @@ public class DecorationHelper {
                 }
             }
 
-            state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
+            if (fixedRand.nextFloat() < 0.25F) {
+                state = rareOreTypes.get(fixedRand.nextInt(rareOreTypes.size())).getDefaultState();
+            } else {
+                state = oreTypes.get(fixedRand.nextInt(oreTypes.size())).getDefaultState();
+            }
         }
 
         protected void potted() {
