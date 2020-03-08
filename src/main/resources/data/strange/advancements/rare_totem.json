@@ -37,12 +37,12 @@
         ]
       }
     },
-    "find_totem_of_transporting": {
+    "find_totem_of_transferring": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "strange:totem_of_transporting"
+            "item": "strange:totem_of_transferring"
           }
         ]
       }
@@ -62,7 +62,7 @@
     [
       "find_totem_of_preserving",
       "find_totem_of_enchanting",
-      "find_totem_of_transporting",
+      "find_totem_of_transferring",
       "find_totem_of_flying"
     ]
   ]
