@@ -9,8 +9,7 @@
 - [x] Config option for Treasure Totems to be added to normal loot
 - [x] Scrolls found in loot should prefer lower tiers; should never be a master scroll
 - [x] Rare enchantments shouldn't appear in normal dungeon loot
-- [ ] Error with craft bookshelf chest quest crafting item
-- [ ] Build debug method for testing quests
+- [x] Error with craft bookshelf chest quest crafting item
 
 ## Testing
 - [x] Advancements
@@ -29,3 +28,6 @@
 - [ ] Weird "air_block" warnings sometimes when loading / "bigdungeon not found" warnings
 - [ ] the "17/null" client message warning - Quark issue? Appears on quark's network channel
 - [ ] "POI data mismatch" error (java.lang.IllegalStateException: POI data mismatch: already registered at (pos)) - MC bug?
+
+## Nice to have
+- [ ] Build debug method for testing quests
