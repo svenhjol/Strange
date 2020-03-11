@@ -5,6 +5,8 @@ title: Runestones
 
 # Runestones
 
+![Collection of different runestones](https://i.postimg.cc/gk1pXt3x/Runestones.jpg)
+
 Runestones allow you to travel vast distances across your world.  They are found on top of [Stone Circles]({{ site.baseurl }}/features/stone_circles) in the overworld, with 16 possible rune glyphs to discover.
 
 ## Runestone travel
@@ -49,5 +51,3 @@ Runestones will be shuffled according to the world seed - you must rediscover a 
 
 
 <small>1. Runestone blocks derive their destination co-ordinates from their own position in the world.  If one is moved to a new location (e.g. in creative mode) it will transport you to a completely different place in the world that still respects the destination type.</small>
-
-![Test screenshot]({{ site.baseurl }}/img/screenshot.png)

@@ -3,10 +3,12 @@ layout: home
 permalink: /
 ---
 
+![Vaults Library room with some items](https://i.postimg.cc/5N6wxgB7/Vaults-Library.jpg){: .center-image }
+
 **Strange** is a mod for Minecraft 1.14 that adds **exploration**, **adventure** and **treasure** to the game without dramatically altering the vanilla playstyle.
 Each feature is configurable and can be disabled, allowing you to customize your experience.
 
-**TODO**: pictures and videos of things.
+This wiki is a work in progress.  More images and videos will be added.
 
 ## Main features
 * [Runestones](features/runestones) - standing stone circles that can transport you to points of interest
@@ -20,7 +22,7 @@ Each feature is configurable and can be disabled, allowing you to customize your
 * [Ambience](features/ambience) - environmental sounds based on biome and nearby features
 
 ## Installation
-This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version 28.1.118) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (version 1.5) as dependencies.
+This mod requires [Forge for Minecraft 1.14.4](https://files.minecraftforge.net/) (at least version **28.2.0**) and [Charm for Minecraft 1.14.4](https://www.curseforge.com/minecraft/mc-mods/charm) (version **1.5.2**) as dependencies.
 
 **PROBABLY IMPORTANT!** *Strange* is currently in alpha and will likely be for a while. It may break your world,
 your game, your cats, it might not play well with other mods etc. Please get in touch via the Github issue tracker if it's something

@@ -5,6 +5,8 @@ title: Obelisks
 
 # Obelisks
 
+![A small obelisk on a mountain](https://i.postimg.cc/bvxqj0Ds/Obelisk.jpg)
+
 Obelisks are vertical stacks of [Runestones]({{ site.baseurl }}/features/runestones) constructed by a player.  The order of the glyphs in the obelisk matches that of a location anywhere in the Overworld.  A player can throw an *ender pearl* at the obelisk to immediately travel to the location it describes.
 
 ## Getting co-ordinates

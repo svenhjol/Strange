@@ -16,8 +16,8 @@
 title: Strange
 email: sven.hjol@protonmail.com
 description: # this means to ignore newlines until "baseurl:" >-
-  Adventure and exploration for vanilla Minecraft, inspired by Charm and Quark.<br>
-  For Minecraft 1.14 with Forge.
+  Adventure and exploration for vanilla Minecraft, inspired by <a href="https://www.curseforge.com/minecraft/mc-mods/charm">Charm</a> and <a href="https://www.curseforge.com/minecraft/mc-mods/quark">Quark</a>.<br>
+  For Minecraft 1.14.4 with Forge.
 baseurl: "/Strange" # the subpath of your site, e.g. /blog
 url: "https://svenhjol.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 mastodon_username: "svenhjol@mastodon.social"

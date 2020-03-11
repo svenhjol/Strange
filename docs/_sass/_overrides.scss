@@ -1,5 +1,5 @@
 $green: #b5e853;
-$link-color: darken($green, 10);
+$link-color: darken($green, 15);
 $header-color: lighten($green, 10);
 
 header {
@@ -45,6 +45,20 @@ a:hover {
     color: darken($color: $link-color, $amount: 12)
 }
 
+header {
+    a {
+        text-decoration: none;
+    }
+
+    .navbar {
+        padding-bottom: 15px;
+
+        .home-layout & {
+            display: none;
+        }
+    }
+}
+
 footer {
     background-color: black;
     padding: 50px 0;
@@ -53,5 +67,22 @@ footer {
         color: white;
         font-size: 1.7em;
     }
+    a, a:hover, a:visited, a:focus {
+        text-decoration: none;
+        color: white;
+    }
     color: white;
+}
+
+.center-image {
+    margin: 0 auto;
+    display: block;
+    padding: 10px 0;
+}
+
+#downloads {
+    .page-layout & {
+        float: right;
+        margin-top: -10px;
+    }
 }

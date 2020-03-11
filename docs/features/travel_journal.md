@@ -5,6 +5,7 @@ title: Travel Journal
 
 # Travel Journal
 
+
 The **Travel Journal** is a craftable item designed to help you catalogue places of interest around your world.
 
 Make a location entry in the journal at any time; give the location a name, a color and take a photo of the area to help you remember what you found!
@@ -17,6 +18,8 @@ Create a travel journal by combining a *[Book and Quill](https://minecraft.gamep
 By default a travel journal lets you record 30 location entries.
 
 ## Recording a location
+
+![Travel Journal edit page](https://i.postimg.cc/bwbhQ0R3/Travel-Journal-Edit.jpg){: .center-image }
 
 When you find a location you want to store in the journal, open the travel journal by right-clicking it, then click "New Location".  The screen changes to show information about the location entry that will be added.
 
@@ -32,9 +35,21 @@ Once you are happy with the information, click "Save" to return back to the main
 
 You can click the paper and quill icon next to the location you want to edit.  The screen changes to show information about the location entry.  You can change the name and color.  If your player is standing at the same position of the entry location, you will also be able to take a photo (or change the existing photo).
 
+## Viewing a photo
+
+![Travel Journal photo page](https://i.postimg.cc/qRBHVPH5/Travel-Journal-Photo.jpg){: .center-image }
+
+When you create a location entry for the first time, or if you are back at the same location you created earlier, you have the option to take a photo or change an existing photo.
+ 
+Open the Edit Location page (click the paper and quill icon next to the location) and click "New Photo".  If you want to view the photo after you have taken it, click "Show Photo" button.
+
+A small picture frame icon will appear next to travel journal entries that have an associated photo.
+
 ## Finding your way back
 
-With lots of location entries in your journal it can be difficult to remember where they are.
+![Travel Journal main page](https://i.postimg.cc/hG1RYS6m/Travel-Journal-Overview.jpg){: .center-image }
+
+With lots of location entries in your journal it can be difficult to remember how to get back to them!
 
 ### By compass
 

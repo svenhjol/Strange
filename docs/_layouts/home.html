@@ -9,19 +9,9 @@
 {% seo %}
   </head>
 
-  <body>
+  <body class="home-layout">
 
-    <header>
-      <div class="container">
-        <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        <p class="author">A mod for Minecraft by Sven Hjól</p>
-        <h2>{{ site.description | default: site.github.project_tagline }}</h2>
-
-        <section id="downloads">
-          <a href="https://www.curseforge.com/minecraft/mc-mods/strange" class="btn btn-github">Download from Curseforge!</a>
-        </section>
-      </div>
-    </header>
+    {% include header.html %}
 
     <div class="home container">
       <section id="main_content">
@@ -29,13 +19,7 @@
       </section>
     </div>
 
-    <footer>
-      <div class="container">
-        <h2>{{ site.title }}</h2>
-        <p>This mod is currently in <strong>alpha release</strong> and as such may break your stuff.<br>Be careful and backup all the things!</p>
-        <p>Any resemblance to actual persons, living or dead, is purely coincidental.</p>
-        <p>&copy; yada</p>
-      </div>
-    </footer>
+    {% include footer.html %}
+
   </body>
 </html>

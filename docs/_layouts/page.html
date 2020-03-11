@@ -9,27 +9,17 @@
 {% seo %}
   </head>
 
-  <body>
+  <body class="page-layout">
 
-    <header>
-      <div class="container">
-        <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        <h2>{{ site.description | default: site.github.project_tagline }}</h2>
-      </div>
-
-      <div class="container">
-        <nav class="navbar">
-          <a href="{{ site.baseurl }}/">Home</a>
-          {{ site.parent }}
-        </nav>
-      </div>
-    </header>
+    {% include header.html %}
 
     <div class="container">
       <section id="main_content">
         {{ content }}
       </section>
     </div>
+
+    {% include footer.html %}
 
   </body>
 </html>

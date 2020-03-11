@@ -5,6 +5,8 @@ title: Stone Circles
 
 # Stone Circles
 
+![Stone circle in the wild](https://i.postimg.cc/zfr1pLt5/Stone-Circle.jpg)
+
 In *flat biomes* (such as plains and desert) you may find a stone circle constructed from cobblestone and stone.  Some of the stone pillars may have a [Runestone]({{ site.baseurl }}/features/runestones) on the top.  With the proper tools and some study, these runestones can help you reach distant locations.
 
 Stone Circles are usually found quite close to each other but if you are in a forest or mountainous area you may have to travel quite far to find one.

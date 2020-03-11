@@ -9,6 +9,8 @@
 - [x] Config option for Treasure Totems to be added to normal loot
 - [x] Scrolls found in loot should prefer lower tiers; should never be a master scroll
 - [x] Rare enchantments shouldn't appear in normal dungeon loot
+- [ ] Error with craft bookshelf chest quest crafting item
+- [ ] Build debug method for testing quests
 
 ## Testing
 - [x] Advancements

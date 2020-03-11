@@ -15,6 +15,8 @@ Scrolls are typically sold by the [Scrollkeeper]({{ site.baseurl }}/features/scr
 
 Scrolls can be one of five tiers, represented by the color of their seal. They correspond to the villager tier levels. A "novice" scrollkeeper sells only "novice" (tier 1) scrolls represented with a dark gray seal. When the villager levels up to "apprentice", they will trade "apprentice" (tier 2) scrolls represented with a brown seal. The seal color matches the villager level badge.
 
+![Available scroll tiers](https://i.postimg.cc/HxzQLPvK/Scrolls.jpg){: .center-image }
+
 Each scroll tier increases the difficulty and reward of the offered quest. "Diamond" (tier 5) quest scrolls have the chance to reward [Totems of Returning]({{ site.baseurl }}/features/totem_of_returning) that take you to a distant [Stone Circle]({{ site.baseurl }}/features/stone_circle) - this helps you begin your search for underground [Vaults]({{ site.baseurl }}/features/vaults).
 
 ## Value

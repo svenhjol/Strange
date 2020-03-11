@@ -7,6 +7,8 @@ title: Scrollkeepers
 
 **Scrollkeepers** are villagers that sell [Scrolls]({{ site.baseurl }}/features/scrolls) and provide rewards for completed [Quests]({{ site.baseurl }}/features/quests).
 
+![Scrollkeeper next to writing desk](https://i.postimg.cc/zXy5fYHm/Scrollkeeper.jpg){: .center-image }
+
 Their "job site block" is the **Writing Desk**, crafted from four planks like a crafting table with two books above it.  Currently, the writing desk has no interaction.
 
 Scrollkeepers only gain XP by completing quests for them.  They **do not gain XP when trading** with them.

@@ -28,8 +28,20 @@ Each quest is unique and might require you to undertake more than one action to 
 * **Hunt creatures** - kill the specified mobs.
 * **Mine blocks** - break the required blocks.
 * **Fetch creatures** - lure or drag mobs back to the scrollkeeper.
-* **Locate items** - use the provided compass/map to fetch items from a lost chest.
-* **Encounter** - use the provided compass/map to locate and destroy powerful mob(s).
+* **Locate items** - fetch items from a lost chest.
+* **Encounter** - locate and destroy powerful mob(s).
+
+The **Locate items** and **Encounter** quest types provide compasses (if Charm bound compasses are not available, maps will be provided instead).
+
+![A quest to find hidden items](https://i.postimg.cc/d3xY94XS/Quest-Lost-Item-Found.jpg){: .center-image }
+
+For locating items, the compass will point to the approximate location of a chest buried underground.  If there are nearby caves, the chest may appear in the cave.
+
+![Quest showing an encounter](https://i.postimg.cc/KzQF1Z5b/Quest-Battle-Page.jpg){: .center-image }
+
+For mob encounters, reaching the approximate location will begin the encounter with a lightning strike, boss bar and thunderstorm.  Completing the encounter or quitting the quest removes the boss bar and ends the storm.
+
+![Arriving at encounter](https://i.postimg.cc/RhFmfjPH/Quest-Battle.jpg){: .center-image }
 
 ### Time limits
 
