@@ -464,7 +464,7 @@ public class DecorationHelper {
         }
 
         protected void ore() {
-            if (!withChance(0.8F)) return;
+            if (!withChance(0.75F)) return;
 
             String type = getValue("type", this.data, "");
             if (!type.isEmpty()) {
