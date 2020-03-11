@@ -11,7 +11,7 @@
 - [x] Rare enchantments shouldn't appear in normal dungeon loot
 
 ## Testing
-- [ ] Advancements
+- [x] Advancements
 - [x] Strange + Charm recipe and item deregistering - should be fixed in alpha.6
 - [x] meson:module_enabled error - recipes don't always work when world crashes
 - [x] Sometimes scroll doesn't disappear from inventory when accepting / quitting - Seems ok...
