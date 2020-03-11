@@ -50,7 +50,6 @@
   },
   "requirements": [
     [
-      "find_totem_of_preserving",
       "find_totem_of_enchanting",
       "find_totem_of_transferring",
       "find_totem_of_flying"
