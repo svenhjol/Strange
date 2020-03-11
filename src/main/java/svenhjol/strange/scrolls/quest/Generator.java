@@ -55,7 +55,6 @@ public class Generator {
     public IQuest generate(World world, BlockPos pos, float valueMultiplier, IQuest quest) {
         List<Definition> definitions = Quests.available.get(quest.getTier());
         if (definitions == null || definitions.isEmpty()) return null;
-
         Definition definition = definitions.get(world.rand.nextInt(definitions.size()));
 
         try {

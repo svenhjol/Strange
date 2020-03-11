@@ -58,15 +58,10 @@ public class ScrollItem extends MesonItem {
         ItemStack scroll = playerIn.getHeldItem(handIn);
 
         if (playerIn.isSneaking()) {
-
             result = ActionResultType.FAIL;
-
         } else if (worldIn.getDimension().getType() != DimensionType.OVERWORLD) {
-
             result = ActionResultType.FAIL;
-
         } else {
-
             playerIn.getCooldownTracker().setCooldown(this, 40);
             if (!worldIn.isRemote) {
 
@@ -91,7 +86,6 @@ public class ScrollItem extends MesonItem {
                     }
 
                     putQuest(scroll, q);
-
                     scroll.setDisplayName(new TranslationTextComponent(getQuest(scroll).getTitle()));
 
                     PlayerQueueHandler.add(worldIn.getGameTime(), playerIn,
@@ -106,9 +100,7 @@ public class ScrollItem extends MesonItem {
                     Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientScrollAction(quest.getId(), handIn), (ServerPlayerEntity) playerIn); // open the screen
 
                 result = ActionResultType.SUCCESS;
-
             } else {
-
                 result = ActionResultType.PASS;
             }
         }
