@@ -10,7 +10,7 @@
     }
   },
   "craft": {
-    "charm:bookshelf_chest": 2
+    "charm:bookshelf_chest_oak": 2
   },
   "rewards": {
     "items": {
