@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
@@ -36,7 +37,7 @@ public class TravelJournalItem extends MesonItem {
         ItemStack held = player.getHeldItem(hand);
         ActionResultType result;
 
-        if (player.isSneaking()) {
+        if (PlayerHelper.isCrouching(player)) {
             result = ActionResultType.PASS;
         } else {
             if (world.isRemote) {

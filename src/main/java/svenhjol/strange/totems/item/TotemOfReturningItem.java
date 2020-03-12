@@ -55,7 +55,7 @@ public class TotemOfReturningItem extends MesonItem {
         ItemStack held = player.getHeldItem(hand);
 
         // bind this totem to current location and exit
-        if (player.isSneaking()) {
+        if (PlayerHelper.isCrouching(player)) {
             BlockPos playerPos = player.getPosition();
             int playerDim = player.dimension.getId();
             setPos(stack, playerPos);

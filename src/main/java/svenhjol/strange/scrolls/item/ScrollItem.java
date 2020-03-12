@@ -15,6 +15,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.PlayerQueueHandler;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.message.ClientScrollAction;
 import svenhjol.strange.scrolls.module.Quests;
@@ -57,7 +58,7 @@ public class ScrollItem extends MesonItem {
         ActionResultType result;
         ItemStack scroll = playerIn.getHeldItem(handIn);
 
-        if (playerIn.isSneaking()) {
+        if (PlayerHelper.isCrouching(playerIn)) {
             result = ActionResultType.FAIL;
         } else if (worldIn.getDimension().getType() != DimensionType.OVERWORLD) {
             result = ActionResultType.FAIL;

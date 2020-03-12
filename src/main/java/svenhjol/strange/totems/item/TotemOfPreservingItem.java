@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.module.TotemOfPreserving;
@@ -49,7 +50,7 @@ public class TotemOfPreservingItem extends MesonItem {
         ItemStack held = player.getHeldItem(hand);
         CompoundNBT items = getItems(held);
 
-        if (items.isEmpty() && player.isSneaking()) {
+        if (items.isEmpty() && PlayerHelper.isCrouching(player)) {
             PlayerInventory inventory = player.inventory;
             ImmutableList<NonNullList<ItemStack>> inventories = ImmutableList.of(inventory.mainInventory, inventory.armorInventory, inventory.offHandInventory);
             CompoundNBT serialized = new CompoundNBT();

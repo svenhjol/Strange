@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
+import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
@@ -44,7 +45,7 @@ public class TotemOfEnchantingItem extends MesonItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack held = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+        if (PlayerHelper.isCrouching(player)) {
             int xp = player.experienceTotal;
             addXp(held, xp);
             player.giveExperiencePoints(-xp);
