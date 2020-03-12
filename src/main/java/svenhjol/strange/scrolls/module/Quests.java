@@ -135,6 +135,6 @@ public class Quests extends MesonModule {
     }
 
     public static int getMaxQuests() {
-        return Math.max(1, Math.max(maxQuests, 3));
+        return Math.max(1, Math.min(maxQuests, 3));
     }
 }
