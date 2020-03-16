@@ -1,6 +1,9 @@
 ## 1.0.0 alpha 10
 * Fixed rare enchantments being applied outside of vaults
 * Fixed totems not being picked properly in loot
+* Fixed some broken quests
+* Fixed mesa mineshaft ruin pathfinding and loot balance
+* Random ore in ruins is now a bit rarer
 * Reduce all ambient sound volume
 * Swamp ruins have more loot
 
