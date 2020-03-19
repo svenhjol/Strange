@@ -256,6 +256,7 @@ public class Runestones extends MesonModule {
         Vec3d vec3d = player.getEyePosition(1.0F);
         Vec3d vec3d1 = player.getLook(1.0F);
         Vec3d vec3d2 = vec3d.add(vec3d1.x * 6, vec3d1.y * 6, vec3d1.z * 6);
+
         BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
         BlockPos runePos = result.getPos();
         BlockState lookedAt = world.getBlockState(runePos);
@@ -293,7 +294,7 @@ public class Runestones extends MesonModule {
 
             UUID id = player.getUniqueID();
             BlockPos pos = playerTeleportRunestone.get(id);
-            teleportRunestone(world, player, pos);
+            doTeleport(world, player, pos);
             playerTeleportRunestone.remove(id);
 
         } else if (allowObelisks && !playerTeleportObelisk.isEmpty() && playerTeleportObelisk.containsKey(player.getUniqueID())) {
@@ -386,11 +387,64 @@ public class Runestones extends MesonModule {
         return Outerlands.getOuterPos(world, rand);
     }
 
+    public static BlockPos normalizeInnerPos(BlockPos pos) {
+        if (!Meson.isModuleEnabled("strange:outerlands"))
+            return pos;
+
+        int x = pos.getX();
+        int z = pos.getZ();
+        int nx = x;
+        int nz = z;
+
+        if (Math.abs(x) > Math.abs(z)) {
+            if (x <= 0 && x <= -Outerlands.threshold) {
+                nx = -Outerlands.threshold;
+            } else if (x > 0 && x > Outerlands.threshold) {
+                nx = Outerlands.threshold;
+            }
+        } else if (Math.abs(x) < Math.abs(z)) {
+            if (z <= 0 && z <= -Outerlands.threshold) {
+                nz = -Outerlands.threshold;
+            } else if (z > 0 && z > Outerlands.threshold) {
+                nz = Outerlands.threshold;
+            }
+        }
+
+        return new BlockPos(nx, pos.getY(), nz);
+    }
+
+    public static BlockPos normalizeOuterPos(BlockPos pos) {
+        if (!Meson.isModuleEnabled("strange:outerlands"))
+            return pos;
+
+        int x = pos.getX();
+        int z = pos.getZ();
+        int nx = x;
+        int nz = z;
+
+        if (Math.abs(x) > Math.abs(z)) {
+            if (x <= 0 && x >= -Outerlands.threshold) {
+                nx = -Outerlands.threshold;
+            } else if (x > 0 && x < Outerlands.threshold) {
+                nx = Outerlands.threshold;
+            }
+        } else if (Math.abs(x) < Math.abs(z)) {
+            if (z <= 0 && z >= -Outerlands.threshold) {
+                nz = -Outerlands.threshold;
+            } else if (z > 0 && z < Outerlands.threshold) {
+                nz = Outerlands.threshold;
+            }
+        }
+
+        return new BlockPos(nx, pos.getY(), nz);
+    }
+
+
     private BlockPos addRandomOffset(BlockPos pos, Random rand) {
         return RunestoneHelper.addRandomOffset(pos, rand, 8);
     }
 
-    private void teleportRunestone(World world, PlayerEntity player, BlockPos pos) {
+    private void doTeleport(World world, PlayerEntity player, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = getRuneValue((RunestoneBlock) state.getBlock());
@@ -477,10 +531,19 @@ public class Runestones extends MesonModule {
         public BlockPos getDest(World world, BlockPos runePos, Random rand) {
             Strange.LOG.debug("Structure: " + structure);
 
-            if (isSpawnPoint())
-                return world.getSpawnPoint();
+            BlockPos spawn = world.getSpawnPoint();
+            int minDist = 4000;
+            int x = runePos.getX();
+            int z = runePos.getZ();
 
-            BlockPos target = outerlands ? getOuterPos(world, rand) : getInnerPos(world, rand);
+            if (isSpawnPoint())
+                return spawn;
+
+            int xdist = -minDist + rand.nextInt(minDist*2);
+            int zdist = -minDist + rand.nextInt(minDist*2);
+            BlockPos p = runePos.add(xdist, 0, zdist);
+
+            BlockPos target = outerlands ? normalizeOuterPos(p) : normalizeInnerPos(p);
             BlockPos dest = world.findNearestStructure(structure, target, dist, true);
             return dest == null ? world.getSpawnPoint() : dest;
         }

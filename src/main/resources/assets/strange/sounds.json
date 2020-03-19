@@ -313,6 +313,11 @@
       {"name": "strange:ambience/taiga/night/long1"}
     ]
   },
+  "ambience.end.long": {
+    "sounds": [
+      {"name": "strange:ambience/end/long1"}
+    ]
+  },
   "ambience.village.short": {
     "sounds": [
       {"name": "strange:ambience/village/short1"},

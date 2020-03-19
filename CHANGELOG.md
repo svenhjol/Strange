@@ -1,3 +1,6 @@
+## 1.0.0 alpha 11
+* 
+
 ## 1.0.0 alpha 10
 * Fixed rare enchantments being applied outside of vaults
 * Fixed totems not being picked properly in loot

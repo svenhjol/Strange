@@ -38,6 +38,7 @@ public class AmbienceClient {
                 new BeachAmbientSounds(player, soundHandler),
                 new CaveAmbientSounds(player, soundHandler),
                 new DeepAmbientSounds(player, soundHandler),
+                new EndAmbientSounds(player, soundHandler),
                 new HighAmbientSounds(player, soundHandler),
                 new MineshaftAmbientSounds(player, soundHandler),
                 new OceanAmbientSounds(player, soundHandler),
