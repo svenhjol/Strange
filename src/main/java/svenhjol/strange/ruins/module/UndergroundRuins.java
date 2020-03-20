@@ -32,6 +32,7 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.ruins.structure.MarkerPiece;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
@@ -80,7 +81,13 @@ public class UndergroundRuins extends MesonModule {
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
         RegistryHandler.registerStructurePiece(MarkerPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "ump"));
 
+
+        final List<Biome> endBiomes = StructureHelper.getEndBiomes();
+
         for (Biome biome : ForgeRegistries.BIOMES) {
+            if (endBiomes.contains(biome))
+                continue;
+
             biome.addFeature(
                 GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
