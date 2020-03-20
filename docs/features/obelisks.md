@@ -27,6 +27,8 @@ Once you have a complete set of glyphs for a location entry in your travel journ
 
 If you want, you can take apart your obelisk using a Silk Touch enchanted pickaxe.
 
+Obelisk blocks also provide a bonus to the Enchanting Table with the same power as a bookshelf.
+
 ## Warning!
 
 You must match the glyphs on the stones in exactly the same order as the glyphs in the journal.  Getting even one glyph wrong could have very bad consequences!  At best, you may be transported to a completely random, unintended location.  At worst, you may find yourself embedded in a mountain - or hundreds of blocks into the sky - or perhaps even in the void beneath the world.
