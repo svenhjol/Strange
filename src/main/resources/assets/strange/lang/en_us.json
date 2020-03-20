@@ -117,7 +117,7 @@
   "gui.strange.travel_journal.title": "Travel Journal has %s entries",
   "gui.strange.travel_journal.update": "§l%s",
   "gui.strange.travel_journal.page": "Page %s",
-  "gui.strange.travel_journal.entry_location": "§8X §f%s, §8Z §f%s, §8Dim §f%s",
+  "gui.strange.travel_journal.entry_location": "X %s, Z %s, Dim %s",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
 
   "item.strange.music_disc_strange": "Strange Music Disc",
