@@ -36,6 +36,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.LocationHelper;
+import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
 
@@ -77,11 +78,7 @@ public class StoneCircles extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
         BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
         BiomeHelper.getBiomeName(Biomes.FROZEN_RIVER),
-        BiomeHelper.getBiomeName(Biomes.SWAMP),
-        BiomeHelper.getBiomeName(Biomes.END_BARRENS),
-        BiomeHelper.getBiomeName(Biomes.END_HIGHLANDS),
-        BiomeHelper.getBiomeName(Biomes.END_MIDLANDS),
-        BiomeHelper.getBiomeName(Biomes.NETHER)
+        BiomeHelper.getBiomeName(Biomes.SWAMP)
     ));
 
     public static final List<Biome> validBiomes = new ArrayList<>();
@@ -104,7 +101,12 @@ public class StoneCircles extends MesonModule {
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
+        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
+
         ForgeRegistries.BIOMES.forEach(biome -> {
+            if (!overworldBiomes.contains(biome))
+                return;
+
             biome.addFeature(
                 GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
