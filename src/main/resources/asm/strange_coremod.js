@@ -69,20 +69,12 @@ function initializeCoreMod() {
                 var didThing = false;
                 var arrayLength = method.instructions.size();
                 var newInstructions = new InsnList();
+                var times = 0;
                 for (var i = 0; i < arrayLength; ++i) {
                     var instruction = method.instructions.get(i)
-
-                    if (instruction.getOpcode() == Opcodes.ISTORE
-                        && instruction.var == 5) {
-                        var label = new LabelNode();
-                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
-                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "canApplyEnchantment", "(Lnet/minecraft/enchantment/Enchantment;)Z", false));
-                        newInstructions.add(new JumpInsnNode(Opcodes.IFNE, label));
-                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
-                        newInstructions.add(new InsnNode(Opcodes.ARETURN));
-                        newInstructions.add(label);
-
-                        method.instructions.insert(instruction, newInstructions);
+                    if (instruction.getOpcode() == Opcodes.ARETURN && ++times == 2) {
+                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "modifyStackEnchantments", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", false));
+                        method.instructions.insertBefore(instruction, newInstructions);
                         didThing = true;
                         break;
                     }
