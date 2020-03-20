@@ -25,25 +25,15 @@ When you find a location you want to store in the journal, open the travel journ
 
 From this screen, type a name for the entry at the top.  By default it uses the name of the biome you are in.
 
-Click one of the color dyes to change the color of the entry if you want to categorise it.
-
 Click the "Take photo" button if you want to record a picture of this location.
+
+Click one of the color dyes to change the color of the entry if you want to categorise it.
 
 Once you are happy with the information, click "Save" to return back to the main journal.  Your new entry will appear in the list, colored accordingly.
 
 ## Editing a location
 
 You can click the paper and quill icon next to the location you want to edit.  The screen changes to show information about the location entry.  You can change the name and color.  If your player is standing at the same position of the entry location, you will also be able to take a photo (or change the existing photo).
-
-## Viewing a photo
-
-![Travel Journal photo page](https://i.postimg.cc/qRBHVPH5/Travel-Journal-Photo.jpg){: .center-image }
-
-When you create a location entry for the first time, or if you are back at the same location you created earlier, you have the option to take a photo or change an existing photo.
- 
-Open the Edit Location page (click the paper and quill icon next to the location) and click "New Photo".  If you want to view the photo after you have taken it, click "Show Photo" button.
-
-A small picture frame icon will appear next to travel journal entries that have an associated photo.
 
 ## Finding your way back
 
