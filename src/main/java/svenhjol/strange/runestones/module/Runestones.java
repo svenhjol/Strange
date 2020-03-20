@@ -17,6 +17,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
@@ -72,6 +73,9 @@ public class Runestones extends MesonModule {
     @Config(name = "Allow obelisks", description = "If true, runestones may be mined with a silk touch pickaxe and crafted vertically into obelisks.\n" +
         "Match the obelisk runes with a location in your travel journal to immediately teleport to that location.")
     public static boolean allowObelisks = true;
+
+    @Config(name = "Maximum runestone travel distance", description = "Maximum number of blocks that you will be transported from a stone circle runestone.")
+    public static int maxDist = 4000;
 
     @CapabilityInject(IRunestonesCapability.class)
     public static final Capability<IRunestonesCapability> RUNESTONES = null;
@@ -532,16 +536,28 @@ public class Runestones extends MesonModule {
             Strange.LOG.debug("Structure: " + structure);
 
             BlockPos spawn = world.getSpawnPoint();
-            int minDist = 4000;
-            int x = runePos.getX();
-            int z = runePos.getZ();
+            final int x = runePos.getX();
+            final int z = runePos.getZ();
+            final WorldBorder border = world.getWorldBorder();
 
             if (isSpawnPoint())
                 return spawn;
 
-            int xdist = -minDist + rand.nextInt(minDist*2);
-            int zdist = -minDist + rand.nextInt(minDist*2);
+            final int xdist = -maxDist + rand.nextInt(maxDist *2);
+            final int zdist = -maxDist + rand.nextInt(maxDist *2);
             BlockPos p = runePos.add(xdist, 0, zdist);
+
+            if (p.getX() > border.maxX())
+                p = new BlockPos(border.maxX(), p.getY(), p.getZ());
+
+            if (p.getX() < border.minX())
+                p = new BlockPos(border.minX(), p.getY(), p.getZ());
+
+            if (p.getZ() > border.maxZ())
+                p = new BlockPos(p.getX(), p.getY(), border.maxZ());
+
+            if (p.getZ() < border.minZ())
+                p = new BlockPos(p.getX(), p.getY(), border.minZ());
 
             BlockPos target = outerlands ? normalizeOuterPos(p) : normalizeInnerPos(p);
             BlockPos dest = world.findNearestStructure(structure, target, dist, true);
