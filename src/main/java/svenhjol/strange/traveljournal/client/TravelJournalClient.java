@@ -8,9 +8,9 @@ import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.client.screen.BaseTravelJournalScreen;
@@ -41,13 +41,16 @@ public class TravelJournalClient {
 
         MainWindow win = mc.mainWindow;
         ScreenShotHelper.saveScreenshot(mc.gameDir, entry.id + ".png", win.getFramebufferWidth() / 8, win.getFramebufferHeight() / 8, mc.getFramebuffer(), i -> mc.gameSettings.hideGUI = false);
-
         player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+        updateAfterScreenshot = true;
 
-        PlayerQueueHandler.add(player.world.getGameTime() + 10, player, p -> {
-            updateAfterScreenshot = true;
+        try {
+            Thread.sleep(500);
             returnAfterScreenshot(mc, entry, player, hand);
-        });
+        } catch (InterruptedException e) {
+            // don't try and reopen the journal
+            Strange.LOG.debug("Thread sleep failed: " + e.getMessage());
+        }
     }
 
     public void returnAfterScreenshot(Minecraft mc, Entry entry, PlayerEntity player, Hand hand) {

@@ -26,6 +26,7 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.List;
 
@@ -128,6 +129,10 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         if (hasScreenshot) {
             if (tex == null) {
                 try {
+                    final RandomAccessFile raf = new RandomAccessFile(file, "r");
+                    if (raf != null)
+                        raf.close();
+
                     InputStream stream = new FileInputStream(file);
                     NativeImage screenshot = NativeImage.read(stream);
                     tex = new DynamicTexture(screenshot);
