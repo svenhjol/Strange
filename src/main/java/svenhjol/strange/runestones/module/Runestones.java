@@ -77,6 +77,9 @@ public class Runestones extends MesonModule {
     @Config(name = "Maximum runestone travel distance", description = "Maximum number of blocks that you will be transported from a stone circle runestone.")
     public static int maxDist = 4000;
 
+    @Config(name = "Travel protection duration", description = "Number of seconds of regeneration and slow-fall when travelling through a stone circle runestone.")
+    public static int protectionDuration = 6;
+
     @CapabilityInject(IRunestonesCapability.class)
     public static final Capability<IRunestonesCapability> RUNESTONES = null;
 
@@ -456,8 +459,9 @@ public class Runestones extends MesonModule {
         CriteriaTriggers.ENTER_BLOCK.trigger((ServerPlayerEntity) player, state);
         Runestones.getCapability(player).discoverType(rune);
 
-        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 100, 2));
-        player.addPotionEffect(new EffectInstance(Effects.REGENERATION, 100, 2));
+        int duration = protectionDuration * 20;
+        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, duration, 2));
+        player.addPotionEffect(new EffectInstance(Effects.REGENERATION, duration, 2));
         final BlockPos currentPlayerPos = player.getPosition();
 
         Random rand = world.rand;
@@ -475,12 +479,14 @@ public class Runestones extends MesonModule {
             destPos = world.getSpawnPoint();
         }
 
-        BlockPos destOffset = addRandomOffset(destPos, rand).add(0, 4, 0);
-        PlayerHelper.teleportSurface(player, destOffset, 0, p -> {
+        BlockPos destOffset = addRandomOffset(destPos, rand);
+        PlayerHelper.teleportSurface(player, destOffset, 0, p1 -> {
             final BlockPos newPlayerPos = player.getPosition();
             Runestones.getCapability(player).recordDestination(pos, destOffset);
-            PlayerHelper.teleport(player, currentPlayerPos, 0, pp -> {
-                PlayerHelper.teleportSurface(player, destOffset, 0);
+            PlayerHelper.teleport(player, currentPlayerPos, 0, p2 -> {
+                PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
+                    p3.setPositionAndUpdate(p3.posX, p3.posY + 2, p3.posZ);
+                });
             });
         });
     }
