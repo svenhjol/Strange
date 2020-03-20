@@ -71,7 +71,12 @@ public class Vaults extends MesonModule {
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
 
+        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
+
         ForgeRegistries.BIOMES.forEach(biome -> {
+            if (!overworldBiomes.contains(biome))
+                return;
+
             biome.addFeature(
                 GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
                 Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
