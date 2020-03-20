@@ -25,6 +25,8 @@ import java.util.Random;
     description = "A distant area of the overworld with more difficult mobs and better treasure." +
         "Can be found by completing quests for a scrollkeeper villager.")
 public class Outerlands extends MesonModule {
+    private static final String DIFFICULT_MOB_TAG = "strange:difficult_mob";
+
     @Config(name = "Threshold", description = "X or Z axis values greater than this value are considered 'outer lands'.")
     public static int threshold = 15000000;
 
@@ -51,19 +53,26 @@ public class Outerlands extends MesonModule {
 
             LivingEntity entity = event.getEntityLiving();
             float multiplier = getScaledMultiplier(world, pos);
+            boolean didAugment = false;
 
             if (entity instanceof MonsterEntity) {
-                if (entity.world.rand.nextInt(8000) < (2 * multiplier)) {
-                    entity.addPotionEffect(new EffectInstance(Effects.HEALTH_BOOST, 800, (int) (2 * multiplier * multiplier)));
+                if (entity.world.rand.nextInt(4000) < (2 * multiplier)) {
+                    entity.addPotionEffect(new EffectInstance(Effects.HEALTH_BOOST, 800, (int) (2.5 * multiplier * multiplier)));
                     entity.setHealth(entity.getMaxHealth());
+                    didAugment = true;
                 }
-                if (entity.world.rand.nextInt(16000) < (2 * multiplier)) {
+                if (entity.world.rand.nextInt(8000) < (2 * multiplier)) {
                     entity.addPotionEffect(new EffectInstance(Effects.STRENGTH, 800, (int) multiplier));
+                    didAugment = true;
                 }
-                if (entity.world.rand.nextInt(16000) < (2 * multiplier)) {
+                if (entity.world.rand.nextInt(8000) < (2 * multiplier)) {
                     entity.addPotionEffect(new EffectInstance(Effects.SPEED, 800, (int) multiplier));
+                    didAugment = true;
                 }
             }
+
+            if (didAugment)
+                entity.addTag(DIFFICULT_MOB_TAG);
         }
     }
 
@@ -89,8 +98,11 @@ public class Outerlands extends MesonModule {
         int xp = event.getOriginalExperience();
 
         if (event.getEntityLiving() instanceof MonsterEntity) {
-            int newXp = (int) (xp * 1.2 * getScaledMultiplier(world, pos));
-            event.setDroppedExperience(newXp);
+            final MonsterEntity entity = (MonsterEntity)event.getEntityLiving();
+            if (entity.getTags().contains(DIFFICULT_MOB_TAG)) {
+                int newXp = (int) (xp * 2.5 * getScaledMultiplier(world, pos));
+                event.setDroppedExperience(newXp);
+            }
         }
     }
 
