@@ -456,6 +456,10 @@ public class Runestones extends MesonModule {
         CriteriaTriggers.ENTER_BLOCK.trigger((ServerPlayerEntity) player, state);
         Runestones.getCapability(player).discoverType(rune);
 
+        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 100, 2));
+        player.addPotionEffect(new EffectInstance(Effects.REGENERATION, 100, 2));
+        final BlockPos currentPlayerPos = player.getPosition();
+
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
@@ -471,8 +475,14 @@ public class Runestones extends MesonModule {
             destPos = world.getSpawnPoint();
         }
 
-        BlockPos destOffset = addRandomOffset(destPos, rand);
-        PlayerHelper.teleportSurface(player, destOffset, 0, p -> Runestones.getCapability(player).recordDestination(pos, destOffset));
+        BlockPos destOffset = addRandomOffset(destPos, rand).add(0, 4, 0);
+        PlayerHelper.teleportSurface(player, destOffset, 0, p -> {
+            final BlockPos newPlayerPos = player.getPosition();
+            Runestones.getCapability(player).recordDestination(pos, destOffset);
+            PlayerHelper.teleport(player, currentPlayerPos, 0, pp -> {
+                PlayerHelper.teleportSurface(player, destOffset, 0);
+            });
+        });
     }
 
     private void runeError(World world, BlockPos pos, PlayerEntity player) {
