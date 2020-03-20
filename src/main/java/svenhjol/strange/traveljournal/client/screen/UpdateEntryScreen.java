@@ -81,7 +81,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         }
 
         mc.keyboardListener.enableRepeatEvents(true);
-        nameField = new TextFieldWidget(font, (width / 2) - 72, 36, 149, 12, "NameField");
+        nameField = new TextFieldWidget(font, (width / 2) - 72, 34, 149, 12, "NameField");
         nameField.setCanLoseFocus(false);
         nameField.changeFocus(true);
         nameField.setTextColor(-1);
@@ -113,8 +113,8 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         int colorsLeftEdge = mid - ((colors.size() * 21) / 2);
 
         if (hasScreenshot) {
-            colorsTopEdge = y + 119;
-            coordsTopEdge = y + 172;
+            colorsTopEdge = y + 117;
+            coordsTopEdge = y + 141;
         } else if (atEntryPosition) {
             colorsTopEdge = y + 64;
             coordsTopEdge = y + 91;
@@ -147,7 +147,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
                 mc.textureManager.bindTexture(res);
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.66F, 0.4F, 0.66F);
-                this.blit( (int)(( this.width / 2 ) / 0.66F) - 110, 134, 0, 0, 228, 200);
+                this.blit( (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
                 GlStateManager.popMatrix();
             }
         }
