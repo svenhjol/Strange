@@ -1,15 +1,20 @@
 package svenhjol.strange.traveljournal.client.screen;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.TranslationTextComponent;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
@@ -19,6 +24,8 @@ import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +40,9 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
     );
     protected FontRenderer glyphs;
+    protected File file = null;
+    protected DynamicTexture tex = null;
+    protected ResourceLocation res = null;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -66,12 +76,12 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
                 }
                 assembled.append(letter);
             }
-            //        assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
+            // assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
             this.runicName = assembled.toString().toCharArray();
         }
 
         mc.keyboardListener.enableRepeatEvents(true);
-        nameField = new TextFieldWidget(font, (width / 2) - 50, 42, 103, 12, "NameField");
+        nameField = new TextFieldWidget(font, (width / 2) - 72, 36, 149, 12, "NameField");
         nameField.setCanLoseFocus(false);
         nameField.changeFocus(true);
         nameField.setTextColor(-1);
@@ -83,36 +93,80 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         nameField.setEnabled(true);
         children.add(nameField);
         setFocusedDefault(nameField);
+
+        if (!mc.world.isRemote) return;
+        file = getScreenshot(entry);
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
-        boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
+
+        final boolean hasScreenshot = hasScreenshot();
+        final boolean atEntryPosition = isAtEntryPosition(player, entry);
 
         int mid = this.width / 2;
-        int x = mid - 90;
         int y = 20;
-        int colorsTopEdge = y + 46;
+
+        int colorsTopEdge;
+        int coordsTopEdge;
         int colorsLeftEdge = mid - ((colors.size() * 21) / 2);
 
-        renderBackground();
+        if (hasScreenshot) {
+            colorsTopEdge = y + 119;
+            coordsTopEdge = y + 172;
+        } else if (atEntryPosition) {
+            colorsTopEdge = y + 64;
+            coordsTopEdge = y + 91;
+        } else {
+            colorsTopEdge = y + 38;
+            coordsTopEdge = y + 65;
+        }
+
         renderBackgroundTexture();
-        renderButtons();
 
-        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y + 8, DyeColor.byId(this.color).getColorValue());
-        nameField.render(mouseX, mouseY, partialTicks);
+        if (hasScreenshot) {
+            if (tex == null) {
+                try {
+                    InputStream stream = new FileInputStream(file);
+                    NativeImage screenshot = NativeImage.read(stream);
+                    tex = new DynamicTexture(screenshot);
+                    res = this.mc.getTextureManager().getDynamicTextureLocation("screenshot", tex);
+                    stream.close();
 
+                    if (tex == null || res == null) {
+                        Strange.LOG.debug("Failed to load screenshot");
+                    }
+                } catch (Exception e) {
+                    Strange.LOG.debug("Error loading screenshot: " + e);
+                }
+                Strange.LOG.debug("Loaded screenshot");
+            }
+
+            if (res != null) {
+                mc.textureManager.bindTexture(res);
+                GlStateManager.pushMatrix();
+                GlStateManager.scalef(0.66F, 0.4F, 0.66F);
+                this.blit( (int)(( this.width / 2 ) / 0.66F) - 110, 134, 0, 0, 228, 200);
+                GlStateManager.popMatrix();
+            }
+        }
+
+        // button to take photo
+        if (atEntryPosition && !hasScreenshot)
+            this.addButton(new Button((width / 2) - 73, y + 36, 152, 20, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+
+        // generate color icons
         for (int i = 0; i < colors.size(); i++) {
             final DyeColor col = colors.get(i);
-            this.addButton(new ImageButton(colorsLeftEdge + (i * 21), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+            this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
         }
 
         if (entry.pos != null) {
+            // show the coordinates if in creative mode
             if (player.isCreative())
-                this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), y + 76, TEXT_COLOR);
+                this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), coordsTopEdge, TEXT_COLOR);
 
-            //this.drawCenteredString(this.glyphs, runicName, (width / 2), y + 94, TEXT_COLOR);
             int offset = y - 2;
 
             if (entry.dim == 0 && runicName.length > 0) {
@@ -125,21 +179,18 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
             }
         }
 
-        if (atEntryPosition || hasScreenshot()) {
-            String key = "gui.strange.travel_journal.show_screenshot";
-            if (atEntryPosition && !hasScreenshot()) key = "gui.strange.travel_journal.new_screenshot";
-            this.addButton(new Button((width / 2) - 60, y + 110, 120, 20, I18n.format(key), (button) -> this.screenshot()));
-        }
+        this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y, DyeColor.byId(this.color).getColorValue());
+        nameField.render(mouseX, mouseY, partialTicks);
 
-        if (!this.message.isEmpty()) {
-            this.drawCenteredString(this.font, this.message, (width / 2), y + 135, WARN_COLOR);
-        }
+        // button to delete entry
+        this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
 
         super.render(mouseX, mouseY, partialTicks);
     }
 
     protected void setColor(DyeColor color) {
         this.color = color.getId();
+        saveProgress();
     }
 
     @Override
@@ -159,15 +210,17 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
-        int buttonX = -152;
+        final boolean atEntryPosition = isAtEntryPosition(player, entry);
+
+        int buttonX = atEntryPosition ? -110 : -50;
+        int buttonDist = 120;
+
+        if (atEntryPosition) {
+            this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+            buttonX += buttonDist;
+        }
 
         this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.save"), (button) -> this.save()));
-        buttonX += 105;
-
-        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.delete"), (button) -> this.delete()));
-        buttonX += 105;
-
-        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.cancel"), (button) -> this.back()));
     }
 
     private void saveProgress() {
@@ -192,28 +245,33 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     }
 
     private void delete() {
-        if (hasShiftDown()) {
-            TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
-            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
-            player.playSound(SoundEvents.BLOCK_WOOD_BREAK, 1.0F, 1.0F);
-            this.back();
-        } else {
-            this.message = I18n.format("gui.strange.travel_journal.hold_shift_to_delete");
-        }
+        TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
+        player.playSound(SoundEvents.BLOCK_WOOD_BREAK, 1.0F, 1.0F);
+        this.back();
     }
 
-    private void screenshot() {
-        this.saveProgress();
-        TravelJournal.client.updateAfterScreenshot = true;
-        mc.displayGuiScreen(new ScreenshotScreen(this.entry, player, hand));
+    private File getScreenshot(Entry entry) {
+        return new File(new File(Minecraft.getInstance().gameDir, "screenshots"), entry.id + ".png");
     }
 
     private boolean hasScreenshot() {
-        File file = ScreenshotScreen.getScreenshot(entry);
+        File file = getScreenshot(entry);
         return file.exists();
     }
 
     private void responder(String str) {
         this.name = str;
+    }
+
+    private void prepareScreenshot() {
+        mc.displayGuiScreen(null);
+        mc.gameSettings.hideGUI = true;
+        player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.SCREENSHOT, entry, hand));
+    }
+
+    private boolean isAtEntryPosition(PlayerEntity player, Entry entry) {
+        return TravelJournal.client.isPlayerAtEntryPosition(player, entry);
     }
 }

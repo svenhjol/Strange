@@ -192,7 +192,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
         }
 
         private static void takeScreenshot(Entry entry, Hand hand, PlayerEntity player) {
-            PlayerQueueHandler.add(player.world.getGameTime() + 60, player, (p) -> {
+            PlayerQueueHandler.add(player.world.getGameTime() + 20, player, (p) -> {
                 player.sendStatusMessage(new StringTextComponent(""), true);
                 Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientTravelJournalAction(ClientTravelJournalAction.SCREENSHOT, entry, hand), (ServerPlayerEntity) player);
             });

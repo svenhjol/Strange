@@ -19,14 +19,13 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.totems.module.TotemOfReturning;
+import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalMeta;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
 
     protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
-    protected List<String> hasScreenshots = new ArrayList<>();
     protected final CompoundNBT journalEntries;
     protected boolean hasTotem = false;
     protected boolean hasCompass = false;
@@ -55,7 +53,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
     protected void refreshData() {
         this.ids = new ArrayList<>();
         this.sortedEntries = new TreeMap<>();
-        this.hasScreenshots = new ArrayList<>();
 
         for (String id : journalEntries.keySet()) {
             INBT entryTag = journalEntries.get(id);
@@ -64,19 +61,15 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
 
             this.ids.add(id);
             this.sortedEntries.put(id, entry);
-
-            File file = ScreenshotScreen.getScreenshot(entry);
-            if (file.exists()) hasScreenshots.add(id);
         }
 
         // check if player has an actionable item in their inventory
         ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
 
-
         for (NonNullList<ItemStack> itemStacks : inventories) {
             for (ItemStack stack : itemStacks) {
                 if (stack.isEmpty()) continue;
-                if (!hasTotem) hasTotem = stack.getItem() == TotemOfReturning.item;
+                if (!hasTotem) hasTotem = stack.getItem() instanceof TotemOfReturningItem;
                 if (!hasCompass)
                     hasCompass = Meson.isModuleEnabled("charm:compass_binding") && stack.getItem() == Items.COMPASS;
                 if (!hasMap) hasMap = stack.getItem() == Items.MAP;
@@ -124,7 +117,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
         for (String id : sublist) {
             int buttonOffsetX = rightEdge - 18;
             Entry entry = sortedEntries.get(id);
-            boolean hasScreenshot = hasScreenshots.contains(id);
             boolean atEntryPosition = TravelJournal.client.isPlayerAtEntryPosition(player, entry);
 
             // draw row
@@ -134,12 +126,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
             // update button
             this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
             buttonOffsetX -= buttonSpacing;
-
-            // screenshot button
-            if (hasScreenshot) {
-                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 80, 0, 19, BUTTONS, (r) -> screenshot(entry)));
-                buttonOffsetX -= buttonSpacing;
-            }
 
             // teleport button
             if (!atEntryPosition && hasTotem && entry.pos != null) {
@@ -162,24 +148,23 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
         }
 
         if (ids.size() > PER_PAGE) {
-            this.font.drawString(I18n.format("gui.strange.travel_journal.page", page), x + 90, 157, SUB_COLOR);
+            this.font.drawString(I18n.format("gui.strange.travel_journal.page", page), x + 100, 157, SUB_COLOR);
             if (page > 1) {
-                this.addButton(new ImageButton(x + 130, 152, 20, 18, 140, 0, 19, BUTTONS, (r) -> {
+                this.addButton(new ImageButton(x + 140, 152, 20, 18, 140, 0, 19, BUTTONS, (r) -> {
                     updateServerPage(--page);
                     redraw();
                 }));
             }
             if (page * PER_PAGE < ids.size()) {
-                this.addButton(new ImageButton(x + 150, 152, 20, 18, 120, 0, 19, BUTTONS, (r) -> {
+                this.addButton(new ImageButton(x + 160, 152, 20, 18, 120, 0, 19, BUTTONS, (r) -> {
                     updateServerPage(++page);
                     redraw();
                 }));
             }
         }
 
-        if (!this.message.isEmpty()) {
-            this.drawCenteredString(this.font, this.message, x + 10, 147, WARN_COLOR);
-        }
+        if (!this.message.isEmpty())
+            this.drawCenteredString(this.font, this.message, mid, 143, WARN_COLOR);
 
         super.render(mouseX, mouseY, partialTicks);
     }
@@ -236,11 +221,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
     private void makeMap(Entry entry) {
         this.close();
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
-    }
-
-    private void screenshot(Entry entry) {
-        TravelJournal.client.updateAfterScreenshot = false;
-        mc.displayGuiScreen(new ScreenshotScreen(entry, player, hand));
     }
 
     private void updateServerPage(int page) {
