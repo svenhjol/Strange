@@ -42,6 +42,8 @@ public class Reward implements IDelegate {
         if (player == null) return false;
 
         if (event instanceof QuestEvent.Complete) {
+            if (!quest.getCriteria().isSatisfied()) return false;
+
             for (ItemStack stack : items.keySet()) {
                 int c = items.get(stack);
                 if (stack.getMaxStackSize() == 1) {
