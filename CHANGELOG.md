@@ -4,6 +4,7 @@
 * Travel journal photos now part of entry rather than separate screen
 * Runestone destination algorithm has been changed
 * Ambience added for The End
+* Obelisks now provide enchanting power equivalent to bookshelves
 
 ## 1.0.0 alpha 10
 * Fixed rare enchantments being applied outside of vaults
