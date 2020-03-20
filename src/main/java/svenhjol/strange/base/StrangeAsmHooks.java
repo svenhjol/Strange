@@ -2,22 +2,21 @@ package svenhjol.strange.base;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.item.ItemStack;
 import svenhjol.strange.enchantments.enchantment.BaseTreasureEnchantment;
 import svenhjol.strange.enchantments.module.TreasureEnchantments;
 
 import java.util.List;
 
 public class StrangeAsmHooks {
-    public static boolean canApplyEnchantments(List<EnchantmentData> enchantments, ItemStack stack) {
+    public static boolean canApplyEnchantments(List<EnchantmentData> enchantments) {
         boolean canApply = true;
         for (EnchantmentData ench : enchantments) {
-            canApply = canApply && canApplyEnchantment(ench.enchantment, stack);
+            canApply = canApply && canApplyEnchantment(ench.enchantment);
         }
         return canApply;
     }
 
-    public static boolean canApplyEnchantment(Enchantment enchantment, ItemStack stack) {
+    public static boolean canApplyEnchantment(Enchantment enchantment) {
         if (!TreasureEnchantments.obtainable) {
             return !(enchantment instanceof BaseTreasureEnchantment);
         }

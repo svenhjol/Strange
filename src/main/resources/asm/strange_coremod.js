@@ -33,8 +33,7 @@ function initializeCoreMod() {
                     if (instruction.getOpcode() == Opcodes.ASTORE) {
                         var label = new LabelNode();
                         newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
-                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
-                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "canApplyEnchantments", "(Ljava/util/List;Lnet/minecraft/item/ItemStack;)Z", false));
+                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "canApplyEnchantments", "(Ljava/util/List;)Z", false));
                         newInstructions.add(new JumpInsnNode(Opcodes.IFNE, label));
                         newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
                         newInstructions.add(new InsnNode(Opcodes.ARETURN));
@@ -76,9 +75,8 @@ function initializeCoreMod() {
                     if (instruction.getOpcode() == Opcodes.ISTORE
                         && instruction.var == 5) {
                         var label = new LabelNode();
-                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 3));
-                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
-                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "canApplyEnchantment", "(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)Z", false));
+                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
+                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "canApplyEnchantment", "(Lnet/minecraft/enchantment/Enchantment;)Z", false));
                         newInstructions.add(new JumpInsnNode(Opcodes.IFNE, label));
                         newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
                         newInstructions.add(new InsnNode(Opcodes.ARETURN));
