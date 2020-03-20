@@ -8,6 +8,7 @@ import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import svenhjol.meson.handler.PlayerQueueHandler;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.base.StrangeSounds;
@@ -43,8 +44,10 @@ public class TravelJournalClient {
 
         player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
 
-        updateAfterScreenshot = true;
-        returnAfterScreenshot(mc, entry, player, hand);
+        PlayerQueueHandler.add(player.world.getGameTime() + 10, player, p -> {
+            updateAfterScreenshot = true;
+            returnAfterScreenshot(mc, entry, player, hand);
+        });
     }
 
     public void returnAfterScreenshot(Minecraft mc, Entry entry, PlayerEntity player, Hand hand) {
