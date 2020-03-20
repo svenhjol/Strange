@@ -5,11 +5,14 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Blocks;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.feature.DecorationProcessor;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
@@ -20,6 +23,24 @@ import java.util.regex.Pattern;
 
 public class StructureHelper {
     public static final List<ResourceLocation> registeredPieces = new ArrayList<>();
+
+    public static List<Biome> getEndBiomes()
+    {
+        return new ArrayList<>(Arrays.asList(Biomes.THE_END, Biomes.END_BARRENS, Biomes.END_HIGHLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_MIDLANDS));
+    }
+
+    public static List<Biome> getNetherBiomes()
+    {
+        return new ArrayList<>(Collections.singletonList(Biomes.NETHER));
+    }
+
+    public static List<Biome> getOverworldBiomes()
+    {
+        List<Biome> biomes = new ArrayList<>(ForgeRegistries.BIOMES.getValues());
+        biomes.removeAll(getEndBiomes());
+        biomes.removeAll(getNetherBiomes());
+        return biomes;
+    }
 
     public static int getWeight(String prefix, String name, int def) {
         if (name.contains(prefix)) {
