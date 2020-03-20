@@ -1,5 +1,9 @@
 ## 1.0.0 alpha 11
-* 
+* Fixed infinite loading when looking for structure in the wrong dimension
+* Fixed issue with Blur mod crashing after taking photo in journal
+* Travel journal photos now part of entry rather than separate screen
+* Runestone destination algorithm has been changed
+* Ambience added for The End
 
 ## 1.0.0 alpha 10
 * Fixed rare enchantments being applied outside of vaults

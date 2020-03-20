@@ -56,6 +56,8 @@ dependencies {
     compile fg.deobf("svenhjol.charm:Charm:${charm_version}")
     compile fg.deobf("vazkii.arl:AutoRegLib:${arl_version}")
     compile fg.deobf("vazkii.quark:Quark:${quark_version}")
+
+//    runtimeOnly fg.deobf("com.terrag.blur:Blur:1.1.0-1")
 }
 
 repositories {
