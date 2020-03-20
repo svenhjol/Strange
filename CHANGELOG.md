@@ -1,3 +1,10 @@
+## 1.0.0 alpha 12
+* Fixed an issue where scrollkeeper trades are always 2 emeralds. Fix #9
+* Fixed rewards given for an incomplete quest when "handing in" a completed one. Fix #10
+* Fixed creative mode coordinates text color on travel journal entry.
+* Additional delay before reopening journal after taking photo.
+* Runestones now give the player a buff during transport. Configurable duration. Test #6
+
 ## 1.0.0 alpha 11
 * Fixed infinite loading when looking for structure in the wrong dimension
 * Fixed issue with Blur mod crashing after taking photo in journal
