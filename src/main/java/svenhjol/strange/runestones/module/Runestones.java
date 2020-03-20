@@ -575,7 +575,16 @@ public class Runestones extends MesonModule {
             if (p.getZ() < border.minZ())
                 p = new BlockPos(p.getX(), p.getY(), border.minZ());
 
-            BlockPos target = outerlands ? normalizeOuterPos(p) : normalizeInnerPos(p);
+            BlockPos target;
+
+            if (outerlands) {
+                target = getOuterPos(world, rand); // get a random outerlands pos
+            } else if (Outerlands.isOuterPos(runePos)) {
+                target = normalizeOuterPos(p); // if you're in the outerlands, find a close-by outerlands pos
+            } else {
+                target = normalizeInnerPos(p); // if you're not in outerlands, find a close-by inner pos
+            }
+
             BlockPos dest = world.findNearestStructure(structure, target, dist, true);
             return dest == null ? world.getSpawnPoint() : dest;
         }
