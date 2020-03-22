@@ -9,12 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
@@ -32,6 +28,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.structure.VaultPiece;
 import svenhjol.strange.ruins.structure.VaultStructure;
@@ -77,11 +74,7 @@ public class Vaults extends MesonModule {
             if (!overworldBiomes.contains(biome))
                 return;
 
-            biome.addFeature(
-                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
+            VersionHelper.addStructureToBiome(structure, biome);
         });
 
         validBiomes.addAll(Arrays.asList(
