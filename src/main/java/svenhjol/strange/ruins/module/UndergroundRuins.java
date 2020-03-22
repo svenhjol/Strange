@@ -168,7 +168,7 @@ public class UndergroundRuins extends MesonModule {
                         BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 100, true);
                         if (structurePos != null) {
                             ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte) 2, true, true);
-                            FilledMapItem.renderBiomePreviewMap(world, map);
+                            FilledMapItem.func_226642_a_(world, map);
                             MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
                             return map;

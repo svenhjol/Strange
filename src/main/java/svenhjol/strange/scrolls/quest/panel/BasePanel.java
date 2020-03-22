@@ -54,7 +54,7 @@ public abstract class BasePanel extends AbstractGui {
     }
 
     public void blitItemIcon(ItemStack stack, int x, int y) {
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.enableStandardItemLighting();
         items.renderItemIntoGUI(stack, x, y);
     }
 }

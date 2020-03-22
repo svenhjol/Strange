@@ -13,6 +13,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -176,7 +177,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                             map.shrink(1);
                             BlockPos pos = entry.pos;
                             ItemStack filled = FilledMapItem.setupNewMap(world, pos.getX(), pos.getZ(), (byte) 2, true, true);
-                            FilledMapItem.renderBiomePreviewMap(world, filled);
+                            FilledMapItem.func_226642_a_((ServerWorld)world, filled);
                             MapData.addTargetDecoration(filled, pos, "+", decoration);
 
                             StringTextComponent text = new StringTextComponent(entry.name);

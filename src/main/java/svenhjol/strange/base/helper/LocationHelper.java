@@ -19,7 +19,7 @@ public class LocationHelper {
         BlockPos structurePos = world.findNearestStructure(res.toString(), pos, 100, true);
         if (structurePos != null) {
             map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte) 2, true, true);
-            FilledMapItem.renderBiomePreviewMap(world, map);
+            FilledMapItem.func_226642_a_(world, map);
             MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
             map.setDisplayName(new TranslationTextComponent("filled_map." + res.getPath()));
         }
