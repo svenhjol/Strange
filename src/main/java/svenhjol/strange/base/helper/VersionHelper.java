@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 
 public class VersionHelper {
     public static MainWindow getMainWindow(Minecraft mc) {
-        return mc.mainWindow; // 1.14
-        // return mc.getMainWindow(); // 1.15
+        // return mc.mainWindow; // 1.14
+        return mc.getMainWindow(); // 1.15
     }
 }
