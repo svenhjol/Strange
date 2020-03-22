@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 
@@ -26,7 +27,9 @@ public class CaveAmbientSounds extends BaseAmbientSounds {
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
 
-        if (!world.isSkyLightMax(pos) && pos.getY() <= world.getSeaLevel()) {
+        if (!WorldHelper.canSeeSky(world, pos)
+            && pos.getY() <= world.getSeaLevel()
+        ) {
             return pos.getY() <= 44 || light <= 12;
         }
 

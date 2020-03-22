@@ -14,6 +14,7 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
 
                 if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
                     && world.getBlockState(surfacePosDown).isSolid()
-                    && world.isSkyLightMax(surfacePosDown)
+                    && WorldHelper.canSeeSky(world, surfacePosDown)
                 ) {
                     foundPos = surfacePos;
                     break;

@@ -333,7 +333,8 @@ public class Encounter implements IDelegate {
                         if (m.getEntity() instanceof ZombieEntity && world.getBlockState(pos).getMaterial() == Material.WATER) {
                             DrownedEntity drowned = EntityType.DROWNED.create(world);
                             if (drowned != null) {
-                                drowned.setPositionAndUpdate(m.posX, m.posY, m.posZ);
+                                final BlockPos mPos = m.getPosition();
+                                drowned.setPositionAndUpdate(mPos.getX(), mPos.getY(), mPos.getZ());
                                 drowned.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.TRIGGERED, null, null);
                                 world.addEntity(drowned);
                                 m.setHealth(0);
