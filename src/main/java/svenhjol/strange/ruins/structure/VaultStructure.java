@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -39,16 +40,16 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z) {
+    public boolean func_225558_a_(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
-            Biome biome = gen.getBiomeProvider().getBiome(pos);
-            return Vaults.validBiomes.contains(biome)
+            Biome b = biomes.getBiome(pos);
+            return Vaults.validBiomes.contains(b)
                 && Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE
-                && gen.hasStructure(biome, Vaults.structure);
+                && gen.hasStructure(b, Vaults.structure);
         }
 
         return false;
@@ -65,8 +66,8 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     public static class Start extends StructureStart {
-        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed) {
-            super(structure, chunkX, chunkZ, biome, bb, ref, seed);
+        public Start(Structure<?> structure, int chunkX, int chunkZ, MutableBoundingBox bb, int ref, long seed) {
+            super(structure, chunkX, chunkZ, bb, ref, seed);
         }
 
         @Override
