@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
@@ -63,7 +64,8 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
             BlockPos surfacePosDown = surfacePos.down();
 
             if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
-                && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
+                && world.getBlockState(surfacePosDown).isSolid()
+                && WorldHelper.canSeeSky(world, surfacePosDown)
             ) {
                 if (Outerlands.isOuterPos(surfacePos)) {
                     config.withChest = true;

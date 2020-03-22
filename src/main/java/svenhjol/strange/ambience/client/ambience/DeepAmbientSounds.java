@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.base.StrangeSounds;
 
 import javax.annotation.Nullable;
@@ -19,7 +20,7 @@ public class DeepAmbientSounds extends BaseAmbientSounds {
         if (world == null || world.getDimension().getType() != DimensionType.OVERWORLD) return false;
         BlockPos pos = player.getPosition();
         int light = world.getLight(pos);
-        return !world.isSkyLightMax(pos) && pos.getY() <= 32 && light < 10;
+        return !WorldHelper.canSeeSky(world, pos) && pos.getY() <= 32 && light < 10;
     }
 
     @Override
