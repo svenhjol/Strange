@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.client;
 
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -12,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.ClientHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.scrolls.client.gui.QuestBadgeGui;
 import svenhjol.strange.scrolls.client.screen.QuestScreen;
 import svenhjol.strange.scrolls.client.screen.ScrollScreen;
@@ -63,8 +65,10 @@ public class QuestClient {
             int numQuests = QuestClient.currentQuests.size();
             if (numQuests == 0) return;
 
-            int xPos = (mc.mainWindow.getScaledWidth() / 2) - (numQuests * w / 2);
-            int yPos = (mc.mainWindow.getScaledHeight() / 4) - 50;
+            final MainWindow mainWindow = VersionHelper.getMainWindow(mc);
+
+            int xPos = (mainWindow.getScaledWidth() / 2) - (numQuests * w / 2);
+            int yPos = (mainWindow.getScaledHeight() / 4) - 50;
 
             for (int i = 0; i < numQuests; i++) {
                 questBadges.add(new QuestBadgeGui(QuestClient.currentQuests.get(i), xPos + (i * (w + 10)), yPos));

@@ -12,6 +12,7 @@ import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.client.screen.BaseTravelJournalScreen;
 import svenhjol.strange.traveljournal.client.screen.TravelJournalScreen;
@@ -39,7 +40,7 @@ public class TravelJournalClient {
         Minecraft mc = Minecraft.getInstance();
         mc.gameSettings.hideGUI = true;
 
-        MainWindow win = mc.mainWindow;
+        MainWindow win = VersionHelper.getMainWindow(mc);
         ScreenShotHelper.saveScreenshot(mc.gameDir, entry.id + ".png", win.getFramebufferWidth() / 8, win.getFramebufferHeight() / 8, mc.getFramebuffer(), i -> mc.gameSettings.hideGUI = false);
         player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
         updateAfterScreenshot = true;
