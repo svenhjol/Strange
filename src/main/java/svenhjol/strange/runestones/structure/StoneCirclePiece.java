@@ -11,6 +11,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
@@ -37,7 +38,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
+    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         GenerationConfig config = new GenerationConfig();

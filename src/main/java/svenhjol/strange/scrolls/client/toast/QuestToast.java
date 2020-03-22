@@ -1,6 +1,6 @@
 package svenhjol.strange.scrolls.client.toast;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
@@ -39,7 +39,7 @@ public class QuestToast implements IToast
     public Visibility draw(ToastGui toastGui, long delta)
     {
         toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
-        GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+        RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 
         toastGui.blit(0, 0, 0, 0, 160, 32);
 
@@ -75,7 +75,7 @@ public class QuestToast implements IToast
             }
         }
 
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.enableStandardItemLighting();
         toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, ScrollItem.putTier(new ItemStack(Scrolls.item), quest.getTier()), 8, 8);
         return delta >= 5000L ? Visibility.HIDE : Visibility.SHOW;
     }
