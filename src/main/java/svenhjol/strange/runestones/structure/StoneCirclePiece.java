@@ -59,7 +59,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         ));
 
         for (int ii = 1; ii < TRIES; ii++) {
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+            BlockPos.Mutable pos = new BlockPos.Mutable(x, y, z);
             BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
             BlockPos surfacePosDown = surfacePos.down();
 
@@ -77,12 +77,12 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         }
 
         if (foundPos != null)
-            return generateCircle(world, new BlockPos.MutableBlockPos(foundPos), rand, config);
+            return generateCircle(world, new BlockPos.Mutable(foundPos), rand, config);
 
         return false;
     }
 
-    public boolean generateCircle(IWorld world, BlockPos.MutableBlockPos pos, Random rand, GenerationConfig config) {
+    public boolean generateCircle(IWorld world, BlockPos.Mutable pos, Random rand, GenerationConfig config) {
         boolean generated = false;
         boolean generatedWithRune = false;
         boolean runestonesEnabled = Meson.isModuleEnabled("strange:runestones");
