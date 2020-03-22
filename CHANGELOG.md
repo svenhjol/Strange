@@ -1,3 +1,6 @@
+## 1.0.0 alpha 13
+* Fixed issue with daytime not being reported to client properly.
+
 ## 1.0.0 alpha 12
 * Fixed an issue where scrollkeeper trades are always 2 emeralds. Fix #9
 * Fixed rewards given for an incomplete quest when "handing in" a completed one. Fix #10
