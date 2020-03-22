@@ -18,7 +18,7 @@ import svenhjol.strange.enchantments.iface.ILegendaryItem;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
-public class LegendarySword extends MesonModule implements ILegendaryItem {
+public class LegendaryWeapons extends MesonModule implements ILegendaryItem {
     @Config(name = "Valid enchantments", description = "Valid enchantments that can be applied to Legendary swords.")
     public static List<String> validEnchantments = new ArrayList<>(Arrays.asList(
         "minecraft:sharpness",
@@ -47,7 +47,7 @@ public class LegendarySword extends MesonModule implements ILegendaryItem {
     public ItemStack getItemStack() {
         Random rand = new Random();
         List<ItemStack> items = new ArrayList<>();
-        Tag<Item> legendaryItemsTag = ItemTags.getCollection().get(new ResourceLocation("strange:legendary_swords"));
+        Tag<Item> legendaryItemsTag = ItemTags.getCollection().get(new ResourceLocation("strange:legendary_weapons"));
 
         //If the tag is missing for some reasons use the default entry
         if (legendaryItemsTag == null){
