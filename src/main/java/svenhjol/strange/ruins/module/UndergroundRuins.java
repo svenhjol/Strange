@@ -84,16 +84,16 @@ public class UndergroundRuins extends MesonModule {
 
         final List<Biome> endBiomes = StructureHelper.getEndBiomes();
 
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (endBiomes.contains(biome))
-                continue;
-
-            biome.addFeature(
-                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
-        }
+//        for (Biome biome : ForgeRegistries.BIOMES) {
+//            if (endBiomes.contains(biome))
+//                continue;
+//
+//            biome.addFeature(
+//                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
+//                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+//
+//            biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
+//        }
     }
 
     @Override

@@ -103,16 +103,16 @@ public class StoneCircles extends MesonModule {
 
         final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
 
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (!overworldBiomes.contains(biome))
-                return;
-
-            biome.addFeature(
-                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
-        });
+//        ForgeRegistries.BIOMES.forEach(biome -> {
+//            if (!overworldBiomes.contains(biome))
+//                return;
+//
+//            biome.addFeature(
+//                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
+//                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
+//
+//            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
+//        });
     }
 
     @SubscribeEvent
