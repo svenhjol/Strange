@@ -30,6 +30,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.ruins.structure.MarkerPiece;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
@@ -84,11 +85,7 @@ public class UndergroundRuins extends MesonModule {
             if (endBiomes.contains(biome))
                 continue;
 
-//            biome.addFeature(
-//                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-//                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG));
+            VersionHelper.addStructureToBiome(structure, biome);
         }
     }
 
