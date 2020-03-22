@@ -451,7 +451,7 @@ public class Runestones extends MesonModule {
         return RunestoneHelper.addRandomOffset(pos, rand, 8);
     }
 
-    private void doTeleport(World world, PlayerEntity player, BlockPos pos) {
+    private void doTeleport(ServerWorld world, PlayerEntity player, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = getRuneValue((RunestoneBlock) state.getBlock());
@@ -547,7 +547,7 @@ public class Runestones extends MesonModule {
             return this.structure.equals(SPAWN);
         }
 
-        public BlockPos getDest(World world, BlockPos runePos, Random rand) {
+        public BlockPos getDest(ServerWorld world, BlockPos runePos, Random rand) {
             Strange.LOG.debug("Structure: " + structure);
 
             BlockPos spawn = world.getSpawnPoint();
