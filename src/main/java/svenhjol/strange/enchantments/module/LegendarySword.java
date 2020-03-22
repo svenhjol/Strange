@@ -1,7 +1,11 @@
 package svenhjol.strange.enchantments.module;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
@@ -11,9 +15,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.enchantments.iface.ILegendaryItem;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.ENCHANTMENTS, hasSubscriptions = true)
 public class LegendarySword extends MesonModule implements ILegendaryItem {
@@ -43,7 +45,22 @@ public class LegendarySword extends MesonModule implements ILegendaryItem {
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.DIAMOND_SWORD);
+        Random rand = new Random();
+        List<ItemStack> items = new ArrayList<>();
+        Tag<Item> legendaryItemsTag = ItemTags.getCollection().get(new ResourceLocation("strange:legendary_swords"));
+
+        //If the tag is missing for some reasons use the default entry
+        if (legendaryItemsTag == null){
+            return new ItemStack(Items.DIAMOND_SWORD);
+        }
+        else {
+            Collection<Item> tagItems = legendaryItemsTag.getAllElements();
+            for (Item item : tagItems) {
+                items.add(new ItemStack(item));
+            }
+        }
+
+        return items.get(rand.nextInt(items.size()));
     }
 
     @Override
