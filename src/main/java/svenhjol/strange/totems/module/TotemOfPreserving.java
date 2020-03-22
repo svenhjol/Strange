@@ -97,9 +97,11 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
             TotemOfPreservingItem.setMessage(totem, source.getDeathMessage(event.getEntityLiving()).getString());
         }
 
-        double x = player.posX + 0.5D;
-        double y = player.posY + 2.25D;
-        double z = player.posZ + 0.5D;
+        final BlockPos playerPos = player.getPosition();
+
+        double x = playerPos.getX() + 0.5D;
+        double y = playerPos.getY() + 2.25D;
+        double z = playerPos.getZ() + 0.5D;
 
         if (y < 0) y = 64;
 

@@ -483,11 +483,11 @@ public class Runestones extends MesonModule {
         PlayerHelper.teleportSurface(player, destOffset, 0, p1 -> {
             final BlockPos newPlayerPos = player.getPosition();
             Runestones.getCapability(player).recordDestination(pos, destOffset);
-            PlayerHelper.teleport(player, currentPlayerPos, 0, p2 -> {
-                PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
-                    p3.setPositionAndUpdate(p3.posX, p3.posY + 2, p3.posZ);
-                });
-            });
+            PlayerHelper.teleport(player, currentPlayerPos, 0,
+                p2 -> PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
+                    final BlockPos playerPos = p3.getPosition();
+                    p3.setPositionAndUpdate(playerPos.getX(), playerPos.getY() + 2, playerPos.getZ());
+            }));
         });
     }
 
