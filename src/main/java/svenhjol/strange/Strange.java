@@ -8,14 +8,14 @@ import org.apache.logging.log4j.MarkerManager;
 import svenhjol.meson.MesonInstance;
 import svenhjol.meson.handler.LogHandler;
 import svenhjol.strange.base.*;
-import svenhjol.strange.base.compat.QuarkCompat;
+import svenhjol.strange.base.compat.IQuarkCompat;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
 
 @Mod(Strange.MOD_ID)
 public class Strange extends MesonInstance {
     public static final String MOD_ID = "strange";
     public static final LogHandler LOG = new LogHandler(Strange.MOD_ID);
-    public static QuarkCompat quarkCompat;
+    public static IQuarkCompat quarkCompat;
     public static StrangeClient client;
 
     public static final Marker CLIENT = MarkerManager.getMarker("CLIENT");

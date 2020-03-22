@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class QuarkCompat {
+public class QuarkCompat implements IQuarkCompat {
     public boolean hasModule(ResourceLocation res) {
         return Meson.isModuleEnabled(res);
     }
