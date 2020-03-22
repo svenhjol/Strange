@@ -481,7 +481,6 @@ public class Runestones extends MesonModule {
 
         BlockPos destOffset = addRandomOffset(destPos, rand);
         PlayerHelper.teleportSurface(player, destOffset, 0, p1 -> {
-            final BlockPos newPlayerPos = player.getPosition();
             Runestones.getCapability(player).recordDestination(pos, destOffset);
             PlayerHelper.teleport(player, currentPlayerPos, 0,
                 p2 -> PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
