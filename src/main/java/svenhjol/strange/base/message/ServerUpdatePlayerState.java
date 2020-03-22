@@ -44,13 +44,15 @@ public class ServerUpdatePlayerState implements IMesonMessage {
                 ServerWorld world = player.getServerWorld();
                 BlockPos pos = player.getPosition();
 
+                final long dayTime = world.getDayTime() % 24000;
+
                 CompoundNBT nbt = new CompoundNBT();
                 nbt.putBoolean("mineshaft", Feature.MINESHAFT.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("stronghold", Feature.STRONGHOLD.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("fortress", Feature.NETHER_BRIDGE.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("shipwreck", Feature.SHIPWRECK.isPositionInsideStructure(world, pos));
                 nbt.putBoolean("village", Feature.VILLAGE.isPositionInsideStructure(world, pos));
-                nbt.putBoolean("day", world.getDayTime() > 0 && world.getDayTime() < 12700);
+                nbt.putBoolean("day", dayTime > 0 && dayTime < 12700);
 
                 if (Meson.isModuleEnabled("strange:runestones")) {
                     IRunestonesCapability runeCap = Runestones.getCapability(player);
