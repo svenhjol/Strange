@@ -23,7 +23,6 @@ public class LegendaryTools extends MesonModule implements ILegendaryItem {
         "minecraft:efficiency",
         "minecraft:fortune",
         "minecraft:knockback",
-        "minecraft:fire_aspect",
         "strange:repel",
         "strange:shulking"
     ));
