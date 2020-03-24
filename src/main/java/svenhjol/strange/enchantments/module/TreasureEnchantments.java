@@ -81,14 +81,6 @@ public class TreasureEnchantments extends MesonModule {
     public static ItemStack getTreasureItem(Random rand) {
         ITreasureEnchantment ench = TreasureEnchantments.availableEnchantments.get(rand.nextInt(TreasureEnchantments.availableEnchantments.size()));
 
-        // test
-//        for (ITreasureEnchantment availableEnchantment : availableEnchantments) {
-//            if (availableEnchantment instanceof LegendarySword) {
-//                ench = availableEnchantment;
-//                break;
-//            }
-//        }
-
         ItemStack treasure = ench.getTreasureItem();
         DyeColor color = ench.getColor();
 
