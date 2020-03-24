@@ -1,7 +1,10 @@
 package svenhjol.strange.base.module;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
@@ -29,5 +32,10 @@ public class EntitySpawner extends MesonModule {
         ResourceLocation res = new ResourceLocation(Strange.MOD_ID, "entity_spawner");
         tile = TileEntityType.Builder.create(EntitySpawnerTileEntity::new, block).build(null);
         RegistryHandler.registerTile(tile, res);
+    }
+
+    @Override
+    public void onClientSetup(FMLClientSetupEvent event) {
+        RenderTypeLookup.setRenderLayer(block, RenderType.getTranslucent());
     }
 }
