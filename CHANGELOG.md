@@ -1,5 +1,8 @@
-## 1.0.0 alpha 13
+## 1.0.0 beta 1
 * Fixed issue with daytime not being reported to client properly.
+* Legendary items are now tag based (merge PR#12)
+* Update some calls in preparation for 1.15.2
+* Depends on Charm 1.5.4
 
 ## 1.0.0 alpha 12
 * Fixed an issue where scrollkeeper trades are always 2 emeralds. Fix #9
