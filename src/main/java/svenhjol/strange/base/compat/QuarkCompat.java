@@ -81,16 +81,9 @@ public class QuarkCompat implements IQuarkCompat {
 
     public boolean hasColorRuneModule() {
         return false;
-        // return ModuleLoader.INSTANCE.isModuleEnabled(ColorRunesModule.class);
     }
 
     public void applyColor(ItemStack stack, DyeColor color) {
-        // get the rune
-//        Item runeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Quark.MOD_ID, color.getName() + "_rune"));
-//        if (runeItem instanceof RuneItem) {
-//            ItemStack rune = new ItemStack(runeItem);
-//            ItemNBTHelper.setBoolean(stack, ColorRunesModule.TAG_RUNE_ATTACHED, true);
-//            ItemNBTHelper.setCompound(stack, ColorRunesModule.TAG_RUNE_COLOR, rune.serializeNBT());
-//        }
+        // colored runes no longer a thing :(
     }
 }
