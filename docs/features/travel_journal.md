@@ -27,6 +27,8 @@ From this screen, type a name for the entry at the top.  By default it uses the 
 
 Click the "Take photo" button if you want to record a picture of this location.
 
+![Travel Journal photo](https://i.postimg.cc/NM9X8w0F/Travel-Journal-Photo2.jpg){: .center-image }
+
 Click one of the color dyes to change the color of the entry if you want to categorise it.
 
 Once you are happy with the information, click "Save" to return back to the main journal.  Your new entry will appear in the list, colored accordingly.
@@ -55,7 +57,11 @@ If you are lucky enough to have a [Totem of Returning]({{ site.baseurl }}/featur
 
 ## Runic co-ordinates
 
-Once you travel through your first [Runestone]({{ site.baseurl }}/features/runestones) and learn its glyph, location entries will show a series of rune symbols on the right-hand side of the edit location page (accessed by the paper and quill icon).  If you have not yet discovered one of the glyphs that describe this location, a question mark (?) will appear instead of the rune.
+Once you travel through your first [Runestone]({{ site.baseurl }}/features/runestones) and learn its glyph, location entries will show a series of rune symbols on the right-hand side of the edit location page (accessed by the paper and quill icon). 
+
+![Travel Journal runes](https://i.postimg.cc/L5vmnJM1/Travel-Journal-Runes.jpg){: .center-image }
+
+If you have not yet discovered one of the glyphs that describe this location, a question mark (?) will appear instead of the rune.
 
 When you have discovered all the glyphs necessary to descibe the location, you can harvest runestones from [Stone Circles]({{ site.baseurl }}/features/stone_circles) and build them into an [Obelisk]({{ site.baseurl }}/features/obelisks).  A correctly built obelisk lets you teleport back to the position recorded in your travel journal.
 
