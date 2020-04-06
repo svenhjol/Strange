@@ -2,6 +2,7 @@ package svenhjol.strange.traveljournal.client.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -11,6 +12,8 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -44,6 +47,11 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
+    protected boolean atEntryPosition;
+    protected boolean hasScreenshot;
+    protected boolean hasRenderedAddPhotoButton;
+    protected boolean hasRenderedColorIcons;
+    protected boolean hasRenderedTrashIcon;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -62,23 +70,66 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
             this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
-            String hex = Long.toHexString(entry.pos.toLong());
-            StringBuilder assembled = new StringBuilder();
+            int dim = 128 + entry.dim;
+            if (dim >= 0 && dim < 256) {
+                String dimHex = Integer.toHexString(dim);
 
-            char[] chars = hex.toCharArray();
-            for (char aChar : chars) {
-                String letter;
-                int rune = Character.getNumericValue(aChar);
+                if (dimHex.length() % 2 == 1)
+                    dimHex = "0" + dimHex;
 
-                if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                    letter = RunestoneHelper.getRuneChars().get(aChar).toString();
-                } else {
-                    letter = "?";
+                // get first and second chars of dimHex
+                String d0 = dimHex.substring(0, 1);
+                String d1 = dimHex.substring(1, 2);
+
+                // convert the entry pos to hex
+                String posHex = Long.toHexString(entry.pos.toLong());
+                if (posHex.length() % 2 == 1)
+                    posHex = "0" + posHex;
+
+                // interpolate dimHex within posHex
+                String p0 = posHex.substring(0, 3);
+                String p1 = posHex.substring(3);
+                String hex = p0 + d0 + p1 + d1;
+
+                StringBuilder assembled = new StringBuilder();
+
+                char[] chars = hex.toCharArray();
+                int rune = -1;
+                boolean atLeastOneRune = false;
+
+                for (int i = 0; i < chars.length; i++) {
+                    String letter;
+                    char c = chars[i];
+                    int v = Character.getNumericValue(c);
+
+                    if (i % 2 == 0) {
+                        // first time round set the rune value
+                        rune = v;
+                    } else {
+                        // second time round set the color and add the string
+                        if (rune >= 0) {
+                            final String color = Integer.toHexString(v);
+
+                            if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
+                                letter = RunestoneHelper.getRuneIntCharMap().get(rune).toString();
+                                atLeastOneRune = true;
+                            } else {
+                                letter = "?";
+                            }
+
+                            assembled.append(letter);
+                            assembled.append(color);
+                            Meson.LOG.debug("(" + letter + color + ")");
+                        }
+
+                        rune = -1;
+                    }
                 }
-                assembled.append(letter);
+
+                if (atLeastOneRune) {
+                    this.runicName = assembled.toString().toCharArray();
+                }
             }
-            // assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
-            this.runicName = assembled.toString().toCharArray();
         }
 
         mc.keyboardListener.enableRepeatEvents(true);
@@ -97,14 +148,17 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
+
+        atEntryPosition = isAtEntryPosition(player, entry);
+        hasScreenshot = hasScreenshot();
+        hasRenderedAddPhotoButton = false;
+        hasRenderedColorIcons = false;
+        hasRenderedTrashIcon = false;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
-
-        final boolean hasScreenshot = hasScreenshot();
-        final boolean atEntryPosition = isAtEntryPosition(player, entry);
 
         int mid = this.width / 2;
         int y = 20;
@@ -158,13 +212,18 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         }
 
         // button to take photo
-        if (atEntryPosition && !hasScreenshot)
+        if (atEntryPosition && !hasScreenshot && !hasRenderedAddPhotoButton) {
+            hasRenderedAddPhotoButton = true;
             this.addButton(new Button((width / 2) - 73, y + 36, 152, 20, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+        }
 
         // generate color icons
-        for (int i = 0; i < colors.size(); i++) {
-            final DyeColor col = colors.get(i);
-            this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+        if (!hasRenderedColorIcons) {
+            for (int i = 0; i < colors.size(); i++) {
+                final DyeColor col = colors.get(i);
+                this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+            }
+            hasRenderedColorIcons = true;
         }
 
         if (entry.pos != null) {
@@ -173,13 +232,30 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
                 this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), coordsTopEdge, TEXT_COLOR);
 
             int offset = y - 2;
+            String letter = null;
 
-            if (entry.dim == 0 && runicName.length > 0) {
+
+            if (runicName.length > 0) {
+                // draw background for rune layout
+                AbstractGui.fill(width / 2 + 113, y + 4, width / 2 + 149, y + (runicName.length * 8) + 4, 0x77000000);
+
                 for (int j = 0; j < runicName.length; j++) {
-                    String s = String.valueOf(runicName[j]);
-                    FontRenderer f = (s.equals("?") ? this.font : this.glyphs);
-                    int color = (s.equals("?")) ? 0xC0C0C0 : 0x888888;
-                    this.drawCenteredString(f, s, (width / 2) + 93, offset + (j * 9), color);
+                    if (j % 2 == 0) {
+                        letter = String.valueOf(runicName[j]);
+                    } else {
+                        String colHex = String.valueOf(runicName[j]);
+                        int colNum = Integer.parseUnsignedInt(colHex, 16);
+                        boolean q = letter.equals("?");
+                        FontRenderer f = (q ? this.font : this.glyphs);
+                        offset += 14;
+
+                        if (!q) {
+                            ItemStack dyeItem = new ItemStack(DyeItem.getItem(DyeColor.byId(colNum)));
+                            this.blitItemIcon(dyeItem, (width / 2) + 128, offset - 5);
+                        }
+
+                        this.drawCenteredString(f, letter, (width / 2) + 123, offset, q ? 0x888888 : 0xFFFFFF);
+                    }
                 }
             }
         }
@@ -188,7 +264,10 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         nameField.render(mouseX, mouseY, partialTicks);
 
         // button to delete entry
-        this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
+        if (!hasRenderedTrashIcon) {
+            this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
+            hasRenderedTrashIcon = true;
+        }
 
         super.render(mouseX, mouseY, partialTicks);
     }

@@ -7,10 +7,15 @@ import java.util.Map;
 import java.util.Random;
 
 public class RunestoneHelper {
-    private static final Map<Character, Character> runeChars = new HashMap<>();
+    private static final Map<Character, Character> runeHexCharMap = new HashMap<>();
+    private static final Map<Integer, Character> runeIntCharMap = new HashMap<>();
 
-    public static Map<Character, Character> getRuneChars() {
-        return runeChars;
+    public static Map<Character, Character> getRuneHexCharMap() {
+        return runeHexCharMap;
+    }
+
+    public static Map<Integer, Character> getRuneIntCharMap() {
+        return runeIntCharMap;
     }
 
     public static BlockPos addRandomOffset(BlockPos pos, Random rand, int max) {
@@ -26,21 +31,38 @@ public class RunestoneHelper {
     }
 
     static {
-        runeChars.put('0', 'a');
-        runeChars.put('1', 'b');
-        runeChars.put('2', 'd');
-        runeChars.put('3', 'e');
-        runeChars.put('4', 'q');
-        runeChars.put('5', 't');
-        runeChars.put('6', 'g');
-        runeChars.put('7', 'h');
-        runeChars.put('8', 'i');
-        runeChars.put('9', 'p');
-        runeChars.put('a', 'v');
-        runeChars.put('b', 'o');
-        runeChars.put('c', 'z');
-        runeChars.put('d', 'j');
-        runeChars.put('e', 'w');
-        runeChars.put('f', 'f');
+        runeHexCharMap.put('0', 'a');
+        runeHexCharMap.put('1', 'b');
+        runeHexCharMap.put('2', 'd');
+        runeHexCharMap.put('3', 'e');
+        runeHexCharMap.put('4', 'q');
+        runeHexCharMap.put('5', 't');
+        runeHexCharMap.put('6', 'g');
+        runeHexCharMap.put('7', 'h');
+        runeHexCharMap.put('8', 'i');
+        runeHexCharMap.put('9', 'p');
+        runeHexCharMap.put('a', 'v');
+        runeHexCharMap.put('b', 'o');
+        runeHexCharMap.put('c', 'z');
+        runeHexCharMap.put('d', 'j');
+        runeHexCharMap.put('e', 'w');
+        runeHexCharMap.put('f', 'f');
+
+        runeIntCharMap.put(0, 'a');
+        runeIntCharMap.put(1, 'b');
+        runeIntCharMap.put(2, 'd');
+        runeIntCharMap.put(3, 'e');
+        runeIntCharMap.put(4, 'q');
+        runeIntCharMap.put(5, 't');
+        runeIntCharMap.put(6, 'g');
+        runeIntCharMap.put(7, 'h');
+        runeIntCharMap.put(8, 'i');
+        runeIntCharMap.put(9, 'p');
+        runeIntCharMap.put(10, 'v');
+        runeIntCharMap.put(11, 'o');
+        runeIntCharMap.put(12, 'z');
+        runeIntCharMap.put(13, 'j');
+        runeIntCharMap.put(14, 'w');
+        runeIntCharMap.put(15, 'f');
     }
 }
