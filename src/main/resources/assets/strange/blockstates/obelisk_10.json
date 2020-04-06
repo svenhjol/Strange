@@ -1,7 +1,36 @@
 {
   "variants": {
-    "": {
-      "model": "strange:block/obelisk_10"
-    }
+    "dyed=false,color=white": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=orange": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=magenta": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=light_blue": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=yellow": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=lime": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=pink": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=gray": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=light_gray": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=cyan": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=purple": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=blue": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=brown": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=green": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=red": { "model": "strange:block/obelisk_10" },
+    "dyed=false,color=black": { "model": "strange:block/obelisk_10" },
+    "dyed=true,color=white": { "model": "strange:block/obelisk_white_10" },
+    "dyed=true,color=orange": { "model": "strange:block/obelisk_orange_10" },
+    "dyed=true,color=magenta": { "model": "strange:block/obelisk_magenta_10" },
+    "dyed=true,color=light_blue": { "model": "strange:block/obelisk_light_blue_10" },
+    "dyed=true,color=yellow": { "model": "strange:block/obelisk_yellow_10" },
+    "dyed=true,color=lime": { "model": "strange:block/obelisk_lime_10" },
+    "dyed=true,color=pink": { "model": "strange:block/obelisk_pink_10" },
+    "dyed=true,color=gray": { "model": "strange:block/obelisk_gray_10" },
+    "dyed=true,color=light_gray": { "model": "strange:block/obelisk_light_gray_10" },
+    "dyed=true,color=cyan": { "model": "strange:block/obelisk_cyan_10" },
+    "dyed=true,color=purple": { "model": "strange:block/obelisk_purple_10" },
+    "dyed=true,color=blue": { "model": "strange:block/obelisk_blue_10" },
+    "dyed=true,color=brown": { "model": "strange:block/obelisk_brown_10" },
+    "dyed=true,color=green": { "model": "strange:block/obelisk_green_10" },
+    "dyed=true,color=red": { "model": "strange:block/obelisk_red_10" },
+    "dyed=true,color=black": { "model": "strange:block/obelisk_black_10" }
   }
 }
