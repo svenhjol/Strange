@@ -17,10 +17,8 @@ import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.LootHelper;
@@ -78,7 +76,6 @@ public class UndergroundRuins extends MesonModule {
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
         RegistryHandler.registerStructurePiece(MarkerPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "ump"));
 
-
         final List<Biome> endBiomes = StructureHelper.getEndBiomes();
 
         for (Biome biome : ForgeRegistries.BIOMES) {
@@ -86,28 +83,6 @@ public class UndergroundRuins extends MesonModule {
                 continue;
 
             VersionHelper.addStructureToBiome(structure, biome);
-        }
-    }
-
-    @Override
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
-        // don't spawn near Quark's big dungeons
-        if (Strange.quarkCompat != null
-            && Strange.quarkCompat.hasBigDungeons()
-        ) {
-            Structure<?> structure = Strange.quarkCompat.getBigDungeonStructure();
-            if (!blacklist.contains(structure)) {
-                blacklist.add(structure);
-                Strange.LOG.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
-            }
-        }
-
-        // don't spawn near Vaults
-        if (Meson.isModuleEnabled("strange:vaults")) {
-            if (!blacklist.contains(Vaults.structure)) {
-                blacklist.add(Vaults.structure);
-                Strange.LOG.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
-            }
         }
     }
 

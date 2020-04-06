@@ -52,6 +52,9 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
             Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
 
             if (gen.hasStructure(biome, UndergroundRuins.structure)) {
+                if (!Meson.isModuleEnabled("strange:underground_ruins"))
+                    return false;
+
                 for (int k = x - 10; k <= x + 10; ++k) {
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {
