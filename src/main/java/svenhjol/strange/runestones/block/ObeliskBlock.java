@@ -67,7 +67,7 @@ public class ObeliskBlock extends BaseRunestoneBlock {
                     held.shrink(1);
                 }
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return ActionResultType.FAIL;
