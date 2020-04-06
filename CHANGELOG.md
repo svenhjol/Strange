@@ -3,6 +3,8 @@
 * Fixed structure spawning check issue and not obeying config.
 * Complete rework of obelisks.
 * Retexture runestones.
+* Testing totem flying issue.
+* Depends on Charm 1.5.5
 
 ## 1.0.0 beta 1
 * Fixed issue with daytime not being reported to client properly.
