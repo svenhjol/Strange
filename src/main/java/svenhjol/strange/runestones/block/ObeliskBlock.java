@@ -5,9 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -70,25 +67,7 @@ public class ObeliskBlock extends BaseRunestoneBlock {
                     held.shrink(1);
                 }
             }
-            if (item instanceof GlassBottleItem) {
-                final Potion potion = PotionUtils.getPotionFromItem(held);
-                if (potion == Potions.WATER) {
-                    final BlockState newState = state
-                        .with(DYED, false)
-                        .with(COLOR, DyeColor.WHITE);
-
-                    worldIn.setBlockState(pos, newState, 2);
-                    worldIn.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                    if (!player.isCreative()) {
-                        if (held.getCount() == 1) {
-                            player.setHeldItem(handIn, new ItemStack(Items.GLASS_BOTTLE));
-                        } else {
-                            held.shrink(1);
-                        }
-                    }
-                }
-            }
+            return true;
         }
 
         return ActionResultType.FAIL;
