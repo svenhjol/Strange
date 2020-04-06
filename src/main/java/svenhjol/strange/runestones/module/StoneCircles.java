@@ -19,6 +19,7 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.charm.tools.item.BoundCompassItem;
 import svenhjol.charm.tools.module.CompassBinding;
@@ -91,7 +92,10 @@ public class StoneCircles extends MesonModule {
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(StoneCirclePiece.PIECE, new ResourceLocation(Strange.MOD_ID, "scp"));
+    }
 
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         validBiomesConfig.forEach(biomeName -> {
             //noinspection deprecation
             Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));

@@ -1,3 +1,9 @@
+## 1.0.0 beta 2
+* Fixed memory leak in travel journal.
+* Fixed structure spawning check issue and not obeying config.
+* Complete rework of obelisks.
+* Retexture runestones.
+
 ## 1.0.0 beta 1
 * Fixed issue with daytime not being reported to client properly.
 * Legendary items are now tag based (merge PR#12)
