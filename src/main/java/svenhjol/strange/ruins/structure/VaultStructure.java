@@ -14,6 +14,7 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.Vaults;
 
@@ -45,8 +46,10 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
 
         if (x == chunk.x && z == chunk.z) {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
+
             Biome b = biomes.getBiome(pos);
             return Vaults.validBiomes.contains(b)
+                && Meson.isModuleEnabled("strange:vaults")
                 && Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE
                 && gen.hasStructure(b, Vaults.structure);

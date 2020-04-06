@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -20,6 +21,7 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     protected Hand hand;
     protected ItemStack stack;
     protected Minecraft mc;
+    protected ItemRenderer items;
 
     public static final int TEXT_COLOR = 0x000000;
     public static final int WARN_COLOR = 0xBB2200;
@@ -37,6 +39,7 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
         this.hand = hand;
         this.stack = player.getHeldItem(hand);
         this.mc = Minecraft.getInstance();
+        this.items = mc.getItemRenderer();
         this.passEvents = true;
     }
 
@@ -100,5 +103,9 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     @Override
     public void drawRightAlignedString(FontRenderer renderer, String str, int x, int y, int color) {
         renderer.drawString(str, (float) (x - renderer.getStringWidth(str)), (float) y, color);
+    }
+
+    public void blitItemIcon(ItemStack stack, int x, int y) {
+        items.renderItemIntoGUI(stack, x, y);
     }
 }

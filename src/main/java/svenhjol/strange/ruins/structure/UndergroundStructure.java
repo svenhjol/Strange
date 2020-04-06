@@ -51,6 +51,9 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
 
         if (x == chunk.x && z == chunk.z) {
             if (gen.hasStructure(biome, UndergroundRuins.structure)) {
+                if (!Meson.isModuleEnabled("strange:underground_ruins"))
+                    return false;
+
                 for (int k = x - 10; k <= x + 10; ++k) {
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {

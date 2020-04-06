@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "block/stone",
+    "side": "strange:block/obelisk_light_blue_3"
+  }
+}
