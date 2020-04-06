@@ -17,6 +17,7 @@ import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
@@ -67,7 +68,10 @@ public class Vaults extends MesonModule {
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
+    }
 
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event) {
         final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
 
         ForgeRegistries.BIOMES.forEach(biome -> {
