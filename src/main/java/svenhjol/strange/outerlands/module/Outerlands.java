@@ -22,7 +22,7 @@ import svenhjol.strange.base.StrangeCategories;
 import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.OUTERLANDS, hasSubscriptions = true,
-    description = "A distant area of the overworld with more difficult mobs and better treasure." +
+    description = "A distant area of the overworld with more difficult mobs and better treasure.\n" +
         "Can be found by completing quests for a scrollkeeper villager.")
 public class Outerlands extends MesonModule {
     private static final String DIFFICULT_MOB_TAG = "strange:difficult_mob";
