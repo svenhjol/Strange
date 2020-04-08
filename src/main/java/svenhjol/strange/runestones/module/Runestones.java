@@ -510,7 +510,7 @@ public class Runestones extends MesonModule {
 
         int duration = protectionDuration * 20;
         player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, duration, 2));
-        player.addPotionEffect(new EffectInstance(Effects.REGENERATION, duration, 2));
+        player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, duration, 2));
         final BlockPos currentPlayerPos = player.getPosition();
 
         Random rand = world.rand;

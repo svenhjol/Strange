@@ -1,28 +1,18 @@
 package svenhjol.strange.runestones.module;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import svenhjol.charm.tools.item.BoundCompassItem;
-import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
@@ -147,51 +137,6 @@ public class StoneCircles extends MesonModule {
 
             LootTable table = event.getTable();
             LootHelper.addTableEntry(table, entry);
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent event) {
-        if (!compassDetection) return;
-        int interval = 20;
-
-        if (event.phase == TickEvent.Phase.END
-            && !event.player.world.isRemote
-            && event.player.world.getGameTime() % interval == 0
-            && event.player.world.getDimension().getType() == DimensionType.OVERWORLD
-            && event.player.world.getDayTime() > 17900
-            && event.player.world.getCurrentMoonPhaseFactor() > 0.95F
-            && Meson.isModuleEnabled("charm:compass_binding")
-        ) {
-            ServerWorld serverWorld = (ServerWorld) event.player.world;
-            ServerPlayerEntity player = (ServerPlayerEntity) event.player;
-
-            // get the nearest stone circle to the player
-            BlockPos circlePos = serverWorld.findNearestStructure(RESNAME, player.getPosition(), 500, true);
-            if (circlePos == null)
-                return;
-
-            // check if player holding a compass and an ingot
-            Hand compassHand = null;
-
-            if (player.getHeldItemMainhand().getItem() == Items.COMPASS
-                && player.getHeldItemOffhand().getItem() == Items.IRON_INGOT
-            ) {
-                compassHand = Hand.MAIN_HAND;
-            } else if (player.getHeldItemOffhand().getItem() == Items.IRON_INGOT
-                && player.getHeldItemMainhand().getItem() == Items.COMPASS
-            ) {
-                compassHand = Hand.OFF_HAND;
-            }
-
-            if (compassHand == null)
-                return;
-
-            // put the bound compass in the player's hand
-            ItemStack boundCompass = new ItemStack(CompassBinding.item);
-            boundCompass.setDisplayName(new TranslationTextComponent("item.strange.strange_compass"));
-            BoundCompassItem.setPos(boundCompass, circlePos);
-            player.setHeldItem(compassHand, boundCompass);
         }
     }
 }
