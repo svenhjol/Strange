@@ -633,7 +633,7 @@ public class Runestones extends MesonModule {
                 target = normalizeInnerPos(p); // if you're not in outerlands, find a close-by inner pos
             }
 
-            BlockPos dest = world.findNearestStructure(structure, target, dist, true);
+            BlockPos dest = world.findNearestStructure(structure, target, dist, false);
             return dest == null ? world.getSpawnPoint() : dest;
         }
     }
