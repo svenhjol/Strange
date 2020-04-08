@@ -29,13 +29,19 @@ import java.util.Objects;
 public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
     public static TotemOfPreservingItem item;
 
-    @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.")
+    @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.\n" +
+        "If 'Only save items when holding a totem' is disabled, then a new totem will be spawned whenever you die.")
     public static boolean saveItems = true;
 
-    @Config(name = "No despawn", description = "The totem will never despawn.")
+    @Config(name = "Only save items when holding a totem", description = "Only store items on death if you're holding an empty totem in your inventory.\n" +
+        "'Save items on death' must be enabled for this to function.")
+    public static boolean onlyWhenHolding = true;
+
+    @Config(name = "No despawn", description = "The totem will never despawn.  'Save items on death' must be enabled for this to function.")
     public static boolean noDespawn = true;
 
-    @Config(name = "No gravity", description = "The totem will stay suspended in the air above your death position.")
+    @Config(name = "No gravity", description = "The totem will stay suspended in the air above your death position.\n" +
+        "'Save items on death' must be enabled for this to function.")
     public static boolean noGravity = true;
 
     @Override
@@ -66,7 +72,9 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
 
     @SubscribeEvent
     public void onPlayerDrops(LivingDropsEvent event) {
-        if (!saveItems) return;
+        if (!saveItems)
+            return;
+
         DamageSource source = event.getSource();
 
         Collection<ItemEntity> drops = event.getDrops();
@@ -75,7 +83,6 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         World world = player.world;
-
         ItemStack totem = new ItemStack(item);
 
         CompoundNBT serialized = new CompoundNBT();
@@ -86,6 +93,26 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
             .map(ItemEntity::getItem)
             .filter(stack -> !stack.isEmpty())
             .forEach(holdable::add);
+
+        if (onlyWhenHolding) {
+            boolean found = false;
+            int foundAtIndex = 0;
+            for (int index = 0; index < holdable.size(); index++) {
+                final ItemStack itemStack = holdable.get(index);
+                if (itemStack.getItem() instanceof TotemOfPreservingItem) {
+                    if (TotemOfPreservingItem.getItems(itemStack).isEmpty()) {
+                        foundAtIndex = index;
+                        found = true;
+                    }
+                }
+            }
+            if (!found)
+                return;
+
+            // use the totem
+            totem = holdable.get(foundAtIndex);
+            holdable.remove(foundAtIndex);
+        }
 
         for (int i = 0; i < holdable.size(); i++) {
             serialized.put(Integer.toString(i), holdable.get(i).serializeNBT());
