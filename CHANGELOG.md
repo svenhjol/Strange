@@ -1,10 +1,13 @@
 ## 1.0.0 beta 2
 * Fixed memory leak in travel journal.
 * Fixed structure spawning check issue and not obeying config.
+* [1.15] Fixed stone circle runestones not taking you to previously discovered location. #17
+* Removed stone circles compasses (they were rubbish anyway) to fix a server crash. #15
+* Player now receives Resistance instead of Regeneration when using a runestone teleport.
+* Behavior of Totem of Preserving has been changed so that you need to be holding a totem for it to preserve items. Configurable. #21
 * Complete rework of obelisks.
 * Retexture runestones.
 * Testing totem flying issue.
-* Depends on Charm 1.5.5
 
 ## 1.0.0 beta 1
 * Fixed issue with daytime not being reported to client properly.
