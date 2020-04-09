@@ -5,6 +5,7 @@
 * Removed stone circles compasses (they were rubbish anyway) to fix a server crash. #15
 * Player now receives Resistance instead of Regeneration when using a runestone teleport.
 * Behavior of Totem of Preserving has been changed so that you need to be holding a totem for it to preserve items. Configurable. #21
+* Restore Quark-based Quests
 * Complete rework of obelisks.
 * Retexture runestones.
 * Testing totem flying issue.
