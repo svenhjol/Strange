@@ -1,5 +1,9 @@
 package svenhjol.strange.ruins.module;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -14,7 +18,11 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.ItemLootEntry;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -33,10 +41,6 @@ import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.structure.VaultPiece;
 import svenhjol.strange.ruins.structure.VaultStructure;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
     description = "Large underground complexes with rare treasure.")
@@ -60,7 +64,7 @@ public class Vaults extends MesonModule {
     @Config(name = "Generate above Y value", description = "Vaults will try and generate above this Y value.")
     public static int generateAbove = 24;
 
-    public static final List<Biome> validBiomes = new ArrayList<>();
+    public static final List<Biome> validBiomes = new ArrayList<Biome>();
 
     @Override
     public void init() {
@@ -72,18 +76,26 @@ public class Vaults extends MesonModule {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
-
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (!overworldBiomes.contains(biome))
-                return;
-
-            VersionHelper.addStructureToBiome(structure, biome);
-        });
+//        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
 
         validBiomes.addAll(Arrays.asList(
             Biomes.MOUNTAINS, Biomes.MOUNTAIN_EDGE
         ));
+        
+        ForgeRegistries.BIOMES.forEach(biome -> {
+        	// This is commented out so modded biomes gets the structure added as a 
+        	// feature and wont cut off vaults if those biomes border a mountain biome 
+        	// and the vault tries to spawn on the border.
+//            if (!overworldBiomes.contains(biome))  
+//                return;
+
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+            
+            //Only these biomes can start the structure generation.
+            if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:vaults"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
+        });
     }
 
     @Override

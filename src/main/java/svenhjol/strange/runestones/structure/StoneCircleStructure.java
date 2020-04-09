@@ -1,5 +1,8 @@
 package svenhjol.strange.runestones.structure;
 
+import java.util.Objects;
+import java.util.Random;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -11,13 +14,9 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 1684681;
@@ -56,9 +55,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
             Biome b = biomes.getBiome(pos);
 
-            return StoneCircles.validBiomes.contains(b)
-                && Meson.isModuleEnabled("strange:stone_circles")
-                && !Runestones.allDests.isEmpty()
+            return !Runestones.allDests.isEmpty()
                 && gen.hasStructure(b, StoneCircles.structure)
                 && Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE;
