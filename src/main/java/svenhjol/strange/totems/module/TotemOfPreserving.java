@@ -75,15 +75,15 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
         if (!saveItems)
             return;
 
-        DamageSource source = event.getSource();
-
         Collection<ItemEntity> drops = event.getDrops();
         if (drops.isEmpty()) return;
         if (!(event.getEntityLiving() instanceof PlayerEntity)) return;
+        if (event.isCanceled()) return;
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         World world = player.world;
         ItemStack totem = new ItemStack(item);
+        DamageSource source = event.getSource();
 
         CompoundNBT serialized = new CompoundNBT();
         List<ItemStack> holdable = new ArrayList<>();
