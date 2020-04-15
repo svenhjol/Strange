@@ -1,3 +1,6 @@
+## 1.0.0 beta 3
+* Obelisk right click issue. Fixes #26
+
 ## 1.0.0 beta 2
 * Fixed memory leak in travel journal.
 * Fixed structure spawning check issue and not obeying config.
