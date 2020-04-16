@@ -141,19 +141,7 @@ public class DecorationHelper {
 
     public static final List<ResourceLocation> storageLootTables = Arrays.asList(
         LootTables.CHESTS_SHIPWRECK_SUPPLY,
-        LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE,
-        LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE,
-        LootTables.CHESTS_VILLAGE_VILLAGE_SAVANNA_HOUSE,
-        LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE,
-        LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE,
         LootTables.CHESTS_VILLAGE_VILLAGE_ARMORER,
-        LootTables.CHESTS_VILLAGE_VILLAGE_BUTCHER,
-        LootTables.CHESTS_VILLAGE_VILLAGE_FISHER,
-        LootTables.CHESTS_VILLAGE_VILLAGE_FLETCHER,
-        LootTables.CHESTS_VILLAGE_VILLAGE_MASON,
-        LootTables.CHESTS_VILLAGE_VILLAGE_SHEPHERD,
-        LootTables.CHESTS_VILLAGE_VILLAGE_TANNERY,
-        LootTables.CHESTS_VILLAGE_VILLAGE_TEMPLE,
         LootTables.CHESTS_VILLAGE_VILLAGE_TOOLSMITH,
         LootTables.CHESTS_VILLAGE_VILLAGE_WEAPONSMITH,
         LootTables.CHESTS_IGLOO_CHEST
@@ -161,6 +149,8 @@ public class DecorationHelper {
 
     public static final List<ResourceLocation> chestLootTables = Arrays.asList(
         LootTables.CHESTS_SIMPLE_DUNGEON,
+        LootTables.CHESTS_DESERT_PYRAMID,
+        LootTables.CHESTS_JUNGLE_TEMPLE,
         LootTables.CHESTS_SHIPWRECK_TREASURE,
         LootTables.CHESTS_WOODLAND_MANSION,
         LootTables.CHESTS_UNDERWATER_RUIN_SMALL

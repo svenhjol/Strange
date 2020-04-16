@@ -66,11 +66,11 @@ public class ObeliskBlock extends BaseRunestoneBlock {
                 if (!player.isCreative()) {
                     held.shrink(1);
                 }
+                return ActionResultType.SUCCESS;
             }
-            return ActionResultType.SUCCESS;
         }
 
-        return ActionResultType.FAIL;
+        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
     @Nullable
