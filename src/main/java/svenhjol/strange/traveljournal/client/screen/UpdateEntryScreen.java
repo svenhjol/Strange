@@ -18,6 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.commons.lang3.StringUtils;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
@@ -83,8 +84,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
                 // convert the entry pos to hex
                 String posHex = Long.toHexString(entry.pos.toLong());
-                if (posHex.length() % 2 == 1)
-                    posHex = "0" + posHex;
+                posHex = StringUtils.leftPad(posHex, 4, "0");
 
                 // interpolate dimHex within posHex
                 String p0 = posHex.substring(0, 3);
