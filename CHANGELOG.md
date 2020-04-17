@@ -1,6 +1,7 @@
 ## 1.0.0 beta 3
 * Obelisk right click issue. Fixes #26
 * Crash when creating travel journal entry at 0 0. Fixes #25
+* Added config for ambience volume.
 
 ## 1.0.0 beta 2
 * Fixed memory leak in travel journal.

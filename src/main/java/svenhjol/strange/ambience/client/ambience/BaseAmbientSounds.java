@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.ambience.client.LongSound;
 import svenhjol.strange.ambience.client.ShortSound;
 import svenhjol.strange.ambience.client.iface.IAmbientSounds;
+import svenhjol.strange.ambience.module.Ambience;
 
 public abstract class BaseAmbientSounds implements IAmbientSounds {
     protected int shortTicks = 0;
@@ -79,7 +80,7 @@ public abstract class BaseAmbientSounds implements IAmbientSounds {
     }
 
     protected void setShortSound() {
-        soundHandler.play(new ShortSound((ClientPlayerEntity) player, getShortSound(), getShortSoundVolume()));
+        soundHandler.play(new ShortSound((ClientPlayerEntity) player, getShortSound(), getShortSoundVolume() * (float)Ambience.volumeMultiplier));
     }
 
     protected void setLongSound() {
