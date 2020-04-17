@@ -22,7 +22,7 @@ public class QuestScreen extends ScrollScreen implements IRenderable {
         int w = 80;
         int h = 20;
 
-        this.addButton(new Button((width / 2) - 100, y, w, h, I18n.format("gui.strange.scrolls.quit"), (button) -> this.quit()));
+        this.addButton(new Button((width / 2) - 100, y, w + 10, h, I18n.format("gui.strange.scrolls.quit"), (button) -> this.quit()));
         this.addButton(new Button((width / 2) + 20, y, w, h, I18n.format("gui.strange.scrolls.close"), (button) -> this.close()));
     }
 
