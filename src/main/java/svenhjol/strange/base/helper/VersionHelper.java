@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
@@ -18,6 +19,10 @@ public class VersionHelper {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void addStructureToBiomeFeature(Structure structure, Biome biome) {
+        // 1.14
+//        biome.addFeature(
+//            GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
+//            Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
 
         // 1.15
         final ConfiguredFeature configured = structure.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
@@ -25,9 +30,12 @@ public class VersionHelper {
 
         biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, decorated);
     }
-    
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void addStructureToBiomeStructure(Structure structure, Biome biome) {
+        // 1.14
+//        biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
+
         // 1.15
         final ConfiguredFeature configured = structure.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
 

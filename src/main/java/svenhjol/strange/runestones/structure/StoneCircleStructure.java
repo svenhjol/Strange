@@ -1,8 +1,5 @@
 package svenhjol.strange.runestones.structure;
 
-import java.util.Objects;
-import java.util.Random;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -17,6 +14,9 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.module.StoneCircles;
+
+import java.util.Objects;
+import java.util.Random;
 
 public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 1684681;

@@ -1,8 +1,5 @@
 package svenhjol.strange.ruins.structure;
 
-import java.util.Objects;
-import java.util.Random;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -19,6 +16,9 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.Vaults;
+
+import java.util.Objects;
+import java.util.Random;
 
 public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 188492881;

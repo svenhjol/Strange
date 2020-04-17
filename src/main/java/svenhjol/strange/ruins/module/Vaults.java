@@ -75,12 +75,12 @@ public class Vaults extends MesonModule {
         validBiomes.addAll(Arrays.asList(
             Biomes.MOUNTAINS, Biomes.MOUNTAIN_EDGE
         ));
-        
+
         ForgeRegistries.BIOMES.forEach(biome -> {
 
             //Structure can finish generating in any biome so it doesn't get cut off.
             VersionHelper.addStructureToBiomeFeature(structure, biome);
-            
+
             //Only these biomes can start the structure generation.
             if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:vaults"))
                 VersionHelper.addStructureToBiomeStructure(structure, biome);
