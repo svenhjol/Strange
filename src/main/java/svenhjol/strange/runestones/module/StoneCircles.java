@@ -1,9 +1,5 @@
 package svenhjol.strange.runestones.module;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -12,11 +8,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTables;
+import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -34,6 +26,10 @@ import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
     description = "Stone circles are surface structures of stone pillars with a runestone on top.\n" +
@@ -95,14 +91,7 @@ public class StoneCircles extends MesonModule {
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-//        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
-
         ForgeRegistries.BIOMES.forEach(biome -> {
-        	// This is commented out so modded biomes gets the structure added as a 
-        	// feature and won't cut off stone circles if those biomes border a valid biome 
-        	// and the stone circle tries to spawn on the border.
-//            if (!overworldBiomes.contains(biome))
-//                return;
 
             //Structure can finish generating in any biome so it doesn't get cut off.
             VersionHelper.addStructureToBiomeFeature(structure, biome);

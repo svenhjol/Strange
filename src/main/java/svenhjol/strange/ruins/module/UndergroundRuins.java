@@ -1,11 +1,5 @@
 package svenhjol.strange.ruins.module;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,11 +15,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTables;
+import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -44,6 +34,8 @@ import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.ruins.structure.MarkerPiece;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
+
+import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUINS, hasSubscriptions = true,
     description = "Ruins that spawn underground with different types according to biome.")
@@ -89,14 +81,8 @@ public class UndergroundRuins extends MesonModule {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-//        final List<Biome> endBiomes = StructureHelper.getEndBiomes();
-
         for (Biome biome : ForgeRegistries.BIOMES) {
-        	//see below (line 97) for alternative way for not adding the structure to both vanilla and modded end biomes
-//            if (endBiomes.contains(biome)) 
-//                continue;
 
-            
             //Structure can finish generating in any biome so it doesn't get cut off.
             VersionHelper.addStructureToBiomeFeature(structure, biome);
             
