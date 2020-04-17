@@ -110,6 +110,10 @@ public class ScrollScreen extends Screen implements IRenderable {
                 new RewardsPanel(quest, width / 2, panelY + 84, 170);
         }
 
+        if (criteria.isSatisfied()) {
+            this.drawCenteredString(this.font, I18n.format("gui.strange.scrolls.return_to_villager"), mid, 200, 0x00AA00);
+        }
+
         GlStateManager.popMatrix();
         super.render(mouseX, mouseY, partialTicks);
     }

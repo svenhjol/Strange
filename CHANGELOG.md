@@ -2,6 +2,7 @@
 * Obelisk right click issue. Fixes #26
 * Crash when creating travel journal entry at 0 0. Fixes #25
 * World hang when doing /locate in non-vanilla dimensions. Fixes #22
+* More obvious that you should return to scrollkeeper when quest complete. #28
 * Added config for ambience volume.
 
 ## 1.0.0 beta 2
