@@ -37,6 +37,9 @@ public class Ambience extends MesonModule {
     @Config(name = "Play ambient sounds", description = "If true, background ambient sounds play in biomes, caves and other dimensions.")
     public static boolean ambience = true;
 
+    @Config(name = "Volume multiplier", description = "Volume of ambient sounds is multiplied by this amount.")
+    public static double volumeMultiplier = 1.0D;
+
     @OnlyIn(Dist.CLIENT)
     public static MusicClient musicClient;
 
