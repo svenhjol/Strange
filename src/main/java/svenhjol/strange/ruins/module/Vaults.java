@@ -72,18 +72,19 @@ public class Vaults extends MesonModule {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
-
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (!overworldBiomes.contains(biome))
-                return;
-
-            VersionHelper.addStructureToBiome(structure, biome);
-        });
-
         validBiomes.addAll(Arrays.asList(
             Biomes.MOUNTAINS, Biomes.MOUNTAIN_EDGE
         ));
+
+        ForgeRegistries.BIOMES.forEach(biome -> {
+
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+
+            //Only these biomes can start the structure generation.
+            if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:vaults"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
+        });
     }
 
     @Override

@@ -20,6 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.LootHelper;
@@ -27,7 +28,6 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
 import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.ruins.structure.MarkerPiece;
@@ -80,13 +80,14 @@ public class UndergroundRuins extends MesonModule {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        final List<Biome> endBiomes = StructureHelper.getEndBiomes();
-
         for (Biome biome : ForgeRegistries.BIOMES) {
-            if (endBiomes.contains(biome))
-                continue;
 
-            VersionHelper.addStructureToBiome(structure, biome);
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+
+            //Only non-end biomes can start the structure generation.
+            if(biome.getCategory() != Biome.Category.THEEND && Meson.isModuleEnabled("strange:underground_ruins"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
         }
     }
 

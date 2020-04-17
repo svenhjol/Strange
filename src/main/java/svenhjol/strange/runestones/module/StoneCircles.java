@@ -23,7 +23,6 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.LocationHelper;
-import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
@@ -92,13 +91,14 @@ public class StoneCircles extends MesonModule {
             if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
-
         ForgeRegistries.BIOMES.forEach(biome -> {
-            if (!overworldBiomes.contains(biome))
-                return;
 
-            VersionHelper.addStructureToBiome(structure, biome);
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+
+            //Only these biomes can start the structure generation.
+            if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:stone_circles"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
         });
     }
 
