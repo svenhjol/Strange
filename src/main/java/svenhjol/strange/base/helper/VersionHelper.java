@@ -17,19 +17,20 @@ public class VersionHelper {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void addStructureToBiome(Structure structure, Biome biome) {
-        // 1.14
-//        biome.addFeature(
-//            GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-//            Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-//
-//        biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
+    public static void addStructureToBiomeFeature(Structure structure, Biome biome) {
 
         // 1.15
         final ConfiguredFeature configured = structure.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
         final ConfiguredFeature decorated = configured.withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG));
 
         biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, decorated);
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static void addStructureToBiomeStructure(Structure structure, Biome biome) {
+        // 1.15
+        final ConfiguredFeature configured = structure.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
+
         biome.addStructure(configured);
     }
 }

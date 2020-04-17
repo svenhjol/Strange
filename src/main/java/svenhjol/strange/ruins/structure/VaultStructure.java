@@ -1,5 +1,8 @@
 package svenhjol.strange.ruins.structure;
 
+import java.util.Objects;
+import java.util.Random;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -14,12 +17,8 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruins.module.Vaults;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
     public static final int SEED_MODIFIER = 188492881;
@@ -48,9 +47,7 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
 
             Biome b = biomes.getBiome(pos);
-            return Vaults.validBiomes.contains(b)
-                && Meson.isModuleEnabled("strange:vaults")
-                && Math.abs(pos.getX()) > MIN_DISTANCE
+            return Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE
                 && gen.hasStructure(b, Vaults.structure);
         }
