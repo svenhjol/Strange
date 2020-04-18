@@ -45,7 +45,6 @@ public class VaultStructure extends ScatteredStructure<NoFeatureConfig> {
 
         if (x == chunk.x && z == chunk.z) {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
-
             Biome b = biomes.getBiome(pos);
             return Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE
