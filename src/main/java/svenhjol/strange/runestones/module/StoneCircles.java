@@ -1,28 +1,21 @@
 package svenhjol.strange.runestones.module;
 
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.storage.loot.*;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.BiomeHelper;
-import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.runestones.structure.StoneCirclePiece;
 import svenhjol.strange.runestones.structure.StoneCircleStructure;
@@ -38,9 +31,6 @@ public class StoneCircles extends MesonModule {
     public static final String NAME = "stone_circle";
     public static final String RESNAME = "strange:stone_circle";
     public static Structure<NoFeatureConfig> structure;
-
-    @Config(name = "Add stone circle maps to loot", description = "If true, stone circle maps will be added to village chests.")
-    public static boolean addMapsToLoot = true;
 
     @Config(name = "Allow compasses to detect stone circles", description = "Holding a compass and an iron ingot under a full moon makes the compass point toward the closest stone circle.\n" +
         "Charm's 'Compass Binding' feature must be enabled for this to work.")
@@ -100,43 +90,5 @@ public class StoneCircles extends MesonModule {
             if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:stone_circles"))
                 VersionHelper.addStructureToBiomeStructure(structure, biome);
         });
-    }
-
-    @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event) {
-        if (!addMapsToLoot) return;
-
-        int weight = 0;
-        int quality = 1;
-
-        ResourceLocation res = event.getName();
-
-        if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_CARTOGRAPHER)) {
-            weight = 10;
-        } else if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)
-            || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_PLAINS_HOUSE)
-            || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SAVANNA_HOUSE)
-            || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE)
-            || res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)
-        ) {
-            weight = 2;
-        }
-
-        if (weight > 0) {
-            LootEntry entry = ItemLootEntry.builder(Items.MAP)
-                .weight(weight)
-                .quality(quality)
-                .acceptFunction(() -> (stack, context) -> {
-                    BlockPos pos = context.get(LootParameters.POSITION);
-                    if (pos != null)
-                        stack = LocationHelper.createMap(context.getWorld(), pos, new ResourceLocation(Strange.MOD_ID, StoneCircles.NAME));
-
-                    return stack;
-                })
-                .build();
-
-            LootTable table = event.getTable();
-            LootHelper.addTableEntry(table, entry);
-        }
     }
 }
