@@ -1,3 +1,6 @@
+## 1.0.0 beta 4
+* World hang when doing /locate in non-vanilla dimension (1.14 only)
+
 ## 1.0.0 beta 3
 * Obelisk right click issue. Fixes #26
 * Crash when creating travel journal entry at 0 0. Fixes #25
