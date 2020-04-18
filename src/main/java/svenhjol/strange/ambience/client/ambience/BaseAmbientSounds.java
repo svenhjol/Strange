@@ -84,7 +84,7 @@ public abstract class BaseAmbientSounds implements IAmbientSounds {
     }
 
     protected void setLongSound() {
-        this.longSound = new LongSound(player, getLongSound(), getLongSoundVolume(), p -> isValid());
+        this.longSound = new LongSound(player, getLongSound(), getLongSoundVolume() * (float)Ambience.volumeMultiplier, p -> isValid());
     }
 
     public boolean isPlayingLongSound() {
