@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import svenhjol.strange.scrolls.client.QuestIcons;
 import svenhjol.strange.scrolls.quest.Condition;
@@ -189,7 +190,7 @@ public class ActionsPanel extends BasePanel {
 
                 // draw remaining count and item icon
                 blitItemIcon(new ItemStack(Items.DIAMOND_SWORD), mid - 60, y - 5);
-                this.drawString(fonts, I18n.format("gui.strange.quests.encounter_defeat", remaining), mid - 36, y, primaryTextColor);
+                this.drawString(fonts, I18n.format("gui.strange.quests.encounter_defeat"), mid - 36, y, primaryTextColor);
 
                 // show tick if complete
                 if (encounter.isSatisfied()) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
@@ -224,7 +225,6 @@ public class ActionsPanel extends BasePanel {
         }
     }
 
-
     public static class FetchPanel extends BasePanel {
         public FetchPanel(IQuest quest, int mid, int y, int width) {
             super(quest, mid, width);
@@ -251,6 +251,13 @@ public class ActionsPanel extends BasePanel {
 
                 // show tick if complete
                 if (remaining == 0) blitIcon(QuestIcons.ICON_TICK, mid - 70, y - 1);
+
+                // show position
+                if (remaining > 0 && quest.getState() == IQuest.State.Started) {
+                    y += rowHeight;
+                    final BlockPos pos = fetch.getLocation();
+                    this.drawString(fonts, I18n.format("gui.strange.quests.fetch_origin", pos.getX(), pos.getZ()), mid - 36, y, secondaryTextColor);
+                }
             }
         }
     }

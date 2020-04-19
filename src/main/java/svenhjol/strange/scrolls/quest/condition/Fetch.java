@@ -115,13 +115,13 @@ public class Fetch implements IDelegate {
     @SuppressWarnings("unused")
     protected boolean onStarted(QuestEvent.Accept event, PlayerEntity player) {
         if (quest.getId().equals(this.quest.getId())) {
-
             BlockPos pos = QuestHelper.getScrollkeeperNearPlayer(player, quest, VILLAGER_RANGE);
             if (pos != null) {
                 this.location = pos;
                 return true;
             }
             player.sendStatusMessage(new TranslationTextComponent("event.strange.quests.start_not_at_scrollkeeper"), true);
+            event.setCanceled(true);
         }
 
         return false;
@@ -179,5 +179,9 @@ public class Fetch implements IDelegate {
 
     public ResourceLocation getTarget() {
         return this.target;
+    }
+
+    public BlockPos getLocation() {
+        return location;
     }
 }

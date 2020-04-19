@@ -99,4 +99,8 @@ public class QuestHelper {
 
         return null;
     }
+
+    public static boolean isBoundToScrollkeeper(IQuest quest) {
+        return !quest.getSeller().equals(Scrollkeepers.ANY_SELLER);
+    }
 }
