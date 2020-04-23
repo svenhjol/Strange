@@ -2,6 +2,7 @@
 * World hang when doing /locate in non-vanilla dimension (1.14 only). Fixes #22
 * "Fetch" quests were starting even though the start conditions were invalid. #28
 * Improved quest completion text and added co-ordinates for "Fetch" quests. #28
+* There was a loud cow in the plains ambience.
 
 ## 1.0.0 beta 3
 * Obelisk right click issue. Fixes #26

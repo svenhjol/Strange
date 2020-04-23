@@ -6,6 +6,7 @@ import net.minecraft.item.Items;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -23,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.BiomeHelper;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
@@ -62,6 +64,14 @@ public class Vaults extends MesonModule {
 
     public static final List<Biome> validBiomes = new ArrayList<Biome>();
 
+    @Config(name = "Allowed biomes", description = "Biomes that vaults may generate in.")
+    public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
+        BiomeHelper.getBiomeName(Biomes.MOUNTAINS),
+        BiomeHelper.getBiomeName(Biomes.MOUNTAIN_EDGE),
+        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA),
+        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA_PLATEAU)
+    ));
+
     @Override
     public void init() {
         structure = new VaultStructure();
@@ -72,9 +82,11 @@ public class Vaults extends MesonModule {
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        validBiomes.addAll(Arrays.asList(
-            Biomes.MOUNTAINS, Biomes.MOUNTAIN_EDGE
-        ));
+        validBiomesConfig.forEach(biomeName -> {
+            //noinspection deprecation
+            Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
+            if (!validBiomes.contains(biome)) validBiomes.add(biome);
+        });
 
         ForgeRegistries.BIOMES.forEach(biome -> {
 
