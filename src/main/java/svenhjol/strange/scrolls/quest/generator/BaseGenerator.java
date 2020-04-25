@@ -14,6 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.charm.Charm;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
@@ -248,10 +249,10 @@ public abstract class BaseGenerator {
                 break;
 
             case ANCIENT_TOME:
-                if (Strange.quarkCompat != null
+                if (Charm.quarkCompat != null
                     && Meson.isModuleEnabled("quark:ancient_tomes")
                 ) {
-                    out = Strange.quarkCompat.getRandomAncientTome(rand);
+                    out = Charm.quarkCompat.getRandomAncientTome(rand);
                 }
                 break;
 

@@ -12,6 +12,7 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import svenhjol.charm.Charm;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
@@ -89,8 +90,8 @@ public class TreasureEnchantments extends MesonModule {
 
         EnchantmentHelper.setEnchantments(map, treasure);
 
-        if (Strange.quarkCompat != null && Strange.quarkCompat.hasColorRuneModule())
-            Strange.quarkCompat.applyColor(treasure, color);
+        if (Charm.quarkCompat != null && Charm.quarkCompat.hasColorRuneModule())
+            Charm.quarkCompat.applyColor(treasure, color);
 
         return treasure;
     }
