@@ -34,6 +34,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import svenhjol.charm.Charm;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
@@ -118,11 +119,11 @@ public class Runestones extends MesonModule {
         ordered.add(new Destination("Igloo", "igloo", false, 0.3F));
 
         if (useQuarkBigDungeon
-            && Strange.quarkCompat != null
-            && Strange.quarkCompat.hasBigDungeons()
+            && Charm.quarkCompat != null
+            && Charm.quarkCompat.hasBigDungeons()
         ) {
-            ordered.add(new Destination(Strange.quarkCompat.getBigDungeonResName(), "big_dungeon", true, 0.3F));
-            ordered.add(new Destination(Strange.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
+            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", true, 0.3F));
+            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
             Strange.LOG.debug("Added Quark's Big Dungeons as a runestone destination");
         } else {
             ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", true, 0.3F));

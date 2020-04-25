@@ -16,6 +16,7 @@ import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.registries.ForgeRegistries;
+import svenhjol.charm.Charm;
 import svenhjol.charm.decoration.block.BookshelfChestBlock;
 import svenhjol.charm.decoration.module.AllTheBarrels;
 import svenhjol.charm.decoration.module.BookshelfChests;
@@ -25,7 +26,6 @@ import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
 import svenhjol.meson.Meson;
 import svenhjol.meson.enums.WoodType;
 import svenhjol.meson.helper.LootHelper;
-import svenhjol.strange.Strange;
 import svenhjol.strange.base.module.EntitySpawner;
 import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
@@ -340,10 +340,10 @@ public class DecorationHelper {
 
             if (!withChance(0.66F)) return;
 
-            if (Strange.quarkCompat != null
-                && Strange.quarkCompat.hasVariantChests()
+            if (Charm.quarkCompat != null
+                && Charm.quarkCompat.hasVariantChests()
                 && rand.nextFloat() < 0.75F)
-                chest = Strange.quarkCompat.getRandomChest(rand);
+                chest = Charm.quarkCompat.getRandomChest(rand);
 
             if (chest == null)
                 chest = Blocks.CHEST;

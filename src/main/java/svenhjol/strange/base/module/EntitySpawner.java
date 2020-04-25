@@ -15,7 +15,7 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.block.EntitySpawnerBlock;
 import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.BASE, alwaysEnabled = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.CORE, alwaysEnabled = true)
 public class EntitySpawner extends MesonModule {
     @Config(name = "Trigger distance", description = "Player will trigger EntitySpawner blocks when closer than this distance.")
     public static int triggerDistance = 16;
