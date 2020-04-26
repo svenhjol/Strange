@@ -3,9 +3,9 @@
 * "Fetch" quests were starting even though the start conditions were invalid. #28
 * Improved quest completion text and added co-ordinates for "Fetch" quests. #28
 * Fix entry name change not being respected when taking a photo. Fixes #38
-* Ambience module has been removed and put in a separate mod Charmonium.
-* There was a loud cow in the plains ambience.
 * Config option to always show X and Z coordinates of a journal entry in the Travel Journal.
+* [1.15] Totem of Preserving's "drop on death" will be disabled if Quark Oddities is present.
+* Ambience module has been removed and put in a separate mod Charmonium. This will cause registration warnings in existing worlds.
 
 ## 1.0.0 beta 3
 * Obelisk right click issue. Fixes #26

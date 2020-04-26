@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -26,9 +27,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true,
+    description = "If you are holding a Totem of Preserving when you die, your items will be stored safely inside it.\n" +
+        "You can also preserve your current inventory at any time by crouch-clicking while holding a totem.  Right click again to restore the inventory.")
 public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
     public static TotemOfPreservingItem item;
+
+    @Config(name = "Enable with Oddities", description = "By default the 'Save items on death' feature will be disabled if Quark Oddities is present.\n" +
+        "Set this to true to force this feature to be enabled.")
+    public static boolean enableWithOddities = false;
 
     @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.\n" +
         "If 'Only save items when holding a totem' is disabled, then a new totem will be spawned whenever you die.")
@@ -73,7 +80,7 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerDrops(LivingDropsEvent event) {
-        if (!saveItems)
+        if ((!enableWithOddities && ForgeHelper.isModLoaded("quarkoddities")) || !saveItems)
             return;
 
         Collection<ItemEntity> drops = event.getDrops();
