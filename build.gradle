@@ -56,8 +56,9 @@ dependencies {
     compile fg.deobf("svenhjol.charm:Charm:${charm_version}")
     compile fg.deobf("vazkii.arl:AutoRegLib:${arl_version}")
     compile fg.deobf("vazkii.quark:Quark:${quark_version}")
-
+//    compile fg.deobf("vazkii.quark:QuarkOddities:${quark_oddities_version}")
 //    runtimeOnly fg.deobf("com.terrag.blur:Blur:1.1.0-1")
+    
 }
 
 repositories {
@@ -78,6 +79,11 @@ repositories {
     maven { // for AutoRegLib and Quark
         name "blamejared"
         url "http://maven.blamejared.com/"
+    }
+
+    maven { // for Curseforge mod download
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
     }
 
     flatDir {
