@@ -228,7 +228,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         if (entry.pos != null) {
             // show the coordinates if in creative mode
-            if (player.isCreative())
+            if (player.isCreative() || TravelJournal.alwaysShowCoordinates)
                 this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), coordsTopEdge, TEXT_COLOR);
 
             int offset = y - 2;
@@ -349,6 +349,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     }
 
     private void prepareScreenshot() {
+        this.saveProgress();
         mc.displayGuiScreen(null);
         mc.gameSettings.hideGUI = true;
         player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);
