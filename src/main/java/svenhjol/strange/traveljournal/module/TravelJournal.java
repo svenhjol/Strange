@@ -22,6 +22,9 @@ public class TravelJournal extends MesonModule {
     @Config(name = "Maximum entries", description = "Maximum number of entries a single travel journal can hold.")
     public static int maxEntries = 30;
 
+    @Config(name = "Always show X and Z co-ordinates", description = "Shows X and Z co-ordinates on the journal entry even when in survival mode.")
+    public static boolean alwaysShowCoordinates = false;
+
     @Override
     public void init() {
         item = new TravelJournalItem(this);
