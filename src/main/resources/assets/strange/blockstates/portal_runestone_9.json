@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "color=white": { "model": "strange:block/portal_runestone_white_9" },
+    "color=orange": { "model": "strange:block/portal_runestone_orange_9" },
+    "color=magenta": { "model": "strange:block/portal_runestone_magenta_9" },
+    "color=light_blue": { "model": "strange:block/portal_runestone_light_blue_9" },
+    "color=yellow": { "model": "strange:block/portal_runestone_yellow_9" },
+    "color=lime": { "model": "strange:block/portal_runestone_lime_9" },
+    "color=pink": { "model": "strange:block/portal_runestone_pink_9" },
+    "color=gray": { "model": "strange:block/portal_runestone_gray_9" },
+    "color=light_gray": { "model": "strange:block/portal_runestone_light_gray_9" },
+    "color=cyan": { "model": "strange:block/portal_runestone_cyan_9" },
+    "color=purple": { "model": "strange:block/portal_runestone_purple_9" },
+    "color=blue": { "model": "strange:block/portal_runestone_blue_9" },
+    "color=brown": { "model": "strange:block/portal_runestone_brown_9" },
+    "color=green": { "model": "strange:block/portal_runestone_green_9" },
+    "color=red": { "model": "strange:block/portal_runestone_red_9" },
+    "color=black": { "model": "strange:block/portal_runestone_black_9" }
+  }
+}

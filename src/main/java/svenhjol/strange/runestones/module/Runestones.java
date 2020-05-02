@@ -47,19 +47,17 @@ import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.block.BaseRunestoneBlock;
-import svenhjol.strange.runestones.block.ObeliskBlock;
+import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
     description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends MesonModule {
     public static final ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
-    public static final List<RunestoneBlock> normalBlocks = new ArrayList<>();
-    public static final List<ObeliskBlock> obeliskBlocks = new ArrayList<>();
+    public static final List<RunestoneBlock> normalRunestones = new ArrayList<>();
     public static List<Destination> innerDests = new ArrayList<>();
     public static List<Destination> outerDests = new ArrayList<>();
     public static List<Destination> allDests = new ArrayList<>();
@@ -73,9 +71,8 @@ public class Runestones extends MesonModule {
         "If false, or Quark is not available, this runestone destination will be a stone circle instead.")
     public static boolean useQuarkBigDungeon = true;
 
-    @Config(name = "Allow obelisks", description = "If true, runestones may be mined with a silk touch pickaxe and crafted vertically into obelisks.\n" +
-        "Match the obelisk runes with a location in your travel journal to immediately teleport to that location.")
-    public static boolean allowObelisks = true;
+    @Config(name = "Allow portal runestones")
+    public static boolean allowPortalRunestones = true;
 
     @Config(name = "Maximum runestone travel distance", description = "Maximum number of blocks that you will be transported from a stone circle runestone.")
     public static int maxDist = 4000;
@@ -89,8 +86,7 @@ public class Runestones extends MesonModule {
     @Override
     public void init() {
         for (int i = 0; i < 16; i++) {
-            normalBlocks.add(new RunestoneBlock(this, i));
-            obeliskBlocks.add(new ObeliskBlock(this, i));
+            normalRunestones.add(new RunestoneBlock(this, i));
         }
     }
 
@@ -187,15 +183,15 @@ public class Runestones extends MesonModule {
                 effectActivate(world, pos);
             }
 
-            if (allowObelisks && block instanceof ObeliskBlock) {
+            if (allowPortalRunestones && block instanceof PortalRunestoneBlock) {
                 BlockPos lpos = new BlockPos(pos.down()); // get lowest stone
-                while (world.getBlockState(lpos).getBlock() instanceof ObeliskBlock && lpos.getY() > 1) {
+                while (world.getBlockState(lpos).getBlock() instanceof PortalRunestoneBlock && lpos.getY() > 1) {
                     lpos = lpos.add(0, -1, 0);
                 }
                 if (lpos.getY() <= 1) return;
 
                 BlockPos hpos = new BlockPos(pos.up()); // get highest stone
-                while (world.getBlockState(hpos).getBlock() instanceof ObeliskBlock && hpos.getY() < 255) {
+                while (world.getBlockState(hpos).getBlock() instanceof PortalRunestoneBlock && hpos.getY() < 255) {
                     hpos = hpos.add(0, 1, 0);
                 }
                 if (hpos.getY() >= 255) return;
@@ -208,13 +204,13 @@ public class Runestones extends MesonModule {
                     BlockPos p = new BlockPos(x, i, z);
                     final BlockState state1 = world.getBlockState(p);
                     final Block block1 = state1.getBlock();
-                    if (!(block1 instanceof ObeliskBlock)) return;
+                    if (!(block1 instanceof PortalRunestoneBlock)) return;
 
                     ResourceLocation reg = block1.getRegistryName();
                     if (reg == null) return;
 
-                    int val = getRuneValue((ObeliskBlock) block1);
-                    final DyeColor dyeColor = getRuneColor(state1);
+                    int val = getRuneValue((PortalRunestoneBlock) block1);
+                    final DyeColor dyeColor = null;
                     if (dyeColor == null) {
                         runeError(world, pos, player);
                         return;
@@ -303,7 +299,7 @@ public class Runestones extends MesonModule {
 
         if (lookedAt.getBlock() instanceof RunestoneBlock) {
             RunestoneBlock block = (RunestoneBlock) lookedAt.getBlock();
-            if (normalBlocks.contains(block)) {
+            if (normalRunestones.contains(block)) {
                 TranslationTextComponent message;
                 IRunestonesCapability cap = Runestones.getCapability(player);
                 int rune = getRuneValue(block);
@@ -336,7 +332,7 @@ public class Runestones extends MesonModule {
             doTeleport(world, player, pos);
             playerTeleportRunestone.remove(id);
 
-        } else if (allowObelisks && !playerTeleportObelisk.isEmpty() && playerTeleportObelisk.containsKey(player.getUniqueID())) {
+        } else if (allowPortalRunestones && !playerTeleportObelisk.isEmpty() && playerTeleportObelisk.containsKey(player.getUniqueID())) {
             final UUID id = player.getUniqueID();
             final Map<Integer, BlockPos> location = playerTeleportObelisk.get(id);
             final Optional<Integer> key = location.keySet().stream().findFirst();
@@ -410,25 +406,11 @@ public class Runestones extends MesonModule {
     }
 
     public static BlockState getRunestoneBlock(int runeValue) {
-        return normalBlocks.get(runeValue).getDefaultState();
+        return normalRunestones.get(runeValue).getDefaultState();
     }
 
     public static int getRuneValue(BaseRunestoneBlock block) {
         return block.getRuneValue();
-    }
-
-    @Nullable
-    public static DyeColor getRuneColor(BlockState state) {
-        if (!(state.getBlock() instanceof ObeliskBlock))
-            return null;
-
-        final Boolean dyed = state.get(ObeliskBlock.DYED);
-        final DyeColor dyeColor = state.get(ObeliskBlock.COLOR);
-
-        if (!dyed)
-            return null;
-
-        return dyeColor;
     }
 
     public static BlockState getRandomBlock(BlockPos pos) {
