@@ -24,6 +24,13 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
     private static final FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
     private final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
 
+    public static float lastRed = 0F;
+    public static float lastGreen = 0F;
+    public static float lastBlue = 0F;
+    public static int dirRed = 1;
+    public static int dirGreen = 1;
+    public static int dirBlue = 1;
+
     public void render(RunePortalTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.disableLighting();
 
@@ -33,6 +40,29 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
         int i = 13;
         float f = this.getOffset();
         GameRenderer gamerenderer = Minecraft.getInstance().gameRenderer;
+
+        float r = 1.0F;
+        float g = 1.0F;
+        float b = 1.0F;
+
+        if (tile.color == -1) {
+            if (lastRed > 0.65F) dirRed = -1;
+            if (lastRed < 0.05F) dirRed = 1;
+
+            if (lastGreen > 0.65F) dirGreen = -1;
+            if (lastGreen < 0.05F) dirGreen = 1;
+
+            if (lastBlue > 0.65F) dirBlue = -1;
+            if (lastBlue < 0.05F) dirBlue = 1;
+
+            lastRed += (dirRed * 0.00014F);
+            lastGreen += (dirGreen * 0.00012F);
+            lastBlue += (dirBlue * 0.0001F);
+
+            r = lastRed;
+            g = lastGreen;
+            b = lastBlue;
+        }
 
         for (int j = 0; j < i; ++j) {
             GlStateManager.pushMatrix();
@@ -82,20 +112,19 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
-            float r = 1.0F;
-            float g = 1.0F;
-            float b = 1.0F;
-
             int k = j - 1;
-            DyeColor dyeColor = DyeColor.byId(tile.color);
-            float[] comps = dyeColor.getColorComponentValues();
-            r = comps[0];
-            g = comps[1];
-            b = comps[2];
 
-            r *= 1.7F * f1;
-            g *= 1.7F * f1;
-            b *= 1.7F * f1;
+            if (tile.color >= 0) {
+                DyeColor dyeColor = DyeColor.byId(tile.color);
+                float[] comps = dyeColor.getColorComponentValues();
+                r = comps[0];
+                g = comps[1];
+                b = comps[2];
+
+                r *= 1.7F * f1;
+                g *= 1.7F * f1;
+                b *= 1.7F * f1;
+            }
 
             if (tile.orientation == 0) { // x axis
                 // north

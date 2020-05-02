@@ -177,6 +177,7 @@ public class RunePortals extends MesonModule {
             }
 
             if (order.size() == 18) {
+                Strange.LOG.debug(order.toString());
                 StringBuilder sb = new StringBuilder();
                 for (int o : order) {
                     sb.append(Integer.toHexString(o));
@@ -215,7 +216,7 @@ public class RunePortals extends MesonModule {
                 Strange.LOG.debug("Destination: " + dest.toString());
 
                 final int orientation = axis == Axis.X ? 0 : 1;
-                final int colorId = color.ordinal();
+                final int colorId = color == null ? -1 : color.ordinal(); // TODO rainbow rune?
 
                 for (int a = -1; a < 2; a++) {
                     for (int b = 1; b < 4; b++) {
