@@ -67,7 +67,11 @@ public class Vaults extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.MOUNTAINS),
         BiomeHelper.getBiomeName(Biomes.MOUNTAIN_EDGE),
         BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA),
-        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA_PLATEAU)
+        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA_PLATEAU),
+        BiomeHelper.getBiomeName(Biomes.PLAINS),
+        BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
+        BiomeHelper.getBiomeName(Biomes.BADLANDS),
+        BiomeHelper.getBiomeName(Biomes.BADLANDS_PLATEAU)
     ));
 
     public static final List<Biome> validBiomes = new ArrayList<>();
