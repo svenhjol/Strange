@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import svenhjol.charm.base.CharmClient;
+import svenhjol.meson.enums.ColorVariant;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
 
 import java.awt.*;
@@ -33,31 +35,34 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
         RANDOM.setSeed(10L);
         GlStateManager.getMatrix(2982, MODELVIEW);
         GlStateManager.getMatrix(2983, PROJECTION);
-        int i = 13;
-        float f = this.getOffset();
+        int passes = 13; // number of iterations of starfield
         GameRenderer gamerenderer = Minecraft.getInstance().gameRenderer;
 
         float r = 1.0F;
         float g = 1.0F;
         float b = 1.0F;
 
-        if (tile.color == -1) {
-            final int rgb = Color.HSBtoRGB(colorTicks, 1.0F, 0.5F);
-            colorTicks += 0.0001F;
-            if (colorTicks >= 1.0F) colorTicks = 0F;
+        boolean useRainbow = tile.color == ColorVariant.RAINBOW.ordinal();
+
+        if (useRainbow) {
+            float t = (float)(CharmClient.clientTicks % 1000) / 1000;
+            final int rgb = Color.HSBtoRGB(t, 1.0F, 0.5F);
+
+//            colorTicks += 0.0001F;
+//            if (colorTicks >= 1.0F) colorTicks = 0F;
 
             r = ((rgb >> 16) & 0xFF) / 255F;
             g = ((rgb >> 8) & 0xFF) / 255F;
             b = (rgb & 0xFF) / 255F;
         }
 
-        for (int j = 0; j < i; ++j) {
+        for (int j = 0; j < passes; ++j) {
             GlStateManager.pushMatrix();
-            float f1 = 8.0F / (float) (30 - j);
+            float brightness = 8.0F / (float) (30 - j); // brightness of each layer
 
             if (j == 0) {
                 this.bindTexture(END_SKY_TEXTURE);
-                f1 = 0.05F;
+                brightness = 0.05F;
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             }
@@ -90,8 +95,7 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
             float f2 = (j + 6) * 0.75F;
             GlStateManager.translatef(17.0F / f2, (2.0F + f2 / 1.5F) * ((float) (Util.milliTime() % 200000L) / 200000.0F), 0.0F);
             GlStateManager.rotatef((f2 * f2 * 4321.0F + f2 * 9.0F) * 2.0F, 0.0F, 0.0F, 1.0F);
-
-            GlStateManager.scalef(4.1F - f2 / 4.0F, 4.1F - f2 / 4.0F, 1.0F);
+            GlStateManager.scalef(4.1F - f2 / 4.0F, 4.1F - f2 / 4.0F, 1.0F); // TODO changed these for scaling, cause for the frame skip?
 
             GlStateManager.multMatrix(PROJECTION);
             GlStateManager.multMatrix(MODELVIEW);
@@ -99,18 +103,16 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
-            int k = j - 1;
-
-            if (tile.color >= 0) {
+            if (!useRainbow) {
                 DyeColor dyeColor = DyeColor.byId(tile.color);
                 float[] comps = dyeColor.getColorComponentValues();
                 r = comps[0];
                 g = comps[1];
                 b = comps[2];
 
-                r *= 1.7F * f1;
-                g *= 1.7F * f1;
-                b *= 1.7F * f1;
+                r *= 1.7F * brightness;
+                g *= 1.7F * brightness;
+                b *= 1.7F * brightness;
             }
 
             if (tile.orientation == 0) { // x axis
@@ -149,10 +151,6 @@ public class RunePortalTileEntityRenderer extends TileEntityRenderer<RunePortalT
         GlStateManager.disableTexGen(GlStateManager.TexGen.R);
         GlStateManager.enableLighting();
         gamerenderer.setupFogColor(false);
-    }
-
-    protected float getOffset() {
-        return 0.75F;
     }
 
     private FloatBuffer getBuffer(float p_147525_1_, float p_147525_2_, float p_147525_3_, float p_147525_4_) {

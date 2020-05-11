@@ -5,6 +5,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.EndChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -38,12 +39,22 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
 
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> gen) {
-        return StoneCircles.distance;
+        int dist = StoneCircles.distance;
+        if (gen instanceof EndChunkGenerator) {
+            return dist / 2;
+        } else {
+            return dist;
+        }
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> gen) {
-        return StoneCircles.distance / 2;
+        int dist = StoneCircles.distance;
+        if (gen instanceof EndChunkGenerator) {
+            return dist / 4;
+        } else {
+            return dist / 2;
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -25,15 +25,16 @@ import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.iface.IMesonBlock;
+import svenhjol.strange.runestones.module.RunePortals;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
 
 import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
-    protected static final VoxelShape X_AABB = Block.makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
-    protected static final VoxelShape Z_AABB = Block.makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
+    public static final EnumProperty<Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
+    protected static final VoxelShape X_AABB = Block.makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
+    protected static final VoxelShape Z_AABB = Block.makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
 
     public RunePortalBlock(MesonModule module) {
         super(Properties
@@ -44,7 +45,7 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
             .noDrops()
         );
         register(module, "rune_portal");
-        this.setDefaultState(this.stateContainer.getBaseState().with(AXIS, Direction.Axis.X));
+        this.setDefaultState(this.stateContainer.getBaseState().with(AXIS, Axis.X));
     }
 
     @Override
@@ -88,15 +89,16 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
         ) {
             final RunePortalTileEntity tile = getTileEntity(world, pos);
             if (tile == null) return;
+            BlockPos dest = tile.position;
+            int dim = tile.dimension;
+            tile.markDirty();
 
             PlayerEntity player = (PlayerEntity)entity;
-            if (player.dimension.getId() != tile.dimension)
-                PlayerHelper.changeDimension(player, tile.dimension);
-
-            PlayerHelper.teleport(player, tile.position, tile.dimension, p -> {
-                int x = Math.max(-30000000, Math.min(30000000, pos.getX()));
-                int y = Math.max(-64, Math.min(1024, pos.getY()));
-                int z = Math.max(-30000000, Math.min(30000000, pos.getZ()));
+            PlayerHelper.changeDimension(player, dim);
+            PlayerHelper.teleport(player, dest, dim, p -> {
+                int x = Math.max(-30000000, Math.min(30000000, dest.getX()));
+                int y = Math.max(-64, Math.min(1024, dest.getY()));
+                int z = Math.max(-30000000, Math.min(30000000, dest.getZ()));
                 player.setPositionAndUpdate(x, y, z);
             });
 
@@ -148,17 +150,22 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
         return tile.color;
     }
 
-    public void setPortal(World world, BlockPos pos, BlockPos portal, int dimension, int color, int orientation) {
+    public void setPortal(World world, BlockPos pos, BlockPos dest, int dimension, int color, int orientation) {
         RunePortalTileEntity tile = getTileEntity(world, pos);
         if (tile != null) {
-            tile.position = portal;
+            tile.position = dest;
             tile.dimension = dimension;
             tile.color = color;
-            tile.orientation = orientation;
+            tile.orientation = orientation; // needed for TER
             tile.markDirty();
 
             BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 3);
+            world.notifyBlockUpdate(pos, state, state, 2);
         }
+    }
+
+    public void remove(World world, BlockPos pos) {
+        world.destroyBlock(pos, false);
+        RunePortals.breakSurroundingPortals(world, pos);
     }
 }

@@ -1,7 +1,9 @@
 {
-  "parent": "block/cube_column",
+  "parent": "block/orientable",
   "textures": {
-    "end": "block/obsidian",
-    "side": "strange:block/portal_runestone_white_4"
+    "top": "block/obsidian",
+    "side": "block/obsidian",
+    "bottom": "block/obsidian",
+    "front": "strange:block/portal_runestone_white_4"
   }
 }

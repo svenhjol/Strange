@@ -39,7 +39,7 @@ public class StoneCircles extends MesonModule {
     @Config(name = "Distance", description = "Distance between stone cicles. For reference, shipwrecks are 16.")
     public static int distance = 20;
 
-    @Config(name = "Allowed biomes", description = "Biomes that stone circles may generate in.")
+    @Config(name = "Allowed generation biomes", description = "Biomes that stone circles may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.PLAINS),
         BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
@@ -55,7 +55,10 @@ public class StoneCircles extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
         BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
         BiomeHelper.getBiomeName(Biomes.FROZEN_RIVER),
-        BiomeHelper.getBiomeName(Biomes.SWAMP)
+        BiomeHelper.getBiomeName(Biomes.SWAMP),
+        BiomeHelper.getBiomeName(Biomes.END_MIDLANDS),
+        BiomeHelper.getBiomeName(Biomes.END_HIGHLANDS),
+        BiomeHelper.getBiomeName(Biomes.END_BARRENS)
     ));
 
     public static final List<Biome> validBiomes = new ArrayList<>();

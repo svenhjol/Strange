@@ -42,6 +42,7 @@ public class RunePortalTileEntity extends TileEntity {
         if (position != null) {
             tag.putLong("position", position.toLong());
         }
+        tag.putInt("dimension", dimension);
         tag.putInt("color", color);
         tag.putInt("orientation", orientation);
 

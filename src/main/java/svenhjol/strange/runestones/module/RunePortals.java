@@ -1,19 +1,16 @@
 package svenhjol.strange.runestones.module;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -21,12 +18,13 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.charm.Charm;
-import svenhjol.charm.building.module.BlockOfEnderPearls;
+import svenhjol.charm.building.block.EnderPearlBlock;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.enums.ColorVariant;
@@ -87,19 +85,33 @@ public class RunePortals extends MesonModule {
         ItemStack held = player.getHeldItem(hand);
 
         if (useColorRune && Charm.quarkCompat.isRune(held)
-            || !useColorRune && held.getItem() instanceof DyeItem) {
-            final boolean didActivate = tryActivatePortal(serverWorld, pos, serverPlayer, Charm.quarkCompat.getRuneColor(held));
+            || !useColorRune && held.getItem() == Items.DIAMOND) {
+            final boolean didActivate = tryActivate(serverWorld, pos, serverPlayer, Charm.quarkCompat.getRuneColor(held));
         }
     }
 
-    public boolean tryActivatePortal(ServerWorld world, BlockPos pos, ServerPlayerEntity player, ColorVariant color) {
-        Block activator = Meson.isModuleEnabled(new ResourceLocation("charm:block_of_ender_pearls"))
-            ? BlockOfEnderPearls.block : Blocks.OBSIDIAN;
+    @SubscribeEvent
+    public void onActivatorBlockBroken(BlockEvent.BreakEvent event) {
+        if (!event.getWorld().isRemote()
+            && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof EnderPearlBlock
+            && Meson.isModuleEnabled(new ResourceLocation("charm:block_of_ender_pearls"))) {
+            breakSurroundingPortals((ServerWorld)event.getWorld(), event.getPos());
+        }
+    }
+
+    public boolean tryActivate(ServerWorld world, BlockPos pos, ServerPlayerEntity player, ColorVariant color) {
+        if (!Meson.isModuleEnabled(new ResourceLocation("charm:block_of_ender_pearls")))
+            return false;
+
+        if (color == null)
+            return false;
 
         final BlockState state = world.getBlockState(pos);
         List<Integer> order = new ArrayList<>();
 
-        if (state.getBlock() == activator) {
+        if (state.getBlock() instanceof EnderPearlBlock) {
+
+            // this tests the portal structure and gets the rune order. It's sensitive to axis and "start" rune.
             Axis axis;
 
             if (world.getBlockState(pos.east()).getBlock() instanceof PortalRunestoneBlock
@@ -167,17 +179,15 @@ public class RunePortals extends MesonModule {
                         }
                     }
 
-//                        Strange.LOG.debug(color.toString());
-//                        Strange.LOG.debug(order.toString());
-
                     break;
 
                 default:
                     return false;
             }
 
+            // process the rune order, pull out dim and blockpos
             if (order.size() == 18) {
-                Strange.LOG.debug(order.toString());
+                Strange.LOG.debug("String order: " + order.toString());
                 StringBuilder sb = new StringBuilder();
                 for (int o : order) {
                     sb.append(Integer.toHexString(o));
@@ -202,6 +212,7 @@ public class RunePortals extends MesonModule {
                         runeError(world, pos, player);
                         return false;
                     }
+
                     dim -= 128;
                     Strange.LOG.debug("Dimension: " + dim);
                     Strange.LOG.debug("Trying to parse hex to long: " + posHex);
@@ -216,7 +227,7 @@ public class RunePortals extends MesonModule {
                 Strange.LOG.debug("Destination: " + dest.toString());
 
                 final int orientation = axis == Axis.X ? 0 : 1;
-                final int colorId = color == null ? -1 : color.ordinal(); // TODO rainbow rune?
+                final int colorId = color.ordinal();
 
                 for (int a = -1; a < 2; a++) {
                     for (int b = 1; b < 4; b++) {
@@ -225,10 +236,28 @@ public class RunePortals extends MesonModule {
                         portal.setPortal(world, p, dest, dim, colorId, orientation);
                     }
                 }
+
+                world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                return true;
             }
         }
 
         return false;
+    }
+
+    public static void breakSurroundingPortals(World world, BlockPos pos) {
+        for (Direction direction : Direction.values()) {
+            BlockPos blockpos = pos.offset(direction);
+            if (world.isBlockLoaded(blockpos)) {
+                BlockState s = world.getBlockState(blockpos);
+                if (s.getBlock() instanceof RunePortalBlock)
+                    ((RunePortalBlock)s.getBlock()).remove(world, blockpos);
+            }
+        }
+    }
+
+    public static BlockState getRunestoneBlock(int runeValue) {
+        return portalRunestones.get(runeValue).getDefaultState();
     }
 
     private void runeError(World world, BlockPos pos, PlayerEntity player) {
