@@ -27,6 +27,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected char[] runicName;
     protected FontRenderer glyphs;
     protected ColorVariant cycleRuneColor;
+    protected boolean atLeastOneRune;
 
     public RuneEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -58,7 +59,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
                 // convert the entry pos to hex
                 String posHex = Long.toHexString(entry.pos.toLong());
-                posHex = StringUtils.leftPad(posHex, 4, "0");
+                posHex = StringUtils.leftPad(posHex, 16, "0");
 
                 // interpolate dimHex within posHex
                 String hex = d0 + posHex + d1;
@@ -83,7 +84,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
                             if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
                                 letter = RunestoneHelper.getRuneIntCharMap().get(rune).toString();
-                                atLeastOneRune = true;
+                                this.atLeastOneRune = true;
                             } else {
                                 letter = "?";
                             }
@@ -97,7 +98,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                     }
                 }
 
-                if (atLeastOneRune) {
+                if (this.atLeastOneRune) {
                     this.runicName = assembled.toString().toCharArray();
                 }
             }
@@ -112,8 +113,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         int y = 20;
         renderBackgroundTexture();
 
-
-        if (entry.pos != null) {
+        if (this.atLeastOneRune && entry.pos != null) {
             int offset = y + 1;
             String letter = null;
 
@@ -123,9 +123,9 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 int index = 0;
                 int hpos = -2;
                 int vpos = 4;
-                int letterSpacing = 20;
+                int letterSpacing = 18;
                 int midoffset = mid - 4;
-                int background = 0xBB020010;
+                int background = 0xD2050014;
 
                 for (int j = 0; j < runicName.length; j++) {
                     if (j % 2 == 0) {
@@ -154,7 +154,12 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                         final int oy = offset + (vpos * letterSpacing);
 
                         AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
-                        this.drawCenteredString(f, letter, midoffset + ox + 10, offset + oy + 6, q ? 0x888888 : 0xFFFFFF);
+
+                        int vpush = 5;
+                        if (letter.equals("f")) {
+                            vpush = 7;
+                        }
+                        this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
 
                         if (!q) {
                             int dx = midoffset + (ox + (ox / 2));
@@ -175,14 +180,10 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 vpos = 4;
 
                 for (int i = 0; i <= 2; i++) {
-                    ItemStack stack = new ItemStack(DyeItem.getItem(DyeColor.byId(0)));
-                    int useBackground = background;
+                    ItemStack stack = ItemStack.EMPTY;
 
-                    if (i == 0) {
-                        letter = "a";
-                    } else if (i == 1) {
-                        useBackground = 0xAA10702A;
-                        letter = "";
+                    if (i == 1) {
+//                        useBackground = 0xAA10702A;
                         if (CharmClient.clientTicks % 30 == 0) {
                             ColorVariant currentRuneColor = this.cycleRuneColor;
                             int c = currentRuneColor.ordinal();
@@ -190,21 +191,20 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                         }
 
                         stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
-                    } else {
-                        letter = "z";
                     }
 
                     final int ox = hpos * letterSpacing;
                     final int oy = offset + (vpos * letterSpacing);
-                    AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing - 1, offset + oy + letterSpacing - 1, useBackground);
-                    if (!letter.isEmpty())
-                        this.drawCenteredString(this.glyphs, letter, midoffset + ox + 10, offset + oy + 6, 0xFFFFFF);
+                    AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing - 1, offset + oy + letterSpacing - 1, background);
 
-                    this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
+                    if (stack != ItemStack.EMPTY)
+                        this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
 
                     hpos += 1;
                 }
             }
+        } else {
+            this.drawCenteredString(this.font, "????", mid + 4, 60, 0xFF404040);
         }
 
         super.render(mouseX, mouseY, partialTicks);
@@ -220,6 +220,6 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
     }
 
     private void back() {
-        mc.displayGuiScreen(new TravelJournalScreen(player, hand));
+        mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
     }
 }

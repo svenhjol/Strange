@@ -1,6 +1,8 @@
 package svenhjol.strange.runestones.module;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -24,8 +26,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.charm.Charm;
-import svenhjol.charm.building.block.EnderPearlBlock;
-import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.enums.ColorVariant;
 import svenhjol.meson.handler.RegistryHandler;
@@ -91,34 +91,31 @@ public class RunePortals extends MesonModule {
     }
 
     @SubscribeEvent
-    public void onActivatorBlockBroken(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isRemote()
-            && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof EnderPearlBlock
-            && Meson.isModuleEnabled(new ResourceLocation("charm:block_of_ender_pearls"))) {
-            breakSurroundingPortals((ServerWorld)event.getWorld(), event.getPos());
+    public void onPortalBlockBroken(BlockEvent.BreakEvent event) {
+        if (!event.getWorld().isRemote()) {
+            Block broken = event.getWorld().getBlockState(event.getPos()).getBlock();
+            if (broken == Blocks.OBSIDIAN)
+                breakSurroundingPortals((ServerWorld) event.getWorld(), event.getPos());
         }
     }
 
     public boolean tryActivate(ServerWorld world, BlockPos pos, ServerPlayerEntity player, ColorVariant color) {
-        if (!Meson.isModuleEnabled(new ResourceLocation("charm:block_of_ender_pearls")))
-            return false;
-
         if (color == null)
             return false;
 
         final BlockState state = world.getBlockState(pos);
         List<Integer> order = new ArrayList<>();
 
-        if (state.getBlock() instanceof EnderPearlBlock) {
+        if (state.getBlock() == Blocks.OBSIDIAN) {
 
-            // this tests the portal structure and gets the rune order. It's sensitive to axis and "start" rune.
+            // this tests the portal structure and gets the rune order. It's sensitive to axis and blockstate facing.
             Axis axis;
 
-            if (world.getBlockState(pos.east()).getBlock() instanceof PortalRunestoneBlock
-                && world.getBlockState(pos.west()).getBlock() instanceof PortalRunestoneBlock) {
+            if (world.getBlockState(pos.east()).getBlock() == Blocks.OBSIDIAN
+                && world.getBlockState(pos.west()).getBlock() == Blocks.OBSIDIAN) {
                 axis = Axis.X;
-            } else if (world.getBlockState(pos.north()).getBlock() instanceof PortalRunestoneBlock
-                && world.getBlockState(pos.south()).getBlock() instanceof PortalRunestoneBlock) {
+            } else if (world.getBlockState(pos.north()).getBlock() == Blocks.OBSIDIAN
+                && world.getBlockState(pos.south()).getBlock() == Blocks.OBSIDIAN) {
                 axis = Axis.Z;
             } else {
                 return false;
@@ -126,10 +123,10 @@ public class RunePortals extends MesonModule {
 
             switch (axis) {
                 case X:
-                    final PortalRunestoneBlock east = (PortalRunestoneBlock)world.getBlockState(pos.east()).getBlock();
-                    final PortalRunestoneBlock west = (PortalRunestoneBlock)world.getBlockState(pos.west()).getBlock();
+                    final BlockState eastState = world.getBlockState(pos.east(2).up(1));
+                    final BlockState westState = world.getBlockState(pos.west(2).up(1));
 
-                    if (east.getRuneValue() == 0) {
+                    if (eastState.get(PortalRunestoneBlock.FACING) == Direction.NORTH) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.east(2).up(i + 1), order)) return false;
                         }
@@ -139,7 +136,7 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(3 - i), order)) return false;
                         }
-                    } else if (west.getRuneValue() == 0) {
+                    } else if (westState.get(PortalRunestoneBlock.FACING) == Direction.SOUTH) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(i + 1), order)) return false;
                         }
@@ -154,10 +151,10 @@ public class RunePortals extends MesonModule {
                     break;
 
                 case Z:
-                    final PortalRunestoneBlock north = (PortalRunestoneBlock)world.getBlockState(pos.north()).getBlock();
-                    final PortalRunestoneBlock south = (PortalRunestoneBlock)world.getBlockState(pos.south()).getBlock();
+                    final BlockState northState = world.getBlockState(pos.north(2).up(1));
+                    final BlockState southState = world.getBlockState(pos.south(2).up(1));
 
-                    if (north.getRuneValue() == 0) {
+                    if (northState.get(PortalRunestoneBlock.FACING) == Direction.WEST) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.north(2).up(i + 1), order)) return false;
                         }
@@ -167,7 +164,7 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(3 - i), order)) return false;
                         }
-                    } else if (south.getRuneValue() == 0) {
+                    } else if (southState.get(PortalRunestoneBlock.FACING) == Direction.EAST) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(i + 1), order)) return false;
                         }
