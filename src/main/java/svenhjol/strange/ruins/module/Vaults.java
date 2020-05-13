@@ -62,7 +62,7 @@ public class Vaults extends MesonModule {
     @Config(name = "Generate above Y value", description = "Vaults will try and generate above this Y value.")
     public static int generateAbove = 24;
 
-    @Config(name = "Allowed biomes", description = "Biomes that vaults may generate in.")
+    @Config(name = "Allowed generation biomes", description = "Biomes that vaults may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.MOUNTAINS),
         BiomeHelper.getBiomeName(Biomes.MOUNTAIN_EDGE),
