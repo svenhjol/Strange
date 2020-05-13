@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -17,8 +18,11 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
+import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
+import svenhjol.strange.runestones.block.PortalRunestoneBlock;
+import svenhjol.strange.runestones.module.RunePortals;
 import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.*;
@@ -44,33 +48,66 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         int z = this.boundingBox.minZ;
         int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
-        config.allRunes = false;
-        config.radius = rand.nextInt(6) + 5;
-        config.runeTries = 2;
-        config.runeChance = 0.8F;
-        config.columnMinHeight = 4;
-        config.columnVariation = 2;
-        config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
-        config.blocks = new ArrayList<>(Arrays.asList(
-            Blocks.STONE.getDefaultState(),
-            Blocks.COBBLESTONE.getDefaultState(),
-            Blocks.MOSSY_COBBLESTONE.getDefaultState()
-        ));
+//        if (world instanceof ServerWorld) {
+//            Biome biome = BiomeHelper.getBiomeAtPos((ServerWorld)world, new BlockPos((chunkPos.getXStart() << 4) + 9, 0, (chunkPos.getZStart() << 4) + 9));
+//        }
+        if (dim == DimensionType.THE_END) {
 
-        for (int ii = 1; ii < TRIES; ii++) {
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-            BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-            BlockPos surfacePosDown = surfacePos.down();
+            config.withChest = false;
+            config.allRunes = true;
+            config.usePortalRunestones = true;
+            config.runeTries = 4;
+            config.runeChance = 1.0F;
+            config.radius = rand.nextInt(7) + 4;
+            config.columnMinHeight = 3;
+            config.columnVariation = 3;
+            config.lootTable = LootTables.CHESTS_END_CITY_TREASURE;
+            config.blocks = new ArrayList<>(Arrays.asList(
+                Blocks.OBSIDIAN.getDefaultState()
+            ));
 
-            if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
-                && world.getBlockState(surfacePosDown).isSolid() && world.isSkyLightMax(surfacePosDown)
-            ) {
-                if (Outerlands.isOuterPos(surfacePos)) {
-                    config.withChest = true;
-                    config.allRunes = true;
+            for (int ii = 1; ii < TRIES; ii++) {
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+                BlockPos surfacePosDown = surfacePos.down();
+
+                if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
+                    foundPos = surfacePos;
+                    break;
                 }
-                foundPos = surfacePos;
-                break;
+            }
+
+        } else {
+
+            config.allRunes = false;
+            config.radius = rand.nextInt(6) + 5;
+            config.runeTries = 2;
+            config.runeChance = 0.8F;
+            config.columnMinHeight = 4;
+            config.columnVariation = 2;
+            config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
+            config.blocks = new ArrayList<>(Arrays.asList(
+                Blocks.STONE.getDefaultState(),
+                Blocks.COBBLESTONE.getDefaultState(),
+                Blocks.MOSSY_COBBLESTONE.getDefaultState()
+            ));
+
+            for (int ii = 1; ii < TRIES; ii++) {
+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+                BlockPos surfacePosDown = surfacePos.down();
+
+                if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
+                    && world.getBlockState(surfacePosDown).isSolid()
+                    && WorldHelper.canSeeSky(world, surfacePosDown)
+                ) {
+                    if (Outerlands.isOuterPos(surfacePos)) {
+                        config.withChest = true;
+                        config.allRunes = true;
+                    }
+                    foundPos = surfacePos;
+                    break;
+                }
             }
         }
 
@@ -140,7 +177,15 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 
                                 if (f < weight) {
                                     availableRunes.remove(rune);
-                                    state = Runestones.getRunestoneBlock(rune);
+
+                                    if (config.usePortalRunestones) {
+                                        List<Direction> directions = Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+                                        state = RunePortals.getRunestoneBlock(rune);
+                                        state = state.with(PortalRunestoneBlock.FACING, directions.get(rand.nextInt(directions.size())));
+                                    } else {
+                                        state = Runestones.getRunestoneBlock(rune);
+                                    }
+
                                     generatedWithRune = true;
                                     break;
                                 }
@@ -193,6 +238,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         public float runeChance = 0.8F;
         public boolean withChest = false;
         public boolean allRunes = false;
+        public boolean usePortalRunestones = false;
         public ResourceLocation lootTable = null;
         public List<BlockState> blocks = new ArrayList<>();
     }

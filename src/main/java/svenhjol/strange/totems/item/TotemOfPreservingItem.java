@@ -14,6 +14,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -82,7 +83,8 @@ public class TotemOfPreservingItem extends MesonItem {
                     continue;
                 }
                 ItemStack stack = ItemStack.read((CompoundNBT) itemTag);
-                world.addEntity(new ItemEntity(world, player.posX, player.posY + 0.5D, player.posZ, stack));
+                final BlockPos playerPos = player.getPosition();
+                world.addEntity(new ItemEntity(world, playerPos.getX(), playerPos.getY() + 0.5D, playerPos.getZ(), stack));
             }
         }
 

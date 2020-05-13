@@ -20,15 +20,19 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.TotemHelper;
-import svenhjol.strange.base.loot.TreasureTotem;
 import svenhjol.strange.totems.client.TotemOfFlyingClient;
 import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfFlyingItem;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
 public class TotemOfFlying extends MesonModule implements ITreasureTotem {
     public static TotemOfFlyingItem item;
+    public static List<UUID> flyingPlayers = new ArrayList<>();
 
     @Config(name = "Durability", description = "Durability of the totem. The totem takes a point of damage every time you take off.")
     public static int durability = 32;
@@ -120,7 +124,9 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem {
                 return;
             }
 
-            disableFlight(player);
+            if (flyingPlayers.contains(player.getUniqueID())) {
+                disableFlight(player);
+            }
         }
     }
 
@@ -130,6 +136,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem {
         } else {
             player.abilities.isFlying = false;
             player.abilities.allowFlying = false;
+            flyingPlayers.remove(player.getUniqueID());
         }
     }
 
@@ -139,6 +146,7 @@ public class TotemOfFlying extends MesonModule implements ITreasureTotem {
         } else {
             player.abilities.allowFlying = true;
             player.abilities.isFlying = true;
+            flyingPlayers.add(player.getUniqueID());
         }
     }
 

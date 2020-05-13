@@ -8,20 +8,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
@@ -32,8 +28,8 @@ import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.base.helper.StructureHelper;
 import svenhjol.strange.base.helper.StructureHelper.RegisterJigsawPieces;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.ruins.structure.MarkerPiece;
 import svenhjol.strange.ruins.structure.UndergroundPiece;
 import svenhjol.strange.ruins.structure.UndergroundStructure;
@@ -80,41 +76,18 @@ public class UndergroundRuins extends MesonModule {
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(UndergroundPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "usp"));
         RegistryHandler.registerStructurePiece(MarkerPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "ump"));
-
-
-        final List<Biome> endBiomes = StructureHelper.getEndBiomes();
-
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (endBiomes.contains(biome))
-                continue;
-
-            biome.addFeature(
-                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure, NoFeatureConfig.NO_FEATURE_CONFIG);
-        }
     }
 
     @Override
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
-        // don't spawn near Quark's big dungeons
-        if (Strange.quarkCompat != null
-            && Strange.quarkCompat.hasBigDungeons()
-        ) {
-            Structure<?> structure = Strange.quarkCompat.getBigDungeonStructure();
-            if (!blacklist.contains(structure)) {
-                blacklist.add(structure);
-                Strange.LOG.debug("[UndergroundRuins] Added Quark's Big Dungeons to underground ruin blacklist");
-            }
-        }
+    public void onCommonSetup(FMLCommonSetupEvent event) {
+        for (Biome biome : ForgeRegistries.BIOMES) {
 
-        // don't spawn near Vaults
-        if (Meson.isModuleEnabled("strange:vaults")) {
-            if (!blacklist.contains(Vaults.structure)) {
-                blacklist.add(Vaults.structure);
-                Strange.LOG.debug("[UndergroundRuins] Added Vaults to underground ruin blacklist");
-            }
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+
+            //Only non-end biomes can start the structure generation.
+            if(biome.getCategory() != Biome.Category.THEEND && Meson.isModuleEnabled("strange:underground_ruins"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
         }
     }
 

@@ -2,7 +2,6 @@ package svenhjol.strange.traveljournal.client.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
@@ -17,7 +16,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.TranslationTextComponent;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -36,14 +34,17 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected int color;
     protected Entry entry;
     protected String message = "";
-    protected char[] runicName;
     protected final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
     );
-    protected FontRenderer glyphs;
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
+    protected boolean atEntryPosition;
+    protected boolean hasScreenshot;
+    protected boolean hasRenderedAddPhotoButton;
+    protected boolean hasRenderedColorIcons;
+    protected boolean hasRenderedTrashIcon;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -51,7 +52,6 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         this.name = entry.name;
         this.color = entry.color > 0 ? entry.color : 15;
         this.passEvents = false;
-        this.runicName = new char[]{};
     }
 
     @Override
@@ -59,27 +59,6 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         super.init();
         if (mc == null) return;
         if (!mc.world.isRemote) return;
-
-        if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
-            this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
-            String hex = Long.toHexString(entry.pos.toLong());
-            StringBuilder assembled = new StringBuilder();
-
-            char[] chars = hex.toCharArray();
-            for (char aChar : chars) {
-                String letter;
-                int rune = Character.getNumericValue(aChar);
-
-                if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                    letter = RunestoneHelper.getRuneChars().get(aChar).toString();
-                } else {
-                    letter = "?";
-                }
-                assembled.append(letter);
-            }
-            // assembled.append(Runestones.runeChars.get(Character.forDigit(entry.dim + 1, 10)).toString()); // only overworld for now
-            this.runicName = assembled.toString().toCharArray();
-        }
 
         mc.keyboardListener.enableRepeatEvents(true);
         nameField = new TextFieldWidget(font, (width / 2) - 72, 34, 149, 12, "NameField");
@@ -97,14 +76,17 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
+
+        atEntryPosition = isAtEntryPosition(player, entry);
+        hasScreenshot = hasScreenshot();
+        hasRenderedAddPhotoButton = false;
+        hasRenderedColorIcons = false;
+        hasRenderedTrashIcon = false;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
-
-        final boolean hasScreenshot = hasScreenshot();
-        final boolean atEntryPosition = isAtEntryPosition(player, entry);
 
         int mid = this.width / 2;
         int y = 20;
@@ -158,37 +140,34 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         }
 
         // button to take photo
-        if (atEntryPosition && !hasScreenshot)
+        if (atEntryPosition && !hasScreenshot && !hasRenderedAddPhotoButton) {
+            hasRenderedAddPhotoButton = true;
             this.addButton(new Button((width / 2) - 73, y + 36, 152, 20, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+        }
 
         // generate color icons
-        for (int i = 0; i < colors.size(); i++) {
-            final DyeColor col = colors.get(i);
-            this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+        if (!hasRenderedColorIcons) {
+            for (int i = 0; i < colors.size(); i++) {
+                final DyeColor col = colors.get(i);
+                this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
+            }
+            hasRenderedColorIcons = true;
         }
 
         if (entry.pos != null) {
             // show the coordinates if in creative mode
-            if (player.isCreative())
+            if (player.isCreative() || TravelJournal.alwaysShowCoordinates)
                 this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), coordsTopEdge, TEXT_COLOR);
-
-            int offset = y - 2;
-
-            if (entry.dim == 0 && runicName.length > 0) {
-                for (int j = 0; j < runicName.length; j++) {
-                    String s = String.valueOf(runicName[j]);
-                    FontRenderer f = (s.equals("?") ? this.font : this.glyphs);
-                    int color = (s.equals("?")) ? 0xC0C0C0 : 0x888888;
-                    this.drawCenteredString(f, s, (width / 2) + 93, offset + (j * 9), color);
-                }
-            }
         }
 
         this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y, DyeColor.byId(this.color).getColorValue());
         nameField.render(mouseX, mouseY, partialTicks);
 
         // button to delete entry
-        this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
+        if (!hasRenderedTrashIcon) {
+            this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
+            hasRenderedTrashIcon = true;
+        }
 
         super.render(mouseX, mouseY, partialTicks);
     }
@@ -217,13 +196,16 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         int h = 20;
         final boolean atEntryPosition = isAtEntryPosition(player, entry);
 
-        int buttonX = atEntryPosition ? -110 : -50;
+        int buttonX = atEntryPosition ? -170 : -110;
         int buttonDist = 120;
 
         if (atEntryPosition) {
             this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
             buttonX += buttonDist;
         }
+
+        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.runes"), (button) -> this.runes()));
+        buttonX += buttonDist;
 
         this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.save"), (button) -> this.save()));
     }
@@ -249,6 +231,10 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         mc.displayGuiScreen(new TravelJournalScreen(player, hand));
     }
 
+    private void runes() {
+        mc.displayGuiScreen(new RuneEntryScreen(entry, player, hand));
+    }
+
     private void delete() {
         TravelJournalItem.deleteEntry(player.getHeldItem(hand), this.entry);
         Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.DELETE, this.entry, hand));
@@ -270,6 +256,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     }
 
     private void prepareScreenshot() {
+        this.saveProgress();
         mc.displayGuiScreen(null);
         mc.gameSettings.hideGUI = true;
         player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.screenshot_in_progress"), true);

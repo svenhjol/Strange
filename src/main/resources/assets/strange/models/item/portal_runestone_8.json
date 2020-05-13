@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "strange:block/portal_runestone_white_8"
+  }
+}

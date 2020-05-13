@@ -101,9 +101,11 @@ public class Scrollkeepers extends MesonModule {
                 }
             });
 
-            double x = player.posX;
-            double y = player.posY;
-            double z = player.posZ;
+            final BlockPos playerPos = player.getPosition();
+
+            double x = playerPos.getX();
+            double y = playerPos.getY();
+            double z = playerPos.getZ();
 
             List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(
                 x - interestRange, y - interestRange, z - interestRange, x + interestRange, y + interestRange, z + interestRange));

@@ -4,6 +4,7 @@ import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,9 +25,10 @@ public class TotemOfFlyingSound extends TickableSound {
     public void tick() {
         ++this.time;
         if (this.player.isAlive() && (this.time <= 20 || this.player.abilities.isFlying)) {
-            this.x = (float) this.player.posX;
-            this.y = (float) this.player.posY;
-            this.z = (float) this.player.posZ;
+            final BlockPos playerPos = this.player.getPosition();
+            this.x = (float) playerPos.getX();
+            this.y = (float) playerPos.getY();
+            this.z = (float) playerPos.getZ();
             float f = (float) this.player.getMotion().lengthSquared();
             if ((double) f >= 1.0E-7D) {
                 this.volume = MathHelper.clamp(f / 4.0F, 0.0F, 1.0F);

@@ -38,14 +38,13 @@ public class QuestEvents {
         final IQuest quest = event.getQuest();
 
         Quests.getCapability(player).acceptQuest(player, quest);
+        respondToEvent(player, event, quest);
 
-        if (respondToEvent(player, event)) {
-            quest.setState(State.Started);
-
-            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity) player);
-        } else {
-            event.setCanceled(true);
+        if (event.isCanceled()) {
             Quests.getCapability(player).removeQuest(player, quest);
+        } else {
+            quest.setState(State.Started);
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendTo(new ClientQuestAction(ClientQuestAction.ACCEPTED, quest), (ServerPlayerEntity) player);
         }
     }
 
@@ -191,8 +190,8 @@ public class QuestEvents {
         }
     }
 
-    private boolean respondToEvent(PlayerEntity player, Event event) {
-        if (player == null) return false;
+    private void respondToEvent(PlayerEntity player, Event event) {
+        if (player == null) return;
         boolean responded = false;
 
         ConcurrentLinkedDeque<IQuest> quests = new ConcurrentLinkedDeque<>(Quests.getCurrent(player));
@@ -201,6 +200,12 @@ public class QuestEvents {
             responded = q.respondTo(event, player) || responded;
         }
 
+        if (responded) Quests.update(player);
+    }
+
+    private boolean respondToEvent(PlayerEntity player, Event event, IQuest quest) {
+        if (player == null) return false;
+        boolean responded = quest.respondTo(event, player);
         if (responded) Quests.update(player);
         return responded;
     }

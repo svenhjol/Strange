@@ -17,7 +17,6 @@
 /*.iml
 /src/main/main.iml
 /heap
-/libs
 
 ## Windows
 Thumbs.db
@@ -31,6 +30,7 @@ Thumbs.db
 
 ## Jars
 *.jar
+!/libs/Charm*.jar
 !/gradle/wrapper/gradle-wrapper.jar
 
 ### OSX (adds a lot of garbage)###
@@ -62,6 +62,6 @@ Temporary Items
 
 runclient.sh
 debugclient.sh
-copycharm.sh
+copydeps.sh
 
 src/main/resources/data/strange/disabled/*

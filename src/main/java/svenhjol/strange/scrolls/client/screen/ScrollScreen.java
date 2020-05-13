@@ -11,6 +11,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.QuestHelper;
 import svenhjol.strange.scrolls.item.ScrollItem;
 import svenhjol.strange.scrolls.message.ServerScrollAction;
 import svenhjol.strange.scrolls.quest.Condition;
@@ -65,8 +66,12 @@ public class ScrollScreen extends Screen implements IRenderable {
         GlStateManager.pushMatrix();
 
         String description = quest.getDescription();
+        Criteria criteria = quest.getCriteria();
 
-        if (!description.isEmpty()) {
+        if (criteria.isSatisfied()) {
+            String key = QuestHelper.isBoundToScrollkeeper(quest) ? "gui.strange.scrolls.return_to_the_scrollkeeper" : "gui.strange.scrolls.return_to_a_scrollkeeper";
+            this.drawCenteredString(this.font, I18n.format(key), mid, 24, 0x00AA00);
+        } else if (!description.isEmpty()) {
             if (quest.getDescription().contains("%%")) {
                 String[] split = quest.getDescription().split("%%");
                 description = split[0];
@@ -75,7 +80,6 @@ public class ScrollScreen extends Screen implements IRenderable {
             this.drawCenteredString(this.font, I18n.format(description), mid, 24, 0xAAAAAA);
         }
 
-        Criteria criteria = quest.getCriteria();
         final List<Condition<IDelegate>> actions = criteria.getConditions(Criteria.ACTION);
         final List<Condition<IDelegate>> constraints = criteria.getConditions(Criteria.CONSTRAINT);
         final List<Condition<IDelegate>> rewards = criteria.getConditions(Criteria.REWARD);

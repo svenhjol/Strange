@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -85,7 +86,8 @@ public class IllusionersDropTotems extends MesonModule {
 
             if (totemItem == null) return;
             ItemStack totem = new ItemStack(totemItem);
-            event.getDrops().add(new ItemEntity(world, entity.posX, entity.posY, entity.posZ, totem));
+            final BlockPos entityPos = entity.getPosition();
+            event.getDrops().add(new ItemEntity(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), totem));
         }
     }
 }

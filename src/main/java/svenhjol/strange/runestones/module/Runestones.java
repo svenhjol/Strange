@@ -8,6 +8,7 @@ import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -33,6 +34,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import svenhjol.charm.Charm;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
@@ -45,7 +47,7 @@ import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
 import svenhjol.strange.runestones.block.BaseRunestoneBlock;
-import svenhjol.strange.runestones.block.ObeliskBlock;
+import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 
@@ -55,14 +57,13 @@ import java.util.*;
     description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends MesonModule {
     public static final ResourceLocation RUNESTONES_CAP_ID = new ResourceLocation(Strange.MOD_ID, "runestone_capability");
-    public static final List<RunestoneBlock> normalBlocks = new ArrayList<>();
-    public static final List<ObeliskBlock> obeliskBlocks = new ArrayList<>();
+    public static final List<RunestoneBlock> normalRunestones = new ArrayList<>();
     public static List<Destination> innerDests = new ArrayList<>();
     public static List<Destination> outerDests = new ArrayList<>();
     public static List<Destination> allDests = new ArrayList<>();
     public static List<Destination> ordered = new ArrayList<>();
     public static final Map<UUID, BlockPos> playerTeleportRunestone = new HashMap<>();
-    public static final Map<UUID, BlockPos> playerTeleportObelisk = new HashMap<>();
+    public static final Map<UUID, Map<Integer, BlockPos>> playerTeleportObelisk = new HashMap<>();
     private static final int INTERVAL = 10;
 
     @Config(name = "Runestone for Quark Big Dungeons", description = "If true, one of the runestones will link to a Big Dungeon from Quark.\n" +
@@ -70,9 +71,8 @@ public class Runestones extends MesonModule {
         "If false, or Quark is not available, this runestone destination will be a stone circle instead.")
     public static boolean useQuarkBigDungeon = true;
 
-    @Config(name = "Allow obelisks", description = "If true, runestones may be mined with a silk touch pickaxe and crafted vertically into obelisks.\n" +
-        "Match the obelisk runes with a location in your travel journal to immediately teleport to that location.")
-    public static boolean allowObelisks = true;
+    @Config(name = "Allow portal runestones")
+    public static boolean allowPortalRunestones = true;
 
     @Config(name = "Maximum runestone travel distance", description = "Maximum number of blocks that you will be transported from a stone circle runestone.")
     public static int maxDist = 4000;
@@ -86,8 +86,7 @@ public class Runestones extends MesonModule {
     @Override
     public void init() {
         for (int i = 0; i < 16; i++) {
-            normalBlocks.add(new RunestoneBlock(this, i));
-            obeliskBlocks.add(new ObeliskBlock(this, i));
+            normalRunestones.add(new RunestoneBlock(this, i));
         }
     }
 
@@ -116,11 +115,11 @@ public class Runestones extends MesonModule {
         ordered.add(new Destination("Igloo", "igloo", false, 0.3F));
 
         if (useQuarkBigDungeon
-            && Strange.quarkCompat != null
-            && Strange.quarkCompat.hasBigDungeons()
+            && Charm.quarkCompat != null
+            && Charm.quarkCompat.hasBigDungeons()
         ) {
-            ordered.add(new Destination(Strange.quarkCompat.getBigDungeonResName(), "big_dungeon", true, 0.3F));
-            ordered.add(new Destination(Strange.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
+            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", true, 0.3F));
+            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
             Strange.LOG.debug("Added Quark's Big Dungeons as a runestone destination");
         } else {
             ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", true, 0.3F));
@@ -184,15 +183,15 @@ public class Runestones extends MesonModule {
                 effectActivate(world, pos);
             }
 
-            if (allowObelisks && block instanceof ObeliskBlock) {
+            if (allowPortalRunestones && block instanceof PortalRunestoneBlock) {
                 BlockPos lpos = new BlockPos(pos.down()); // get lowest stone
-                while (world.getBlockState(lpos).getBlock() instanceof ObeliskBlock && lpos.getY() > 1) {
+                while (world.getBlockState(lpos).getBlock() instanceof PortalRunestoneBlock && lpos.getY() > 1) {
                     lpos = lpos.add(0, -1, 0);
                 }
                 if (lpos.getY() <= 1) return;
 
                 BlockPos hpos = new BlockPos(pos.up()); // get highest stone
-                while (world.getBlockState(hpos).getBlock() instanceof ObeliskBlock && hpos.getY() < 255) {
+                while (world.getBlockState(hpos).getBlock() instanceof PortalRunestoneBlock && hpos.getY() < 255) {
                     hpos = hpos.add(0, 1, 0);
                 }
                 if (hpos.getY() >= 255) return;
@@ -203,14 +202,22 @@ public class Runestones extends MesonModule {
 
                 for (int i = hpos.getY() - 1; i > lpos.getY(); i--) {
                     BlockPos p = new BlockPos(x, i, z);
-                    Block block1 = world.getBlockState(p).getBlock();
-                    if (!(block1 instanceof ObeliskBlock)) return;
+                    final BlockState state1 = world.getBlockState(p);
+                    final Block block1 = state1.getBlock();
+                    if (!(block1 instanceof PortalRunestoneBlock)) return;
 
                     ResourceLocation reg = block1.getRegistryName();
                     if (reg == null) return;
 
-                    int val = getRuneValue((ObeliskBlock) block1);
+                    int val = getRuneValue((PortalRunestoneBlock) block1);
+                    final DyeColor dyeColor = null;
+                    if (dyeColor == null) {
+                        runeError(world, pos, player);
+                        return;
+                    }
+
                     order.add(val);
+                    order.add(dyeColor.ordinal());
                 }
 
                 if (order.isEmpty()) return;
@@ -220,16 +227,36 @@ public class Runestones extends MesonModule {
                     sb.append(Integer.toHexString(o));
                 }
                 String s = sb.toString();
-                if (s.length() < 5 || s.length() > 16) {
+                if (s.length() < 5 || s.length() > 18) {
                     runeError(world, pos, player);
                     return;
                 }
 
                 long l;
+                int dim;
 
                 try {
-                    l = Long.parseUnsignedLong(s, 16);
+                    final String d0 = s.substring(3, 4);
+                    final String d1 = s.substring(s.length() - 1);
+                    final String p0 = s.substring(0, 3);
+                    final String p1 = s.substring(4, s.length() - 1);
+
+                    final String dimHex = d0 + d1;
+                    final String posHex = p0 + p1;
+
+                    dim = Integer.parseUnsignedInt(dimHex, 16);
+                    if (dim < 0 || dim > 255) {
+                        runeError(world, pos, player);
+                        return;
+                    }
+
+                    dim -= 128;
+                    Meson.LOG.debug("Dimension: " + dim);
+
+                    Meson.LOG.debug("Trying to parse hex to long: " + posHex);
+                    l = Long.parseUnsignedLong(posHex, 16);
                 } catch (Exception e) {
+                    Meson.LOG.debug("Failed: " + e.getMessage());
                     runeError(world, pos, player);
                     return;
                 }
@@ -237,7 +264,9 @@ public class Runestones extends MesonModule {
                 BlockPos dest = BlockPos.fromLong(l);
                 Strange.LOG.debug(dest.toString());
 
-                playerTeleportObelisk.put(player.getUniqueID(), dest);
+                Map<Integer, BlockPos> location = new HashMap<>();
+                location.put(dim, dest);
+                playerTeleportObelisk.put(player.getUniqueID(), location);
                 effectActivate(world, pos);
             }
         }
@@ -270,7 +299,7 @@ public class Runestones extends MesonModule {
 
         if (lookedAt.getBlock() instanceof RunestoneBlock) {
             RunestoneBlock block = (RunestoneBlock) lookedAt.getBlock();
-            if (normalBlocks.contains(block)) {
+            if (normalRunestones.contains(block)) {
                 TranslationTextComponent message;
                 IRunestonesCapability cap = Runestones.getCapability(player);
                 int rune = getRuneValue(block);
@@ -298,26 +327,29 @@ public class Runestones extends MesonModule {
 
     private void checkTeleport(ServerWorld world, ServerPlayerEntity player) {
         if (!playerTeleportRunestone.isEmpty() && playerTeleportRunestone.containsKey(player.getUniqueID())) {
-
             UUID id = player.getUniqueID();
             BlockPos pos = playerTeleportRunestone.get(id);
             doTeleport(world, player, pos);
             playerTeleportRunestone.remove(id);
 
-        } else if (allowObelisks && !playerTeleportObelisk.isEmpty() && playerTeleportObelisk.containsKey(player.getUniqueID())) {
+        } else if (allowPortalRunestones && !playerTeleportObelisk.isEmpty() && playerTeleportObelisk.containsKey(player.getUniqueID())) {
+            final UUID id = player.getUniqueID();
+            final Map<Integer, BlockPos> location = playerTeleportObelisk.get(id);
+            final Optional<Integer> key = location.keySet().stream().findFirst();
 
-            UUID id = player.getUniqueID();
-            BlockPos pos = playerTeleportObelisk.get(id);
+            if (key.isPresent()) {
+                final int dim = key.get();
+                final BlockPos pos = location.get(dim);
+                if (player.dimension.getId() != dim)
+                    PlayerHelper.changeDimension(player, dim);
 
-            if (player.dimension.getId() != 0)
-                PlayerHelper.changeDimension(player, 0);
-
-            PlayerHelper.teleport(player, pos, 0, p -> {
-                int x = Math.max(-30000000, Math.min(30000000, pos.getX()));
-                int y = Math.max(-64, Math.min(1024, pos.getY()));
-                int z = Math.max(-30000000, Math.min(30000000, pos.getZ()));
-                player.setPositionAndUpdate(x, y, z);
-            });
+                PlayerHelper.teleport(player, pos, dim, p -> {
+                    int x = Math.max(-30000000, Math.min(30000000, pos.getX()));
+                    int y = Math.max(-64, Math.min(1024, pos.getY()));
+                    int z = Math.max(-30000000, Math.min(30000000, pos.getZ()));
+                    player.setPositionAndUpdate(x, y, z);
+                });
+            }
             playerTeleportObelisk.remove(id);
         }
     }
@@ -374,7 +406,7 @@ public class Runestones extends MesonModule {
     }
 
     public static BlockState getRunestoneBlock(int runeValue) {
-        return normalBlocks.get(runeValue).getDefaultState();
+        return normalRunestones.get(runeValue).getDefaultState();
     }
 
     public static int getRuneValue(BaseRunestoneBlock block) {
@@ -451,7 +483,7 @@ public class Runestones extends MesonModule {
         return RunestoneHelper.addRandomOffset(pos, rand, 8);
     }
 
-    private void doTeleport(World world, PlayerEntity player, BlockPos pos) {
+    private void doTeleport(ServerWorld world, PlayerEntity player, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
         int rune = getRuneValue((RunestoneBlock) state.getBlock());
@@ -461,7 +493,7 @@ public class Runestones extends MesonModule {
 
         int duration = protectionDuration * 20;
         player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, duration, 2));
-        player.addPotionEffect(new EffectInstance(Effects.REGENERATION, duration, 2));
+        player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, duration, 2));
         final BlockPos currentPlayerPos = player.getPosition();
 
         Random rand = world.rand;
@@ -481,13 +513,12 @@ public class Runestones extends MesonModule {
 
         BlockPos destOffset = addRandomOffset(destPos, rand);
         PlayerHelper.teleportSurface(player, destOffset, 0, p1 -> {
-            final BlockPos newPlayerPos = player.getPosition();
             Runestones.getCapability(player).recordDestination(pos, destOffset);
-            PlayerHelper.teleport(player, currentPlayerPos, 0, p2 -> {
-                PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
-                    p3.setPositionAndUpdate(p3.posX, p3.posY + 2, p3.posZ);
-                });
-            });
+            PlayerHelper.teleport(player, currentPlayerPos, 0,
+                p2 -> PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
+                    final BlockPos playerPos = p3.getPosition();
+                    p3.setPositionAndUpdate(playerPos.getX(), playerPos.getY() + 2, playerPos.getZ());
+            }));
         });
     }
 
@@ -548,7 +579,7 @@ public class Runestones extends MesonModule {
             return this.structure.equals(SPAWN);
         }
 
-        public BlockPos getDest(World world, BlockPos runePos, Random rand) {
+        public BlockPos getDest(ServerWorld world, BlockPos runePos, Random rand) {
             Strange.LOG.debug("Structure: " + structure);
 
             BlockPos spawn = world.getSpawnPoint();

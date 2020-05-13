@@ -1,5 +1,40 @@
-## 1.0.0 alpha 13
+## 1.0.0 beta 4
+* World hang when doing `/locate` in non-vanilla dimension (1.14 only). Fixes #22
+* "Fetch" quests were starting even though the start conditions were invalid. #28
+* Improved quest completion text and added co-ordinates for "Fetch" quests. #28
+* Fix entry name change not being respected when taking a photo. Fixes #38
+* Config option to always show X and Z coordinates of a journal entry in the Travel Journal.
+* Vault and Stone Circle biome config has been changed to allow more biomes. If you have customized this config, you may need to look over it.
+* Stone Circles may now generate in the End with harvestable Portal Runestones.
+* Added RunePortals (documentation Todo!) and Rune Page to the Travel Journal.
+* Ambience module has been removed and put in a separate mod Charmonium. This will cause registration warnings in existing worlds.
+* [1.15] Totem of Preserving's "drop on death" will be disabled if Quark Oddities is present.
+
+## 1.0.0 beta 3
+* Obelisk right click issue. Fixes #26
+* Crash when creating travel journal entry at 0 0. Fixes #25
+* World hang when doing /locate in non-vanilla dimensions. Fixes #22
+* More obvious that you should return to scrollkeeper when quest complete. #28
+* Stone Circle maps don't generate anymore due to lag issues. #32
+* Added config for ambience volume.
+
+## 1.0.0 beta 2
+* Fixed memory leak in travel journal.
+* Fixed structure spawning check issue and not obeying config.
+* [1.15] Fixed stone circle runestones not taking you to previously discovered location. #17
+* Removed stone circles compasses (they were rubbish anyway) to fix a server crash. #15
+* Player now receives Resistance instead of Regeneration when using a runestone teleport.
+* Behavior of Totem of Preserving has been changed so that you need to be holding a totem for it to preserve items. Configurable. #21
+* Restore Quark-based Quests
+* Complete rework of obelisks.
+* Retexture runestones.
+* Testing totem flying issue.
+
+## 1.0.0 beta 1
 * Fixed issue with daytime not being reported to client properly.
+* Legendary items are now tag based (merge PR#12)
+* Update some calls in preparation for 1.15.2
+* Depends on Charm 1.5.4
 
 ## 1.0.0 alpha 12
 * Fixed an issue where scrollkeeper trades are always 2 emeralds. Fix #9

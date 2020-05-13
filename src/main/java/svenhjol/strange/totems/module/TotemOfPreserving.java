@@ -9,10 +9,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.helper.ForgeHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -25,17 +27,29 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.TOTEMS, hasSubscriptions = true,
+    description = "If you are holding a Totem of Preserving when you die, your items will be stored safely inside it.\n" +
+        "You can also preserve your current inventory at any time by crouch-clicking while holding a totem.  Right click again to restore the inventory.")
 public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
     public static TotemOfPreservingItem item;
 
-    @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.")
+    @Config(name = "Enable with Oddities", description = "By default the 'Save items on death' feature will be disabled if Quark Oddities is present.\n" +
+        "Set this to true to force this feature to be enabled.")
+    public static boolean enableWithOddities = false;
+
+    @Config(name = "Save items on death", description = "When you die, your items will be stored in a totem at the place where you died.\n" +
+        "If 'Only save items when holding a totem' is disabled, then a new totem will be spawned whenever you die.")
     public static boolean saveItems = true;
 
-    @Config(name = "No despawn", description = "The totem will never despawn.")
+    @Config(name = "Only save items when holding a totem", description = "Only store items on death if you're holding an empty totem in your inventory.\n" +
+        "'Save items on death' must be enabled for this to function.")
+    public static boolean onlyWhenHolding = true;
+
+    @Config(name = "No despawn", description = "The totem will never despawn.  'Save items on death' must be enabled for this to function.")
     public static boolean noDespawn = true;
 
-    @Config(name = "No gravity", description = "The totem will stay suspended in the air above your death position.")
+    @Config(name = "No gravity", description = "The totem will stay suspended in the air above your death position.\n" +
+        "'Save items on death' must be enabled for this to function.")
     public static boolean noGravity = true;
 
     @Override
@@ -64,19 +78,20 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerDrops(LivingDropsEvent event) {
-        if (!saveItems) return;
-        DamageSource source = event.getSource();
+        if ((!enableWithOddities && ForgeHelper.isModLoaded("quarkoddities")) || !saveItems)
+            return;
 
         Collection<ItemEntity> drops = event.getDrops();
         if (drops.isEmpty()) return;
         if (!(event.getEntityLiving() instanceof PlayerEntity)) return;
+        if (event.isCanceled()) return;
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         World world = player.world;
-
         ItemStack totem = new ItemStack(item);
+        DamageSource source = event.getSource();
 
         CompoundNBT serialized = new CompoundNBT();
         List<ItemStack> holdable = new ArrayList<>();
@@ -86,6 +101,26 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
             .map(ItemEntity::getItem)
             .filter(stack -> !stack.isEmpty())
             .forEach(holdable::add);
+
+        if (onlyWhenHolding) {
+            boolean found = false;
+            int foundAtIndex = 0;
+            for (int index = 0; index < holdable.size(); index++) {
+                final ItemStack itemStack = holdable.get(index);
+                if (itemStack.getItem() instanceof TotemOfPreservingItem) {
+                    if (TotemOfPreservingItem.getItems(itemStack).isEmpty()) {
+                        foundAtIndex = index;
+                        found = true;
+                    }
+                }
+            }
+            if (!found)
+                return;
+
+            // use the totem
+            totem = holdable.get(foundAtIndex);
+            holdable.remove(foundAtIndex);
+        }
 
         for (int i = 0; i < holdable.size(); i++) {
             serialized.put(Integer.toString(i), holdable.get(i).serializeNBT());
@@ -97,9 +132,11 @@ public class TotemOfPreserving extends MesonModule implements ITreasureTotem {
             TotemOfPreservingItem.setMessage(totem, source.getDeathMessage(event.getEntityLiving()).getString());
         }
 
-        double x = player.posX + 0.5D;
-        double y = player.posY + 2.25D;
-        double z = player.posZ + 0.5D;
+        final BlockPos playerPos = player.getPosition();
+
+        double x = playerPos.getX() + 0.5D;
+        double y = playerPos.getY() + 2.25D;
+        double z = playerPos.getZ() + 0.5D;
 
         if (y < 0) y = 64;
 

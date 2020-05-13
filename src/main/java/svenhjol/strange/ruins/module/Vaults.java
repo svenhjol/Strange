@@ -6,32 +6,32 @@ import net.minecraft.item.Items;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.BiomeHelper;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.StructureHelper;
+import svenhjol.strange.base.helper.VersionHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.structure.VaultPiece;
 import svenhjol.strange.ruins.structure.VaultStructure;
@@ -62,6 +62,18 @@ public class Vaults extends MesonModule {
     @Config(name = "Generate above Y value", description = "Vaults will try and generate above this Y value.")
     public static int generateAbove = 24;
 
+    @Config(name = "Allowed generation biomes", description = "Biomes that vaults may generate in.")
+    public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
+        BiomeHelper.getBiomeName(Biomes.MOUNTAINS),
+        BiomeHelper.getBiomeName(Biomes.MOUNTAIN_EDGE),
+        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA),
+        BiomeHelper.getBiomeName(Biomes.SHATTERED_SAVANNA_PLATEAU),
+        BiomeHelper.getBiomeName(Biomes.PLAINS),
+        BiomeHelper.getBiomeName(Biomes.SUNFLOWER_PLAINS),
+        BiomeHelper.getBiomeName(Biomes.BADLANDS),
+        BiomeHelper.getBiomeName(Biomes.BADLANDS_PLATEAU)
+    ));
+
     public static final List<Biome> validBiomes = new ArrayList<>();
 
     @Override
@@ -70,23 +82,25 @@ public class Vaults extends MesonModule {
 
         RegistryHandler.registerStructure(structure, new ResourceLocation(Strange.MOD_ID, NAME));
         RegistryHandler.registerStructurePiece(VaultPiece.PIECE, new ResourceLocation(Strange.MOD_ID, "vp"));
+    }
 
-        final List<Biome> overworldBiomes = StructureHelper.getOverworldBiomes();
-
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (!overworldBiomes.contains(biome))
-                return;
-
-            biome.addFeature(
-                GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-                Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
-
-            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
+    @Override
+    public void onCommonSetup(FMLCommonSetupEvent event) {
+        validBiomesConfig.forEach(biomeName -> {
+            //noinspection deprecation
+            Biome biome = Registry.BIOME.getOrDefault(new ResourceLocation(biomeName));
+            if (!validBiomes.contains(biome)) validBiomes.add(biome);
         });
 
-        validBiomes.addAll(Arrays.asList(
-            Biomes.MOUNTAINS, Biomes.MOUNTAIN_EDGE
-        ));
+        ForgeRegistries.BIOMES.forEach(biome -> {
+
+            //Structure can finish generating in any biome so it doesn't get cut off.
+            VersionHelper.addStructureToBiomeFeature(structure, biome);
+
+            //Only these biomes can start the structure generation.
+            if(validBiomes.contains(biome) && Meson.isModuleEnabled("strange:vaults"))
+                VersionHelper.addStructureToBiomeStructure(structure, biome);
+        });
     }
 
     @Override
