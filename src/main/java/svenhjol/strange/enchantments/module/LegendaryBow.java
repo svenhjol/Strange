@@ -39,7 +39,7 @@ public class LegendaryBow extends MesonModule implements ILegendaryItem {
     public ItemStack getItemStack() {
         Random rand = new Random();
         List<ItemStack> items = new ArrayList<>();
-        Tag<Item> legendaryItemsTag = ItemTags.getCollection().get(new ResourceLocation("strange:legendary_crossbows"));
+        Tag<Item> legendaryItemsTag = ItemTags.getCollection().get(new ResourceLocation("strange:legendary_bows"));
 
         //If the tag is missing for some reasons use the default entry
         if (legendaryItemsTag == null){
