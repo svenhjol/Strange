@@ -64,7 +64,7 @@ public class Vaults extends MesonModule {
 
     public static final List<Biome> validBiomes = new ArrayList<Biome>();
 
-    @Config(name = "Allowed biomes", description = "Biomes that vaults may generate in.")
+    @Config(name = "Allowed generation biomes", description = "Biomes that vaults may generate in.")
     public static List<String> validBiomesConfig = new ArrayList<>(Arrays.asList(
         BiomeHelper.getBiomeName(Biomes.MOUNTAINS),
         BiomeHelper.getBiomeName(Biomes.MOUNTAIN_EDGE),
