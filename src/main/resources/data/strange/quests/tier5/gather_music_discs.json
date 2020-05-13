@@ -7,12 +7,12 @@
     }
   },
   "gather": {
-    "minecraft:record_chirp | minecraft:record_blocks | minecraft:record_stal | minecraft:record_mellohi": 1
+    "minecraft:music_disc_chirp | minecraft:music_disc_blocks | minecraft:music_disc_stal | minecraft:music_disc_mellohi": 1
   },
   "rewards": {
     "items": {
       "minecraft:emerald": 4,
-      "minecraft:record_chirp | minecraft:record_blocks | minecraft:record_stal | minecraft:record_mellohi": 1,
+      "minecraft:music_disc_chirp | minecraft:music_disc_blocks | minecraft:music_disc_stal | minecraft:music_disc_mellohi": 1,
       "StoneCircleTotem": 1
     },
     "xp": {
