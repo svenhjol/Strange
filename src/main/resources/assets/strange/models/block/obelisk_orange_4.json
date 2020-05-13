@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end": "block/stone",
-    "side": "strange:block/obelisk_orange_4"
-  }
-}

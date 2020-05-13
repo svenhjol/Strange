@@ -1,3 +1,6 @@
 {
-  "parent": "strange:block/runestone_5"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "strange:block/runestone_5"
+  }
 }
