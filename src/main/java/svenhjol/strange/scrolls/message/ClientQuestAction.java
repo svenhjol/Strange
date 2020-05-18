@@ -11,9 +11,9 @@ import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 public class ClientQuestAction implements IMesonMessage {
@@ -37,7 +37,7 @@ public class ClientQuestAction implements IMesonMessage {
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             CompressedStreamTools.writeCompressed(msg.quest.toNBT(), out);
-            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
+            serialized = Base64.getEncoder().encodeToString(out.toByteArray());
         } catch (Exception e) {
             Strange.LOG.warn("Failed to compress quest");
         }
@@ -51,7 +51,7 @@ public class ClientQuestAction implements IMesonMessage {
 
         int action = buf.readInt();
         try {
-            final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
+            final byte[] byteData = Base64.getDecoder().decode(buf.readString());
             quest.fromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData)));
         } catch (Exception e) {
             Strange.LOG.warn("Failed to uncompress quest");
