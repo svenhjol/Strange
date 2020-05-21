@@ -6,22 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "strange:portal_runestone_0",
-          "conditions": [
-            {
-              "condition": "minecraft:match_tool",
-              "predicate": {
-                "enchantments": [
-                  {
-                    "enchantment": "minecraft:silk_touch",
-                    "levels": {
-                      "min": 1
-                    }
-                  }
-                ]
-              }
-            }
-          ]
+          "name": "strange:portal_runestone_0"
         }
       ],
       "conditions": [

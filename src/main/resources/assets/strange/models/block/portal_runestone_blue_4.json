@@ -1,9 +1,9 @@
 {
   "parent": "block/orientable",
   "textures": {
-    "top": "block/obsidian",
-    "side": "block/obsidian",
-    "bottom": "block/obsidian",
+    "top": "strange:block/amethyst",
+    "side": "strange:block/amethyst",
+    "bottom": "strange:block/amethyst",
     "front": "strange:block/portal_runestone_blue_4"
   }
 }

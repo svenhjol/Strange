@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
@@ -22,9 +21,8 @@ import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.decoration.module.Amethyst;
 import svenhjol.strange.outerlands.module.Outerlands;
-import svenhjol.strange.runestones.block.PortalRunestoneBlock;
-import svenhjol.strange.runestones.module.RunePortals;
 import svenhjol.strange.runestones.module.Runestones;
 
 import java.util.*;
@@ -56,13 +54,13 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
             config.allRunes = true;
             config.usePortalRunestones = true;
             config.runeTries = 4;
-            config.runeChance = 1.0F;
+            config.runeChance = 0F;
             config.radius = rand.nextInt(7) + 4;
             config.columnMinHeight = 3;
             config.columnVariation = 3;
             config.lootTable = LootTables.CHESTS_END_CITY_TREASURE;
             config.blocks = new ArrayList<>(Arrays.asList(
-                Blocks.OBSIDIAN.getDefaultState()
+                Amethyst.block.getDefaultState()
             ));
 
             for (int ii = 1; ii < TRIES; ii++) {
@@ -176,15 +174,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 
                                 if (f < weight) {
                                     availableRunes.remove(rune);
-
-                                    if (config.usePortalRunestones) {
-                                        List<Direction> directions = Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
-                                        state = RunePortals.getRunestoneBlock(rune);
-                                        state = state.with(PortalRunestoneBlock.FACING, directions.get(rand.nextInt(directions.size())));
-                                    } else {
-                                        state = Runestones.getRunestoneBlock(rune);
-                                    }
-
+                                    state = Runestones.getRunestoneBlock(rune);
                                     generatedWithRune = true;
                                     break;
                                 }

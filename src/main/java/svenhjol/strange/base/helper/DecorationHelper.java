@@ -24,7 +24,7 @@ import svenhjol.charm.decoration.module.Crates;
 import svenhjol.charm.decoration.module.GoldLanterns;
 import svenhjol.charm.decoration.tileentity.BookshelfChestTileEntity;
 import svenhjol.meson.Meson;
-import svenhjol.meson.enums.WoodType;
+import svenhjol.meson.enums.VanillaWoodType;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.base.module.EntitySpawner;
 import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
@@ -204,7 +204,7 @@ public class DecorationHelper {
         Blocks.SLIME_BLOCK
     ));
 
-    public static final List<WoodType> woodTypes = new ArrayList<>(Arrays.asList(WoodType.values()));
+    public static final List<VanillaWoodType> woodTypes = new ArrayList<>(Arrays.asList(VanillaWoodType.values()));
 
     static {
         if (Meson.isModuleEnabled("strange:scrolls"))
@@ -307,7 +307,7 @@ public class DecorationHelper {
         protected void bookshelf() {
             // TODO variant bookshelves
             if (Meson.isModuleEnabled("charm:bookshelf_chests") && withChance(0.1F)) {
-                state = ((Block) BookshelfChests.blocks.get(WoodType.OAK)).getDefaultState()
+                state = ((Block) BookshelfChests.blocks.get(VanillaWoodType.OAK)).getDefaultState()
                     .with(BookshelfChestBlock.SLOTS, 9);
 
                 BookshelfChestTileEntity tile = BookshelfChests.tile.create();
@@ -514,7 +514,7 @@ public class DecorationHelper {
         protected void storage() {
             if (!withChance(0.7F)) return;
             LockableLootTileEntity tile;
-            WoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
+            VanillaWoodType woodType = woodTypes.get(fixedRand.nextInt(woodTypes.size()));
 
             List<BlockState> barrels = new ArrayList<>(Collections.singletonList(
                 Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, Direction.UP)

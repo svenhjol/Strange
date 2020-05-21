@@ -2,7 +2,6 @@ package svenhjol.strange.runestones.module;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -26,12 +25,14 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.charm.Charm;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.enums.ColorVariant;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.decoration.module.Amethyst;
 import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunePortalBlock;
 import svenhjol.strange.runestones.client.renderer.RunePortalTileEntityRenderer;
@@ -61,6 +62,11 @@ public class RunePortals extends MesonModule {
         for (int i = 0; i < 16; i++) {
             portalRunestones.add(new PortalRunestoneBlock(this, i));
         }
+    }
+
+    @Override
+    public boolean shouldRunSetup() {
+        return Meson.isModuleEnabled("strange:amethyst");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -94,7 +100,7 @@ public class RunePortals extends MesonModule {
     public void onPortalBlockBroken(BlockEvent.BreakEvent event) {
         if (!event.getWorld().isRemote()) {
             Block broken = event.getWorld().getBlockState(event.getPos()).getBlock();
-            if (broken == Blocks.OBSIDIAN)
+            if (broken == Amethyst.block)
                 breakSurroundingPortals((ServerWorld) event.getWorld(), event.getPos());
         }
     }
@@ -106,16 +112,16 @@ public class RunePortals extends MesonModule {
         final BlockState state = world.getBlockState(pos);
         List<Integer> order = new ArrayList<>();
 
-        if (state.getBlock() == Blocks.OBSIDIAN) {
+        if (state.getBlock() == Amethyst.block) {
 
             // this tests the portal structure and gets the rune order. It's sensitive to axis and blockstate facing.
             Axis axis;
 
-            if (world.getBlockState(pos.east()).getBlock() == Blocks.OBSIDIAN
-                && world.getBlockState(pos.west()).getBlock() == Blocks.OBSIDIAN) {
+            if (world.getBlockState(pos.east()).getBlock() == Amethyst.block
+                && world.getBlockState(pos.west()).getBlock() == Amethyst.block) {
                 axis = Axis.X;
-            } else if (world.getBlockState(pos.north()).getBlock() == Blocks.OBSIDIAN
-                && world.getBlockState(pos.south()).getBlock() == Blocks.OBSIDIAN) {
+            } else if (world.getBlockState(pos.north()).getBlock() == Amethyst.block
+                && world.getBlockState(pos.south()).getBlock() == Amethyst.block) {
                 axis = Axis.Z;
             } else {
                 return false;
