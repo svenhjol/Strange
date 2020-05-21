@@ -8,7 +8,9 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-
+plugins {
+    id "com.wynprice.cursemaven" version "2.1.1"
+}
 apply plugin: 'net.minecraftforge.gradle'
 
 ext.configFile = file('gradle.properties')
@@ -59,6 +61,7 @@ dependencies {
     compile fg.deobf("vazkii.autoreglib:AutoRegLib:${arl_version}")
     compile fg.deobf("vazkii.quark:Quark:${quark_version}")
     compile fg.deobf("quark-oddities:QuarkOddities:${quark_oddities_version}")
+//    compile fg.deobf("curse.maven:zombie-horse-spawn:2810326")
 //    runtimeOnly fg.deobf("com.terrag.blur:Blur:1.1.0-1")
 }
 
