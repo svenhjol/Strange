@@ -66,6 +66,9 @@ public class TreasureTotems extends MesonModule {
 
     @Nullable
     public static ItemStack getTreasureItem(Random rand) {
+        if (availableTotems.size() == 0) {
+            return ItemStack.EMPTY;
+        }
         ITreasureTotem totem = availableTotems.get(rand.nextInt(availableTotems.size()));
         return totem.getTreasureItem();
     }

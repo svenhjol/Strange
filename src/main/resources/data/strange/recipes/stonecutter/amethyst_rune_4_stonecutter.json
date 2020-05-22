@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "strange:amethyst"
+  },
+  "result": "strange:portal_runestone_4",
+  "count": 1,
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "meson:module_enabled",
+          "module": "strange:amethyst"
+        },
+        {
+          "type": "meson:module_enabled",
+          "module": "strange:rune_portals"
+        }
+      ]
+    }
+  ]
+}
