@@ -46,8 +46,8 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.ruins.module.UndergroundRuins;
+import svenhjol.strange.runestones.block.AmethystRuneBlock;
 import svenhjol.strange.runestones.block.BaseRunestoneBlock;
-import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 
@@ -183,15 +183,15 @@ public class Runestones extends MesonModule {
                 effectActivate(world, pos);
             }
 
-            if (allowPortalRunestones && block instanceof PortalRunestoneBlock) {
+            if (allowPortalRunestones && block instanceof AmethystRuneBlock) {
                 BlockPos lpos = new BlockPos(pos.down()); // get lowest stone
-                while (world.getBlockState(lpos).getBlock() instanceof PortalRunestoneBlock && lpos.getY() > 1) {
+                while (world.getBlockState(lpos).getBlock() instanceof AmethystRuneBlock && lpos.getY() > 1) {
                     lpos = lpos.add(0, -1, 0);
                 }
                 if (lpos.getY() <= 1) return;
 
                 BlockPos hpos = new BlockPos(pos.up()); // get highest stone
-                while (world.getBlockState(hpos).getBlock() instanceof PortalRunestoneBlock && hpos.getY() < 255) {
+                while (world.getBlockState(hpos).getBlock() instanceof AmethystRuneBlock && hpos.getY() < 255) {
                     hpos = hpos.add(0, 1, 0);
                 }
                 if (hpos.getY() >= 255) return;
@@ -204,12 +204,12 @@ public class Runestones extends MesonModule {
                     BlockPos p = new BlockPos(x, i, z);
                     final BlockState state1 = world.getBlockState(p);
                     final Block block1 = state1.getBlock();
-                    if (!(block1 instanceof PortalRunestoneBlock)) return;
+                    if (!(block1 instanceof AmethystRuneBlock)) return;
 
                     ResourceLocation reg = block1.getRegistryName();
                     if (reg == null) return;
 
-                    int val = getRuneValue((PortalRunestoneBlock) block1);
+                    int val = getRuneValue((AmethystRuneBlock) block1);
                     final DyeColor dyeColor = null;
                     if (dyeColor == null) {
                         runeError(world, pos, player);

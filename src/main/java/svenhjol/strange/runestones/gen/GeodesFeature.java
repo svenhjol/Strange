@@ -8,6 +8,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
+import svenhjol.strange.runestones.module.Amethyst;
 import vazkii.quark.world.block.CaveCrystalBlock;
 import vazkii.quark.world.module.underground.CaveCrystalUndergroundBiomeModule;
 
@@ -97,10 +98,14 @@ public class GeodesFeature extends Feature<GeodesConfig> {
                      worldIn.setBlockState(pos.add(x, y, z), Blocks.AIR.getDefaultState(), 2);
                   }
                   if (aboolean3[index] && rand.nextFloat() > 0.2F) {
-                     int col = rand.nextFloat() < 0.5F ? geodeColor1 : geodeColor2;
-
-                     BlockState state = crystals.get(col).getDefaultState();
-                     worldIn.setBlockState(pos.add(x, y, z), state, 2);
+                     BlockPos pa = pos.add(x, y, z);
+                     if (rand.nextFloat() < 0.1F) {
+                        worldIn.setBlockState(pa, Amethyst.ore.getDefaultState(), 2);
+                     } else {
+                        int col = rand.nextFloat() < 0.5F ? geodeColor1 : geodeColor2;
+                        BlockState state = crystals.get(col).getDefaultState();
+                        worldIn.setBlockState(pa, state, 2);
+                     }
                   }
                }
             }
