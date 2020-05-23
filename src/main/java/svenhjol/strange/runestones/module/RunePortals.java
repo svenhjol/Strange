@@ -32,7 +32,7 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.decoration.module.Amethyst;
+import svenhjol.strange.runestones.block.MoonstoneBlock;
 import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunePortalBlock;
 import svenhjol.strange.runestones.client.renderer.RunePortalTileEntityRenderer;
@@ -100,7 +100,7 @@ public class RunePortals extends MesonModule {
     public void onPortalBlockBroken(BlockEvent.BreakEvent event) {
         if (!event.getWorld().isRemote()) {
             Block broken = event.getWorld().getBlockState(event.getPos()).getBlock();
-            if (broken == Amethyst.block)
+            if (broken instanceof MoonstoneBlock)
                 breakSurroundingPortals((ServerWorld) event.getWorld(), event.getPos());
         }
     }
@@ -112,16 +112,16 @@ public class RunePortals extends MesonModule {
         final BlockState state = world.getBlockState(pos);
         List<Integer> order = new ArrayList<>();
 
-        if (state.getBlock() == Amethyst.block) {
+        if (state.getBlock() instanceof MoonstoneBlock) {
 
             // this tests the portal structure and gets the rune order. It's sensitive to axis and blockstate facing.
             Axis axis;
 
-            if (world.getBlockState(pos.east()).getBlock() == Amethyst.block
-                && world.getBlockState(pos.west()).getBlock() == Amethyst.block) {
+            if (world.getBlockState(pos.east()).getBlock() instanceof MoonstoneBlock
+                && world.getBlockState(pos.west()).getBlock() instanceof MoonstoneBlock) {
                 axis = Axis.X;
-            } else if (world.getBlockState(pos.north()).getBlock() == Amethyst.block
-                && world.getBlockState(pos.south()).getBlock() == Amethyst.block) {
+            } else if (world.getBlockState(pos.north()).getBlock() instanceof MoonstoneBlock
+                && world.getBlockState(pos.south()).getBlock() instanceof MoonstoneBlock) {
                 axis = Axis.Z;
             } else {
                 return false;

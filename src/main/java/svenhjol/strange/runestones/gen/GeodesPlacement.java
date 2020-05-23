@@ -22,7 +22,7 @@ public class GeodesPlacement extends SimplePlacement<FrequencyConfig> {
 
         for (int i = 0; i < rand.nextInt(rand.nextInt(config.count) + 1) + 1; ++i) {
             int x = rand.nextInt(16);
-            int y = rand.nextInt(120) + 4;
+            int y = rand.nextInt(16) + 60;
             int z = rand.nextInt(16);
             locations.add(pos.add(x, y, z));
         }

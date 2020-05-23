@@ -19,7 +19,6 @@ import net.minecraft.world.storage.loot.LootTables;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.decoration.module.Amethyst;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 
@@ -49,65 +48,38 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 //        if (world instanceof ServerWorld) {
 //            Biome biome = BiomeHelper.getBiomeAtPos((ServerWorld)world, new BlockPos((chunkPos.getXStart() << 4) + 9, 0, (chunkPos.getZStart() << 4) + 9));
 //        }
-        if (dim == DimensionType.THE_END) {
 
-            config.withChest = false;
-            config.allRunes = true;
-            config.usePortalRunestones = true;
-            config.runeTries = 4;
-            config.runeChance = 0F;
-            config.radius = rand.nextInt(7) + 4;
-            config.columnMinHeight = 3;
-            config.columnVariation = 3;
-            config.lootTable = LootTables.CHESTS_END_CITY_TREASURE;
-            config.blocks = new ArrayList<>(Arrays.asList(
-                Amethyst.block.getDefaultState()
-            ));
+        config.allRunes = false;
+        config.radius = rand.nextInt(6) + 5;
+        config.runeTries = 2;
+        config.runeChance = 0.8F;
+        config.columnMinHeight = 4;
+        config.columnVariation = 2;
+        config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
+        config.blocks = new ArrayList<>(Arrays.asList(
+            Blocks.STONE.getDefaultState(),
+            Blocks.COBBLESTONE.getDefaultState(),
+            Blocks.MOSSY_COBBLESTONE.getDefaultState()
+        ));
 
-            for (int ii = 1; ii < TRIES; ii++) {
-                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                BlockPos surfacePosDown = surfacePos.down();
+        for (int ii = 1; ii < TRIES; ii++) {
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+            BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
+            BlockPos surfacePosDown = surfacePos.down();
 
-                if (world.isAirBlock(surfacePos) && world.getBlockState(surfacePosDown).getBlock().equals(Blocks.END_STONE)) {
-                    foundPos = surfacePos;
-                    break;
+            if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
+                && world.getBlockState(surfacePosDown).isSolid()
+                && WorldHelper.canSeeSky(world, surfacePosDown)
+            ) {
+                if (Outerlands.isOuterPos(surfacePos)) {
+                    config.withChest = true;
+                    config.allRunes = true;
                 }
-            }
-
-        } else {
-
-            config.allRunes = false;
-            config.radius = rand.nextInt(6) + 5;
-            config.runeTries = 2;
-            config.runeChance = 0.8F;
-            config.columnMinHeight = 4;
-            config.columnVariation = 2;
-            config.lootTable = LootTables.CHESTS_PILLAGER_OUTPOST;
-            config.blocks = new ArrayList<>(Arrays.asList(
-                Blocks.STONE.getDefaultState(),
-                Blocks.COBBLESTONE.getDefaultState(),
-                Blocks.MOSSY_COBBLESTONE.getDefaultState()
-            ));
-
-            for (int ii = 1; ii < TRIES; ii++) {
-                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-                BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
-                BlockPos surfacePosDown = surfacePos.down();
-
-                if ((world.isAirBlock(surfacePos) || world.hasWater(surfacePos))
-                    && world.getBlockState(surfacePosDown).isSolid()
-                    && WorldHelper.canSeeSky(world, surfacePosDown)
-                ) {
-                    if (Outerlands.isOuterPos(surfacePos)) {
-                        config.withChest = true;
-                        config.allRunes = true;
-                    }
-                    foundPos = surfacePos;
-                    break;
-                }
+                foundPos = surfacePos;
+                break;
             }
         }
+
 
         if (foundPos != null)
             return generateCircle(world, new BlockPos.MutableBlockPos(foundPos), rand, config);

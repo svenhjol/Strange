@@ -45,7 +45,7 @@ public class EnderGeodes extends MesonModule {
         for (Biome b : validBiomes) {
             b.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS,
                 Biome.createDecoratedFeature(feature,
-                    new GeodesConfig(Blocks.VOID_AIR.getDefaultState()),
+                    new GeodesConfig(Blocks.END_STONE.getDefaultState()),
                     placement,
                     new FrequencyConfig(2)
             ));

@@ -19,7 +19,7 @@ public class GeodesConfig implements IFeatureConfig {
    }
 
    public static <T> GeodesConfig deserialize(Dynamic<T> p_214712_0_) {
-      BlockState blockstate = p_214712_0_.get("state").map(BlockState::deserialize).orElse(Blocks.AIR.getDefaultState());
+      BlockState blockstate = p_214712_0_.get("state").map(BlockState::deserialize).orElse(Blocks.END_STONE.getDefaultState());
       return new GeodesConfig(blockstate);
    }
 }
