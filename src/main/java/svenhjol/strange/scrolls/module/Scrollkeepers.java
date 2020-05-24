@@ -214,7 +214,7 @@ public class Scrollkeepers extends MesonModule {
             // apply bad omen effect according to villager level and distance from spawn
             if (badOmenChance > 0
                 && villagerLevel >= 3
-                && world.rand.nextFloat() < (badOmenChance + ((villagerLevel - 1) * Outerlands.getScaledMultiplier(world, pos)))
+                && world.rand.nextFloat() < (badOmenChance * ((villagerLevel - 2) * Outerlands.getScaledMultiplier(world, pos)))
             ) {
                 int amplifier = Math.max(0, villagerLevel - 2);
                 EffectInstance badOmen = new EffectInstance(Effects.BAD_OMEN, 120000, amplifier, false, false, true);
