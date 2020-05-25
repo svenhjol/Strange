@@ -10,7 +10,7 @@
     }
   },
   "craft": {
-    "charm:crates": 2
+    "charm:crate_open_oak": 2
   },
   "rewards": {
     "items": {
