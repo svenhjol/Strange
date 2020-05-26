@@ -7,18 +7,20 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.block.MoonstoneBlock;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = CharmCategories.DECORATION)
 public class Moonstones extends MesonModule {
-    public static Map<Integer, MoonstoneBlock> moonstones = new HashMap<>();
+    public static List<MoonstoneBlock> moonstones = new ArrayList<>();
 
     @Override
     public void init() {
         int i = 0;
-        for (DyeColor color : DyeColor.values()) {
-            moonstones.put(i++, new MoonstoneBlock(this, color));
+
+        List<DyeColor> colors = new ArrayList<>(Arrays.asList(DyeColor.MAGENTA, DyeColor.PURPLE));
+
+        for (DyeColor color : colors) {
+            moonstones.add(new MoonstoneBlock(this, color));
         }
     }
 }

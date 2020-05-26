@@ -21,6 +21,8 @@ public class GeodesPlacement extends SimplePlacement<FrequencyConfig> {
         List<BlockPos> locations = Lists.newArrayList();
 
         for (int i = 0; i < rand.nextInt(rand.nextInt(config.count) + 1) + 1; ++i) {
+            if (rand.nextFloat() < 0.75F) continue;
+
             int x = rand.nextInt(16);
             int y = rand.nextInt(16) + 60;
             int z = rand.nextInt(16);
