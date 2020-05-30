@@ -1,4 +1,4 @@
-package svenhjol.strange.base.tile;
+package svenhjol.strange.base.tileentity;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;

@@ -1,12 +1,18 @@
 package svenhjol.strange.base.helper;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import svenhjol.meson.Meson;
+import svenhjol.strange.Strange;
+import svenhjol.strange.outerlands.module.Outerlands;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class RunestoneHelper {
+    public final static ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
+
     private static final Map<Character, Character> runeHexCharMap = new HashMap<>();
     private static final Map<Integer, Character> runeIntCharMap = new HashMap<>();
 
@@ -64,5 +70,57 @@ public class RunestoneHelper {
         runeIntCharMap.put(13, 'j');
         runeIntCharMap.put(14, 'w');
         runeIntCharMap.put(15, 'f');
+    }
+
+    public static BlockPos normalizeInnerPos(BlockPos pos) {
+        if (!Meson.isModuleEnabled("strange:outerlands"))
+            return pos;
+
+        int x = pos.getX();
+        int z = pos.getZ();
+        int nx = x;
+        int nz = z;
+
+        if (Math.abs(x) > Math.abs(z)) {
+            if (x <= 0 && x <= -Outerlands.threshold) {
+                nx = -Outerlands.threshold;
+            } else if (x > 0 && x > Outerlands.threshold) {
+                nx = Outerlands.threshold;
+            }
+        } else if (Math.abs(x) < Math.abs(z)) {
+            if (z <= 0 && z <= -Outerlands.threshold) {
+                nz = -Outerlands.threshold;
+            } else if (z > 0 && z > Outerlands.threshold) {
+                nz = Outerlands.threshold;
+            }
+        }
+
+        return new BlockPos(nx, pos.getY(), nz);
+    }
+
+    public static BlockPos normalizeOuterPos(BlockPos pos) {
+        if (!Meson.isModuleEnabled("strange:outerlands"))
+            return pos;
+
+        int x = pos.getX();
+        int z = pos.getZ();
+        int nx = x;
+        int nz = z;
+
+        if (Math.abs(x) > Math.abs(z)) {
+            if (x <= 0 && x >= -Outerlands.threshold) {
+                nx = -Outerlands.threshold;
+            } else if (x > 0 && x < Outerlands.threshold) {
+                nx = Outerlands.threshold;
+            }
+        } else if (Math.abs(x) < Math.abs(z)) {
+            if (z <= 0 && z >= -Outerlands.threshold) {
+                nz = -Outerlands.threshold;
+            } else if (z > 0 && z < Outerlands.threshold) {
+                nz = Outerlands.threshold;
+            }
+        }
+
+        return new BlockPos(nx, pos.getY(), nz);
     }
 }
