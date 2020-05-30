@@ -11,7 +11,6 @@ import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -76,14 +75,14 @@ public class Runestones extends MesonModule {
     public static List<String> availableDestinations = new ArrayList<>(Arrays.asList(
         "strange:spawn_point",
         "strange:stone_circle",
-        "village",
-        "pillager_outpost",
-        "desert_pyramid",
-        "jungle_template",
-        "ocean_ruin",
-        "mineshaft",
-        "swamp_hut",
-        "igloo",
+        "minecraft:village",
+        "minecraft:pillager_outpost",
+        "minecraft:desert_pyramid",
+        "minecraft:jungle_pyramid",
+        "minecraft:mineshaft",
+        "minecraft:ocean_ruin",
+        "minecraft:swamp_hut",
+        "minecraft:igloo",
         "strange:underground_ruin",
         "quark:big_dungeon"
     ));
@@ -139,42 +138,6 @@ public class Runestones extends MesonModule {
         }
 
         Strange.LOG.debug(ordered.toString());
-
-        // add all destinations here; serverStarted shuffles them according to world seed
-//        // TODO set up constants not magic strings
-//        ordered = new ArrayList<>();
-//        ordered.add(new Destination("spawn_point", false, 1.0F));
-//        ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.9F));
-//        ordered.add(new Destination(StoneCircles.RESNAME, "outer_stone_circle", true, 0.9F));
-//        ordered.add(new Destination("Village", "village", false, 0.5F));
-//        ordered.add(new Destination("Village", "outer_village", true, 0.7F));
-//        ordered.add(new Destination("Pillager_Outpost", "pillager_outpost", false, 0.75F));
-//        ordered.add(new Destination("Pillager_Outpost", "outer_pillager_outpost", true, 0.6F));
-//        ordered.add(new Destination("Desert_Pyramid", "desert_pyramid", false, 0.2F));
-//        ordered.add(new Destination("Jungle_Pyramid", "jungle_pyramid", false, 0.2F));
-//        ordered.add(new Destination("Ocean_Ruin", "ocean_ruin", false, 0.65F));
-//        ordered.add(new Destination("Mineshaft", "mineshaft", false, 0.5F));
-//        ordered.add(new Destination("Swamp_Hut", "swamp_hut", false, 0.3F));
-//        ordered.add(new Destination("Igloo", "igloo", false, 0.3F));
-//
-//        if (useQuarkBigDungeon
-//            && Charm.quarkCompat != null
-//            && Charm.quarkCompat.hasBigDungeons()
-//        ) {
-//            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", true, 0.3F));
-//            ordered.add(new Destination(Charm.quarkCompat.getBigDungeonResName(), "big_dungeon", false, 0.3F));
-//            Strange.LOG.debug("Added Quark's Big Dungeons as a runestone destination");
-//        } else {
-//            ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", true, 0.3F));
-//            ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.3F));
-//        }
-//
-//        if (Meson.isModuleEnabled("strange:underground_ruins")) {
-//            ordered.add(new Destination(UndergroundRuins.RESNAME, "underground_ruin", false, 0.15F));
-//            Strange.LOG.debug("Added Underground Ruins as a runestone destination");
-//        } else {
-//            ordered.add(new Destination(StoneCircles.RESNAME, "stone_circle", false, 0.15F));
-//        }
     }
 
     @Override
@@ -347,10 +310,6 @@ public class Runestones extends MesonModule {
         return Outerlands.getOuterPos(world, rand);
     }
 
-    private BlockPos addRandomOffset(BlockPos pos, Random rand) {
-        return RunestoneHelper.addRandomOffset(pos, rand, 8);
-    }
-
     private void doTeleport(ServerWorld world, PlayerEntity player, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return;
@@ -367,33 +326,27 @@ public class Runestones extends MesonModule {
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
-        if (player.dimension.getId() != 0)
-            PlayerHelper.changeDimension(player, 0);
+//        if (player.dimension.getId() != 0)
+//            PlayerHelper.changeDimension(player, 0);
 
-        Destination dest = destinations.get(rune);
-        BlockPos destPos = dest.getDest(world, pos, rand);
+        Destination destination = destinations.get(rune);
+        BlockPos destPos = destination.getAndRecordDestination(world, pos, rand);
 
         if (destPos == null) {
-            Strange.LOG.warn("Dest position invalid, defaulting to spawn position");
+            Strange.LOG.warn("Destination position is invalid, defaulting to spawn position.");
             destPos = world.getSpawnPoint();
         }
 
-        Strange.LOG.debug("Rune: " + rune + ", dest: " + dest.structure.toString() + ", pos: " + destPos.toString());
-        BlockPos destOffset = addRandomOffset(destPos, rand);
-        PlayerHelper.teleportSurface(player, destOffset, 0, p1 -> {
+        final BlockPos usePos = destPos;
+        Strange.LOG.debug("Rune: " + rune + ", dest: " + destination.structure.toString() + ", pos: " + destPos.toString());
+        PlayerHelper.teleportSurface(player, destPos, 0, p1 -> {
 
-        // record the destination
-        Runestones.getCapability(player).recordDestination(pos, destOffset);
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof RunestoneTileEntity) {
-            RunestoneTileEntity runestone = (RunestoneTileEntity)tile;
-            runestone.position = destOffset;
-            runestone.destination = dest.structure.toString();
-            runestone.markDirty();
-        }
+        // record the destination for the player
+        Runestones.getCapability(player).recordDestination(pos, usePos);
 
+        // teleport player to surface of position
         PlayerHelper.teleport(player, currentPlayerPos, 0,
-            p2 -> PlayerHelper.teleportSurface(player, destOffset, 0, p3 -> {
+            p2 -> PlayerHelper.teleportSurface(player, usePos, 0, p3 -> {
                 final BlockPos playerPos = p3.getPosition();
                 p3.setPositionAndUpdate(playerPos.getX(), playerPos.getY() + 2, playerPos.getZ());
             }));
