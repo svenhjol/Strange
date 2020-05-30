@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "strange:polished_amethyst"
   },
-  "result": "strange:portal_runestone_10",
+  "result": "strange:runic_amethyst_10",
   "count": 1,
   "conditions": [
     {
