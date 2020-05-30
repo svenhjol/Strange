@@ -11,6 +11,8 @@ import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.tileentity.RunestoneTileEntity;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Destination {
@@ -30,35 +32,29 @@ public class Destination {
         return this.structure.equals(RunestoneHelper.SPAWN);
     }
 
-    public BlockPos getDest(ServerWorld world, BlockPos runePos, Random rand) {
+    public BlockPos getAndRecordDestination(ServerWorld world, BlockPos runePos, Random rand) {
         // does the runestone have a destination already stored?
         TileEntity tile = world.getTileEntity(runePos);
-            if (tile instanceof RunestoneTileEntity) {
+        if (tile instanceof RunestoneTileEntity) {
             RunestoneTileEntity runestone = (RunestoneTileEntity)tile;
             String destination = runestone.destination;
             BlockPos position = runestone.position;
 
             if (destination != null && !destination.isEmpty()) {
-                Strange.LOG.debug("Destination stored in runestone, using that instead of calculating new one.");
+                Strange.LOG.debug("Found destination in the runestone: using that instead of calculating new one.");
                 return position;
             }
         }
 
         Strange.LOG.debug("Structure: " + structure);
         int maxDist = Runestones.maxDist;
-
-        BlockPos spawn = world.getSpawnPoint();
-        final int x = runePos.getX();
-        final int z = runePos.getZ();
         final WorldBorder border = world.getWorldBorder();
-
-        if (isSpawnPoint())
-            return spawn;
 
         final int xdist = -maxDist + rand.nextInt(maxDist *2);
         final int zdist = -maxDist + rand.nextInt(maxDist *2);
         BlockPos p = runePos.add(xdist, 0, zdist);
 
+        // bounds check
         if (p.getX() > border.maxX())
             p = new BlockPos(border.maxX(), p.getY(), p.getZ());
 
@@ -71,23 +67,70 @@ public class Destination {
         if (p.getZ() < border.minZ())
             p = new BlockPos(p.getX(), p.getY(), border.minZ());
 
-        BlockPos target;
-        BlockPos dest;
+        BlockPos currentLocation;
+        BlockPos foundPos;
 
         if (Outerlands.isOuterPos(runePos)) {
-            target = RunestoneHelper.normalizeOuterPos(p); // if you're in the outerlands, find a close-by outerlands pos
+            currentLocation = RunestoneHelper.normalizeOuterPos(p); // if you're in the outerlands, find a close-by outerlands pos
         } else {
-            target = RunestoneHelper.normalizeInnerPos(p); // if you're not in outerlands, find a close-by inner pos
+            currentLocation = RunestoneHelper.normalizeInnerPos(p); // if you're not in outerlands, find a close-by inner pos
         }
 
-        if (structure.equals(RunestoneHelper.SPAWN)) {
-            dest = world.getSpawnPoint();
+        if (isSpawnPoint()) {
+            foundPos = world.getSpawnPoint();
         } else {
-            dest = world.findNearestStructure(structure.toString(), target, Runestones.maxDist, true);
-            if (dest == null)
-                dest = world.getSpawnPoint();
+            String structureName = getStructureName();
+            foundPos = world.findNearestStructure(structureName, currentLocation, Runestones.maxDist, true);
+            if (foundPos == null) {
+                Strange.LOG.warn("World could not locate structure " + structureName + ", defaulting to spawn position.");
+                foundPos = world.getSpawnPoint();
+            }
         }
 
-        return dest;
+        foundPos = RunestoneHelper.addRandomOffset(foundPos, rand, 8);
+
+        // record the destination and position in the runestone
+        if (tile instanceof RunestoneTileEntity) {
+            RunestoneTileEntity runestone = (RunestoneTileEntity)tile;
+            runestone.position = foundPos;
+            runestone.destination = structure.toString();
+            runestone.markDirty();
+
+            Strange.LOG.debug("Stored destination in runestone for next time.");
+        }
+
+        return foundPos;
+    }
+
+    private String getStructureName() {
+        String structureName;
+
+        Map<String, String> vanillaMap = new HashMap<>();
+        vanillaMap.put("buried_treasure", "Buried_Treasure");
+        vanillaMap.put("desert_pyramid", "Desert_Pyramid");
+        vanillaMap.put("endcity", "EndCity");
+        vanillaMap.put("fortress", "Fortress");
+        vanillaMap.put("igloo", "Igloo");
+        vanillaMap.put("jungle_pyramid", "Jungle_Pyramid");
+        vanillaMap.put("mansion", "Mansion");
+        vanillaMap.put("mineshaft", "Mineshaft");
+        vanillaMap.put("monument", "Monument");
+        vanillaMap.put("ocean_ruin", "Ocean_Ruin");
+        vanillaMap.put("pillager_outpost", "Pillager_Outpost");
+        vanillaMap.put("shipwreck", "Shipwreck");
+        vanillaMap.put("stronghold", "Stronghold");
+        vanillaMap.put("swamp_hut", "Swamp_Hut");
+        vanillaMap.put("village", "Village");
+
+        if (structure.getNamespace().equals("minecraft")) {
+            structureName = structure.getPath();
+            if (vanillaMap.containsKey(structureName)) {
+                structureName = vanillaMap.get(structureName);
+            }
+        } else {
+            structureName = structure.toString();
+        }
+
+        return structureName;
     }
 }
