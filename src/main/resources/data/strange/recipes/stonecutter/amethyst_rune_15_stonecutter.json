@@ -1,7 +1,7 @@
 {
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "strange:amethyst"
+    "item": "strange:polished_amethyst"
   },
   "result": "strange:portal_runestone_15",
   "count": 1,

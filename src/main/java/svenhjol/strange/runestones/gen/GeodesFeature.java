@@ -102,7 +102,7 @@ public class GeodesFeature extends Feature<GeodesConfig> {
                      if (rand.nextFloat() < 0.1F) {
                         worldIn.setBlockState(pa, Blocks.END_STONE.getDefaultState(), 2);
                      } else if (rand.nextFloat() < 0.05F) {
-                        worldIn.setBlockState(pa, Amethyst.ore.getDefaultState(), 2);
+                        worldIn.setBlockState(pa, Amethyst.block.getDefaultState(), 2);
                      } else {
                         int col = rand.nextFloat() < 0.5F ? geodeColor1 : geodeColor2;
                         BlockState state = moonstones.get(col).getDefaultState();
