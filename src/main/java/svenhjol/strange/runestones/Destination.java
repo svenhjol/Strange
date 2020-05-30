@@ -33,7 +33,7 @@ public class Destination {
     public BlockPos getDest(ServerWorld world, BlockPos runePos, Random rand) {
         // does the runestone have a destination already stored?
         TileEntity tile = world.getTileEntity(runePos);
-        if (tile instanceof RunestoneTileEntity) {
+            if (tile instanceof RunestoneTileEntity) {
             RunestoneTileEntity runestone = (RunestoneTileEntity)tile;
             String destination = runestone.destination;
             BlockPos position = runestone.position;

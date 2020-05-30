@@ -5,7 +5,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import svenhjol.strange.runestones.module.RunePortals;
+import svenhjol.strange.runestones.module.Runestones;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +17,7 @@ public class RunestoneTileEntity extends TileEntity {
     public String destination;
 
     public RunestoneTileEntity() {
-        super(RunePortals.tile);
+        super(Runestones.tile);
     }
 
     @Override
