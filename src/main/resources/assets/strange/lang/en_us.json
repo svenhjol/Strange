@@ -16,6 +16,8 @@
   "advancements.strange.rare_totem.title": "Rare Treasure",
   "advancements.strange.rare_totem.description": "Find a rare totem",
 
+  "block.strange.amethyst": "Raw Amethyst",
+  "block.strange.polished_amethyst": "Polished Amethyst",
   "block.strange.moonstone_white": "White Moonstone",
   "block.strange.moonstone_light_gray": "Light Gray Moonstone",
   "block.strange.moonstone_gray": "Gray Moonstone",
