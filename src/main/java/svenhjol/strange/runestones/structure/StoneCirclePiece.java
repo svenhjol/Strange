@@ -94,15 +94,8 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 
         Map<Integer, Float> availableRunes = new HashMap<>();
         if (runestonesEnabled) {
-
-            if (config.allRunes) {
-                for (int i = 0; i < Runestones.allDests.size(); i++) {
-                    availableRunes.put(i, Runestones.allDests.get(i).weight);
-                }
-            } else {
-                for (int i = 0; i < Runestones.innerDests.size(); i++) {
-                    availableRunes.put(i, Runestones.innerDests.get(i).weight);
-                }
+            for (int i = 0; i < Runestones.destinations.size(); i++) {
+                availableRunes.put(i, Runestones.destinations.get(i).weight);
             }
 
             if (availableRunes.size() == 0) {

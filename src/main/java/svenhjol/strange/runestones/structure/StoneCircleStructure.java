@@ -65,7 +65,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
             BlockPos pos = new BlockPos((x << 4) + 9, 0, (z << 4) + 9);
             Biome biome = gen.getBiomeProvider().getBiome(pos);
 
-            return !Runestones.allDests.isEmpty()
+            return !Runestones.destinations.isEmpty()
                 && gen.hasStructure(biome, StoneCircles.structure)
                 && Math.abs(pos.getX()) > MIN_DISTANCE
                 && Math.abs(pos.getZ()) > MIN_DISTANCE;
