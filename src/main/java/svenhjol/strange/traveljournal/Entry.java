@@ -74,8 +74,9 @@ public class Entry {
     }
 
     private String calculatePosRef(BlockPos pos, int dim) {
-        long l = pos.toLong() + dim;
+        long l = pos.toLong() + (long) dim;
         String encoded = Long.toString(l, 26);
+        encoded = encoded.replace('-', '0');
         String trimmed = StringUtils.leftPad(encoded.substring(encoded.length() - 12), 12, "0");
         return trimmed;
     }
