@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "strange:amethyst"
+    }
+  },
+  "result": {
+    "item": "strange:polished_amethyst"
+  },
+  "conditions": [
+    {
+      "type": "meson:module_enabled",
+      "module": "strange:amethyst"
+    }
+  ]
+}
