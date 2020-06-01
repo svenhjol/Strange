@@ -1,4 +1,4 @@
-package svenhjol.strange.runestones.module;
+package svenhjol.strange.stonecircles.module;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -17,8 +17,8 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.VersionHelper;
-import svenhjol.strange.runestones.structure.StoneCirclePiece;
-import svenhjol.strange.runestones.structure.StoneCircleStructure;
+import svenhjol.strange.stonecircles.structure.StoneCirclePiece;
+import svenhjol.strange.stonecircles.structure.StoneCircleStructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,10 +31,6 @@ public class StoneCircles extends MesonModule {
     public static final String NAME = "stone_circle";
     public static final String RESNAME = "strange:stone_circle";
     public static Structure<NoFeatureConfig> structure;
-
-    @Config(name = "Allow compasses to detect stone circles", description = "Holding a compass and an iron ingot under a full moon makes the compass point toward the closest stone circle.\n" +
-        "Charm's 'Compass Binding' feature must be enabled for this to work.")
-    public static boolean compassDetection = true;
 
     @Config(name = "Distance", description = "Distance between stone cicles. For reference, shipwrecks are 16.")
     public static int distance = 20;
@@ -55,10 +51,7 @@ public class StoneCircles extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
         BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
         BiomeHelper.getBiomeName(Biomes.FROZEN_RIVER),
-        BiomeHelper.getBiomeName(Biomes.SWAMP),
-        BiomeHelper.getBiomeName(Biomes.END_MIDLANDS),
-        BiomeHelper.getBiomeName(Biomes.END_HIGHLANDS),
-        BiomeHelper.getBiomeName(Biomes.END_BARRENS)
+        BiomeHelper.getBiomeName(Biomes.SWAMP)
     ));
 
     public static final List<Biome> validBiomes = new ArrayList<>();
@@ -85,7 +78,6 @@ public class StoneCircles extends MesonModule {
         });
 
         ForgeRegistries.BIOMES.forEach(biome -> {
-
             //Structure can finish generating in any biome so it doesn't get cut off.
             VersionHelper.addStructureToBiomeFeature(structure, biome);
 

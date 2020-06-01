@@ -8,7 +8,6 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import svenhjol.charm.base.message.ServerUpdatePlayerState;
 import svenhjol.meson.Meson;
 import svenhjol.strange.ruins.module.UndergroundRuins;
-import svenhjol.strange.ruins.module.Vaults;
 import svenhjol.strange.runestones.capability.IRunestonesCapability;
 import svenhjol.strange.runestones.module.Runestones;
 
@@ -37,9 +36,6 @@ public class StrangeServer {
 
         if (Meson.isModuleEnabled("strange:underground_ruins")) {
             nbt.putBoolean("underground_ruin", UndergroundRuins.structure.isPositionInsideStructure(world, pos));
-        }
-        if (Meson.isModuleEnabled("strange:vaults")) {
-            nbt.putBoolean("vaults", Vaults.structure.isPositionInsideStructure(world, pos));
         }
     }
 }

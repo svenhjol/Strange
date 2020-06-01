@@ -1,4 +1,4 @@
-package svenhjol.strange.ruins.structure;
+package svenhjol.strange.stonecircles.structure;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;

@@ -1,4 +1,4 @@
-package svenhjol.strange.runestones.structure;
+package svenhjol.strange.stonecircles.structure;
 
 
 import net.minecraft.block.BlockState;
@@ -49,7 +49,6 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 //            Biome biome = BiomeHelper.getBiomeAtPos((ServerWorld)world, new BlockPos((chunkPos.getXStart() << 4) + 9, 0, (chunkPos.getZStart() << 4) + 9));
 //        }
 
-        config.allRunes = false;
         config.radius = rand.nextInt(6) + 5;
         config.runeTries = 2;
         config.runeChance = 0.8F;
@@ -71,18 +70,15 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
                 && world.getBlockState(surfacePosDown).isSolid()
                 && WorldHelper.canSeeSky(world, surfacePosDown)
             ) {
-                if (Outerlands.isOuterPos(surfacePos)) {
-                    config.withChest = true;
-                    config.allRunes = true;
-                }
                 foundPos = surfacePos;
                 break;
             }
         }
 
-
-        if (foundPos != null)
+        if (foundPos != null) {
+            config.withChest = Outerlands.isOuterPos(foundPos);
             return generateCircle(world, new BlockPos.MutableBlockPos(foundPos), rand, config);
+        }
 
         return false;
     }
@@ -192,8 +188,6 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         public int runeTries = 1;
         public float runeChance = 0.8F;
         public boolean withChest = false;
-        public boolean allRunes = false;
-        public boolean usePortalRunestones = false;
         public ResourceLocation lootTable = null;
         public List<BlockState> blocks = new ArrayList<>();
     }

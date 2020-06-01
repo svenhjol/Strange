@@ -1,5 +1,6 @@
-package svenhjol.strange.runestones.structure;
+package svenhjol.strange.stonecircles.structure;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -7,13 +8,15 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.EndChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.runestones.module.StoneCircles;
+import svenhjol.strange.stonecircles.module.StoneCircles;
+import svenhjol.strange.stonecircles.module.Vaults;
 
 import java.util.Objects;
 import java.util.Random;
@@ -93,7 +96,35 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
         public void init(ChunkGenerator<?> gen, TemplateManager templates, int chunkX, int chunkZ, Biome biomeIn) {
             BlockPos pos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
             components.add(new StoneCirclePiece(this.rand, pos));
+
+            if (rand.nextFloat() < Vaults.vaultChance && Vaults.isValidPosition(pos))
+                generateVaults(gen, templates, pos);
+
             this.recalculateStructureSize();
+        }
+
+        private void generateVaults(ChunkGenerator<?> gen, TemplateManager templates, BlockPos pos) {
+            final String dir = Vaults.isValidPosition(pos) ? Vaults.VAULTS_DIR : Vaults.VAULTS_LOCAL;
+            final ResourceLocation start = new ResourceLocation(Strange.MOD_ID, dir + "/starts");
+
+            JigsawManager.func_214889_a(start, Vaults.size, VaultPiece::new, gen, templates, pos, components, rand);
+            this.recalculateStructureSize();
+
+            int top = bounds.maxY;
+
+            // move components into the earth
+            if (top >= Vaults.generateBelow) {
+                int shift = bounds.maxY - Vaults.generateBelow;
+                bounds.offset(0, -shift, 0);
+                components.forEach(p -> p.offset(0, -shift, 0));
+            }
+
+            if (bounds.minY < Vaults.generateAbove) {
+                int shift = Vaults.generateAbove - bounds.minY;
+                bounds.offset(0, shift, 0);
+                components.forEach(p -> p.offset(0, shift, 0));
+                //  Strange.LOG.debug("[VaultStructure] Shifting up by " + shift + " at " + pos);
+            }
         }
     }
 }
