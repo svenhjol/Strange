@@ -10,7 +10,6 @@ import net.minecraft.potion.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -18,15 +17,13 @@ import svenhjol.charm.Charm;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PotionHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.ItemHelper;
 import svenhjol.strange.base.helper.LocationHelper;
-import svenhjol.strange.runestones.module.Runestones;
-import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.scrolls.module.Scrolls;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Definition;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
-import svenhjol.strange.totems.item.TotemOfReturningItem;
-import svenhjol.strange.totems.module.TotemOfReturning;
+import svenhjol.strange.stonecircles.module.StoneCircles;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import javax.annotation.Nullable;
@@ -213,17 +210,7 @@ public abstract class BaseGenerator {
 
         switch (item) {
             case STONE_CIRCLE_TOTEM:
-                if (Meson.isModuleEnabled("strange:stone_circles")
-                    && Meson.isModuleEnabled("strange:totem_of_returning")
-                ) {
-                    out = new ItemStack(TotemOfReturning.item);
-                    BlockPos pos = world.findNearestStructure(StoneCircles.RESNAME, Runestones.getOuterPos(world, world.rand), 1000, true);
-                    if (pos == null) return null;
-
-                    TotemOfReturningItem.setPos(out, pos.add(0, world.getSeaLevel(), 0));
-                    TotemOfReturningItem.setGenerated(out, true);
-                    out.setDisplayName(new TranslationTextComponent("item.strange.quest_reward_totem"));
-                }
+                out = ItemHelper.getDistantTotem(world);
                 break;
 
             case STONE_CIRCLE_MAP:
