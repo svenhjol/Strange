@@ -31,8 +31,8 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.runestones.block.RunicAmethystBlock;
 import svenhjol.strange.runestones.block.RunePortalBlock;
+import svenhjol.strange.runestones.block.RunicAmethystBlock;
 import svenhjol.strange.runestones.client.renderer.RunePortalTileEntityRenderer;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
 
@@ -42,7 +42,6 @@ import java.util.List;
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class RunePortals extends MesonModule {
     public static final List<RunicAmethystBlock> portalRunestones = new ArrayList<>();
-
     public static RunePortalBlock portal;
 
     @ObjectHolder("strange:rune_portal")
@@ -138,7 +137,6 @@ public class RunePortals extends MesonModule {
                     final BlockState westState = world.getBlockState(pos.west(2).up(1));
 
                     if (eastState.get(RunicAmethystBlock.FACING) == Direction.NORTH) {
-                        if (!addOrder(world, pos.east(), order)) return false;
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.east(2).up(i + 1), order)) return false;
                         }
@@ -148,9 +146,10 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(3 - i), order)) return false;
                         }
-                        if (!addOrder(world, pos.west(), order)) return false;
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.west(1 + i), order)) return false;
+                        }
                     } else if (westState.get(RunicAmethystBlock.FACING) == Direction.SOUTH) {
-                        if (!addOrder(world, pos.west(), order)) return false;
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(i + 1), order)) return false;
                         }
@@ -160,7 +159,9 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.east(2).up(3 - i), order)) return false;
                         }
-                        if (!addOrder(world, pos.east(), order)) return false;
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.east(1 + i), order)) return false;
+                        }
                     }
 
                     break;
@@ -170,7 +171,6 @@ public class RunePortals extends MesonModule {
                     final BlockState southState = world.getBlockState(pos.south(2).up(1));
 
                     if (northState.get(RunicAmethystBlock.FACING) == Direction.WEST) {
-                        if (!addOrder(world, pos.north(), order)) return false;
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.north(2).up(i + 1), order)) return false;
                         }
@@ -180,9 +180,10 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(3 - i), order)) return false;
                         }
-                        if (!addOrder(world, pos.south(), order)) return false;
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.south(1 + i), order)) return false;
+                        }
                     } else if (southState.get(RunicAmethystBlock.FACING) == Direction.EAST) {
-                        if (!addOrder(world, pos.south(), order)) return false;
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(i + 1), order)) return false;
                         }
@@ -192,7 +193,9 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.north(2).up(3 - i), order)) return false;
                         }
-                        if (!addOrder(world, pos.north(), order)) return false;
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.north(1 + i), order)) return false;
+                        }
                     }
 
                     break;

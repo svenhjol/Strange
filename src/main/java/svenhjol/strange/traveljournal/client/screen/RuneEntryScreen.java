@@ -9,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import org.apache.commons.lang3.StringUtils;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClient;
 import svenhjol.meson.Meson;
@@ -18,6 +17,10 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.module.TravelJournal;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String name;
@@ -45,28 +48,33 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
             this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
             int dim = entry.dim;
-
-            // convert the entry pos to base-encoded string
-            String encoded = Long.toString(entry.pos.toLong(), 26);
-            encoded = StringUtils.leftPad(encoded, 18, "0");
+            String posref = entry.posref;
+            Map<Character, Character> runeCharMap = RunestoneHelper.getRuneCharMap();
+            List<Character> values = new ArrayList<>(runeCharMap.values());
 
             StringBuilder assembled = new StringBuilder();
-            char[] chars = encoded.toCharArray();
+            char[] chars = posref.toCharArray();
 
             for (int i = 0; i < chars.length; i++) {
-                String letter;
+                boolean showRune = false;
                 char c = chars[i];
-                int rune = Character.getNumericValue(c);
+                Character letter = runeCharMap.get(c);
 
-                if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                    letter = RunestoneHelper.getRuneIntCharMap().get(rune).toString();
-                    this.atLeastOneRune = true;
+                if (values.contains(letter)) {
+                    int runeValue = values.indexOf(letter);
+                    if (player.isCreative() || Strange.client.discoveredRunes.contains(runeValue)) {
+                        showRune = true;
+                    }
+                }
+
+                if (!showRune) {
+                    letter = '?';
                 } else {
-                    letter = "?";
+                    this.atLeastOneRune = true;
                 }
 
                 assembled.append(letter);
-                Meson.LOG.debug(letter);
+                Meson.LOG.debug(String.valueOf(letter));
             }
 
             if (this.atLeastOneRune) {
@@ -85,11 +93,17 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
         if (this.atLeastOneRune && entry.pos != null) {
             int offset = y + 1;
-            String letter = null;
+            String letter;
+            ItemStack stack;
+
+            if (CharmClient.clientTicks % 30 == 0) {
+                ColorVariant currentRuneColor = this.cycleRuneColor;
+                int c = currentRuneColor.ordinal();
+                cycleRuneColor = ColorVariant.byIndex(c == 15 ? 0 : ++c);
+            }
+            stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
 
             if (runicName.length > 0) {
-                // draw background for rune layout
-
                 int index = 0;
                 int hpos = -2;
                 int vpos = 4;
@@ -99,73 +113,34 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
                 for (int j = 0; j < runicName.length; j++) {
                     letter = String.valueOf(runicName[j]);
+                    int vpush = 5;
+                    boolean up = index <= 3;
+                    boolean down = index >= 6 && index <= 9;
+                    boolean right = index >= 3 && index <= 6;
+                    boolean left = index >= 9 && index <= 12;
                     boolean q = letter.equals("?");
                     FontRenderer f = (q ? this.font : this.glyphs);
 
-                    boolean up = index <= 3;
-                    boolean down = index >= 6;
-                    boolean hadd = index >= 3 && index <= 6;
-                    boolean toprow = index >= 3 && index <= 5;
-
-                    if (up)
-                        vpos--;
-
-                    if (down)
-                        vpos++;
-
-                    if (hadd)
-                        hpos++;
+                    if (up) vpos--;
+                    if (down) vpos++;
+                    if (right) hpos++;
+                    if (left) hpos--;
 
                     final int ox = hpos * letterSpacing;
                     final int oy = offset + (vpos * letterSpacing);
 
                     AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
 
-                    int vpush = 5;
-                    if (letter.equals("f")) {
+                    if (letter.equals("f"))
                         vpush = 7;
+
+                    if (index == 10) {
+                        if (stack != ItemStack.EMPTY)
+                            this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
                     }
+
                     this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
-
-//                    if (!q) {
-//                        int dx = midoffset + (ox + (ox / 2));
-//                        int dy = offset + oy;
-//                        if (toprow) {
-//                            dx = midoffset + ox;
-//                            dy = offset + oy - letterSpacing + 2;
-//                        }
-//                        ItemStack dyeItem = new ItemStack(DyeItem.getItem(DyeColor.byId(colNum)));
-//                        this.blitItemIcon(dyeItem, dx, dy);
-//                    }
-
                     index++;
-                }
-
-                hpos = -1;
-                vpos = 4;
-
-                for (int i = 0; i <= 2; i++) {
-                    ItemStack stack = ItemStack.EMPTY;
-
-                    if (i == 1) {
-//                        useBackground = 0xAA10702A;
-                        if (CharmClient.clientTicks % 30 == 0) {
-                            ColorVariant currentRuneColor = this.cycleRuneColor;
-                            int c = currentRuneColor.ordinal();
-                            cycleRuneColor = ColorVariant.byIndex(c == 15 ? 0 : ++c);
-                        }
-
-                        stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
-                    }
-
-                    final int ox = hpos * letterSpacing;
-                    final int oy = offset + (vpos * letterSpacing);
-                    AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing - 1, offset + oy + letterSpacing - 1, background);
-
-                    if (stack != ItemStack.EMPTY)
-                        this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
-
-                    hpos += 1;
                 }
             }
         } else {
