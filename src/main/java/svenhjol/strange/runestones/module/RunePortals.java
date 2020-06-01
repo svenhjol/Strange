@@ -31,13 +31,16 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
+import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.runestones.block.RunePortalBlock;
 import svenhjol.strange.runestones.block.RunicAmethystBlock;
 import svenhjol.strange.runestones.client.renderer.RunePortalTileEntityRenderer;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
+import svenhjol.strange.traveljournal.storage.TravelJournalSavedData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class RunePortals extends MesonModule {
@@ -147,7 +150,7 @@ public class RunePortals extends MesonModule {
                             if (!addOrder(world, pos.west(2).up(3 - i), order)) return false;
                         }
                         for (int i = 0; i < 3; i++) {
-                            if (!addOrder(world, pos.west(1 + i), order)) return false;
+                            if (!addOrder(world, pos.west(1 - i), order)) return false;
                         }
                     } else if (westState.get(RunicAmethystBlock.FACING) == Direction.SOUTH) {
                         for (int i = 0; i < 3; i++) {
@@ -160,7 +163,7 @@ public class RunePortals extends MesonModule {
                             if (!addOrder(world, pos.east(2).up(3 - i), order)) return false;
                         }
                         for (int i = 0; i < 3; i++) {
-                            if (!addOrder(world, pos.east(1 + i), order)) return false;
+                            if (!addOrder(world, pos.east(1 - i), order)) return false;
                         }
                     }
 
@@ -181,7 +184,7 @@ public class RunePortals extends MesonModule {
                             if (!addOrder(world, pos.south(2).up(3 - i), order)) return false;
                         }
                         for (int i = 0; i < 3; i++) {
-                            if (!addOrder(world, pos.south(1 + i), order)) return false;
+                            if (!addOrder(world, pos.south(1 - i), order)) return false;
                         }
                     } else if (southState.get(RunicAmethystBlock.FACING) == Direction.EAST) {
                         for (int i = 0; i < 3; i++) {
@@ -194,7 +197,7 @@ public class RunePortals extends MesonModule {
                             if (!addOrder(world, pos.north(2).up(3 - i), order)) return false;
                         }
                         for (int i = 0; i < 3; i++) {
-                            if (!addOrder(world, pos.north(1 + i), order)) return false;
+                            if (!addOrder(world, pos.north(1 - i), order)) return false;
                         }
                     }
 
@@ -205,33 +208,31 @@ public class RunePortals extends MesonModule {
             }
 
             // process the rune order, pull out dim and blockpos
-            if (order.size() == 18) {
+            if (order.size() == 12) {
                 Strange.LOG.debug("String order: " + order.toString());
-                StringBuilder sb = new StringBuilder();
+                final Map<Character, Character> charmap = RunestoneHelper.getRuneCharMap();
+                final List<Character> charkeys = new ArrayList<>(charmap.keySet());
+                StringBuilder keyBuilder = new StringBuilder();
+
                 for (int o : order) {
-                    sb.append(Integer.toHexString(o));
+                    Character c = charkeys.get(o);
+                    keyBuilder.append(c);
                 }
-                String s = sb.toString();
-                if (s.length() != 18) {
+
+                String key = keyBuilder.toString();
+                if (key.length() != 12) {
                     runeError(world, pos, player);
                     return false;
                 }
 
-                long l;
-                int dim = 0; // TODO fix me
-
-                try {
-                    Strange.LOG.debug("Trying to parse hex to long: " + s);
-                    l = Long.parseUnsignedLong(s, 26);
-                } catch (Exception e) {
-                    Strange.LOG.debug("Failed: " + e.getMessage());
+                TravelJournalSavedData data = TravelJournalSavedData.get(world);
+                if (!data.positions.containsKey(key) || !data.dimensions.containsKey(key)) {
                     runeError(world, pos, player);
                     return false;
                 }
 
-                BlockPos dest = BlockPos.fromLong(l);
-                Strange.LOG.debug("Destination: " + dest.toString());
-
+                final BlockPos dest = data.positions.get(key);
+                final int dim = data.dimensions.get(key);
                 final int orientation = axis == Axis.X ? 0 : 1;
                 final int colorId = color.ordinal();
 
@@ -268,7 +269,7 @@ public class RunePortals extends MesonModule {
 
     private void runeError(World world, BlockPos pos, PlayerEntity player) {
         player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
-        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1.5F, Explosion.Mode.NONE);
+        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 2.5D, pos.getZ() + 0.5D, 0.75F, Explosion.Mode.NONE);
     }
 
     private boolean addOrder(ServerWorld world, BlockPos pos, List<Integer> order) {

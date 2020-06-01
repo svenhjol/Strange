@@ -11,7 +11,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClient;
-import svenhjol.meson.Meson;
 import svenhjol.meson.enums.ColorVariant;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
@@ -65,6 +64,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                     if (player.isCreative() || Strange.client.discoveredRunes.contains(runeValue)) {
                         showRune = true;
                     }
+                    Strange.LOG.debug(String.valueOf(runeValue));
                 }
 
                 if (!showRune) {
@@ -74,11 +74,11 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 }
 
                 assembled.append(letter);
-                Meson.LOG.debug(String.valueOf(letter));
             }
 
             if (this.atLeastOneRune) {
                 this.runicName = assembled.toString().toCharArray();
+                Strange.LOG.debug(assembled.toString());
             }
         }
     }
