@@ -13,7 +13,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.IBlockReader;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
-import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.tileentity.EntitySpawnerTileEntity;
 
 import javax.annotation.Nullable;
 

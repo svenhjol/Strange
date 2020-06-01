@@ -33,6 +33,7 @@ import java.util.List;
 public class TotemOfReturningItem extends MesonItem {
     private static final String POS = "pos";
     private static final String DIM = "dim";
+    private static final String GENERATED = "generated";
 
     public TotemOfReturningItem(MesonModule module) {
         super(module, "totem_of_returning", new Item.Properties()
@@ -75,20 +76,27 @@ public class TotemOfReturningItem extends MesonItem {
     public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack) {
         // teleport the player
         if (!world.isRemote) {
-            PlayerHelper.teleport(player, pos, dim, t -> {
-                for (int i = 0; i < 3; i++) {
-                    BlockPos pp = player.getPosition().add(0, i, 0);
-                    BlockState state = player.world.getBlockState(pp);
-                    if (state.isSolid()) {
-                        player.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
-                    }
-                }
-                player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
-                player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D);
-                player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            });
+            if (getGenerated(stack)) {
+                PlayerHelper.teleportSurface(player, pos, dim, TotemOfReturningItem::onTeleport);
+            } else {
+                PlayerHelper.teleport(player, pos, dim, TotemOfReturningItem::onTeleport);
+            }
         }
         TotemHelper.destroy(player, stack);
+    }
+
+    private static void onTeleport(PlayerEntity player) {
+        BlockPos pos = player.getPosition();
+        for (int i = 0; i < 3; i++) {
+            BlockPos pp = player.getPosition().add(0, i, 0);
+            BlockState state = player.world.getBlockState(pp);
+            if (state.isSolid()) {
+                player.world.setBlockState(pp, Blocks.AIR.getDefaultState(), 2);
+            }
+        }
+        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, 40, 0));
+        player.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D);
+        player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
     @Nullable
@@ -101,12 +109,20 @@ public class TotemOfReturningItem extends MesonItem {
         return ItemNBTHelper.getInt(stack, DIM, 0);
     }
 
+    public static boolean getGenerated(ItemStack stack) {
+        return ItemNBTHelper.getBoolean(stack, GENERATED, false);
+    }
+
     public static void setPos(ItemStack stack, BlockPos pos) {
         ItemNBTHelper.setLong(stack, POS, pos.toLong());
     }
 
     public static void setDim(ItemStack stack, int dim) {
         ItemNBTHelper.setInt(stack, DIM, dim);
+    }
+
+    public static void setGenerated(ItemStack stack, boolean generated) {
+        ItemNBTHelper.setBoolean(stack, GENERATED, generated);
     }
 
     @Override

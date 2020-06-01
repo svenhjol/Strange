@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "strange:polished_amethyst"
+  },
+  "result": "strange:runic_amethyst_23",
+  "count": 1,
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "meson:module_enabled",
+          "module": "strange:amethyst"
+        },
+        {
+          "type": "meson:module_enabled",
+          "module": "strange:rune_portals"
+        }
+      ]
+    }
+  ]
+}

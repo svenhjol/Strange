@@ -27,7 +27,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.enums.VanillaWoodType;
 import svenhjol.meson.helper.LootHelper;
 import svenhjol.strange.base.module.EntitySpawner;
-import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.tileentity.EntitySpawnerTileEntity;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.scrolls.block.WritingDeskBlock;
 import svenhjol.strange.scrolls.module.Scrollkeepers;

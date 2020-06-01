@@ -4,9 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
@@ -32,9 +31,8 @@ import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
-import svenhjol.strange.decoration.module.Amethyst;
-import svenhjol.strange.runestones.block.PortalRunestoneBlock;
 import svenhjol.strange.runestones.block.RunePortalBlock;
+import svenhjol.strange.runestones.block.RunicAmethystBlock;
 import svenhjol.strange.runestones.client.renderer.RunePortalTileEntityRenderer;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
 
@@ -43,8 +41,7 @@ import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class RunePortals extends MesonModule {
-    public static final List<PortalRunestoneBlock> portalRunestones = new ArrayList<>();
-
+    public static final List<RunicAmethystBlock> portalRunestones = new ArrayList<>();
     public static RunePortalBlock portal;
 
     @ObjectHolder("strange:rune_portal")
@@ -59,8 +56,8 @@ public class RunePortals extends MesonModule {
         tile = TileEntityType.Builder.create(RunePortalTileEntity::new, portal).build(null);
         RegistryHandler.registerTile(tile, res);
 
-        for (int i = 0; i < 16; i++) {
-            portalRunestones.add(new PortalRunestoneBlock(this, i));
+        for (int i = 0; i < 26; i++) {
+            portalRunestones.add(new RunicAmethystBlock(this, i));
         }
     }
 
@@ -91,8 +88,15 @@ public class RunePortals extends MesonModule {
         ItemStack held = player.getHeldItem(hand);
 
         if (useColorRune && Charm.quarkCompat.isRune(held)
-            || !useColorRune && held.getItem() == Items.DIAMOND) {
-            final boolean didActivate = tryActivate(serverWorld, pos, serverPlayer, Charm.quarkCompat.getRuneColor(held));
+            || !useColorRune && held.getItem() instanceof DyeItem) {
+            ColorVariant color;
+            if (useColorRune) {
+                color = Charm.quarkCompat.getRuneColor(held);
+            } else {
+                color = ColorVariant.byIndex(((DyeItem)held.getItem()).getDyeColor().getId());
+            }
+
+            final boolean didActivate = tryActivate(serverWorld, pos, serverPlayer, color);
         }
     }
 
@@ -100,7 +104,7 @@ public class RunePortals extends MesonModule {
     public void onPortalBlockBroken(BlockEvent.BreakEvent event) {
         if (!event.getWorld().isRemote()) {
             Block broken = event.getWorld().getBlockState(event.getPos()).getBlock();
-            if (broken == Amethyst.block)
+            if (broken instanceof RunicAmethystBlock)
                 breakSurroundingPortals((ServerWorld) event.getWorld(), event.getPos());
         }
     }
@@ -112,16 +116,16 @@ public class RunePortals extends MesonModule {
         final BlockState state = world.getBlockState(pos);
         List<Integer> order = new ArrayList<>();
 
-        if (state.getBlock() == Amethyst.block) {
+        if (state.getBlock() instanceof RunicAmethystBlock) {
 
             // this tests the portal structure and gets the rune order. It's sensitive to axis and blockstate facing.
             Axis axis;
 
-            if (world.getBlockState(pos.east()).getBlock() == Amethyst.block
-                && world.getBlockState(pos.west()).getBlock() == Amethyst.block) {
+            if (world.getBlockState(pos.east()).getBlock() instanceof RunicAmethystBlock
+                && world.getBlockState(pos.west()).getBlock() instanceof RunicAmethystBlock) {
                 axis = Axis.X;
-            } else if (world.getBlockState(pos.north()).getBlock() == Amethyst.block
-                && world.getBlockState(pos.south()).getBlock() == Amethyst.block) {
+            } else if (world.getBlockState(pos.north()).getBlock() instanceof RunicAmethystBlock
+                && world.getBlockState(pos.south()).getBlock() instanceof RunicAmethystBlock) {
                 axis = Axis.Z;
             } else {
                 return false;
@@ -132,7 +136,7 @@ public class RunePortals extends MesonModule {
                     final BlockState eastState = world.getBlockState(pos.east(2).up(1));
                     final BlockState westState = world.getBlockState(pos.west(2).up(1));
 
-                    if (eastState.get(PortalRunestoneBlock.FACING) == Direction.NORTH) {
+                    if (eastState.get(RunicAmethystBlock.FACING) == Direction.NORTH) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.east(2).up(i + 1), order)) return false;
                         }
@@ -142,7 +146,10 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(3 - i), order)) return false;
                         }
-                    } else if (westState.get(PortalRunestoneBlock.FACING) == Direction.SOUTH) {
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.west(1 + i), order)) return false;
+                        }
+                    } else if (westState.get(RunicAmethystBlock.FACING) == Direction.SOUTH) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.west(2).up(i + 1), order)) return false;
                         }
@@ -152,6 +159,9 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.east(2).up(3 - i), order)) return false;
                         }
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.east(1 + i), order)) return false;
+                        }
                     }
 
                     break;
@@ -160,7 +170,7 @@ public class RunePortals extends MesonModule {
                     final BlockState northState = world.getBlockState(pos.north(2).up(1));
                     final BlockState southState = world.getBlockState(pos.south(2).up(1));
 
-                    if (northState.get(PortalRunestoneBlock.FACING) == Direction.WEST) {
+                    if (northState.get(RunicAmethystBlock.FACING) == Direction.WEST) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.north(2).up(i + 1), order)) return false;
                         }
@@ -170,7 +180,10 @@ public class RunePortals extends MesonModule {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(3 - i), order)) return false;
                         }
-                    } else if (southState.get(PortalRunestoneBlock.FACING) == Direction.EAST) {
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.south(1 + i), order)) return false;
+                        }
+                    } else if (southState.get(RunicAmethystBlock.FACING) == Direction.EAST) {
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.south(2).up(i + 1), order)) return false;
                         }
@@ -179,6 +192,9 @@ public class RunePortals extends MesonModule {
                         }
                         for (int i = 0; i < 3; i++) {
                             if (!addOrder(world, pos.north(2).up(3 - i), order)) return false;
+                        }
+                        for (int i = 0; i < 3; i++) {
+                            if (!addOrder(world, pos.north(1 + i), order)) return false;
                         }
                     }
 
@@ -196,30 +212,17 @@ public class RunePortals extends MesonModule {
                     sb.append(Integer.toHexString(o));
                 }
                 String s = sb.toString();
-                if (s.length() < 5 || s.length() > 18) {
+                if (s.length() != 18) {
                     runeError(world, pos, player);
                     return false;
                 }
 
                 long l;
-                int dim;
+                int dim = 0; // TODO fix me
 
                 try {
-                    final String d0 = s.substring(0, 1);
-                    final String d1 = s.substring(s.length() - 1);
-                    final String dimHex = d0 + d1;
-                    final String posHex = s.substring(1, s.length() - 1);
-
-                    dim = Integer.parseUnsignedInt(dimHex, 16);
-                    if (dim < 0 || dim > 255) {
-                        runeError(world, pos, player);
-                        return false;
-                    }
-
-                    dim -= 128;
-                    Strange.LOG.debug("Dimension: " + dim);
-                    Strange.LOG.debug("Trying to parse hex to long: " + posHex);
-                    l = Long.parseUnsignedLong(posHex, 16);
+                    Strange.LOG.debug("Trying to parse hex to long: " + s);
+                    l = Long.parseUnsignedLong(s, 26);
                 } catch (Exception e) {
                     Strange.LOG.debug("Failed: " + e.getMessage());
                     runeError(world, pos, player);
@@ -270,17 +273,11 @@ public class RunePortals extends MesonModule {
 
     private boolean addOrder(ServerWorld world, BlockPos pos, List<Integer> order) {
         final BlockState s = world.getBlockState(pos);
-        if (!(s.getBlock() instanceof PortalRunestoneBlock))
+        if (!(s.getBlock() instanceof RunicAmethystBlock))
             return false;
 
-        PortalRunestoneBlock b = (PortalRunestoneBlock)s.getBlock();
-        final DyeColor color = PortalRunestoneBlock.getRuneColor(s);
-
-        if (color == null)
-            return false;
-
+        RunicAmethystBlock b = (RunicAmethystBlock)s.getBlock();
         order.add(b.getRuneValue());
-        order.add(color.ordinal());
         return true;
     }
 }

@@ -6,12 +6,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import org.apache.commons.lang3.StringUtils;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClient;
 import svenhjol.meson.Meson;
@@ -20,6 +17,10 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.module.TravelJournal;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String name;
@@ -46,61 +47,38 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
         if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
             this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
-            int dim = 128 + entry.dim;
-            if (dim >= 0 && dim < 256) {
-                String dimHex = Integer.toHexString(dim);
+            int dim = entry.dim;
+            String posref = entry.posref;
+            Map<Character, Character> runeCharMap = RunestoneHelper.getRuneCharMap();
+            List<Character> values = new ArrayList<>(runeCharMap.values());
 
-                if (dimHex.length() % 2 == 1)
-                    dimHex = "0" + dimHex;
+            StringBuilder assembled = new StringBuilder();
+            char[] chars = posref.toCharArray();
 
-                // get first and second chars of dimHex
-                String d0 = dimHex.substring(0, 1);
-                String d1 = dimHex.substring(1, 2);
+            for (int i = 0; i < chars.length; i++) {
+                boolean showRune = false;
+                char c = chars[i];
+                Character letter = runeCharMap.get(c);
 
-                // convert the entry pos to hex
-                String posHex = Long.toHexString(entry.pos.toLong());
-                posHex = StringUtils.leftPad(posHex, 16, "0");
-
-                // interpolate dimHex within posHex
-                String hex = d0 + posHex + d1;
-                StringBuilder assembled = new StringBuilder();
-
-                char[] chars = hex.toCharArray();
-                int rune = -1;
-                boolean atLeastOneRune = false;
-
-                for (int i = 0; i < chars.length; i++) {
-                    String letter;
-                    char c = chars[i];
-                    int v = Character.getNumericValue(c);
-
-                    if (i % 2 == 0) {
-                        // first time round set the rune value
-                        rune = v;
-                    } else {
-                        // second time round set the color and add the string
-                        if (rune >= 0) {
-                            final String color = Integer.toHexString(v);
-
-                            if (player.isCreative() || Strange.client.discoveredRunes.contains(rune)) {
-                                letter = RunestoneHelper.getRuneIntCharMap().get(rune).toString();
-                                this.atLeastOneRune = true;
-                            } else {
-                                letter = "?";
-                            }
-
-                            assembled.append(letter);
-                            assembled.append(color);
-                            Meson.LOG.debug("(" + letter + color + ")");
-                        }
-
-                        rune = -1;
+                if (values.contains(letter)) {
+                    int runeValue = values.indexOf(letter);
+                    if (player.isCreative() || Strange.client.discoveredRunes.contains(runeValue)) {
+                        showRune = true;
                     }
                 }
 
-                if (this.atLeastOneRune) {
-                    this.runicName = assembled.toString().toCharArray();
+                if (!showRune) {
+                    letter = '?';
+                } else {
+                    this.atLeastOneRune = true;
                 }
+
+                assembled.append(letter);
+                Meson.LOG.debug(String.valueOf(letter));
+            }
+
+            if (this.atLeastOneRune) {
+                this.runicName = assembled.toString().toCharArray();
             }
         }
     }
@@ -115,11 +93,17 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
         if (this.atLeastOneRune && entry.pos != null) {
             int offset = y + 1;
-            String letter = null;
+            String letter;
+            ItemStack stack;
+
+            if (CharmClient.clientTicks % 30 == 0) {
+                ColorVariant currentRuneColor = this.cycleRuneColor;
+                int c = currentRuneColor.ordinal();
+                cycleRuneColor = ColorVariant.byIndex(c == 15 ? 0 : ++c);
+            }
+            stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
 
             if (runicName.length > 0) {
-                // draw background for rune layout
-
                 int index = 0;
                 int hpos = -2;
                 int vpos = 4;
@@ -128,79 +112,35 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 int background = 0xD2050014;
 
                 for (int j = 0; j < runicName.length; j++) {
-                    if (j % 2 == 0) {
-                        letter = String.valueOf(runicName[j]);
-                    } else {
-                        String colHex = String.valueOf(runicName[j]);
-                        int colNum = Integer.parseUnsignedInt(colHex, 16);
-                        boolean q = letter.equals("?");
-                        FontRenderer f = (q ? this.font : this.glyphs);
+                    letter = String.valueOf(runicName[j]);
+                    int vpush = 5;
+                    boolean up = index <= 3;
+                    boolean down = index >= 6 && index <= 9;
+                    boolean right = index >= 3 && index <= 6;
+                    boolean left = index >= 9 && index <= 12;
+                    boolean q = letter.equals("?");
+                    FontRenderer f = (q ? this.font : this.glyphs);
 
-                        boolean up = index <= 3;
-                        boolean down = index >= 6;
-                        boolean hadd = index >= 3 && index <= 6;
-                        boolean toprow = index >= 3 && index <= 5;
-
-                        if (up)
-                            vpos--;
-
-                        if (down)
-                            vpos++;
-
-                        if (hadd)
-                            hpos++;
-
-                        final int ox = hpos * letterSpacing;
-                        final int oy = offset + (vpos * letterSpacing);
-
-                        AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
-
-                        int vpush = 5;
-                        if (letter.equals("f")) {
-                            vpush = 7;
-                        }
-                        this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
-
-                        if (!q) {
-                            int dx = midoffset + (ox + (ox / 2));
-                            int dy = offset + oy;
-                            if (toprow) {
-                                dx = midoffset + ox;
-                                dy = offset + oy - letterSpacing + 2;
-                            }
-                            ItemStack dyeItem = new ItemStack(DyeItem.getItem(DyeColor.byId(colNum)));
-                            this.blitItemIcon(dyeItem, dx, dy);
-                        }
-
-                        index++;
-                    }
-                }
-
-                hpos = -1;
-                vpos = 4;
-
-                for (int i = 0; i <= 2; i++) {
-                    ItemStack stack = ItemStack.EMPTY;
-
-                    if (i == 1) {
-//                        useBackground = 0xAA10702A;
-                        if (CharmClient.clientTicks % 30 == 0) {
-                            ColorVariant currentRuneColor = this.cycleRuneColor;
-                            int c = currentRuneColor.ordinal();
-                            cycleRuneColor = ColorVariant.byIndex(c == 15 ? 0 : ++c);
-                        }
-
-                        stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
-                    }
+                    if (up) vpos--;
+                    if (down) vpos++;
+                    if (right) hpos++;
+                    if (left) hpos--;
 
                     final int ox = hpos * letterSpacing;
                     final int oy = offset + (vpos * letterSpacing);
-                    AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing - 1, offset + oy + letterSpacing - 1, background);
 
-                    if (stack != ItemStack.EMPTY)
-                        this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
+                    AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
 
-                    hpos += 1;
+                    if (letter.equals("f"))
+                        vpush = 7;
+
+                    if (index == 10) {
+                        if (stack != ItemStack.EMPTY)
+                            this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
+                    }
+
+                    this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
+                    index++;
                 }
             }
         } else {

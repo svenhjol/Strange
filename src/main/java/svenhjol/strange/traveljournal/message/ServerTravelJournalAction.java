@@ -13,6 +13,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -28,6 +29,7 @@ import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.storage.TravelJournalSavedData;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -99,6 +101,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 if (player == null) return;
 
                 world = player.world;
+                ServerWorld serverWorld = (ServerWorld)world;
                 held = player.getHeldItem(msg.hand);
 
                 if (msg.name == null || msg.name.isEmpty()) {
@@ -109,10 +112,16 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
                 CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
                 ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
+                TravelJournalSavedData data = TravelJournalSavedData.get(serverWorld);
 
                 if (msg.action == ADD) {
 
                     TravelJournalItem.addEntry(held, entry);
+
+                    // write position and dimension to the world data
+                    data.positions.put(entry.posref, entry.pos);
+                    data.dimensions.put(entry.posref, entry.dim);
+                    data.markDirty();
 
                 } else if (msg.action == UPDATE) {
 
