@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "strange:polished_amethyst"
+    }
+  },
+  "result": {
+    "item": "strange:polished_amethyst_slab",
+    "count": 6
+  },
+  "conditions": [
+    {
+      "type": "meson:module_enabled",
+      "module": "strange:amethyst"
+    }
+  ]
+}
