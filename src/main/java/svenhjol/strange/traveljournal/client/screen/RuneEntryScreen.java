@@ -109,7 +109,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 int vpos = 4;
                 int letterSpacing = 18;
                 int midoffset = mid - 4;
-                int background = 0xD2050014;
+                int background = 0xD2100026;
 
                 for (int j = 0; j < runicName.length; j++) {
                     letter = String.valueOf(runicName[j]);

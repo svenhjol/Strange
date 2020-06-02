@@ -17,13 +17,14 @@ public class TravelJournalSavedData extends WorldSavedData {
 
     public TravelJournalSavedData() {
         super(ID);
+        this.markDirty();
     }
 
     @Override
     public void read(CompoundNBT tag) {
         // get dimensions
         for (String key : getTagDimensions(tag).keySet()) {
-            dimensions.put(key, getTagDimensions(tag).getInt(key));
+            dimensions.put(key, (int)getTagDimensions(tag).getLong(key));
         }
 
         // get positions
@@ -37,7 +38,7 @@ public class TravelJournalSavedData extends WorldSavedData {
         // set dimensions
         for (String key : dimensions.keySet()) {
             Integer dimensionId = dimensions.get(key);
-            getTagDimensions(tag).putInt(key, dimensionId);
+            getTagDimensions(tag).putLong(key, (long)dimensionId);
         }
 
         // set positions
