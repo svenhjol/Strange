@@ -19,7 +19,6 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String name;
@@ -48,8 +47,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
             this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
             int dim = entry.dim;
             String posref = entry.posref;
-            Map<Character, Character> runeCharMap = RunestoneHelper.getRuneCharMap();
-            List<Character> values = new ArrayList<>(runeCharMap.values());
+            List<Character> values = new ArrayList<>(RunestoneHelper.getRuneCharMap().values());
 
             StringBuilder assembled = new StringBuilder();
             char[] chars = posref.toCharArray();
@@ -57,7 +55,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
             for (int i = 0; i < chars.length; i++) {
                 boolean showRune = false;
                 char c = chars[i];
-                Character letter = runeCharMap.get(c);
+                Character letter = RunestoneHelper.getRuneCharMap().get(c);
 
                 if (values.contains(letter)) {
                     int runeValue = values.indexOf(letter);

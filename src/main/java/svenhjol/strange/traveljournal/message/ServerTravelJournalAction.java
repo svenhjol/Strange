@@ -114,6 +114,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
                 TravelJournalSavedData data = TravelJournalSavedData.get(serverWorld);
 
+
                 if (msg.action == ADD) {
 
                     TravelJournalItem.addEntry(held, entry);

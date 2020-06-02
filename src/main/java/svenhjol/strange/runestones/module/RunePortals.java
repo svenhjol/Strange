@@ -40,7 +40,6 @@ import svenhjol.strange.traveljournal.storage.TravelJournalSavedData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true)
 public class RunePortals extends MesonModule {
@@ -210,9 +209,10 @@ public class RunePortals extends MesonModule {
             // process the rune order, pull out dim and blockpos
             if (order.size() == 12) {
                 Strange.LOG.debug("String order: " + order.toString());
-                final Map<Character, Character> charmap = RunestoneHelper.getRuneCharMap();
-                final List<Character> charkeys = new ArrayList<>(charmap.keySet());
+                final List<Character> charkeys = new ArrayList<>(RunestoneHelper.getRuneCharMap().keySet());
+                final List<Character> charvalues = new ArrayList<>(RunestoneHelper.getRuneCharMap().values());
                 StringBuilder keyBuilder = new StringBuilder();
+                TravelJournalSavedData data = TravelJournalSavedData.get(world);
 
                 for (int o : order) {
                     Character c = charkeys.get(o);
@@ -225,7 +225,6 @@ public class RunePortals extends MesonModule {
                     return false;
                 }
 
-                TravelJournalSavedData data = TravelJournalSavedData.get(world);
                 if (!data.positions.containsKey(key) || !data.dimensions.containsKey(key)) {
                     runeError(world, pos, player);
                     return false;

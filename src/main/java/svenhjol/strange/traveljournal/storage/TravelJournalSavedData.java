@@ -2,6 +2,7 @@ package svenhjol.strange.traveljournal.storage;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -24,7 +25,7 @@ public class TravelJournalSavedData extends WorldSavedData {
     public void read(CompoundNBT tag) {
         // get dimensions
         for (String key : getTagDimensions(tag).keySet()) {
-            dimensions.put(key, (int)getTagDimensions(tag).getLong(key));
+            dimensions.put(key, getTagDimensions(tag).getInt(key));
         }
 
         // get positions
@@ -38,7 +39,7 @@ public class TravelJournalSavedData extends WorldSavedData {
         // set dimensions
         for (String key : dimensions.keySet()) {
             Integer dimensionId = dimensions.get(key);
-            getTagDimensions(tag).putLong(key, (long)dimensionId);
+            getTagDimensions(tag).putInt(key, dimensionId);
         }
 
         // set positions
@@ -51,7 +52,10 @@ public class TravelJournalSavedData extends WorldSavedData {
     }
 
     public static TravelJournalSavedData get(ServerWorld world) {
-        return world.getSavedData().getOrCreate(TravelJournalSavedData::new, ID);
+        return world.getServer()
+            .getWorld(DimensionType.OVERWORLD)
+            .getSavedData()
+            .getOrCreate(TravelJournalSavedData::new, ID);
     }
 
     private CompoundNBT getTagPositions(CompoundNBT tag) {

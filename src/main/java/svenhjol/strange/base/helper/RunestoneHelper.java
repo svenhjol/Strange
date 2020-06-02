@@ -6,14 +6,14 @@ import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class RunestoneHelper {
     public final static ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
 
-    private static final Map<Character, Character> runeCharMap = new HashMap<>();
+    private static final Map<Character, Character> runeCharMap = new TreeMap<>();
 
     public static Map<Character, Character> getRuneCharMap() {
         return runeCharMap;
