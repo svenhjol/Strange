@@ -15,7 +15,7 @@ public class PolishedAmethystWallBlock extends WallBlock implements IMesonBlock 
 
     @Override
     public ItemGroup getItemGroup() {
-        return ItemGroup.BUILDING_BLOCKS;
+        return ItemGroup.DECORATIONS;
     }
 
     @Override
