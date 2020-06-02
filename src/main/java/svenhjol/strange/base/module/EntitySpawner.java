@@ -13,7 +13,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.block.EntitySpawnerBlock;
-import svenhjol.strange.base.tile.EntitySpawnerTileEntity;
+import svenhjol.strange.base.tileentity.EntitySpawnerTileEntity;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.CORE, alwaysEnabled = true)
 public class EntitySpawner extends MesonModule {

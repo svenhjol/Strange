@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "strange:polished_amethyst"
+  },
+  "result": "strange:polished_amethyst_slab",
+  "count": 1,
+  "conditions": [
+    {
+      "type": "meson:module_enabled",
+      "module": "strange:amethyst"
+    }
+  ]
+}

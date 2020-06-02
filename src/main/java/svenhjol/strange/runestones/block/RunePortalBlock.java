@@ -15,6 +15,8 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -93,6 +95,9 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
             int dim = tile.dimension;
             tile.markDirty();
 
+            world.playSound(null, pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.8F, 1.15F);
+            world.playSound(null, dest, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.8F, 0.9F);
+
             PlayerEntity player = (PlayerEntity)entity;
             PlayerHelper.changeDimension(player, dim);
             PlayerHelper.teleport(player, dest, dim, p -> {
@@ -101,20 +106,6 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
                 int z = Math.max(-30000000, Math.min(30000000, dest.getZ()));
                 player.setPositionAndUpdate(x, y, z);
             });
-
-//            if (thisPortal != null) {
-//                BlockPos foundPortal = RunePortals.findPortal((ServerWorld) world, thisPortal);
-//                PlayerEntity player = (PlayerEntity) entity;
-//                BlockPos teleportTo = foundPortal == null ? thisPortal : foundPortal;
-//                PlayerHelper.teleport(player, teleportTo.add(-2, 1, 0), 0);
-//
-//                if (foundPortal != null) {
-//                    Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.TRAVELLED, foundPortal));
-//                } else {
-//                    player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 120, 4));
-//                    Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.UNLINKED, thisPortal));
-//                }
-//            }
         }
     }
 

@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "strange:block/polished_amethyst",
+    "front": "strange:block/runic_amethyst_0",
+    "side": "strange:block/polished_amethyst",
+    "bottom": "strange:block/polished_amethyst"
+  }
+}

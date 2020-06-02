@@ -1,9 +1,0 @@
-{
-  "parent": "block/orientable",
-  "textures": {
-    "top": "strange:block/amethyst",
-    "side": "strange:block/amethyst",
-    "bottom": "strange:block/amethyst",
-    "front": "strange:block/portal_runestone_white_12"
-  }
-}
