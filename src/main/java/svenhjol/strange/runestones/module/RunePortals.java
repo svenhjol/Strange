@@ -71,7 +71,7 @@ public class RunePortals extends MesonModule {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onClientSetup(FMLClientSetupEvent event) {
-        ClientRegistry.bindTileEntitySpecialRenderer(RunePortalTileEntity.class, new RunePortalTileEntityRenderer());
+        ClientRegistry.bindTileEntityRenderer(tile, RunePortalTileEntityRenderer::new);
     }
 
     @SubscribeEvent

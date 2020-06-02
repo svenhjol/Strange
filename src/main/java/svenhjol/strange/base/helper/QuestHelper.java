@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import svenhjol.charm.tools.item.BoundCompassItem;
@@ -51,7 +52,7 @@ public class QuestHelper {
         } else {
             World world = player.world;
             stack = FilledMapItem.setupNewMap(world, location.getX(), location.getZ(), (byte) 2, true, true);
-            FilledMapItem.renderBiomePreviewMap(world, stack);
+            FilledMapItem.func_226642_a_((ServerWorld)world, stack);
             MapData.addTargetDecoration(stack, location, "+", MapDecoration.Type.TARGET_X);
         }
 

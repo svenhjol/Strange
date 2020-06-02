@@ -186,7 +186,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                             map.shrink(1);
                             BlockPos pos = entry.pos;
                             ItemStack filled = FilledMapItem.setupNewMap(world, pos.getX(), pos.getZ(), (byte) 2, true, true);
-                            FilledMapItem.renderBiomePreviewMap(world, filled);
+                            FilledMapItem.func_226642_a_((ServerWorld)world, filled);
                             MapData.addTargetDecoration(filled, pos, "+", decoration);
 
                             StringTextComponent text = new StringTextComponent(entry.name);

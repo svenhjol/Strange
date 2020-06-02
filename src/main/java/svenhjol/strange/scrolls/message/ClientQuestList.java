@@ -10,12 +10,12 @@ import svenhjol.strange.scrolls.client.QuestClient;
 import svenhjol.strange.scrolls.quest.Quest;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -37,7 +37,7 @@ public class ClientQuestList implements IMesonMessage {
             try {
                 final ByteArrayOutputStream out = new ByteArrayOutputStream();
                 CompressedStreamTools.writeCompressed(quest.toNBT(), out);
-                String str = DatatypeConverter.printBase64Binary(out.toByteArray());
+                String str = Base64.getEncoder().encodeToString(out.toByteArray());
                 compressed.add(str);
             } catch (Exception e) {
                 Strange.LOG.warn("Failed to compress quest: " + e.toString());
@@ -49,7 +49,7 @@ public class ClientQuestList implements IMesonMessage {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             ObjectOutputStream so = new ObjectOutputStream(out);
             so.writeObject(compressed);
-            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
+            serialized = Base64.getEncoder().encodeToString(out.toByteArray());
             so.close();
         } catch (Exception e) {
             Strange.LOG.warn("Failed to output quests stream: " + e.toString());
@@ -63,7 +63,7 @@ public class ClientQuestList implements IMesonMessage {
         List<IQuest> quests = new ArrayList<>();
 
         try {
-            final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
+            final byte[] byteData = Base64.getDecoder().decode(buf.readString());
             ByteArrayInputStream bi = new ByteArrayInputStream(byteData);
             ObjectInputStream si = new ObjectInputStream(bi);
             //noinspection unchecked
@@ -75,7 +75,7 @@ public class ClientQuestList implements IMesonMessage {
 
         for (String s : compressed) {
             try {
-                final byte[] byteData = DatatypeConverter.parseBase64Binary(s);
+                final byte[] byteData = Base64.getDecoder().decode(s);
                 CompoundNBT nbt = CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData));
 
                 Quest quest = new Quest();

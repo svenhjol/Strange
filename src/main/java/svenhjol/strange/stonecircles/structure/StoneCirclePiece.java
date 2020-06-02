@@ -7,10 +7,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
@@ -37,7 +39,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
+    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         GenerationConfig config = new GenerationConfig();
@@ -62,7 +64,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
         ));
 
         for (int ii = 1; ii < TRIES; ii++) {
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+            BlockPos.Mutable pos = new BlockPos.Mutable(x, y, z);
             BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
             BlockPos surfacePosDown = surfacePos.down();
 
@@ -77,13 +79,13 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 
         if (foundPos != null) {
             config.withChest = Outerlands.isOuterPos(foundPos);
-            return generateCircle(world, new BlockPos.MutableBlockPos(foundPos), rand, config);
+            return generateCircle(world, new BlockPos.Mutable(foundPos), rand, config);
         }
 
         return false;
     }
 
-    public boolean generateCircle(IWorld world, BlockPos.MutableBlockPos pos, Random rand, GenerationConfig config) {
+    public boolean generateCircle(IWorld world, Mutable pos, Random rand, GenerationConfig config) {
         boolean generated = false;
         boolean generatedWithRune = false;
         boolean runestonesEnabled = Meson.isModuleEnabled("strange:runestones");

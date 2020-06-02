@@ -75,11 +75,11 @@ public class Scrollkeepers extends MesonModule {
     public void init() {
         block = new WritingDeskBlock(this);
         ImmutableSet<BlockState> states = ImmutableSet.copyOf(block.getStateContainer().getValidStates());
-        PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1);
+        PointOfInterestType type = new PointOfInterestType(SCROLLKEEPER, states, 1, 1);
         ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, SCROLLKEEPER);
         RegistryHandler.registerVillagerPointOfInterest(type, ID);
 
-        profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of());
+        profession = new VillagerProfession(SCROLLKEEPER, type, ImmutableSet.of(), ImmutableSet.of(), SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
         RegistryHandler.registerVillager(profession, ID);
     }
 

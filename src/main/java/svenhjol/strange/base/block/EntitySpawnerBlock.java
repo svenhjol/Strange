@@ -8,7 +8,6 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.IBlockReader;
 import svenhjol.meson.MesonModule;
@@ -34,11 +33,6 @@ public class EntitySpawnerBlock extends MesonBlock {
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @SuppressWarnings("deprecation")

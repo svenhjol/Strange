@@ -7,9 +7,9 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 public class ClientTravelJournalEntries implements IMesonMessage {
@@ -25,7 +25,7 @@ public class ClientTravelJournalEntries implements IMesonMessage {
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             CompressedStreamTools.writeCompressed(msg.entries, out);
-            serialized = DatatypeConverter.printBase64Binary(out.toByteArray());
+            serialized = Base64.getEncoder().encodeToString(out.toByteArray());
         } catch (Exception e) {
             Strange.LOG.warn("Failed to compress entries");
         }
@@ -37,7 +37,7 @@ public class ClientTravelJournalEntries implements IMesonMessage {
         CompoundNBT entries = new CompoundNBT();
 
         try {
-            final byte[] byteData = DatatypeConverter.parseBase64Binary(buf.readString());
+            final byte[] byteData = Base64.getDecoder().decode(buf.readString());
             entries = CompressedStreamTools.readCompressed(new ByteArrayInputStream(byteData));
         } catch (Exception e) {
             Strange.LOG.warn("Failed to uncompress entries");

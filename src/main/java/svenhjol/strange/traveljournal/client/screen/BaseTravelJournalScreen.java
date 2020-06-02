@@ -6,7 +6,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -107,7 +106,6 @@ public abstract class BaseTravelJournalScreen extends Screen implements IRendera
     }
 
     public void blitItemIcon(ItemStack stack, int x, int y) {
-        RenderHelper.enableGUIStandardItemLighting();
         items.renderItemIntoGUI(stack, x, y);
     }
 }

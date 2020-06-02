@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -45,17 +46,15 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     @Override
-    public boolean hasStartAt(ChunkGenerator<?> gen, Random rand, int x, int z) {
+    public boolean func_225558_a_(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
-            Biome biome = gen.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9));
-
             if (gen.hasStructure(biome, UndergroundRuins.structure)) {
                 for (int k = x - 10; k <= x + 10; ++k) {
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {
-                            if (structure.hasStartAt(gen, rand, k, l)) {
+                            if (structure.func_225558_a_(biomes, gen, rand, k, l, biome)) {
                                 Strange.LOG.debug("[UndergroundStructure] too close to " + structure.getStructureName());
                                 return false;
                             }
@@ -85,8 +84,8 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
 
     @SuppressWarnings("unused")
     public static class Start extends StructureStart {
-        public Start(Structure<?> structure, int chunkX, int chunkZ, Biome biome, MutableBoundingBox bb, int ref, long seed) {
-            super(structure, chunkX, chunkZ, biome, bb, ref, seed);
+        public Start(Structure<?> structure, int chunkX, int chunkZ, MutableBoundingBox bb, int ref, long seed) {
+            super(structure, chunkX, chunkZ, bb, ref, seed);
         }
 
         @Override

@@ -186,7 +186,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     @Override
     public boolean keyPressed(int i1, int i2, int i3) {
         if (i1 == 256) player.closeScreen();
-        return this.nameField.keyPressed(i1, i2, i3) || this.nameField.func_212955_f() || super.keyPressed(i1, i2, i3);
+        return this.nameField.keyPressed(i1, i2, i3) || this.nameField.canWrite() || super.keyPressed(i1, i2, i3);
     }
 
     @Override

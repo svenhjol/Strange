@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -84,9 +85,9 @@ public class UndergroundRuins extends MesonModule {
 
             //Structure can finish generating in any biome so it doesn't get cut off.
             VersionHelper.addStructureToBiomeFeature(structure, biome);
-
+            
             //Only non-end biomes can start the structure generation.
-            if(biome.getCategory() != Biome.Category.THEEND && Meson.isModuleEnabled("strange:underground_ruins"))
+            if(biome.getCategory() != Category.THEEND && Meson.isModuleEnabled("strange:underground_ruins"))
                 VersionHelper.addStructureToBiomeStructure(structure, biome);
         }
     }
@@ -141,7 +142,7 @@ public class UndergroundRuins extends MesonModule {
                         BlockPos structurePos = world.findNearestStructure(RESNAME, pos, 100, true);
                         if (structurePos != null) {
                             ItemStack map = FilledMapItem.setupNewMap(world, structurePos.getX(), structurePos.getZ(), (byte) 2, true, true);
-                            FilledMapItem.renderBiomePreviewMap(world, map);
+                            FilledMapItem.func_226642_a_(world, map);
                             MapData.addTargetDecoration(map, structurePos, "+", MapDecoration.Type.TARGET_X);
                             map.setDisplayName(new TranslationTextComponent("filled_map.underground_ruin"));
                             return map;

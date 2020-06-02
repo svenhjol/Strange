@@ -4,7 +4,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.strange.runestones.module.RunePortals;
 
 import javax.annotation.Nullable;
@@ -64,5 +67,14 @@ public class RunePortalTileEntity extends TileEntity {
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         super.onDataPacket(net, pkt);
         handleUpdateTag(pkt.getNbtCompound());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean shouldRenderFace(Direction face) {
+        if (this.orientation == 0) {
+            return face == Direction.NORTH || face == Direction.SOUTH;
+        } else {
+            return face == Direction.EAST || face == Direction.WEST;
+        }
     }
 }

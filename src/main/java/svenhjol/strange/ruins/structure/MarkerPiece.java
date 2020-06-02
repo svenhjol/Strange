@@ -4,11 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
@@ -35,7 +36,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bb, ChunkPos chunk) {
+    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunk) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         int x = this.boundingBox.minX;
@@ -45,7 +46,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
 
             for (int i = 100; i > 32; i--) {
                 for (int ii = 1; ii < TRIES; ii++) {
-                    MutableBlockPos pos = new MutableBlockPos(x, i, z);
+                    Mutable pos = new Mutable(x, i, z);
                     BlockPos surfacePos = pos.add(rand.nextInt(ii) - rand.nextInt(ii), 0, rand.nextInt(ii) - rand.nextInt(ii));
                     BlockPos surfacePosDown = surfacePos.down();
 
@@ -61,7 +62,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
             int y = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
 
             for (int i = 1; i < TRIES; i++) {
-                MutableBlockPos pos = new MutableBlockPos(x, y, z);
+                Mutable pos = new Mutable(x, y, z);
                 BlockPos surfacePos = pos.add(rand.nextInt(i) - rand.nextInt(i), 0, rand.nextInt(i) - rand.nextInt(i));
                 BlockPos surfacePosDown = surfacePos.down();
 
@@ -76,7 +77,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
             int y = world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
             for (int i = 1; i < TRIES; i++) {
-                MutableBlockPos pos = new MutableBlockPos(x, y, z);
+                Mutable pos = new Mutable(x, y, z);
                 BlockPos surfacePos = pos.add(rand.nextInt(i) - rand.nextInt(i), 0, rand.nextInt(i) - rand.nextInt(i));
                 BlockPos surfacePosDown = surfacePos.down();
 

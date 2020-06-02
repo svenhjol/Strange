@@ -5,8 +5,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.placement.FrequencyConfig;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.placement.ChanceConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
@@ -24,13 +27,15 @@ import java.util.List;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES)
 public class EnderGeodes extends MesonModule {
-    public static Feature<GeodesConfig> feature = null;
-    public static Placement<FrequencyConfig> placement = null;
+    public static Feature<NoFeatureConfig> feature = null;
+    public static Placement<ChanceConfig> placement = null;
+    public static GeodesConfig configuration = null;
 
     @Override
     public void init() {
-        feature = new GeodesFeature(GeodesConfig::deserialize);
-        placement = new GeodesPlacement(FrequencyConfig::deserialize);
+        feature = new GeodesFeature(NoFeatureConfig::deserialize);
+        placement = new GeodesPlacement(ChanceConfig::deserialize);
+        configuration = new GeodesConfig(Blocks.END_STONE.getDefaultState());
         ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "ender_geode");
         RegistryHandler.registerFeature(feature, placement, ID);
     }
@@ -43,12 +48,9 @@ public class EnderGeodes extends MesonModule {
             Biomes.END_MIDLANDS
         ));
         for (Biome b : validBiomes) {
-            b.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS,
-                Biome.createDecoratedFeature(feature,
-                    new GeodesConfig(Blocks.END_STONE.getDefaultState()),
-                    placement,
-                    new FrequencyConfig(2)
-            ));
+            final ConfiguredFeature configured = feature.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
+            final ConfiguredFeature decorated = configured.withPlacement(placement.configure(new ChanceConfig(4)));
+            b.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, decorated);
         }
     }
 }

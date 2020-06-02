@@ -8,6 +8,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import svenhjol.strange.runestones.block.MoonstoneBlock;
 import svenhjol.strange.runestones.module.Amethyst;
 import svenhjol.strange.runestones.module.Moonstones;
@@ -18,18 +19,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-public class GeodesFeature extends Feature<GeodesConfig> {
+public class GeodesFeature extends Feature<NoFeatureConfig> {
    public enum GeodeType {
       MOONSTONES,
       AMETHYST,
       PORTAL
    }
 
-   public GeodesFeature(Function<Dynamic<?>, ? extends GeodesConfig> p_i51485_1_) {
+   public GeodesFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51485_1_) {
       super(p_i51485_1_);
    }
 
-   public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, GeodesConfig config) {
+   public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
       int startdepth = 8;
       int xmax = 24;
       int ymax = 24;
@@ -111,7 +112,7 @@ public class GeodesFeature extends Feature<GeodesConfig> {
                for (int y = 0; y < ymax; ++y) {
                   int index = (x * xmax + z) * zmax + y;
                   if (outershell[index]) {
-                     worldIn.setBlockState(pos.add(x, y, z), y >= 4 ? Blocks.END_STONE.getDefaultState() : config.state, 2);
+                     worldIn.setBlockState(pos.add(x, y, z), Blocks.END_STONE.getDefaultState(), 2);
                   }
 
                   if (hollow[index]) {

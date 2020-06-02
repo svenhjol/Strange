@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
@@ -29,11 +30,11 @@ public class UndergroundPiece extends AbstractVillagePiece {
     }
 
     @Override
-    public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox structureBox, ChunkPos chunk) {
+    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox structureBox, ChunkPos chunk) {
         boolean result;
 
         try {
-            result = super.addComponentParts(world, rand, structureBox, chunk);
+            result = super.func_225577_a_(world, gen, rand, structureBox, chunk);
         } catch (NullPointerException e) {
             Strange.LOG.warn("NullPointer when generating piece, FIXME: " + e);
             result = false;

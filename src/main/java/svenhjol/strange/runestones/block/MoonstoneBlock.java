@@ -8,7 +8,6 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.DyeColor;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -17,6 +16,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
+import vazkii.quark.base.handler.RenderLayerHandler;
 
 public class MoonstoneBlock extends MesonBlock {
     private DyeColor color;
@@ -30,17 +30,14 @@ public class MoonstoneBlock extends MesonBlock {
                 .lightValue(11)
                 .harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE)
+                .notSolid()
             );
 
         float[] comp = color.getColorComponentValues();
         this.vec = new Vec3d(comp[0], comp[1], comp[2]);
         this.color = color;
 
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
+        RenderLayerHandler.setRenderType(this, RenderLayerHandler.RenderTypeSkeleton.TRANSLUCENT);
     }
 
     @Override
