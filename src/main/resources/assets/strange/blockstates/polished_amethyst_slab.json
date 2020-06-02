@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "type=bottom": { "model": "strange:block/polished_amethyst_slab" },
+    "type=top": { "model": "strange:block/polished_amethyst_slab_top" },
+    "type=double": { "model": "strange:block/polished_amethyst" }
+  }
+}
