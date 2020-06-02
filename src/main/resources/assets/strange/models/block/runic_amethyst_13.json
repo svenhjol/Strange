@@ -1,7 +1,9 @@
 {
-  "parent": "block/cube_column",
+  "parent": "block/orientable",
   "textures": {
-    "end": "strange:block/polished_amethyst",
-    "side": "strange:block/runic_amethyst_13"
+    "top": "strange:block/polished_amethyst",
+    "front": "strange:block/runic_amethyst_13",
+    "side": "strange:block/polished_amethyst",
+    "bottom": "strange:block/polished_amethyst"
   }
 }
