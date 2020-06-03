@@ -59,7 +59,7 @@ public class StrangeJigsawPiece extends SingleJigsawPiece {
     }
 
     @Override
-    public boolean func_225575_a_(TemplateManager templateManagerIn, IWorld worldIn, ChunkGenerator<?> gen, BlockPos pos, Rotation rotationIn, MutableBoundingBox boundsIn, Random rand) {
+    public boolean place(TemplateManager templateManagerIn, IWorld worldIn, ChunkGenerator<?> gen, BlockPos pos, Rotation rotationIn, MutableBoundingBox boundsIn, Random rand) {
         // bodge metadata into the author tag so we can determine what type of "air" to use for template
         Template template = templateManagerIn.getTemplateDefaulted(this.location);
         String loc = this.location.toString();
@@ -68,6 +68,6 @@ public class StrangeJigsawPiece extends SingleJigsawPiece {
         } else if (loc.contains("underlava")) {
             template.setAuthor(DecorationProcessor.LAVA);
         }
-        return super.func_225575_a_(templateManagerIn, worldIn, gen, pos, rotationIn, boundsIn, rand);
+        return super.place(templateManagerIn, worldIn, gen, pos, rotationIn, boundsIn, rand);
     }
 }
