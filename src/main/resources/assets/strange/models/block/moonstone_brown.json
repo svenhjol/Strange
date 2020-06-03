@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "strange:block/moonstone_pink"
+        "all": "strange:block/moonstone_brown"
     }
 }
