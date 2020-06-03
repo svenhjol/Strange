@@ -12,6 +12,7 @@ import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -22,10 +23,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES)
+@Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES,
+    description = "Geodes are rough spherical shapes that spawn around large islands in the End.\n" +
+        "Inside a Geode you may find Raw Amethyst or Moonstone crystals (if enabled)."
+)
 public class EnderGeodes extends MesonModule {
     public static Feature<NoFeatureConfig> feature = null;
     public static Placement<ChanceConfig> placement = null;
+
+    @Config(name = "Chance", description = "Chance (1 in n) of a Geode spawning in a chunk.")
+    public static int chance = 35;
 
     @Override
     public void init() {
@@ -45,7 +52,7 @@ public class EnderGeodes extends MesonModule {
         for (Biome b : validBiomes) {
             b.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, feature
                 .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                .withPlacement(placement.configure(new ChanceConfig(30))));
+                .withPlacement(placement.configure(new ChanceConfig(chance))));
         }
     }
 }

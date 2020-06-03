@@ -9,6 +9,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import svenhjol.meson.Meson;
 import svenhjol.strange.runestones.block.MoonstoneBlock;
 import svenhjol.strange.runestones.module.Amethyst;
 import svenhjol.strange.runestones.module.Moonstones;
@@ -56,7 +57,12 @@ public class GeodesFeature extends Feature<NoFeatureConfig> {
 
       // tweak values based on geode type
       if (geodeType == GeodeType.AMETHYST) {
+         if (!Meson.isModuleEnabled("strange:amethyst")) return false;
          decorationInnerEdge = 0.8D;
+      }
+
+      if (geodeType == GeodeType.MOONSTONES) {
+         if (!Meson.isModuleEnabled("strange:moonstones")) return false;
       }
 
 
