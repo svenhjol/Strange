@@ -9,6 +9,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import svenhjol.meson.Meson;
 import svenhjol.strange.runestones.block.MoonstoneBlock;
 import svenhjol.strange.runestones.module.Amethyst;
 import svenhjol.strange.runestones.module.Moonstones;
@@ -36,7 +37,6 @@ public class GeodesFeature extends Feature<NoFeatureConfig> {
       int ymax = 24;
       int zmax = 24;
       int total = xmax * ymax * zmax;
-      int chance = 5; // 1 in n
 
       double outerEdge = 2.5D;
       double innerEdge = 1.3D;
@@ -57,7 +57,12 @@ public class GeodesFeature extends Feature<NoFeatureConfig> {
 
       // tweak values based on geode type
       if (geodeType == GeodeType.AMETHYST) {
+         if (!Meson.isModuleEnabled("strange:amethyst")) return false;
          decorationInnerEdge = 0.8D;
+      }
+
+      if (geodeType == GeodeType.MOONSTONES) {
+         if (!Meson.isModuleEnabled("strange:moonstones")) return false;
       }
 
 
@@ -73,36 +78,31 @@ public class GeodesFeature extends Feature<NoFeatureConfig> {
          boolean[] decoration = new boolean[total];
          pos = pos.down(startdepth);
 
-         int i = rand.nextInt(chance);
-         if (i > 1) return false;
+         double d0 = rand.nextDouble() * 6.0D + 4.0D;
+         double d1 = rand.nextDouble() * 5.5D + 4.5D;
+         double d2 = rand.nextDouble() * 6.0D + 4.0D;
+         double d3 = rand.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
+         double d4 = rand.nextDouble() * (16.0D - d1 - 2.0D) + 1.0D + d1 / 2.0D;
+         double d5 = rand.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
 
-         for(int j = 0; j < i; ++j) {
-            double d0 = rand.nextDouble() * 6.0D + 4.0D;
-            double d1 = rand.nextDouble() * 5.5D + 4.5D;
-            double d2 = rand.nextDouble() * 6.0D + 4.0D;
-            double d3 = rand.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
-            double d4 = rand.nextDouble() * (16.0D - d1 - 2.0D) + 1.0D + d1 / 2.0D;
-            double d5 = rand.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
+         for(int x = 1; x < xmax; ++x) {
+            for(int z = 1; z < zmax; ++z) {
+               for(int y = 1; y < ymax; ++y) {
+                  double d6 = ((double)x - d3) / (d0 / 2.0D);
+                  double d7 = ((double)y - d4) / (d1 / 2.0D);
+                  double d8 = ((double)z - d5) / (d2 / 2.0D);
+                  double d9 = d6 * d6 + d7 * d7 + d8 * d8;
 
-            for(int x = 1; x < xmax; ++x) {
-               for(int z = 1; z < zmax; ++z) {
-                  for(int y = 1; y < ymax; ++y) {
-                     double d6 = ((double)x - d3) / (d0 / 2.0D);
-                     double d7 = ((double)y - d4) / (d1 / 2.0D);
-                     double d8 = ((double)z - d5) / (d2 / 2.0D);
-                     double d9 = d6 * d6 + d7 * d7 + d8 * d8;
+                  int index = (x * xmax + z) * zmax + y;
 
-                     int index = (x * xmax + z) * zmax + y;
+                  if (d9 < outerEdge)
+                     outershell[index] = true;
 
-                     if (d9 < outerEdge)
-                        outershell[index] = true;
+                  if (d9 < innerEdge)
+                     hollow[index] = true;
 
-                     if (d9 < innerEdge)
-                        hollow[index] = true;
-
-                     if (d9 < decorationOuterEdge && d9 > decorationInnerEdge)
-                        decoration[index] = true;
-                  }
+                  if (d9 < decorationOuterEdge && d9 > decorationInnerEdge)
+                     decoration[index] = true;
                }
             }
          }

@@ -31,11 +31,11 @@ public class VaultPiece extends AbstractVillagePiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox structureBox, ChunkPos chunk) {
+    public boolean create(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox structureBox, ChunkPos chunk) {
         boolean result;
 
         try {
-            result = super.func_225577_a_(world, gen, rand, structureBox, chunk);
+            result = super.create(world, gen, rand, structureBox, chunk);
         } catch (NullPointerException e) {
             Strange.LOG.warn("NullPointer when generating piece, FIXME: " + e);
             result = false;

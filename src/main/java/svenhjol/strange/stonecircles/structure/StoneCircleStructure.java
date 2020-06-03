@@ -62,7 +62,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_225558_a_(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
+    public boolean canBeGenerated(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
@@ -108,7 +108,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
             final String dir = Vaults.isValidPosition(pos) ? Vaults.VAULTS_DIR : Vaults.VAULTS_LOCAL;
             final ResourceLocation start = new ResourceLocation(Strange.MOD_ID, dir + "/starts");
 
-            JigsawManager.func_214889_a(start, Vaults.size, VaultPiece::new, gen, templates, pos, components, rand);
+            JigsawManager.addPieces(start, Vaults.size, VaultPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
 
             int top = bounds.maxY;
