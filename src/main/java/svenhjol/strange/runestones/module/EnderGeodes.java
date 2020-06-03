@@ -45,7 +45,7 @@ public class EnderGeodes extends MesonModule {
         for (Biome b : validBiomes) {
             b.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, feature
                 .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                .withPlacement(placement.configure(new ChanceConfig(4))));
+                .withPlacement(placement.configure(new ChanceConfig(1))));
         }
     }
 }
