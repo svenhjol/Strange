@@ -25,10 +25,13 @@ import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.item.TravelJournalPage;
+import svenhjol.strange.traveljournal.module.TravelJournal;
 import svenhjol.strange.traveljournal.storage.TravelJournalSavedData;
 
 import javax.annotation.Nullable;
@@ -42,6 +45,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
     public static final int SCREENSHOT = 4;
     public static final int BIND_COMPASS = 5;
     public static final int MAKE_MAP = 6;
+    public static final int MAKE_PAGE = 7;
 
     private final String id;
     private final BlockPos pos;
@@ -103,6 +107,8 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 world = player.world;
                 ServerWorld serverWorld = (ServerWorld)world;
                 held = player.getHeldItem(msg.hand);
+                ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
+                TravelJournalSavedData data = TravelJournalSavedData.get(serverWorld);
 
                 if (msg.name == null || msg.name.isEmpty()) {
                     msg.name = new TranslationTextComponent("gui.strange.travel_journal.new_entry").getUnformattedComponentText();
@@ -111,21 +117,23 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 // create entry
                 Entry entry = new Entry(msg.id, msg.name, msg.pos, msg.dim, msg.color);
                 CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
-                ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
-                TravelJournalSavedData data = TravelJournalSavedData.get(serverWorld);
-
 
                 if (msg.action == ADD) {
-
-                    TravelJournalItem.addEntry(held, entry);
+                    // write the known runes to the entry
+                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry);
 
                     // write position and dimension to the world data
                     data.positions.put(entry.posref, entry.pos);
                     data.dimensions.put(entry.posref, entry.dim);
                     data.markDirty();
 
+                    // add entry to the journal
+                    TravelJournalItem.addEntry(held, entry);
+
                 } else if (msg.action == UPDATE) {
 
+                    // write the known runes to the entry
+                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry);
                     TravelJournalItem.updateEntry(held, entry);
 
                 } else if (msg.action == DELETE) {
@@ -196,6 +204,17 @@ public class ServerTravelJournalAction implements IMesonMessage {
                             PlayerHelper.addOrDropStack(player, filled);
                         }
                     }
+                } else if (msg.action == MAKE_PAGE) {
+
+                    ItemStack paper = getItemFromInventory(inventories, Items.PAPER);
+                    if (paper == null) return;
+                    ItemStack page = new ItemStack(TravelJournal.page);
+
+                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry, player.isCreative());
+                    TravelJournalPage.setEntry(page, entry);
+
+                    PlayerHelper.addOrDropStack(player, page);
+                    paper.shrink(1);
                 }
             });
             ctx.get().setPacketHandled(true);

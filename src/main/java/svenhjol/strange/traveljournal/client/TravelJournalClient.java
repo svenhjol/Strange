@@ -1,11 +1,20 @@
 package svenhjol.strange.traveljournal.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.meson.helper.ClientHelper;
@@ -18,10 +27,20 @@ import svenhjol.strange.traveljournal.client.screen.BaseTravelJournalScreen;
 import svenhjol.strange.traveljournal.client.screen.TravelJournalScreen;
 import svenhjol.strange.traveljournal.client.screen.UpdateEntryScreen;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.item.TravelJournalPage;
 
 @OnlyIn(Dist.CLIENT)
 public class TravelJournalClient {
     public boolean updateAfterScreenshot = false;
+    public RunePageRenderer runePageRenderer;
+    public final RenderType PAGE_BACKGROUND = RenderType.getText(new ResourceLocation(Strange.MOD_ID, "textures/gui/rune_page_background.png"));
+
+
+    public TravelJournalClient() {
+        this.runePageRenderer = new RunePageRenderer(
+            Minecraft.getInstance().textureManager
+        );
+    }
 
     public void openTravelJournal(Hand hand) {
         PlayerEntity player = ClientHelper.getClientPlayer();
@@ -68,6 +87,50 @@ public class TravelJournalClient {
         if (!(player.getHeldItem(hand).getItem() instanceof TravelJournalItem)) {
             mc.displayGuiScreen(null);
         }
+    }
+
+    public void renderPageHand(MatrixStack matrixStack, IRenderTypeBuffer buffers, int light, Hand hand, float pitch, float equip, float swing, ItemStack stack) {
+        matrixStack.push();
+
+        float f = MathHelper.sqrt(swing);
+        float f1 = -0.2F * MathHelper.sin(swing * (float)Math.PI);
+        float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
+        matrixStack.translate(0.0D, (double)(-f1 / 2.0F), (double)f2);
+        float f3 = this.getMapAngleFromPitch(pitch);
+        matrixStack.translate(0.0D, (double)(0.04F + equip
+            * -1.2F + f3 * -0.5F), (double)-0.72F);
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(f3 * -85.0F));
+
+        float f4 = MathHelper.sin(f * (float)Math.PI);
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(f4 * 20.0F));
+        matrixStack.scale(2.0F, 2.0F, 2.0F);
+
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+        matrixStack.scale(0.38F, 0.38F, 0.38F);
+        matrixStack.translate(-0.5D, -0.5D, 0.0D);
+        matrixStack.scale(0.0078125F, 0.0078125F, 0.0078125F);
+        IVertexBuilder builder = buffers.getBuffer(PAGE_BACKGROUND);
+        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+        builder.pos(matrix4f, -7.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).lightmap(light).endVertex();
+        builder.pos(matrix4f, 135.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).lightmap(light).endVertex();
+        builder.pos(matrix4f, 135.0F, -7.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).lightmap(light).endVertex();
+        builder.pos(matrix4f, -7.0F, -7.0F, 0.0F).color(255, 255, 255, 255).tex(0.0F, 0.0F).lightmap(light).endVertex();
+
+        Entry entry = TravelJournalPage.getEntry(stack);
+        runePageRenderer.render(entry, matrixStack, buffers, light);
+
+        matrixStack.pop();
+    }
+
+    /**
+     * Return the angle to render the Map
+     */
+    private float getMapAngleFromPitch(float pitch) {
+        float f = 1.0F - pitch / 45.0F + 0.1F;
+        f = MathHelper.clamp(f, 0.0F, 1.0F);
+        f = -MathHelper.cos(f * (float)Math.PI) * 0.5F + 0.5F;
+        return f;
     }
 }
 

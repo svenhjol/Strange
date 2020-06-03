@@ -1,14 +1,16 @@
 package svenhjol.strange.base.helper;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
+import svenhjol.strange.runestones.capability.IRunestonesCapability;
+import svenhjol.strange.runestones.module.Runestones;
+import svenhjol.strange.traveljournal.Entry;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 
 public class RunestoneHelper {
     public final static ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
@@ -110,5 +112,37 @@ public class RunestoneHelper {
         }
 
         return new BlockPos(nx, pos.getY(), nz);
+    }
+
+    public static String calculateKnownRunes(PlayerEntity player, Entry entry) {
+        return calculateKnownRunes(player, entry, false);
+    }
+
+    public static String calculateKnownRunes(PlayerEntity player, Entry entry, boolean showAll) {
+        String known = "";
+
+        IRunestonesCapability cap = Runestones.getCapability(player);
+        List<Character> values = new ArrayList<>(RunestoneHelper.getRuneCharMap().values());
+        StringBuilder assembled = new StringBuilder();
+
+        char[] chars = entry.posref.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            boolean showRune = false;
+            char c = chars[i];
+            Character letter = RunestoneHelper.getRuneCharMap().get(c);
+            if (values.contains(letter)) {
+                int runeValue = values.indexOf(letter);
+                if (showAll || cap.getDiscoveredTypes().contains(runeValue)) {
+                    showRune = true;
+                }
+            }
+
+            if (!showRune)
+                letter = '?';
+
+            assembled.append(letter);
+        }
+        known = assembled.toString();
+        return known;
     }
 }
