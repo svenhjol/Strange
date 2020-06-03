@@ -12,18 +12,14 @@ import net.minecraft.util.Hand;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClient;
 import svenhjol.meson.enums.ColorVariant;
-import svenhjol.strange.Strange;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String name;
     protected Entry entry;
-    protected char[] runicName;
+    protected String runicName;
     protected FontRenderer glyphs;
     protected ColorVariant cycleRuneColor;
     protected boolean atLeastOneRune;
@@ -33,52 +29,17 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         this.entry = entry;
         this.name = entry.name;
         this.passEvents = false;
-        this.runicName = new char[]{};
         this.cycleRuneColor = ColorVariant.WHITE;
     }
 
     @Override
     protected void init() {
         super.init();
-        if (mc == null) return;
+        if (mc == null || mc.world == null) return;
         if (!mc.world.isRemote) return;
-
-        if (player.isCreative() || !Strange.client.discoveredRunes.isEmpty()) {
-            this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
-            int dim = entry.dim;
-            String posref = entry.posref;
-            List<Character> values = new ArrayList<>(RunestoneHelper.getRuneCharMap().values());
-
-            StringBuilder assembled = new StringBuilder();
-            char[] chars = posref.toCharArray();
-
-            for (int i = 0; i < chars.length; i++) {
-                boolean showRune = false;
-                char c = chars[i];
-                Character letter = RunestoneHelper.getRuneCharMap().get(c);
-
-                if (values.contains(letter)) {
-                    int runeValue = values.indexOf(letter);
-                    if (player.isCreative() || Strange.client.discoveredRunes.contains(runeValue)) {
-                        showRune = true;
-                    }
-                    Strange.LOG.debug(String.valueOf(runeValue));
-                }
-
-                if (!showRune) {
-                    letter = '?';
-                } else {
-                    this.atLeastOneRune = true;
-                }
-
-                assembled.append(letter);
-            }
-
-            if (this.atLeastOneRune) {
-                this.runicName = assembled.toString().toCharArray();
-                Strange.LOG.debug(assembled.toString());
-            }
-        }
+        this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
+        this.runicName = RunestoneHelper.getDiscoveredRunesClient(entry);
+        this.atLeastOneRune = !this.runicName.equals("????????????");
     }
 
     @Override
@@ -101,7 +62,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
             }
             stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
 
-            if (runicName.length > 0) {
+            if (runicName.length() == 12) {
                 int index = 0;
                 int hpos = -2;
                 int vpos = 4;
@@ -109,15 +70,15 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 int midoffset = mid - 4;
                 int background = 0xD2100026;
 
-                for (int j = 0; j < runicName.length; j++) {
-                    letter = String.valueOf(runicName[j]);
-                    int vpush = 5;
+                for (int j = 0; j < runicName.length(); j++) {
+                    letter = runicName.substring(j, j+1);
+                    int fontvpush = 5;
                     boolean up = index <= 3;
                     boolean down = index >= 6 && index <= 9;
                     boolean right = index >= 3 && index <= 6;
                     boolean left = index >= 9 && index <= 12;
-                    boolean q = letter.equals("?");
-                    FontRenderer f = (q ? this.font : this.glyphs);
+                    boolean unknown = letter.equals("?");
+                    FontRenderer f = (unknown ? this.font : this.glyphs);
 
                     if (up) vpos--;
                     if (down) vpos++;
@@ -130,14 +91,12 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                     AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
 
                     if (letter.equals("f"))
-                        vpush = 7;
+                        fontvpush = 7;
 
-                    if (index == 10) {
-                        if (stack != ItemStack.EMPTY)
-                            this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
-                    }
+                    if (index == 10 && stack != ItemStack.EMPTY)
+                        this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
 
-                    this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
+                    this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + fontvpush, unknown ? 0xFF727272 : 0xFFFFFFFF);
                     index++;
                 }
             }

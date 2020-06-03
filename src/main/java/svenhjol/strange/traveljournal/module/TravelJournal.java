@@ -1,8 +1,10 @@
 package svenhjol.strange.traveljournal.module;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -13,12 +15,14 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.traveljournal.client.TravelJournalClient;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.item.TravelJournalPage;
 import svenhjol.strange.traveljournal.storage.TravelJournalSavedData;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.TRAVEL_JOURNAL, hasSubscriptions = true,
     description = "Records interesting places around your world.")
 public class TravelJournal extends MesonModule {
     public static TravelJournalItem item;
+    public static TravelJournalPage page;
 
     @OnlyIn(Dist.CLIENT)
     public static TravelJournalClient client;
@@ -32,6 +36,7 @@ public class TravelJournal extends MesonModule {
     @Override
     public void init() {
         item = new TravelJournalItem(this);
+        page = new TravelJournalPage(this);
     }
 
     @Override
@@ -43,6 +48,24 @@ public class TravelJournal extends MesonModule {
     public void onWorldLoad(WorldEvent.Load event) {
         if (event.getWorld() instanceof ServerWorld) {
             TravelJournalSavedData.get((ServerWorld) event.getWorld());
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void onRenderHand(RenderHandEvent event) {
+        ItemStack itemStack = event.getItemStack();
+        if (itemStack.getItem() == page) {
+            client.renderPageHand(
+                event.getMatrixStack(),
+                event.getBuffers(),
+                event.getLight(),
+                event.getHand(),
+                event.getInterpolatedPitch(),
+                event.getEquipProgress(),
+                event.getSwingProgress(),
+                itemStack);
+            event.setCanceled(true);
         }
     }
 }

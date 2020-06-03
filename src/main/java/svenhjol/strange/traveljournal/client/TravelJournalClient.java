@@ -1,11 +1,17 @@
 package svenhjol.strange.traveljournal.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.meson.helper.ClientHelper;
@@ -18,10 +24,18 @@ import svenhjol.strange.traveljournal.client.screen.BaseTravelJournalScreen;
 import svenhjol.strange.traveljournal.client.screen.TravelJournalScreen;
 import svenhjol.strange.traveljournal.client.screen.UpdateEntryScreen;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
+import svenhjol.strange.traveljournal.item.TravelJournalPage;
 
 @OnlyIn(Dist.CLIENT)
 public class TravelJournalClient {
     public boolean updateAfterScreenshot = false;
+    public PageItemRenderer pageItemRenderer;
+
+    public TravelJournalClient() {
+        this.pageItemRenderer = new PageItemRenderer(
+            Minecraft.getInstance().textureManager
+        );
+    }
 
     public void openTravelJournal(Hand hand) {
         PlayerEntity player = ClientHelper.getClientPlayer();
@@ -68,6 +82,51 @@ public class TravelJournalClient {
         if (!(player.getHeldItem(hand).getItem() instanceof TravelJournalItem)) {
             mc.displayGuiScreen(null);
         }
+    }
+
+    public void renderPageHand(MatrixStack matrixStack, IRenderTypeBuffer buffers, int light, Hand hand, float pitch, float equip, float swing, ItemStack stack) {
+        Entry entry = TravelJournalPage.getEntry(stack);
+        int display = TravelJournalPage.getDisplay(stack);
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) return;
+
+        matrixStack.push(); // needed so that parent renderer isn't affect by what we do here
+
+        // copypasta from renderMapFirstPersonSide
+        float e = hand == Hand.MAIN_HAND ? 1.0F : -1.0F;
+        matrixStack.translate((double)(e * 0.125F), -0.125D, 0.0D);
+
+        // render player arm
+        if (!player.isInvisible()) {
+            matrixStack.push();
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(e * 10.0F));
+            pageItemRenderer.renderArm(player, matrixStack, buffers, light, swing, equip, hand);
+            matrixStack.pop();
+        }
+
+        // transform page based on the hand it is held and render it
+        matrixStack.push();
+        pageItemRenderer.transformPageForHand(matrixStack, buffers, light, swing, equip, hand);
+        if (display == 0) {
+            pageItemRenderer.renderEntryPage(entry, matrixStack, buffers, light);
+        }
+        if (display == 1) {
+            pageItemRenderer.renderRunePage(entry, matrixStack, buffers, light);
+        }
+        matrixStack.pop();
+
+        matrixStack.pop(); // close
+    }
+
+
+    /**
+     * Return the angle to render the Map
+     */
+    private float getMapAngleFromPitch(float pitch) {
+        float f = 1.0F - pitch / 45.0F + 0.1F;
+        f = MathHelper.clamp(f, 0.0F, 1.0F);
+        f = -MathHelper.cos(f * (float)Math.PI) * 0.5F + 0.5F;
+        return f;
     }
 }
 

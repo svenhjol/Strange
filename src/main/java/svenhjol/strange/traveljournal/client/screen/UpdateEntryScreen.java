@@ -9,7 +9,10 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -40,11 +43,15 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected File file = null;
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
+    protected PlayerInventory inv = null;
     protected boolean atEntryPosition;
+    protected boolean hasPaper;
     protected boolean hasScreenshot;
     protected boolean hasRenderedAddPhotoButton;
     protected boolean hasRenderedColorIcons;
     protected boolean hasRenderedTrashIcon;
+    protected boolean hasRenderedRuneIcon;
+    protected boolean hasRenderedMakePageIcon;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -57,7 +64,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        if (mc == null) return;
+        if (mc == null || mc.world == null) return;
         if (!mc.world.isRemote) return;
 
         mc.keyboardListener.enableRepeatEvents(true);
@@ -76,17 +83,21 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
+        inv = player.inventory;
 
         atEntryPosition = isAtEntryPosition(player, entry);
         hasScreenshot = hasScreenshot();
         hasRenderedAddPhotoButton = false;
         hasRenderedColorIcons = false;
         hasRenderedTrashIcon = false;
+        hasRenderedRuneIcon = false;
+        hasRenderedMakePageIcon = false;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
+        hasPaper = inv.hasItemStack(new ItemStack(Items.PAPER));
 
         int mid = this.width / 2;
         int y = 20;
@@ -165,8 +176,20 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
         // button to delete entry
         if (!hasRenderedTrashIcon) {
-            this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 80, 0, 19, BUTTONS, (r) -> delete()));
+            this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 160, 0, 19, BUTTONS, (r) -> delete()));
             hasRenderedTrashIcon = true;
+        }
+
+        // button to show runes
+        if (!hasRenderedRuneIcon) {
+            this.addButton(new ImageButton(mid - 128, y + 80, 20, 18, 180, 0, 19, BUTTONS, (r) -> runes()));
+            hasRenderedRuneIcon = true;
+        }
+
+        // button to make page
+        if (!hasRenderedMakePageIcon && hasPaper) {
+            this.addButton(new ImageButton(mid - 128, y + 98, 20, 18, 200, 0, 19, BUTTONS, (r) -> makePage()));
+            hasRenderedMakePageIcon = true;
         }
 
         super.render(mouseX, mouseY, partialTicks);
@@ -196,16 +219,13 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         int h = 20;
         final boolean atEntryPosition = isAtEntryPosition(player, entry);
 
-        int buttonX = atEntryPosition ? -170 : -110;
+        int buttonX = atEntryPosition ? -110 : -40;
         int buttonDist = 120;
 
         if (atEntryPosition) {
             this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
             buttonX += buttonDist;
         }
-
-        this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.runes"), (button) -> this.runes()));
-        buttonX += buttonDist;
 
         this.addButton(new Button((width / 2) + buttonX, y, w, h, I18n.format("gui.strange.travel_journal.save"), (button) -> this.save()));
     }
@@ -233,6 +253,12 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
     private void runes() {
         mc.displayGuiScreen(new RuneEntryScreen(entry, player, hand));
+    }
+
+    private void makePage() {
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_PAGE, entry, hand));
+        player.playSound(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1.0F, 1.0F);
+        player.sendStatusMessage(new TranslationTextComponent("gui.strange.travel_journal.made_page"), true);
     }
 
     private void delete() {
