@@ -4,18 +4,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.DyeColor;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.runestones.module.RunePortals;
@@ -33,35 +30,6 @@ public class PortalRunestoneBlock extends BaseRunestoneBlock {
             .with(COLOR, DyeColor.WHITE)
             .with(FACING, Direction.NORTH)
         );
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        final ItemStack held = player.getHeldItem(handIn);
-
-        if (!worldIn.isRemote
-            && !held.isEmpty()
-        ) {
-            final Item item = held.getItem();
-            if (item instanceof DyeItem) {
-                final DyeItem dye = (DyeItem)item;
-                final DyeColor dyeColor = dye.getDyeColor();
-
-                final BlockState newState = state
-                    .with(COLOR, dyeColor);
-
-                worldIn.setBlockState(pos, newState, 2);
-                worldIn.playSound(null, pos, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                if (!player.isCreative())
-                    held.shrink(1);
-
-                return ActionResultType.SUCCESS;
-            }
-        }
-
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
     @Override
