@@ -15,9 +15,8 @@ public class Moonstones extends MesonModule {
 
     @Override
     public void init() {
-        int i = 0;
-
-        List<DyeColor> colors = new ArrayList<>(Arrays.asList(DyeColor.MAGENTA, DyeColor.PURPLE));
+//        List<DyeColor> colors = new ArrayList<>(Arrays.asList(DyeColor.MAGENTA, DyeColor.PURPLE));
+        DyeColor[] colors = DyeColor.values();
 
         for (DyeColor color : colors) {
             moonstones.add(new MoonstoneBlock(this, color));
