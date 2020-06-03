@@ -19,6 +19,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.TranslationTextComponent;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -36,7 +38,8 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected String name;
     protected int color;
     protected Entry entry;
-    protected String message = "";
+    protected String message;
+    protected String discoveredRunes;
     protected final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
     );
@@ -44,14 +47,26 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
     protected DynamicTexture tex = null;
     protected ResourceLocation res = null;
     protected PlayerInventory inv = null;
+    protected int screenshotFailureRetries = 0;
+
+    // player conditions
     protected boolean atEntryPosition;
-    protected boolean hasPaper;
-    protected boolean hasScreenshot;
+    protected boolean hasScreenshot = false;
+    protected boolean hasAnyRunes = false;
+    protected boolean hasPaper = false;
+    protected boolean hasTotem = false;
+    protected boolean hasCompass = false;
+    protected boolean hasMap = false;
+
+    // button render switches
     protected boolean hasRenderedAddPhotoButton;
-    protected boolean hasRenderedColorIcons;
-    protected boolean hasRenderedTrashIcon;
-    protected boolean hasRenderedRuneIcon;
-    protected boolean hasRenderedMakePageIcon;
+    protected boolean hasRenderedColorButtons;
+    protected boolean hasRenderedTrashButton;
+    protected boolean hasRenderedRuneButton;
+    protected boolean hasRenderedMakePageButton;
+    protected boolean hasRenderedCompassButton;
+    protected boolean hasRenderedTotemButton;
+    protected boolean hasRenderedMapButton;
 
     public UpdateEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -84,20 +99,26 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         if (!mc.world.isRemote) return;
         file = getScreenshot(entry);
         inv = player.inventory;
+        discoveredRunes = RunestoneHelper.getDiscoveredRunesClient(entry);
+        hasAnyRunes = RunestoneHelper.hasAnyRunes(discoveredRunes);
+
+        hasPaper = inv.hasItemStack(new ItemStack(Items.PAPER));
+        hasTotem = inv.hasItemStack(new ItemStack(TotemOfReturning.item));
+        hasMap = inv.hasItemStack(new ItemStack(Items.MAP));
+        hasCompass = inv.hasItemStack(new ItemStack(Items.COMPASS));
 
         atEntryPosition = isAtEntryPosition(player, entry);
         hasScreenshot = hasScreenshot();
         hasRenderedAddPhotoButton = false;
-        hasRenderedColorIcons = false;
-        hasRenderedTrashIcon = false;
-        hasRenderedRuneIcon = false;
-        hasRenderedMakePageIcon = false;
+        hasRenderedColorButtons = false;
+        hasRenderedTrashButton = false;
+        hasRenderedRuneButton = false;
+        hasRenderedMakePageButton = false;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TravelJournal.client.closeIfNotHolding(mc, player, hand);
-        hasPaper = inv.hasItemStack(new ItemStack(Items.PAPER));
 
         int mid = this.width / 2;
         int y = 20;
@@ -135,10 +156,18 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
                     if (tex == null || res == null) {
                         Strange.LOG.debug("Failed to load screenshot");
                     }
+                    Strange.LOG.debug("Loaded screenshot");
                 } catch (Exception e) {
                     Strange.LOG.debug("Error loading screenshot: " + e);
+                    screenshotFailureRetries++;
+
+                    if (screenshotFailureRetries > 4) {
+                        Strange.LOG.warn("Failure loading screenshot, aborting retries");
+                        hasScreenshot = false;
+                        res = null;
+                        tex = null;
+                    }
                 }
-                Strange.LOG.debug("Loaded screenshot");
             }
 
             if (res != null) {
@@ -150,19 +179,13 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
             }
         }
 
-        // button to take photo
-        if (atEntryPosition && !hasScreenshot && !hasRenderedAddPhotoButton) {
-            hasRenderedAddPhotoButton = true;
-            this.addButton(new Button((width / 2) - 73, y + 36, 152, 20, I18n.format("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
-        }
-
         // generate color icons
-        if (!hasRenderedColorIcons) {
+        if (!hasRenderedColorButtons) {
             for (int i = 0; i < colors.size(); i++) {
                 final DyeColor col = colors.get(i);
                 this.addButton(new ImageButton(colorsLeftEdge + (i * 22), colorsTopEdge, 20, 18, (i * 20), 0, 18, COLORS, (r) -> setColor(col)));
             }
-            hasRenderedColorIcons = true;
+            hasRenderedColorButtons = true;
         }
 
         if (entry.pos != null) {
@@ -174,22 +197,65 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         this.drawCenteredString(this.font, I18n.format("gui.strange.travel_journal.update", entry.name), (width / 2), y, DyeColor.byId(this.color).getColorValue());
         nameField.render(mouseX, mouseY, partialTicks);
 
+        /*
+         * --- Left Buttons ---
+         */
+
         // button to delete entry
-        if (!hasRenderedTrashIcon) {
-            this.addButton(new ImageButton(mid - 128, y + 13, 20, 18, 160, 0, 19, BUTTONS, (r) -> delete()));
-            hasRenderedTrashIcon = true;
+        if (!hasRenderedTrashButton) {
+            this.addButton(new ImageButton(mid - 127, y + 13, 20, 18, 160, 0, 19, BUTTONS, (r) -> delete()));
+            hasRenderedTrashButton = true;
+        }
+
+
+        /*
+         * --- Right Buttons ---
+         */
+
+        int ypos = 13;
+        int yoffset = 18;
+        int xoffset = 113;
+
+        // button to make page
+        if (!hasRenderedMakePageButton && hasPaper) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 100, 0, 19, BUTTONS, (r) -> makePage()));
+            hasRenderedMakePageButton = true;
+        }
+
+        // button to take photo
+        if (!hasRenderedAddPhotoButton && atEntryPosition) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 80, 0, 19, BUTTONS, (r) -> prepareScreenshot()));
+            hasRenderedAddPhotoButton = true;
         }
 
         // button to show runes
-        if (!hasRenderedRuneIcon) {
-            this.addButton(new ImageButton(mid - 128, y + 80, 20, 18, 180, 0, 19, BUTTONS, (r) -> runes()));
-            hasRenderedRuneIcon = true;
+        if (!hasRenderedRuneButton && hasAnyRunes) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 180, 0, 19, BUTTONS, (r) -> runes()));
+            hasRenderedRuneButton = true;
         }
 
-        // button to make page
-        if (!hasRenderedMakePageIcon && hasPaper) {
-            this.addButton(new ImageButton(mid - 128, y + 98, 20, 18, 200, 0, 19, BUTTONS, (r) -> makePage()));
-            hasRenderedMakePageIcon = true;
+        // button to teleport
+        if (!hasRenderedTotemButton && hasTotem) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 60, 0, 19, BUTTONS, (r) -> teleport()));
+            hasRenderedTotemButton = true;
+        }
+
+        // button to bind compass
+        if (!hasRenderedCompassButton && hasCompass) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 20, 0, 19, BUTTONS, (r) -> bindCompass()));
+            hasRenderedCompassButton = true;
+        }
+
+        // button to make map
+        if (!hasRenderedMapButton && hasMap) {
+            ypos += yoffset;
+            this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 40, 0, 19, BUTTONS, (r) -> makeMap()));
+            hasRenderedMapButton = true;
         }
 
         super.render(mouseX, mouseY, partialTicks);
@@ -253,6 +319,21 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
 
     private void runes() {
         mc.displayGuiScreen(new RuneEntryScreen(entry, player, hand));
+    }
+
+    private void teleport() {
+        this.close();
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
+    }
+
+    private void bindCompass() {
+        this.close();
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
+    }
+
+    private void makeMap() {
+        this.close();
+        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
     }
 
     private void makePage() {

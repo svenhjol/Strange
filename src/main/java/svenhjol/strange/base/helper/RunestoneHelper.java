@@ -14,8 +14,8 @@ import svenhjol.strange.traveljournal.Entry;
 import java.util.*;
 
 public class RunestoneHelper {
-    public final static ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
-
+    public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
+    public static final String NO_RUNES = "????????????";
     private static final Map<Character, Character> runeCharMap = new TreeMap<>();
 
     public static Map<Character, Character> getRuneCharMap() {
@@ -143,5 +143,9 @@ public class RunestoneHelper {
         }
         out = assembled.toString();
         return out;
+    }
+
+    public static boolean hasAnyRunes(String discovered) {
+        return !discovered.equals(NO_RUNES);
     }
 }

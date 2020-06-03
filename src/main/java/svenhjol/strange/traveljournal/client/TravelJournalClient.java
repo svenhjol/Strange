@@ -60,7 +60,7 @@ public class TravelJournalClient {
         updateAfterScreenshot = true;
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(550);
             returnAfterScreenshot(mc, entry, player, hand);
         } catch (InterruptedException e) {
             // don't try and reopen the journal
@@ -118,10 +118,6 @@ public class TravelJournalClient {
         matrixStack.pop(); // close
     }
 
-
-    /**
-     * Return the angle to render the Map
-     */
     private float getMapAngleFromPitch(float pitch) {
         float f = 1.0F - pitch / 45.0F + 0.1F;
         f = MathHelper.clamp(f, 0.0F, 1.0F);

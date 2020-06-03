@@ -1,25 +1,20 @@
 package svenhjol.strange.traveljournal.client.screen;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.meson.Meson;
-import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.item.TravelJournalItem;
 import svenhjol.strange.traveljournal.message.ServerTravelJournalAction;
@@ -37,9 +32,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
     protected Map<String, Entry> sortedEntries = new TreeMap<>();
     protected List<String> ids = new ArrayList<>();
     protected final CompoundNBT journalEntries;
-    protected boolean hasTotem = false;
-    protected boolean hasCompass = false;
-    protected boolean hasMap = false;
     protected int page;
     protected String message = "";
 
@@ -62,19 +54,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
             this.ids.add(id);
             this.sortedEntries.put(id, entry);
         }
-
-        // check if player has an actionable item in their inventory
-        ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
-
-        for (NonNullList<ItemStack> itemStacks : inventories) {
-            for (ItemStack stack : itemStacks) {
-                if (stack.isEmpty()) continue;
-                if (!hasTotem) hasTotem = stack.getItem() instanceof TotemOfReturningItem;
-                if (!hasCompass)
-                    hasCompass = Meson.isModuleEnabled("charm:compass_binding") && stack.getItem() == Items.COMPASS;
-                if (!hasMap) hasMap = stack.getItem() == Items.MAP;
-            }
-        }
     }
 
     @Override
@@ -90,11 +69,9 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
         int buttonSpacing = 18;
         int titleSpacing = 11;
         int rowHeight = 20;
-        int titleX = 2;
         int titleY = 15;
         int textX = 2;
         int textY = 10;
-        int buttonX = 2;
         int buttonY = 4;
         int rightEdge = mid + 94;
 
@@ -124,25 +101,8 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
             this.font.drawString(bold + entry.name, x + textX, y + textY, DyeColor.byId(entry.color).getColorValue());
 
             // update button
-            this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 40, 0, 19, BUTTONS, (r) -> update(entry)));
+            this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 220, 0, 19, BUTTONS, (r) -> update(entry)));
             buttonOffsetX -= buttonSpacing;
-
-            // teleport button
-            if (!atEntryPosition && hasTotem && entry.pos != null) {
-                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 20, 0, 19, BUTTONS, (r) -> teleport(entry)));
-                buttonOffsetX -= buttonSpacing;
-            }
-
-            // compass button
-            if (hasCompass && entry.pos != null) {
-                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 60, 0, 19, BUTTONS, (r) -> bindCompass(entry)));
-                buttonOffsetX -= buttonSpacing;
-            }
-
-            // map button
-            if (hasMap && entry.pos != null) {
-                this.addButton(new ImageButton(buttonOffsetX, y + buttonY, 20, 18, 100, 0, 19, BUTTONS, (r) -> makeMap(entry)));
-            }
 
             y += rowHeight;
         }
@@ -206,21 +166,6 @@ public class TravelJournalScreen extends BaseTravelJournalScreen {
 
     private void update(Entry entry) {
         mc.displayGuiScreen(new UpdateEntryScreen(entry, player, hand));
-    }
-
-    private void teleport(Entry entry) {
-        this.close();
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.TELEPORT, entry, hand));
-    }
-
-    private void bindCompass(Entry entry) {
-        this.close();
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.BIND_COMPASS, entry, hand));
-    }
-
-    private void makeMap(Entry entry) {
-        this.close();
-        Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToServer(new ServerTravelJournalAction(ServerTravelJournalAction.MAKE_MAP, entry, hand));
     }
 
     private void updateServerPage(int page) {

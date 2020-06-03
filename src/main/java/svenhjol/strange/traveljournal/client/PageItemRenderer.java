@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class PageItemRenderer implements AutoCloseable {
     public final RenderType RUNE_PAGE_BACKGROUND = RenderType.getText(new ResourceLocation(Strange.MOD_ID, "textures/gui/rune_page_background.png"));
-    public final RenderType ENTRY_PAGE_BACKGROUND = RenderType.getText(new ResourceLocation("textures/map/map_background.png"));
+    public final RenderType ENTRY_PAGE_BACKGROUND = RenderType.getText(new ResourceLocation(Strange.MOD_ID, "textures/gui/entry_page_background.png"));
     public final TextureManager textureManager;
     public final Map<String, Instance> instances = new HashMap<>();
     private FontRenderer fr;
@@ -76,7 +76,7 @@ public class PageItemRenderer implements AutoCloseable {
         protected File file = null;
         protected DynamicTexture tex = null;
         protected ResourceLocation res = null;
-        protected RenderType render = null;
+        protected RenderType renderScreenshot = null;
 
         private Instance(Entry entry) {
             this.entry = entry;
@@ -91,7 +91,7 @@ public class PageItemRenderer implements AutoCloseable {
                 NativeImage screenshot = NativeImage.read(stream);
                 tex = new DynamicTexture(screenshot);
                 res = PageItemRenderer.this.textureManager.getDynamicTextureLocation("screenshot", tex);
-                render = RenderType.getText(res);
+                renderScreenshot = RenderType.getText(res);
                 stream.close();
 
             } catch (Exception e) {
@@ -103,9 +103,9 @@ public class PageItemRenderer implements AutoCloseable {
             this.renderEntryPageBackground(matrixStack, buffers, light);
             fr = Minecraft.getInstance().fontRenderer;
 
-            if (this.render != null) {
+            if (this.renderScreenshot != null) {
                 Matrix4f matrix4f = matrixStack.getLast().getMatrix();
-                IVertexBuilder ivertexbuilder = buffers.getBuffer(this.render);
+                IVertexBuilder ivertexbuilder = buffers.getBuffer(this.renderScreenshot);
                 ivertexbuilder.pos(matrix4f, 0.0F, 128.0F, -0.01F).color(255, 255, 255, 255).tex(0.0F, 1.0F).lightmap(light).endVertex();
                 ivertexbuilder.pos(matrix4f, 128.0F, 128.0F, -0.01F).color(255, 255, 255, 255).tex(1.0F, 1.0F).lightmap(light).endVertex();
                 ivertexbuilder.pos(matrix4f, 128.0F, 0.0F, -0.01F).color(255, 255, 255, 255).tex(1.0F, 0.0F).lightmap(light).endVertex();
@@ -114,9 +114,17 @@ public class PageItemRenderer implements AutoCloseable {
 
             matrixStack.push();
             int color = DyeColor.byId(entry.color).getColorValue();
-            int bgcolor = this.render == null ? 0x00000000 : 0x77FFFFFF;
+            int bgcolor = this.renderScreenshot == null ? 0x00000000 : 0x77FFFFFF;
             int x = 62 - (6 * (entry.name.length() / 2));
             fr.renderString(entry.name, x, 14, color, false, matrixStack.getLast().getMatrix(), buffers, false, bgcolor, light);
+
+            if (this.renderScreenshot == null) {
+                // render the runes for this entry
+                discovered = RunestoneHelper.getDiscoveredRunesClient(entry);
+                for (int i = 0; i < discovered.length(); i++) {
+                    renderGlyph(discovered.substring(i, i + 1), 25 + (7 * i), 110, matrixStack, buffers, light, 0xFF404040, 0x9A404040);
+                }
+            }
 
             matrixStack.pop();
         }
@@ -137,32 +145,33 @@ public class PageItemRenderer implements AutoCloseable {
             int c = 0;
 
             for (int i = 0; i < 3; i++) {
-                renderGlyph(discovered.substring(c++, c), x + 13, y + 85 - (i * 25), matrixStack, buffers, light);
+                renderGlyph(discovered.substring(c++, c), x + 13, y + 85 - (i * 25), matrixStack, buffers, light, 0xFFFFFFFF, 0xFF808080);
             }
             for (int i = 0; i < 3; i++) {
-                renderGlyph(discovered.substring(c++, c), x + 38 + (i * 24), y + 11, matrixStack, buffers, light);
+                renderGlyph(discovered.substring(c++, c), x + 38 + (i * 24), y + 11, matrixStack, buffers, light, 0xFFFFFFFF, 0xFF808080);
             }
             for (int i = 0; i < 3; i++) {
-                renderGlyph(discovered.substring(c++, c), x + 111, y + 36 + (i * 24), matrixStack, buffers, light);
+                renderGlyph(discovered.substring(c++, c), x + 111, y + 36 + (i * 24), matrixStack, buffers, light, 0xFFFFFFFF, 0xFF808080);
             }
             for (int i = 0; i < 3; i++) {
-                renderGlyph(discovered.substring(c++, c), x + 86 - (i * 24), y + 109, matrixStack, buffers, light);
+                renderGlyph(discovered.substring(c++, c), x + 86 - (i * 24), y + 109, matrixStack, buffers, light, 0xFFFFFFFF, 0xFF808080);
             }
 
             matrixStack.pop();
         }
 
-        private void renderGlyph(String s, float x, float y, MatrixStack matrixStack, IRenderTypeBuffer buffers, int light) {
+        private void renderGlyph(String s, float x, float y, MatrixStack matrixStack, IRenderTypeBuffer buffers, int light, int runeColor, int unknownColor) {
             // 0xff23183a
 
-            FontRenderer f;
             int color;
+
+            FontRenderer f;
             if (s.equals("?")) {
                 f = fr;
-                color = 0xFF808080;
+                color = unknownColor;
             } else {
                 f = gr;
-                color = -1;
+                color = runeColor;
             }
             f.renderString(s, x, y, color, false, matrixStack.getLast().getMatrix(), buffers, false, 0x00000000, light);
         }

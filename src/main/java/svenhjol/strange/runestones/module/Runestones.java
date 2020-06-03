@@ -1,5 +1,6 @@
 package svenhjol.strange.runestones.module;
 
+import com.google.common.base.CaseFormat;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -211,15 +212,20 @@ public class Runestones extends MesonModule {
 
                 if (cap.getDiscoveredTypes().contains(rune)) {
                     Destination dest = destinations.get(rune);
-                    TranslationTextComponent description = new TranslationTextComponent(dest.structure.toString());
+
+                    // try and format the string into something reasonable
+                    String path = dest.structure.getPath();
+                    String desc = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, path);
+                    desc = desc.replaceAll("_", " ");
+
                     BlockPos destPos = dest.isSpawnPoint() ? world.getSpawnPoint() : cap.getDestination(runePos);
 
                     if (destPos != null) {
                         effectTravelled(world, runePos);
-                        message = new TranslationTextComponent("runestone.strange.rune_travelled", description, destPos.getX(), destPos.getZ());
+                        message = new TranslationTextComponent("runestone.strange.rune_travelled", desc, destPos.getX(), destPos.getZ());
                     } else {
                         effectDiscovered(world, runePos);
-                        message = new TranslationTextComponent("runestone.strange.rune_connects", description);
+                        message = new TranslationTextComponent("runestone.strange.rune_connects", desc);
                     }
                 } else {
                     message = new TranslationTextComponent("runestone.strange.rune_unknown");

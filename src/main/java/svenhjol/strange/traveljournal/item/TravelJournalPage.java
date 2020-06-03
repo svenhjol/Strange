@@ -54,12 +54,12 @@ public class TravelJournalPage extends MesonItem {
 
                     return new ActionResult<>(ActionResultType.SUCCESS, ItemStack.EMPTY);
                 }
+            } else {
+                int display = getDisplay(held);
+                setDisplay(held, display == 0 ? 1 : 0); // boolean behavior for now but we might add more functionality in future
+                return new ActionResult<>(ActionResultType.SUCCESS, held);
             }
         }
-
-        // flip the page if normal right click
-        int display = getDisplay(held);
-        setDisplay(held, display == 0 ? 1 : 0); // boolean behavior for now but we might add more functionality in future
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
