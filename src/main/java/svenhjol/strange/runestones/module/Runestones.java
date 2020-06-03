@@ -1,6 +1,5 @@
 package svenhjol.strange.runestones.module;
 
-import com.google.common.base.CaseFormat;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -40,6 +39,7 @@ import net.minecraftforge.registries.ObjectHolder;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.handler.RegistryHandler;
 import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -213,10 +213,10 @@ public class Runestones extends MesonModule {
                 if (cap.getDiscoveredTypes().contains(rune)) {
                     Destination dest = destinations.get(rune);
 
-                    // try and format the string into something reasonable
-                    String path = dest.structure.getPath();
-                    String desc = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, path);
+                    // try and format the string into something nice
+                    String desc = dest.structure.getPath();
                     desc = desc.replaceAll("_", " ");
+                    desc = StringHelper.capitalizeString(desc);
 
                     BlockPos destPos = dest.isSpawnPoint() ? world.getSpawnPoint() : cap.getDestination(runePos);
 
