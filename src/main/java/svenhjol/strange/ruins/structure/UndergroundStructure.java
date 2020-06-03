@@ -46,7 +46,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_225558_a_(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
+    public boolean canBeGenerated(BiomeManager biomes, ChunkGenerator<?> gen, Random rand, int x, int z, Biome biome) {
         ChunkPos chunk = this.getStartPositionForPosition(gen, rand, x, z, 0, 0);
 
         if (x == chunk.x && z == chunk.z) {
@@ -54,7 +54,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
                 for (int k = x - 10; k <= x + 10; ++k) {
                     for (int l = z - 10; l <= z + 10; ++l) {
                         for (Structure<?> structure : UndergroundRuins.blacklist) {
-                            if (structure.func_225558_a_(biomes, gen, rand, k, l, biome)) {
+                            if (structure.canBeGenerated(biomes, gen, rand, k, l, biome)) {
                                 Strange.LOG.debug("[UndergroundStructure] too close to " + structure.getStructureName());
                                 return false;
                             }
@@ -108,7 +108,7 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
             ResourceLocation start = new ResourceLocation(Strange.MOD_ID, UndergroundRuins.DIR + "/" + catName + "/" + ruin + "/starts");
 
             Strange.LOG.debug("[UndergroundStructure] create ruin " + ruin + " at " + pos);
-            JigsawManager.func_214889_a(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
+            JigsawManager.addPieces(start, size, UndergroundPiece::new, gen, templates, pos, components, rand);
             this.recalculateStructureSize();
 
             int maxTop = getMaxTopForBiome(biomeCategory, new Random(pos.toLong()));
