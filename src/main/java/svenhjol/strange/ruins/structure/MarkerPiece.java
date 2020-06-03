@@ -36,7 +36,7 @@ public class MarkerPiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunk) {
+    public boolean create(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunk) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         int x = this.boundingBox.minX;

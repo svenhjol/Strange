@@ -20,9 +20,7 @@ public class GeodesPlacement extends SimplePlacement<ChanceConfig> {
     protected Stream<BlockPos> getPositions(Random rand, ChanceConfig config, BlockPos pos) {
         List<BlockPos> locations = Lists.newArrayList();
 
-        for (int i = 0; i < rand.nextInt(rand.nextInt(config.chance) + 1) + 1; ++i) {
-            if (rand.nextFloat() < 0.75F) continue;
-
+        for (int i = 0; i < rand.nextInt(rand.nextInt(config.chance) + 1); ++i) {
             int x = rand.nextInt(16);
             int y = rand.nextInt(16) + 60;
             int z = rand.nextInt(16);
