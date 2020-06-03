@@ -332,9 +332,6 @@ public class Runestones extends MesonModule {
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
-//        if (player.dimension.getId() != 0)
-//            PlayerHelper.changeDimension(player, 0);
-
         Destination destination = destinations.get(rune);
         BlockPos destPos = destination.getAndRecordDestination(world, pos, rand);
 
