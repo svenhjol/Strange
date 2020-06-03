@@ -25,7 +25,6 @@ import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
@@ -119,8 +118,6 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 CompoundNBT nbt = TravelJournalItem.getEntry(held, entry.id);
 
                 if (msg.action == ADD) {
-                    // write the known runes to the entry
-                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry);
 
                     // write position and dimension to the world data
                     data.positions.put(entry.posref, entry.pos);
@@ -133,7 +130,6 @@ public class ServerTravelJournalAction implements IMesonMessage {
                 } else if (msg.action == UPDATE) {
 
                     // write the known runes to the entry
-                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry);
                     TravelJournalItem.updateEntry(held, entry);
 
                 } else if (msg.action == DELETE) {
@@ -209,9 +205,8 @@ public class ServerTravelJournalAction implements IMesonMessage {
                     ItemStack paper = getItemFromInventory(inventories, Items.PAPER);
                     if (paper == null) return;
                     ItemStack page = new ItemStack(TravelJournal.page);
-
-                    entry.known = RunestoneHelper.calculateKnownRunes(player, entry, player.isCreative());
                     TravelJournalPage.setEntry(page, entry);
+                    page.setDisplayName(new StringTextComponent(entry.name));
 
                     PlayerHelper.addOrDropStack(player, page);
                     paper.shrink(1);

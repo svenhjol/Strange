@@ -12,13 +12,14 @@ import net.minecraft.util.Hand;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClient;
 import svenhjol.meson.enums.ColorVariant;
+import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.traveljournal.Entry;
 import svenhjol.strange.traveljournal.module.TravelJournal;
 
 public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String name;
     protected Entry entry;
-    protected String known;
+    protected String runicName;
     protected FontRenderer glyphs;
     protected ColorVariant cycleRuneColor;
     protected boolean atLeastOneRune;
@@ -28,7 +29,6 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         this.entry = entry;
         this.name = entry.name;
         this.passEvents = false;
-        this.known = "";
         this.cycleRuneColor = ColorVariant.WHITE;
     }
 
@@ -38,7 +38,8 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         if (mc == null || mc.world == null) return;
         if (!mc.world.isRemote) return;
         this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
-        this.known = entry.known;
+        this.runicName = RunestoneHelper.getDiscoveredRunesClient(entry);
+        this.atLeastOneRune = !this.runicName.equals("????????????");
     }
 
     @Override
@@ -51,7 +52,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
         if (this.atLeastOneRune && entry.pos != null) {
             int offset = y + 1;
-            char letter;
+            String letter;
             ItemStack stack;
 
             if (CharmClient.clientTicks % 30 == 0) {
@@ -61,7 +62,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
             }
             stack = Charm.quarkCompat != null ? Charm.quarkCompat.getRune(cycleRuneColor) : new ItemStack(Items.DIAMOND);
 
-            if (known.length() > 0) {
+            if (runicName.length() == 12) {
                 int index = 0;
                 int hpos = -2;
                 int vpos = 4;
@@ -69,15 +70,15 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
                 int midoffset = mid - 4;
                 int background = 0xD2100026;
 
-                for (int j = 0; j < known.length(); j++) {
-                    letter = known.charAt(j);
-                    int vpush = 5;
+                for (int j = 0; j < runicName.length(); j++) {
+                    letter = runicName.substring(j, j+1);
+                    int fontvpush = 5;
                     boolean up = index <= 3;
                     boolean down = index >= 6 && index <= 9;
                     boolean right = index >= 3 && index <= 6;
                     boolean left = index >= 9 && index <= 12;
-                    boolean q = letter == '?';
-                    FontRenderer f = (q ? this.font : this.glyphs);
+                    boolean unknown = letter.equals("?");
+                    FontRenderer f = (unknown ? this.font : this.glyphs);
 
                     if (up) vpos--;
                     if (down) vpos++;
@@ -89,15 +90,13 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
 
                     AbstractGui.fill(midoffset + ox, offset + oy, midoffset + ox + letterSpacing-1, offset + oy + letterSpacing-1, background);
 
-                    if (letter == 'f')
-                        vpush = 7;
+                    if (letter.equals("f"))
+                        fontvpush = 7;
 
-                    if (index == 10) {
-                        if (stack != ItemStack.EMPTY)
-                            this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
-                    }
+                    if (index == 10 && stack != ItemStack.EMPTY)
+                        this.blitItemIcon(stack, midoffset + ox, offset + oy + letterSpacing);
 
-                    this.drawCenteredString(f, String.valueOf(letter), midoffset + ox + 9, offset + oy + vpush, q ? 0xFF727272 : 0xFFFFFFFF);
+                    this.drawCenteredString(f, letter, midoffset + ox + 9, offset + oy + fontvpush, unknown ? 0xFF727272 : 0xFFFFFFFF);
                     index++;
                 }
             }

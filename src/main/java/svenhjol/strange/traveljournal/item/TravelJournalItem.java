@@ -57,14 +57,17 @@ public class TravelJournalItem extends MesonItem {
         ItemNBTHelper.setInt(stack, PAGE, page);
     }
 
-    public static void addEntry(ItemStack stack, Entry entry) {
+    public static boolean addEntry(ItemStack stack, Entry entry) {
         CompoundNBT tag = entry.toNBT();
         CompoundNBT entries = ItemNBTHelper.getCompound(stack, ENTRIES);
 
         if (entries.keySet().size() < TravelJournal.maxEntries) {
             entries.put(entry.id, tag);
             ItemNBTHelper.setCompound(stack, ENTRIES, entries);
+            return true;
         }
+
+        return false;
     }
 
     public static void updateEntry(ItemStack stack, Entry entry) {

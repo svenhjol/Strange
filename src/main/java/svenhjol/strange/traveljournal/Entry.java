@@ -8,7 +8,6 @@ public class Entry {
     public String id = "";
     public String name = "";
     public String posref = "";
-    public String known = "";
     public BlockPos pos;
     public int dim;
     public int color;
@@ -19,7 +18,6 @@ public class Entry {
     public static final String NAME = "name";
     public static final String COLOR = "color";
     public static final String POSREF = "posref";
-    public static final String KNOWN = "known";
 
     public Entry(String id, BlockPos pos, int dim) {
         this.id = id;
@@ -50,7 +48,6 @@ public class Entry {
         nbt.putString(ID, id);
         nbt.putString(NAME, name);
         nbt.putString(POSREF, posref);
-        nbt.putString(KNOWN, known);
         nbt.putLong(POS, pos.toLong());
         nbt.putInt(DIM, dim);
         nbt.putInt(COLOR, color);
@@ -65,7 +62,6 @@ public class Entry {
         dim = nbt.getInt(DIM);
         color = nbt.getInt(COLOR);
         posref = nbt.getString(POSREF);
-        known = nbt.getString(KNOWN);
     }
 
     public void fromEntry(Entry entry) {
@@ -75,7 +71,6 @@ public class Entry {
         dim = entry.dim;
         color = entry.color;
         posref = entry.posref;
-        known = entry.known;
     }
 
     private String calculatePosRef(BlockPos pos, int dim) {

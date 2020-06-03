@@ -159,6 +159,8 @@
   "gui.strange.travel_journal.save": "Save Changes",
   "gui.strange.travel_journal.back": "Back to Journal",
   "gui.strange.travel_journal.made_page": "You have created a page for this entry.",
+  "gui.strange.travel_journal.added_page": "You have added this page to your journal.",
+  "gui.strange.travel_journal.page_exists": "This page already exists in your journal.",
   "gui.strange.travel_journal.title": "Travel Journal has %s entries",
   "gui.strange.travel_journal.update": "§l%s",
   "gui.strange.travel_journal.page": "Page %s",
