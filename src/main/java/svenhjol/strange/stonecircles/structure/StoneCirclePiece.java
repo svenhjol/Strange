@@ -39,7 +39,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
+    public boolean create(IWorld world, ChunkGenerator<?> gen, Random rand, MutableBoundingBox bb, ChunkPos chunkPos) {
         BlockPos foundPos = null;
         DimensionType dim = world.getDimension().getType();
         GenerationConfig config = new GenerationConfig();
