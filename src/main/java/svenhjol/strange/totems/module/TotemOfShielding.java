@@ -3,7 +3,7 @@ package svenhjol.strange.totems.module;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import svenhjol.meson.Meson;
@@ -13,7 +13,6 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.TotemHelper;
-import svenhjol.strange.base.loot.TreasureTotem;
 import svenhjol.strange.totems.iface.ITreasureTotem;
 import svenhjol.strange.totems.item.TotemOfShieldingItem;
 
@@ -43,7 +42,7 @@ public class TotemOfShielding extends MesonModule implements ITreasureTotem {
     }
 
     @SubscribeEvent
-    public void onDamage(LivingDamageEvent event) {
+    public void onDamage(LivingHurtEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity
             && !event.isCanceled()
         ) {
