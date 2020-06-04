@@ -20,12 +20,13 @@ public class TotemHelper {
         return false;
     }
 
-    public static void destroy(PlayerEntity player, ItemStack totem) {
-        if (player.isSpectator() || player.isCreative()) return;
+    public static boolean destroy(PlayerEntity player, ItemStack totem) {
+        if (player.isSpectator() || player.isCreative()) return false;
 
         totem.shrink(1);
 
         if (player.world.isRemote) effectDestroyTotem(player.getPosition());
+        return true;
     }
 
     public static int damage(PlayerEntity player, ItemStack totem, int amount) {

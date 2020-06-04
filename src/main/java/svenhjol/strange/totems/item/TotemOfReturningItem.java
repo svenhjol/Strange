@@ -11,10 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -52,22 +49,23 @@ public class TotemOfReturningItem extends MesonItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        BlockPos pos = getPos(stack); // the position to teleport to
-        int dim = getDim(stack); // the dimension to teleport to
         ItemStack held = player.getHeldItem(hand);
+        BlockPos pos = getPos(held); // the position to teleport to
+        int dim = getDim(held); // the dimension to teleport to
 
         // bind this totem to current location and exit
         if (PlayerHelper.isCrouching(player)) {
             BlockPos playerPos = player.getPosition();
             int playerDim = player.dimension.getId();
-            setPos(stack, playerPos);
-            setDim(stack, playerDim);
+            setPos(held, playerPos);
+            setDim(held, playerDim);
 
             player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
-            return super.onItemRightClick(world, player, hand);
+            return new ActionResult<>(ActionResultType.SUCCESS, held);
         } else if (pos != null && !world.isRemote) {
             teleport(world, player, pos, dim, held);
+            boolean destroyed = TotemHelper.destroy(player, held);
+            return new ActionResult<>(ActionResultType.SUCCESS, destroyed ? ItemStack.EMPTY : held);
         } else {
             player.sendStatusMessage(new TranslationTextComponent("totem.strange.returning.unbound"), true);
         }
@@ -85,7 +83,6 @@ public class TotemOfReturningItem extends MesonItem {
             }
             LocationHelper.removeForcedChunk((ServerWorld)world, pos);
         }
-        TotemHelper.destroy(player, stack);
     }
 
     private static void onTeleport(PlayerEntity player) {
