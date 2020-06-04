@@ -147,7 +147,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                     if (nbt != null && !nbt.isEmpty()) {
                         ItemStack totem = getItemFromInventory(inventories, TotemOfReturning.item);
                         if (totem != null) {
-                            TotemOfReturningItem.teleport(player.world, player, entry.pos, entry.dim, totem);
+                            TotemOfReturningItem.teleport((ServerWorld)player.world, player, entry.pos, entry.dim, totem);
                         }
                     }
 
