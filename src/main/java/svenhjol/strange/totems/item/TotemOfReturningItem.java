@@ -20,11 +20,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
+import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
@@ -64,7 +66,7 @@ public class TotemOfReturningItem extends MesonItem {
 
             player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
             return super.onItemRightClick(world, player, hand);
-        } else if (pos != null) {
+        } else if (pos != null && !world.isRemote) {
             teleport(world, player, pos, dim, held);
         } else {
             player.sendStatusMessage(new TranslationTextComponent("totem.strange.returning.unbound"), true);
@@ -74,13 +76,14 @@ public class TotemOfReturningItem extends MesonItem {
     }
 
     public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack) {
-        // teleport the player
         if (!world.isRemote) {
+            LocationHelper.addForcedChunk((ServerWorld)world, pos);
             if (getGenerated(stack)) {
                 PlayerHelper.teleportSurface(player, pos, dim, TotemOfReturningItem::onTeleport);
             } else {
                 PlayerHelper.teleport(player, pos, dim, TotemOfReturningItem::onTeleport);
             }
+            LocationHelper.removeForcedChunk((ServerWorld)world, pos);
         }
         TotemHelper.destroy(player, stack);
     }

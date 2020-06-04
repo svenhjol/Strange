@@ -6,13 +6,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -221,12 +218,12 @@ public class RunePortals extends MesonModule {
 
                 String key = keyBuilder.toString();
                 if (key.length() != 12) {
-                    runeError(world, pos, player);
+                    RunestoneHelper.runeError(world, pos, player);
                     return false;
                 }
 
                 if (!data.positions.containsKey(key) || !data.dimensions.containsKey(key)) {
-                    runeError(world, pos, player);
+                    RunestoneHelper.runeError(world, pos, player);
                     return false;
                 }
 
@@ -264,11 +261,6 @@ public class RunePortals extends MesonModule {
 
     public static BlockState getRunestoneBlock(int runeValue) {
         return portalRunestones.get(runeValue).getDefaultState();
-    }
-
-    private void runeError(World world, BlockPos pos, PlayerEntity player) {
-        player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
-        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 2.5D, pos.getZ() + 0.5D, 0.75F, Explosion.Mode.NONE);
     }
 
     private boolean addOrder(ServerWorld world, BlockPos pos, List<Integer> order) {

@@ -4,10 +4,12 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
+import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 
@@ -25,5 +27,31 @@ public class LocationHelper {
         }
 
         return map;
+    }
+
+    public static boolean addForcedChunk(ServerWorld world, BlockPos pos) {
+        ChunkPos chunkPos = new ChunkPos(pos);
+
+        // try a couple of times I guess?
+        boolean result = false;
+        for (int i = 0; i <= 2; i++) {
+            result = world.forceChunk(chunkPos.getXStart(), chunkPos.getZStart(), true);
+            if (result) break;
+        }
+        if (result)
+            Strange.LOG.debug("Force loaded chunk " + chunkPos.toString());
+
+        return result;
+    }
+
+    public static boolean removeForcedChunk(ServerWorld world, BlockPos pos) {
+        ChunkPos chunkPos = new ChunkPos(pos);
+        boolean result = world.forceChunk(chunkPos.getXStart(), chunkPos.getZStart(), false);
+        if (!result) {
+            Strange.LOG.error("Could not unload forced chunk - this is probably really bad.");
+        } else {
+            Strange.LOG.debug("Unloaded forced chunk " + chunkPos.toString());
+        }
+        return result;
     }
 }

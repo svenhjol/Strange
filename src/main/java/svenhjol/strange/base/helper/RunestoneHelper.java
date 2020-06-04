@@ -1,8 +1,12 @@
 package svenhjol.strange.base.helper;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import svenhjol.meson.Meson;
@@ -147,5 +151,10 @@ public class RunestoneHelper {
 
     public static boolean hasAnyRunes(String discovered) {
         return !discovered.equals(NO_RUNES);
+    }
+
+    public static void runeError(World world, BlockPos pos, PlayerEntity player) {
+        player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
+        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 2.5D, pos.getZ() + 0.5D, 0.75F, Explosion.Mode.NONE);
     }
 }

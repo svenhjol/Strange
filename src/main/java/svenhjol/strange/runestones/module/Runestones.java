@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.Feature;
@@ -45,6 +44,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.Destination;
@@ -172,7 +172,7 @@ public class Runestones extends MesonModule {
             }
 
             if (block instanceof RunestoneBlock) {
-                playerTeleportRunestone.put(player.getUniqueID(), pos);
+                prepareTeleport((ServerWorld)world, pos, player);
                 effectActivate(world, pos);
             }
         }
@@ -240,7 +240,7 @@ public class Runestones extends MesonModule {
         if (!playerTeleportRunestone.isEmpty() && playerTeleportRunestone.containsKey(player.getUniqueID())) {
             UUID id = player.getUniqueID();
             BlockPos pos = playerTeleportRunestone.get(id);
-            doTeleport(world, player, pos);
+            doTeleport(world, pos, player);
             playerTeleportRunestone.remove(id);
         }
     }
@@ -316,49 +316,65 @@ public class Runestones extends MesonModule {
         return Outerlands.getOuterPos(world, rand);
     }
 
-    private void doTeleport(ServerWorld world, PlayerEntity player, BlockPos pos) {
+    private int getRuneValue(ServerWorld world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        if (!(state.getBlock() instanceof RunestoneBlock)) return;
+        if (!(state.getBlock() instanceof RunestoneBlock)) return -1;
         int rune = getRuneValue((RunestoneBlock) state.getBlock());
+        return rune;
+    }
 
-        CriteriaTriggers.ENTER_BLOCK.trigger((ServerPlayerEntity) player, state);
-        Runestones.getCapability(player).discoverType(rune);
-
-        int duration = protectionDuration * 20;
-        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, duration, 2));
-        player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, duration, 2));
-        final BlockPos currentPlayerPos = player.getPosition();
+    private BlockPos getRuneDestination(ServerWorld world, BlockPos pos) {
+        int runeValue = getRuneValue(world, pos);
 
         Random rand = world.rand;
         rand.setSeed(pos.toLong());
 
-        Destination destination = destinations.get(rune);
-        BlockPos destPos = destination.getAndRecordDestination(world, pos, rand);
-
-        if (destPos == null) {
-            Strange.LOG.warn("Destination position is invalid, defaulting to spawn position.");
-            destPos = world.getSpawnPoint();
-        }
-
-        final BlockPos usePos = destPos;
-        Strange.LOG.debug("Rune: " + rune + ", dest: " + destination.structure.toString() + ", pos: " + destPos.toString());
-        PlayerHelper.teleportSurface(player, destPos, 0, p1 -> {
-
-        // record the destination for the player
-        Runestones.getCapability(player).recordDestination(pos, usePos);
-
-        // teleport player to surface of position
-        PlayerHelper.teleport(player, currentPlayerPos, 0,
-            p2 -> PlayerHelper.teleportSurface(player, usePos, 0, p3 -> {
-                final BlockPos playerPos = p3.getPosition();
-                p3.setPositionAndUpdate(playerPos.getX(), playerPos.getY() + 2, playerPos.getZ());
-            }));
-        });
+        Destination destination = destinations.get(runeValue);
+        return destination.getAndRecordDestination(world, pos, rand);
     }
 
-    private void runeError(World world, BlockPos pos, PlayerEntity player) {
-        player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
-        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1.5F, Explosion.Mode.NONE);
+    private void prepareTeleport(ServerWorld world, BlockPos pos, PlayerEntity player) {
+        BlockState state = world.getBlockState(pos);
+        BlockPos destPos = getRuneDestination(world, pos);
+
+        int rune = getRuneValue(world, pos);
+        if (rune == -1) {
+            Strange.LOG.warn("Failed to get the value of the rune.");
+            RunestoneHelper.runeError(world, pos, player);
+            return;
+        }
+
+        // force remote chunk
+        boolean result = LocationHelper.addForcedChunk(world, destPos);
+        if (!result) {
+            Strange.LOG.warn("Could not load destination chunk, giving up.");
+            RunestoneHelper.runeError(world, pos, player);
+            return;
+        }
+
+        // store discovered rune against player
+        CriteriaTriggers.ENTER_BLOCK.trigger((ServerPlayerEntity) player, state);
+        Runestones.getCapability(player).discoverType(rune);
+
+        // record the destination for the player
+        Runestones.getCapability(player).recordDestination(pos, destPos);
+
+        // prep player for teleport
+        playerTeleportRunestone.put(player.getUniqueID(), destPos);
+    }
+
+    private void doTeleport(ServerWorld world, BlockPos destPos, PlayerEntity player) {
+        int duration = protectionDuration * 20;
+        player.addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, duration, 2));
+        player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, duration, 2));
+
+        PlayerHelper.teleportSurface(player, destPos, 0, p1 -> {
+            final BlockPos playerPos = p1.getPosition();
+            p1.setPositionAndUpdate(playerPos.getX(), playerPos.getY() + 2, playerPos.getZ());
+
+            // unload the chunk!
+            LocationHelper.removeForcedChunk(world, destPos);
+        });
     }
 
     public static void effectActivate(World world, BlockPos pos) {
