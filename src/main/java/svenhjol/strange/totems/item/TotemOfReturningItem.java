@@ -23,7 +23,6 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.ItemNBTHelper;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
-import svenhjol.strange.base.helper.LocationHelper;
 import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
@@ -62,8 +61,10 @@ public class TotemOfReturningItem extends MesonItem {
 
             player.playSound(SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, 0.8F);
             return new ActionResult<>(ActionResultType.SUCCESS, held);
-        } else if (pos != null && !world.isRemote) {
-            teleport(world, player, pos, dim, held);
+        } else if (pos != null) {
+            if (!world.isRemote)
+                teleport((ServerWorld)world, player, pos, dim, held);
+
             boolean destroyed = TotemHelper.destroy(player, held);
             return new ActionResult<>(ActionResultType.SUCCESS, destroyed ? ItemStack.EMPTY : held);
         } else {
@@ -73,15 +74,13 @@ public class TotemOfReturningItem extends MesonItem {
         return super.onItemRightClick(world, player, hand);
     }
 
-    public static void teleport(World world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack) {
-        if (!world.isRemote) {
-            LocationHelper.addForcedChunk((ServerWorld)world, pos);
-            if (getGenerated(stack)) {
-                PlayerHelper.teleportSurface(player, pos, dim, TotemOfReturningItem::onTeleport);
-            } else {
-                PlayerHelper.teleport(player, pos, dim, TotemOfReturningItem::onTeleport);
-            }
-            LocationHelper.removeForcedChunk((ServerWorld)world, pos);
+    public static void teleport(ServerWorld world, PlayerEntity player, BlockPos pos, int dim, ItemStack stack) {
+        if (getGenerated(stack)) {
+//                LocationHelper.addForcedChunk((ServerWorld)world, pos);
+            PlayerHelper.teleportSurface(player, pos, dim, TotemOfReturningItem::onTeleport);
+//                LocationHelper.removeForcedChunk((ServerWorld)world, pos);
+        } else {
+            PlayerHelper.teleport(player, pos, dim, TotemOfReturningItem::onTeleport);
         }
     }
 
