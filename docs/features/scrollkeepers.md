@@ -27,7 +27,7 @@ When you complete all the quest actions, return to the scrollkeeper.  They will 
 
 The following **might** happen, depending on the situation:
 * the villager's XP will increase, possibly increasing their level
-* a raid begins (normally this is super rare - see below)
+* a raid begins (normally this is rare - see below)
 
 **NOTE**: When you accept a quest from a scroll sold by a particular scrollkeeper, you must return to the **same scrollkeeper** to hand in the quest.  If you find a scroll in the world somewhere, for example in dungeon loot, you can hand in the quest to **any scrollkeeper** to increase their XP.  
 
@@ -53,7 +53,7 @@ Remember, it could take considerable effort and loyalty to increase the level of
 
 Illagers **don't want** scrollkeepers to level up to "master".  At the highest level, scrollkeepers offer you quests that reward you with a [Totem of Returning]({{ site.baseurl }}/features/totem_of_returning) that teleports you to a distant [Stone Circle]({{ site.baseurl }}/features/stone_circles) - potentially giving you access to rare treasure.
 
-As a result, there is a very small chance for a raid to begin every time you complete a quest.  The higher the level of the scrollkeeper, the greater the chance and ferocity of the incoming raid.
+As a result, there is a very small chance for a raid to begin every time you hand-in a quest to a villager of level **Journeyman or higher**.  The higher the level of the scrollkeeper, the greater the chance and ferocity of the incoming raid.
 
 ## See also
 

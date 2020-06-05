@@ -7,8 +7,6 @@ title: Totem of Shielding
 
 This orange totem grants protection against all damage types.  It has durability similar to the [Totem of Flying]({{ site.baseurl }}/features/totem_of_flying) and cannot be repaired.  It is obtainable via:
 * A treasure chest in the [Vaults]({{ site.baseurl }}/features/vaults) (common)
-* A treasure chest at the centre of a [Stone Circle]({{ site.baseurl }}/features/stone_circles) in the Nether or End (common)
-* A barrel or crate in the Vaults (rare)
 * An [Illusioner]({{ site.baseurl }}/features/illusioners) drop (rare)
 
 ## Using the totem

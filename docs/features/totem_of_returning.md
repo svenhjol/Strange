@@ -7,8 +7,6 @@ title: Totem of Returning
 
 This purple totem is a single-use teleporter and is obtainable via:
 * A treasure chest in the [Vaults]({{ site.baseurl }}/features/vaults) (common)
-* A treasure chest at the centre of a [Stone Circle]({{ site.baseurl }}/features/stone_circles) in the Nether or End (common)
-* A barrel or crate in the Vaults (rare)
 * An [Illusioner]({{ site.baseurl }}/features/illusioners) drop (rare)
 * Reward for a Tier 5 (diamond) [Quest]({{ site.baseurl }}/features/scrollkeeper), bound to a distant [Stone Circle]({{ site.baseurl }}/features/stone_circles)
 
@@ -24,7 +22,7 @@ Some [Quests]({{ site.baseurl }}/features/quests) provide a pre-bound totem as a
 
 ## Using a totem with a travel journal
 
-If you have a Totem of Returning in your inventory while you are looking at a [Travel Journal]({{ site.baseurl }}/features/travel_journal), a small icon of the totem will appear next to all journal entries.  You may click this icon to teleport yourself instantly to the travel journal location, consuming the totem in the process.
+If you have a Totem of Returning in your inventory while you are looking at a [Travel Journal]({{ site.baseurl }}/features/travel_journal), a small icon of the totem will appear on all journal entries.  You may click this icon to teleport yourself instantly to the travel journal location, consuming the totem in the process.
 
 ## Trading
 

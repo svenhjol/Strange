@@ -13,11 +13,7 @@ Stone Circles are usually found quite close to each other but if you are in a fo
 
 ## In the Outerlands
 
-If you find a stone circle in [The Outerlands]({{ site.baseurl }}/features/outerlands) there is chance that you fill find a map to nearby [Vaults]({{ site.baseurl }}/features/vaults) in a chest at the centre of the circle.  Vaults contain some of the greatest treasure and artifacts that *Strange* has to offer, hidden inside a large labyrinth of corridors and rooms, patrolled with illagers and challenging mobs.  Read more about the Vaults [here]({{ site.baseurl }}/features/vaults).
-
-## Finding Stone Circles
-
-It is possible to obtain a special compass to the closest stone circle by holding a normal compass and an iron ingot under a full moon.  This compass can be turned back into a normal compass on a crafting table.  This feature only works if Charm's "Bound Compasses" feature is enabled. 
+If you find a stone circle in [The Outerlands]({{ site.baseurl }}/features/outerlands) there is chance that there will be [Vaults]({{ site.baseurl }}/features/vaults) beneath them.  Vaults contain some of the greatest treasure and artifacts that *Strange* has to offer, hidden inside a large labyrinth of corridors and rooms, patrolled with illagers and challenging mobs.  Read more about the Vaults [here]({{ site.baseurl }}/features/vaults).
 
 ## Notes
 
