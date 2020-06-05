@@ -1,3 +1,16 @@
+## 1.0.0 beta 5
+* Fixed vault chests being empty when disabling totems. Fixes #56
+* Added compatiblity with Java 9+
+* Added Ender Geodes, Amethyst and Moonstones
+* Added Rune Portals
+* Added Travel Journal pages for sharing entries.
+* Removed old beta 4 portal runestones and obelisks.  This will cause registration warnings in existing worlds.
+* Rebuild of Travel Journal client.
+* Vaults now spawn under stone circles again.  `strange:vaults` has been deregistered and *may* cause registration warnings or world corruption when upgrading from an old beta.
+* Tweak scrollkeeper raids. No longer raids until Journeyman.
+* Totem of Returning rewards no longer embed the player under the earth.
+* Chunk preloading for teleport via runestones.
+
 ## 1.0.0 beta 4
 * World hang when doing `/locate` in non-vanilla dimension (1.14 only). Fixes #22
 * "Fetch" quests were starting even though the start conditions were invalid. #28
