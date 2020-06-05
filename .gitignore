@@ -65,3 +65,4 @@ debugclient.sh
 copydeps.sh
 
 src/main/resources/data/strange/disabled/*
+*.code-workspace
