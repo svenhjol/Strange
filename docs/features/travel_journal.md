@@ -35,8 +35,6 @@ You can click the paper and quill icon next to the location you want to edit.  T
 
 ## Finding your way back
 
-![Travel Journal main page](https://i.postimg.cc/hG1RYS6m/Travel-Journal-Overview.jpg){: .center-image }
-
 With lots of location entries in your journal it can be difficult to remember how to get back to them!
 
 ### By compass
