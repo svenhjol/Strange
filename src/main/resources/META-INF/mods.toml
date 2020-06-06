@@ -17,14 +17,14 @@ authors="svenhjol"
 [[dependencies.strange]]
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[28.2,)" #mandatory
+    versionRange="[31.2,)" #mandatory
     ordering="NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     side="BOTH" # Side this dependency is applied on - BOTH, CLIENT or SERVER
 
 [[dependencies.strange]]
     modId="charm" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.15.2-1.5.8,)" #mandatory
+    versionRange="[1.15.2-1.5.9,)" #mandatory
     ordering="AFTER" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     side="BOTH" # Side this dependency is applied on - BOTH, CLIENT or SERVER
 
