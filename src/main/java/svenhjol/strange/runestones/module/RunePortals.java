@@ -218,12 +218,12 @@ public class RunePortals extends MesonModule {
 
                 String key = keyBuilder.toString();
                 if (key.length() != 12) {
-                    RunestoneHelper.runeError(world, pos, player);
+                    RunestoneHelper.runeError(world, pos, false, player);
                     return false;
                 }
 
                 if (!data.positions.containsKey(key) || !data.dimensions.containsKey(key)) {
-                    RunestoneHelper.runeError(world, pos, player);
+                    RunestoneHelper.runeError(world, pos, false, player);
                     return false;
                 }
 

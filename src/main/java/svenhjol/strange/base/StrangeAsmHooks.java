@@ -4,6 +4,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.structure.Structure;
+import svenhjol.strange.base.module.Debug;
 import svenhjol.strange.enchantments.enchantment.BaseTreasureEnchantment;
 import svenhjol.strange.enchantments.module.TreasureEnchantments;
 
@@ -35,5 +38,13 @@ public class StrangeAsmHooks {
                 return ItemStack.EMPTY;
         }
         return stack;
+    }
+
+    public static void startLocating(World world, Structure<?> structure) {
+        Debug.startLocating(structure);
+    }
+
+    public static boolean shouldStopLocating(World world, Structure<?> structure) {
+        return Debug.shouldStopLocating(structure);
     }
 }

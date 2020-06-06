@@ -11,6 +11,7 @@ import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.runestones.module.Runestones;
 import svenhjol.strange.runestones.tileentity.RunestoneTileEntity;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -32,6 +33,7 @@ public class Destination {
         return this.structure.equals(RunestoneHelper.SPAWN);
     }
 
+    @Nullable
     public BlockPos getAndRecordDestination(ServerWorld world, BlockPos runePos, Random rand) {
         // does the runestone have a destination already stored?
         TileEntity tile = world.getTileEntity(runePos);
@@ -81,9 +83,10 @@ public class Destination {
         } else {
             String structureName = getStructureName();
             foundPos = world.findNearestStructure(structureName, currentLocation, Runestones.maxDist, true);
+
             if (foundPos == null) {
-                Strange.LOG.warn("World could not locate structure " + structureName + ", defaulting to spawn position.");
-                foundPos = world.getSpawnPoint();
+                Strange.LOG.warn("World could not locate structure " + structureName);
+                return null;
             }
         }
 

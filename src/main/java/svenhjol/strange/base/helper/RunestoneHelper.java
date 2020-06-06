@@ -1,5 +1,6 @@
 package svenhjol.strange.base.helper;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -15,6 +16,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.outerlands.module.Outerlands;
 import svenhjol.strange.traveljournal.Entry;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class RunestoneHelper {
@@ -153,8 +155,13 @@ public class RunestoneHelper {
         return !discovered.equals(NO_RUNES);
     }
 
-    public static void runeError(World world, BlockPos pos, PlayerEntity player) {
-        player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
-        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 2.5D, pos.getZ() + 0.5D, 0.75F, Explosion.Mode.NONE);
+    public static void runeError(World world, BlockPos pos, boolean destroyBlock, @Nullable PlayerEntity player) {
+        if (player != null)
+            player.addPotionEffect(new EffectInstance(Effects.NAUSEA, 5 * 20));
+
+        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, 1.25F, Explosion.Mode.DESTROY);
+
+        if (destroyBlock)
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
     }
 }

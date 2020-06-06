@@ -53,6 +53,7 @@ import svenhjol.strange.runestones.block.RunestoneBlock;
 import svenhjol.strange.runestones.capability.*;
 import svenhjol.strange.runestones.tileentity.RunestoneTileEntity;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.RUNESTONES, hasSubscriptions = true,
@@ -172,8 +173,10 @@ public class Runestones extends MesonModule {
             }
 
             if (block instanceof RunestoneBlock) {
-                prepareTeleport((ServerWorld)world, pos, player);
-                effectActivate(world, pos);
+                boolean success = prepareTeleport((ServerWorld)world, pos, player);
+
+                if (success)
+                    effectActivate(world, pos);
             }
         }
     }
@@ -323,6 +326,7 @@ public class Runestones extends MesonModule {
         return rune;
     }
 
+    @Nullable
     private BlockPos getRuneDestination(ServerWorld world, BlockPos pos) {
         int runeValue = getRuneValue(world, pos);
 
@@ -333,23 +337,28 @@ public class Runestones extends MesonModule {
         return destination.getAndRecordDestination(world, pos, rand);
     }
 
-    private void prepareTeleport(ServerWorld world, BlockPos pos, PlayerEntity player) {
+    private boolean prepareTeleport(ServerWorld world, BlockPos pos, PlayerEntity player) {
         BlockState state = world.getBlockState(pos);
         BlockPos destPos = getRuneDestination(world, pos);
+
+        if (destPos == null) {
+            RunestoneHelper.runeError(world, pos, true, player);
+            return false;
+        }
 
         int rune = getRuneValue(world, pos);
         if (rune == -1) {
             Strange.LOG.warn("Failed to get the value of the rune.");
-            RunestoneHelper.runeError(world, pos, player);
-            return;
+            RunestoneHelper.runeError(world, pos, true, player);
+            return false;
         }
 
         // force remote chunk
         boolean result = LocationHelper.addForcedChunk(world, destPos);
         if (!result) {
             Strange.LOG.warn("Could not load destination chunk, giving up.");
-            RunestoneHelper.runeError(world, pos, player);
-            return;
+            RunestoneHelper.runeError(world, pos, true, player);
+            return false;
         }
 
         // store discovered rune against player
@@ -361,6 +370,8 @@ public class Runestones extends MesonModule {
 
         // prep player for teleport
         playerTeleportRunestone.put(player.getUniqueID(), destPos);
+
+        return true;
     }
 
     private void doTeleport(ServerWorld world, BlockPos destPos, PlayerEntity player) {

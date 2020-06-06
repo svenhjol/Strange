@@ -88,6 +88,59 @@ function initializeCoreMod() {
 
                 return method;
             }
+        },
+
+        /*
+         * Structure: limit number of ticks a structure locate runs for
+         */
+        'Structure': {
+            target: {
+                'type': 'METHOD',
+                'class': 'net.minecraft.world.gen.feature.structure.Structure',
+                'methodName': 'func_211405_a', // findNearest
+                'methodDesc': '(Lnet/minecraft/world/World;Lnet/minecraft/world/gen/ChunkGenerator;Lnet/minecraft/util/math/BlockPos;IZ)Lnet/minecraft/util/math/BlockPos;'
+            },
+            transformer: function(method) {
+                var didIstore8 = false;
+                var didIstore11 = false;
+                var arrayLength = method.instructions.size();
+                var newInstructions = new InsnList();
+                for (var i = 0; i < arrayLength; ++i) {
+                    var instruction = method.instructions.get(i)
+                    if (instruction.getOpcode() == Opcodes.ISTORE
+                        && instruction.var == 8
+                    ) {
+                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "startLocating", "(Lnet/minecraft/world/World;Lnet/minecraft/world/gen/feature/structure/Structure;)V", false));
+                        method.instructions.insert(instruction, newInstructions);
+
+                        print("[Strange ASM] Transformed Structure#findNearest +shouldStartLocating");
+                        didIstore8 = true;
+                    }
+
+                    if (instruction.getOpcode() == Opcodes.ISTORE
+                        && instruction.var == 11
+                    ) {
+                        var label = new LabelNode();
+                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                        newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                        newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, ASM_HOOKS, "shouldStopLocating", "(Lnet/minecraft/world/World;Lnet/minecraft/world/gen/feature/structure/Structure;)Z", false));
+                        newInstructions.add(new JumpInsnNode(Opcodes.IFEQ, label));
+                        newInstructions.add(new InsnNode(Opcodes.ACONST_NULL));
+                        newInstructions.add(new InsnNode(Opcodes.ARETURN));
+                        newInstructions.add(label);
+                        method.instructions.insert(instruction, newInstructions);
+
+                        print("[Strange ASM] Transformed Structure#findNearest +shouldStopLocating");
+                        didIstore11 = true;
+                    }
+
+                    if (didIstore8 && didIstore11) break;
+                }
+
+                return method;
+            }
         }
     }
 }
