@@ -53,14 +53,14 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compile fg.deobf("svenhjol.charm:Charm:${charm_version}")
+    compile fg.deobf("svenhjol.charm:Charm:${charm}")
+    compile fg.deobf("curse.maven:${autoreglib}")
+    compile fg.deobf("curse.maven:${quark}")
+    compile fg.deobf("curse.maven:${quark_oddities}")
 
-    compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei}")
 
-    compile fg.deobf("vazkii.autoreglib:AutoRegLib:${arl_version}")
-    compile fg.deobf("vazkii.quark:Quark:${quark_version}")
-    compile fg.deobf("quark-oddities:QuarkOddities:${quark_oddities_version}")
 //    compile fg.deobf("curse.maven:zombie-horse-spawn:2810326")
 //    runtimeOnly fg.deobf("com.terrag.blur:Blur:1.1.0-1")
 }
