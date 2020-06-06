@@ -25,6 +25,7 @@ import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.helper.StringHelper;
 import svenhjol.meson.iface.IMesonMessage;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.item.TotemOfReturningItem;
 import svenhjol.strange.totems.module.TotemOfReturning;
 import svenhjol.strange.traveljournal.Entry;
@@ -149,6 +150,7 @@ public class ServerTravelJournalAction implements IMesonMessage {
                         if (totem != null) {
                             TotemOfReturningItem.teleport((ServerWorld)player.world, player, entry.pos, entry.dim, totem);
                         }
+                        boolean destroyed = TotemHelper.destroy(player, held);
                     }
 
                 } else if (msg.action == BIND_COMPASS) {
