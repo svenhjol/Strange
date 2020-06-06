@@ -44,13 +44,9 @@ public class StoneCircles extends MesonModule {
         BiomeHelper.getBiomeName(Biomes.WOODED_BADLANDS_PLATEAU),
         BiomeHelper.getBiomeName(Biomes.DESERT),
         BiomeHelper.getBiomeName(Biomes.DESERT_LAKES),
-        BiomeHelper.getBiomeName(Biomes.BEACH),
-        BiomeHelper.getBiomeName(Biomes.RIVER),
         BiomeHelper.getBiomeName(Biomes.SAVANNA),
         BiomeHelper.getBiomeName(Biomes.SAVANNA_PLATEAU),
         BiomeHelper.getBiomeName(Biomes.SNOWY_TUNDRA),
-        BiomeHelper.getBiomeName(Biomes.SNOWY_BEACH),
-        BiomeHelper.getBiomeName(Biomes.FROZEN_RIVER),
         BiomeHelper.getBiomeName(Biomes.SWAMP)
     ));
 
