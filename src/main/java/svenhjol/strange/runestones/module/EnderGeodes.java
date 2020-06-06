@@ -32,7 +32,7 @@ public class EnderGeodes extends MesonModule {
     public static Placement<ChanceConfig> placement = null;
 
     @Config(name = "Chance", description = "Chance (1 in n) of a Geode spawning in a chunk.")
-    public static int chance = 35;
+    public static int chance = 50;
 
     @Override
     public void init() {
