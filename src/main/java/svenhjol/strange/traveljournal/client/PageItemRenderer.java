@@ -34,8 +34,6 @@ public class PageItemRenderer implements AutoCloseable {
     public final RenderType ENTRY_PAGE_BACKGROUND = RenderType.getText(new ResourceLocation(Strange.MOD_ID, "textures/gui/entry_page_background.png"));
     public final TextureManager textureManager;
     public final Map<String, Instance> instances = new HashMap<>();
-    private FontRenderer fr;
-    private FontRenderer gr;
 
     public PageItemRenderer(TextureManager textureManager) {
         this.textureManager = textureManager;
@@ -73,6 +71,9 @@ public class PageItemRenderer implements AutoCloseable {
     public class Instance implements AutoCloseable {
         private final Entry entry;
         private String discovered;
+        private FontRenderer fr;
+        private FontRenderer gr;
+
         protected File file = null;
         protected DynamicTexture tex = null;
         protected ResourceLocation res = null;
@@ -81,6 +82,8 @@ public class PageItemRenderer implements AutoCloseable {
         private Instance(Entry entry) {
             this.entry = entry;
             this.discovered = null;
+            fr = Minecraft.getInstance().fontRenderer;
+            gr = Minecraft.getInstance().getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
 
             try {
                 file = new File(new File(Minecraft.getInstance().gameDir, "screenshots"), entry.id + ".png");
@@ -101,7 +104,6 @@ public class PageItemRenderer implements AutoCloseable {
 
         public void renderEntryPage(Entry entry, MatrixStack matrixStack, IRenderTypeBuffer buffers, int light) {
             this.renderEntryPageBackground(matrixStack, buffers, light);
-            fr = Minecraft.getInstance().fontRenderer;
 
             if (this.renderScreenshot != null) {
                 Matrix4f matrix4f = matrixStack.getLast().getMatrix();
@@ -131,9 +133,6 @@ public class PageItemRenderer implements AutoCloseable {
 
         public void renderRunePage(Entry entry, MatrixStack matrixStack, IRenderTypeBuffer buffers, int light) {
             this.renderRunePageBackground(matrixStack, buffers, light);
-
-            fr = Minecraft.getInstance().fontRenderer;
-            gr = Minecraft.getInstance().getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
             discovered = RunestoneHelper.getDiscoveredRunesClient(entry);
 
             if (discovered.length() != 12)

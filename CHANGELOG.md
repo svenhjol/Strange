@@ -1,3 +1,6 @@
+## 1.0.0 beta 5 hotfix 1
+* Fixed crash when holding a travel journal page.
+
 ## 1.0.0 beta 5
 * Fixed vault chests being empty when disabling totems. Fixes #56
 * Added compatiblity with Java 9+
