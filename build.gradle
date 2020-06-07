@@ -60,9 +60,7 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${jei}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei}")
-
 //    compile fg.deobf("curse.maven:zombie-horse-spawn:2810326")
-//    runtimeOnly fg.deobf("com.terrag.blur:Blur:1.1.0-1")
 }
 
 repositories {
