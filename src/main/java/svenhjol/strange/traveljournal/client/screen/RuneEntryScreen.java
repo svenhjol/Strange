@@ -22,7 +22,6 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
     protected String runicName;
     protected FontRenderer glyphs;
     protected ColorVariant cycleRuneColor;
-    protected boolean atLeastOneRune;
 
     public RuneEntryScreen(Entry entry, PlayerEntity player, Hand hand) {
         super(entry.name, player, hand);
@@ -39,7 +38,6 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         if (!mc.world.isRemote) return;
         this.glyphs = mc.getFontResourceManager().getFontRenderer(Minecraft.standardGalacticFontRenderer);
         this.runicName = RunestoneHelper.getDiscoveredRunesClient(entry);
-        this.atLeastOneRune = !this.runicName.equals("????????????");
     }
 
     @Override
@@ -50,7 +48,7 @@ public class RuneEntryScreen extends BaseTravelJournalScreen {
         int y = 20;
         renderBackgroundTexture();
 
-        if (this.atLeastOneRune && entry.pos != null) {
+        if (entry.pos != null) {
             int offset = y + 1;
             String letter;
             ItemStack stack;

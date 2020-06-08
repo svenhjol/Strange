@@ -231,7 +231,7 @@ public class UpdateEntryScreen extends BaseTravelJournalScreen {
         }
 
         // button to show runes
-        if (!hasRenderedRuneButton && hasAnyRunes) {
+        if (!hasRenderedRuneButton) {
             ypos += yoffset;
             this.addButton(new ImageButton(mid + xoffset, ypos, 20, 18, 180, 0, 19, BUTTONS, (r) -> runes()));
             hasRenderedRuneButton = true;
