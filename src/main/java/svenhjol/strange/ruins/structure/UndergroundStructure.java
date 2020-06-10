@@ -10,9 +10,9 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
+import net.minecraft.world.gen.feature.structure.MarginedStructureStart;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import svenhjol.meson.Meson;
 import svenhjol.strange.Strange;
@@ -79,11 +79,11 @@ public class UndergroundStructure extends ScatteredStructure<NoFeatureConfig> {
 
     @Override
     public IStartFactory getStartFactory() {
-        return UndergroundStructure.Start::new;
+        return Start::new;
     }
 
     @SuppressWarnings("unused")
-    public static class Start extends StructureStart {
+    public static class Start extends MarginedStructureStart {
         public Start(Structure<?> structure, int chunkX, int chunkZ, MutableBoundingBox bb, int ref, long seed) {
             super(structure, chunkX, chunkZ, bb, ref, seed);
         }
