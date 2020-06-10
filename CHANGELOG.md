@@ -1,3 +1,9 @@
+## 1.0.0 beta 6
+* Fixed totem of returning not being destroyed when used. Fixes #74
+* Player can now always see the rune diagram page in travel journal. Fixes #72
+* Experimental vanilla locate fix (disabled by default). Fixes #75
+* Added `/strange learnrune` and `/strange learnall` commands
+
 ## 1.0.0 beta 5 hotfix 1
 * Fixed crash when holding a travel journal page.
 

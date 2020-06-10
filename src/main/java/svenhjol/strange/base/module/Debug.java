@@ -25,7 +25,7 @@ public class Debug extends MesonModule {
 
     @Config(name = "Enable Locate Interrupt", description = "Allows functions that look for structures in the world to quit after a number of lookups." +
         "This prevents server timeouts when locations are too far away to be found.")
-    public static boolean enableLocateInterrupt = true;
+    public static boolean enableLocateInterrupt = false;
 
     @Config(name = "Locate Interrupt maximum lookups", description = "If `Enable Locate Interrupt` is enabled, this is the maximum number of lookups before searching gives up." +
         "Set this higher to allow wider searches.")
