@@ -4,11 +4,13 @@ import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import svenhjol.meson.MesonInstance;
 import svenhjol.meson.handler.LogHandler;
 import svenhjol.strange.base.*;
+import svenhjol.strange.base.command.StrangeCommand;
 import svenhjol.strange.base.feature.StrangeJigsawPiece;
 
 @Mod(Strange.MOD_ID)
@@ -40,5 +42,10 @@ public class Strange extends MesonInstance {
     public void onClientSetup(FMLClientSetupEvent event) {
         super.onClientSetup(event);
         Strange.client = new StrangeClient();
+    }
+
+    @Override
+    public void onServerStarting(FMLServerStartingEvent event) {
+        StrangeCommand.register(event.getCommandDispatcher());
     }
 }
