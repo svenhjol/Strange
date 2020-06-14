@@ -15,13 +15,10 @@ import svenhjol.strange.base.StrangeCategories;
 import svenhjol.strange.base.helper.ItemHelper;
 import svenhjol.strange.totems.module.TotemOfReturning;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Module(mod = Strange.MOD_ID, category = StrangeCategories.CORE, alwaysEnabled = true, hasSubscriptions = true,
     description = "Internal debugging tests for Strange.")
 public class Debug extends MesonModule {
-    private final static Map<Integer, Integer> locating = new HashMap<>();
+    private static Integer locating = 0;
 
     @Config(name = "Enable Locate Interrupt", description = "Allows functions that look for structures in the world to quit after a number of lookups." +
         "This prevents server timeouts when locations are too far away to be found.")
@@ -50,26 +47,24 @@ public class Debug extends MesonModule {
     }
 
     public static void startLocating(Structure<?> structure) {
-        if (enableLocateInterrupt)
-            locating.put(structure.hashCode(), 0);
+        if (enableLocateInterrupt) {
+            locating = 0;
+            Strange.LOG.debug("Starting locate loop count");
+        }
     }
 
     public static boolean shouldStopLocating(Structure<?> structure) {
         if (!enableLocateInterrupt)
             return false;
 
-        int hash = structure.hashCode();
-
-        if (!locating.containsKey(hash))
-            return true;
-
-        Integer i = locating.get(hash);
-        if (i > locateInterruptMaxLookups) {
-            locating.remove(hash);
+        if (locating + 1 > locateInterruptMaxLookups) {
+            Strange.LOG.debug("Locate loop count hit " + locateInterruptMaxLookups);
+            locating = 0;
             return true;
         }
 
-        locating.put(hash, ++i);
+        locating++;
+
         return false;
     }
 }
