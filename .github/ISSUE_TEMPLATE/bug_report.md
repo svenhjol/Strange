@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+You must provide all the **required** information below, or your issue will be ignored/closed.
+
 **Describe the bug (required)**
 A clear and concise description of what the bug is. Has the bug been reported already?
 

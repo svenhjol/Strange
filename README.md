@@ -2,6 +2,14 @@
 
 **Strange** is a mod for Minecraft 1.15 that adds **exploration**, **adventure** and **treasure** to the game without dramatically altering the vanilla playstyle.
 
+----
+
+## Found a problem with the mod? 
+Use the [issue tracker in Github](https://github.com/svenhjol/Strange/issues) and create a new Bug Report.
+**Important**: you must provide all the required information in the Bug Report template, or your issue will be ignored/closed.  
+
+----
+
 Each feature is configurable and can be disabled, allowing you to customize your experience.
 
 Browse the [documentation and wiki](https://svenhjol.github.io/Strange/) here!
