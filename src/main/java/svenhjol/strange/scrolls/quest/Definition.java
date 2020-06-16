@@ -18,6 +18,7 @@ import java.util.Map;
 public class Definition {
     private int tier;
     private int timeLimit; // in minutes
+    private boolean builtIn;
     private String title;
     private List<String> modules;
     private List<String> locate = new ArrayList<>();
@@ -37,6 +38,10 @@ public class Definition {
 
     public int getTimeLimit() {
         return timeLimit;
+    }
+
+    public boolean isBuiltIn() {
+        return builtIn;
     }
 
     public List<String> getModules() {

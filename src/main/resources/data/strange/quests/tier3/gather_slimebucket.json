@@ -1,4 +1,5 @@
 {
+  "builtIn": true,
   "modules": [
     "quark:slime_in_a_bucket"
   ],

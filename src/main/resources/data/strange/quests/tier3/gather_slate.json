@@ -1,4 +1,5 @@
 {
+  "builtIn": true,
   "modules": [
     "quark:more_stone_variants"
   ],
