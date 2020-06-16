@@ -15,8 +15,6 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -24,9 +22,12 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.meson.iface.IMesonBlock;
+import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.message.ClientRunePortalAction;
 import svenhjol.strange.runestones.module.RunePortals;
 import svenhjol.strange.runestones.tileentity.RunePortalTileEntity;
 
@@ -95,8 +96,7 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
             int dim = tile.dimension;
             tile.markDirty();
 
-            world.playSound(null, pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.8F, 1.15F);
-            world.playSound(null, dest, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.8F, 0.9F);
+            Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.TRAVELLED, pos));
 
             PlayerEntity player = (PlayerEntity)entity;
             PlayerHelper.changeDimension(player, dim);
@@ -105,6 +105,7 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
                 int y = Math.max(-64, Math.min(1024, dest.getY()));
                 int z = Math.max(-30000000, Math.min(30000000, dest.getZ()));
                 player.setPositionAndUpdate(x, y, z);
+                Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.TRAVELLED, dest));
             });
         }
     }
