@@ -51,7 +51,7 @@ public class StoneCirclePiece extends ScatteredStructurePiece {
 //            Biome biome = BiomeHelper.getBiomeAtPos((ServerWorld)world, new BlockPos((chunkPos.getXStart() << 4) + 9, 0, (chunkPos.getZStart() << 4) + 9));
 //        }
 
-        config.radius = rand.nextInt(6) + 5;
+        config.radius = rand.nextInt(7) + 5;
         config.runeTries = 2;
         config.runeChance = 0.8F;
         config.columnMinHeight = 4;
