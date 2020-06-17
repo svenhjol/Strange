@@ -1,8 +1,8 @@
 package svenhjol.strange.scrolls.module;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
+import net.minecraft.resources.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -59,6 +59,10 @@ public class Quests extends MesonModule {
     @Config(name = "Language", description = "Language code to use for showing quest details.")
     public static String language = "en";
 
+    @Config(name = "Use built-in quests", description = "If true, built-in quests bundled with the mod will be available as scrolls. \n" +
+        "Set to false if you want to disable the built-in quests (e.g. to only use quests from a custom datapack)")
+    public static boolean useBuiltinQuests = true;
+
     @Override
     public boolean shouldRunSetup() {
         return Meson.isModuleEnabled("strange:scrolls");
@@ -70,16 +74,20 @@ public class Quests extends MesonModule {
     }
 
     public void onServerStarted(FMLServerStartedEvent event) {
-        IReloadableResourceManager rm = event.getServer().getResourceManager();
+        MinecraftServer server = event.getServer();
+        IReloadableResourceManager rm = server.getResourceManager();
 
         for (int tier = 1; tier <= Scrolls.MAX_TIERS; tier++) {
             Quests.available.put(tier, new ArrayList<>());
-            Collection<ResourceLocation> resources = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
+            Collection<ResourceLocation> serverQuests = rm.getAllResourceLocations("quests/tier" + tier, file -> file.endsWith(".json"));
 
-            for (ResourceLocation res : resources) {
+            for (ResourceLocation res : serverQuests) {
                 try {
                     IResource resource = rm.getResource(res);
                     Definition definition = Definition.deserialize(resource);
+
+                    if (definition.isBuiltIn() && !useBuiltinQuests)
+                        continue;
 
                     List<String> mods = definition.getModules();
                     if (!mods.isEmpty()) {
@@ -103,6 +111,7 @@ public class Quests extends MesonModule {
                     Strange.LOG.warn("Could not load quest for " + res.toString() + " because " + e.getMessage());
                 }
             }
+
         }
     }
 

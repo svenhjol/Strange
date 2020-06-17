@@ -8,6 +8,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonItem;
@@ -18,7 +19,7 @@ import svenhjol.strange.traveljournal.module.TravelJournal;
 
 public class TravelJournalPage extends MesonItem {
     public static final String ENTRY = "entry";
-    public static final String DISPLAY = "display";
+    public static final String FLIPPED = "flipped";
 
     public TravelJournalPage(MesonModule module) {
         super(module, "travel_journal_page", new Item.Properties()
@@ -56,8 +57,13 @@ public class TravelJournalPage extends MesonItem {
                 }
             } else {
                 int display = getDisplay(held);
-                setDisplay(held, display == 0 ? 1 : 0); // boolean behavior for now but we might add more functionality in future
-                return new ActionResult<>(ActionResultType.SUCCESS, held);
+                ITextComponent displayName = held.getDisplayName();
+
+                ItemStack flipped = held.copy();
+                setDisplay(flipped, display == 0 ? 1 : 0); // boolean behavior for now but we might add more functionality in future
+                flipped.setDisplayName(displayName);
+
+                return new ActionResult<>(ActionResultType.SUCCESS, flipped);
             }
         }
 
@@ -73,10 +79,10 @@ public class TravelJournalPage extends MesonItem {
     }
 
     public static int getDisplay(ItemStack stack) {
-        return ItemNBTHelper.getInt(stack, DISPLAY, 0);
+        return ItemNBTHelper.getInt(stack, FLIPPED, 0);
     }
 
     public static void setDisplay(ItemStack stack, int display) {
-        ItemNBTHelper.setInt(stack, DISPLAY, display);
+        ItemNBTHelper.setInt(stack, FLIPPED, display);
     }
 }

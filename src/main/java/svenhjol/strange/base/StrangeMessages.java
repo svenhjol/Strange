@@ -2,6 +2,7 @@ package svenhjol.strange.base;
 
 import svenhjol.meson.MesonInstance;
 import svenhjol.meson.handler.PacketHandler;
+import svenhjol.strange.runestones.message.ClientRunePortalAction;
 import svenhjol.strange.scrolls.message.*;
 import svenhjol.strange.totems.message.ClientTotemUpdate;
 import svenhjol.strange.totems.message.ClientTotemUpdateFlying;
@@ -26,5 +27,6 @@ public class StrangeMessages {
         handler.register(ClientTotemUpdateFlying.class, ClientTotemUpdateFlying::encode, ClientTotemUpdateFlying::decode, ClientTotemUpdateFlying.Handler::handle);
         handler.register(ClientTravelJournalEntries.class, ClientTravelJournalEntries::encode, ClientTravelJournalEntries::decode, ClientTravelJournalEntries.Handler::handle);
         handler.register(ClientTravelJournalAction.class, ClientTravelJournalAction::encode, ClientTravelJournalAction::decode, ClientTravelJournalAction.Handler::handle);
+        handler.register(ClientRunePortalAction.class, ClientRunePortalAction::encode, ClientRunePortalAction::decode, ClientRunePortalAction.Handler::handle);
     }
 }

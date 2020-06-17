@@ -6,10 +6,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,6 +27,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.enums.ColorVariant;
 import svenhjol.meson.handler.RegistryHandler;
+import svenhjol.meson.helper.ClientHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeCategories;
@@ -45,6 +48,9 @@ public class RunePortals extends MesonModule {
 
     @ObjectHolder("strange:rune_portal")
     public static TileEntityType<RunePortalTileEntity> tile;
+
+    @OnlyIn(Dist.CLIENT)
+    public static long clientTravelTicks;
 
     @Override
     public void init() {
@@ -271,5 +277,31 @@ public class RunePortals extends MesonModule {
         RunicAmethystBlock b = (RunicAmethystBlock)s.getBlock();
         order.add(b.getRuneValue());
         return true;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void effectPortalTravelled(BlockPos pos) {
+        World world = ClientHelper.getClientWorld();
+        PlayerEntity player = ClientHelper.getClientPlayer();
+        long time = world.getGameTime();
+        if (clientTravelTicks == 0 || time - clientTravelTicks > 20) {
+            BlockPos current = pos.add(-3, 0, -3);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    BlockPos p = current.add(j, 0, k);
+                    for (int i = 0; i < 6; ++i) {
+                        double d0 = world.rand.nextGaussian() * 0.1D;
+                        double d1 = world.rand.nextGaussian() * 0.1D;
+                        double d2 = world.rand.nextGaussian() * 0.1D;
+                        double dx = (float) p.getX() + MathHelper.clamp(world.rand.nextFloat(), 0.25f, 0.75f);
+                        double dy = (float) p.getY() + 0.8f;
+                        double dz = (float) p.getZ() + MathHelper.clamp(world.rand.nextFloat(), 0.25f, 0.75f);
+                        world.addParticle(ParticleTypes.CLOUD, dx, dy, dz, d0, d1, d2);
+                    }
+                }
+            }
+            world.playSound(player, pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.75F, 1.0F);
+            clientTravelTicks = time;
+        }
     }
 }

@@ -1,4 +1,5 @@
 {
+  "builtIn": true,
   "modules": [
     "quark:brimstone_underground_biome"
   ],
