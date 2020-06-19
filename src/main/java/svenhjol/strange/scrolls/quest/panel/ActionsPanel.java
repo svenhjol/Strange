@@ -1,6 +1,7 @@
 package svenhjol.strange.scrolls.quest.panel;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -17,37 +18,37 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class ActionsPanel extends BasePanel {
-    public ActionsPanel(IQuest quest, String actionId, int mid, int y, int width) {
-        super(quest, mid, width);
+    public ActionsPanel(Screen screen, IQuest quest, String actionId, int mid, int y, int width) {
+        super(screen, quest, mid, width);
 
         // TODO gammy switch needs replacing with something better
         switch (actionId) {
             case Gather.ID:
-                new GatherPanel(quest, mid, y, width);
+                new GatherPanel(screen, quest, mid, y, width);
                 break;
 
             case Craft.ID:
-                new CraftPanel(quest, mid, y, width);
+                new CraftPanel(screen, quest, mid, y, width);
                 break;
 
             case Encounter.ID:
-                new EncounterPanel(quest, mid, y, width);
+                new EncounterPanel(screen, quest, mid, y, width);
                 break;
 
             case Hunt.ID:
-                new HuntPanel(quest, mid, y, width);
+                new HuntPanel(screen, quest, mid, y, width);
                 break;
 
             case Mine.ID:
-                new MinePanel(quest, mid, y, width);
+                new MinePanel(screen, quest, mid, y, width);
                 break;
 
             case Locate.ID:
-                new LocatePanel(quest, mid, y, width);
+                new LocatePanel(screen, quest, mid, y, width);
                 break;
 
             case Fetch.ID:
-                new FetchPanel(quest, mid, y, width);
+                new FetchPanel(screen, quest, mid, y, width);
                 break;
 
             default:
@@ -57,8 +58,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class GatherPanel extends BasePanel {
-        public GatherPanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public GatherPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
             List<Condition<Gather>> toGather = quest.getCriteria().getConditions(Gather.class);
             if (toGather.isEmpty()) return;
 
@@ -85,8 +86,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class CraftPanel extends BasePanel {
-        public CraftPanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public CraftPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
             List<Condition<Craft>> toCraft = quest.getCriteria().getConditions(Craft.class);
             if (toCraft.isEmpty()) return;
 
@@ -113,8 +114,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class MinePanel extends BasePanel {
-        public MinePanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public MinePanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
             List<Condition<Mine>> toMine = quest.getCriteria().getConditions(Mine.class);
             if (toMine.isEmpty()) return;
 
@@ -141,8 +142,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class HuntPanel extends BasePanel {
-        public HuntPanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public HuntPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
 
             List<Condition<Hunt>> actions = quest.getCriteria().getConditions(Hunt.class);
             if (actions.isEmpty()) return;
@@ -171,8 +172,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class EncounterPanel extends BasePanel {
-        public EncounterPanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public EncounterPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
 
             List<Condition<Encounter>> actions = quest.getCriteria().getConditions(Encounter.class);
             if (actions.isEmpty()) return;
@@ -199,8 +200,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class LocatePanel extends BasePanel {
-        public LocatePanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public LocatePanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
             List<Condition<Locate>> toLocate = quest.getCriteria().getConditions(Locate.class);
             if (toLocate.isEmpty()) return;
 
@@ -226,8 +227,8 @@ public class ActionsPanel extends BasePanel {
     }
 
     public static class FetchPanel extends BasePanel {
-        public FetchPanel(IQuest quest, int mid, int y, int width) {
-            super(quest, mid, width);
+        public FetchPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+            super(screen, quest, mid, width);
 
             List<Condition<Fetch>> actions = quest.getCriteria().getConditions(Fetch.class);
             if (actions.isEmpty()) return;

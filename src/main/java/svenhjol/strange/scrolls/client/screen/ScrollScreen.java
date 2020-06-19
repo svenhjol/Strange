@@ -97,7 +97,8 @@ public class ScrollScreen extends Screen implements IRenderable {
             int ii = (i * 2) + 1;
             panelMid = (ii * (width / (actionIds.size() * 2)));
             panelWidth = width / ii;
-            new ActionsPanel(quest, actionIds.get(i), panelMid, panelY, panelWidth);
+
+            new ActionsPanel(this, quest, actionIds.get(i), panelMid, panelY, panelWidth);
         }
 
         boolean splitConstraintsAndRewards = false;
@@ -105,13 +106,13 @@ public class ScrollScreen extends Screen implements IRenderable {
             splitConstraintsAndRewards = true;
 
         if (splitConstraintsAndRewards) {
-            new ConstraintsPanel(quest, 3 * (width / 4), panelY + 84, 85);
-            new RewardsPanel(quest, width / 4, panelY + 84, 85);
+            new ConstraintsPanel(this, quest, 3 * (width / 4), panelY + 84, 85);
+            new RewardsPanel(this, quest, width / 4, panelY + 84, 85, mouseX, mouseY);
         } else {
             if (constraints.size() > 0)
-                new ConstraintsPanel(quest, width / 2, panelY + 84, 170);
+                new ConstraintsPanel(this, quest, width / 2, panelY + 84, 170);
             if (rewards.size() > 0)
-                new RewardsPanel(quest, width / 2, panelY + 84, 170);
+                new RewardsPanel(this, quest, width / 2, panelY + 84, 170, mouseX, mouseY);
         }
 
         GlStateManager.popMatrix();

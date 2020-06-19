@@ -144,7 +144,7 @@
   "gui.strange.quests.fetch_origin": "Bring to %s %s",
   "gui.strange.quests.complete_within_time": "Complete within %s:%s",
   "gui.strange.quests.complete_within_seconds": "Complete within %s seconds",
-  "gui.strange.quests.reward_xp": "%s experience",
+  "gui.strange.quests.reward_xp": "Experience: %s",
   "gui.strange.quests.reward_item": "%s: %s",
   "gui.strange.quests.too_many_quests": "You must complete or quit your current quests first.",
   "gui.strange.quests.provided_items": "%s provided",

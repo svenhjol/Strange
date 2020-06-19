@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -24,8 +25,9 @@ public abstract class BasePanel extends AbstractGui {
     protected final int rowHeight = 16;
     protected final int width;
     protected final int mid;
+    protected final Screen screen;
 
-    public BasePanel(IQuest quest, int mid, int width) {
+    public BasePanel(Screen screen, IQuest quest, int mid, int width) {
         this.quest = quest;
         this.width = width;
         this.mid = mid;
@@ -33,6 +35,7 @@ public abstract class BasePanel extends AbstractGui {
         this.fonts = mc.fontRenderer;
         this.items = mc.getItemRenderer();
         this.textures = mc.getTextureManager();
+        this.screen = screen;
     }
 
     public void drawBackground(int x0, int x1, int y0, int y1) {

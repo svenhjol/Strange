@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.quest.panel;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,8 +16,8 @@ import java.util.List;
 
 @SuppressWarnings("rawtypes")
 public class ConstraintsPanel extends BasePanel {
-    public ConstraintsPanel(IQuest quest, int mid, int y, int width) {
-        super(quest, mid, width);
+    public ConstraintsPanel(Screen screen, IQuest quest, int mid, int y, int width) {
+        super(screen, quest, mid, width);
 
         final List<Condition<IDelegate>> constraints = quest.getCriteria().getConditions(Criteria.CONSTRAINT);
         if (constraints.isEmpty()) return;
