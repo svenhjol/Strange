@@ -14,6 +14,7 @@ import svenhjol.strange.scrolls.quest.iface.IQuest;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Reward implements IDelegate {
@@ -22,9 +23,10 @@ public class Reward implements IDelegate {
     public static final String ITEM_DATA = "itemData";
     public static final String ITEM_COUNT = "itemCount";
 
-    private int xp;
-    private Map<ItemStack, Integer> items = new HashMap<>();
+    @SuppressWarnings("SortedCollectionWithNonComparableKeys")
+    private Map<ItemStack, Integer> items = new TreeMap<>();
     private IQuest quest;
+    private int xp;
 
     @Override
     public String getId() {

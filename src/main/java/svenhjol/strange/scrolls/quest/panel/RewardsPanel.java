@@ -10,9 +10,9 @@ import svenhjol.strange.scrolls.quest.condition.Reward;
 import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class RewardsPanel extends BasePanel {
     public RewardsPanel(Screen screen, IQuest quest, int mid, int y, int width, int mouseX, int mouseY) {
@@ -43,7 +43,7 @@ public class RewardsPanel extends BasePanel {
                 }
 
                 if (rewardItems.size() > 0) {
-                    Set<ItemStack> stacks = rewardItems.keySet();
+                    List<ItemStack> stacks = new ArrayList<>(rewardItems.keySet());
 
                     // render item names
                     int cy = y;
@@ -58,11 +58,10 @@ public class RewardsPanel extends BasePanel {
                     // render item tooltips
                     cy = y;
                     for (ItemStack stack : stacks) {
-                        if (!stack.hasEffect())
-                            continue;
-
-                        if (mouseX > mid - 60 && mouseX < mid - 44
-                            && mouseY > cy - 5 && mouseY < cy + 11) {
+                        if (stack.hasEffect()
+                            && mouseX > mid - 60 && mouseX < mid - 44
+                            && mouseY > cy - 5 && mouseY < cy + 11
+                        ) {
                             screen.renderTooltip(screen.getTooltipFromItem(stack), mouseX, mouseY);
                         }
                         cy += rowHeight;

@@ -1,11 +1,9 @@
 package svenhjol.strange.base.helper;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -19,13 +17,11 @@ import svenhjol.charm.tools.module.CompassBinding;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.scrolls.module.Quests;
 import svenhjol.strange.scrolls.module.Scrollkeepers;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class QuestHelper {
@@ -57,25 +53,11 @@ public class QuestHelper {
         }
 
         stack.setDisplayName(title);
-        Objects.requireNonNull(stack.getTag()).putString(Quests.QUEST_ID, quest.getId());
         PlayerHelper.addOrDropStack(player, stack);
     }
 
     public static void giveQuestItemToPlayer(PlayerEntity player, ItemStack stack) {
         PlayerHelper.addOrDropStack(player, stack);
-    }
-
-    public static void removeQuestItemsFromPlayer(PlayerEntity player, IQuest quest) {
-        // remove the quest helper equipment like compasses, maps, etc.
-        ImmutableList<NonNullList<ItemStack>> inventories = PlayerHelper.getInventories(player);
-        inventories.forEach(inv -> inv.forEach(stack -> {
-            if (!stack.isEmpty() && stack.hasTag() && stack.getTag() != null) {
-                String questTagId = stack.getTag().getString(Quests.QUEST_ID);
-                if (questTagId.contains(quest.getId())) {
-                    stack.shrink(1);
-                }
-            }
-        }));
     }
 
     @Nullable

@@ -243,7 +243,6 @@ public class Locate implements IDelegate {
     }
 
     public boolean onEnded(PlayerEntity player) {
-        QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
         return true;
     }
 

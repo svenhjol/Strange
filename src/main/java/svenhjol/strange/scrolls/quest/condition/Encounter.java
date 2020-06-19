@@ -260,7 +260,6 @@ public class Encounter implements IDelegate {
     }
 
     public boolean onEnded(PlayerEntity player) {
-        QuestHelper.removeQuestItemsFromPlayer(player, this.quest);
         this.bossInfo.removeAllPlayers();
         World world = player.world;
         WorldHelper.clearWeather(world);
