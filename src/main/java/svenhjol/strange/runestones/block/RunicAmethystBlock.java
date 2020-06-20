@@ -11,6 +11,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.runestones.module.RunePortals;
@@ -57,5 +58,10 @@ public class RunicAmethystBlock extends BaseRunestoneBlock {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getDefaultState()
             .with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
+    @Override
+    public float getEnchantPowerBonus(BlockState state, IWorldReader world, BlockPos pos) {
+        return 1;
     }
 }
