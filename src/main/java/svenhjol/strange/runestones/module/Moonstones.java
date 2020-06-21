@@ -1,6 +1,9 @@
 package svenhjol.strange.runestones.module;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.DyeColor;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import svenhjol.charm.base.CharmCategories;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Module;
@@ -15,11 +18,15 @@ public class Moonstones extends MesonModule {
 
     @Override
     public void init() {
-//        List<DyeColor> colors = new ArrayList<>(Arrays.asList(DyeColor.MAGENTA, DyeColor.PURPLE));
         DyeColor[] colors = DyeColor.values();
 
         for (DyeColor color : colors) {
             moonstones.add(new MoonstoneBlock(this, color));
         }
+    }
+
+    @Override
+    public void onClientSetup(FMLClientSetupEvent event) {
+        moonstones.forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.getCutout()));
     }
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
-import vazkii.quark.base.handler.RenderLayerHandler;
 
 public class MoonstoneBlock extends MesonBlock {
     private DyeColor color;
@@ -36,8 +35,6 @@ public class MoonstoneBlock extends MesonBlock {
         float[] comp = color.getColorComponentValues();
         this.vec = new Vec3d(comp[0], comp[1], comp[2]);
         this.color = color;
-
-        RenderLayerHandler.setRenderType(this, RenderLayerHandler.RenderTypeSkeleton.TRANSLUCENT);
     }
 
     @Override
