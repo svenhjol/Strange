@@ -2,6 +2,8 @@ package svenhjol.strange.totems.item;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -16,6 +18,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import svenhjol.meson.MesonItem;
@@ -25,6 +29,8 @@ import svenhjol.meson.helper.WorldHelper;
 import svenhjol.strange.base.helper.TotemHelper;
 import svenhjol.strange.totems.module.TotemOfTransferring;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -124,8 +130,9 @@ public class TotemOfTransferringItem extends MesonItem {
             }
 
             putState(holdable, new CompoundNBT()); // clear the state for creative players
+            player.getCooldownTracker().setCooldown(this, 30);
+            world.playSound(null, player.getPosition(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, 1.2F);
             TotemHelper.destroy(player, holdable);
-
             return new ActionResult<>(ActionResultType.SUCCESS, holdable);
 
         } else {
@@ -168,6 +175,8 @@ public class TotemOfTransferringItem extends MesonItem {
             }
 
             putState(holdable, savedState);
+            player.getCooldownTracker().setCooldown(this, 30);
+            world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, 0.8F);
             return new ActionResult<>(ActionResultType.SUCCESS, holdable);
         }
     }
@@ -184,6 +193,20 @@ public class TotemOfTransferringItem extends MesonItem {
 
     public static void putState(ItemStack totem, CompoundNBT state) {
         ItemNBTHelper.setCompound(totem, STATE, state);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> strings, ITooltipFlag flag) {
+        if (hasState(stack)) {
+            CompoundNBT savedState = getState(stack);
+            INBT nbtState = savedState.get("state");
+            if (nbtState != null) {
+                BlockState state = NBTUtil.readBlockState((CompoundNBT) nbtState);
+                ITextComponent name = state.getBlock().getNameTextComponent();
+                strings.add(new StringTextComponent(I18n.format("totem.strange.transferring.contains", name.getString())));
+            }
+        }
+        super.addInformation(stack, world, strings, flag);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
