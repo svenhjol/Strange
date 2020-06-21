@@ -25,7 +25,7 @@ public class Vaults extends MesonModule {
     public static Structure<NoFeatureConfig> structure;
 
     @Config(name = "Vault size", description = "Vaults size. This controls how many corridors and rooms will spawn.")
-    public static int size = 8;
+    public static int size = 9;
 
     @Config(name = "Vault chance", description = "Chance of vaults generating below a stone circle.")
     public static double vaultChance = 0.33D;
