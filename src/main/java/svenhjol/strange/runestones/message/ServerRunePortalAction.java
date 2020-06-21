@@ -1,10 +1,8 @@
 package svenhjol.strange.runestones.message;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import svenhjol.meson.iface.IMesonMessage;
 
@@ -36,13 +34,9 @@ public class ServerRunePortalAction implements IMesonMessage {
     public static class Handler {
         public static void handle(final ServerRunePortalAction msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                World world;
-                ItemStack held;
-
                 NetworkEvent.Context context = ctx.get();
                 ServerPlayerEntity player = context.getSender();
                 if (player == null) return;
-
 
                 //noinspection SwitchStatementWithTooFewBranches
                 switch (msg.action) {
