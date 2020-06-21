@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
@@ -43,8 +44,9 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
         super(Properties
             .create(Material.PORTAL, MaterialColor.BLACK)
             .doesNotBlockMovement()
+            .hardnessAndResistance(-1.0F)
             .lightValue(15)
-            .hardnessAndResistance(-1.0F, 3600000.0F)
+            .notSolid()
             .noDrops()
         );
         register(module, "rune_portal");
@@ -98,13 +100,12 @@ public class RunePortalBlock extends EndPortalBlock implements IMesonBlock {
 
             Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.TRAVELLED, pos));
 
-            PlayerEntity player = (PlayerEntity)entity;
+            ServerPlayerEntity player = (ServerPlayerEntity)entity;
             PlayerHelper.changeDimension(player, dim);
+
+            player.invulnerableDimensionChange = true;
+
             PlayerHelper.teleport(player, dest, dim, p -> {
-                int x = Math.max(-30000000, Math.min(30000000, dest.getX()));
-                int y = Math.max(-64, Math.min(1024, dest.getY()));
-                int z = Math.max(-30000000, Math.min(30000000, dest.getZ()));
-                player.setPositionAndUpdate(x, y, z);
                 Meson.getInstance(Strange.MOD_ID).getPacketHandler().sendToAll(new ClientRunePortalAction(ClientRunePortalAction.TRAVELLED, dest));
             });
         }
