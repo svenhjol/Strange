@@ -1,6 +1,7 @@
 ## 1.0.0 beta 6
 * Fixed totem of returning not being destroyed when used. #74
 * Fixed repeating sounds when touching a runestone portal. #81
+* Fixed player being refused entry to a runestone portal. #71
 * Player can now always see the rune diagram page in travel journal. #72
 * Opening travel journal pages causes them to lose custom name. #79
 * Experimental vanilla locate fix (disabled by default). #75
