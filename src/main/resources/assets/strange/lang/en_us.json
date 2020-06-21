@@ -236,5 +236,6 @@
   "totem.strange.preserving.item_name": "%s (%s)",
   "totem.strange.enchanting.contains": "Contains %s XP",
   "totem.strange.returning.bound": "%s in dimension %s",
-  "totem.strange.returning.unbound": "Shift-right click to set the totem's location"
+  "totem.strange.returning.unbound": "Shift-right click to set the totem's location",
+  "totem.strange.transferring.contains": "Contains %s"
 }
