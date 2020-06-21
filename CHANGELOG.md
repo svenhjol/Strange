@@ -4,19 +4,11 @@
 * Fixed player being refused entry to a runestone portal. #71
 * Player can now always see the rune diagram page in travel journal. #72
 * Opening travel journal pages causes them to lose custom name. #79
+* Jungle Temples not valid runestone destinations, restored. This may cause some discovered runes to change from beta5.
 * Experimental vanilla locate fix (disabled by default). #75
 * Quest reward items with enchantments now show their enchantment on hover. #83
 * Quest provided items such as maps and compasses no longer expire after quest is done. #82
 * Added `/strange learnrune` and `/strange learnall` commands
-
-NOTE: If you are upgrading from **beta 5**, change the following entry in your `strange-common.toml` config file:
-```
-[Runestones.Runestones]
-    "Available destinations"
-        The value "minecraft:jungle_pyramid" changes to "minecraft:jungle_temple".
-```
-After changing this value, runestones will once more be able to link to Jungle Pyramids.
-
 
 ## 1.0.0 beta 5 hotfix 1
 * Fixed crash when holding a travel journal page.

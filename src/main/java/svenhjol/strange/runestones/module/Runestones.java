@@ -80,7 +80,7 @@ public class Runestones extends MesonModule {
         "minecraft:village",
         "minecraft:pillager_outpost",
         "minecraft:desert_pyramid",
-        "minecraft:jungle_temple",
+        "minecraft:jungle_pyramid",
         "minecraft:mineshaft",
         "minecraft:ocean_ruin",
         "minecraft:swamp_hut",
@@ -124,6 +124,11 @@ public class Runestones extends MesonModule {
             if (res.equals(RunestoneHelper.SPAWN)) {
                 addStructure = true;
             } else {
+                // work-around jungle pyramid registry nonsense
+                if (res.toString().equals("minecraft:jungle_pyramid")) {
+                    res = new ResourceLocation("jungle_temple");
+                }
+
                 Feature<?> value = ForgeRegistries.FEATURES.getValue(res);
                 addStructure = value != null;
             }
