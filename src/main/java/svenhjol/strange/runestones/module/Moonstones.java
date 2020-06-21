@@ -27,6 +27,6 @@ public class Moonstones extends MesonModule {
 
     @Override
     public void onClientSetup(FMLClientSetupEvent event) {
-        moonstones.forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.getCutout()));
+        moonstones.forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.getTranslucent()));
     }
 }
