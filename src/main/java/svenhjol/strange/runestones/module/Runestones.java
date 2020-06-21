@@ -80,7 +80,7 @@ public class Runestones extends MesonModule {
         "minecraft:village",
         "minecraft:pillager_outpost",
         "minecraft:desert_pyramid",
-        "minecraft:jungle_pyramid",
+        "minecraft:jungle_temple",
         "minecraft:mineshaft",
         "minecraft:ocean_ruin",
         "minecraft:swamp_hut",
