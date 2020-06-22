@@ -57,6 +57,7 @@ dependencies {
     compile fg.deobf("curse.maven:${autoreglib}")
     compile fg.deobf("curse.maven:${quark}")
     compile fg.deobf("curse.maven:${quark_oddities}")
+    compile fg.deobf("curse.maven:${locatebiome}")
 
     compileOnly fg.deobf("mezz.jei:jei-${jei}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei}")
