@@ -105,10 +105,11 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
         }
 
         private void generateVaults(ChunkGenerator<?> gen, TemplateManager templates, BlockPos pos) {
-            final String dir = Vaults.isValidPosition(pos) ? Vaults.VAULTS_DIR : Vaults.VAULTS_LOCAL;
+            final String dir = Vaults.VAULTS_DIR;
             final ResourceLocation start = new ResourceLocation(Strange.MOD_ID, dir + "/starts");
 
-            JigsawManager.addPieces(start, Vaults.size, VaultPiece::new, gen, templates, pos, components, rand);
+            BlockPos startPos = pos.south(rand.nextInt(3) - 6).west(rand.nextInt(3) - 6);
+            JigsawManager.addPieces(start, Vaults.size, VaultPiece::new, gen, templates, startPos, components, rand);
             this.recalculateStructureSize();
 
             int top = bounds.maxY;
