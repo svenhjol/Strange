@@ -108,7 +108,7 @@ public class StoneCircleStructure extends ScatteredStructure<NoFeatureConfig> {
             final String dir = Vaults.VAULTS_DIR;
             final ResourceLocation start = new ResourceLocation(Strange.MOD_ID, dir + "/starts");
 
-            BlockPos startPos = pos.south(rand.nextInt(3) - 6).west(rand.nextInt(3) - 6);
+            BlockPos startPos = pos.south(rand.nextInt(3) - 6).west(rand.nextInt(3) - 6).down(12);
             JigsawManager.addPieces(start, Vaults.size, VaultPiece::new, gen, templates, startPos, components, rand);
             this.recalculateStructureSize();
 
