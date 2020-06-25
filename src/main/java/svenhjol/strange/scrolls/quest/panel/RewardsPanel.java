@@ -4,6 +4,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import svenhjol.strange.scrolls.quest.Condition;
 import svenhjol.strange.scrolls.quest.Criteria;
 import svenhjol.strange.scrolls.quest.condition.Reward;
@@ -11,10 +12,15 @@ import svenhjol.strange.scrolls.quest.iface.IDelegate;
 import svenhjol.strange.scrolls.quest.iface.IQuest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class RewardsPanel extends BasePanel {
+    private static final List<String> HIDDEN_TOOLTIPS = new ArrayList<>(Arrays.asList(
+        "strange:totem_of_returning"
+    ));
+
     public RewardsPanel(Screen screen, IQuest quest, int mid, int y, int width, int mouseX, int mouseY) {
         super(screen, quest, mid, width);
 
@@ -62,6 +68,11 @@ public class RewardsPanel extends BasePanel {
                             && mouseX > mid - 60 && mouseX < mid - 44
                             && mouseY > cy - 5 && mouseY < cy + 11
                         ) {
+                            // don't show item tooltips for items in hidden
+                            ResourceLocation regName = stack.getItem().getRegistryName();
+                            if (regName != null && HIDDEN_TOOLTIPS.contains(regName.toString()))
+                                continue;
+
                             screen.renderTooltip(screen.getTooltipFromItem(stack), mouseX, mouseY);
                         }
                         cy += rowHeight;
