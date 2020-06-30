@@ -11,7 +11,7 @@
     "minecraft:oak_log": 8
   },
   "provide": {
-    "minecraft:wooden_axe Z minecraft:wooden_axe[enchanted]": 1
+    "minecraft:wooden_axe | minecraft:wooden_axe[enchanted]": 1
   },
   "rewards": {
     "items": {
