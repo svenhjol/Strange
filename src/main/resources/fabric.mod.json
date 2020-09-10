@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "strange",
+  "version": "${version}",
+
+  "name": "Strange",
+  "description": "Stranger things.",
+  "authors": [
+    "svenhjol"
+  ],
+  "contact": {
+    "homepage": "https://svenhjol.github.io/Strange/",
+    "sources": "https://github.com/svenhjol/Strange"
+  },
+
+  "license": "MIT",
+  "icon": "assets/strange/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "svenhjol.strange.Strange"
+    ]
+  },
+  "mixins": [
+    "strange.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x",
+    "charm": "2.0.*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
