@@ -1,5 +1,6 @@
 package svenhjol.strange.module;
 
+import jdk.incubator.jpackage.internal.resources.ResourceLocator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,8 +14,13 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.iface.Config;
@@ -22,6 +28,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.block.RunestoneBlock;
 import svenhjol.strange.event.ThrownEntityImpactCallback;
+import svenhjol.strange.helper.RunestoneHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +71,42 @@ public class Runestones extends MesonModule {
         ThrownEntityImpactCallback.EVENT.register(this::tryEnderPearlImpact);
     }
 
+    @Override
+    public void initWorld() {
+        List<Destination> dests = new ArrayList<>();
+
+        int j = 0;
+
+        for (int i = 0; i < numberOfRunes; i++) {
+            String dest = availableDestinations.get(j);
+            Identifier destId = new Identifier(dest);
+
+            float weight = 1.0F - (j / (float)(numberOfRunes + 10));
+            boolean addStructure;
+
+            if (destId.equals(RunestoneHelper.SPAWN)) {
+                addStructure = true;
+            } else {
+
+                Registry<ConfiguredStructureFeature<?, ?>> features = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
+                ConfiguredStructureFeature<?, ?> structure = features.get(destId);
+                addStructure = structure != null;
+            }
+
+            if (!addStructure) {
+                Meson.LOG.warn("Could not find registered structure " + dest + ", ignoring as runestone destination");
+                dests.add(new Destination(RunestoneHelper.SPAWN, weight));
+            } else {
+                dests.add(new Destination(destId, weight));
+            }
+
+            if (j++ >= availableDestinations.size() - 1)
+                j = 0;
+        }
+
+        Meson.LOG.debug(dests.toString());
+    }
+
     private ActionResult tryEnderPearlImpact(ThrownEntity entity, HitResult hitResult) {
         if (!entity.world.isClient
             && entity instanceof EnderPearlEntity
@@ -92,9 +135,11 @@ public class Runestones extends MesonModule {
 
     static class Destination {
         private Identifier structure;
+        private float weight;
 
-        public Destination(Identifier structure) {
+        public Destination(Identifier structure, float weight) {
             this.structure = structure;
+            this.weight = weight;
         }
     }
 }
