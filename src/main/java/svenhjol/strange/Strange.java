@@ -2,6 +2,8 @@ package svenhjol.strange;
 
 import svenhjol.meson.MesonMod;
 import svenhjol.meson.MesonModule;
+import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.module.Runestones;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +14,13 @@ public class Strange extends MesonMod {
     @Override
     public void onInitialize() {
         super.init(MOD_ID);
+        StrangeSounds.init(this);
     }
 
     @Override
     protected List<Class<? extends MesonModule>> getModules() {
-        return Arrays.asList();
+        return Arrays.asList(
+            Runestones.class
+        );
     }
 }
