@@ -3,6 +3,7 @@ package svenhjol.strange;
 import svenhjol.meson.MesonMod;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.module.Amethyst;
 import svenhjol.strange.module.Runestones;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class Strange extends MesonMod {
     @Override
     protected List<Class<? extends MesonModule>> getModules() {
         return Arrays.asList(
+            Amethyst.class,
             Runestones.class
         );
     }
