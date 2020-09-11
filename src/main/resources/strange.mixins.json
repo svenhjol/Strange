@@ -4,6 +4,7 @@
   "package": "svenhjol.strange.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ThrownEntityMixin"
   ],
   "client": [
   ],
