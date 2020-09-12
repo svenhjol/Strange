@@ -4,6 +4,8 @@
   "package": "svenhjol.strange.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "PlayerManagerMixin",
+    "accessor.WorldSaveHandlerAccessor"
   ],
   "client": [
   ],
