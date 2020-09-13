@@ -21,10 +21,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
@@ -37,11 +37,13 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.block.RunestoneBlock;
 import svenhjol.strange.blockentity.RunestoneBlockEntity;
+import svenhjol.strange.destination.BiomeDestination;
+import svenhjol.strange.destination.Destination;
+import svenhjol.strange.destination.StructureDestination;
 import svenhjol.strange.event.PlayerLoadDataCallback;
 import svenhjol.strange.event.PlayerSaveDataCallback;
 import svenhjol.strange.helper.RunestoneHelper;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 
@@ -67,8 +69,8 @@ public class Runestones extends MesonModule {
     @Config(name = "Travel protection time", description = "Number of seconds of regeneration and slow-fall when travelling through a runestone.")
     public static int protectionDuration = 10;
 
-    @Config(name = "Available destinations", description = "Destinations that runestones may teleport you to. The list is weighted with more likely runestones at the top.")
-    public static List<String> configDestinations = new ArrayList<>(Arrays.asList(
+    @Config(name = "Available structures", description = "Structures that runestones may teleport you to. The list is weighted with more likely structures at the top.")
+    public static List<String> configStructures = new ArrayList<>(Arrays.asList(
         "strange:spawn_point",
         "strange:stone_circle",
         "minecraft:village",
@@ -79,7 +81,18 @@ public class Runestones extends MesonModule {
         "minecraft:ocean_ruin",
         "minecraft:swamp_hut",
         "minecraft:igloo",
+        "minecraft:ruined_portal",
         "strange:underground_ruin"
+    ));
+
+    @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
+    public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
+        "minecraft:ice_spikes",
+        "minecraft:bamboo_jungle",
+        "minecraft:desert_lakes",
+        "minecraft:badlands",
+        "minecraft:mountain_edge",
+        "minecraft:giant_tree_taiga"
     ));
 
     @Override
@@ -105,6 +118,7 @@ public class Runestones extends MesonModule {
             }
         }));
 
+        // load player discovered runes from disk
         PlayerLoadDataCallback.EVENT.register(((player, playerDataDir) -> {
             UUID uid = player.getUuid();
             CompoundTag tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"));
@@ -133,23 +147,41 @@ public class Runestones extends MesonModule {
         });
 
         // setup the list of runestone destination structures
-        int j = 0;
-        for (int i = 0; i < numberOfRunes; i++) {
-            String dest = configDestinations.get(j);
-            Identifier destId = new Identifier(dest);
+        int r = 0;
+        while (r < numberOfRunes) {
+            for (int j = 0; j < configStructures.size(); j++) {
+                if (r >= numberOfRunes) break;
+                String configStructure = configStructures.get(j);
+                Identifier locationId = new Identifier(configStructure);
 
-            float weight = 1.0F - (j / (float)(numberOfRunes + 10));
-            boolean addStructure = destId.equals(RunestoneHelper.SPAWN) || StructureFeature.STRUCTURES.containsKey(destId.getPath());
+                float weight = 1.0F - (j / (float) (numberOfRunes + 10));
+                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || StructureFeature.STRUCTURES.containsKey(locationId.getPath());
 
-            if (addStructure) {
-                availableDestinations.add(new Destination(destId, weight));
-            } else {
-                Meson.LOG.warn("Could not find registered structure " + dest + ", ignoring as runestone destination");
-                availableDestinations.add(new Destination(RunestoneHelper.SPAWN, weight));
+                if (addStructure) {
+                    availableDestinations.add(new StructureDestination(locationId, weight));
+                } else {
+                    Meson.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
+                    availableDestinations.add(new StructureDestination(RunestoneHelper.SPAWN, weight));
+                }
+                r++;
             }
 
-            if (j++ >= configDestinations.size() - 1)
-                j = 0;
+            for (int j = 0; j < configBiomes.size(); j++) {
+                if (r >= numberOfRunes) break;
+                String configBiome = configBiomes.get(j);
+                Identifier locationId = new Identifier(configBiome);
+
+                float weight = 1.0F - (j / (float) (numberOfRunes + 10));
+                boolean addBiome = BuiltinRegistries.BIOME.containsId(locationId);
+
+                if (addBiome) {
+                    availableDestinations.add(new BiomeDestination(locationId, weight));
+                } else {
+                    Meson.LOG.warn("Could not find registered biome " + configBiome + ", ignoring as runestone destination");
+                    availableDestinations.add(new BiomeDestination(RunestoneHelper.SPAWN, weight));
+                }
+                r++;
+            }
         }
 
         Meson.LOG.debug(availableDestinations.toString());
@@ -200,7 +232,7 @@ public class Runestones extends MesonModule {
                 if (playerDiscoveries.containsKey(uid)) {
                     if (playerDiscoveries.get(uid).contains(runeValue)) {
                         Destination destination = destinations.get(runeValue);
-                        message = new TranslatableText("runestone.strange.known", RunestoneHelper.getFormattedStructureName(destination.structure));
+                        message = new TranslatableText("runestone.strange.known", RunestoneHelper.getFormattedLocationName(destination.getLocation()));
                     }
                 }
 
@@ -208,12 +240,12 @@ public class Runestones extends MesonModule {
                 if (blockEntity instanceof RunestoneBlockEntity) {
                     RunestoneBlockEntity runestone = (RunestoneBlockEntity)blockEntity;
 
-                    if (runestone.structure != null) {
-                        String formattedStructureName = RunestoneHelper.getFormattedStructureName(runestone.structure);
+                    if (runestone.location != null) {
+                        String formattedLocationName = RunestoneHelper.getFormattedLocationName(runestone.location);
                         if (runestone.player != null && !runestone.player.isEmpty()) {
-                            message = new TranslatableText("runestone.strange.discoveredby", formattedStructureName, runestone.player);
+                            message = new TranslatableText("runestone.strange.discoveredby", formattedLocationName, runestone.player);
                         } else {
-                            message = new TranslatableText("runestone.strange.discovered", formattedStructureName);
+                            message = new TranslatableText("runestone.strange.discovered", formattedLocationName);
                         }
                     }
                 }
@@ -339,92 +371,5 @@ public class Runestones extends MesonModule {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return -1;
         return ((RunestoneBlock)state.getBlock()).getRuneValue();
-    }
-
-    static class Destination {
-        private final Identifier structure;
-        private float weight;
-
-        public Destination(Identifier structure, float weight) {
-            this.structure = structure;
-            this.weight = weight;
-        }
-
-        public boolean isSpawnPoint() {
-            return this.structure.equals(RunestoneHelper.SPAWN);
-        }
-
-        @Nullable
-        public BlockPos getDestination(ServerWorld world, BlockPos runePos, Random random, @Nullable ServerPlayerEntity player) {
-            int maxDistance = Runestones.maxDistance;
-
-            BlockEntity blockEntity = world.getBlockEntity(runePos);
-            if (blockEntity instanceof RunestoneBlockEntity) {
-                RunestoneBlockEntity runeBlockEntity = (RunestoneBlockEntity)blockEntity;
-                BlockPos position = runeBlockEntity.position;
-                Identifier structure = runeBlockEntity.structure;
-
-                if (structure != null && position != null) {
-                    Meson.LOG.debug("Found destination in runestone: " + structure.toString());
-                    return position;
-                }
-            }
-
-            // bounds check
-            WorldBorder border = world.getWorldBorder();
-            int xdist = -maxDistance + random.nextInt(maxDistance *2);
-            int zdist = -maxDistance + random.nextInt(maxDistance *2);
-            BlockPos destPos = runePos.add(xdist, 0, zdist);
-
-            if (destPos.getX() > border.getBoundEast())
-                destPos = new BlockPos(border.getBoundEast(), destPos.getY(), destPos.getZ());
-
-            if (destPos.getX() < border.getBoundWest())
-                destPos = new BlockPos(border.getBoundWest(), destPos.getY(), destPos.getZ());
-
-            if (destPos.getZ() > border.getBoundSouth())
-                destPos = new BlockPos(destPos.getX(), destPos.getY(), border.getBoundSouth());
-
-            if (destPos.getZ() < border.getBoundNorth())
-                destPos = new BlockPos(destPos.getX(), destPos.getY(), border.getBoundNorth());
-
-            BlockPos foundPos;
-
-            if (isSpawnPoint()) {
-                foundPos = world.getSpawnPos();
-            } else {
-
-                // TODO check this works with modded structures
-                String structureId = structure.getNamespace().equals("minecraft") ? structure.getPath() : structure.toString();
-                StructureFeature<?> structureFeature = StructureFeature.STRUCTURES.get(structureId);
-
-                if (structureFeature == null) {
-                    Meson.LOG.warn("Could not find structure in registry of type: " + structure);
-                    return null;
-                }
-
-                Meson.LOG.debug("Trying to locate structure in the world: " + structure);
-                foundPos = world.locateStructure(structureFeature, destPos, 1000, false);
-            }
-
-            if (foundPos == null) {
-                Meson.LOG.warn("Could not locate structure: " + structure);
-                return null;
-            }
-
-            foundPos = RunestoneHelper.addRandomOffset(foundPos, random, 8);
-
-            if (blockEntity instanceof RunestoneBlockEntity) {
-                RunestoneBlockEntity runeBlockEntity = (RunestoneBlockEntity)blockEntity;
-                runeBlockEntity.position = foundPos;
-                runeBlockEntity.structure = this.structure;
-                runeBlockEntity.player = player != null ? player.getName().asString() : "";
-                runeBlockEntity.markDirty();
-
-                Meson.LOG.debug("Stored structure in runestone for next use");
-            }
-
-            return foundPos;
-        }
     }
 }

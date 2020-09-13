@@ -41,7 +41,7 @@ public class RunestoneHelper {
         return pos;
     }
 
-    public static String getFormattedStructureName(Identifier structureId) {
-        return StringHelper.capitalize(structureId.getPath().replaceAll("_", " "));
+    public static String getFormattedLocationName(Identifier locationId) {
+        return StringHelper.capitalize(locationId.getPath().replaceAll("_", " "));
     }
 }
