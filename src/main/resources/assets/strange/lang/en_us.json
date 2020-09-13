@@ -27,5 +27,7 @@
   "block.strange.runestone_24": "Runestone",
   "block.strange.runestone_25": "Runestone",
   "runestone.strange.unknown": "???",
-  "runestone.strange.discovered": "Discovered %s"
+  "runestone.strange.known": "%s...",
+  "runestone.strange.discovered": "Discovered %s",
+  "runestone.strange.discoveredby": "Discovered %s by <%s>"
 }
