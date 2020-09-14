@@ -2,8 +2,9 @@ package svenhjol.strange;
 
 import svenhjol.meson.MesonMod;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.base.StrangeSounds;
+import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.module.Amethyst;
+import svenhjol.strange.module.Ruins;
 import svenhjol.strange.module.Runestones;
 import svenhjol.strange.module.StoneCircles;
 
@@ -16,13 +17,14 @@ public class Strange extends MesonMod {
     @Override
     public void onInitialize() {
         super.init(MOD_ID);
-        StrangeSounds.init(this);
+        StrangeStructures.init(this);
     }
 
     @Override
     protected List<Class<? extends MesonModule>> getModules() {
         return Arrays.asList(
             Amethyst.class,
+            Ruins.class,
             Runestones.class,
             StoneCircles.class
         );
