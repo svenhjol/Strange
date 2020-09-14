@@ -87,12 +87,12 @@ public class Runestones extends MesonModule {
 
     @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
     public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
-        "minecraft:ice_spikes",
-        "minecraft:bamboo_jungle",
         "minecraft:desert_lakes",
-        "minecraft:badlands",
         "minecraft:mountain_edge",
-        "minecraft:giant_tree_taiga"
+        "minecraft:giant_tree_taiga",
+        "minecraft:badlands",
+        "minecraft:bamboo_jungle",
+        "minecraft:ice_spikes"
     ));
 
     @Override
