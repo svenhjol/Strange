@@ -4,6 +4,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.strange.helper.RunestoneHelper;
@@ -34,10 +35,7 @@ public class StructureDestination extends Destination {
         if (isSpawnPoint()) {
             foundPos = world.getSpawnPos();
         } else {
-
-            // TODO check this works with modded structures
-            String structureId = location.getNamespace().equals("minecraft") ? location.getPath() : location.toString();
-            StructureFeature<?> structureFeature = StructureFeature.STRUCTURES.get(structureId);
+            StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(location);
 
             if (structureFeature == null) {
                 Meson.LOG.warn("Could not find structure in registry of type: " + location);

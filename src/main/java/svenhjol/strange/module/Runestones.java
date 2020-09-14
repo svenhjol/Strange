@@ -25,7 +25,6 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.PlayerTickCallback;
@@ -155,7 +154,7 @@ public class Runestones extends MesonModule {
                 Identifier locationId = new Identifier(configStructure);
 
                 float weight = 1.0F - (j / (float) (numberOfRunes + 10));
-                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || StructureFeature.STRUCTURES.containsKey(locationId.getPath());
+                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || Registry.STRUCTURE_FEATURE.containsId(locationId);
 
                 if (addStructure) {
                     availableDestinations.add(new StructureDestination(locationId, weight));
@@ -183,8 +182,6 @@ public class Runestones extends MesonModule {
                 r++;
             }
         }
-
-        Meson.LOG.debug(availableDestinations.toString());
     }
 
     /**
