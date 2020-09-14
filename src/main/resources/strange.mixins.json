@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "PlayerManagerMixin",
+    "SinglePoolElementMixin",
     "accessor.WorldSaveHandlerAccessor"
   ],
   "client": [
