@@ -5,9 +5,7 @@ import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -15,6 +13,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.BiomeHelper;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.structure.StoneCircleFeature;
@@ -23,8 +22,9 @@ import svenhjol.strange.structure.StoneCircleGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-@Module(description = "Surface structures made of stone pillars with a runestone on the top.")
+@Module(description = "Circles of stone columns. Runestones may appear at the top of a column.")
 public class StoneCircles extends MesonModule {
     public static final Identifier STRUCTURE_ID = new Identifier(Strange.MOD_ID, "stone_circle");
     public static final Identifier PIECE_ID = new Identifier(Strange.MOD_ID, "stone_circle_piece");
@@ -32,6 +32,20 @@ public class StoneCircles extends MesonModule {
     public static StructurePieceType STONE_CIRCLE_PIECE;
     public static StructureFeature<DefaultFeatureConfig> STONE_CIRCLE_STRUCTURE;
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE;
+
+    @Config(name = "Available biomes", description = "Biomes that stone circles may generate in.")
+    public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
+        "minecraft:plains",
+        "minecraft:desert",
+        "minecraft:savanna",
+        "minecraft:swamp",
+        "minecraft:sunflower_plains",
+        "minecraft:flower_forest",
+        "minecraft:snowy_tundra"
+    ));
+
+    @Config(name = "Distance between stone circles", description = "Distance between stone circles. As a guide, ruined portals are 25.")
+    public static int spacing = 24;
 
     @Override
     public void register() {
@@ -43,7 +57,7 @@ public class StoneCircles extends MesonModule {
 
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE)
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
-            .defaultConfig(32, 8, 12345)
+            .defaultConfig(spacing, 8, 515122)
             .register();
 
         BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_ID, STONE_CIRCLE);
@@ -57,15 +71,9 @@ public class StoneCircles extends MesonModule {
             return;
         }
 
-        List<RegistryKey<Biome>> validBiomes = new ArrayList<>(Arrays.asList(
-            BiomeKeys.PLAINS,
-            BiomeKeys.SNOWY_TUNDRA
-        ));
-
-        validBiomes.forEach(registryKey -> {
-            // TODO biome helper add structure method that accepts a registry key
-            Biome biome = BiomeHelper.getBiomeFromBiomeKey(registryKey);
-            BiomeHelper.addStructureFeature(biome, STONE_CIRCLE);
+        configBiomes.forEach(biomeId -> {
+            Optional<Biome> biome = BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId));
+            biome.ifPresent(value -> BiomeHelper.addStructureFeature(value, STONE_CIRCLE));
         });
     }
 }
