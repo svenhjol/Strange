@@ -191,8 +191,9 @@ public class DataBlockProcessor extends StructureProcessor {
         }
 
         protected void bookshelf() {
+            IVariantMaterial variantMaterial = DecorationHelper.getRandomVariantMaterial(fixedRandom);
+
             if (Meson.enabled("charm:bookcases") && withChance(BOOKCASE_CHANCE)) {
-                IVariantMaterial variantMaterial = DecorationHelper.getRandomVariantMaterial(fixedRandom);
                 state = Bookcases.BOOKCASE_BLOCKS.get(variantMaterial).getDefaultState()
                     .with(BookcaseBlock.SLOTS, BookcaseBlockEntity.SIZE); // make it have the "full" texture
 
@@ -205,6 +206,8 @@ public class DataBlockProcessor extends StructureProcessor {
                     this.tag = new CompoundTag();
                     blockEntity.toTag(this.tag);
                 }
+            } else if (Meson.enabled("charm:variant_bookshelves")) {
+                state = VariantBookshelves.BOOKSHELF_BLOCKS.get(variantMaterial).getDefaultState();
             } else {
                 state = Blocks.BOOKSHELF.getDefaultState();
             }
