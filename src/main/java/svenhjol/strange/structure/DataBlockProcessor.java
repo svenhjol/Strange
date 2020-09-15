@@ -196,15 +196,15 @@ public class DataBlockProcessor extends StructureProcessor {
                 state = Bookcases.BOOKCASE_BLOCKS.get(variantMaterial).getDefaultState()
                     .with(BookcaseBlock.SLOTS, BookcaseBlockEntity.SIZE); // make it have the "full" texture
 
-//                if (random.nextFloat() < BOOKCASE_LOOT_CHANCE) {
-//                    BookcaseBlockEntity blockEntity = Bookcases.BLOCK_ENTITY.instantiate();
-//                    if (blockEntity == null)
-//                        return;
-//
-//                    blockEntity.setLootTable(DecorationHelper.getRandomLootTable(BOOKCASE_LOOT_TABLES, random), random.nextLong());
-//                    this.tag = new CompoundTag();
-//                    blockEntity.toTag(this.tag);
-//                }
+                if (random.nextFloat() < BOOKCASE_LOOT_CHANCE) {
+                    BookcaseBlockEntity blockEntity = Bookcases.BLOCK_ENTITY.instantiate();
+                    if (blockEntity == null)
+                        return;
+
+                    blockEntity.setLootTable(DecorationHelper.getRandomLootTable(BOOKCASE_LOOT_TABLES, random), random.nextLong());
+                    this.tag = new CompoundTag();
+                    blockEntity.toTag(this.tag);
+                }
             } else {
                 state = Blocks.BOOKSHELF.getDefaultState();
             }
