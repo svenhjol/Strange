@@ -2,9 +2,7 @@ package svenhjol.strange;
 
 import svenhjol.meson.MesonMod;
 import svenhjol.meson.MesonModule;
-import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.strange.base.StrangeStructures;
-import svenhjol.strange.helper.DecorationHelper;
 import svenhjol.strange.module.*;
 
 import java.util.Arrays;
@@ -17,11 +15,6 @@ public class Strange extends MesonMod {
     public void onInitialize() {
         super.init(MOD_ID);
         StrangeStructures.init(this);
-
-        // TODO: move to Charm
-        LoadWorldCallback.EVENT.register(server -> {
-            DecorationHelper.init();
-        });
     }
 
     @Override

@@ -23,8 +23,8 @@ import svenhjol.charm.blockentity.BookcaseBlockEntity;
 import svenhjol.charm.module.*;
 import svenhjol.meson.Meson;
 import svenhjol.meson.enums.IVariantMaterial;
+import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
-import svenhjol.strange.helper.DecorationHelper;
 import svenhjol.strange.module.EntitySpawner;
 import svenhjol.strange.module.Runestones;
 
@@ -34,8 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static svenhjol.meson.helper.DecorationHelper.*;
 import static svenhjol.strange.helper.DataBlockHelper.*;
-import static svenhjol.strange.helper.DecorationHelper.*;
 
 public class DataBlockProcessor extends StructureProcessor {
     public DataBlockResolver resolver = new DataBlockResolver();
