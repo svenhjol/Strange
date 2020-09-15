@@ -2,11 +2,10 @@ package svenhjol.strange;
 
 import svenhjol.meson.MesonMod;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.strange.base.StrangeStructures;
-import svenhjol.strange.module.Amethyst;
-import svenhjol.strange.module.Ruins;
-import svenhjol.strange.module.Runestones;
-import svenhjol.strange.module.StoneCircles;
+import svenhjol.strange.helper.DecorationHelper;
+import svenhjol.strange.module.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,12 +17,18 @@ public class Strange extends MesonMod {
     public void onInitialize() {
         super.init(MOD_ID);
         StrangeStructures.init(this);
+
+        // TODO: move to Charm
+        LoadWorldCallback.EVENT.register(server -> {
+            DecorationHelper.init();
+        });
     }
 
     @Override
     protected List<Class<? extends MesonModule>> getModules() {
         return Arrays.asList(
             Amethyst.class,
+            EntitySpawner.class,
             Ruins.class,
             Runestones.class,
             StoneCircles.class
