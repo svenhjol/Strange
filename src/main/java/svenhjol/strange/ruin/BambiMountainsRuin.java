@@ -1,82 +1,42 @@
 package svenhjol.strange.ruin;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolElement;
-import net.minecraft.structure.pool.StructurePools;
-import net.minecraft.structure.processor.StructureProcessorLists;
-import net.minecraft.util.Identifier;
-import svenhjol.strange.Strange;
+import java.util.HashMap;
+import java.util.Map;
 
-public class BambiMountainsRuin {
-    public static StructurePool STARTS;
+public class BambiMountainsRuin extends BaseRuin {
+    private final Map<String, Integer> ROOMS = new HashMap<>();
+    private final Map<String, Integer> CORRIDORS = new HashMap<>();
+    private final Map<String, Integer> ENDS = new HashMap<>();
 
-    public static void init() {
+    public BambiMountainsRuin(String modId, String ruinName) {
+        super(modId, ruinName);
 
-        // starts
-        STARTS = StructurePools.register(
-            new StructurePool(
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/starts"),
-                new Identifier("empty"),
-                ImmutableList.of(
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/start1", StructureProcessorLists.EMPTY), 1)
-                ),
-                StructurePool.Projection.RIGID
-            )
-        );
+        addStart("start1", 1);
 
-        // rooms
-        StructurePools.register(
-            new StructurePool(
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/rooms"),
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/ends"),
-                ImmutableList.of(
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_blacksmith", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_corner1", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_corner2", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_derp1", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_skeletons", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_trap", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/room_zombies", StructureProcessorLists.EMPTY), 1)
-                ),
-                StructurePool.Projection.RIGID
-            )
-        );
+        ROOMS.put("room_blacksmith", 1);
+        ROOMS.put("room_corner1", 1);
+        ROOMS.put("room_corner2", 1);
+        ROOMS.put("room_derp1", 1);
+        ROOMS.put("room_skeletons", 1);
+        ROOMS.put("room_trap", 1);
+        ROOMS.put("room_zombies", 1);
 
-        // corridors
-        StructurePools.register(
-            new StructurePool(
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/corridors"),
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/ends"),
-                ImmutableList.of(
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/corridor_hall", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/corridor_shattered", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/corridor_small", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/corridor_spawner", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/corridor_tiny", StructureProcessorLists.EMPTY), 1)
-                ),
-                StructurePool.Projection.RIGID
-            )
-        );
+        CORRIDORS.put("corridor_hall", 1);
+        CORRIDORS.put("corridor_shattered", 1);
+        CORRIDORS.put("corridor_small", 1);
+        CORRIDORS.put("corridor_spawner", 1);
+        CORRIDORS.put("corridor_tiny", 1);
 
-        // ends
-        StructurePools.register(
-            new StructurePool(
-                new Identifier(Strange.MOD_ID, "ruins/bambi_mountains/ends"),
-                new Identifier("empty"),
-                ImmutableList.of(
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_chest", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_erosion", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_potions", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_wall1", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_wall2", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_wall3", StructureProcessorLists.EMPTY), 1),
-                    Pair.of(StructurePoolElement.method_30435("strange:ruins/bambi_mountains/end_wall4", StructureProcessorLists.EMPTY), 1)
-                ),
-                StructurePool.Projection.RIGID
-            )
-        );
+        ENDS.put("end_chest", 1);
+        ENDS.put("end_erosion", 1);
+        ENDS.put("end_potions", 1);
+        ENDS.put("end_wall1", 1);
+        ENDS.put("end_wall2", 1);
+        ENDS.put("end_wall3", 1);
+        ENDS.put("end_wall4", 1);
 
+        registerPool("rooms", ROOMS);
+        registerPool("corridors", CORRIDORS);
+        registerPool("ends", ENDS);
     }
 }
