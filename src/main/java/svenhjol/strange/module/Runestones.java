@@ -60,7 +60,7 @@ public class Runestones extends MesonModule {
     public static Map<UUID, Integer> playerTeleportTicks = new HashMap<>();
     public static Map<UUID, List<Integer>> playerDiscoveries = new HashMap<>();
 
-    private static final int numberOfRunes = 26;
+    public static final int numberOfRunes = 26;
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be transported from a runestone.")
     public static int maxDistance = 4000;
