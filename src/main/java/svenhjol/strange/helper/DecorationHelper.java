@@ -46,14 +46,12 @@ public class DecorationHelper {
             LootTables.DESERT_PYRAMID_CHEST,
             LootTables.JUNGLE_TEMPLE_CHEST,
             LootTables.SIMPLE_DUNGEON_CHEST,
-            LootTables.STRONGHOLD_CORRIDOR_CHEST,
-            LootTables.FISHING_TREASURE_GAMEPLAY
+            LootTables.STRONGHOLD_CORRIDOR_CHEST
         );
 
         COMMON_LOOT_TABLES.addAll(Arrays.asList(
             LootTables.JUNGLE_TEMPLE_DISPENSER_CHEST,
-            LootTables.IGLOO_CHEST_CHEST,
-            LootTables.FISHING_JUNK_GAMEPLAY
+            LootTables.IGLOO_CHEST_CHEST
         ));
 
         COMMON_LOOT_TABLES.addAll(LootHelper.getVanillaVillageLootTables());
