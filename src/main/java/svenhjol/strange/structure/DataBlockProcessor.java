@@ -235,8 +235,8 @@ public class DataBlockProcessor extends StructureProcessor {
                 IVariantMaterial variantMaterial = DecorationHelper.getRandomVariantMaterial(random);
 
                 state = random.nextFloat() < 0.1F ?
-                    VariantChests.NORMAL_CHEST_BLOCKS.get(variantMaterial).getDefaultState() :
-                    VariantChests.TRAPPED_CHEST_BLOCKS.get(variantMaterial).getDefaultState();
+                    VariantChests.TRAPPED_CHEST_BLOCKS.get(variantMaterial).getDefaultState() :
+                    VariantChests.NORMAL_CHEST_BLOCKS.get(variantMaterial).getDefaultState();
 
             } else {
                 state = Blocks.CHEST.getDefaultState();
