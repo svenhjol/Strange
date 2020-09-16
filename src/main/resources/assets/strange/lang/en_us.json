@@ -26,6 +26,8 @@
   "block.strange.runestone_23": "Runestone",
   "block.strange.runestone_24": "Runestone",
   "block.strange.runestone_25": "Runestone",
+  "block.strange.writing_desk": "Writing Desk",
+  "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
   "runestone.strange.unknown": "???",
   "runestone.strange.known": "%s...",
   "runestone.strange.discovered": "Discovered %s",

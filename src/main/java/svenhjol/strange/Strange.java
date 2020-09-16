@@ -24,6 +24,7 @@ public class Strange extends MesonMod {
             EntitySpawner.class,
             Ruins.class,
             Runestones.class,
+            Scrollkeepers.class,
             StoneCircles.class
         );
     }

@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "strange:block/writing_desk" },
+        "facing=south": { "model": "strange:block/writing_desk", "y": 180 },
+        "facing=west":  { "model": "strange:block/writing_desk", "y": 270 },
+        "facing=east":  { "model": "strange:block/writing_desk", "y": 90 }
+    }
+}
