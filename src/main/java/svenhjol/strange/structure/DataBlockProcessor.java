@@ -401,17 +401,18 @@ public class DataBlockProcessor extends StructureProcessor {
 
             if (random.nextFloat() < 0.5F && Meson.enabled("charm:crates")) {
                 // get a crate
-                this.state = Crates.CRATE_BLOCKS.get(woodType).getDefaultState();
+                state = Crates.CRATE_BLOCKS.get(woodType).getDefaultState();
                 blockEntity = Crates.BLOCK_ENTITY.instantiate();
             } else {
                 // get a barrel
                 if (Meson.enabled("charm:variant_barrels")) {
                     // get variant barrel
-                    this.state = VariantBarrels.BARREL_BLOCKS.get(woodType).getDefaultState();
+                    state = VariantBarrels.BARREL_BLOCKS.get(woodType).getDefaultState();
                 } else {
                     // get vanilla barrel
-                    this.state = Blocks.BARREL.getDefaultState();
+                    state = Blocks.BARREL.getDefaultState();
                 }
+                state = state.with(BarrelBlock.FACING, Direction.UP);
                 blockEntity = BlockEntityType.BARREL.instantiate();
             }
 
@@ -419,9 +420,9 @@ public class DataBlockProcessor extends StructureProcessor {
                 return;
 
             Identifier lootTable = DecorationHelper.getRandomLootTable(COMMON_LOOT_TABLES, random);
-            blockEntity.setLootTable(getLootTable(this.data, lootTable), random.nextLong());
-            this.tag = new CompoundTag();
-            blockEntity.toTag(this.tag);
+            blockEntity.setLootTable(getLootTable(data, lootTable), random.nextLong());
+            tag = new CompoundTag();
+            blockEntity.toTag(tag);
         }
 
         public boolean withChance(float chance) {
