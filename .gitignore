@@ -20,6 +20,7 @@
 /src/main/main.iml
 /heap
 /libs
+!/libs/.gitkeep
 /web/node_modules
 /web/vendor
 
