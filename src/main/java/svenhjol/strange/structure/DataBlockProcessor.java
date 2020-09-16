@@ -23,6 +23,7 @@ import svenhjol.charm.blockentity.BookcaseBlockEntity;
 import svenhjol.charm.module.*;
 import svenhjol.meson.Meson;
 import svenhjol.meson.enums.IVariantMaterial;
+import svenhjol.meson.enums.VanillaVariantMaterial;
 import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
 import svenhjol.strange.module.EntitySpawner;
@@ -206,7 +207,7 @@ public class DataBlockProcessor extends StructureProcessor {
                     this.tag = new CompoundTag();
                     blockEntity.toTag(this.tag);
                 }
-            } else if (Meson.enabled("charm:variant_bookshelves")) {
+            } else if (Meson.enabled("charm:variant_bookshelves") && variantMaterial != VanillaVariantMaterial.OAK) {
                 state = VariantBookshelves.BOOKSHELF_BLOCKS.get(variantMaterial).getDefaultState();
             } else {
                 state = Blocks.BOOKSHELF.getDefaultState();
