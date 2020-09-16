@@ -1,5 +1,7 @@
 package svenhjol.strange.ruin;
 
+import svenhjol.strange.Strange;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +10,8 @@ public class BambiMountainsRuin extends BaseRuin {
     private final Map<String, Integer> CORRIDORS = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();
 
-    public BambiMountainsRuin(String modId, String ruinName) {
-        super(modId, ruinName);
+    public BambiMountainsRuin() {
+        super(Strange.MOD_ID, "bambi_mountains");
 
         addStart("start1", 1);
 
