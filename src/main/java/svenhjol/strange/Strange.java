@@ -22,6 +22,7 @@ public class Strange extends MesonMod {
         return Arrays.asList(
             Amethyst.class,
             EntitySpawner.class,
+            Quests.class,
             Ruins.class,
             Runestones.class,
             Scrollkeepers.class,
