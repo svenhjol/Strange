@@ -6,6 +6,7 @@
   "mixins": [
     "PlayerManagerMixin",
     "SinglePoolElementMixin",
+    "accessor.MinecraftServerAccessor",
     "accessor.WorldSaveHandlerAccessor"
   ],
   "client": [
