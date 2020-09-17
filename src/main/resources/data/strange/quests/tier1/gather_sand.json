@@ -1,0 +1,21 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Sand",
+      "description": "The village needs more sandcastles."
+    }
+  },
+  "gather": {
+    "minecraft:sand": 20
+  },
+  "rewards": {
+    "items": {
+      "minecraft:sandstone": 4,
+      "minecraft:emerald[common]": 1
+    },
+    "xp": {
+      "count": 20
+    }
+  }
+}
