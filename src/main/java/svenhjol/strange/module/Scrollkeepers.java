@@ -1,5 +1,6 @@
 package svenhjol.strange.module;
 
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
@@ -7,6 +8,7 @@ import net.minecraft.world.poi.PointOfInterestType;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.VillagerHelper;
 import svenhjol.meson.iface.Module;
+import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
 
@@ -27,5 +29,10 @@ public class Scrollkeepers extends MesonModule {
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
 
         // TODO: village builds for scrollkeepers
+    }
+
+    @Override
+    public void clientRegister() {
+        RenderLayersAccessor.getBlocks().put(WRITING_DESK, RenderLayer.getCutout());
     }
 }
