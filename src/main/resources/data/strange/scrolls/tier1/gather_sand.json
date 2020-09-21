@@ -9,13 +9,13 @@
   "gather": {
     "minecraft:sand": 20
   },
-  "rewards": {
+  "reward": {
     "items": {
       "minecraft:sandstone": 4,
       "minecraft:emerald[common]": 1
     },
     "xp": {
-      "count": 20
+      "level": 1
     }
   }
 }

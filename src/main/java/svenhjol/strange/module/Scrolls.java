@@ -8,16 +8,16 @@ import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
-import svenhjol.strange.quest.QuestDefinition;
+import svenhjol.strange.scroll.ScrollDefinition;
 
 import java.util.*;
 
-@Module(description = "Quests are written on scrolls and scrollkeeper villagers provide rewards for completed quests.")
-public class Quests extends MesonModule {
+@Module(description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
+public class Scrolls extends MesonModule {
     public static final int MAX_TIERS = 6;
-    public static Map<Integer, List<QuestDefinition>> AVAILABLE_QUESTS = new HashMap<>();
+    public static Map<Integer, List<ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
 
-    public static boolean useBuiltInQuests = true;
+    public static boolean useBuiltInScrolls = true;
 
     @Override
     public void init() {
@@ -28,18 +28,18 @@ public class Quests extends MesonModule {
         ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
 
         for (int tier = 1; tier <= MAX_TIERS; tier++) {
-            AVAILABLE_QUESTS.put(tier, new ArrayList<>());
-            Collection<Identifier> quests = resources.findResources("quests/tier" + tier, file -> file.endsWith(".json"));
+            AVAILABLE_SCROLLS.put(tier, new ArrayList<>());
+            Collection<Identifier> scrolls = resources.findResources("scrolls/tier" + tier, file -> file.endsWith(".json"));
 
-            for (Identifier quest : quests) {
+            for (Identifier scroll : scrolls) {
                 try {
-                    QuestDefinition definition = QuestDefinition.deserialize(resources.getResource(quest));
+                    ScrollDefinition definition = ScrollDefinition.deserialize(resources.getResource(scroll));
 
-                    // check that quest module is built-in and configured to be used
-                    if (definition.isBuiltIn() && !useBuiltInQuests)
+                    // check that scroll definition is built-in and configured to be used
+                    if (definition.isBuiltIn() && !useBuiltInScrolls)
                         continue;
 
-                    // check that quest modules are present and enabled
+                    // check that scroll modules are present and enabled
                     List<String> requiredModules = definition.getModules();
                     if (!requiredModules.isEmpty()) {
                         boolean valid = true;
@@ -47,20 +47,19 @@ public class Quests extends MesonModule {
                             valid = valid && Meson.enabled(requiredModule);
                         }
                         if (!valid) {
-                            Meson.LOG.info("Quest " + quest.toString() + " is missing required modules, disabling.");
+                            Meson.LOG.info("Scroll definition " + scroll.toString() + " is missing required modules, disabling.");
                             continue;
                         }
                     }
 
-                    String name = quest.getPath().replace("/", ".").replace(".json", "");
+                    String name = scroll.getPath().replace("/", ".").replace(".json", "");
                     definition.setTitle(name);
                     definition.setTier(tier);
-                    AVAILABLE_QUESTS.get(tier).add(definition);
-                    Meson.LOG.info("Loaded quest " + quest.toString() + " for tier " + tier);
-
+                    AVAILABLE_SCROLLS.get(tier).add(definition);
+                    Meson.LOG.info("Loaded scroll definition " + scroll.toString() + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.LOG.warn("Could not load quest for " + quest.toString() + " because " + e.getMessage());
+                    Meson.LOG.warn("Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
                 }
             }
         }

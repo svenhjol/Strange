@@ -1,4 +1,4 @@
-package svenhjol.strange.quest;
+package svenhjol.strange.scroll;
 
 import com.google.gson.Gson;
 import net.minecraft.resource.Resource;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuestDefinition {
+public class ScrollDefinition {
     private int tier;
     private int timeLimit; // in minutes
     private boolean builtIn;
@@ -20,11 +20,15 @@ public class QuestDefinition {
     private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
     private Map<String, Map<String, String>> encounter = new HashMap<>();
-    private Map<String, Map<String, String>> rewards = new HashMap<>();
+    private Map<String, Map<String, String>> reward = new HashMap<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
 
     public String getTitle() {
         return title;
+    }
+
+    public int getTier() {
+        return tier;
     }
 
     public int getTimeLimit() {
@@ -55,8 +59,8 @@ public class QuestDefinition {
         return encounter == null ? new HashMap<>() : encounter;
     }
 
-    public Map<String, Map<String, String>> getRewards() {
-        return rewards == null ? new HashMap<>() : rewards;
+    public Map<String, Map<String, String>> getReward() {
+        return reward == null ? new HashMap<>() : reward;
     }
 
     public Map<String, Map<String, String>> getLang() {
@@ -71,8 +75,8 @@ public class QuestDefinition {
         this.title = title;
     }
 
-    public static QuestDefinition deserialize(Resource resource) {
+    public static ScrollDefinition deserialize(Resource resource) {
         Reader reader = new InputStreamReader(resource.getInputStream());
-        return new Gson().fromJson(reader, QuestDefinition.class);
+        return new Gson().fromJson(reader, ScrollDefinition.class);
     }
 }
