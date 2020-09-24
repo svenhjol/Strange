@@ -1,21 +1,21 @@
-package svenhjol.strange.scroll.populate;
+package svenhjol.strange.scroll.populator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.strange.scroll.Scroll;
+import svenhjol.strange.scroll.ScrollQuest;
 import svenhjol.strange.scroll.ScrollDefinition;
 
 import java.util.*;
 
-public class RewardPopulator extends ScrollPopulator {
+public class RewardPopulator extends Populator {
     public static final String ITEMS = "items";
     public static final String XP = "xp";
     public static final String COUNT = "count";
     public static final String LEVELS = "levels";
 
-    public RewardPopulator(World world, BlockPos pos, Scroll scroll, ScrollDefinition definition) {
-        super(world, pos, scroll, definition);
+    public RewardPopulator(World world, BlockPos pos, ScrollQuest scrollQuest, ScrollDefinition definition) {
+        super(world, pos, scrollQuest, definition);
     }
 
     @Override
@@ -45,9 +45,9 @@ public class RewardPopulator extends ScrollPopulator {
             if (items.size() > 3) {
                 List<ItemStack> itemList = new ArrayList<>(items.keySet());
                 Collections.shuffle(itemList);
-                itemList.subList(0, 3).forEach(stack -> scroll.getReward().addItem(stack, items.get(stack)));
+                itemList.subList(0, 3).forEach(stack -> scrollQuest.getReward().addItem(stack, items.get(stack)));
             } else {
-                items.forEach(scroll.getReward()::addItem);
+                items.forEach(scrollQuest.getReward()::addItem);
             }
         }
 
@@ -57,7 +57,7 @@ public class RewardPopulator extends ScrollPopulator {
 
                 // reward scales the number of levels according to the rarity of the scroll
                 int levels = getCountFromValue(definition.get(LEVELS), true);
-                scroll.getReward().setXp(levels);
+                scrollQuest.getReward().setXp(levels);
             }
         }
     }
