@@ -10,6 +10,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.ScrollDefinition;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
@@ -63,5 +64,16 @@ public class Scrolls extends MesonModule {
                 }
             }
         }
+    }
+
+    @Nullable
+    public static ScrollDefinition getRandomDefinition(int tier, Random random) {
+        if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
+            Meson.LOG.warn("No scroll definitions available for this tier: " + tier);
+            return null;
+        }
+
+        List<ScrollDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        return definitions.get(random.nextInt(definitions.size()));
     }
 }
