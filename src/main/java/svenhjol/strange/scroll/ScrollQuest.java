@@ -7,7 +7,7 @@ import svenhjol.strange.helper.ScrollHelper;
 
 import java.util.UUID;
 
-public class Scroll implements IScrollSerializable {
+public class ScrollQuest implements IScrollSerializable {
     private static final String ID_TAG = "id";
     private static final String TITLE_TAG = "title";
     private static final String DESCRIPTION_TAG = "description";
@@ -24,7 +24,7 @@ public class Scroll implements IScrollSerializable {
     private int rarity = 0;
     private Reward reward = new Reward(this);
 
-    public Scroll(UUID merchant, int rarity) {
+    public ScrollQuest(UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
         this.merchant = merchant.toString();
     }
