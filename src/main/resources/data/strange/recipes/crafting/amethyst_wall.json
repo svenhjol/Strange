@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "strange:amethyst"
+    }
+  },
+  "result": {
+    "item": "strange:amethyst_wall",
+    "count": 6
+  },
+  "conditions": [
+    {
+      "type": "meson:module_enabled",
+      "module": "strange:amethyst"
+    }
+  ]
+}
