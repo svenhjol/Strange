@@ -16,11 +16,11 @@ public class Reward implements IScrollSerializable {
     public static final String XP_TAG = "xp";
 
     private int xp;
-    private Scroll scroll;
+    private ScrollQuest scrollQuest;
     private Map<ItemStack, Integer> items = new TreeMap<>();
 
-    public Reward(Scroll scroll) {
-        this.scroll = scroll;
+    public Reward(ScrollQuest scrollQuest) {
+        this.scrollQuest = scrollQuest;
     }
 
     public void complete(PlayerEntity player) {
