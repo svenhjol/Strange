@@ -45,9 +45,9 @@ public class RewardPopulator extends Populator {
             if (items.size() > 3) {
                 List<ItemStack> itemList = new ArrayList<>(items.keySet());
                 Collections.shuffle(itemList);
-                itemList.subList(0, 3).forEach(stack -> scrollQuest.getReward().addItem(stack, items.get(stack)));
+                itemList.subList(0, 3).forEach(stack -> quest.getReward().addItem(stack, items.get(stack)));
             } else {
-                items.forEach(scrollQuest.getReward()::addItem);
+                items.forEach(quest.getReward()::addItem);
             }
         }
 
@@ -57,7 +57,7 @@ public class RewardPopulator extends Populator {
 
                 // reward scales the number of levels according to the rarity of the scroll
                 int levels = getCountFromValue(definition.get(LEVELS), true);
-                scrollQuest.getReward().setXp(levels);
+                quest.getReward().setXp(levels);
             }
         }
     }

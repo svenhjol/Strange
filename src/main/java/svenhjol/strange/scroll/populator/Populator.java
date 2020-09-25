@@ -26,13 +26,13 @@ public abstract class Populator {
 
     protected final World world;
     protected final BlockPos pos;
-    protected final ScrollQuest scrollQuest;
+    protected final ScrollQuest quest;
     protected final ScrollDefinition definition;
 
-    public Populator(World world, BlockPos pos, ScrollQuest scrollQuest, ScrollDefinition definition) {
+    public Populator(World world, BlockPos pos, ScrollQuest quest, ScrollDefinition definition) {
         this.world = world;
         this.pos = pos;
-        this.scrollQuest = scrollQuest;
+        this.quest = quest;
         this.definition = definition;
     }
 
@@ -84,22 +84,22 @@ public abstract class Populator {
     public String filterRarity(String key) {
         if (key.contains(EPIC_LABEL)) {
             // epic items only have a small chance to pass, boosted by quest value
-            if (world.random.nextFloat() > (EPIC_CHANCE_BASE + (0.02F * scrollQuest.getRarity()))) return null;
+            if (world.random.nextFloat() > (EPIC_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
             return key.replace(EPIC_LABEL, "");
 
         } else if (key.contains(RARE_LABEL)) {
             // rare items only have a small chance to pass, boosted by quest value
-            if (world.random.nextFloat() > (RARE_CHANCE_BASE + (0.02F * scrollQuest.getRarity()))) return null;
+            if (world.random.nextFloat() > (RARE_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
             return key.replace(RARE_LABEL, "");
 
         } else if (key.contains(UNCOMMON_LABEL)) {
             // uncommon items pass sometimes
-            if (world.random.nextFloat() > (UNCOMMON_CHANCE_BASE + (0.05F * scrollQuest.getRarity()))) return null;
+            if (world.random.nextFloat() > (UNCOMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
             return key.replace(UNCOMMON_LABEL, "");
 
         } else if (key.contains(COMMON_LABEL)) {
             // common items pass often
-            if (world.random.nextFloat() > (COMMON_CHANCE_BASE + (0.05F * scrollQuest.getRarity()))) return null;
+            if (world.random.nextFloat() > (COMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
             return key.replace(COMMON_LABEL, "");
         }
 
@@ -133,6 +133,6 @@ public abstract class Populator {
     }
 
     public int multiplyValue(int original) {
-        return original * scrollQuest.getRarity();
+        return original * quest.getRarity();
     }
 }
