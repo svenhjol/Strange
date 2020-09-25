@@ -8,7 +8,6 @@ import svenhjol.meson.helper.PlayerHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @SuppressWarnings("SortedCollectionWithNonComparableKeys")
 public class Reward implements IScrollSerializable {
@@ -73,7 +72,7 @@ public class Reward implements IScrollSerializable {
         CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
         CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
 
-        this.items = new TreeMap<>();
+        this.items = new HashMap<>();
 
         if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
             for (int i = 0; i < dataTag.getSize(); i++) {
