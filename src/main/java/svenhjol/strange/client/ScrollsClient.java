@@ -22,12 +22,12 @@ public class ScrollsClient {
         ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_OPEN_SCROLL, (context, data) -> {
             CompoundTag questTag = data.readCompoundTag();
             context.getTaskQueue().execute(() -> {
-                tryReadQuest(questTag);
+                tryDisplayScroll(questTag);
             });
         });
     }
 
-    private void tryReadQuest(CompoundTag questTag) {
+    private void tryDisplayScroll(CompoundTag questTag) {
         ScrollQuest quest = new ScrollQuest();
         quest.fromTag(questTag);
         MinecraftClient.getInstance().openScreen(new ScrollScreen(quest));
