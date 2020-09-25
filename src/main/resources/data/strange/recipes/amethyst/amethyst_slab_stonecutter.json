@@ -4,11 +4,5 @@
     "item": "strange:amethyst"
   },
   "result": "strange:amethyst_slab",
-  "count": 1,
-  "conditions": [
-    {
-      "type": "meson:module_enabled",
-      "module": "strange:amethyst"
-    }
-  ]
+  "count": 1
 }

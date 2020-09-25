@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "strange:amethyst"
+  },
+  "result": "strange:amethyst_wall",
+  "count": 1
+}
