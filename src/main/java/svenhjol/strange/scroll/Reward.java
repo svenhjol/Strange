@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import svenhjol.meson.helper.PlayerHelper;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,7 +18,7 @@ public class Reward implements IScrollSerializable {
 
     private int xp;
     private ScrollQuest scrollQuest;
-    private Map<ItemStack, Integer> items = new TreeMap<>();
+    private Map<ItemStack, Integer> items = new HashMap<>();
 
     public Reward(ScrollQuest scrollQuest) {
         this.scrollQuest = scrollQuest;
