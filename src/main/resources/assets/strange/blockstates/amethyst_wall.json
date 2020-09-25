@@ -13,7 +13,7 @@
       "apply": { "model": "strange:block/amethyst_wall_side", "y": 180, "uvlock": true }
     },
     {   "when": { "west": "true" },
-      "apply": { "model": "strange:block/methyst_wall_side", "y": 270, "uvlock": true }
+      "apply": { "model": "strange:block/amethyst_wall_side", "y": 270, "uvlock": true }
     }
   ]
 }
