@@ -7,6 +7,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.meson.iface.Module;
+import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.ScrollDefinition;
 
@@ -17,11 +18,16 @@ import java.util.*;
 public class Scrolls extends MesonModule {
     public static final int MAX_TIERS = 6;
     public static Map<Integer, List<ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
+    public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
 
     public static boolean useBuiltInScrolls = true;
 
     @Override
     public void init() {
+        for (int i = 1; i <= MAX_TIERS; i++) {
+            SCROLL_TIERS.put(i, new ScrollItem(this, i));
+        }
+
         LoadWorldCallback.EVENT.register(this::tryLoadQuests);
     }
 
