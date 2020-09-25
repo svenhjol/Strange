@@ -7,6 +7,8 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.meson.iface.Module;
+import svenhjol.strange.Strange;
+import svenhjol.strange.client.ScrollsClient;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.ScrollDefinition;
@@ -17,9 +19,11 @@ import java.util.*;
 @Module(description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends MesonModule {
     public static final int MAX_TIERS = 6;
+    public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
     public static Map<Integer, List<ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
 
+    public static ScrollsClient client;
     public static boolean useBuiltInScrolls = true;
 
     @Override
@@ -31,10 +35,16 @@ public class Scrolls extends MesonModule {
 
     @Override
     public void init() {
-        LoadWorldCallback.EVENT.register(this::tryLoadQuests);
+        // load the scroll definitions when the world loads
+        LoadWorldCallback.EVENT.register(this::tryLoadScrolls);
     }
 
-    private void tryLoadQuests(MinecraftServer server) {
+    @Override
+    public void clientInit() {
+        this.client = new ScrollsClient(this);
+    }
+
+    private void tryLoadScrolls(MinecraftServer server) {
         ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
 
         for (int tier = 1; tier <= MAX_TIERS; tier++) {
