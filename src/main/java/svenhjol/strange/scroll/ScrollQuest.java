@@ -10,7 +10,6 @@ import java.util.UUID;
 public class ScrollQuest implements IScrollSerializable {
     private static final String ID_TAG = "id";
     private static final String TITLE_TAG = "title";
-    private static final String DESCRIPTION_TAG = "description";
     private static final String MERCHANT_TAG = "merchant";
     private static final String REWARD_TAG = "reward";
     private static final String TIER_TAG = "tier";
@@ -19,7 +18,6 @@ public class ScrollQuest implements IScrollSerializable {
     private String id = "";
     private String merchant = "";
     private String title = "";
-    private String description = "";
     private int tier = 1;
     private int rarity = 0;
     private Reward reward = new Reward(this);
@@ -37,7 +35,6 @@ public class ScrollQuest implements IScrollSerializable {
         tag.putString(MERCHANT_TAG, merchant);
         tag.putString(ID_TAG, id);
         tag.putString(TITLE_TAG, title);
-        tag.putString(DESCRIPTION_TAG, description);
         tag.put(REWARD_TAG, reward.toTag());
 
         return tag;
@@ -49,7 +46,6 @@ public class ScrollQuest implements IScrollSerializable {
         merchant = tag.getString(MERCHANT_TAG);
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
-        description = tag.getString(DESCRIPTION_TAG);
         reward.fromTag(tag.getCompound(REWARD_TAG));
     }
 
@@ -69,10 +65,6 @@ public class ScrollQuest implements IScrollSerializable {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public UUID getMerchant() {
         if (merchant.isEmpty())
             return ScrollHelper.ANY_MERCHANT;
@@ -82,6 +74,18 @@ public class ScrollQuest implements IScrollSerializable {
 
     public Reward getReward() {
         return reward;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMerchant(UUID merchant) {
+        this.merchant = merchant.toString();
+    }
+
+    public void setRarity(int rarity) {
+        this.rarity = rarity;
     }
 
     public void complete(PlayerEntity player) {
