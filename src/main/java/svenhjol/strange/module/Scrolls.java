@@ -22,14 +22,26 @@ public class Scrolls extends MesonModule {
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
     public static Map<Integer, List<ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
+    public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    public static ScrollsClient client;
+    public ScrollsClient client;
+
+    // TODO: make this a config
     public static boolean useBuiltInScrolls = true;
+
+    public Scrolls() {
+        SCROLL_TIER_IDS.put(1, "novice");
+        SCROLL_TIER_IDS.put(2, "apprentice");
+        SCROLL_TIER_IDS.put(3, "journeyman");
+        SCROLL_TIER_IDS.put(4, "expert");
+        SCROLL_TIER_IDS.put(5, "master");
+        SCROLL_TIER_IDS.put(6, "legendary");
+    }
 
     @Override
     public void register() {
-        for (int i = 1; i <= MAX_TIERS; i++) {
-            SCROLL_TIERS.put(i, new ScrollItem(this, i));
+        for (int tier = 1; tier <= MAX_TIERS; tier++) {
+            SCROLL_TIERS.put(tier, new ScrollItem(this, tier, "scroll_" + SCROLL_TIER_IDS.get(tier)));
         }
     }
 
