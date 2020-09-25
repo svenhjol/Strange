@@ -13,11 +13,5 @@
   "result": {
     "item": "strange:amethyst_stairs",
     "count": 4
-  },
-  "conditions": [
-    {
-      "type": "meson:module_enabled",
-      "module": "strange:amethyst"
-    }
-  ]
+  }
 }
