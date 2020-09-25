@@ -8,7 +8,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -28,8 +27,8 @@ public class ScrollItem extends MesonItem {
 
     private final int tier;
 
-    public ScrollItem(MesonModule module, int tier) {
-        super(module, "scroll_tier_" + tier, new Item.Settings()
+    public ScrollItem(MesonModule module, int tier, String name) {
+        super(module, name, new Item.Settings()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
             .maxCount(1)
@@ -64,7 +63,7 @@ public class ScrollItem extends MesonItem {
 
         if (hasBeenPopulated(heldScroll)) {
             // tell the client to open the scroll
-            playerShouldOpenScroll((ServerPlayerEntity)player, heldScroll);
+            playerShouldOpenScroll(player, heldScroll);
             return new TypedActionResult<>(ActionResult.SUCCESS, heldScroll);
         }
 
