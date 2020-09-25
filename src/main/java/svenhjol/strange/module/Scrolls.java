@@ -23,11 +23,14 @@ public class Scrolls extends MesonModule {
     public static boolean useBuiltInScrolls = true;
 
     @Override
-    public void init() {
+    public void register() {
         for (int i = 1; i <= MAX_TIERS; i++) {
             SCROLL_TIERS.put(i, new ScrollItem(this, i));
         }
+    }
 
+    @Override
+    public void init() {
         LoadWorldCallback.EVENT.register(this::tryLoadQuests);
     }
 
