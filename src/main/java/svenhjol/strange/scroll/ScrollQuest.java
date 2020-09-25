@@ -16,15 +16,17 @@ public class ScrollQuest implements IScrollSerializable {
     private static final String RARITY_TAG = "rarity";
 
     private String id = "";
-    private String merchant = "";
+    private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private String title = "";
     private int tier = 1;
     private int rarity = 0;
     private Reward reward = new Reward(this);
 
+    public ScrollQuest() { }
+
     public ScrollQuest(UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
-        this.merchant = merchant.toString();
+        this.merchant = merchant;
     }
 
     public CompoundTag toTag() {
@@ -32,7 +34,7 @@ public class ScrollQuest implements IScrollSerializable {
 
         tag.putInt(TIER_TAG, tier);
         tag.putInt(RARITY_TAG, rarity);
-        tag.putString(MERCHANT_TAG, merchant);
+        tag.putString(MERCHANT_TAG, merchant.toString());
         tag.putString(ID_TAG, id);
         tag.putString(TITLE_TAG, title);
         tag.put(REWARD_TAG, reward.toTag());
@@ -43,7 +45,7 @@ public class ScrollQuest implements IScrollSerializable {
     public void fromTag(CompoundTag tag) {
         tier = tag.getInt(TIER_TAG);
         rarity = tag.getInt(RARITY_TAG);
-        merchant = tag.getString(MERCHANT_TAG);
+        merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
         reward.fromTag(tag.getCompound(REWARD_TAG));
@@ -66,10 +68,7 @@ public class ScrollQuest implements IScrollSerializable {
     }
 
     public UUID getMerchant() {
-        if (merchant.isEmpty())
-            return ScrollHelper.ANY_MERCHANT;
-
-        return UUID.fromString(merchant);
+        return merchant;
     }
 
     public Reward getReward() {
@@ -81,7 +80,7 @@ public class ScrollQuest implements IScrollSerializable {
     }
 
     public void setMerchant(UUID merchant) {
-        this.merchant = merchant.toString();
+        this.merchant = merchant;
     }
 
     public void setRarity(int rarity) {
