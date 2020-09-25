@@ -25,6 +25,9 @@ public class ScrollQuestCreator {
         BlockPos pos = player.getBlockPos();
         ScrollQuest quest = new ScrollQuest(merchantUid, rarity);
 
+        quest.setTitle(definition.getTitle());
+        quest.setMerchant(merchantUid);
+
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new RewardPopulator(world, pos, quest, definition)
         ));
