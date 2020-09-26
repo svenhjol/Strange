@@ -46,7 +46,7 @@ public class ScrollItem extends MesonItem {
         if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
             return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
 
-        player.getItemCooldownManager().set(this, 40);
+        player.getItemCooldownManager().set(this, 10);
 
         if (world.isClient)
             return new TypedActionResult<>(ActionResult.PASS, heldScroll);
