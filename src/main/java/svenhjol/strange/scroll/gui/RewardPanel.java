@@ -18,25 +18,23 @@ public class RewardPanel extends BasePanel {
 
     public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
         RewardTag reward = quest.getReward();
-        int textColor = 0xFFFFFF;
-        int xp = reward.getXp();
-        int row = 16;
         Map<ItemStack, Integer> items = reward.getItems();
+        int xp = reward.getXp();
 
         // the panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.reward"), mid, top);
+        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.reward"), mid, top, titleColor);
 
-        top += row;
+        top += rowHeight;
 
         // if the reward has XP then show it here
         if (xp > 0) {
             TranslatableText text = new TranslatableText("gui.strange.quests.reward_xp", xp);
             renderItemIcon(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, top, textColor);
-            top += row;
+            top += rowHeight;
         }
 
-        // if there are items, render them out with icon and quantity
+        // if there are items, render them out with icon, name and quantity
         if (items.size() > 0) {
             ArrayList<ItemStack> stacks = new ArrayList<>(items.keySet());
 
@@ -47,7 +45,7 @@ public class RewardPanel extends BasePanel {
                 TranslatableText text = new TranslatableText("gui.strange.quests.reward_item", stack.getName(), count);
                 renderItemIcon(stack, mid - 60, baseTop - 5);
                 drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
-                baseTop += row;
+                baseTop += rowHeight;
             }
 
             // tooltips
@@ -59,7 +57,7 @@ public class RewardPanel extends BasePanel {
                 ) {
                     screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
                 }
-                baseTop += row;
+                baseTop += rowHeight;
             }
         }
     }
