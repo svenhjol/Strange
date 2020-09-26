@@ -5,14 +5,13 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.scroll.BasePanel;
 import svenhjol.strange.scroll.tag.GatherTag;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-public class GatherPanel extends BasePanel {
+public class GatherPanel extends Panel {
     public static GatherPanel INSTANCE = new GatherPanel();
 
     @Override

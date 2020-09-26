@@ -6,14 +6,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.scroll.BasePanel;
 import svenhjol.strange.scroll.tag.QuestTag;
 import svenhjol.strange.scroll.tag.RewardTag;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-public class RewardPanel extends BasePanel {
+public class RewardPanel extends Panel {
     public static RewardPanel INSTANCE = new RewardPanel();
 
     public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {

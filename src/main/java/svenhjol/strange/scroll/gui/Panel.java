@@ -1,11 +1,11 @@
-package svenhjol.strange.scroll;
+package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.scroll.tag.QuestTag;
 
-public abstract class BasePanel extends GuiHelper {
+public abstract class Panel extends GuiHelper {
     protected int textColor = 0xFFFFFF;
     protected int titleColor = 0xFFFF00;
     protected int rowHeight = 16;
