@@ -4,10 +4,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.scroll.gui.GatherPanel;
-import svenhjol.strange.scroll.gui.RewardPanel;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.scroll.gui.GatherPanel;
+import svenhjol.strange.scroll.gui.HuntPanel;
+import svenhjol.strange.scroll.gui.Panel;
+import svenhjol.strange.scroll.gui.RewardPanel;
 import svenhjol.strange.scroll.tag.QuestTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScrollScreen extends Screen {
     private final QuestTag quest;
@@ -35,9 +40,29 @@ public class ScrollScreen extends Screen {
         // draw the title at the top of the page
         GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 12, 0xFFFF88);
 
-        // render out the panels
+        // render scroll requirements panels
+        List<Panel> panels = new ArrayList<>();
+        if (quest.getGather().getItems().size() > 0)
+            panels.add(GatherPanel.INSTANCE);
+
+        if (quest.getHunt().getEntities().size() > 0)
+            panels.add(HuntPanel.INSTANCE);
+
+        int panelTop = 48;
+        int panelMid;
+        int panelWidth;
+
+        for (int i = 0; i < panels.size(); i++) {
+            int ii = (i * 2) + 1;
+            panelMid = (ii * (width / (panels.size() * 2)));
+            panelWidth = width / ii;
+
+            Panel panel = panels.get(i);
+            panel.render(this, matrices, quest, panelMid, panelWidth, panelTop, mouseX, mouseY);
+        }
+
+        // render scroll reward panel
         RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 120, mouseX, mouseY);
-        GatherPanel.INSTANCE.render(this, matrices, quest, mid, width, 30, mouseX, mouseY); // TODO: side by side
 
         super.render(matrices, mouseX, mouseY, delta);
     }

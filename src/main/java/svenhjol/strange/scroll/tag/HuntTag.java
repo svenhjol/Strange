@@ -95,6 +95,10 @@ public class HuntTag implements ITag {
         return satisfied;
     }
 
+    public Map<Identifier, String> getNames() {
+        return names;
+    }
+
     public void update(PlayerEntity player) {
         satisfied.clear();
 
@@ -103,7 +107,7 @@ public class HuntTag implements ITag {
             satisfied.put(id, countKilled >= count);
 
             if (Registry.ENTITY_TYPE.containsId(id))
-                names.put(id, Registry.ENTITY_TYPE.get(id).getName().asString());
+                names.put(id, Registry.ENTITY_TYPE.get(id).getName().getString());
         });
     }
 }
