@@ -108,6 +108,11 @@ public class Scrolls extends MesonModule {
         }
 
         List<JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        if (definitions.isEmpty()) {
+            Meson.LOG.warn("No scroll definitions found in this tier: " + tier);
+            return null;
+        }
+
         return definitions.get(random.nextInt(definitions.size()));
     }
 }
