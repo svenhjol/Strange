@@ -5,6 +5,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
+import svenhjol.strange.base.StrangeIcons;
 import svenhjol.strange.scroll.tag.GatherTag;
 import svenhjol.strange.scroll.tag.QuestTag;
 
@@ -18,6 +19,7 @@ public class GatherPanel extends Panel {
     public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
         GatherTag gather = quest.getGather();
         Map<ItemStack, Integer> items = gather.getItems();
+        Map<ItemStack, Boolean> collected = gather.getCollected();
         if (items.isEmpty())
             return; // really not ideal, should be caught earlier than this
 
@@ -34,8 +36,13 @@ public class GatherPanel extends Panel {
         for (ItemStack stack : stacks) {
             int count = items.get(stack);
             TranslatableText text = new TranslatableText("gui.strange.scrolls.gather_item", stack.getName(), count);
-            renderItemIcon(stack, mid - 60, baseTop - 5);
+            renderItemStack(stack, mid - 60, baseTop - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
+
+            // if all of this type is collected, show a tick next to it
+            if (collected.get(stack))
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 70, baseTop - 1);
+
             baseTop += rowHeight;
         }
 
