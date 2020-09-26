@@ -15,13 +15,15 @@ public class QuestTag implements IScrollTag {
     private static final String REWARD_TAG = "reward";
     private static final String TIER_TAG = "tier";
     private static final String RARITY_TAG = "rarity";
+    private static final String GATHER_TAG = "gather";
 
     private String id = "";
-    private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private String title = "";
+    private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private int tier = 1;
     private int rarity = 0;
     private RewardTag rewardTag = new RewardTag(this);
+    private GatherTag gatherTag = new GatherTag(this);
 
     public QuestTag() { }
 
@@ -39,6 +41,7 @@ public class QuestTag implements IScrollTag {
         tag.putString(ID_TAG, id);
         tag.putString(TITLE_TAG, title);
         tag.put(REWARD_TAG, rewardTag.toTag());
+        tag.put(GATHER_TAG, gatherTag.toTag());
 
         return tag;
     }
@@ -50,6 +53,7 @@ public class QuestTag implements IScrollTag {
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
         rewardTag.fromTag(tag.getCompound(REWARD_TAG));
+        gatherTag.fromTag(tag.getCompound(GATHER_TAG));
     }
 
     public String getId() {
@@ -74,6 +78,10 @@ public class QuestTag implements IScrollTag {
 
     public RewardTag getReward() {
         return rewardTag;
+    }
+
+    public GatherTag getGather() {
+        return gatherTag;
     }
 
     public void setTitle(String title) {
