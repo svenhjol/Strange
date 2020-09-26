@@ -19,7 +19,7 @@ public class GatherPanel extends Panel {
     public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
         GatherTag gather = quest.getGather();
         Map<ItemStack, Integer> items = gather.getItems();
-        Map<ItemStack, Boolean> collected = gather.getCollected();
+        Map<ItemStack, Boolean> satisfied = gather.getSatisfied();
         if (items.isEmpty())
             return; // really not ideal, should be caught earlier than this
 
@@ -40,7 +40,7 @@ public class GatherPanel extends Panel {
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // if all of this type is collected, show a tick next to it
-            if (collected.get(stack))
+            if (satisfied.get(stack))
                 renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 70, baseTop - 1);
 
             baseTop += rowHeight;

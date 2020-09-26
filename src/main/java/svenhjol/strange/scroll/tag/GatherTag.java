@@ -14,7 +14,7 @@ public class GatherTag implements ITag {
 
     private QuestTag questTag;
     private Map<ItemStack, Integer> items = new HashMap<>();
-    private Map<ItemStack, Boolean> collected = new HashMap<>(); // this is dynamically generated, not stored in nbt
+    private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
     public GatherTag(QuestTag questTag) {
         this.questTag = questTag;
@@ -29,12 +29,15 @@ public class GatherTag implements ITag {
         if (!items.isEmpty()) {
             int index = 0;
             for (ItemStack stack : items.keySet()) {
-                String stackIndex = Integer.toString(index);
+                String tagIndex = Integer.toString(index);
+                int itemCount = items.get(stack);
 
+                // write the data to the tags at the specified index
                 CompoundTag itemTag = new CompoundTag();
                 stack.toTag(itemTag);
-                dataTag.put(stackIndex, itemTag);
-                countTag.putInt(stackIndex, items.get(stack));
+                dataTag.put(tagIndex, itemTag);
+                countTag.putInt(tagIndex, itemCount);
+
                 index++;
             }
         }
@@ -49,37 +52,37 @@ public class GatherTag implements ITag {
         CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
         CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
 
-        this.items = new HashMap<>();
+        items = new HashMap<>();
 
         if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
             for (int i = 0; i < dataTag.getSize(); i++) {
-                String stackIndex = String.valueOf(i);
-                Tag tagAtIndex = dataTag.get(stackIndex);
+                String tagIndex = String.valueOf(i);
+                Tag tagAtIndex = dataTag.get(tagIndex);
 
                 if (tagAtIndex == null)
                     continue;
 
                 ItemStack stack = ItemStack.fromTag((CompoundTag)tagAtIndex);
-                int count = Math.max(countTag.getInt(stackIndex), 1);
+                int count = Math.max(countTag.getInt(tagIndex), 1);
                 items.put(stack, count);
             }
         }
     }
 
     public void addItem(ItemStack stack, int count) {
-        this.items.put(stack, count);
+        items.put(stack, count);
     }
 
     public Map<ItemStack, Integer> getItems() {
         return items;
     }
 
-    public Map<ItemStack, Boolean> getCollected() {
-        return this.collected;
+    public Map<ItemStack, Boolean> getSatisfied() {
+        return satisfied;
     }
 
-    public void updateCollected(PlayerEntity player) {
-        collected.clear();
+    public void update(PlayerEntity player) {
+        satisfied.clear();
 
         final Map<ItemStack, Integer> sum = new HashMap<>();
 
@@ -92,6 +95,6 @@ public class GatherTag implements ITag {
             }
         });
 
-        sum.forEach((stack, count) -> collected.put(stack, count >= items.get(stack)));
+        sum.forEach((stack, count) -> satisfied.put(stack, count >= items.get(stack)));
     }
 }

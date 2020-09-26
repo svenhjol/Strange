@@ -70,7 +70,7 @@ public abstract class Populator {
     }
 
     @Nullable
-    public Identifier getEntityResFromKey(String key) {
+    public Identifier getEntityIdFromKey(String key) {
         key = splitOptionalRandomly(key);
 
         key = filterRarity(key);
