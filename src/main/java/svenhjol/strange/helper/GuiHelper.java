@@ -18,7 +18,7 @@ public class GuiHelper extends DrawableHelper {
     }
 
     public static void drawCenteredTitle(MatrixStack matrices, String title, int left, int top) {
-        DrawableHelper.drawCenteredString(matrices, getTextRenderer(), title, left, top, 0xFFFFFF);
+        DrawableHelper.drawCenteredString(matrices, getTextRenderer(), title, left, top, 0xFFFF00);
     }
 
     public static void renderItemIcon(ItemStack stack, int x, int y) {
