@@ -29,6 +29,7 @@ public class QuestTag implements IScrollTag {
 
     public QuestTag(UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
+        this.rarity = rarity;
         this.merchant = merchant;
     }
 
