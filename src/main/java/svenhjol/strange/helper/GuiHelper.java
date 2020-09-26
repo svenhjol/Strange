@@ -17,8 +17,8 @@ public class GuiHelper extends DrawableHelper {
         return MinecraftClient.getInstance().textRenderer;
     }
 
-    public static void drawCenteredTitle(MatrixStack matrices, String title, int left, int top) {
-        DrawableHelper.drawCenteredString(matrices, getTextRenderer(), title, left, top, 0xFFFF00);
+    public static void drawCenteredTitle(MatrixStack matrices, String title, int left, int top, int color) {
+        DrawableHelper.drawCenteredString(matrices, getTextRenderer(), title, left, top, color);
     }
 
     public static void renderItemIcon(ItemStack stack, int x, int y) {
