@@ -6,11 +6,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestType;
 import svenhjol.meson.MesonModule;
+import svenhjol.meson.event.PlayerTickCallback;
 import svenhjol.meson.helper.VillagerHelper;
 import svenhjol.meson.iface.Module;
 import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
+import svenhjol.strange.client.ScrollKeepersClient;
 
 @Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests.")
 public class Scrollkeepers extends MesonModule {
@@ -20,6 +22,10 @@ public class Scrollkeepers extends MesonModule {
     public static WritingDeskBlock WRITING_DESK;
     public static VillagerProfession SCROLLKEEPER;
     public static PointOfInterestType POIT;
+
+    public static ScrollKeepersClient client;
+
+    public static int interestRange = 16;
 
     @Override
     public void register() {
@@ -34,5 +40,11 @@ public class Scrollkeepers extends MesonModule {
     @Override
     public void clientRegister() {
         RenderLayersAccessor.getBlocks().put(WRITING_DESK, RenderLayer.getCutout());
+    }
+
+    @Override
+    public void clientInit() {
+        client = new ScrollKeepersClient(this);
+        PlayerTickCallback.EVENT.register(player -> client.villagerInterested(player));
     }
 }
