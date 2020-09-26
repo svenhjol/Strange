@@ -1,5 +1,10 @@
 package svenhjol.strange.module;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -9,9 +14,11 @@ import svenhjol.meson.event.LoadWorldCallback;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.client.ScrollsClient;
+import svenhjol.strange.event.EntityDeathCallback;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -52,6 +59,9 @@ public class Scrolls extends MesonModule {
     public void init() {
         // load the scroll definitions when the world loads
         LoadWorldCallback.EVENT.register(this::tryLoadScrolls);
+
+        // handle entities being killed
+        EntityDeathCallback.EVENT.register(this::handleEntityDeath);
     }
 
     @Override
@@ -100,6 +110,26 @@ public class Scrolls extends MesonModule {
         }
     }
 
+    private void handleEntityDeath(LivingEntity entity, DamageSource source) {
+        Entity attacker = source.getAttacker();
+        if (!(attacker instanceof PlayerEntity))
+            return;
+
+        PlayerEntity player = (PlayerEntity)attacker;
+
+        player.inventory.main.forEach(scroll -> {
+            // read the quest data from the scroll
+            QuestTag quest = ScrollItem.getScrollQuest(scroll);
+            if (quest == null)
+                return;
+
+            quest.getHunt().playerKilledEntity(player, entity);
+
+            // write the quest back to the scroll
+            ScrollItem.setScrollQuest(scroll, quest);
+        });
+    }
+
     @Nullable
     public static JsonDefinition getRandomDefinition(int tier, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
@@ -114,5 +144,20 @@ public class Scrolls extends MesonModule {
         }
 
         return definitions.get(random.nextInt(definitions.size()));
+    }
+
+    public static List<ItemStack> getAllPlayerScrolls(PlayerEntity player) {
+        List<ItemStack> scrolls = new ArrayList<>();
+
+        player.inventory.main.forEach(stack -> {
+            if (stack.isEmpty())
+                return;
+
+            if (stack.getItem() instanceof ScrollItem) {
+                scrolls.add(stack);
+            }
+        });
+
+        return scrolls;
     }
 }

@@ -62,7 +62,7 @@ public class ScrollScreen extends Screen {
         }
 
         // render scroll reward panel
-        RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 120, mouseX, mouseY);
+        RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 128, mouseX, mouseY);
 
         super.render(matrices, mouseX, mouseY, delta);
     }

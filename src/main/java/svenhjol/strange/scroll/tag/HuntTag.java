@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -109,5 +110,16 @@ public class HuntTag implements ITag {
             if (Registry.ENTITY_TYPE.containsId(id))
                 names.put(id, Registry.ENTITY_TYPE.get(id).getName().getString());
         });
+    }
+
+    public void playerKilledEntity(PlayerEntity player, LivingEntity entity) {
+        Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+
+        if (entities.containsKey(id)) {
+            Integer count = killed.getOrDefault(id, 0);
+            killed.put(id, count + 1);
+        }
+
+        update(player);
     }
 }

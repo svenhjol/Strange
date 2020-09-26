@@ -44,7 +44,7 @@ public class HuntPanel extends Panel {
 
             // if all of this type is killed, show a tick next to it
             if (satisfied.get(entityId))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 70, baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 50, baseTop - 1);
 
             baseTop += rowHeight;
         }

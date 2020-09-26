@@ -40,8 +40,8 @@ public class GatherPanel extends Panel {
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // if all of this type is collected, show a tick next to it
-            if (satisfied.get(stack))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 70, baseTop - 1);
+            if (satisfied.containsKey(stack) && satisfied.get(stack))
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 72, baseTop - 1);
 
             baseTop += rowHeight;
         }
