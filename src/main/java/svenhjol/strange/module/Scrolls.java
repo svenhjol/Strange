@@ -11,7 +11,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.client.ScrollsClient;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
-import svenhjol.strange.scroll.ScrollDefinition;
+import svenhjol.strange.scroll.JsonDefinition;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -20,7 +20,7 @@ import java.util.*;
 public class Scrolls extends MesonModule {
     public static final int MAX_TIERS = 6;
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
-    public static Map<Integer, List<ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
+    public static Map<Integer, List<JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
@@ -28,6 +28,9 @@ public class Scrolls extends MesonModule {
 
     // TODO: make this a config
     public static boolean useBuiltInScrolls = true;
+
+    // TODO: make this a config
+    public static String language = "en";
 
     public Scrolls() {
         SCROLL_TIER_IDS.put(1, "novice");
@@ -65,7 +68,7 @@ public class Scrolls extends MesonModule {
 
             for (Identifier scroll : scrolls) {
                 try {
-                    ScrollDefinition definition = ScrollDefinition.deserialize(resources.getResource(scroll));
+                    JsonDefinition definition = JsonDefinition.deserialize(resources.getResource(scroll));
 
                     // check that scroll definition is built-in and configured to be used
                     if (definition.isBuiltIn() && !useBuiltInScrolls)
@@ -98,13 +101,13 @@ public class Scrolls extends MesonModule {
     }
 
     @Nullable
-    public static ScrollDefinition getRandomDefinition(int tier, Random random) {
+    public static JsonDefinition getRandomDefinition(int tier, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
             Meson.LOG.warn("No scroll definitions available for this tier: " + tier);
             return null;
         }
 
-        List<ScrollDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        List<JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
         return definitions.get(random.nextInt(definitions.size()));
     }
 }

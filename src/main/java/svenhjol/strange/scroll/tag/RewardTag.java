@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll;
+package svenhjol.strange.scroll.tag;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -9,18 +9,17 @@ import svenhjol.meson.helper.PlayerHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("SortedCollectionWithNonComparableKeys")
-public class Reward implements IScrollSerializable {
+public class RewardTag implements IScrollTag {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
     public static final String XP_TAG = "xp";
 
     private int xp;
-    private ScrollQuest scrollQuest;
+    private QuestTag questTag;
     private Map<ItemStack, Integer> items = new HashMap<>();
 
-    public Reward(ScrollQuest scrollQuest) {
-        this.scrollQuest = scrollQuest;
+    public RewardTag(QuestTag questTag) {
+        this.questTag = questTag;
     }
 
     public void complete(PlayerEntity player) {

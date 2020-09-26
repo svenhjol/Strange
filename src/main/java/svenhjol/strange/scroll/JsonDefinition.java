@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScrollDefinition {
+public class JsonDefinition {
     private int tier;
     private int timeLimit; // in minutes
     private boolean builtIn;
@@ -75,8 +75,8 @@ public class ScrollDefinition {
         this.title = title;
     }
 
-    public static ScrollDefinition deserialize(Resource resource) {
+    public static JsonDefinition deserialize(Resource resource) {
         Reader reader = new InputStreamReader(resource.getInputStream());
-        return new Gson().fromJson(reader, ScrollDefinition.class);
+        return new Gson().fromJson(reader, JsonDefinition.class);
     }
 }

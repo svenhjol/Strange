@@ -7,12 +7,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import svenhjol.strange.scroll.ScrollQuest;
-import svenhjol.strange.scroll.ScrollDefinition;
+import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
 
-public abstract class Populator {
+public abstract class BasePopulator {
     public static final float EPIC_CHANCE_BASE = 0.02F;
     public static final float RARE_CHANCE_BASE = 0.15F;
     public static final float UNCOMMON_CHANCE_BASE = 0.45F;
@@ -26,10 +26,10 @@ public abstract class Populator {
 
     protected final World world;
     protected final BlockPos pos;
-    protected final ScrollQuest quest;
-    protected final ScrollDefinition definition;
+    protected final QuestTag quest;
+    protected final JsonDefinition definition;
 
-    public Populator(World world, BlockPos pos, ScrollQuest quest, ScrollDefinition definition) {
+    public BasePopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
         this.world = world;
         this.pos = pos;
         this.quest = quest;

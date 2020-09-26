@@ -28,6 +28,8 @@
   "block.strange.runestone_25": "Runestone",
   "block.strange.writing_desk": "Writing Desk",
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
+  "gui.strange.scrolls.close": "Close",
+  "gui.strange.scrolls.reward": "Reward",
   "item.strange.scroll_novice": "Novice Scroll",
   "item.strange.scroll_apprentice": "Apprentice Scroll",
   "item.strange.scroll_journeyman": "Journeyman Scroll",

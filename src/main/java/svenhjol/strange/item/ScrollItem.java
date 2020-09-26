@@ -8,16 +8,16 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.helper.DimensionHelper;
 import svenhjol.meson.item.MesonItem;
+import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.module.Scrolls;
-import svenhjol.strange.scroll.ScrollDefinition;
-import svenhjol.strange.scroll.ScrollQuest;
-import svenhjol.strange.scroll.ScrollQuestCreator;
+import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.ScrollPopulator;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -42,8 +42,6 @@ public class ScrollItem extends MesonItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack heldScroll = player.getStackInHand(hand);
-        int rarity = getScrollRarity(heldScroll);
-        UUID merchant = getScrollMerchant(heldScroll);
 
         if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
             return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
@@ -54,14 +52,12 @@ public class ScrollItem extends MesonItem {
             return new TypedActionResult<>(ActionResult.PASS, heldScroll);
 
         if (!hasBeenPopulated(heldScroll)) {
-            ScrollDefinition definition = Scrolls.getRandomDefinition(tier, world.random);
+            JsonDefinition definition = Scrolls.getRandomDefinition(tier, world.random);
 
             if (definition == null)
                 return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
 
-            ScrollQuest quest = ScrollQuestCreator.create(player, definition, rarity, merchant);
-            setScrollQuest(heldScroll, quest);
-            heldScroll.setCustomName(new TranslatableText(quest.getTitle()));
+            ScrollPopulator.populate(heldScroll, player, definition);
         }
 
         if (hasBeenPopulated(heldScroll)) {
@@ -74,7 +70,7 @@ public class ScrollItem extends MesonItem {
     }
 
     private void playerShouldOpenScroll(PlayerEntity player, ItemStack scroll) {
-        ScrollQuest quest = getScrollQuest(scroll);
+        QuestTag quest = getScrollQuest(scroll);
         if (quest == null)
             return;
 
@@ -88,15 +84,19 @@ public class ScrollItem extends MesonItem {
     }
 
     public static UUID getScrollMerchant(ItemStack scroll) {
-        return UUID.fromString(scroll.getOrCreateTag().getString(MERCHANT_TAG));
+        String string = scroll.getOrCreateTag().getString(MERCHANT_TAG);
+        if (string.isEmpty())
+            return ScrollHelper.ANY_MERCHANT;
+
+        return UUID.fromString(string);
     }
 
     @Nullable
-    public static ScrollQuest getScrollQuest(ItemStack scroll) {
+    public static QuestTag getScrollQuest(ItemStack scroll) {
         if (!hasBeenPopulated(scroll))
             return null;
 
-        ScrollQuest quest = new ScrollQuest();
+        QuestTag quest = new QuestTag();
         CompoundTag tag = scroll.getOrCreateTag().getCompound(QUEST_TAG);
 
         if (tag == null)
@@ -114,7 +114,7 @@ public class ScrollItem extends MesonItem {
         scroll.getOrCreateTag().putString(MERCHANT_TAG, merchant.toString());
     }
 
-    public static void setScrollQuest(ItemStack scroll, ScrollQuest quest) {
+    public static void setScrollQuest(ItemStack scroll, QuestTag quest) {
         scroll.getOrCreateTag().put(QUEST_TAG, quest.toTag());
     }
 

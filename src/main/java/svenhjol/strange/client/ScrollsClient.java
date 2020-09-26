@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.CompoundTag;
 import svenhjol.meson.MesonModule;
-import svenhjol.strange.gui.ScrollScreen;
-import svenhjol.strange.scroll.ScrollQuest;
+import svenhjol.strange.scroll.ScrollScreen;
+import svenhjol.strange.scroll.tag.QuestTag;
 
 import static svenhjol.strange.module.Scrolls.MSG_CLIENT_OPEN_SCROLL;
 
@@ -28,7 +28,7 @@ public class ScrollsClient {
     }
 
     private void tryDisplayScroll(CompoundTag questTag) {
-        ScrollQuest quest = new ScrollQuest();
+        QuestTag quest = new QuestTag();
         quest.fromTag(questTag);
         MinecraftClient.getInstance().openScreen(new ScrollScreen(quest));
     }

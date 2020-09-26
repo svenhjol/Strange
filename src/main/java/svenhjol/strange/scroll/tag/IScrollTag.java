@@ -1,8 +1,8 @@
-package svenhjol.strange.scroll;
+package svenhjol.strange.scroll.tag;
 
 import net.minecraft.nbt.CompoundTag;
 
-public interface IScrollSerializable {
+public interface IScrollTag {
     CompoundTag toTag();
 
     void fromTag(CompoundTag tag);

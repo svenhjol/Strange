@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll;
+package svenhjol.strange.scroll.tag;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -7,7 +7,7 @@ import svenhjol.strange.helper.ScrollHelper;
 
 import java.util.UUID;
 
-public class ScrollQuest implements IScrollSerializable {
+public class QuestTag implements IScrollTag {
     private static final String ID_TAG = "id";
     private static final String TITLE_TAG = "title";
     private static final String MERCHANT_TAG = "merchant";
@@ -20,11 +20,11 @@ public class ScrollQuest implements IScrollSerializable {
     private String title = "";
     private int tier = 1;
     private int rarity = 0;
-    private Reward reward = new Reward(this);
+    private RewardTag rewardTag = new RewardTag(this);
 
-    public ScrollQuest() { }
+    public QuestTag() { }
 
-    public ScrollQuest(UUID merchant, int rarity) {
+    public QuestTag(UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
         this.merchant = merchant;
     }
@@ -37,7 +37,7 @@ public class ScrollQuest implements IScrollSerializable {
         tag.putString(MERCHANT_TAG, merchant.toString());
         tag.putString(ID_TAG, id);
         tag.putString(TITLE_TAG, title);
-        tag.put(REWARD_TAG, reward.toTag());
+        tag.put(REWARD_TAG, rewardTag.toTag());
 
         return tag;
     }
@@ -48,7 +48,7 @@ public class ScrollQuest implements IScrollSerializable {
         merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
-        reward.fromTag(tag.getCompound(REWARD_TAG));
+        rewardTag.fromTag(tag.getCompound(REWARD_TAG));
     }
 
     public String getId() {
@@ -71,8 +71,8 @@ public class ScrollQuest implements IScrollSerializable {
         return merchant;
     }
 
-    public Reward getReward() {
-        return reward;
+    public RewardTag getReward() {
+        return rewardTag;
     }
 
     public void setTitle(String title) {
@@ -88,6 +88,6 @@ public class ScrollQuest implements IScrollSerializable {
     }
 
     public void complete(PlayerEntity player) {
-        reward.complete(player);
+        rewardTag.complete(player);
     }
 }

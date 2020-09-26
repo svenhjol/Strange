@@ -1,17 +1,17 @@
-package svenhjol.strange.gui;
+package svenhjol.strange.scroll;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.gui.panel.RewardPanel;
+import svenhjol.strange.scroll.gui.RewardPanel;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.scroll.ScrollQuest;
+import svenhjol.strange.scroll.tag.QuestTag;
 
 public class ScrollScreen extends Screen {
-    private ScrollQuest quest;
+    private QuestTag quest;
 
-    public ScrollScreen(ScrollQuest quest) {
+    public ScrollScreen(QuestTag quest) {
         super(new TranslatableText(quest.getTitle()));
         this.quest = quest;
     }

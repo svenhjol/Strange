@@ -3,19 +3,19 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.strange.scroll.ScrollQuest;
-import svenhjol.strange.scroll.ScrollDefinition;
+import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.JsonDefinition;
 
 import java.util.*;
 
-public class RewardPopulator extends Populator {
+public class RewardPopulator extends BasePopulator {
     public static final String ITEMS = "items";
     public static final String XP = "xp";
     public static final String COUNT = "count";
     public static final String LEVELS = "levels";
 
-    public RewardPopulator(World world, BlockPos pos, ScrollQuest scrollQuest, ScrollDefinition definition) {
-        super(world, pos, scrollQuest, definition);
+    public RewardPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
+        super(world, pos, quest, definition);
     }
 
     @Override
