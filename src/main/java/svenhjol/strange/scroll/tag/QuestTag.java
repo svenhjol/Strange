@@ -99,4 +99,8 @@ public class QuestTag implements ITag {
     public void complete(PlayerEntity player) {
         rewardTag.complete(player);
     }
+
+    public void update(PlayerEntity player) {
+        gatherTag.updateCollected(player);
+    }
 }
