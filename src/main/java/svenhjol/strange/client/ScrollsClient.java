@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import svenhjol.meson.MesonModule;
 import svenhjol.strange.scroll.ScrollScreen;
@@ -22,14 +23,15 @@ public class ScrollsClient {
         ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_OPEN_SCROLL, (context, data) -> {
             CompoundTag questTag = data.readCompoundTag();
             context.getTaskQueue().execute(() -> {
-                tryDisplayScroll(questTag);
+                tryDisplayScroll(context.getPlayer(), questTag);
             });
         });
     }
 
-    private void tryDisplayScroll(CompoundTag questTag) {
+    private void tryDisplayScroll(PlayerEntity player, CompoundTag questTag) {
         QuestTag quest = new QuestTag();
         quest.fromTag(questTag);
+        quest.update(player);
         MinecraftClient.getInstance().openScreen(new ScrollScreen(quest));
     }
 }

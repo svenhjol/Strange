@@ -28,7 +28,7 @@ public class RewardPanel extends Panel {
         // if the reward has XP then show it here
         if (xp > 0) {
             TranslatableText text = new TranslatableText("gui.strange.quests.reward_xp", xp);
-            renderItemIcon(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
+            renderItemStack(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, top, textColor);
             top += rowHeight;
         }
@@ -42,7 +42,7 @@ public class RewardPanel extends Panel {
             for (ItemStack stack : stacks) {
                 int count = items.get(stack);
                 TranslatableText text = new TranslatableText("gui.strange.quests.reward_item", stack.getName(), count);
-                renderItemIcon(stack, mid - 60, baseTop - 5);
+                renderItemStack(stack, mid - 60, baseTop - 5);
                 drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
                 baseTop += rowHeight;
             }
