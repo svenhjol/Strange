@@ -4,6 +4,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import svenhjol.strange.scroll.gui.GatherPanel;
 import svenhjol.strange.scroll.gui.RewardPanel;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.scroll.tag.QuestTag;
@@ -32,11 +33,11 @@ public class ScrollScreen extends Screen {
         renderBackground(matrices);
 
         // draw the title at the top of the page
-        GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 12);
+        GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 12, 0xFFFF88);
 
         // render out the panels
         RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 120, mouseX, mouseY);
-
+        GatherPanel.INSTANCE.render(this, matrices, quest, mid, width, 30, mouseX, mouseY); // TODO: side by side
 
         super.render(matrices, mouseX, mouseY, delta);
     }
