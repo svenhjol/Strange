@@ -68,4 +68,8 @@ public class GatherTag implements IScrollTag {
     public void addItem(ItemStack stack, int count) {
         this.items.put(stack, count);
     }
+
+    public Map<ItemStack, Integer> getItems() {
+        return items;
+    }
 }
