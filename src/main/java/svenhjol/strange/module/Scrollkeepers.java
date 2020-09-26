@@ -24,6 +24,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
 import svenhjol.strange.client.ScrollKeepersClient;
 import svenhjol.strange.item.ScrollItem;
+import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 @Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests.")
@@ -78,8 +79,7 @@ public class Scrollkeepers extends MesonModule {
                     return ActionResult.PASS;
 
                 if (!quest.isSatisfied(playerEntity)) {
-                    // TODO: villager not interested
-                    world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
 

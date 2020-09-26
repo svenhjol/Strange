@@ -8,6 +8,7 @@
     "PlayerManagerMixin",
     "SinglePoolElementMixin",
     "accessor.MinecraftServerAccessor",
+    "accessor.VillagerEntityAccessor",
     "accessor.WorldSaveHandlerAccessor"
   ],
   "client": [
