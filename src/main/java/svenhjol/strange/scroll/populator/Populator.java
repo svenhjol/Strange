@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll;
+package svenhjol.strange.scroll.populator;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
@@ -7,11 +7,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
 
-public abstract class BasePopulator {
+public abstract class Populator {
     public static final float EPIC_CHANCE_BASE = 0.02F;
     public static final float RARE_CHANCE_BASE = 0.15F;
     public static final float UNCOMMON_CHANCE_BASE = 0.45F;
@@ -28,7 +29,7 @@ public abstract class BasePopulator {
     protected final QuestTag quest;
     protected final JsonDefinition definition;
 
-    public BasePopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
+    public Populator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
         this.world = world;
         this.pos = pos;
         this.quest = quest;

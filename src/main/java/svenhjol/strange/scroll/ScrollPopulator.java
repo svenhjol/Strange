@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.scroll.populator.GatherGenerator;
 import svenhjol.strange.scroll.populator.LangPopulator;
+import svenhjol.strange.scroll.populator.Populator;
 import svenhjol.strange.scroll.populator.RewardPopulator;
 import svenhjol.strange.scroll.tag.QuestTag;
 
@@ -25,13 +26,13 @@ public class ScrollPopulator {
         BlockPos pos = player.getBlockPos();
         QuestTag quest = new QuestTag(merchant, rarity);
 
-        List<BasePopulator> populators = new ArrayList<>(Arrays.asList(
+        List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(world, pos, quest, definition),
             new RewardPopulator(world, pos, quest, definition),
             new GatherGenerator(world, pos, quest, definition)
         ));
 
-        populators.forEach(BasePopulator::populate);
+        populators.forEach(Populator::populate);
         ScrollItem.setScrollQuest(scroll, quest);
         scroll.setCustomName(new TranslatableText(quest.getTitle()));
     }

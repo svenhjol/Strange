@@ -3,13 +3,12 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.strange.scroll.BasePopulator;
 import svenhjol.strange.scroll.tag.QuestTag;
 import svenhjol.strange.scroll.JsonDefinition;
 
 import java.util.*;
 
-public class RewardPopulator extends BasePopulator {
+public class RewardPopulator extends Populator {
     public static final String ITEMS = "items";
     public static final String XP = "xp";
     public static final String COUNT = "count";
