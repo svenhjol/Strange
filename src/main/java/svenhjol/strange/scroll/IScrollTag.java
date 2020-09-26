@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll.tag;
+package svenhjol.strange.scroll;
 
 import net.minecraft.nbt.CompoundTag;
 

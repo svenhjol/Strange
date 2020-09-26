@@ -30,6 +30,8 @@
   "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
   "gui.strange.scrolls.close": "Close",
   "gui.strange.scrolls.reward": "Reward",
+  "gui.strange.scrolls.reward_xp": "Experience levels: %s",
+  "gui.strange.quests.reward_item": "%s: %s",
   "item.strange.scroll_novice": "Novice Scroll",
   "item.strange.scroll_apprentice": "Apprentice Scroll",
   "item.strange.scroll_journeyman": "Journeyman Scroll",

@@ -6,7 +6,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.item.ScrollItem;
-import svenhjol.strange.scroll.populator.BasePopulator;
 import svenhjol.strange.scroll.populator.LangPopulator;
 import svenhjol.strange.scroll.populator.RewardPopulator;
 import svenhjol.strange.scroll.tag.QuestTag;

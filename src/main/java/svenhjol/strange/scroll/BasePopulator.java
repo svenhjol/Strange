@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll.populator;
+package svenhjol.strange.scroll;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
@@ -119,7 +118,7 @@ public abstract class BasePopulator {
             count = Integer.parseInt(value);
         }
 
-        return scale ? multiplyValue(count) : count;
+        return scale ? scaleRarity(count) : count;
     }
 
     public String splitOptionalRandomly(String key) {
@@ -132,7 +131,7 @@ public abstract class BasePopulator {
         return key;
     }
 
-    public int multiplyValue(int original) {
+    public int scaleRarity(int original) {
         return original * quest.getRarity();
     }
 }

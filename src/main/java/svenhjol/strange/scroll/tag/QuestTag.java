@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.helper.ScrollHelper;
+import svenhjol.strange.scroll.IScrollTag;
 
 import java.util.UUID;
 

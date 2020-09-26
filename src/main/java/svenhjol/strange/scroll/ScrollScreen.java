@@ -9,7 +9,7 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 public class ScrollScreen extends Screen {
-    private QuestTag quest;
+    private final QuestTag quest;
 
     public ScrollScreen(QuestTag quest) {
         super(new TranslatableText(quest.getTitle()));
@@ -31,8 +31,12 @@ public class ScrollScreen extends Screen {
 
         renderBackground(matrices);
 
-        GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 84);
-        RewardPanel.render(this, matrices, quest, mid, width, 94, mouseX, mouseY);
+        // draw the title at the top of the page
+        GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 12);
+
+        // render out the panels
+        RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 120, mouseX, mouseY);
+
 
         super.render(matrices, mouseX, mouseY, delta);
     }
@@ -42,7 +46,7 @@ public class ScrollScreen extends Screen {
         int w = 80;
         int h = 20;
 
-        this.addButton(new ButtonWidget(width / 2, y, w, h, new TranslatableText("gui.strange.scrolls.close"), this::close));
+        this.addButton(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText("gui.strange.scrolls.close"), this::close));
     }
 
     private void close(ButtonWidget button) {

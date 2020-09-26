@@ -3,6 +3,7 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import svenhjol.strange.scroll.BasePopulator;
 import svenhjol.strange.scroll.tag.QuestTag;
 import svenhjol.strange.scroll.JsonDefinition;
 
