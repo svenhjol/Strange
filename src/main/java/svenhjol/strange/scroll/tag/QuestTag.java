@@ -15,6 +15,7 @@ public class QuestTag implements ITag {
     private static final String TIER_TAG = "tier";
     private static final String RARITY_TAG = "rarity";
     private static final String GATHER_TAG = "gather";
+    private static final String HUNT_TAG = "hunt";
 
     private String id = "";
     private String title = "";
@@ -23,6 +24,7 @@ public class QuestTag implements ITag {
     private int rarity = 0;
     private RewardTag rewardTag = new RewardTag(this);
     private GatherTag gatherTag = new GatherTag(this);
+    private HuntTag huntTag = new HuntTag(this);
 
     public QuestTag() { }
 
@@ -42,6 +44,7 @@ public class QuestTag implements ITag {
         tag.putString(TITLE_TAG, title);
         tag.put(REWARD_TAG, rewardTag.toTag());
         tag.put(GATHER_TAG, gatherTag.toTag());
+        tag.put(HUNT_TAG, huntTag.toTag());
 
         return tag;
     }
@@ -54,6 +57,7 @@ public class QuestTag implements ITag {
         title = tag.getString(TITLE_TAG);
         rewardTag.fromTag(tag.getCompound(REWARD_TAG));
         gatherTag.fromTag(tag.getCompound(GATHER_TAG));
+        huntTag.fromTag(tag.getCompound(HUNT_TAG));
     }
 
     public String getId() {
@@ -84,6 +88,10 @@ public class QuestTag implements ITag {
         return gatherTag;
     }
 
+    public HuntTag getHunt() {
+        return huntTag;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -101,6 +109,7 @@ public class QuestTag implements ITag {
     }
 
     public void update(PlayerEntity player) {
-        gatherTag.updateCollected(player);
+        gatherTag.update(player);
+        huntTag.update(player);
     }
 }

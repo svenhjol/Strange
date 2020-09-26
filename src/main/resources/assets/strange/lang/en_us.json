@@ -31,6 +31,7 @@
   "gui.strange.scrolls.close": "Close",
   "gui.strange.scrolls.gather": "Collect items",
   "gui.strange.scrolls.gather_item": "%s: %s",
+  "gui.strange.scrolls.hunt": "Kill mobs",
   "gui.strange.scrolls.reward": "Reward",
   "gui.strange.scrolls.reward_xp": "Experience levels: %s",
   "gui.strange.quests.reward_item": "%s: %s",

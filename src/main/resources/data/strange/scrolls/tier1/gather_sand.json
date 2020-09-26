@@ -8,6 +8,9 @@
   "gather": {
     "minecraft:sand": 20
   },
+  "hunt": {
+    "minecraft:spider": 1
+  },
   "reward": {
     "items": {
       "minecraft:sandstone": 4,
