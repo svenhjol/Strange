@@ -31,10 +31,7 @@ import svenhjol.meson.Meson;
 import svenhjol.strange.helper.DataBlockHelper;
 import svenhjol.strange.module.EntitySpawner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class EntitySpawnerBlockEntity extends BlockEntity implements Tickable {
     private final static String ENTITY = "entity";
@@ -110,10 +107,11 @@ public class EntitySpawnerBlockEntity extends BlockEntity implements Tickable {
         if (world == null)
             return false;
 
-        if (!Registry.ENTITY_TYPE.containsId(entity))
+        Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(entity);
+        if (!optionalEntityType.isPresent())
             return false;
 
-        EntityType<?> type = Registry.ENTITY_TYPE.get(entity);
+        EntityType<?> type = optionalEntityType.get();
 
         if (type == EntityType.MINECART || type == EntityType.CHEST_MINECART)
             return tryCreateMinecart(type, pos);

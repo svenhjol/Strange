@@ -154,7 +154,7 @@ public class Runestones extends MesonModule {
                 Identifier locationId = new Identifier(configStructure);
 
                 float weight = 1.0F - (j / (float) (numberOfRunes + 10));
-                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || Registry.STRUCTURE_FEATURE.containsId(locationId);
+                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || Registry.STRUCTURE_FEATURE.get(locationId) != null;
 
                 if (addStructure) {
                     availableDestinations.add(new StructureDestination(locationId, weight));
@@ -171,7 +171,7 @@ public class Runestones extends MesonModule {
                 Identifier locationId = new Identifier(configBiome);
 
                 float weight = 1.0F - (j / (float) (numberOfRunes + 10));
-                boolean addBiome = BuiltinRegistries.BIOME.containsId(locationId);
+                boolean addBiome = BuiltinRegistries.BIOME.get(locationId) != null;
 
                 if (addBiome) {
                     availableDestinations.add(new BiomeDestination(locationId, weight));

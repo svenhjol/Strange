@@ -11,6 +11,7 @@ import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public abstract class Populator {
     public static final float EPIC_CHANCE_BASE = 0.02F;
@@ -57,10 +58,11 @@ public abstract class Populator {
         if (itemId == null)
             return null;
 
-        if (!Registry.ITEM.containsId(itemId))
+        Optional<Item> optionalItem = Registry.ITEM.getOrEmpty(itemId);
+        if (!optionalItem.isPresent())
             return null;
 
-        Item item = Registry.ITEM.get(itemId);
+        Item item = optionalItem.get();
         stack = new ItemStack(item);
 
         if (doEnchant && item.isEnchantable(stack))

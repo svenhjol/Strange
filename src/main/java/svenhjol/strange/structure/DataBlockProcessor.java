@@ -30,10 +30,7 @@ import svenhjol.strange.module.EntitySpawner;
 import svenhjol.strange.module.Runestones;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static svenhjol.meson.helper.DecorationHelper.*;
 import static svenhjol.strange.helper.DataBlockHelper.*;
@@ -184,10 +181,12 @@ public class DataBlockProcessor extends StructureProcessor {
             if (type.isEmpty()) return;
 
             Identifier typeId = new Identifier(type);
-            if (!Registry.BLOCK.containsId(typeId))
+            Optional<Block> optionalBlock = Registry.BLOCK.getOrEmpty(typeId);
+
+            if (!optionalBlock.isPresent())
                 return;
 
-            Block block = Registry.BLOCK.get(typeId);
+            Block block = optionalBlock.get();
             this.state = block.getDefaultState();
         }
 
@@ -271,7 +270,7 @@ public class DataBlockProcessor extends StructureProcessor {
 
             Identifier typeId = new Identifier(type);
 
-            if (!Registry.ENTITY_TYPE.containsId(typeId))
+            if (!Registry.ENTITY_TYPE.getOrEmpty(typeId).isPresent())
                 return;
 
             blockEntity.entity = typeId;
@@ -336,7 +335,7 @@ public class DataBlockProcessor extends StructureProcessor {
             String type = getValue("type", this.data, "");
             if (!type.isEmpty()) {
                 Identifier typeId = new Identifier(type);
-                if (!Registry.ENTITY_TYPE.containsId(typeId))
+                if (!Registry.ENTITY_TYPE.getOrEmpty(typeId).isPresent())
                     return;
 
                 Block ore = Registry.BLOCK.get(typeId);
@@ -374,7 +373,7 @@ public class DataBlockProcessor extends StructureProcessor {
             } else {
                 // try and use the specified entity
                 Identifier typeId = new Identifier(type);
-                if (!Registry.ENTITY_TYPE.containsId(typeId))
+                if (!Registry.ENTITY_TYPE.getOrEmpty(typeId).isPresent())
                     return;
 
                 entity = Registry.ENTITY_TYPE.get(typeId);

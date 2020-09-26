@@ -1,7 +1,5 @@
 package svenhjol.strange.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +10,6 @@ import svenhjol.strange.scroll.tag.QuestTag;
 
 import static svenhjol.strange.module.Scrolls.MSG_CLIENT_OPEN_SCROLL;
 
-@Environment(EnvType.CLIENT)
 public class ScrollsClient {
     private final MesonModule module;
 

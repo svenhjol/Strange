@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -8,6 +9,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class HuntTag implements ITag {
     public static final String ENTITY_DATA = "entity_data";
@@ -107,8 +109,8 @@ public class HuntTag implements ITag {
             int countKilled = killed.getOrDefault(id, 0);
             satisfied.put(id, countKilled >= count);
 
-            if (Registry.ENTITY_TYPE.containsId(id))
-                names.put(id, Registry.ENTITY_TYPE.get(id).getName().getString());
+            Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(id);
+            optionalEntityType.ifPresent(entityType -> names.put(id, entityType.getName().getString()));
         });
     }
 
