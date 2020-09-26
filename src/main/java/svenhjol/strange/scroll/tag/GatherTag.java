@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -13,6 +14,7 @@ public class GatherTag implements ITag {
 
     private QuestTag questTag;
     private Map<ItemStack, Integer> items = new HashMap<>();
+    private Map<ItemStack, Boolean> collected = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
     public GatherTag(QuestTag questTag) {
         this.questTag = questTag;
@@ -70,5 +72,26 @@ public class GatherTag implements ITag {
 
     public Map<ItemStack, Integer> getItems() {
         return items;
+    }
+
+    public Map<ItemStack, Boolean> getCollected() {
+        return this.collected;
+    }
+
+    public void updateCollected(PlayerEntity player) {
+        collected.clear();
+
+        final Map<ItemStack, Integer> sum = new HashMap<>();
+
+        player.inventory.main.forEach(invStack -> {
+            if (!invStack.isEmpty()) {
+                items.forEach((stack, count) -> {
+                    if (stack.isItemEqualIgnoreDamage(invStack))
+                        sum.merge(stack, invStack.getCount(), Integer::sum);
+                });
+            }
+        });
+
+        sum.forEach((stack, count) -> collected.put(stack, count >= items.get(stack)));
     }
 }
