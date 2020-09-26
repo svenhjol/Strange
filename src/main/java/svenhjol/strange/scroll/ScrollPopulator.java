@@ -6,7 +6,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.item.ScrollItem;
-import svenhjol.strange.scroll.populator.GatherGenerator;
+import svenhjol.strange.scroll.populator.GatherPopulator;
 import svenhjol.strange.scroll.populator.LangPopulator;
 import svenhjol.strange.scroll.populator.Populator;
 import svenhjol.strange.scroll.populator.RewardPopulator;
@@ -29,7 +29,7 @@ public class ScrollPopulator {
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(world, pos, quest, definition),
             new RewardPopulator(world, pos, quest, definition),
-            new GatherGenerator(world, pos, quest, definition)
+            new GatherPopulator(world, pos, quest, definition)
         ));
 
         populators.forEach(Populator::populate);

@@ -9,8 +9,8 @@ import svenhjol.strange.scroll.tag.QuestTag;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GatherGenerator extends Populator {
-    public GatherGenerator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
+public class GatherPopulator extends Populator {
+    public GatherPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
         super(world, pos, quest, definition);
     }
 
