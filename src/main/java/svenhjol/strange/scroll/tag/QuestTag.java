@@ -108,6 +108,12 @@ public class QuestTag implements ITag {
         rewardTag.complete(player);
     }
 
+    public boolean isSatisfied(PlayerEntity player) {
+        update(player);
+        return gatherTag.isSatisfied()
+            && huntTag.isSatisfied();
+    }
+
     public void update(PlayerEntity player) {
         gatherTag.update(player);
         huntTag.update(player);

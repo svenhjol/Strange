@@ -81,6 +81,10 @@ public class GatherTag implements ITag {
         return satisfied;
     }
 
+    public boolean isSatisfied() {
+        return getSatisfied().values().stream().allMatch(r -> r);
+    }
+
     public void update(PlayerEntity player) {
         satisfied.clear();
 

@@ -102,6 +102,10 @@ public class HuntTag implements ITag {
         return names;
     }
 
+    public boolean isSatisfied() {
+        return getSatisfied().values().stream().allMatch(r -> r);
+    }
+
     public void update(PlayerEntity player) {
         satisfied.clear();
 
