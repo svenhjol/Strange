@@ -5,12 +5,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import svenhjol.meson.helper.PlayerHelper;
-import svenhjol.strange.scroll.IScrollTag;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RewardTag implements IScrollTag {
+public class RewardTag implements ITag {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
     public static final String XP_TAG = "xp";

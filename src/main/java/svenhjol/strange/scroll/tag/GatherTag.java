@@ -3,12 +3,11 @@ package svenhjol.strange.scroll.tag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import svenhjol.strange.scroll.IScrollTag;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GatherTag implements IScrollTag {
+public class GatherTag implements ITag {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
 
