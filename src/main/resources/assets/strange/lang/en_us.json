@@ -27,7 +27,7 @@
   "block.strange.runestone_24": "Runestone",
   "block.strange.runestone_25": "Runestone",
   "block.strange.writing_desk": "Writing Desk",
-  "entity.minecraft.villager.strange.scrollkeeper": "Scrollkeeper",
+  "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
   "gui.strange.scrolls.close": "Close",
   "gui.strange.scrolls.gather": "Collect items",
   "gui.strange.scrolls.gather_item": "%s: %s",
