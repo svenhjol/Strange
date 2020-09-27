@@ -1,13 +1,13 @@
 package svenhjol.strange.scroll.populator;
 
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
@@ -26,15 +26,15 @@ public abstract class Populator {
     public static final String COMMON_LABEL = "[common]";
     public static final String UNCOMMON_LABEL = "[uncommon]";
 
-    protected final PlayerEntity player;
-    protected final World world;
+    protected final ServerPlayerEntity player;
+    protected final ServerWorld world;
     protected final BlockPos pos;
     protected final QuestTag quest;
     protected final JsonDefinition definition;
 
-    public Populator(PlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public Populator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
         this.player = player;
-        this.world = player.world;
+        this.world = (ServerWorld)player.world;
         this.pos = player.getBlockPos();
         this.quest = quest;
         this.definition = definition;

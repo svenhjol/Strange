@@ -9,6 +9,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import svenhjol.meson.MesonModule;
@@ -58,7 +59,7 @@ public class ScrollItem extends MesonItem {
             if (definition == null)
                 return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
 
-            ScrollPopulator.populate(heldScroll, player, definition);
+            ScrollPopulator.populate(heldScroll, (ServerPlayerEntity)player, definition);
         }
 
         if (hasBeenPopulated(heldScroll)) {

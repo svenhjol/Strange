@@ -1,7 +1,7 @@
 package svenhjol.strange.scroll;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.scroll.populator.*;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ScrollPopulator {
-    public static void populate(ItemStack scroll, PlayerEntity player, JsonDefinition definition) {
+    public static void populate(ItemStack scroll, ServerPlayerEntity player, JsonDefinition definition) {
         UUID merchant = ScrollItem.getScrollMerchant(scroll);
         int rarity = ScrollItem.getScrollRarity(scroll);
         QuestTag quest = new QuestTag(merchant, rarity);
