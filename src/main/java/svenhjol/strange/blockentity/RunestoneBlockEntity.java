@@ -38,8 +38,12 @@ public class RunestoneBlockEntity extends BlockEntity {
         super.toTag(tag);
         if (this.position != null) {
             tag.putLong(POSITION_TAG, this.position.asLong());
-            tag.putString(LOCATION_TAG, this.location.toString());
-            tag.putString(PLAYER_TAG, this.player);
+
+            if (location != null)
+                tag.putString(LOCATION_TAG, this.location.toString());
+
+            if (player != null)
+                tag.putString(PLAYER_TAG, this.player);
         }
         return tag;
     }
