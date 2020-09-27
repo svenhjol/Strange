@@ -22,7 +22,8 @@ public class ScrollPopulator {
             new LangPopulator(player, quest, definition),
             new RewardPopulator(player, quest, definition),
             new GatherPopulator(player, quest, definition),
-            new HuntPopulator(player, quest, definition)
+            new HuntPopulator(player, quest, definition),
+            new ExplorePopulator(player, quest, definition)
         ));
 
         populators.forEach(Populator::populate);

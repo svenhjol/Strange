@@ -17,15 +17,17 @@ public class QuestTag implements ITag {
     private static final String RARITY_TAG = "rarity";
     private static final String GATHER_TAG = "gather";
     private static final String HUNT_TAG = "hunt";
+    private static final String EXPLORE_TAG = "explore";
 
     private String id = "";
     private String title = "";
     private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private int tier = 1;
     private int rarity = 0;
-    private RewardTag rewardTag = new RewardTag(this);
-    private GatherTag gatherTag = new GatherTag(this);
-    private HuntTag huntTag = new HuntTag(this);
+    private RewardTag reward = new RewardTag(this);
+    private GatherTag gather = new GatherTag(this);
+    private HuntTag hunt = new HuntTag(this);
+    private ExploreTag explore = new ExploreTag(this);
 
     public QuestTag() { }
 
@@ -43,9 +45,10 @@ public class QuestTag implements ITag {
         tag.putString(MERCHANT_TAG, merchant.toString());
         tag.putString(ID_TAG, id);
         tag.putString(TITLE_TAG, title);
-        tag.put(REWARD_TAG, rewardTag.toTag());
-        tag.put(GATHER_TAG, gatherTag.toTag());
-        tag.put(HUNT_TAG, huntTag.toTag());
+        tag.put(REWARD_TAG, reward.toTag());
+        tag.put(GATHER_TAG, gather.toTag());
+        tag.put(HUNT_TAG, hunt.toTag());
+        tag.put(EXPLORE_TAG, explore.toTag());
 
         return tag;
     }
@@ -56,9 +59,10 @@ public class QuestTag implements ITag {
         merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
-        rewardTag.fromTag(tag.getCompound(REWARD_TAG));
-        gatherTag.fromTag(tag.getCompound(GATHER_TAG));
-        huntTag.fromTag(tag.getCompound(HUNT_TAG));
+        reward.fromTag(tag.getCompound(REWARD_TAG));
+        gather.fromTag(tag.getCompound(GATHER_TAG));
+        hunt.fromTag(tag.getCompound(HUNT_TAG));
+        explore.fromTag(tag.getCompound(EXPLORE_TAG));
     }
 
     public String getId() {
@@ -82,15 +86,19 @@ public class QuestTag implements ITag {
     }
 
     public RewardTag getReward() {
-        return rewardTag;
+        return reward;
     }
 
     public GatherTag getGather() {
-        return gatherTag;
+        return gather;
     }
 
     public HuntTag getHunt() {
-        return huntTag;
+        return hunt;
+    }
+
+    public ExploreTag getExplore() {
+        return explore;
     }
 
     public void setTitle(String title) {
@@ -105,19 +113,23 @@ public class QuestTag implements ITag {
         this.rarity = rarity;
     }
 
+    public void inventoryTick(PlayerEntity player) {
+        explore.inventoryTick(player);
+    }
+
     public void complete(PlayerEntity player, MerchantEntity merchant) {
-        gatherTag.complete(player, merchant);
-        rewardTag.complete(player, merchant);
+        gather.complete(player, merchant);
+        reward.complete(player, merchant);
     }
 
     public boolean isSatisfied(PlayerEntity player) {
         update(player);
-        return gatherTag.isSatisfied()
-            && huntTag.isSatisfied();
+        return gather.isSatisfied()
+            && hunt.isSatisfied();
     }
 
     public void update(PlayerEntity player) {
-        gatherTag.update(player);
-        huntTag.update(player);
+        gather.update(player);
+        hunt.update(player);
     }
 }
