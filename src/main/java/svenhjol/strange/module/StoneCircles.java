@@ -61,16 +61,12 @@ public class StoneCircles extends MesonModule {
             .register();
 
         BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_ID, STONE_CIRCLE);
+
+        enabled = Meson.enabled("strange:runestones");
     }
 
     @Override
     public void init() {
-        // TODO move to depends()
-        if (!Meson.enabled("strange:runestones")) {
-            this.enabled = false;
-            return;
-        }
-
         configBiomes.forEach(biomeId -> {
             Optional<Biome> biome = BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId));
             biome.ifPresent(value -> BiomeHelper.addStructureFeature(value, STONE_CIRCLE));
