@@ -21,7 +21,7 @@ public class GatherPanel extends Panel {
         Map<ItemStack, Integer> items = gather.getItems();
         Map<ItemStack, Boolean> satisfied = gather.getSatisfied();
         if (items.isEmpty())
-            return; // really not ideal, should be caught earlier than this
+            return;
 
         // the panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.gather"), mid, top, titleColor);

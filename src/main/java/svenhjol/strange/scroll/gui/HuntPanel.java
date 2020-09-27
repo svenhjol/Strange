@@ -23,7 +23,7 @@ public class HuntPanel extends Panel {
         Map<Identifier, Boolean> satisfied = hunt.getSatisfied();
         Map<Identifier, String> names = hunt.getNames();
         if (entities.isEmpty())
-            return; // should be caught earlier than this
+            return;
 
         // the panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.hunt"), mid, top, titleColor);
