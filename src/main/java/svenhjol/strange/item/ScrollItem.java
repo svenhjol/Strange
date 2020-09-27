@@ -2,6 +2,7 @@ package svenhjol.strange.item;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -110,8 +111,8 @@ public class ScrollItem extends MesonItem {
         return scroll.getOrCreateTag().getInt(RARITY_TAG);
     }
 
-    public static void setScrollMerchant(ItemStack scroll, UUID merchant) {
-        scroll.getOrCreateTag().putString(MERCHANT_TAG, merchant.toString());
+    public static void setScrollMerchant(ItemStack scroll, MerchantEntity merchant) {
+        scroll.getOrCreateTag().putString(MERCHANT_TAG, merchant.getUuidAsString());
     }
 
     public static void setScrollQuest(ItemStack scroll, QuestTag quest) {

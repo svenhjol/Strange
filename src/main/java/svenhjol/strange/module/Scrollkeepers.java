@@ -23,9 +23,11 @@ import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
 import svenhjol.strange.client.ScrollKeepersClient;
+import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 
 @Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests.")
 public class Scrollkeepers extends MesonModule {
@@ -46,6 +48,12 @@ public class Scrollkeepers extends MesonModule {
         WRITING_DESK = new WritingDeskBlock(this);
         POIT = VillagerHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
+
+        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollForEmeralds(1));
+        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollForEmeralds(2));
+        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollForEmeralds(3));
+        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollForEmeralds(4));
+        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollForEmeralds(5));
 
         // TODO: village builds for scrollkeepers
     }
@@ -78,14 +86,22 @@ public class Scrollkeepers extends MesonModule {
                 if (quest == null)
                     return ActionResult.PASS;
 
+                // quest conditions haven't been satisfied yet
                 if (!quest.isSatisfied(playerEntity)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
 
+                // must be the merchant you bought the scroll from, or a scroll you found
+                if (!villager.getUuid().equals(quest.getMerchant())
+                    || quest.getMerchant().equals(ScrollHelper.ANY_MERCHANT)) {
+                    ((VillagerEntityAccessor)villager).invokeSayNo();
+                    return ActionResult.FAIL;
+                }
+
+                // success, tidy up the quest, give rewards etc.
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
                 quest.complete(playerEntity);
                 heldStack.decrement(1);
             }
