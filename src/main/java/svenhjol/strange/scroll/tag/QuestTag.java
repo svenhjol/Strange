@@ -119,17 +119,20 @@ public class QuestTag implements ITag {
 
     public void complete(PlayerEntity player, MerchantEntity merchant) {
         gather.complete(player, merchant);
+        explore.complete(player, merchant);
         reward.complete(player, merchant);
     }
 
     public boolean isSatisfied(PlayerEntity player) {
         update(player);
         return gather.isSatisfied()
-            && hunt.isSatisfied();
+            && hunt.isSatisfied()
+            && explore.isSatisfied();
     }
 
     public void update(PlayerEntity player) {
         gather.update(player);
         hunt.update(player);
+        explore.update(player);
     }
 }
