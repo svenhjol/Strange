@@ -22,6 +22,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.PlayerTickCallback;
 import svenhjol.meson.helper.VillagerHelper;
+import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
 import svenhjol.strange.Strange;
@@ -33,7 +34,7 @@ import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.scroll.tag.QuestTag;
 import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 
-@Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests.")
+@Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends MesonModule {
     public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
@@ -44,13 +45,13 @@ public class Scrollkeepers extends MesonModule {
     public static PointOfInterestType POIT;
 
     public static ScrollKeepersClient client;
-
     public static int interestRange = 16;
+
+    @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when handing in a scroll.")
     public static double badOmenChance = 0.03D;
 
     @Override
     public void register() {
-        // TODO: dedicated sounds for scrollkeeper jobsite
         WRITING_DESK = new WritingDeskBlock(this);
         POIT = VillagerHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
@@ -62,6 +63,8 @@ public class Scrollkeepers extends MesonModule {
         VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollForEmeralds(5));
 
         // TODO: village builds for scrollkeepers
+
+        enabled = Meson.enabled("strange:scrolls");
     }
 
     @Override
@@ -133,7 +136,7 @@ public class Scrollkeepers extends MesonModule {
                 }
 
                 // handle bad omen penalty
-                if (badOmenChance > 0 && villagerLevel >= 3 && world.random.nextFloat() < (badOmenChance * (villagerLevel - 2))) {
+                if (badOmenChance > 0 && villagerLevel >= 3 && world.random.nextFloat() < (Math.min(badOmenChance, 1.0D) * (villagerLevel - 2))) {
                     int amplifier = Math.max(0, villagerLevel - 2);
                     StatusEffectInstance badOmen = new StatusEffectInstance(StatusEffects.BAD_OMEN, 120000, amplifier, false, false, true);
                     playerEntity.addStatusEffect(badOmen);
