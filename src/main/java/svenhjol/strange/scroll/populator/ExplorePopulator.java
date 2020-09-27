@@ -47,6 +47,7 @@ public class ExplorePopulator extends Populator {
 
 
         // populate the items for the quest
+        // TODO: handle fun names for items
         List<ItemStack> items = new ArrayList<>();
 
         for (String stackName : explore) {
