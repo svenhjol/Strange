@@ -82,7 +82,29 @@ public class GatherTag implements ITag {
     }
 
     public boolean isSatisfied() {
+        if (items.isEmpty())
+            return true;
+
         return getSatisfied().values().stream().allMatch(r -> r);
+    }
+
+    public void complete(PlayerEntity player) {
+        if (items.isEmpty())
+            return;
+
+        items.forEach((stack, count) -> {
+            int actualCount = count;
+            for (ItemStack invStack : player.inventory.main) {
+                if (actualCount <= 0)
+                    continue;
+
+                if (stack.isItemEqualIgnoreDamage(invStack)) {
+                    int invCount = invStack.getCount();
+                    actualCount -= invCount;
+                    invStack.decrement(invCount);
+                }
+            }
+        });
     }
 
     public void update(PlayerEntity player) {

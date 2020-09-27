@@ -103,6 +103,9 @@ public class HuntTag implements ITag {
     }
 
     public boolean isSatisfied() {
+        if (entities.isEmpty())
+            return true;
+
         return getSatisfied().values().stream().allMatch(r -> r);
     }
 
