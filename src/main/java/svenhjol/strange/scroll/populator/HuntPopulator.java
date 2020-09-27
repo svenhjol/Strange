@@ -1,8 +1,7 @@
 package svenhjol.strange.scroll.populator;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
@@ -10,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HuntPopulator extends Populator {
-    public HuntPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
-        super(world, pos, quest, definition);
+    public HuntPopulator(PlayerEntity player, QuestTag quest, JsonDefinition definition) {
+        super(player, quest, definition);
     }
 
     @Override

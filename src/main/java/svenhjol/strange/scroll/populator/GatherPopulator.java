@@ -1,8 +1,7 @@
 package svenhjol.strange.scroll.populator;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
@@ -10,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GatherPopulator extends Populator {
-    public GatherPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
-        super(world, pos, quest, definition);
+    public GatherPopulator(PlayerEntity player, QuestTag quest, JsonDefinition definition) {
+        super(player, quest, definition);
     }
 
     @Override

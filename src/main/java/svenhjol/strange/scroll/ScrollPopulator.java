@@ -3,8 +3,6 @@ package svenhjol.strange.scroll;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.scroll.populator.*;
 import svenhjol.strange.scroll.tag.QuestTag;
@@ -18,16 +16,13 @@ public class ScrollPopulator {
     public static void populate(ItemStack scroll, PlayerEntity player, JsonDefinition definition) {
         UUID merchant = ScrollItem.getScrollMerchant(scroll);
         int rarity = ScrollItem.getScrollRarity(scroll);
-
-        World world = player.world;
-        BlockPos pos = player.getBlockPos();
         QuestTag quest = new QuestTag(merchant, rarity);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(
-            new LangPopulator(world, pos, quest, definition),
-            new RewardPopulator(world, pos, quest, definition),
-            new GatherPopulator(world, pos, quest, definition),
-            new HuntPopulator(world, pos, quest, definition)
+            new LangPopulator(player, quest, definition),
+            new RewardPopulator(player, quest, definition),
+            new GatherPopulator(player, quest, definition),
+            new HuntPopulator(player, quest, definition)
         ));
 
         populators.forEach(Populator::populate);

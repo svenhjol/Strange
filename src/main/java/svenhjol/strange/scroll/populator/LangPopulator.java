@@ -1,7 +1,6 @@
 package svenhjol.strange.scroll.populator;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.entity.player.PlayerEntity;
 import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
@@ -13,8 +12,8 @@ import java.util.Map;
 public class LangPopulator extends Populator {
     public static final String TITLE = "title";
 
-    public LangPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
-        super(world, pos, quest, definition);
+    public LangPopulator(PlayerEntity player, QuestTag quest, JsonDefinition definition) {
+        super(player, quest, definition);
     }
 
     @Override

@@ -1,10 +1,9 @@
 package svenhjol.strange.scroll.populator;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import svenhjol.strange.scroll.tag.QuestTag;
 import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.tag.QuestTag;
 
 import java.util.*;
 
@@ -14,8 +13,8 @@ public class RewardPopulator extends Populator {
     public static final String COUNT = "count";
     public static final String LEVELS = "levels";
 
-    public RewardPopulator(World world, BlockPos pos, QuestTag quest, JsonDefinition definition) {
-        super(world, pos, quest, definition);
+    public RewardPopulator(PlayerEntity player, QuestTag quest, JsonDefinition definition) {
+        super(player, quest, definition);
     }
 
     @Override
