@@ -127,8 +127,9 @@ public class HuntTag implements ITag {
         if (entities.containsKey(id)) {
             Integer count = killed.getOrDefault(id, 0);
             killed.put(id, count + 1);
-        }
 
-        update(player);
+            questTag.markDirty(true);
+            update(player);
+        }
     }
 }
