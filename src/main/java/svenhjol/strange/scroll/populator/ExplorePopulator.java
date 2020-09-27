@@ -66,7 +66,7 @@ public class ExplorePopulator extends Populator {
 
 
         // give map to the location
-        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x00FF00);
+        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
         PlayerHelper.addOrDropStack(player, map);
     }
 
