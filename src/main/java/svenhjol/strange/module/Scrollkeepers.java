@@ -102,7 +102,7 @@ public class Scrollkeepers extends MesonModule {
                 // success, tidy up the quest, give rewards etc.
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                quest.complete(playerEntity);
+                quest.complete(playerEntity, villager);
                 heldStack.decrement(1);
             }
 

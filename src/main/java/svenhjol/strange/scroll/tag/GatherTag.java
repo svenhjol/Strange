@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -88,7 +89,7 @@ public class GatherTag implements ITag {
         return getSatisfied().values().stream().allMatch(r -> r);
     }
 
-    public void complete(PlayerEntity player) {
+    public void complete(PlayerEntity player, MerchantEntity merchant) {
         if (items.isEmpty())
             return;
 

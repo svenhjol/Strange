@@ -1,10 +1,11 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.ai.brain.task.LookTargetUtil;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import svenhjol.meson.helper.PlayerHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,19 +23,12 @@ public class RewardTag implements ITag {
         this.questTag = questTag;
     }
 
-    public void complete(PlayerEntity player) {
+    public void complete(PlayerEntity player, MerchantEntity merchant) {
         for (ItemStack stack : items.keySet()) {
             int count = items.get(stack);
             ItemStack stackToDrop = stack.copy();
-
-            if (stack.getMaxCount() == 1) {
-                for (int i = 0; i < count; i++) {
-                    PlayerHelper.addOrDropStack(player, stackToDrop);
-                }
-            } else {
-                stackToDrop.setCount(count);
-                PlayerHelper.addOrDropStack(player, stackToDrop);
-            }
+            stackToDrop.setCount(count);
+            LookTargetUtil.give(merchant, stackToDrop, player.getPos());
         }
 
         if (xp > 0)

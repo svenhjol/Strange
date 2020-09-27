@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -104,9 +105,9 @@ public class QuestTag implements ITag {
         this.rarity = rarity;
     }
 
-    public void complete(PlayerEntity player) {
-        gatherTag.complete(player);
-        rewardTag.complete(player);
+    public void complete(PlayerEntity player, MerchantEntity merchant) {
+        gatherTag.complete(player, merchant);
+        rewardTag.complete(player, merchant);
     }
 
     public boolean isSatisfied(PlayerEntity player) {
