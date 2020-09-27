@@ -24,6 +24,7 @@ public class QuestTag implements ITag {
     private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private int tier = 1;
     private int rarity = 0;
+    private boolean dirty = false;
     private RewardTag reward = new RewardTag(this);
     private GatherTag gather = new GatherTag(this);
     private HuntTag hunt = new HuntTag(this);
@@ -134,5 +135,13 @@ public class QuestTag implements ITag {
         gather.update(player);
         hunt.update(player);
         explore.update(player);
+    }
+
+    public void markDirty(boolean flag) {
+        this.dirty = flag;
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
     }
 }
