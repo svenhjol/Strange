@@ -17,7 +17,7 @@
       "minecraft:emerald[common]": 1
     },
     "xp": {
-      "level": 1
+      "levels": 1
     }
   }
 }
