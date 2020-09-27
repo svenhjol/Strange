@@ -99,7 +99,7 @@ public class Scrolls extends MesonModule {
 
         for (int tier = 1; tier <= MAX_TIERS; tier++) {
             AVAILABLE_SCROLLS.put(tier, new ArrayList<>());
-            Collection<Identifier> scrolls = resources.findResources("scrolls/tier" + tier, file -> file.endsWith(".json"));
+            Collection<Identifier> scrolls = resources.findResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
 
             for (Identifier scroll : scrolls) {
                 try {
