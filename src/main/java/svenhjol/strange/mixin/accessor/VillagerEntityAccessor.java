@@ -8,4 +8,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface VillagerEntityAccessor {
     @Invoker
     void invokeSayNo();
+
+    @Invoker
+    boolean invokeCanLevelUp();
+
+    @Invoker
+    void invokeLevelUp();
 }
