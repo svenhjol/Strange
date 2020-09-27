@@ -24,6 +24,7 @@ import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.EntityDeathCallback;
 import svenhjol.meson.event.LoadWorldCallback;
+import svenhjol.meson.event.PlayerTickCallback;
 import svenhjol.meson.iface.Config;
 import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
@@ -36,6 +37,7 @@ import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @Module(description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends MesonModule {
@@ -87,6 +89,9 @@ public class Scrolls extends MesonModule {
 
         // add scrolls to loot
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
+
+        // check player inventory and callback quest methods
+        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
     }
 
     @Override
@@ -142,16 +147,27 @@ public class Scrolls extends MesonModule {
 
         PlayerEntity player = (PlayerEntity)attacker;
 
-        player.inventory.main.forEach(scroll -> {
-            // read the quest data from the scroll
-            QuestTag quest = ScrollItem.getScrollQuest(scroll);
-            if (quest == null)
-                return;
-
+        forEachQuest(player, (scroll, quest) -> {
             quest.getHunt().playerKilledEntity(player, entity);
 
-            // write the quest back to the scroll
-            ScrollItem.setScrollQuest(scroll, quest);
+            if (quest.isDirty()) {
+                quest.markDirty(false);
+                ScrollItem.setScrollQuest(scroll, quest);
+            }
+        });
+    }
+
+    private void handlePlayerTick(PlayerEntity player) {
+        if (player.world.getTime() % 20 != 0)
+            return; // poll every second
+
+        forEachQuest(player, (scroll, quest) -> {
+            quest.getExplore().inventoryTick(player);
+
+            if (quest.isDirty()) {
+                quest.markDirty(false);
+                ScrollItem.setScrollQuest(scroll, quest);
+            }
         });
     }
 
@@ -168,6 +184,19 @@ public class Scrolls extends MesonModule {
 
             supplier.pool(builder);
         }
+    }
+
+    private void forEachQuest(PlayerEntity player, BiConsumer<ItemStack, QuestTag> callback) {
+        player.inventory.main.forEach(stack -> {
+            if (!(stack.getItem() instanceof ScrollItem))
+                return;
+
+            QuestTag quest = ScrollItem.getScrollQuest(stack);
+            if (quest == null)
+                return;
+
+            callback.accept(stack, quest);
+        });
     }
 
     @Nullable
