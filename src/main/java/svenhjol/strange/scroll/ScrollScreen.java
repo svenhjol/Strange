@@ -5,10 +5,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.scroll.gui.GatherPanel;
-import svenhjol.strange.scroll.gui.HuntPanel;
-import svenhjol.strange.scroll.gui.Panel;
-import svenhjol.strange.scroll.gui.RewardPanel;
+import svenhjol.strange.scroll.gui.*;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ public class ScrollScreen extends Screen {
     public ScrollScreen(QuestTag quest) {
         super(new TranslatableText(quest.getTitle()));
         this.quest = quest;
+        this.passEvents = true;
     }
 
     @Override
@@ -42,11 +40,15 @@ public class ScrollScreen extends Screen {
 
         // render scroll requirements panels
         List<Panel> panels = new ArrayList<>();
+
         if (quest.getGather().getItems().size() > 0)
             panels.add(GatherPanel.INSTANCE);
 
         if (quest.getHunt().getEntities().size() > 0)
             panels.add(HuntPanel.INSTANCE);
+
+        if (quest.getExplore().getItems().size() > 0)
+            panels.add(ExplorePanel.INSTANCE);
 
         int panelTop = 48;
         int panelMid;
