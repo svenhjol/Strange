@@ -2,16 +2,22 @@ package svenhjol.strange.structure;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceWithDimensions;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import svenhjol.charm.module.VariantChests;
 import svenhjol.meson.Meson;
+import svenhjol.meson.enums.IVariantMaterial;
+import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.strange.module.Runestones;
 import svenhjol.strange.module.StoneCircles;
 
@@ -33,7 +39,9 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         int maxHeight = 8;
         int runeTries = 10;
         float runeChance = 0.8F;
-        String lootTable = "";
+
+        // TODO: dedicated loot table here
+        Identifier lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
 
         List<BlockState> blocks = new ArrayList<>(Arrays.asList(
             Blocks.STONE.getDefaultState(),
@@ -108,7 +116,27 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
             }
         }
 
-        // TODO spawn chest at center
+        // generate chest at center
+        boolean useVariantChests = Meson.enabled("charm:variant_chests");
+        for (int s = 5; s > -15; s--) {
+            BlockPos checkPos = blockPos.add(0, s, 0);
+            BlockPos checkUpPos = checkPos.up();
+            BlockState checkState = world.getBlockState(checkPos);
+            BlockState checkUpState = world.getBlockState(checkUpPos);
+
+            if (checkState.isOpaque() && checkUpState.isAir() && lootTable != null) {
+                BlockState chest;
+                if (useVariantChests) {
+                    IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
+                    chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();
+                } else {
+                    chest = Blocks.CHEST.getDefaultState();
+                }
+
+                world.setBlockState(checkUpPos, chest, 2);
+                LootableContainerBlockEntity.setLootTable(world, random, checkUpPos, lootTable);
+            }
+        }
 
         if (!generatedSomething)
             Meson.LOG.debug("Did not generate a stone circle at: " + blockPos);
