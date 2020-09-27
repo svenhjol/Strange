@@ -14,6 +14,7 @@ import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.module.Ruins;
 import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.tag.ExploreTag;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class ExplorePopulator extends Populator {
             if (stack == null)
                 continue;
 
+            // set the quest tag of the stack to the quest ID so we can match it later
+            stack.getOrCreateTag().putString(ExploreTag.QUEST, quest.getId());
             items.add(stack);
         }
 
