@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -9,19 +10,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExploreTag implements ITag {
     public static final String STRUCTURE = "structure";
     public static final String DIMENSION = "dimension";
     public static final String CHEST = "chest";
     public static final String ITEM_DATA = "item_data";
+    public static final String QUEST = "quest";
 
     private QuestTag questTag;
     private BlockPos structurePos;
     private BlockPos chestPos;
     private Identifier dimension;
     private List<ItemStack> items = new ArrayList<>();
+    private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
     public ExploreTag(QuestTag questTag) {
         this.questTag = questTag;
@@ -72,8 +77,12 @@ public class ExploreTag implements ITag {
         }
     }
 
-    public void inventoryTick(PlayerEntity player) {
+    public List<ItemStack> getItems() {
+        return items;
+    }
 
+    public Map<ItemStack, Boolean> getSatisfied() {
+        return satisfied;
     }
 
     public void setStructurePos(BlockPos structurePos) {
@@ -86,5 +95,48 @@ public class ExploreTag implements ITag {
 
     public void setItems(List<ItemStack> items) {
         this.items = items;
+    }
+
+    public boolean isSatisfied() {
+        if (items.isEmpty())
+            return true;
+
+        return getSatisfied().values().stream().allMatch(r -> r);
+    }
+
+    public void inventoryTick(PlayerEntity player) {
+
+    }
+
+    public void complete(PlayerEntity player, MerchantEntity merchant) {
+        if (items.isEmpty())
+            return;
+
+        items.forEach(stack -> {
+            for (ItemStack invStack : player.inventory.main) {
+                if (stack.isItemEqualIgnoreDamage(invStack)
+                    && stack.getOrCreateTag().getString(QUEST).equals(questTag.getId())
+                ) {
+                    invStack.decrement(1);
+                }
+            }
+        });
+    }
+
+    public void update(PlayerEntity player) {
+        satisfied.clear();
+
+        items.forEach(stack -> {
+            satisfied.put(stack, false);
+
+            player.inventory.main.forEach(invStack -> {
+                if (!stack.isEmpty()
+                    && stack.isItemEqualIgnoreDamage(invStack)
+                    && invStack.getOrCreateTag().getString(QUEST).equals(questTag.getId())
+                ) {
+                    satisfied.put(stack, true);
+                }
+            });
+        });
     }
 }
