@@ -16,7 +16,7 @@ public class JsonDefinition {
     private boolean builtIn;
     private String title;
     private List<String> modules;
-    private List<String> locate = new ArrayList<>();
+    private List<String> explore = new ArrayList<>();
     private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
     private Map<String, Map<String, String>> encounter = new HashMap<>();
@@ -43,8 +43,8 @@ public class JsonDefinition {
         return modules == null ? new ArrayList<>() : modules;
     }
 
-    public List<String> getLocate() {
-        return locate == null ? new ArrayList<>() : locate;
+    public List<String> getExplore() {
+        return explore == null ? new ArrayList<>() : explore;
     }
 
     public Map<String, String> getGather() {
