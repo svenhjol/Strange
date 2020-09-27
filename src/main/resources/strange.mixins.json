@@ -4,7 +4,6 @@
   "package": "svenhjol.strange.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "LivingEntityMixin",
     "PlayerManagerMixin",
     "SinglePoolElementMixin",
     "accessor.MinecraftServerAccessor",
