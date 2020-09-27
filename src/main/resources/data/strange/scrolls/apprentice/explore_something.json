@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Find The Magic Trousers"
+    }
+  },
+  "explore": [
+    "minecraft:diamond_leggings"
+  ],
+  "reward": {
+    "items": {
+      "minecraft:diamond": 64
+    },
+    "xp": {
+      "levels": 30
+    }
+  }
+}
