@@ -93,15 +93,15 @@ public class GatherTag implements ITag {
             return;
 
         items.forEach((stack, count) -> {
-            int actualCount = count;
+            int remainder = count;
             for (ItemStack invStack : player.inventory.main) {
-                if (actualCount <= 0)
+                if (remainder <= 0)
                     continue;
 
                 if (stack.isItemEqualIgnoreDamage(invStack)) {
-                    int invCount = invStack.getCount();
-                    actualCount -= invCount;
-                    invStack.decrement(invCount);
+                    int decrement = Math.min(remainder, invStack.getCount());
+                    remainder -= decrement;
+                    invStack.decrement(decrement);
                 }
             }
         });
