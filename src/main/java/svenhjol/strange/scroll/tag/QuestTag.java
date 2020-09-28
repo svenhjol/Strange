@@ -23,7 +23,7 @@ public class QuestTag implements ITag {
     private String title = "";
     private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private int tier = 1;
-    private int rarity = 0;
+    private int rarity = 1;
     private boolean dirty = false;
     private RewardTag reward = new RewardTag(this);
     private GatherTag gather = new GatherTag(this);
