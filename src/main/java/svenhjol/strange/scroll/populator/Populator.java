@@ -138,6 +138,6 @@ public abstract class Populator {
     }
 
     public int scaleRarity(int original) {
-        return original * quest.getRarity();
+        return original * Math.min(1, quest.getRarity());
     }
 }
