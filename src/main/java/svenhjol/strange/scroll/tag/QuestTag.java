@@ -34,7 +34,7 @@ public class QuestTag implements ITag {
 
     public QuestTag(UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
-        this.rarity = rarity;
+        this.rarity = Math.max(1, rarity);
         this.merchant = merchant;
     }
 
@@ -56,7 +56,7 @@ public class QuestTag implements ITag {
 
     public void fromTag(CompoundTag tag) {
         tier = tag.getInt(TIER_TAG);
-        rarity = tag.getInt(RARITY_TAG);
+        rarity = Math.max(1, tag.getInt(RARITY_TAG));
         merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
         id = tag.getString(ID_TAG);
         title = tag.getString(TITLE_TAG);
