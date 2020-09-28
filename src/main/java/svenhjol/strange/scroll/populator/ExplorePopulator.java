@@ -31,8 +31,8 @@ public class ExplorePopulator extends Populator {
         List<String> explore = definition.getExplore();
 
         // find the structure to explore
-        BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 1500);
-        BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 1500);
+        BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 1000);
+        BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 500);
 
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(Ruins.STRUCTURE_ID);
         if (structureFeature == null) {
@@ -41,7 +41,7 @@ public class ExplorePopulator extends Populator {
                 fail("Could not find ruin or mineshaft");
         }
 
-        BlockPos foundPos = world.locateStructure(structureFeature, max, 1000, true);
+        BlockPos foundPos = world.locateStructure(structureFeature, max, 500, true);
         if (foundPos == null)
             fail("Could not locate structure");
 
