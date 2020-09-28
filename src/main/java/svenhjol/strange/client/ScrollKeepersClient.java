@@ -37,9 +37,6 @@ public class ScrollKeepersClient {
             if (quest == null)
                 return;
 
-            if (!quest.isSatisfied(player))
-                return;
-
             int x = playerPos.getX();
             int y = playerPos.getY();
             int z = playerPos.getZ();
@@ -48,6 +45,12 @@ public class ScrollKeepersClient {
             List<VillagerEntity> villagers = world.getNonSpectatingEntities(VillagerEntity.class, new Box(
                 x - range, y - range, z - range, x + range, y + range, z + range
             ));
+
+            if (villagers.isEmpty())
+                return;
+
+            if (!quest.isSatisfied(player))
+                return;
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
