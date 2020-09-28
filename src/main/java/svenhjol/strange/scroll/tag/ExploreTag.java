@@ -123,7 +123,7 @@ public class ExploreTag implements ITag {
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structurePos);
-        if (dist < 1000) {
+        if (dist < 1200) {
             chestPos = placeChest(player.world, structurePos, player.getRandom());
             questTag.markDirty(true);
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.7F, 1.15F);
