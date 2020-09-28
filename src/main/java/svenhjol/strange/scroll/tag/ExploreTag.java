@@ -3,13 +3,11 @@ package svenhjol.strange.scroll.tag;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -25,6 +23,7 @@ import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.meson.helper.PosHelper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExploreTag implements ITag {
     public static final String STRUCTURE = "structure";
@@ -165,65 +164,43 @@ public class ExploreTag implements ITag {
     }
 
     private BlockPos placeChest(World world, BlockPos pos, Random random) {
-        int minRange = 8;
-        int maxRange = 16;
-        int maxTries = 8; // tries within range
-        int start = 32;
-        List<BlockPos> placements = new ArrayList<>();
+        int checkRange = 32;
+        int fallbackRange = 8;
+        int startHeight = 32;
 
-        // assemble list of valid placements
-        for (int y = start; y < start + 8; y++) {
-            for (int r = minRange; r <= maxRange; r++) {
-                for (int tries = 0; tries < maxTries; tries++) {
-                    BlockPos tryPlace = new BlockPos(pos.getX() - (r/2) + random.nextInt(r), y, pos.getZ() - (r/2) + random.nextInt(r));
-                    BlockState floor = world.getBlockState(tryPlace.down());
-                    BlockState above = world.getBlockState(tryPlace.up());
-                    if (floor.isOpaque()
-                        && (world.isAir(tryPlace) || world.getBlockState(tryPlace).getMaterial() == Material.WATER)
-                        && (above.isAir() || above.getMaterial() == Material.WATER)
-                    ) {
-                        placements.add(tryPlace);
-                    }
-                }
+        BlockPos pos1 = pos.add(-checkRange, startHeight - (checkRange/2), -checkRange);
+        BlockPos pos2 = pos.add(checkRange, startHeight + (checkRange/2), checkRange);
+
+        List<BlockPos> chests = BlockPos.stream(pos1, pos2).map(BlockPos::toImmutable).filter(p -> {
+            BlockState state = world.getBlockState(p);
+            return state.getBlock() instanceof ChestBlock;
+        }).collect(Collectors.toList());
+
+        if (chests.isEmpty()) {
+            BlockState chest;
+            boolean useVariantChests = Meson.enabled("charm:variant_chests");
+            if (useVariantChests) {
+                IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
+                chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();
+            } else {
+                chest = Blocks.CHEST.getDefaultState();
             }
+
+            int x = pos.getX() - (fallbackRange/2) + random.nextInt(fallbackRange);
+            int z = pos.getZ() - (fallbackRange/2) + random.nextInt(fallbackRange);
+            BlockPos place = new BlockPos(x, startHeight, z);
+            if (!world.getBlockState(place.down()).isOpaque())
+                world.setBlockState(place.down(), Blocks.STONE.getDefaultState(), 2);
+
+            world.setBlockState(place, chest, 2);
+            chests.add(place);
         }
 
-        // get the placement position for the chest
-        BlockPos placePos;
-        if (placements.isEmpty()) {
-            int x = pos.getX() - (maxRange/2) + random.nextInt(maxRange);
-            int y = start;
-            int z = pos.getZ() - (maxRange/2) + random.nextInt(maxRange);
-            placePos = new BlockPos(x, y, z);
-            if (!world.getBlockState(placePos.down()).isOpaque()) {
-                world.setBlockState(placePos.down(), Blocks.STONE.getDefaultState(), 2);
-            }
-        } else {
-            placePos = placements.get(random.nextInt(placements.size()));
-        }
+        BlockPos place = chests.get(random.nextInt(chests.size()));
+        BlockEntity blockEntity = world.getBlockEntity(place);
 
-        BlockState chest;
-
-        // TODO: this is common to stone circle generator
-        boolean useVariantChests = Meson.enabled("charm:variant_chests");
-        if (useVariantChests) {
-            IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
-            chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();
-        } else {
-            chest = Blocks.CHEST.getDefaultState();
-        }
-
-        // check waterlogged chest
-        if (world.getBlockState(placePos).getMaterial() == Material.WATER)
-            chest = chest.with(ChestBlock.WATERLOGGED, true);
-
-        // place the chest
-        world.setBlockState(placePos, chest, 2);
-        BlockEntity blockEntity = world.getBlockEntity(placePos);
         if (blockEntity instanceof ChestBlockEntity) {
-            // create normal loot table
             ChestBlockEntity chestBlockEntity = (ChestBlockEntity)blockEntity;
-            chestBlockEntity.setLootTable(LootTables.SIMPLE_DUNGEON_CHEST, random.nextLong());
 
             // write the items into the loot
             int slot = 0;
@@ -233,6 +210,6 @@ public class ExploreTag implements ITag {
             }
         }
 
-        return placePos;
+        return place;
     }
 }
