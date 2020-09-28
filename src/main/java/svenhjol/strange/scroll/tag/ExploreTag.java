@@ -209,7 +209,7 @@ public class ExploreTag implements ITag {
 
         // place the chest
         world.setBlockState(placePos, chest, 2);
-        BlockEntity blockEntity = world.getBlockEntity(chestPos);
+        BlockEntity blockEntity = world.getBlockEntity(placePos);
         if (blockEntity instanceof ChestBlockEntity) {
             // create normal loot table
             ChestBlockEntity chestBlockEntity = (ChestBlockEntity)blockEntity;
