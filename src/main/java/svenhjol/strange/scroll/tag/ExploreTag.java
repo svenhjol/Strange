@@ -1,6 +1,9 @@
 package svenhjol.strange.scroll.tag;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -10,6 +13,8 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -119,11 +124,11 @@ public class ExploreTag implements ITag {
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structurePos);
-        if (dist < 800) {
-            BlockPos placePos = placeChest(player.world, structurePos, player.getRandom());
-            Meson.LOG.debug("Placed chest at: " + placePos);
-            chestPos = placePos;
+        if (dist < 1000) {
+            chestPos = placeChest(player.world, structurePos, player.getRandom());
             questTag.markDirty(true);
+            player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.7F, 1.15F);
+            Meson.LOG.info("Placed chest at: " + chestPos);
         }
     }
 
@@ -162,18 +167,23 @@ public class ExploreTag implements ITag {
     private BlockPos placeChest(World world, BlockPos pos, Random random) {
         int minRange = 8;
         int maxRange = 16;
-        int maxTries = 4; // tries within range
-        int start = 16 + random.nextInt(16);
+        int maxTries = 8; // tries within range
+        int start = 32;
         List<BlockPos> placements = new ArrayList<>();
 
         // assemble list of valid placements
-        for (int y = start; y < world.getSeaLevel(); y++) {
+        for (int y = start; y < start + 8; y++) {
             for (int r = minRange; r <= maxRange; r++) {
                 for (int tries = 0; tries < maxTries; tries++) {
                     BlockPos tryPlace = new BlockPos(pos.getX() - (r/2) + random.nextInt(r), y, pos.getZ() - (r/2) + random.nextInt(r));
                     BlockState floor = world.getBlockState(tryPlace.down());
-                    if (floor.isOpaque() && (world.isAir(tryPlace) || world.getBlockState(tryPlace).getMaterial() == Material.WATER))
+                    BlockState above = world.getBlockState(tryPlace.up());
+                    if (floor.isOpaque()
+                        && (world.isAir(tryPlace) || world.getBlockState(tryPlace).getMaterial() == Material.WATER)
+                        && (above.isAir() || above.getMaterial() == Material.WATER)
+                    ) {
                         placements.add(tryPlace);
+                    }
                 }
             }
         }
