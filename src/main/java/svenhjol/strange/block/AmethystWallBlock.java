@@ -1,5 +1,6 @@
 package svenhjol.strange.block;
 
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.WallBlock;
 import svenhjol.meson.MesonModule;
