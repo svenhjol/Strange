@@ -29,7 +29,7 @@
   "block.strange.writing_desk": "Writing Desk",
   "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
   "gui.strange.scrolls.close": "Close",
-  "gui.strange.scrolls.explore": "Explore structure",
+  "gui.strange.scrolls.explore": "Explore to find items",
   "gui.strange.scrolls.explore_item": "%s",
   "gui.strange.scrolls.gather": "Collect items",
   "gui.strange.scrolls.gather_item": "%s: %s",

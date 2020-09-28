@@ -49,8 +49,7 @@ public class GatherPanel extends Panel {
         // tooltips
         baseTop = top;
         for (ItemStack stack : stacks) {
-            if (stack.hasGlint()
-                && mouseX > mid - 60 && mouseX < mid - 44
+            if (mouseX > mid - 60 && mouseX < mid - 44
                 && mouseY > baseTop - 5 && mouseY < baseTop + 11
             ) {
                 screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
