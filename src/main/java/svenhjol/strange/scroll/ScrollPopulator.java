@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ScrollPopulator {
     public static void populate(ItemStack scroll, ServerPlayerEntity player, JsonDefinition definition) {
         UUID merchant = ScrollItem.getScrollMerchant(scroll);
-        int rarity = ScrollItem.getScrollRarity(scroll);
+        int rarity = Math.min(1, ScrollItem.getScrollRarity(scroll));
         QuestTag quest = new QuestTag(merchant, rarity);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(

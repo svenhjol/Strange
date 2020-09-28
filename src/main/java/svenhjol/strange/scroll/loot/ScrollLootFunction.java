@@ -19,7 +19,7 @@ public class ScrollLootFunction extends ConditionalLootFunction {
     @Override
     protected ItemStack process(ItemStack stack, LootContext context) {
         int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1;
-        int rarity = context.getRandom().nextInt(2) + 1;
+        int rarity = context.getRandom().nextInt(2) + 2;
 
         ItemStack scroll = new ItemStack(Scrolls.SCROLL_TIERS.get(tier));
         ScrollItem.setScrollRarity(scroll, rarity);
