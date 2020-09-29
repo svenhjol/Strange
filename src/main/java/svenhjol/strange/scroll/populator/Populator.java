@@ -1,6 +1,7 @@
 package svenhjol.strange.scroll.populator;
 
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,6 +13,7 @@ import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.QuestTag;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class Populator {
@@ -68,8 +70,12 @@ public abstract class Populator {
         Item item = optionalItem.get();
         stack = new ItemStack(item);
 
-        if (doEnchant && item.isEnchantable(stack))
-            EnchantmentHelper.generateEnchantments(world.random, stack, isRare ? 15 : 5, isRare);
+        if (doEnchant && item.isEnchantable(stack)) {
+            List<EnchantmentLevelEntry> enchantments = EnchantmentHelper.generateEnchantments(world.random, stack, isRare ? 15 : 5, isRare);
+            for (EnchantmentLevelEntry e : enchantments) {
+                stack.addEnchantment(e.enchantment, e.level);
+            }
+        }
 
         return stack;
     }
@@ -87,24 +93,26 @@ public abstract class Populator {
 
     @Nullable
     public String filterRarity(String key) {
+        boolean certain = key.contains("!");
+
         if (key.contains(EPIC_LABEL)) {
             // epic items only have a small chance to pass, boosted by quest value
-            if (world.random.nextFloat() > (EPIC_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
+            if (!certain && world.random.nextFloat() > (EPIC_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
             return key.replace(EPIC_LABEL, "");
 
         } else if (key.contains(RARE_LABEL)) {
             // rare items only have a small chance to pass, boosted by quest value
-            if (world.random.nextFloat() > (RARE_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
+            if (!certain && world.random.nextFloat() > (RARE_CHANCE_BASE + (0.02F * quest.getRarity()))) return null;
             return key.replace(RARE_LABEL, "");
 
         } else if (key.contains(UNCOMMON_LABEL)) {
             // uncommon items pass sometimes
-            if (world.random.nextFloat() > (UNCOMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
+            if (!certain && world.random.nextFloat() > (UNCOMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
             return key.replace(UNCOMMON_LABEL, "");
 
         } else if (key.contains(COMMON_LABEL)) {
             // common items pass often
-            if (world.random.nextFloat() > (COMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
+            if (!certain && world.random.nextFloat() > (COMMON_CHANCE_BASE + (0.05F * quest.getRarity()))) return null;
             return key.replace(COMMON_LABEL, "");
         }
 
