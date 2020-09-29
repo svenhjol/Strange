@@ -71,7 +71,9 @@ public class ExploreTag implements ITag {
             outTag.putLongArray(CHESTS, chestPositions);
         }
 
-        outTag.putString(DIMENSION, dimension.toString());
+        if (dimension != null)
+            outTag.putString(DIMENSION, dimension.toString());
+
         return outTag;
     }
 

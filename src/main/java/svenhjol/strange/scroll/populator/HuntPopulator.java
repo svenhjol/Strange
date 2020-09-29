@@ -18,6 +18,9 @@ public class HuntPopulator extends Populator {
         Map<String, String> hunt = definition.getHunt();
         Map<Identifier, Integer> entities = new HashMap<>();
 
+        if (hunt.isEmpty())
+            return;
+
         for (String id : hunt.keySet()) {
             Identifier entityId = getEntityIdFromKey(id);
             if (entityId == null)

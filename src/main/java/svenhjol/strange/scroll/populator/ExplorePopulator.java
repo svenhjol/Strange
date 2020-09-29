@@ -30,6 +30,9 @@ public class ExplorePopulator extends Populator {
     public void populate() {
         List<String> explore = definition.getExplore();
 
+        if (explore.isEmpty())
+            return;
+
         // find the structure to explore
         BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 1000);
         BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 500);

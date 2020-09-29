@@ -18,6 +18,9 @@ public class GatherPopulator extends Populator {
         Map<String, String> gather = definition.getGather();
         Map<ItemStack, Integer> items = new HashMap<>();
 
+        if (gather.isEmpty())
+            return;
+
         for (String stackName : gather.keySet()) {
             ItemStack stack = getItemFromKey(stackName);
             if (stack == null)
