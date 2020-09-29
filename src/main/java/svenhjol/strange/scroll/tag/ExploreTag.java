@@ -28,13 +28,13 @@ import java.util.stream.Collectors;
 public class ExploreTag implements ITag {
     public static final String STRUCTURE = "structure";
     public static final String DIMENSION = "dimension";
-    public static final String CHEST = "chest";
-    public static final String ITEM_DATA = "item_data";
+    public static final String CHESTS = "chests";
+    public static final String ITEMS = "items";
     public static final String QUEST = "quest";
 
     private QuestTag questTag;
-    private BlockPos structurePos;
-    private BlockPos chestPos;
+    private BlockPos structure;
+    private List<BlockPos> chests;
     private Identifier dimension;
     private List<ItemStack> items = new ArrayList<>();
     private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
@@ -55,14 +55,21 @@ public class ExploreTag implements ITag {
                 itemDataTag.add(itemTag);
             }
 
-            outTag.put(ITEM_DATA, itemDataTag);
+            outTag.put(ITEMS, itemDataTag);
         }
 
 
-        if (structurePos != null)
-            outTag.putLong(STRUCTURE, structurePos.asLong());
-        if (chestPos != null)
-            outTag.putLong(CHEST, chestPos.asLong());
+        if (structure != null)
+            outTag.putLong(STRUCTURE, structure.asLong());
+
+        if (chests != null && !chests.isEmpty()) {
+            List<Long> chestPositions = chests.stream()
+                .map(BlockPos::toImmutable)
+                .map(BlockPos::asLong)
+                .collect(Collectors.toList());
+
+            outTag.putLongArray(CHESTS, chestPositions);
+        }
 
         outTag.putString(DIMENSION, dimension.toString());
         return outTag;
@@ -70,16 +77,24 @@ public class ExploreTag implements ITag {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        structurePos = tag.contains(STRUCTURE) ? BlockPos.fromLong(tag.getLong(STRUCTURE)) : null;
-        chestPos = tag.contains(CHEST) ? BlockPos.fromLong(tag.getLong(CHEST)) : null;
+        structure = tag.contains(STRUCTURE) ? BlockPos.fromLong(tag.getLong(STRUCTURE)) : null;
         dimension = Identifier.tryParse(tag.getString(DIMENSION));
 
         if (dimension == null)
             dimension = new Identifier("minecraft", "overworld"); // probably not good
 
+
+        if (tag.contains(CHESTS)) {
+            chests = new ArrayList<>();
+            long[] chestPositions = tag.getLongArray(CHESTS);
+            for (long pos : chestPositions) {
+                chests.add(BlockPos.fromLong(pos));
+            }
+        }
+
         items = new ArrayList<>();
 
-        ListTag itemDataTag = (ListTag)tag.get(ITEM_DATA);
+        ListTag itemDataTag = (ListTag)tag.get(ITEMS);
         if (itemDataTag != null && itemDataTag.size() > 0) {
             for (Tag itemTag : itemDataTag) {
                 ItemStack stack = ItemStack.fromTag((CompoundTag)itemTag);
@@ -96,8 +111,8 @@ public class ExploreTag implements ITag {
         return satisfied;
     }
 
-    public void setStructurePos(BlockPos structurePos) {
-        this.structurePos = structurePos;
+    public void setStructure(BlockPos structure) {
+        this.structure = structure;
     }
 
     public void setDimension(Identifier dimension) {
@@ -119,15 +134,17 @@ public class ExploreTag implements ITag {
         if (player.world.isClient)
             return;
 
-        if (structurePos == null || chestPos != null)
+        if (structure == null || (chests != null && !chests.isEmpty()))
             return;
 
-        double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structurePos);
+        double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 1200) {
-            chestPos = placeChest(player.world, structurePos, player.getRandom());
+            List<BlockPos> chestPositions = addLootToChests(player.world, structure, player.getRandom());
             questTag.markDirty(true);
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.7F, 1.15F);
-            Meson.LOG.info("Placed chest at: " + chestPos);
+            player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
+            chestPositions.forEach(pos -> Meson.LOG.debug("Added to chest at: " + pos.toShortString()));
+
+            chests = chestPositions;
         }
     }
 
@@ -163,7 +180,7 @@ public class ExploreTag implements ITag {
         });
     }
 
-    private BlockPos placeChest(World world, BlockPos pos, Random random) {
+    private List<BlockPos> addLootToChests(World world, BlockPos pos, Random random) {
         int checkRange = 32;
         int fallbackRange = 8;
         int startHeight = 32;
@@ -176,8 +193,11 @@ public class ExploreTag implements ITag {
             return state.getBlock() instanceof ChestBlock;
         }).collect(Collectors.toList());
 
+        // if not possible to find any chests, place one in the world.
         if (chests.isEmpty()) {
             BlockState chest;
+
+            // TODO: make this some kind of helper method
             boolean useVariantChests = Meson.enabled("charm:variant_chests");
             if (useVariantChests) {
                 IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
@@ -186,30 +206,56 @@ public class ExploreTag implements ITag {
                 chest = Blocks.CHEST.getDefaultState();
             }
 
-            int x = pos.getX() - (fallbackRange/2) + random.nextInt(fallbackRange);
-            int z = pos.getZ() - (fallbackRange/2) + random.nextInt(fallbackRange);
-            BlockPos place = new BlockPos(x, startHeight, z);
-            if (!world.getBlockState(place.down()).isOpaque())
-                world.setBlockState(place.down(), Blocks.STONE.getDefaultState(), 2);
+            // get a location near the start position
+            BlockPos place = null;
 
+            outerloop:
+            for (int sy = startHeight; sy < startHeight + 4; sy++) {
+                for (int sx = -fallbackRange; sx <= fallbackRange; sx++) {
+                    for (int sz = -fallbackRange; sz <= fallbackRange; sz++) {
+                        BlockPos checkPos = new BlockPos(pos.add(sx, sy, sz));
+                        if (world.getBlockState(checkPos).isAir()) {
+                            place = checkPos;
+                            break outerloop;
+                        }
+                    }
+                }
+            }
+
+            if (place == null) {
+                int x = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
+                int z = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
+                place = new BlockPos(pos.add(x, startHeight, z));
+            }
+
+            // build a little 3x3x3 cube of air to house the chest
+            for (int py = -1; py <= 1; py++) {
+                BlockState state = py == -1 ? Blocks.STONE.getDefaultState() : Blocks.AIR.getDefaultState();
+                for (int px = -1; px <= 1; px++) {
+                    for (int pz = -1; pz <= 1; pz++) {
+                        world.setBlockState(place.add(px, py, pz), state, 2);
+                    }
+                }
+            }
             world.setBlockState(place, chest, 2);
             chests.add(place);
         }
 
-        BlockPos place = chests.get(random.nextInt(chests.size()));
-        BlockEntity blockEntity = world.getBlockEntity(place);
+        List<BlockPos> placements = new ArrayList<>();
 
-        if (blockEntity instanceof ChestBlockEntity) {
-            ChestBlockEntity chestBlockEntity = (ChestBlockEntity)blockEntity;
+        // select a chest at random and write the loot into it
+        int slot = 0;
+        for (ItemStack stack : items) {
+            BlockPos place = chests.get(random.nextInt(chests.size()));
+            BlockEntity blockEntity = world.getBlockEntity(place);
 
-            // write the items into the loot
-            int slot = 0;
-            for (ItemStack stack : items) {
-                slot += random.nextInt(chestBlockEntity.size() / items.size());
-                chestBlockEntity.setStack(slot, stack);
+            if (blockEntity instanceof ChestBlockEntity) {
+                ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
+                chestBlockEntity.setStack(slot++, stack);
             }
+            placements.add(place);
         }
 
-        return place;
+        return placements;
     }
 }
