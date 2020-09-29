@@ -96,9 +96,9 @@ public class EntitySpawnerBlockEntity extends BlockEntity implements Tickable {
         boolean result = trySpawn(pos);
 
         if (result) {
-            Meson.LOG.debug("EntitySpawner spawned entity at pos: " + pos);
+            Meson.LOG.debug("EntitySpawner spawned entity " + entity.toString() + " at pos: " + pos);
         } else {
-            Meson.LOG.warn("EntitySpawner failed to spawn entity at pos: " + pos);
+            Meson.LOG.debug("EntitySpawner failed to spawn entity " + entity.toString() + " at pos: " + pos);
         }
     }
 
