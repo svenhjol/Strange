@@ -62,7 +62,7 @@ public class ExplorePopulator extends Populator {
 
         quest.getExplore().setItems(items);
         quest.getExplore().setDimension(DimensionHelper.getDimension(world));
-        quest.getExplore().setStructurePos(foundPos);
+        quest.getExplore().setStructure(foundPos);
 
 
         // give map to the location
