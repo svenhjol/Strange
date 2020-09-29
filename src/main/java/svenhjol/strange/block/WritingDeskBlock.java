@@ -10,6 +10,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.block.MesonBlock;
@@ -19,6 +20,8 @@ import javax.annotation.Nullable;
 
 public class WritingDeskBlock extends MesonBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    public static final VoxelShape TOP;
+    public static final VoxelShape LEGS;
     public static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape OUTLINE_SHAPE;
 
@@ -60,7 +63,9 @@ public class WritingDeskBlock extends MesonBlock {
 
 
     static {
-        COLLISION_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        OUTLINE_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        TOP = Block.createCuboidShape(0.0D, 13.0D, 0.0D, 16.0D, 13.0D, 16.0D);
+        LEGS = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 12.0D, 15.0D);
+        COLLISION_SHAPE = VoxelShapes.union(TOP, LEGS);
+        OUTLINE_SHAPE = VoxelShapes.union(TOP, LEGS);
     }
 }
