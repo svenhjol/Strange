@@ -50,7 +50,8 @@ public abstract class Populator {
         key = splitOptionalRandomly(key);
 
         boolean doEnchant = key.contains(ENCHANTED_LABEL);
-        boolean isRare = key.contains(RARE_LABEL) || key.contains(EPIC_LABEL);
+        boolean isRare = key.contains(RARE_LABEL);
+        boolean isEpic = key.contains(EPIC_LABEL);
 
         if (key.contains(ENCHANTED_LABEL))
             key = key.replace(ENCHANTED_LABEL, "");
@@ -71,7 +72,9 @@ public abstract class Populator {
         stack = new ItemStack(item);
 
         if (doEnchant && item.isEnchantable(stack)) {
-            List<EnchantmentLevelEntry> enchantments = EnchantmentHelper.generateEnchantments(world.random, stack, isRare ? 15 : 5, isRare);
+            int level = isRare ? 15 : isEpic ? 30 : 5;
+
+            List<EnchantmentLevelEntry> enchantments = EnchantmentHelper.generateEnchantments(world.random, stack, level, isRare || isEpic);
             for (EnchantmentLevelEntry e : enchantments) {
                 stack.addEnchantment(e.enchantment, e.level);
             }
@@ -94,6 +97,9 @@ public abstract class Populator {
     @Nullable
     public String filterRarity(String key) {
         boolean certain = key.contains("!");
+
+        if (certain)
+            key = key.replace("!", "");
 
         if (key.contains(EPIC_LABEL)) {
             // epic items only have a small chance to pass, boosted by quest value

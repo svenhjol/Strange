@@ -6,8 +6,8 @@
     }
   },
   "explore": [
-    "minecraft:diamond_leggings[enchanted][rare]!",
-    "minecraft:chainmail_leggings[enchanted][rare]!"
+    "minecraft:diamond_leggings[enchanted][epic]!",
+    "minecraft:chainmail_leggings[enchanted][epic]!"
   ],
   "reward": {
     "items": {
