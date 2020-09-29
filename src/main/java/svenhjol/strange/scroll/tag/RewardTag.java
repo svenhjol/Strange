@@ -13,9 +13,9 @@ import java.util.Map;
 public class RewardTag implements ITag {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
-    public static final String XP_TAG = "xp";
+    public static final String LEVELS_TAG = "levels";
 
-    private int xp;
+    private int levels;
     private QuestTag questTag;
     private Map<ItemStack, Integer> items = new HashMap<>();
 
@@ -31,8 +31,8 @@ public class RewardTag implements ITag {
             LookTargetUtil.give(merchant, stackToDrop, player.getPos());
         }
 
-        if (xp > 0)
-            player.addExperienceLevels(xp);
+        if (levels > 0)
+            player.addExperienceLevels(levels);
     }
 
     public CompoundTag toTag() {
@@ -55,12 +55,12 @@ public class RewardTag implements ITag {
 
         outTag.put(ITEM_DATA, dataTag);
         outTag.put(ITEM_COUNT, countTag);
-        outTag.putInt(XP_TAG, xp);
+        outTag.putInt(LEVELS_TAG, levels);
         return outTag;
     }
 
     public void fromTag(CompoundTag tag) {
-        this.xp = tag.getInt(XP_TAG);
+        this.levels = tag.getInt(LEVELS_TAG);
 
         CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
         CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
@@ -90,11 +90,11 @@ public class RewardTag implements ITag {
         return items;
     }
 
-    public int getXp() {
-        return xp;
+    public int getLevels() {
+        return levels;
     }
 
-    public void setXp(int xp) {
-        this.xp = xp;
+    public void setLevels(int levels) {
+        this.levels = levels;
     }
 }

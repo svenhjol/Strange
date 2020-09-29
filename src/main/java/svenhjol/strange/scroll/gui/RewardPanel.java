@@ -18,16 +18,16 @@ public class RewardPanel extends Panel {
     public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
         RewardTag reward = quest.getReward();
         Map<ItemStack, Integer> items = reward.getItems();
-        int xp = reward.getXp();
+        int levels = reward.getLevels();
 
         // the panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.reward"), mid, top, titleColor);
 
         top += rowHeight;
 
-        // if the reward has XP then show it here
-        if (xp > 0) {
-            TranslatableText text = new TranslatableText("gui.strange.scrolls.reward_xp", xp);
+        // if the reward provides XP levels then show it here
+        if (levels > 0) {
+            TranslatableText text = new TranslatableText(levels == 1 ? "gui.strange.scrolls.reward_level" : "gui.strange.scrolls.reward_levels", levels);
             renderItemStack(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, top, textColor);
             top += rowHeight;

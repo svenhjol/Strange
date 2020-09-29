@@ -9,9 +9,8 @@ import java.util.*;
 
 public class RewardPopulator extends Populator {
     public static final String ITEMS = "items";
-    public static final String XP = "xp";
-    public static final String COUNT = "count";
     public static final String LEVELS = "levels";
+    public static final String XP = "xp";
 
     public RewardPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
         super(player, quest, definition);
@@ -22,9 +21,6 @@ public class RewardPopulator extends Populator {
         Map<String, Map<String, String>> reward = definition.getReward();
         if (reward.isEmpty())
             return;
-
-        if (reward.containsKey(COUNT))
-            throw new RuntimeException("Reward XP count has been deprecated. Fix up scroll definition: " + definition.getTitle());
 
         if (reward.containsKey(ITEMS)) {
             Map<String, String> defined = reward.get(ITEMS);
@@ -56,7 +52,7 @@ public class RewardPopulator extends Populator {
 
                 // reward scales the number of levels according to the rarity of the scroll
                 int levels = getCountFromValue(definition.get(LEVELS), true);
-                quest.getReward().setXp(levels);
+                quest.getReward().setLevels(levels);
             }
         }
     }
