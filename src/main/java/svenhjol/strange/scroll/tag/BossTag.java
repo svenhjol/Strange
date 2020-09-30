@@ -160,7 +160,7 @@ public class BossTag implements ITag {
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
-        if (dist < 300) {
+        if (dist < 260) {
             BossPopulator.startEncounter(player, this);
             questTag.markDirty(true);
             spawned = true;
