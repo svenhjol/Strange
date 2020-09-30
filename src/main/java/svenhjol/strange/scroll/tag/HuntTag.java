@@ -19,8 +19,10 @@ public class HuntTag implements ITag {
     private QuestTag questTag;
     private Map<Identifier, Integer> entities = new HashMap<>();
     private Map<Identifier, Integer> killed = new HashMap<>();
-    private Map<Identifier, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
-    private Map<Identifier, String> names = new HashMap<>(); // this is dynamically generated, not stored in nbt
+
+    // these are dynamically generated, not stored in nbt
+    private Map<Identifier, Boolean> satisfied = new HashMap<>();
+    private Map<Identifier, String> names = new HashMap<>();
 
     public HuntTag(QuestTag questTag) {
         this.questTag = questTag;
