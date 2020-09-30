@@ -45,7 +45,7 @@ public class Scrolls extends MesonModule {
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
-    public static Map<Integer, List<JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
+    public static Map<Integer, Map<String, JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
@@ -103,7 +103,7 @@ public class Scrolls extends MesonModule {
         ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
 
         for (int tier = 1; tier <= MAX_TIERS; tier++) {
-            AVAILABLE_SCROLLS.put(tier, new ArrayList<>());
+            AVAILABLE_SCROLLS.put(tier, new HashMap<>());
             Collection<Identifier> scrolls = resources.findResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
 
             for (Identifier scroll : scrolls) {
@@ -127,10 +127,10 @@ public class Scrolls extends MesonModule {
                         }
                     }
 
-                    String name = scroll.getPath().replace("/", ".").replace(".json", "");
-                    definition.setTitle(name);
+                    String id = scroll.getPath().replace("/", ".").replace(".json", "");
+                    definition.setTitle(id);
                     definition.setTier(tier);
-                    AVAILABLE_SCROLLS.get(tier).add(definition);
+                    AVAILABLE_SCROLLS.get(tier).put(id, definition);
                     Meson.LOG.info("Loaded scroll definition " + scroll.toString() + " for tier " + tier);
 
                 } catch (Exception e) {
@@ -206,13 +206,13 @@ public class Scrolls extends MesonModule {
             return null;
         }
 
-        List<JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        Map<String, JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
         if (definitions.isEmpty()) {
             Meson.LOG.warn("No scroll definitions found in this tier: " + tier);
             return null;
         }
 
-        return definitions.get(random.nextInt(definitions.size()));
+        return new ArrayList<>(definitions.values()).get(random.nextInt(definitions.size()));
     }
 
     public static List<ItemStack> getAllPlayerScrolls(PlayerEntity player) {
