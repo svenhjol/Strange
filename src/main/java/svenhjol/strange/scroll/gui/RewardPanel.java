@@ -20,7 +20,7 @@ public class RewardPanel extends Panel {
         Map<ItemStack, Integer> items = reward.getItems();
         int levels = reward.getLevels();
 
-        // the panel title
+        // panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.reward"), mid, top, titleColor);
 
         top += rowHeight;

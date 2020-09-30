@@ -26,7 +26,7 @@ public class BossPanel extends Panel {
         if (entities.isEmpty())
             return;
 
-        // the panel title
+        // panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.boss"), mid, top, titleColor);
 
         top += rowHeight;

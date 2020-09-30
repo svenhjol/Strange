@@ -35,8 +35,9 @@ public class ScrollScreen extends Screen {
 
         renderBackground(matrices);
 
-        // draw the title at the top of the page
+        // title and description at the top of the page
         GuiHelper.drawCenteredTitle(matrices, title.getString(), mid, 12, 0xFFFF88);
+        GuiHelper.drawCenteredTitle(matrices, quest.getDescription(), mid, 24, 0x888888);
 
         // render scroll requirements panels
         List<Panel> panels = new ArrayList<>();
@@ -67,7 +68,7 @@ public class ScrollScreen extends Screen {
         }
 
         // render scroll reward panel
-        RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 128, mouseX, mouseY);
+        RewardPanel.INSTANCE.render(this, matrices, quest, mid, width, 134, mouseX, mouseY);
 
         super.render(matrices, mouseX, mouseY, delta);
     }

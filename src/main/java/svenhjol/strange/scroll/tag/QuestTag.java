@@ -14,6 +14,7 @@ public class QuestTag implements ITag {
     private static final String ID_TAG = "id";
     private static final String DEFINITION_TAG = "definition";
     private static final String TITLE_TAG = "title";
+    private static final String DESCRIPTION_TAG = "description";
     private static final String MERCHANT_TAG = "merchant";
     private static final String REWARD_TAG = "reward";
     private static final String TIER_TAG = "tier";
@@ -26,6 +27,7 @@ public class QuestTag implements ITag {
     private String id = "";
     private String definition = "";
     private String title = "";
+    private String description = "";
     private UUID merchant = ScrollHelper.ANY_MERCHANT;
     private int tier = 1;
     private int rarity = 1;
@@ -55,6 +57,7 @@ public class QuestTag implements ITag {
         tag.putString(ID_TAG, id);
         tag.putString(DEFINITION_TAG, definition);
         tag.putString(TITLE_TAG, title);
+        tag.putString(DESCRIPTION_TAG, description);
         tag.put(REWARD_TAG, reward.toTag());
         tag.put(GATHER_TAG, gather.toTag());
         tag.put(HUNT_TAG, hunt.toTag());
@@ -71,6 +74,7 @@ public class QuestTag implements ITag {
         id = tag.getString(ID_TAG);
         definition = tag.getString(DEFINITION_TAG);
         title = tag.getString(TITLE_TAG);
+        description = tag.getString(DESCRIPTION_TAG);
         reward.fromTag(tag.getCompound(REWARD_TAG));
         gather.fromTag(tag.getCompound(GATHER_TAG));
         hunt.fromTag(tag.getCompound(HUNT_TAG));
@@ -96,6 +100,10 @@ public class QuestTag implements ITag {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public UUID getMerchant() {
@@ -124,6 +132,10 @@ public class QuestTag implements ITag {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void inventoryTick(PlayerEntity player) {

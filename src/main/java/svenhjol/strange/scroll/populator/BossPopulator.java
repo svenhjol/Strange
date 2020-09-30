@@ -118,7 +118,7 @@ public class BossPopulator extends Populator {
         if (boss.containsKey(SUPPORT))
             trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
 
-        ScrollHelper.stormyWeather(world);
+        ScrollHelper.stormyWeather(world, 3600);
     }
 
     public static void checkEncounter(PlayerEntity player, BossTag tag) {

@@ -27,7 +27,7 @@ public class HuntPanel extends Panel {
         if (entities.isEmpty())
             return;
 
-        // the panel title
+        // panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.hunt"), mid, top, titleColor);
 
         top += rowHeight;

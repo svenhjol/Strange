@@ -58,11 +58,19 @@ public class ScrollHelper {
     }
 
     public static void clearWeather(ServerWorld world) {
-        world.setWeather(world.random.nextInt(12000) + 3600, 0, false, false);
+        clearWeather(world, world.random.nextInt(12000) + 3600);
+    }
+
+    public static void clearWeather(ServerWorld world, int duration) {
+        world.setWeather(duration, 0, false, false);
     }
 
     public static void stormyWeather(ServerWorld world) {
-        world.setWeather(0, world.random.nextInt(12000) + 3600, true, true);
+        stormyWeather(world, world.random.nextInt(12000) + 3600);
+    }
+
+    public static void stormyWeather(ServerWorld world, int duration) {
+        world.setWeather(0, duration, true, true);
     }
 
     public static boolean isLikeSolid(World world, BlockPos pos) {

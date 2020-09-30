@@ -23,7 +23,7 @@ public class GatherPanel extends Panel {
         if (items.isEmpty())
             return;
 
-        // the panel title
+        // panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.gather"), mid, top, titleColor);
 
         top += rowHeight;

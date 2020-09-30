@@ -21,7 +21,7 @@ public class ExplorePanel extends Panel {
         List<ItemStack> stacks = explore.getItems();
         Map<ItemStack, Boolean> satisfied = explore.getSatisfied();
 
-        // the panel title
+        // panel title
         drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.explore"), mid, top, titleColor);
 
         top += rowHeight;

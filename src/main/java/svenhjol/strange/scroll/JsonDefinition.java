@@ -15,8 +15,9 @@ public class JsonDefinition {
     private int tier;
     private int timeLimit; // in minutes
     private boolean builtIn;
-    private String title;
-    private List<String> modules;
+    private String title = "";
+    private String description = "";
+    private List<String> modules = new ArrayList<>();
     private List<String> explore = new ArrayList<>();
     private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
@@ -30,6 +31,10 @@ public class JsonDefinition {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public int getTier() {
@@ -82,6 +87,10 @@ public class JsonDefinition {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public static JsonDefinition deserialize(Resource resource) {

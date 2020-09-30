@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class LangPopulator extends Populator {
     public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
 
     public LangPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
         super(player, quest, definition);
@@ -28,6 +29,9 @@ public class LangPopulator extends Populator {
 
             if (keys.contains(TITLE))
                 quest.setTitle(strings.get(TITLE));
+
+            if (keys.contains(DESCRIPTION))
+                quest.setDescription(strings.get(DESCRIPTION));
         }
     }
 }
