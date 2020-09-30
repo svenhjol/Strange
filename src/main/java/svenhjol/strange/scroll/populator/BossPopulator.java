@@ -16,7 +16,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.meson.Meson;
 import svenhjol.meson.helper.DimensionHelper;
@@ -35,7 +34,7 @@ import java.util.*;
 public class BossPopulator extends Populator {
     public static final String TARGETS = "targets";
     public static final String SETTINGS = "settings";
-    public static final String ENTITIES = "entities";
+    public static final String SUPPORT = "support";
     public static final String COUNT = "count";
     public static final String HEALTH = "health";
     public static final String EFFECTS = "effects";
@@ -97,8 +96,7 @@ public class BossPopulator extends Populator {
 
     public static void startEncounter(PlayerEntity player, BossTag tag) {
         QuestTag quest = tag.getQuest();
-        World world = player.world;
-        ServerWorld serverWorld = (ServerWorld)world;
+        ServerWorld world = (ServerWorld)player.world;
         BlockPos pos = tag.getStructure();
 
         if (pos == null)
@@ -108,93 +106,19 @@ public class BossPopulator extends Populator {
         if (definition == null)
             return; // TODO: handle scroll errors
 
-        int effectDuration = 10000; // something that doesn't run out very quickly
-        int effectAmplifier = Math.max(1, quest.getTier() - 3);
         Map<String, Map<String, Map<String, String>>> boss = definition.getBoss();
 
         // try and spawn the boss target entities
         if (boss.containsKey(TARGETS)) {
-            boolean didAnySpawn = false;
-            Map<String, Map<String, String>> targets = boss.get(TARGETS);
-
-            for (String id : targets.keySet()) {
-                Map<String, String> props = targets.get(id);
-
-                // try and get the type from the ID
-                Optional<EntityType<?>> optionalType = EntityType.get(id);
-                if (!optionalType.isPresent())
-                    return;
-
-                // get the count property and spawn this many mobs default to 1 if not set
-                int count = Integer.parseInt(props.getOrDefault(COUNT, "1"));
-
-                for (int n = 0; n < count; n++) {
-
-                    // try and create the entity from the type
-                    Entity entity = optionalType.get().create(world);
-                    if (!(entity instanceof MobEntity))
-                        return;
-
-                    MobEntity mobEntity = (MobEntity) entity;
-
-                    // get the health property, default to 20 hearts if not set
-                    int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
-
-                    // parse effectsString into list of effects
-                    String effectsDef = props.getOrDefault(EFFECTS, "");
-                    final List<String> effects = new ArrayList<>();
-                    if (effectsDef.length() > 0) {
-                        if (effectsDef.contains(",")) {
-                            effects.addAll(Arrays.asList(effectsDef.split(",")));
-                        } else {
-                            effects.add(effectsDef);
-                        }
-                    }
-
-                    effects.add("fire_resistance");
-                    effects.add("water_breathing");
-
-
-                    // try and add mob to the world, if fail then record the mob as killed
-                    boolean didSpawn = ScrollHelper.spawnMobNearPos(serverWorld, pos, mobEntity, (mob, mobPos) -> {
-                        // set properties on the entity
-                        mob.setPersistent();
-                        mob.addScoreboardTag(quest.getId()); // this flags the mob as a target
-
-                        // need to override this attribute on the entity to allow health values greater than maxhealth
-                        EntityAttributeInstance healthAttribute = mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
-                        if (healthAttribute != null)
-                            healthAttribute.setBaseValue(health);
-
-                        mob.setHealth(health);
-
-                        if (effects.size() > 0) {
-                            effects.forEach(effectName -> {
-                                StatusEffect effect = Registry.STATUS_EFFECT.get(new Identifier(effectName));
-                                if (effect == null)
-                                    return;
-
-                                mob.addStatusEffect(new StatusEffectInstance(effect, effectDuration, effectAmplifier));
-                            });
-                        }
-
-                        Meson.LOG.info("Spawned " + id + " at " + mobPos.toShortString());
-                    });
-
-                    if (didSpawn) {
-                        didAnySpawn = true;
-                    } else {
-                        Meson.LOG.info("Failed to spawn " + id);
-                        quest.getBoss().forceKill(mobEntity);
-                    }
-                }
-            }
-
-            if (!didAnySpawn)
+            if (!trySpawnEntities(world, pos, quest, boss.get(TARGETS), true))
                 return; // TODO: handle scroll errors
-
-            ScrollHelper.stormyWeather(serverWorld);
         }
+
+        // try and spawn supporting entities
+        if (boss.containsKey(SUPPORT))
+            trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
+
+        ScrollHelper.stormyWeather(world);
     }
 
     public static void checkEncounter(PlayerEntity player, BossTag tag) {
@@ -208,5 +132,93 @@ public class BossPopulator extends Populator {
     private void fail(String message) {
         // TODO: handle fail conditions
         throw new RuntimeException("Could not start boss quest: " + message);
+    }
+
+    private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, QuestTag quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
+        int effectDuration = 10000; // something that doesn't run out very quickly
+        int effectAmplifier = Math.max(1, quest.getTier() - 3);
+        boolean didAnySpawn = false;
+
+        for (String id : entityDefinitions.keySet()) {
+            Map<String, String> props = entityDefinitions.get(id);
+
+            // try and get the type from the ID
+            Optional<EntityType<?>> optionalType = EntityType.get(id);
+            if (!optionalType.isPresent())
+                return false;
+
+            // get the count property and spawn this many mobs default to 1 if not set
+            int count = Integer.parseInt(props.getOrDefault(COUNT, "1"));
+
+            for (int n = 0; n < count; n++) {
+
+                // try and create the entity from the type
+                Entity entity = optionalType.get().create(world);
+                if (!(entity instanceof MobEntity))
+                    return false;
+
+                MobEntity mobEntity = (MobEntity) entity;
+
+                // get the health property, default to 20 hearts if not set
+                int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
+
+                // parse effectsString into list of effects
+                String effectsDef = props.getOrDefault(EFFECTS, "");
+                final List<String> effects = new ArrayList<>();
+                if (effectsDef.length() > 0) {
+                    if (effectsDef.contains(",")) {
+                        effects.addAll(Arrays.asList(effectsDef.split(",")));
+                    } else {
+                        effects.add(effectsDef);
+                    }
+                }
+
+                // all entities start with fire resist and water breathing by default
+                effects.add("fire_resistance");
+                effects.add("water_breathing");
+
+                // try and add mob to the world, if fail then record the mob as killed
+                boolean didSpawn = ScrollHelper.spawnMobNearPos(world, pos, mobEntity, (mob, mobPos) -> {
+                    // set properties on the entity
+                    mob.setPersistent();
+
+                    // if this entity should be a boss, set the quest ID tag on it
+                    if (isBoss)
+                        mob.addScoreboardTag(quest.getId());
+
+                    // need to override this attribute on the entity to allow health values greater than maxhealth
+                    EntityAttributeInstance healthAttribute = mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+                    if (healthAttribute != null)
+                        healthAttribute.setBaseValue(health);
+
+                    mob.setHealth(health);
+
+                    // apply status effects to the mob
+                    if (effects.size() > 0) {
+                        effects.forEach(effectName -> {
+                            StatusEffect effect = Registry.STATUS_EFFECT.get(new Identifier(effectName));
+                            if (effect == null)
+                                return;
+
+                            mob.addStatusEffect(new StatusEffectInstance(effect, effectDuration, effectAmplifier));
+                        });
+                    }
+
+                    Meson.LOG.info("Spawned " + id + " at " + mobPos.toShortString());
+                });
+
+                if (didSpawn) {
+                    didAnySpawn = true;
+                } else {
+                    Meson.LOG.info("Failed to spawn " + id);
+
+                    // if a boss entity couldn't spawn, flag it as a kill
+                    if (isBoss)
+                        quest.getBoss().forceKill(mobEntity);
+                }
+            }
+        }
+
+        return didAnySpawn;
     }
 }

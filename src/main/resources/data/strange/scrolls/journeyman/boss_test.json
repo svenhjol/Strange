@@ -10,15 +10,21 @@
     "targets": {
       "minecraft:vindicator": {
         "count": 3,
-        "health": 200,
+        "health": 100,
         "effects": "strength"
+      }
+    },
+    "support": {
+      "minecraft:pillager": {
+        "count": 6,
+        "health": 20
       }
     }
   },
   "reward": {
     "items": {
-      "minecraft:egg": 400,
-      "minecraft:crossbow[enchanted]!": 1
+      "minecraft:egg": 4,
+      "minecraft:crossbow[enchanted][epic]!": 1
     },
     "xp": {
       "levels": 10
