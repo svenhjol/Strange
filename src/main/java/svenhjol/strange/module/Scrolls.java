@@ -149,7 +149,7 @@ public class Scrolls extends MesonModule {
         PlayerEntity player = (PlayerEntity)attacker;
 
         forEachQuest(player, (scroll, quest) -> {
-            quest.getHunt().playerKilledEntity(player, entity);
+            quest.playerKilledEntity(player, entity);
 
             if (quest.isDirty()) {
                 quest.markDirty(false);

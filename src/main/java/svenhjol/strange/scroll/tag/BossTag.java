@@ -2,6 +2,8 @@ package svenhjol.strange.scroll.tag;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -135,6 +137,10 @@ public class BossTag implements ITag {
         return satisfied;
     }
 
+    public BlockPos getStructure() {
+        return structure;
+    }
+
     public boolean isSatisfied() {
         if (entities.isEmpty())
             return true;
@@ -142,16 +148,27 @@ public class BossTag implements ITag {
         return getSatisfied().values().stream().allMatch(r -> r);
     }
 
+    public void forceKill(MobEntity entity) {
+        Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+        Integer count = killed.getOrDefault(id, 0);
+        killed.put(id, count + 1);
+        questTag.markDirty(true);
+    }
+
     public void inventoryTick(PlayerEntity player) {
         if (player.world.isClient || spawned || structure == null)
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
-        if (dist < 400) {
+        if (dist < 300) {
             BossPopulator.startEncounter(player, this);
             questTag.markDirty(true);
             spawned = true;
         }
+    }
+
+    public void complete(PlayerEntity player, MerchantEntity merchant) {
+        BossPopulator.checkEncounter(player, this);
     }
 
     public void update(PlayerEntity player) {
@@ -177,5 +194,7 @@ public class BossTag implements ITag {
             questTag.markDirty(true);
             update(player);
         }
+
+        BossPopulator.checkEncounter(player, this);
     }
 }

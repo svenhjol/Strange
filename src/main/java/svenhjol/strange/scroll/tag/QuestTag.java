@@ -1,5 +1,6 @@
 package svenhjol.strange.scroll.tag;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -134,6 +135,7 @@ public class QuestTag implements ITag {
         gather.complete(player, merchant);
         explore.complete(player, merchant);
         reward.complete(player, merchant);
+        boss.complete(player, merchant);
     }
 
     public boolean isSatisfied(PlayerEntity player) {
@@ -149,6 +151,11 @@ public class QuestTag implements ITag {
         hunt.update(player);
         explore.update(player);
         boss.update(player);
+    }
+
+    public void playerKilledEntity(PlayerEntity player, LivingEntity entity) {
+        hunt.playerKilledEntity(player, entity);
+        boss.playerKilledEntity(player, entity);
     }
 
     public void markDirty(boolean flag) {
