@@ -16,14 +16,15 @@ public class ScrollPopulator {
     public static void populate(ItemStack scroll, ServerPlayerEntity player, JsonDefinition definition) {
         UUID merchant = ScrollItem.getScrollMerchant(scroll);
         int rarity = Math.min(1, ScrollItem.getScrollRarity(scroll));
-        QuestTag quest = new QuestTag(merchant, rarity);
+        QuestTag quest = new QuestTag(definition, merchant, rarity);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(player, quest, definition),
             new RewardPopulator(player, quest, definition),
             new GatherPopulator(player, quest, definition),
             new HuntPopulator(player, quest, definition),
-            new ExplorePopulator(player, quest, definition)
+            new ExplorePopulator(player, quest, definition),
+            new BossPopulator(player, quest, definition)
         ));
 
         populators.forEach(Populator::populate);

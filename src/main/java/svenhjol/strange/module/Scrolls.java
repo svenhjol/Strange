@@ -128,6 +128,7 @@ public class Scrolls extends MesonModule {
                     }
 
                     String id = scroll.getPath().replace("/", ".").replace(".json", "");
+                    definition.setId(id);
                     definition.setTitle(id);
                     definition.setTier(tier);
                     AVAILABLE_SCROLLS.get(tier).put(id, definition);
@@ -162,7 +163,7 @@ public class Scrolls extends MesonModule {
             return; // poll every second
 
         forEachQuest(player, (scroll, quest) -> {
-            quest.getExplore().inventoryTick(player);
+            quest.inventoryTick(player);
 
             if (quest.isDirty()) {
                 quest.markDirty(false);
@@ -222,9 +223,8 @@ public class Scrolls extends MesonModule {
             if (stack.isEmpty())
                 return;
 
-            if (stack.getItem() instanceof ScrollItem) {
+            if (stack.getItem() instanceof ScrollItem)
                 scrolls.add(stack);
-            }
         });
 
         return scrolls;

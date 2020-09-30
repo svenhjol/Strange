@@ -1,0 +1,27 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Boss Test",
+      "description": "Defeat all enemies."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:vindicator": {
+        "count": 3,
+        "health": 100,
+        "effects": "strength"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "minecraft:egg": 4,
+      "minecraft:crossbow[enchanted]!": 1
+    },
+    "xp": {
+      "levels": 10
+    }
+  }
+}

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonDefinition {
+    private String id;
     private int tier;
     private int timeLimit; // in minutes
     private boolean builtIn;
@@ -19,9 +20,13 @@ public class JsonDefinition {
     private List<String> explore = new ArrayList<>();
     private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
-    private Map<String, Map<String, String>> encounter = new HashMap<>();
+    private Map<String, Map<String, Map<String, String>>> boss = new HashMap<>();
     private Map<String, Map<String, String>> reward = new HashMap<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
+
+    public String getId() {
+        return id;
+    }
 
     public String getTitle() {
         return title;
@@ -55,8 +60,8 @@ public class JsonDefinition {
         return hunt == null ? new HashMap<>() : hunt;
     }
 
-    public Map<String, Map<String, String>> getEncounter() {
-        return encounter == null ? new HashMap<>() : encounter;
+    public Map<String, Map<String, Map<String, String>>> getBoss() {
+        return boss == null ? new HashMap<>() : boss;
     }
 
     public Map<String, Map<String, String>> getReward() {
@@ -65,6 +70,10 @@ public class JsonDefinition {
 
     public Map<String, Map<String, String>> getLang() {
         return lang == null ? new HashMap<>() : lang;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setTier(int tier) {

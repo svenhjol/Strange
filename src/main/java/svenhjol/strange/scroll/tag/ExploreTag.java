@@ -127,16 +127,14 @@ public class ExploreTag implements ITag {
     }
 
     public void inventoryTick(PlayerEntity player) {
-        if (player.world.isClient)
-            return;
-
-        if (structure == null || (chests != null && !chests.isEmpty()))
+        if (player.world.isClient || structure == null || (chests != null && !chests.isEmpty()))
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 1200) {
-            List<BlockPos> chestPositions = ExplorePopulator.addLootToChests(player.world, structure, items, player.getRandom());
+            List<BlockPos> chestPositions = ExplorePopulator.addLootToChests(player, this);
             questTag.markDirty(true);
+
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
             chestPositions.forEach(pos -> Meson.LOG.debug("Added to chest at: " + pos.toShortString()));
 

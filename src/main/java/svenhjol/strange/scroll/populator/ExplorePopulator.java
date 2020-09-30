@@ -5,6 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -60,7 +61,6 @@ public class ExplorePopulator extends Populator {
         if (foundPos == null)
             fail("Could not locate structure");
 
-
         // populate the items for the quest
         // TODO: handle fun names for items
         List<ItemStack> items = new ArrayList<>();
@@ -79,13 +79,17 @@ public class ExplorePopulator extends Populator {
         quest.getExplore().setDimension(DimensionHelper.getDimension(world));
         quest.getExplore().setStructure(foundPos);
 
-
         // give map to the location
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
         PlayerHelper.addOrDropStack(player, map);
     }
 
-    public static List<BlockPos> addLootToChests(World world, BlockPos pos, List<ItemStack> items, Random random) {
+    public static List<BlockPos> addLootToChests(PlayerEntity player, ExploreTag explore) {
+        World world = player.world;
+        BlockPos pos = player.getBlockPos();
+        List<ItemStack> items = explore.getItems();
+        Random random = player.getRandom();
+
         int checkRange = 32;
         int fallbackRange = 8;
         int startHeight = 32;

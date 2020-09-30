@@ -50,6 +50,9 @@ public class ScrollScreen extends Screen {
         if (quest.getExplore().getItems().size() > 0)
             panels.add(ExplorePanel.INSTANCE);
 
+        if (quest.getBoss().getEntities().size() > 0)
+            panels.add(BossPanel.INSTANCE);
+
         int panelTop = 48;
         int panelMid;
         int panelWidth;
