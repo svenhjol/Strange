@@ -2,6 +2,8 @@ package svenhjol.strange.scroll.populator;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.MobEntity;
@@ -89,7 +91,7 @@ public class BossPopulator extends Populator {
         entities.forEach(quest.getBoss()::addTarget);
 
         // give map to the location
-        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.RED_MARKER, 0x770000);
+        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, 0x770000);
         PlayerHelper.addOrDropStack(player, map);
     }
 
@@ -158,6 +160,12 @@ public class BossPopulator extends Populator {
                         // set properties on the entity
                         mob.setPersistent();
                         mob.addScoreboardTag(quest.getId()); // this flags the mob as a target
+
+                        // need to override this attribute on the entity to allow health values greater than maxhealth
+                        EntityAttributeInstance healthAttribute = mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+                        if (healthAttribute != null)
+                            healthAttribute.setBaseValue(health);
+
                         mob.setHealth(health);
 
                         if (effects.size() > 0) {

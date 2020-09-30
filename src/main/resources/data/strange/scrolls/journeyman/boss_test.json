@@ -10,14 +10,14 @@
     "targets": {
       "minecraft:vindicator": {
         "count": 3,
-        "health": 100,
+        "health": 200,
         "effects": "strength"
       }
     }
   },
   "reward": {
     "items": {
-      "minecraft:egg": 4,
+      "minecraft:egg": 400,
       "minecraft:crossbow[enchanted]!": 1
     },
     "xp": {
