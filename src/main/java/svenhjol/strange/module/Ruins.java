@@ -14,6 +14,7 @@ import svenhjol.meson.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruin.BambiMountainsRuin;
 import svenhjol.strange.ruin.ForestRuin;
+import svenhjol.strange.ruin.PlainsRuin;
 import svenhjol.strange.structure.RuinFeature;
 import svenhjol.strange.structure.RuinGenerator;
 
@@ -81,6 +82,7 @@ public class Ruins extends MesonModule {
         // register all custom ruins here
         MOUNTAINS_RUINS.add(new BambiMountainsRuin());
         FOREST_RUINS.add(new ForestRuin());
+        PLAINS_RUINS.add(new PlainsRuin());
 
         // builds and registers all custom ruins into pools
         RuinGenerator.init();
