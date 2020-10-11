@@ -35,7 +35,7 @@ public class QuestManager extends PersistentState {
         quests.values().stream()
             .filter(Quest::isActive)
             .forEach(quest -> {
-                quest.tick();
+                quest.tick(currentTime);
 
                 if (quest.isDirty()) {
                     quest.setDirty(false);
@@ -99,7 +99,7 @@ public class QuestManager extends PersistentState {
         UUID owner = player.getUuid();
 
         int rarity = Math.min(1, ScrollItem.getScrollRarity(scroll));
-        Quest quest = new Quest(definition, owner, merchant, rarity);
+        Quest quest = new Quest(definition, owner, merchant, rarity, currentTime);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(player, quest, definition),
