@@ -25,8 +25,8 @@ import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.module.Ruins;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.ExploreTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Explore;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 public class ExplorePopulator extends Populator {
 
-    public ExplorePopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public ExplorePopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 
@@ -71,7 +71,7 @@ public class ExplorePopulator extends Populator {
                 continue;
 
             // set the quest tag of the stack to the quest ID so we can match it later
-            stack.getOrCreateTag().putString(ExploreTag.QUEST, quest.getId());
+            stack.getOrCreateTag().putString(Explore.QUEST, quest.getId());
             items.add(stack);
         }
 
@@ -84,7 +84,7 @@ public class ExplorePopulator extends Populator {
         PlayerHelper.addOrDropStack(player, map);
     }
 
-    public static List<BlockPos> addLootToChests(PlayerEntity player, ExploreTag explore) {
+    public static List<BlockPos> addLootToChests(PlayerEntity player, Explore explore) {
         World world = player.world;
         BlockPos pos = player.getBlockPos();
         List<ItemStack> items = explore.getItems();

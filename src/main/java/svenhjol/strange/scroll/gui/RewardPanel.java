@@ -1,13 +1,12 @@
 package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.scroll.tag.QuestTag;
-import svenhjol.strange.scroll.tag.RewardTag;
+import svenhjol.strange.scroll.tag.Quest;
+import svenhjol.strange.scroll.tag.Reward;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,13 +14,13 @@ import java.util.Map;
 public class RewardPanel extends Panel {
     public static RewardPanel INSTANCE = new RewardPanel();
 
-    public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
-        RewardTag reward = quest.getReward();
+    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+        Reward reward = quest.getReward();
         Map<ItemStack, Integer> items = reward.getItems();
         int levels = reward.getLevels();
 
         // panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.reward"), mid, top, titleColor);
+        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.reward"), mid, top, titleColor);
 
         top += rowHeight;
 

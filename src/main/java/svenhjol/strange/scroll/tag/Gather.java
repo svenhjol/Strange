@@ -9,16 +9,16 @@ import net.minecraft.nbt.Tag;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GatherTag implements ITag {
+public class Gather implements ISerializable {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
 
-    private QuestTag questTag;
+    private Quest quest;
     private Map<ItemStack, Integer> items = new HashMap<>();
     private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
-    public GatherTag(QuestTag questTag) {
-        this.questTag = questTag;
+    public Gather(Quest quest) {
+        this.quest = quest;
     }
 
     @Override

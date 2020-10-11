@@ -20,22 +20,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ExploreTag implements ITag {
+public class Explore implements ISerializable {
     public static final String STRUCTURE = "structure";
     public static final String DIMENSION = "dimension";
     public static final String CHESTS = "chests";
     public static final String ITEMS = "items";
     public static final String QUEST = "quest";
 
-    private QuestTag questTag;
+    private Quest quest;
     private BlockPos structure;
     private List<BlockPos> chests;
     private Identifier dimension;
     private List<ItemStack> items = new ArrayList<>();
     private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
-    public ExploreTag(QuestTag questTag) {
-        this.questTag = questTag;
+    public Explore(Quest quest) {
+        this.quest = quest;
     }
 
     @Override
@@ -126,14 +126,14 @@ public class ExploreTag implements ITag {
         return getSatisfied().values().stream().allMatch(r -> r);
     }
 
-    public void inventoryTick(PlayerEntity player) {
+    public void playerTick(PlayerEntity player) {
         if (player.world.isClient || structure == null || (chests != null && !chests.isEmpty()))
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 1200) {
             List<BlockPos> chestPositions = ExplorePopulator.addLootToChests(player, this);
-            questTag.markDirty(true);
+            quest.setDirty(true);
 
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
             chestPositions.forEach(pos -> Meson.LOG.debug("Added to chest at: " + pos.toShortString()));
@@ -149,7 +149,7 @@ public class ExploreTag implements ITag {
         items.forEach(stack -> {
             for (ItemStack invStack : player.inventory.main) {
                 if (stack.isItemEqualIgnoreDamage(invStack)
-                    && stack.getOrCreateTag().getString(QUEST).equals(questTag.getId())
+                    && stack.getOrCreateTag().getString(QUEST).equals(quest.getId())
                 ) {
                     invStack.decrement(1);
                 }
@@ -166,7 +166,7 @@ public class ExploreTag implements ITag {
             player.inventory.main.forEach(invStack -> {
                 if (!stack.isEmpty()
                     && stack.isItemEqualIgnoreDamage(invStack)
-                    && invStack.getOrCreateTag().getString(QUEST).equals(questTag.getId())
+                    && invStack.getOrCreateTag().getString(QUEST).equals(quest.getId())
                 ) {
                     satisfied.put(stack, true);
                 }

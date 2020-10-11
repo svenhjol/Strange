@@ -1,13 +1,12 @@
 package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import svenhjol.strange.base.StrangeIcons;
-import svenhjol.strange.scroll.tag.GatherTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Gather;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,15 +15,15 @@ public class GatherPanel extends Panel {
     public static GatherPanel INSTANCE = new GatherPanel();
 
     @Override
-    public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
-        GatherTag gather = quest.getGather();
+    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+        Gather gather = quest.getGather();
         Map<ItemStack, Integer> items = gather.getItems();
         Map<ItemStack, Boolean> satisfied = gather.getSatisfied();
         if (items.isEmpty())
             return;
 
         // panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.gather"), mid, top, titleColor);
+        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.gather"), mid, top, titleColor);
 
         top += rowHeight;
 

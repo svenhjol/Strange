@@ -9,6 +9,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import svenhjol.strange.base.StrangeIcons;
 
 public class GuiHelper extends DrawableHelper {
@@ -24,8 +25,8 @@ public class GuiHelper extends DrawableHelper {
         return MinecraftClient.getInstance().getTextureManager();
     }
 
-    public static void drawCenteredTitle(MatrixStack matrices, String title, int left, int top, int color) {
-        DrawableHelper.drawCenteredString(matrices, getTextRenderer(), title, left, top, color);
+    public static void drawCenteredTitle(MatrixStack matrices, Text title, int left, int top, int color) {
+        DrawableHelper.drawCenteredText(matrices, getTextRenderer(), title, left, top, color);
     }
 
     public static void renderItemStack(ItemStack stack, int x, int y) {

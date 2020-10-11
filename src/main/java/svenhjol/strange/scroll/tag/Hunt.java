@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class HuntTag implements ITag {
+public class Hunt implements ISerializable {
     public static final String ENTITY_DATA = "entity_data";
     public static final String ENTITY_COUNT = "entity_count";
     public static final String ENTITY_KILLED = "entity_killed";
 
-    private QuestTag questTag;
+    private Quest quest;
     private Map<Identifier, Integer> entities = new HashMap<>();
     private Map<Identifier, Integer> killed = new HashMap<>();
 
@@ -24,8 +24,8 @@ public class HuntTag implements ITag {
     private Map<Identifier, Boolean> satisfied = new HashMap<>();
     private Map<Identifier, String> names = new HashMap<>();
 
-    public HuntTag(QuestTag questTag) {
-        this.questTag = questTag;
+    public Hunt(Quest quest) {
+        this.quest = quest;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class HuntTag implements ITag {
             Integer count = killed.getOrDefault(id, 0);
             killed.put(id, count + 1);
 
-            questTag.markDirty(true);
+            quest.setDirty(true);
             update(player);
         }
     }

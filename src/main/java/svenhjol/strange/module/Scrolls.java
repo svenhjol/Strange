@@ -1,5 +1,6 @@
 package svenhjol.strange.module;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
@@ -18,8 +19,12 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.PersistentStateManager;
+import net.minecraft.world.World;
 import svenhjol.meson.Meson;
 import svenhjol.meson.MesonModule;
 import svenhjol.meson.event.EntityDeathCallback;
@@ -32,8 +37,9 @@ import svenhjol.strange.client.ScrollsClient;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.JsonDefinition;
+import svenhjol.strange.scroll.QuestManager;
 import svenhjol.strange.scroll.loot.ScrollLootFunction;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -50,6 +56,7 @@ public class Scrolls extends MesonModule {
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
     public ScrollsClient client;
+    public static QuestManager questManager;
 
     @Config(name = "Use build-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
@@ -81,8 +88,11 @@ public class Scrolls extends MesonModule {
 
     @Override
     public void init() {
-        // load the scroll definitions when the world loads
-        LoadWorldCallback.EVENT.register(this::tryLoadScrolls);
+        // load quest manager and scrolls when world starts
+        LoadWorldCallback.EVENT.register(server -> {
+            loadQuestManager(server);
+            tryLoadScrolls(server);
+        });
 
         // handle entities being killed
         EntityDeathCallback.EVENT.register(this::handleEntityDeath);
@@ -90,13 +100,27 @@ public class Scrolls extends MesonModule {
         // add scrolls to loot
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
-        // check player inventory and callback quest methods
+        // tick the quests belonging to the player
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+
+        // tick the questmanager
+        ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
     }
 
     @Override
     public void clientInit() {
         this.client = new ScrollsClient(this);
+    }
+
+    private void loadQuestManager(MinecraftServer server) {
+        ServerWorld overworld = server.getWorld(World.OVERWORLD);
+        if (overworld == null) {
+            Meson.LOG.warn("Overworld is null, cannot load persistent state manager");
+            return;
+        }
+
+        PersistentStateManager stateManager = overworld.getPersistentStateManager();
+        questManager = stateManager.getOrCreate(() -> new QuestManager(overworld), QuestManager.nameFor(overworld.getDimension()));
     }
 
     private void tryLoadScrolls(MinecraftServer server) {
@@ -143,33 +167,41 @@ public class Scrolls extends MesonModule {
 
     private void handleEntityDeath(LivingEntity entity, DamageSource source) {
         Entity attacker = source.getAttacker();
-        if (!(attacker instanceof PlayerEntity))
+        if (!(attacker instanceof ServerPlayerEntity))
             return;
 
-        PlayerEntity player = (PlayerEntity)attacker;
+        ServerPlayerEntity player = (ServerPlayerEntity) attacker;
 
-        forEachQuest(player, (scroll, quest) -> {
-            quest.playerKilledEntity(player, entity);
+        Scrolls.questManager.forEachPlayerQuest(player, quest -> quest.playerKilledEntity(player, entity));
 
-            if (quest.isDirty()) {
-                quest.markDirty(false);
-                ScrollItem.setScrollQuest(scroll, quest);
-            }
-        });
+//        forEachQuest(player, (scroll, quest) -> {
+//            quest.playerKilledEntity(player, entity);
+//
+//            if (quest.isDirty()) {
+//                quest.setDirty(false);
+//                ScrollItem.setScrollQuest(scroll, quest);
+//            }
+//        });
     }
 
     private void handlePlayerTick(PlayerEntity player) {
         if (player.world.getTime() % 20 != 0)
-            return; // poll every second
+            return; // poll once every second
 
-        forEachQuest(player, (scroll, quest) -> {
-            quest.inventoryTick(player);
+        if (!(player instanceof ServerPlayerEntity))
+            return; // must be server-side
 
-            if (quest.isDirty()) {
-                quest.markDirty(false);
-                ScrollItem.setScrollQuest(scroll, quest);
-            }
-        });
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        Scrolls.questManager.forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
+
+//        forEachQuest(player, (scroll, quest) -> {
+//            quest.playerTick(player);
+//
+//            if (quest.isDirty()) {
+//                quest.setDirty(false);
+//                ScrollItem.setScrollQuest(scroll, quest);
+//            }
+//        });
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter) {
@@ -187,12 +219,12 @@ public class Scrolls extends MesonModule {
         }
     }
 
-    private void forEachQuest(PlayerEntity player, BiConsumer<ItemStack, QuestTag> callback) {
+    private void forEachQuest(PlayerEntity player, BiConsumer<ItemStack, Quest> callback) {
         player.inventory.main.forEach(stack -> {
             if (!(stack.getItem() instanceof ScrollItem))
                 return;
 
-            QuestTag quest = ScrollItem.getScrollQuest(stack);
+            Quest quest = ScrollItem.getScrollQuest(stack);
             if (quest == null)
                 return;
 

@@ -11,7 +11,7 @@ import svenhjol.meson.MesonModule;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.module.Scrollkeepers;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ScrollKeepersClient {
             if (!(heldStack.getItem() instanceof ScrollItem))
                 return;
 
-            QuestTag quest = ScrollItem.getScrollQuest(heldStack);
+            Quest quest = ScrollItem.getScrollQuest(heldStack);
             if (quest == null)
                 return;
 
@@ -54,7 +54,7 @@ public class ScrollKeepersClient {
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
-                    if (quest.getMerchant().equals(ScrollHelper.ANY_MERCHANT) || quest.getMerchant().equals(villager.getUuid()))
+                    if (quest.getMerchant().equals(ScrollHelper.ANY_UUID) || quest.getMerchant().equals(villager.getUuid()))
                         effectShowInterest(villager);
                 }
             });

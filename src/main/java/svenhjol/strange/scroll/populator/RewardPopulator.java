@@ -3,7 +3,7 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ public class RewardPopulator extends Populator {
     public static final String LEVELS = "levels";
     public static final String XP = "xp";
 
-    public RewardPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public RewardPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 

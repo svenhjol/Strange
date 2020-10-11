@@ -42,7 +42,10 @@ public class JsonDefinition {
     }
 
     public int getTimeLimit() {
-        return timeLimit;
+        if (timeLimit == 0)
+            timeLimit = 20;
+
+        return timeLimit * 60 * 20;
     }
 
     public boolean isBuiltIn() {

@@ -10,17 +10,17 @@ import net.minecraft.nbt.Tag;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RewardTag implements ITag {
+public class Reward implements ISerializable {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
     public static final String LEVELS_TAG = "levels";
 
     private int levels;
-    private QuestTag questTag;
+    private Quest quest;
     private Map<ItemStack, Integer> items = new HashMap<>();
 
-    public RewardTag(QuestTag questTag) {
-        this.questTag = questTag;
+    public Reward(Quest quest) {
+        this.quest = quest;
     }
 
     public void complete(PlayerEntity player, MerchantEntity merchant) {

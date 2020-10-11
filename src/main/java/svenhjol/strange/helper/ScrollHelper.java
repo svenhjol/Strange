@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 public class ScrollHelper {
-    public static final UUID ANY_MERCHANT = UUID.fromString("0-0-0-0-1");
+    public static final UUID ANY_UUID = UUID.fromString("0-0-0-0-1");
 
     // TODO: move to PosHelper
     public static boolean spawnMobNearPos(ServerWorld world, BlockPos pos, MobEntity mob, BiConsumer<MobEntity, BlockPos> onSpawn) {

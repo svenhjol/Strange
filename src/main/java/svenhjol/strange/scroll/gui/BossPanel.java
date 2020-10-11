@@ -1,13 +1,12 @@
 package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import svenhjol.strange.base.StrangeIcons;
-import svenhjol.strange.scroll.tag.BossTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Boss;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,8 +15,8 @@ public class BossPanel extends Panel {
     public static BossPanel INSTANCE = new BossPanel();
 
     @Override
-    public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
-        BossTag boss = quest.getBoss();
+    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+        Boss boss = quest.getBoss();
         Map<Identifier, Integer> entities = boss.getEntities();
         Map<Identifier, Integer> killed = boss.getKilled();
         Map<Identifier, Boolean> satisfied = boss.getSatisfied();
@@ -27,7 +26,7 @@ public class BossPanel extends Panel {
             return;
 
         // panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.boss"), mid, top, titleColor);
+        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.boss"), mid, top, titleColor);
 
         top += rowHeight;
 

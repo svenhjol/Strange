@@ -3,7 +3,7 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class LangPopulator extends Populator {
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
 
-    public LangPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public LangPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 

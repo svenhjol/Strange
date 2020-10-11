@@ -26,8 +26,8 @@ import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.module.StoneCircles;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.BossTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Boss;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class BossPopulator extends Populator {
     public static final String HEALTH = "health";
     public static final String EFFECTS = "effects";
 
-    public BossPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public BossPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 
@@ -94,8 +94,8 @@ public class BossPopulator extends Populator {
         PlayerHelper.addOrDropStack(player, map);
     }
 
-    public static void startEncounter(PlayerEntity player, BossTag tag) {
-        QuestTag quest = tag.getQuest();
+    public static void startEncounter(PlayerEntity player, Boss tag) {
+        Quest quest = tag.getQuest();
         ServerWorld world = (ServerWorld)player.world;
         BlockPos pos = tag.getStructure();
 
@@ -121,7 +121,7 @@ public class BossPopulator extends Populator {
         ScrollHelper.stormyWeather(world, 3600);
     }
 
-    public static void checkEncounter(PlayerEntity player, BossTag tag) {
+    public static void checkEncounter(PlayerEntity player, Boss tag) {
         if (player.world.isClient)
             return;
 
@@ -134,7 +134,7 @@ public class BossPopulator extends Populator {
         throw new RuntimeException("Could not start boss quest: " + message);
     }
 
-    private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, QuestTag quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
+    private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
         int effectDuration = 10000; // something that doesn't run out very quickly
         int effectAmplifier = Math.max(1, quest.getTier() - 3);
         boolean didAnySpawn = false;

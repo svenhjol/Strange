@@ -3,13 +3,13 @@ package svenhjol.strange.scroll.populator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GatherPopulator extends Populator {
-    public GatherPopulator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public GatherPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 

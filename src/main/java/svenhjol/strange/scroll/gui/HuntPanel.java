@@ -1,13 +1,12 @@
 package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import svenhjol.strange.base.StrangeIcons;
-import svenhjol.strange.scroll.tag.HuntTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Hunt;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,8 +15,8 @@ public class HuntPanel extends Panel {
     public static HuntPanel INSTANCE = new HuntPanel();
 
     @Override
-    public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
-        HuntTag hunt = quest.getHunt();
+    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+        Hunt hunt = quest.getHunt();
 
         Map<Identifier, Integer> entities = hunt.getEntities();
         Map<Identifier, Integer> killed = hunt.getKilled();
@@ -28,7 +27,7 @@ public class HuntPanel extends Panel {
             return;
 
         // panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.hunt"), mid, top, titleColor);
+        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.hunt"), mid, top, titleColor);
 
         top += rowHeight;
 

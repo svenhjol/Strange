@@ -10,15 +10,17 @@ import svenhjol.strange.scroll.JsonDefinition;
 
 import java.util.UUID;
 
-public class QuestTag implements ITag {
+public class Quest implements ISerializable {
     private static final String ID_TAG = "id";
     private static final String DEFINITION_TAG = "definition";
     private static final String TITLE_TAG = "title";
     private static final String DESCRIPTION_TAG = "description";
     private static final String MERCHANT_TAG = "merchant";
+    private static final String OWNER_TAG = "owner";
     private static final String REWARD_TAG = "reward";
     private static final String TIER_TAG = "tier";
     private static final String RARITY_TAG = "rarity";
+    private static final String TICKS_TAG = "ticks";
     private static final String GATHER_TAG = "gather";
     private static final String HUNT_TAG = "hunt";
     private static final String EXPLORE_TAG = "explore";
@@ -28,24 +30,28 @@ public class QuestTag implements ITag {
     private String definition = "";
     private String title = "";
     private String description = "";
-    private UUID merchant = ScrollHelper.ANY_MERCHANT;
+    private UUID owner = ScrollHelper.ANY_UUID;
+    private UUID merchant = ScrollHelper.ANY_UUID;
     private int tier = 1;
     private int rarity = 1;
+    private int ticks = 0;
     private boolean dirty = false;
-    private RewardTag reward = new RewardTag(this);
-    private GatherTag gather = new GatherTag(this);
-    private HuntTag hunt = new HuntTag(this);
-    private ExploreTag explore = new ExploreTag(this);
-    private BossTag boss = new BossTag(this);
+    private Reward reward = new Reward(this);
+    private Gather gather = new Gather(this);
+    private Hunt hunt = new Hunt(this);
+    private Explore explore = new Explore(this);
+    private Boss boss = new Boss(this);
 
-    public QuestTag() { }
+    private Quest() { }
 
-    public QuestTag(JsonDefinition definition, UUID merchant, int rarity) {
+    public Quest(JsonDefinition definition, UUID owner, UUID merchant, int rarity) {
         this.id = RandomStringUtils.randomAlphabetic(10);
         this.rarity = Math.max(1, rarity);
         this.tier = definition.getTier();
         this.definition = definition.getId();
+        this.ticks = definition.getTimeLimit();
         this.merchant = merchant;
+        this.owner = owner;
     }
 
     public CompoundTag toTag() {
@@ -53,7 +59,9 @@ public class QuestTag implements ITag {
 
         tag.putInt(TIER_TAG, tier);
         tag.putInt(RARITY_TAG, rarity);
+        tag.putInt(TICKS_TAG, ticks);
         tag.putString(MERCHANT_TAG, merchant.toString());
+        tag.putString(OWNER_TAG, owner.toString());
         tag.putString(ID_TAG, id);
         tag.putString(DEFINITION_TAG, definition);
         tag.putString(TITLE_TAG, title);
@@ -70,7 +78,9 @@ public class QuestTag implements ITag {
     public void fromTag(CompoundTag tag) {
         tier = tag.getInt(TIER_TAG);
         rarity = Math.max(1, tag.getInt(RARITY_TAG));
+        ticks = Math.max(0, tag.getInt(TICKS_TAG));
         merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
+        owner = UUID.fromString(tag.getString(OWNER_TAG));
         id = tag.getString(ID_TAG);
         definition = tag.getString(DEFINITION_TAG);
         title = tag.getString(TITLE_TAG);
@@ -80,6 +90,18 @@ public class QuestTag implements ITag {
         hunt.fromTag(tag.getCompound(HUNT_TAG));
         explore.fromTag(tag.getCompound(EXPLORE_TAG));
         boss.fromTag(tag.getCompound(BOSS_TAG));
+    }
+
+    public void setDirty(boolean flag) {
+        this.dirty = flag;
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public boolean isActive() {
+        return ticks > 0;
     }
 
     public String getId() {
@@ -98,6 +120,10 @@ public class QuestTag implements ITag {
         return rarity;
     }
 
+    public int getTicks() {
+        return ticks;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -110,23 +136,27 @@ public class QuestTag implements ITag {
         return merchant;
     }
 
-    public RewardTag getReward() {
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public Reward getReward() {
         return reward;
     }
 
-    public GatherTag getGather() {
+    public Gather getGather() {
         return gather;
     }
 
-    public HuntTag getHunt() {
+    public Hunt getHunt() {
         return hunt;
     }
 
-    public ExploreTag getExplore() {
+    public Explore getExplore() {
         return explore;
     }
 
-    public BossTag getBoss() {
+    public Boss getBoss() {
         return boss;
     }
 
@@ -138,9 +168,13 @@ public class QuestTag implements ITag {
         this.description = description;
     }
 
-    public void inventoryTick(PlayerEntity player) {
-        explore.inventoryTick(player);
-        boss.inventoryTick(player);
+    public void tick() {
+        if (ticks > 0) ticks--;
+    }
+
+    public void playerTick(PlayerEntity player) {
+        explore.playerTick(player);
+        boss.playerTick(player);
     }
 
     public void complete(PlayerEntity player, MerchantEntity merchant) {
@@ -148,6 +182,10 @@ public class QuestTag implements ITag {
         explore.complete(player, merchant);
         reward.complete(player, merchant);
         boss.complete(player, merchant);
+
+        // set ticks to zero to expire the quest
+        ticks = 0;
+        this.setDirty(true);
     }
 
     public boolean isSatisfied(PlayerEntity player) {
@@ -170,11 +208,9 @@ public class QuestTag implements ITag {
         boss.playerKilledEntity(player, entity);
     }
 
-    public void markDirty(boolean flag) {
-        this.dirty = flag;
-    }
-
-    public boolean isDirty() {
-        return this.dirty;
+    public static Quest getFromTag(CompoundTag fromTag) {
+        Quest quest = new Quest();
+        quest.fromTag(fromTag);
+        return quest;
     }
 }

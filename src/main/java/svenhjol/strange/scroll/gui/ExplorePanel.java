@@ -1,13 +1,12 @@
 package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import svenhjol.strange.base.StrangeIcons;
-import svenhjol.strange.scroll.tag.ExploreTag;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Explore;
+import svenhjol.strange.scroll.tag.Quest;
 
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,13 @@ public class ExplorePanel extends Panel {
     public static ExplorePanel INSTANCE = new ExplorePanel();
 
     @Override
-    public void render(Screen screen, MatrixStack matrices, QuestTag quest, int mid, int width, int top, int mouseX, int mouseY) {
-        ExploreTag explore = quest.getExplore();
+    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+        Explore explore = quest.getExplore();
         List<ItemStack> stacks = explore.getItems();
         Map<ItemStack, Boolean> satisfied = explore.getSatisfied();
 
         // panel title
-        drawCenteredTitle(matrices, I18n.translate("gui.strange.scrolls.explore"), mid, top, titleColor);
+        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.explore"), mid, top, titleColor);
 
         top += rowHeight;
 

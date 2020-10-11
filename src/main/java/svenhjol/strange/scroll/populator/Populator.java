@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import svenhjol.strange.scroll.JsonDefinition;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,10 +31,10 @@ public abstract class Populator {
     protected final ServerPlayerEntity player;
     protected final ServerWorld world;
     protected final BlockPos pos;
-    protected final QuestTag quest;
+    protected final Quest quest;
     protected final JsonDefinition definition;
 
-    public Populator(ServerPlayerEntity player, QuestTag quest, JsonDefinition definition) {
+    public Populator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         this.player = player;
         this.world = (ServerWorld)player.world;
         this.pos = player.getBlockPos();

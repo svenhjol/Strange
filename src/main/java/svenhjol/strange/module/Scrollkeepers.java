@@ -31,7 +31,7 @@ import svenhjol.strange.client.ScrollKeepersClient;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
-import svenhjol.strange.scroll.tag.QuestTag;
+import svenhjol.strange.scroll.tag.Quest;
 import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 
 @Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
@@ -91,7 +91,7 @@ public class Scrollkeepers extends MesonModule {
                 return ActionResult.PASS;
 
             if (!world.isClient) {
-                QuestTag quest = ScrollItem.getScrollQuest(heldStack);
+                Quest quest = ScrollItem.getScrollQuest(heldStack);
                 if (quest == null)
                     return ActionResult.PASS;
 
@@ -103,7 +103,7 @@ public class Scrollkeepers extends MesonModule {
 
                 // must be the merchant you bought the scroll from, or a scroll you found
                 if (!villager.getUuid().equals(quest.getMerchant())
-                    && !quest.getMerchant().equals(ScrollHelper.ANY_MERCHANT)) {
+                    && !quest.getMerchant().equals(ScrollHelper.ANY_UUID)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }

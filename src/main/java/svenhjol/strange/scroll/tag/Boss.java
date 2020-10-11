@@ -14,7 +14,7 @@ import svenhjol.strange.scroll.populator.BossPopulator;
 
 import java.util.*;
 
-public class BossTag implements ITag {
+public class Boss implements ISerializable {
     public static final String TARGET_ENTITIES = "target_entities";
     public static final String TARGET_COUNT = "target_count";
     public static final String TARGET_KILLED = "target_killed";
@@ -22,7 +22,7 @@ public class BossTag implements ITag {
     public static final String STRUCTURE = "structure";
     public static final String DIMENSION = "dimension";
 
-    private QuestTag questTag;
+    private Quest quest;
     private BlockPos structure;
     private Identifier dimension;
     private boolean spawned;
@@ -34,8 +34,8 @@ public class BossTag implements ITag {
     private Map<Identifier, Boolean> satisfied = new HashMap<>();
     private Map<Identifier, String> names = new HashMap<>();
 
-    public BossTag(QuestTag questTag) {
-        this.questTag = questTag;
+    public Boss(Quest quest) {
+        this.quest = quest;
     }
 
     @Override
@@ -117,8 +117,8 @@ public class BossTag implements ITag {
         this.structure = structure;
     }
 
-    public QuestTag getQuest() {
-        return questTag;
+    public Quest getQuest() {
+        return quest;
     }
 
     public Map<Identifier, Integer> getEntities() {
@@ -152,17 +152,17 @@ public class BossTag implements ITag {
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
         Integer count = killed.getOrDefault(id, 0);
         killed.put(id, count + 1);
-        questTag.markDirty(true);
+        quest.setDirty(true);
     }
 
-    public void inventoryTick(PlayerEntity player) {
+    public void playerTick(PlayerEntity player) {
         if (player.world.isClient || spawned || structure == null)
             return;
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 260) {
             BossPopulator.startEncounter(player, this);
-            questTag.markDirty(true);
+            quest.setDirty(true);
             spawned = true;
         }
     }
@@ -187,11 +187,11 @@ public class BossTag implements ITag {
         List<String> tags = new ArrayList<>(entity.getScoreboardTags());
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
 
-        if (tags.contains(questTag.getId())) {
+        if (tags.contains(quest.getId())) {
             Integer count = killed.getOrDefault(id, 0);
             killed.put(id, count + 1);
 
-            questTag.markDirty(true);
+            quest.setDirty(true);
             update(player);
         }
 

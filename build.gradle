@@ -22,7 +22,7 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
-	modImplementation "svenhjol.charm:charm:${charm_version}"
+	modImplementation "svenhjol.charm:charm:fabric-${project.minecraft_version}-${project.charm_version}"
 }
 
 processResources {

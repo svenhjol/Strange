@@ -41,6 +41,7 @@
   "gui.strange.scrolls.reward_levels": "Experience: %s levels",
   "gui.strange.scrolls.reward_level": "Experience: %s level",
   "gui.strange.scrolls.reward_item": "%s: %s",
+  "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
   "item.strange.scroll_novice": "Novice Scroll",
   "item.strange.scroll_apprentice": "Apprentice Scroll",
   "item.strange.scroll_journeyman": "Journeyman Scroll",
