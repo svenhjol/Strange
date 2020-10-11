@@ -2,6 +2,7 @@ package svenhjol.strange.scroll.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import svenhjol.strange.base.StrangeIcons;
@@ -18,7 +19,7 @@ public class ExplorePanel extends Panel {
     public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
         Explore explore = quest.getExplore();
         List<ItemStack> stacks = explore.getItems();
-        Map<ItemStack, Boolean> satisfied = explore.getSatisfied();
+        Map<Item, Boolean> satisfied = explore.getSatisfied();
 
         // panel title
         drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.explore"), mid, top, titleColor);
@@ -33,7 +34,7 @@ public class ExplorePanel extends Panel {
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // if this item is collected, show a tick next to it
-            if (satisfied.containsKey(stack) && satisfied.get(stack))
+            if (satisfied.containsKey(stack.getItem()) && satisfied.get(stack.getItem()))
                 renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 72, baseTop - 1);
 
             baseTop += rowHeight;
@@ -42,10 +43,11 @@ public class ExplorePanel extends Panel {
         // tooltips
         baseTop = top;
         for (ItemStack stack : stacks) {
+            ItemStack stackCopy = stack.copy();
             if (mouseX > mid - 60 && mouseX < mid - 44
                 && mouseY > baseTop - 5 && mouseY < baseTop + 11
             ) {
-                screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
+                screen.renderTooltip(matrices, screen.getTooltipFromItem(stackCopy), mouseX, mouseY);
             }
             baseTop += rowHeight;
         }

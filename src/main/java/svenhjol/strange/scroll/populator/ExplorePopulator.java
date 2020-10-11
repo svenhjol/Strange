@@ -86,9 +86,13 @@ public class ExplorePopulator extends Populator {
 
     public static List<BlockPos> addLootToChests(PlayerEntity player, Explore explore) {
         World world = player.world;
-        BlockPos pos = player.getBlockPos();
+        BlockPos pos = explore.getStructure();
         List<ItemStack> items = explore.getItems();
         Random random = player.getRandom();
+
+        // normalize, prevent stupid spawning in the sky
+        if (pos.getY() != 0)
+            pos = new BlockPos(pos.getX(), 0, pos.getZ());
 
         int checkRange = 32;
         int fallbackRange = 8;
@@ -154,7 +158,8 @@ public class ExplorePopulator extends Populator {
 
         // select a chest at random and write the loot into it
         int slot = 0;
-        for (ItemStack stack : items) {
+        for (ItemStack itemStack : items) {
+            ItemStack stack = itemStack.copy();
             BlockPos place = chests.get(random.nextInt(chests.size()));
             BlockEntity blockEntity = world.getBlockEntity(place);
 

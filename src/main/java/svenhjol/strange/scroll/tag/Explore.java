@@ -2,6 +2,7 @@ package svenhjol.strange.scroll.tag;
 
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,7 +33,7 @@ public class Explore implements ISerializable {
     private List<BlockPos> chests;
     private Identifier dimension;
     private List<ItemStack> items = new ArrayList<>();
-    private Map<ItemStack, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
+    private final Map<Item, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
     public Explore(Quest quest) {
         this.quest = quest;
@@ -103,7 +104,11 @@ public class Explore implements ISerializable {
         return items;
     }
 
-    public Map<ItemStack, Boolean> getSatisfied() {
+    public BlockPos getStructure() {
+        return structure;
+    }
+
+    public Map<Item, Boolean> getSatisfied() {
         return satisfied;
     }
 
@@ -160,15 +165,22 @@ public class Explore implements ISerializable {
     public void update(PlayerEntity player) {
         satisfied.clear();
 
-        items.forEach(stack -> {
-            satisfied.put(stack, false);
+        items.forEach(itemStack -> {
+            ItemStack stack = itemStack.copy();
+            Item item = stack.getItem();
+            satisfied.put(item, false);
 
             player.inventory.main.forEach(invStack -> {
+                // skip if already added
+                if (satisfied.containsKey(item) && satisfied.get(item))
+                    return;
+
+                // compare stacks and add the item if found
                 if (!stack.isEmpty()
                     && stack.isItemEqualIgnoreDamage(invStack)
                     && invStack.getOrCreateTag().getString(QUEST).equals(quest.getId())
                 ) {
-                    satisfied.put(stack, true);
+                    satisfied.put(item, true);
                 }
             });
         });
