@@ -44,7 +44,7 @@ public class ScrollScreen extends Screen {
         int panelMid; // set dynamically according to number of panels
         int panelWidth; // set dynamically according to number of panels
 
-        int timeLeft = quest.getTicks() / 20; // time left in seconds
+        int timeLeft = quest.getTimeLeft() / 20; // time left in seconds
         int timeColor = timeLeft < 60 ? 0xFF0000 : 0x777777; // color to render time. If less than 60 seconds, red
         int minutes = timeLeft / 60; // time left in minutes
         int seconds = timeLeft % 60; // number of seconds left in this minute
