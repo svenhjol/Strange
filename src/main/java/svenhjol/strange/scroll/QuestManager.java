@@ -66,16 +66,21 @@ public class QuestManager extends PersistentState {
     public CompoundTag toTag(CompoundTag tag) {
         ListTag listTag = new ListTag();
 
-        quests.values().forEach(quest -> {
-            if (quest.isActive()) {
-                CompoundTag questTag = quest.toTag();
-                listTag.add(questTag);
-            }
+        forEachQuest(quest -> {
+            CompoundTag questTag = quest.toTag();
+            listTag.add(questTag);
         });
 
         tag.putInt(TICK_TAG, currentTime);
         tag.put(QUESTS_TAG, listTag);
         return tag;
+    }
+
+    public void forEachQuest(Consumer<Quest> callback) {
+        quests.values().forEach(quest -> {
+            if (quest.isActive())
+                callback.accept(quest);
+        });
     }
 
     public void forEachPlayerQuest(ServerPlayerEntity player, Consumer<Quest> callback) {
@@ -84,7 +89,10 @@ public class QuestManager extends PersistentState {
         if (!playerQuests.containsKey(owner))
             return;
 
-        playerQuests.get(owner).forEach(callback);
+        playerQuests.get(owner).forEach(quest -> {
+            if (quest.isActive())
+                callback.accept(quest);
+        });
     }
 
     @Nullable

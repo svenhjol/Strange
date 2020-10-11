@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import svenhjol.strange.helper.ScrollHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -124,14 +125,17 @@ public class Hunt implements ISerializable {
     }
 
     public void playerKilledEntity(PlayerEntity player, LivingEntity entity) {
-        Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+        // must be the player who owns the quest
+        if (quest.getOwner().equals(player.getUuid()) || quest.getOwner().equals(ScrollHelper.ANY_UUID)) {
+            Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
 
-        if (entities.containsKey(id)) {
-            Integer count = killed.getOrDefault(id, 0);
-            killed.put(id, count + 1);
+            if (entities.containsKey(id)) {
+                Integer count = killed.getOrDefault(id, 0);
+                killed.put(id, count + 1);
 
-            quest.setDirty(true);
-            update(player);
+                quest.setDirty(true);
+                update(player);
+            }
         }
     }
 }

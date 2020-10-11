@@ -171,8 +171,7 @@ public class Scrolls extends MesonModule {
             return;
 
         ServerPlayerEntity player = (ServerPlayerEntity) attacker;
-
-        Scrolls.questManager.forEachPlayerQuest(player, quest -> quest.playerKilledEntity(player, entity));
+        Scrolls.questManager.forEachQuest(quest -> quest.playerKilledEntity(player, entity));
 
 //        forEachQuest(player, (scroll, quest) -> {
 //            quest.playerKilledEntity(player, entity);
