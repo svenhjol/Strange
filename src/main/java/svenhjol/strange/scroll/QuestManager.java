@@ -30,18 +30,21 @@ public class QuestManager extends PersistentState {
     }
 
     public void tick() {
-        ++currentTime;
+        quests.values().forEach(quest -> {
+            if (!quest.isActive())
+                return;
 
-        quests.values().stream()
-            .filter(Quest::isActive)
-            .forEach(quest -> {
-                quest.tick(currentTime);
+            quest.tick(currentTime);
 
-                if (quest.isDirty()) {
-                    quest.setDirty(false);
-                    this.markDirty();
-                }
-            });
+            if (quest.isDirty()) {
+                quest.setDirty(false);
+                this.markDirty();
+            }
+        });
+
+        // required at interval so that the current time gets written into tags properly
+        if (++currentTime % 200 == 0)
+            markDirty();
     }
 
     @Override
