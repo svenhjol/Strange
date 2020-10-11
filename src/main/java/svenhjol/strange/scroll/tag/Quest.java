@@ -21,6 +21,7 @@ public class Quest implements ISerializable {
     private static final String TIER_TAG = "tier";
     private static final String RARITY_TAG = "rarity";
     private static final String TIME_TAG = "time";
+    private static final String EXPIRY_TAG = "expiry";
     private static final String GATHER_TAG = "gather";
     private static final String HUNT_TAG = "hunt";
     private static final String EXPLORE_TAG = "explore";
@@ -34,6 +35,7 @@ public class Quest implements ISerializable {
     private UUID merchant = ScrollHelper.ANY_UUID;
     private int tier = 1;
     private int rarity = 1;
+    private int expiry = 0;
     private int time = 0;
     private boolean dirty = false;
     private Reward reward = new Reward(this);
@@ -42,9 +44,6 @@ public class Quest implements ISerializable {
     private Explore explore = new Explore(this);
     private Boss boss = new Boss(this);
 
-    // transient
-    private int currentTime;
-
     private Quest() { }
 
     public Quest(JsonDefinition definition, UUID owner, UUID merchant, int rarity, int currentTime) {
@@ -52,7 +51,8 @@ public class Quest implements ISerializable {
         this.rarity = Math.max(1, rarity);
         this.tier = definition.getTier();
         this.definition = definition.getId();
-        this.time = currentTime + definition.getTimeLimit();
+        this.time = currentTime;
+        this.expiry = currentTime + definition.getTimeLimit();
         this.merchant = merchant;
         this.owner = owner;
     }
@@ -62,6 +62,7 @@ public class Quest implements ISerializable {
 
         tag.putInt(TIER_TAG, tier);
         tag.putInt(RARITY_TAG, rarity);
+        tag.putInt(EXPIRY_TAG, expiry);
         tag.putInt(TIME_TAG, time);
         tag.putString(MERCHANT_TAG, merchant.toString());
         tag.putString(OWNER_TAG, owner.toString());
@@ -81,6 +82,7 @@ public class Quest implements ISerializable {
     public void fromTag(CompoundTag tag) {
         tier = tag.getInt(TIER_TAG);
         rarity = Math.max(1, tag.getInt(RARITY_TAG));
+        expiry = Math.max(0, tag.getInt(EXPIRY_TAG));
         time = Math.max(0, tag.getInt(TIME_TAG));
         merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
         owner = UUID.fromString(tag.getString(OWNER_TAG));
@@ -123,12 +125,12 @@ public class Quest implements ISerializable {
         return rarity;
     }
 
-    public int getTime() {
-        return time;
+    public int getExpiry() {
+        return expiry;
     }
 
     public int getTimeLeft() {
-        return Math.max(0, time - currentTime);
+        return Math.max(0, expiry - time);
     }
 
     public String getTitle() {
@@ -176,7 +178,7 @@ public class Quest implements ISerializable {
     }
 
     public void tick(int currentTime) {
-        this.currentTime = currentTime;
+        this.time = currentTime;
     }
 
     public void playerTick(PlayerEntity player) {
