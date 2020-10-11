@@ -98,8 +98,8 @@ public class ExplorePopulator extends Populator {
         int fallbackRange = 8;
         int startHeight = 32;
 
-        BlockPos pos1 = pos.add(-checkRange, startHeight - (checkRange/2), -checkRange);
-        BlockPos pos2 = pos.add(checkRange, startHeight + (checkRange/2), checkRange);
+        BlockPos pos1 = pos.add(-checkRange, startHeight - (checkRange / 4), -checkRange);
+        BlockPos pos2 = pos.add(checkRange, startHeight + (checkRange / 4), checkRange);
 
         List<BlockPos> chests = BlockPos.stream(pos1, pos2).map(BlockPos::toImmutable).filter(p -> {
             BlockState state = world.getBlockState(p);
