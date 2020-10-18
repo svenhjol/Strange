@@ -1,4 +1,4 @@
-package svenhjol.strange.ruin;
+package svenhjol.strange.structure;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
@@ -13,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public abstract class BaseRuin {
+public abstract class BasePiece {
     private final String modId;
+    private final String subFolder;
     private final String ruinName;
     private final List<Pair<Function<StructurePool.Projection, ? extends StructurePoolElement>, Integer>> starts = new ArrayList<>();
 
-    public BaseRuin(String modId, String ruinName) {
+    public BasePiece(String modId, String subFolder, String ruinName) {
         this.modId = modId;
+        this.subFolder = subFolder;
         this.ruinName = ruinName;
     }
 
@@ -46,10 +48,10 @@ public abstract class BaseRuin {
     }
 
     protected String getPiecePath(String piece) {
-        return modId + ":ruins/" + ruinName + "/" + piece;
+        return modId + ":" + subFolder + "/" + ruinName + "/" + piece;
     }
 
     protected Identifier getPoolPath(String pool) {
-        return new Identifier(modId, "ruins/" + ruinName + "/" + pool);
+        return new Identifier(modId, subFolder + "/" + ruinName + "/" + pool);
     }
 }

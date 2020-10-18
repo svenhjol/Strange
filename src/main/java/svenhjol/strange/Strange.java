@@ -2,6 +2,7 @@ package svenhjol.strange;
 
 import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.module.*;
 
@@ -14,6 +15,7 @@ public class Strange implements ModInitializer {
     @Override
     public void onInitialize() {
         StrangeStructures.init();
+        StrangeLoot.init();
 
         ModuleHandler.AVAILABLE_MODULES.put(Strange.MOD_ID, new ArrayList<>(Arrays.asList(
             EntitySpawner.class,

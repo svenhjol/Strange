@@ -23,6 +23,7 @@ import svenhjol.charm.mixin.accessor.ShovelItemAccessor;
 import svenhjol.strange.base.StrangeLoot;
 
 import java.util.List;
+import java.util.Random;
 
 public class AncientRubbleBlock extends CharmBlock {
     public AncientRubbleBlock(CharmModule module) {
@@ -55,8 +56,10 @@ public class AncientRubbleBlock extends CharmBlock {
             chance += (fortune * 0.1F);
             chance += (player.getLuck() * 0.1F);
 
-            if (world.random.nextFloat() < chance)
+            if (world.random.nextFloat() < chance) {
                 dropTreasure(player, serverWorld, pos);
+                return;
+            }
         }
 
         dropGravel(player, serverWorld, pos);
@@ -67,15 +70,16 @@ public class AncientRubbleBlock extends CharmBlock {
     }
 
     private void dropTreasure(PlayerEntity player, ServerWorld world, BlockPos pos) {
+        Random rand = world.random;
         LootTable lootTable = world.getServer().getLootManager().getTable(StrangeLoot.ANCIENT_RUBBLE);
         List<ItemStack> list = lootTable.generateLoot((new LootContext.Builder(world))
             .parameter(LootContextParameters.THIS_ENTITY, player)
             .parameter(LootContextParameters.ORIGIN, player.getPos())
-            .random(world.random)
+            .random(rand)
             .build(LootContextTypes.CHEST));
 
         if (!list.isEmpty()) {
-            drop(world, pos, list.get(0));
+            drop(world, pos, list.get(rand.nextInt(list.size())));
         } else {
             Charm.LOG.warn("Could not get item from loot table");
             dropGravel(player, world, pos);

@@ -1,17 +1,18 @@
-package svenhjol.strange.ruin;
+package svenhjol.strange.structure.ruin;
 
 import svenhjol.strange.Strange;
+import svenhjol.strange.structure.BasePiece;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlainsRuin extends BaseRuin {
+public class PlainsRuin extends BasePiece {
     private final Map<String, Integer> ROOMS = new HashMap<>();
     private final Map<String, Integer> CORRIDORS = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();
 
     public PlainsRuin() {
-        super(Strange.MOD_ID, "plains");
+        super(Strange.MOD_ID, "ruins", "plains");
 
         addStart("start1", 1);
 

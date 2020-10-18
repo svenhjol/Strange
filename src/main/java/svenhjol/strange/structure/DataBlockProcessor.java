@@ -27,16 +27,19 @@ import svenhjol.charm.blockentity.BookcaseBlockEntity;
 import svenhjol.charm.module.*;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
 import svenhjol.strange.module.EntitySpawner;
+import svenhjol.strange.module.Excavation;
 import svenhjol.strange.module.Runestones;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static svenhjol.charm.base.helper.DecorationHelper.*;
 import static svenhjol.strange.helper.DataBlockHelper.*;
 
 public class DataBlockProcessor extends StructureProcessor {
     public DataBlockResolver resolver = new DataBlockResolver();
+    public static Map<String, Consumer<DataBlockResolver>> callbacks = new HashMap<>();
 
     @Nullable
     @Override
@@ -72,6 +75,7 @@ public class DataBlockProcessor extends StructureProcessor {
         private static final String MOB = "mob";
         private static final String ORE = "ore";
         private static final String FLOWERPOT = "plantpot";
+        private static final String RUBBLE = "rubble";
         private static final String RUNE = "rune";
         private static final String SAPLING = "sapling";
         private static final String SPAWNER = "spawner";
@@ -90,20 +94,21 @@ public class DataBlockProcessor extends StructureProcessor {
         public static float MOB_CHANCE = 0.75F;
         public static float ORE_CHANCE = 0.75F;
         public static float RARE_ORE_CHANCE = 0.25F;
+        public static float RUBBLE_CHANCE = 0.9F;
         public static float RUNESTONE_CHANCE = 0.75F;
         public static float SAPLING_CHANCE = 0.8F;
         public static float SPAWNER_CHANCE = 0.8F;
         public static float STORAGE_CHANCE = 0.7F;
 
-        private String data;
-        private BlockRotation rotation;
-        private BlockState state;
-        private BlockPos pos;
-        private WorldView world;
-        private CompoundTag tag;
-        private Random fixedRandom; // fixed according to parent template
-        private Random random; // random according to the replaced block hashcode
-        private float chance;
+        public String data;
+        public BlockRotation rotation;
+        public BlockState state;
+        public BlockPos pos;
+        public WorldView world;
+        public CompoundTag tag;
+        public Random fixedRandom; // fixed according to parent template
+        public Random random; // random according to the replaced block hashcode
+        public float chance;
 
         public StructureBlockInfo replace(WorldView world, BlockRotation rotation, StructureBlockInfo blockInfo, Random random) {
             String data = blockInfo.tag.getString("metadata");
@@ -139,13 +144,19 @@ public class DataBlockProcessor extends StructureProcessor {
             if (this.data.startsWith(LAVA)) lava();
             if (this.data.startsWith(MOB)) mob();
             if (this.data.startsWith(ORE)) ore();
+            if (this.data.startsWith(RUBBLE)) rubble();
             if (this.data.startsWith(RUNE)) runestone();
             if (this.data.startsWith(SAPLING)) sapling();
             if (this.data.startsWith(SPAWNER)) spawner();
             if (this.data.startsWith(STORAGE)) storage();
 
-            if (this.state == null)
-                this.state = Blocks.AIR.getDefaultState();
+            if (this.state == null) {
+                callbacks.entrySet().stream().filter(entry -> this.data.startsWith(entry.getKey())).forEach(entry ->
+                    entry.getValue().accept(this));
+
+                if (this.state == null)
+                    this.state = Blocks.AIR.getDefaultState();
+            }
 
             return new StructureBlockInfo(this.pos, this.state, this.tag);
         }
@@ -346,6 +357,13 @@ public class DataBlockProcessor extends StructureProcessor {
             state = fixedRandom.nextFloat() < RARE_ORE_CHANCE ?
                 DecorationHelper.getRandomBlock(RARE_ORES, fixedRandom) :
                 DecorationHelper.getRandomBlock(COMMON_ORES, fixedRandom);
+        }
+
+        protected void rubble() {
+            if (!withChance(RUBBLE_CHANCE) || !ModuleHandler.enabled("strange:excavation"))
+                return;
+
+            state = Excavation.ANCIENT_RUBBLE.getDefaultState();
         }
 
         protected void runestone() {

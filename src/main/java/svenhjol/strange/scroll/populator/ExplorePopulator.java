@@ -50,7 +50,7 @@ public class ExplorePopulator extends Populator {
         BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 1000);
         BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 500);
 
-        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(Ruins.STRUCTURE_ID);
+        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(Ruins.RUIN_ID);
         if (structureFeature == null) {
             structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier("mineshaft"));
             if (structureFeature == null)
