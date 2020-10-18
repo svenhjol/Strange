@@ -4,6 +4,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -27,6 +28,11 @@ public class EntitySpawnerBlock extends CharmBlockWithEntity {
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new EntitySpawnerBlockEntity();
+    }
+
+    @Override
+    public void createBlockItem(Identifier id) {
+        // don't
     }
 
     @Override
