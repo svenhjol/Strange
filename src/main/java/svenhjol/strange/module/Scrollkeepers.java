@@ -1,5 +1,6 @@
 package svenhjol.strange.module;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.Entity;
@@ -18,13 +19,13 @@ import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
 import net.minecraft.world.poi.PointOfInterestType;
-import svenhjol.meson.Meson;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.event.PlayerTickCallback;
-import svenhjol.meson.helper.VillagerHelper;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
-import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.VillagerHelper;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
 import svenhjol.strange.client.ScrollKeepersClient;
@@ -34,8 +35,8 @@ import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.scroll.tag.Quest;
 import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 
-@Module(description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
-public class Scrollkeepers extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
+public class Scrollkeepers extends CharmModule {
     public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35};
@@ -64,12 +65,12 @@ public class Scrollkeepers extends MesonModule {
 
         // TODO: village builds for scrollkeepers
 
-        enabled = Meson.enabled("strange:scrolls");
+        enabled = ModuleHandler.enabled("strange:scrolls");
     }
 
     @Override
     public void clientRegister() {
-        RenderLayersAccessor.getBlocks().put(WRITING_DESK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(WRITING_DESK, RenderLayer.getCutout());
     }
 
     @Override
@@ -140,7 +141,7 @@ public class Scrollkeepers extends MesonModule {
                     int amplifier = Math.max(0, villagerLevel - 2);
                     StatusEffectInstance badOmen = new StatusEffectInstance(StatusEffects.BAD_OMEN, 120000, amplifier, false, false, true);
                     playerEntity.addStatusEffect(badOmen);
-                    Meson.LOG.debug("Applying bad omen of amplifier: " + amplifier);
+                    Charm.LOG.debug("Applying bad omen of amplifier: " + amplifier);
                 }
             }
 

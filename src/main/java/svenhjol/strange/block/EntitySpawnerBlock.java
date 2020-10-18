@@ -9,14 +9,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.block.MesonBlockWithEntity;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.block.CharmBlockWithEntity;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
 
 import javax.annotation.Nullable;
 
-public class EntitySpawnerBlock extends MesonBlockWithEntity {
-    public EntitySpawnerBlock(MesonModule module) {
+public class EntitySpawnerBlock extends CharmBlockWithEntity {
+    public EntitySpawnerBlock(CharmModule module) {
         super(module, "entity_spawner", AbstractBlock.Settings
             .of(Material.AIR)
             .noCollision()

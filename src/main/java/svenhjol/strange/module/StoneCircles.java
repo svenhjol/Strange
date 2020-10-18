@@ -10,11 +10,11 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
-import svenhjol.meson.Meson;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.helper.BiomeHelper;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.BiomeHelper;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.structure.StoneCircleFeature;
 import svenhjol.strange.structure.StoneCircleGenerator;
@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Module(description = "Circles of stone columns. Runestones may appear at the top of a column.")
-public class StoneCircles extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Circles of stone columns. Runestones may appear at the top of a column.")
+public class StoneCircles extends CharmModule {
     public static final Identifier STRUCTURE_ID = new Identifier(Strange.MOD_ID, "stone_circle");
     public static final Identifier PIECE_ID = new Identifier(Strange.MOD_ID, "stone_circle_piece");
 
@@ -62,7 +62,7 @@ public class StoneCircles extends MesonModule {
 
         BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_ID, STONE_CIRCLE);
 
-        enabled = Meson.enabled("strange:runestones");
+        enabled = ModuleHandler.enabled("strange:runestones");
     }
 
     @Override

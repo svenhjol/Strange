@@ -27,7 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.ServerWorldAccess;
-import svenhjol.meson.Meson;
+import svenhjol.charm.Charm;
 import svenhjol.strange.helper.DataBlockHelper;
 import svenhjol.strange.module.EntitySpawner;
 
@@ -96,9 +96,9 @@ public class EntitySpawnerBlockEntity extends BlockEntity implements Tickable {
         boolean result = trySpawn(pos);
 
         if (result) {
-            Meson.LOG.debug("EntitySpawner spawned entity " + entity.toString() + " at pos: " + pos);
+            Charm.LOG.debug("EntitySpawner spawned entity " + entity.toString() + " at pos: " + pos);
         } else {
-            Meson.LOG.debug("EntitySpawner failed to spawn entity " + entity.toString() + " at pos: " + pos);
+            Charm.LOG.debug("EntitySpawner failed to spawn entity " + entity.toString() + " at pos: " + pos);
         }
     }
 

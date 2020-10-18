@@ -14,10 +14,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.enums.IVariantMaterial;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.meson.Meson;
-import svenhjol.meson.enums.IVariantMaterial;
-import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.strange.module.Runestones;
 import svenhjol.strange.module.StoneCircles;
 
@@ -64,7 +65,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         }
 
         if (availableRunes.size() == 0) {
-            Meson.LOG.warn("No available runes to generate");
+            Charm.LOG.warn("No available runes to generate");
             return false;
         }
 
@@ -124,7 +125,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
 
         // generate chest at center
         if (random.nextFloat() < chestChance) {
-            boolean useVariantChests = Meson.enabled("charm:variant_chests");
+            boolean useVariantChests = ModuleHandler.enabled("charm:variant_chests");
             for (int s = maxCheckSurface; s > minCheckSurface; s--) {
                 BlockPos checkPos = blockPos.add(0, s, 0);
                 BlockPos checkUpPos = checkPos.up();
@@ -147,7 +148,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         }
 
         if (!generatedSomething)
-            Meson.LOG.debug("Did not generate a stone circle at: " + blockPos);
+            Charm.LOG.debug("Did not generate a stone circle at: " + blockPos);
 
         return generatedSomething;
     }

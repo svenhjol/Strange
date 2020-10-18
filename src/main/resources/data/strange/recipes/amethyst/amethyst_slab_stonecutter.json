@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "strange:amethyst"
-  },
-  "result": "strange:amethyst_slab",
-  "count": 1
-}

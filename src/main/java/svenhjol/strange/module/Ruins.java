@@ -7,10 +7,10 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.helper.BiomeHelper;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.helper.BiomeHelper;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.ruin.BambiMountainsRuin;
 import svenhjol.strange.ruin.ForestRuin;
@@ -22,8 +22,8 @@ import java.util.List;
 
 import static svenhjol.strange.structure.RuinGenerator.*;
 
-@Module(description = "Underground ruins with different themes according to the biome.")
-public class Ruins extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Underground ruins with different themes according to the biome.")
+public class Ruins extends CharmModule {
     public static final Identifier STRUCTURE_ID = new Identifier(Strange.MOD_ID, "ruin");
 
     public static StructureFeature<StructurePoolFeatureConfig> STRUCTURE;

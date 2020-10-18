@@ -1,19 +1,19 @@
 package svenhjol.strange.module;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
-import svenhjol.meson.mixin.accessor.RenderLayersAccessor;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.EntitySpawnerBlock;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
 
-@Module(description = "Spawns entities when a player is within range.", alwaysEnabled = true)
-public class EntitySpawner extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Spawns entities when a player is within range.", alwaysEnabled = true)
+public class EntitySpawner extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "entity_spawner");
     public static EntitySpawnerBlock ENTITY_SPAWNER;
     public static BlockEntityType<EntitySpawnerBlockEntity> BLOCK_ENTITY;
@@ -30,6 +30,6 @@ public class EntitySpawner extends MesonModule {
 
     @Override
     public void clientRegister() {
-        RenderLayersAccessor.getBlocks().put(ENTITY_SPAWNER, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ENTITY_SPAWNER, RenderLayer.getCutout());
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import svenhjol.meson.helper.PosHelper;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.scroll.populator.BossPopulator;
 
 import java.util.*;

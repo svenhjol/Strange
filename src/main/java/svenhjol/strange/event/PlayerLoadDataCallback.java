@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import svenhjol.meson.Meson;
+import svenhjol.charm.Charm;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ public interface PlayerLoadDataCallback {
             try {
                 tag = NbtIo.readCompressed(file);
             } catch (Exception e) {
-                Meson.LOG.error("Failed to load player data from file: " + file.toString());
+                Charm.LOG.error("Failed to load player data from file: " + file.toString());
                 tag = new CompoundTag();
             }
         } else {

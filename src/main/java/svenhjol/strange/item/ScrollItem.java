@@ -14,9 +14,9 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.helper.DimensionHelper;
-import svenhjol.meson.item.MesonItem;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.item.CharmItem;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.scroll.JsonDefinition;
@@ -25,14 +25,14 @@ import svenhjol.strange.scroll.tag.Quest;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class ScrollItem extends MesonItem {
+public class ScrollItem extends CharmItem {
     private static final String QUEST_TAG = "quest";
     private static final String RARITY_TAG = "rarity";
     private static final String MERCHANT_TAG = "merchant";
 
     private final int tier;
 
-    public ScrollItem(MesonModule module, int tier, String name) {
+    public ScrollItem(CharmModule module, int tier, String name) {
         super(module, name, new Item.Settings()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)

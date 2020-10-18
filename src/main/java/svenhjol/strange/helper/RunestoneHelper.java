@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import svenhjol.meson.helper.StringHelper;
+import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;

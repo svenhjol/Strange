@@ -4,16 +4,16 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import svenhjol.meson.MesonModule;
+import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.scroll.ScrollScreen;
 import svenhjol.strange.scroll.tag.Quest;
 
 import static svenhjol.strange.module.Scrolls.MSG_CLIENT_OPEN_SCROLL;
 
 public class ScrollsClient {
-    private final MesonModule module;
+    private final CharmModule module;
 
-    public ScrollsClient(MesonModule module) {
+    public ScrollsClient(CharmModule module) {
         this.module = module;
 
         // listen for scroll open events being sent from the server

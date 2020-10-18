@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
-import svenhjol.meson.Meson;
+import svenhjol.charm.Charm;
 import svenhjol.strange.blockentity.RunestoneBlockEntity;
 import svenhjol.strange.helper.RunestoneHelper;
 
@@ -65,7 +65,7 @@ public abstract class Destination {
             Identifier location = runeBlockEntity.location;
 
             if (location != null && position != null) {
-                Meson.LOG.debug("Found destination in runestone: " + location.toString());
+                Charm.LOG.debug("Found destination in runestone: " + location.toString());
                 return position;
             }
         }
@@ -82,7 +82,7 @@ public abstract class Destination {
             runeBlockEntity.player = player != null ? player.getName().asString() : "";
             runeBlockEntity.markDirty();
 
-            Meson.LOG.debug("Stored location in runestone for next use");
+            Charm.LOG.debug("Stored location in runestone for next use");
         }
     }
 }

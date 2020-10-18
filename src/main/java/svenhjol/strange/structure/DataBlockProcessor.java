@@ -18,13 +18,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.WorldView;
+import svenhjol.charm.base.enums.IVariantMaterial;
+import svenhjol.charm.base.enums.VanillaVariantMaterial;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.block.BookcaseBlock;
 import svenhjol.charm.blockentity.BookcaseBlockEntity;
 import svenhjol.charm.module.*;
-import svenhjol.meson.Meson;
-import svenhjol.meson.enums.IVariantMaterial;
-import svenhjol.meson.enums.VanillaVariantMaterial;
-import svenhjol.meson.helper.DecorationHelper;
 import svenhjol.strange.blockentity.EntitySpawnerBlockEntity;
 import svenhjol.strange.module.EntitySpawner;
 import svenhjol.strange.module.Runestones;
@@ -32,7 +32,7 @@ import svenhjol.strange.module.Runestones;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static svenhjol.meson.helper.DecorationHelper.*;
+import static svenhjol.charm.base.helper.DecorationHelper.*;
 import static svenhjol.strange.helper.DataBlockHelper.*;
 
 public class DataBlockProcessor extends StructureProcessor {
@@ -193,7 +193,7 @@ public class DataBlockProcessor extends StructureProcessor {
         protected void bookshelf() {
             IVariantMaterial variantMaterial = DecorationHelper.getRandomVariantMaterial(fixedRandom);
 
-            if (Meson.enabled("charm:bookcases") && withChance(BOOKCASE_CHANCE)) {
+            if (ModuleHandler.enabled("charm:bookcases") && withChance(BOOKCASE_CHANCE)) {
                 state = Bookcases.BOOKCASE_BLOCKS.get(variantMaterial).getDefaultState()
                     .with(BookcaseBlock.SLOTS, BookcaseBlockEntity.SIZE); // make it have the "full" texture
 
@@ -206,7 +206,7 @@ public class DataBlockProcessor extends StructureProcessor {
                     this.tag = new CompoundTag();
                     blockEntity.toTag(this.tag);
                 }
-            } else if (Meson.enabled("charm:variant_bookshelves") && variantMaterial != VanillaVariantMaterial.OAK) {
+            } else if (ModuleHandler.enabled("charm:variant_bookshelves") && variantMaterial != VanillaVariantMaterial.OAK) {
                 state = VariantBookshelves.BOOKSHELF_BLOCKS.get(variantMaterial).getDefaultState();
             } else {
                 state = Blocks.BOOKSHELF.getDefaultState();
@@ -230,7 +230,7 @@ public class DataBlockProcessor extends StructureProcessor {
         protected void chest() {
             if (!withChance(CHEST_CHANCE)) return;
 
-            if (Meson.enabled("charm:variant_chests")) {
+            if (ModuleHandler.enabled("charm:variant_chests")) {
                 IVariantMaterial variantMaterial = DecorationHelper.getRandomVariantMaterial(random);
 
                 state = random.nextFloat() < 0.1F ?
@@ -295,7 +295,7 @@ public class DataBlockProcessor extends StructureProcessor {
             if (!withChance(LANTERN_CHANCE)) return;
             state = Blocks.LANTERN.getDefaultState();
 
-            if (Meson.enabled("charm:gold_lanterns") && random.nextFloat() < LANTERN_GOLD_CHANCE)
+            if (ModuleHandler.enabled("charm:gold_lanterns") && random.nextFloat() < LANTERN_GOLD_CHANCE)
                 state = GoldLanterns.GOLD_LANTERN.getDefaultState();
 
             if (data.contains("hanging"))
@@ -349,7 +349,7 @@ public class DataBlockProcessor extends StructureProcessor {
         }
 
         protected void runestone() {
-            if (!Meson.enabled("strange:runestones") || !withChance(RUNESTONE_CHANCE)) {
+            if (!ModuleHandler.enabled("strange:runestones") || !withChance(RUNESTONE_CHANCE)) {
                 state = Blocks.STONE.getDefaultState();
                 return;
             }
@@ -398,13 +398,13 @@ public class DataBlockProcessor extends StructureProcessor {
             LootableContainerBlockEntity blockEntity;
             IVariantMaterial woodType = DecorationHelper.getRandomVariantMaterial(random);
 
-            if (random.nextFloat() < 0.5F && Meson.enabled("charm:crates")) {
+            if (random.nextFloat() < 0.5F && ModuleHandler.enabled("charm:crates")) {
                 // get a crate
                 state = Crates.CRATE_BLOCKS.get(woodType).getDefaultState();
                 blockEntity = Crates.BLOCK_ENTITY.instantiate();
             } else {
                 // get a barrel
-                if (Meson.enabled("charm:variant_barrels")) {
+                if (ModuleHandler.enabled("charm:variant_barrels")) {
                     // get variant barrel
                     state = VariantBarrels.BARREL_BLOCKS.get(woodType).getDefaultState();
                 } else {

@@ -25,13 +25,13 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.event.PlayerTickCallback;
-import svenhjol.meson.event.ThrownEntityImpactCallback;
-import svenhjol.meson.helper.WorldHelper;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.helper.WorldHelper;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.event.ThrownEntityImpactCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.block.RunestoneBlock;
@@ -46,8 +46,8 @@ import svenhjol.strange.helper.RunestoneHelper;
 import java.io.File;
 import java.util.*;
 
-@Module(description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
-public class Runestones extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Runestones allow fast travel to points of interest in your world by using an Ender Pearl.")
+public class Runestones extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "runestone");
     public static final String DISCOVERIES_TAG = "discoveries";
 
@@ -129,7 +129,7 @@ public class Runestones extends MesonModule {
                 for (int i : intArray) {
                     playerDiscoveries.get(uid).add(i);
                 }
-                Meson.LOG.debug("Loaded player rune discovery data");
+                Charm.LOG.debug("Loaded player rune discovery data");
             }
         }));
 
@@ -159,7 +159,7 @@ public class Runestones extends MesonModule {
                 if (addStructure) {
                     availableDestinations.add(new StructureDestination(locationId, weight));
                 } else {
-                    Meson.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
+                    Charm.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
                     availableDestinations.add(new StructureDestination(RunestoneHelper.SPAWN, weight));
                 }
                 r++;
@@ -176,7 +176,7 @@ public class Runestones extends MesonModule {
                 if (addBiome) {
                     availableDestinations.add(new BiomeDestination(locationId, weight));
                 } else {
-                    Meson.LOG.warn("Could not find registered biome " + configBiome + ", ignoring as runestone destination");
+                    Charm.LOG.warn("Could not find registered biome " + configBiome + ", ignoring as runestone destination");
                     availableDestinations.add(new BiomeDestination(RunestoneHelper.SPAWN, weight));
                 }
                 r++;
@@ -193,7 +193,7 @@ public class Runestones extends MesonModule {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
 
         if (overworld == null) {
-            Meson.LOG.warn("Cannot access overworld, unable to get seed.");
+            Charm.LOG.warn("Cannot access overworld, unable to get seed.");
             return;
         }
 
@@ -284,7 +284,7 @@ public class Runestones extends MesonModule {
             }
 
             if (surface <= 0) {
-                Meson.LOG.warn("Failed to find a surface value to spawn the player");
+                Charm.LOG.warn("Failed to find a surface value to spawn the player");
                 return;
             }
 
@@ -330,7 +330,7 @@ public class Runestones extends MesonModule {
     private boolean onPearlImpact(ServerWorld world, BlockPos runePos, ServerPlayerEntity player) {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
-            Meson.LOG.warn("Failed to get the value of the rune at " + runePos.toShortString());
+            Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toShortString());
             return RunestoneHelper.explode(world, runePos, player, true);
         }
 
@@ -345,7 +345,7 @@ public class Runestones extends MesonModule {
         // force remote chunk
         boolean result = WorldHelper.addForcedChunk(world, destPos);
         if (!result) {
-            Meson.LOG.warn("Could not load destination chunk, giving up");
+            Charm.LOG.warn("Could not load destination chunk, giving up");
             return RunestoneHelper.explode(world, runePos, player, true);
         }
 

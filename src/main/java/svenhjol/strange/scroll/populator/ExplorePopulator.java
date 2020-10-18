@@ -15,13 +15,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
+import svenhjol.charm.base.enums.IVariantMaterial;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.DecorationHelper;
+import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.MapHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.meson.Meson;
-import svenhjol.meson.enums.IVariantMaterial;
-import svenhjol.meson.helper.DecorationHelper;
-import svenhjol.meson.helper.DimensionHelper;
-import svenhjol.meson.helper.MapHelper;
-import svenhjol.meson.helper.PlayerHelper;
 import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.module.Ruins;
 import svenhjol.strange.scroll.JsonDefinition;
@@ -111,7 +111,7 @@ public class ExplorePopulator extends Populator {
             BlockState chest;
 
             // TODO: make this some kind of helper method
-            boolean useVariantChests = Meson.enabled("charm:variant_chests");
+            boolean useVariantChests = ModuleHandler.enabled("charm:variant_chests");
             if (useVariantChests) {
                 IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
                 chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();

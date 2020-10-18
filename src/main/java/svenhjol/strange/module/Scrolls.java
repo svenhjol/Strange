@@ -25,13 +25,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
-import svenhjol.meson.Meson;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.event.EntityDeathCallback;
-import svenhjol.meson.event.LoadWorldCallback;
-import svenhjol.meson.event.PlayerTickCallback;
-import svenhjol.meson.iface.Config;
-import svenhjol.meson.iface.Module;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.iface.Config;
+import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.EntityDeathCallback;
+import svenhjol.charm.event.LoadWorldCallback;
+import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.client.ScrollsClient;
 import svenhjol.strange.item.ScrollItem;
@@ -45,8 +46,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-@Module(description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
-public class Scrolls extends MesonModule {
+@Module(mod = Strange.MOD_ID, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
+public class Scrolls extends CharmModule {
     public static final int MAX_TIERS = 6;
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
@@ -115,7 +116,7 @@ public class Scrolls extends MesonModule {
     private void loadQuestManager(MinecraftServer server) {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
         if (overworld == null) {
-            Meson.LOG.warn("Overworld is null, cannot load persistent state manager");
+            Charm.LOG.warn("Overworld is null, cannot load persistent state manager");
             return;
         }
 
@@ -143,10 +144,10 @@ public class Scrolls extends MesonModule {
                     if (!requiredModules.isEmpty()) {
                         boolean valid = true;
                         for (String requiredModule : requiredModules) {
-                            valid = valid && Meson.enabled(requiredModule);
+                            valid = valid && ModuleHandler.enabled(requiredModule);
                         }
                         if (!valid) {
-                            Meson.LOG.info("Scroll definition " + scroll.toString() + " is missing required modules, disabling.");
+                            Charm.LOG.info("Scroll definition " + scroll.toString() + " is missing required modules, disabling.");
                             continue;
                         }
                     }
@@ -156,10 +157,10 @@ public class Scrolls extends MesonModule {
                     definition.setTitle(id);
                     definition.setTier(tier);
                     AVAILABLE_SCROLLS.get(tier).put(id, definition);
-                    Meson.LOG.info("Loaded scroll definition " + scroll.toString() + " for tier " + tier);
+                    Charm.LOG.info("Loaded scroll definition " + scroll.toString() + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Meson.LOG.warn("Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
+                    Charm.LOG.warn("Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
                 }
             }
         }
@@ -234,13 +235,13 @@ public class Scrolls extends MesonModule {
     @Nullable
     public static JsonDefinition getRandomDefinition(int tier, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
-            Meson.LOG.warn("No scroll definitions available for this tier: " + tier);
+            Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
             return null;
         }
 
         Map<String, JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
         if (definitions.isEmpty()) {
-            Meson.LOG.warn("No scroll definitions found in this tier: " + tier);
+            Charm.LOG.warn("No scroll definitions found in this tier: " + tier);
             return null;
         }
 

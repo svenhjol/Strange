@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
-import svenhjol.meson.Meson;
+import svenhjol.charm.Charm;
 import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.module.Runestones;
 
@@ -38,16 +38,16 @@ public class StructureDestination extends Destination {
             StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(location);
 
             if (structureFeature == null) {
-                Meson.LOG.warn("Could not find structure in registry of type: " + location);
+                Charm.LOG.warn("Could not find structure in registry of type: " + location);
                 return null;
             }
 
-            Meson.LOG.debug("Trying to locate structure in the world: " + location);
+            Charm.LOG.debug("Trying to locate structure in the world: " + location);
             foundPos = world.locateStructure(structureFeature, destPos, 1000, false);
         }
 
         if (foundPos == null) {
-            Meson.LOG.warn("Could not locate structure: " + location);
+            Charm.LOG.warn("Could not locate structure: " + location);
             return null;
         }
 

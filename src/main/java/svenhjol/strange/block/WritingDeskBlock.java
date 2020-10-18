@@ -12,20 +12,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import svenhjol.meson.MesonModule;
-import svenhjol.meson.block.MesonBlock;
+import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.block.CharmBlock;
 import svenhjol.strange.module.Scrollkeepers;
 
 import javax.annotation.Nullable;
 
-public class WritingDeskBlock extends MesonBlock {
+public class WritingDeskBlock extends CharmBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final VoxelShape TOP;
     public static final VoxelShape LEGS;
     public static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape OUTLINE_SHAPE;
 
-    public WritingDeskBlock(MesonModule module) {
+    public WritingDeskBlock(CharmModule module) {
         super(module, Scrollkeepers.BLOCK_ID.getPath(), AbstractBlock.Settings.copy(Blocks.CARTOGRAPHY_TABLE));
     }
 

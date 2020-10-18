@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import svenhjol.meson.helper.LootHelper;
+import svenhjol.charm.base.helper.LootHelper;
 
 import java.util.List;
 import java.util.regex.Matcher;

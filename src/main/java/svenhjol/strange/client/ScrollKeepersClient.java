@@ -7,7 +7,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import svenhjol.meson.MesonModule;
+import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.module.Scrollkeepers;
@@ -16,9 +16,9 @@ import svenhjol.strange.scroll.tag.Quest;
 import java.util.List;
 
 public class ScrollKeepersClient {
-    private MesonModule module;
+    private CharmModule module;
 
-    public ScrollKeepersClient(MesonModule module) {
+    public ScrollKeepersClient(CharmModule module) {
         this.module = module;
     }
 

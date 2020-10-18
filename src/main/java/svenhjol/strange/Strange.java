@@ -1,32 +1,27 @@
 package svenhjol.strange;
 
-import svenhjol.meson.MesonMod;
-import svenhjol.meson.MesonModule;
+import net.fabricmc.api.ModInitializer;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.module.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class Strange extends MesonMod {
+public class Strange implements ModInitializer {
     public static final String MOD_ID = "strange";
 
     @Override
     public void onInitialize() {
-        super.init(MOD_ID);
-        StrangeStructures.init(this);
-    }
+        StrangeStructures.init();
 
-    @Override
-    protected List<Class<? extends MesonModule>> getModules() {
-        return Arrays.asList(
-            Amethyst.class,
+        ModuleHandler.AVAILABLE_MODULES.put(Strange.MOD_ID, new ArrayList<>(Arrays.asList(
             EntitySpawner.class,
             Ruins.class,
             Runestones.class,
             Scrollkeepers.class,
             Scrolls.class,
             StoneCircles.class
-        );
+        )));
     }
 }

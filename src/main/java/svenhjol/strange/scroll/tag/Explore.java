@@ -11,8 +11,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import svenhjol.meson.Meson;
-import svenhjol.meson.helper.PosHelper;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.scroll.populator.ExplorePopulator;
 
 import java.util.ArrayList;
@@ -141,7 +141,7 @@ public class Explore implements ISerializable {
             quest.setDirty(true);
 
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
-            chestPositions.forEach(pos -> Meson.LOG.debug("Added to chest at: " + pos.toShortString()));
+            chestPositions.forEach(pos -> Charm.LOG.debug("Added to chest at: " + pos.toShortString()));
 
             chests = chestPositions;
         }

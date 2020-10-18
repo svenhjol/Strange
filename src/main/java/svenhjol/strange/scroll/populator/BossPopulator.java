@@ -17,10 +17,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
-import svenhjol.meson.Meson;
-import svenhjol.meson.helper.DimensionHelper;
-import svenhjol.meson.helper.MapHelper;
-import svenhjol.meson.helper.PlayerHelper;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.MapHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.module.Scrolls;
@@ -204,13 +204,13 @@ public class BossPopulator extends Populator {
                         });
                     }
 
-                    Meson.LOG.info("Spawned " + id + " at " + mobPos.toShortString());
+                    Charm.LOG.info("Spawned " + id + " at " + mobPos.toShortString());
                 });
 
                 if (didSpawn) {
                     didAnySpawn = true;
                 } else {
-                    Meson.LOG.info("Failed to spawn " + id);
+                    Charm.LOG.info("Failed to spawn " + id);
 
                     // if a boss entity couldn't spawn, flag it as a kill
                     if (isBoss)
