@@ -81,7 +81,7 @@ public class Runestones extends CharmModule {
         "minecraft:swamp_hut",
         "minecraft:igloo",
         "minecraft:ruined_portal",
-        "strange:underground_ruin"
+        "strange:ruin"
     ));
 
     @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
