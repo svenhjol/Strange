@@ -17,8 +17,10 @@ public class Strange implements ModInitializer {
 
         ModuleHandler.AVAILABLE_MODULES.put(Strange.MOD_ID, new ArrayList<>(Arrays.asList(
             EntitySpawner.class,
+            Excavation.class,
             Ruins.class,
             Runestones.class,
+            RunicTablets.class,
             Scrollkeepers.class,
             Scrolls.class,
             StoneCircles.class
