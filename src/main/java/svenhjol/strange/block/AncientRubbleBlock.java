@@ -60,11 +60,11 @@ public class AncientRubbleBlock extends CharmBlock {
             }
         }
 
-        dropGravel(player, serverWorld, pos);
+        dropGravel(serverWorld, pos);
     }
 
-    private void dropGravel(PlayerEntity player, ServerWorld world, BlockPos pos) {
-        drop((ServerWorld)player.world, pos, new ItemStack(Blocks.GRAVEL));
+    private void dropGravel(ServerWorld world, BlockPos pos) {
+        drop(world, pos, new ItemStack(Blocks.GRAVEL));
     }
 
     private void dropTreasure(PlayerEntity player, ServerWorld world, BlockPos pos) {
@@ -80,7 +80,7 @@ public class AncientRubbleBlock extends CharmBlock {
             drop(world, pos, list.get(rand.nextInt(list.size())));
         } else {
             Charm.LOG.warn("Could not get item from loot table");
-            dropGravel(player, world, pos);
+            dropGravel(world, pos);
         }
     }
 
