@@ -79,7 +79,7 @@ public class AncientRubbleBlock extends CharmBlock {
             .build(LootContextTypes.CHEST));
 
         if (!list.isEmpty()) {
-            world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 0.8F);
+            world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
             drop(world, pos, list.get(rand.nextInt(list.size())));
         } else {
             Charm.LOG.warn("Could not get item from loot table");
