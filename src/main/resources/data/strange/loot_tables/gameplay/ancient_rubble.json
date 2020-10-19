@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_helmet",
           "functions": [
             {
@@ -20,15 +20,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_chestplate",
           "functions": [
             {
@@ -42,15 +42,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_leggings",
           "functions": [
             {
@@ -64,15 +64,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_boots",
           "functions": [
             {
@@ -86,15 +86,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_axe",
           "functions": [
             {
@@ -108,15 +108,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_pickaxe",
           "functions": [
             {
@@ -130,15 +130,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_shovel",
           "functions": [
             {
@@ -152,15 +152,15 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:diamond_sword",
           "functions": [
             {
@@ -174,8 +174,184 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
-                "min": 200,
-                "max": 400
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_helmet",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_chestplate",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_leggings",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_boots",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_axe",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_pickaxe",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_shovel",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:iron_sword",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "min": 5,
+                "max": 15
+              },
+              "treasure": true
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.0,
+                "max": 0.9
               }
             }
           ]
