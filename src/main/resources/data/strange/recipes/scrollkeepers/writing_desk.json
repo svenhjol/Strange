@@ -15,11 +15,5 @@
   },
   "result": {
     "item": "strange:writing_desk"
-  },
-  "conditions": [
-    {
-      "type": "meson:module_enabled",
-      "module": "strange:scrolls"
-    }
-  ]
+  }
 }
