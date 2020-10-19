@@ -19,6 +19,7 @@ import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.module.VariantChests;
+import svenhjol.strange.module.Excavation;
 import svenhjol.strange.module.Runestones;
 import svenhjol.strange.module.StoneCircles;
 
@@ -26,6 +27,7 @@ import java.util.*;
 
 public class StoneCircleGenerator extends StructurePieceWithDimensions {
     public static float chestChance = 0.3F;
+    public static float rubbleChance = 0.1F;
     public static float runeChance = 0.8F;
     public static int maxCheckSurface = 5;
     public static int minCheckSurface = -15;
@@ -143,6 +145,22 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
 
                     world.setBlockState(checkUpPos, chest, 2);
                     LootableContainerBlockEntity.setLootTable(world, random, checkUpPos, lootTable);
+                }
+            }
+        }
+
+        // try and place some ancient rubble
+        if (random.nextFloat() < rubbleChance && ModuleHandler.enabled("strange:excavation")) {
+            int maxTries = 1 + random.nextInt(3);
+            for (int tries = 0; tries < maxTries; tries++) {
+                for (int s = maxCheckSurface; s > minCheckSurface; s--) {
+                    BlockPos checkPos = blockPos.add(random.nextInt(8) - 8, s, random.nextInt(8) - 8);
+                    BlockPos checkUpPos = checkPos.up();
+                    BlockState checkState = world.getBlockState(checkPos);
+                    BlockState checkUpState = world.getBlockState(checkUpPos);
+
+                    if (checkState.isOpaque() && checkUpState.isAir() && lootTable != null)
+                        world.setBlockState(checkPos, Excavation.ANCIENT_RUBBLE.getDefaultState(), 2);
                 }
             }
         }

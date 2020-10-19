@@ -21,18 +21,22 @@ import svenhjol.strange.item.BlankTabletItem;
 import svenhjol.strange.item.ClayTabletItem;
 import svenhjol.strange.item.RunicTabletItem;
 import svenhjol.strange.item.TabletItem;
+import svenhjol.strange.scroll.loot.BlankTabletLootFunction;
 import svenhjol.strange.scroll.loot.RunicTabletLootFunction;
 
 @Module(mod = Strange.MOD_ID)
 public class RunicTablets extends CharmModule {
     public static final Identifier RUNIC_TABLET_LOOT_ID = new Identifier(Strange.MOD_ID, "runic_tablet_loot");
+    public static final Identifier BLANK_TABLET_LOOT_ID = new Identifier(Strange.MOD_ID, "blank_tablet_loot");
     public static LootFunctionType RUNIC_TABLET_LOOT_FUNCTION;
+    public static LootFunctionType BLANK_TABLET_LOOT_FUNCTION;
 
     public static TabletItem CLAY_TABLET;
     public static TabletItem RUNIC_TABLET;
     public static TabletItem BLANK_TABLET;
 
     public static boolean addRunicTabletsToLoot = true;
+    public static boolean addBlankTabletsToLoot = true;
 
     @Override
     public void register() {
@@ -41,7 +45,9 @@ public class RunicTablets extends CharmModule {
         BLANK_TABLET = new BlankTabletItem(this, "blank_tablet");
 
         RUNIC_TABLET_LOOT_FUNCTION = new LootFunctionType(new RunicTabletLootFunction.Serializer());
+        BLANK_TABLET_LOOT_FUNCTION = new LootFunctionType(new BlankTabletLootFunction.Serializer());
         Registry.register(Registry.LOOT_FUNCTION_TYPE, RUNIC_TABLET_LOOT_ID, RUNIC_TABLET_LOOT_FUNCTION);
+        Registry.register(Registry.LOOT_FUNCTION_TYPE, BLANK_TABLET_LOOT_ID, BLANK_TABLET_LOOT_FUNCTION);
     }
 
     @Override
@@ -50,17 +56,33 @@ public class RunicTablets extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
-        if (!ModuleHandler.enabled("strange:excavation") || !addRunicTabletsToLoot)
+        if (!ModuleHandler.enabled("strange:excavation"))
             return;
 
-        if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
-            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
-                .with(ItemEntry.builder(Items.CLAY_BALL)
-                    .weight(20)
-                    .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
+        // TODO: foundations loot
 
-            supplier.pool(builder);
+        if (addRunicTabletsToLoot) {
+            if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
+                FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                    .rolls(ConstantLootTableRange.create(1))
+                    .with(ItemEntry.builder(Items.CLAY_BALL)
+                        .weight(20)
+                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
+
+                supplier.pool(builder);
+            }
+        }
+
+        if (addBlankTabletsToLoot) {
+            if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
+                FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                    .rolls(ConstantLootTableRange.create(1))
+                    .with(ItemEntry.builder(Items.CLAY_BALL)
+                        .weight(2)
+                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
+
+                supplier.pool(builder);
+            }
         }
     }
 }
