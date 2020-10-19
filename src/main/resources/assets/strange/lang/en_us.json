@@ -44,6 +44,7 @@
   "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
   "item.strange.clay_tablet": "Clay Tablet",
   "item.strange.runic_tablet": "Runic Tablet",
+  "item.strange.runic_tablet_foundation": "Ancient Foundation",
   "item.strange.scroll_novice": "Novice Scroll",
   "item.strange.scroll_apprentice": "Apprentice Scroll",
   "item.strange.scroll_journeyman": "Journeyman Scroll",

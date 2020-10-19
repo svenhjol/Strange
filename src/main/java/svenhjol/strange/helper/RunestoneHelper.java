@@ -12,7 +12,6 @@ import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class RunestoneHelper {
     public static final Identifier SPAWN = new Identifier(Strange.MOD_ID, "spawn_point");
@@ -27,18 +26,6 @@ public class RunestoneHelper {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
         return false;
-    }
-
-    public static BlockPos addRandomOffset(BlockPos pos, Random rand, int max) {
-        int n = rand.nextInt(max);
-        int e = rand.nextInt(max);
-        int s = rand.nextInt(max);
-        int w = rand.nextInt(max);
-        pos = pos.north(rand.nextFloat() < 0.5F ? n : -n);
-        pos = pos.east(rand.nextFloat() < 0.5F ? e : -e);
-        pos = pos.south(rand.nextFloat() < 0.5F ? s : -s);
-        pos = pos.west(rand.nextFloat() < 0.5F ? w : -w);
-        return pos;
     }
 
     public static String getFormattedLocationName(Identifier locationId) {

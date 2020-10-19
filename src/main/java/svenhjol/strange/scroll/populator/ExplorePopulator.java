@@ -17,12 +17,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
-import svenhjol.charm.base.helper.DecorationHelper;
-import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.charm.base.helper.MapHelper;
-import svenhjol.charm.base.helper.PlayerHelper;
+import svenhjol.charm.base.helper.*;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.strange.helper.RunestoneHelper;
 import svenhjol.strange.module.Ruins;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.tag.Explore;
@@ -47,8 +43,8 @@ public class ExplorePopulator extends Populator {
             return;
 
         // find the structure to explore
-        BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 1000);
-        BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 500);
+        BlockPos min = PosHelper.addRandomOffset(pos, world.random, 1000);
+        BlockPos max = PosHelper.addRandomOffset(min, world.random, 500);
 
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(Ruins.RUIN_ID);
         if (structureFeature == null) {

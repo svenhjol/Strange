@@ -18,11 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
-import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.charm.base.helper.MapHelper;
-import svenhjol.charm.base.helper.PlayerHelper;
-import svenhjol.strange.helper.RunestoneHelper;
-import svenhjol.strange.helper.ScrollHelper;
+import svenhjol.charm.base.helper.*;
 import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.module.StoneCircles;
 import svenhjol.strange.scroll.JsonDefinition;
@@ -50,8 +46,8 @@ public class BossPopulator extends Populator {
         if (boss.isEmpty())
             return;
 
-        BlockPos min = RunestoneHelper.addRandomOffset(pos, world.random, 250);
-        BlockPos max = RunestoneHelper.addRandomOffset(min, world.random, 250);
+        BlockPos min = PosHelper.addRandomOffset(pos, world.random, 250);
+        BlockPos max = PosHelper.addRandomOffset(min, world.random, 250);
 
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(StoneCircles.STRUCTURE_ID);
         if (structureFeature == null)
@@ -118,7 +114,7 @@ public class BossPopulator extends Populator {
         if (boss.containsKey(SUPPORT))
             trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
 
-        ScrollHelper.stormyWeather(world, 3600);
+        WorldHelper.stormyWeather(world, 3600);
     }
 
     public static void checkEncounter(PlayerEntity player, Boss tag) {
@@ -126,7 +122,7 @@ public class BossPopulator extends Populator {
             return;
 
         if (tag.isSatisfied())
-            ScrollHelper.clearWeather((ServerWorld)player.world);
+            WorldHelper.clearWeather((ServerWorld)player.world);
     }
 
     private void fail(String message) {
@@ -178,7 +174,7 @@ public class BossPopulator extends Populator {
                 effects.add("water_breathing");
 
                 // try and add mob to the world, if fail then record the mob as killed
-                boolean didSpawn = ScrollHelper.spawnMobNearPos(world, pos, mobEntity, (mob, mobPos) -> {
+                boolean didSpawn = MobHelper.spawnMobNearPos(world, pos, mobEntity, (mob, mobPos) -> {
                     // set properties on the entity
                     mob.setPersistent();
 

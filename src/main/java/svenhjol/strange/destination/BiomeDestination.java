@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import svenhjol.charm.Charm;
-import svenhjol.strange.helper.RunestoneHelper;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.module.Runestones;
 
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ public class BiomeDestination extends Destination {
             return null;
         }
 
-        foundPos = RunestoneHelper.addRandomOffset(foundPos, random, 8);
+        foundPos = PosHelper.addRandomOffset(foundPos, random, 8);
         store(world, runePos, foundPos, player);
 
         return foundPos;
