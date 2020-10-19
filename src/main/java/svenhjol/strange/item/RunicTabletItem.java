@@ -41,7 +41,7 @@ public class RunicTabletItem extends TabletItem {
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
-        return UseAction.CROSSBOW;
+        return UseAction.BOW;
     }
 
     @Override
