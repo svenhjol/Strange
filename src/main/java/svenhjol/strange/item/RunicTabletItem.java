@@ -1,16 +1,15 @@
 package svenhjol.strange.item;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
@@ -35,13 +34,19 @@ public class RunicTabletItem extends TabletItem {
         if (pos == null)
             return TypedActionResult.fail(stack);
 
-        world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 1.0F, 1.15F);
-        return TypedActionResult.success(stack);
+        world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.75F, 1.2F);
+        user.setCurrentHand(hand);
+        return TypedActionResult.consume(stack);
     }
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
-        return UseAction.BOW;
+        return UseAction.CROSSBOW;
+    }
+
+    @Override
+    public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
+        return !miner.isCreative();
     }
 
     @Override
@@ -54,46 +59,50 @@ public class RunicTabletItem extends TabletItem {
         if (world.isClient)
             return;
 
-        ServerWorld serverWorld = (ServerWorld)world;
         BlockPos pos = TabletItem.getPos(stack);
         Identifier dimension = TabletItem.getDimension(stack);
-        RegistryKey<World> key = DimensionHelper.getDimension(dimension);
+        boolean exact = TabletItem.getExact(stack);
 
-        if (key == null) {
-            Charm.LOG.warn("Something bad happened with the dimension");
+        if (!DimensionHelper.isDimension(world, dimension))
             return;
-        }
 
         if (pos == null) {
             Charm.LOG.warn("Encoded position was null");
             return;
         }
 
-        ServerWorld destinationWorld = serverWorld.getServer().getWorld(key);
-        user.moveToWorld(destinationWorld);
+        if (!exact) {
+            // TODO: move to helper, this is shared with Runestone code
+            int surface = 0;
 
-        // TODO: move to helper, this is shared with Runestone code
-        int surface = 0;
-
-        for (int y = world.getHeight(); y >= 0; --y) {
-            BlockPos n = new BlockPos(pos.getX(), y, pos.getZ());
-            if (world.isAir(n) && !world.isAir(n.down())) {
-                surface = y;
-                break;
+            for (int y = world.getHeight(); y >= 0; --y) {
+                BlockPos n = new BlockPos(pos.getX(), y, pos.getZ());
+                if (world.isAir(n) && !world.isAir(n.down())) {
+                    surface = y;
+                    break;
+                }
             }
+
+            if (surface <= 0) {
+                Charm.LOG.warn("Failed to find a surface value to spawn the player");
+                return;
+            }
+
+            pos = new BlockPos(pos.getX(), surface, pos.getZ());
         }
 
-        if (surface <= 0) {
-            Charm.LOG.warn("Failed to find a surface value to spawn the player");
-            return;
-        }
-
-        user.teleport(pos.getX(), surface, pos.getZ());
+        user.teleport(pos.getX(), pos.getY(), pos.getZ(), true);
+        world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
         stack.damage(1, user, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
     }
 
     @Override
     public int getMaxUseTime(ItemStack stack) {
         return 40000;
+    }
+
+    @Override
+    public int getEnchantability() {
+        return 0;
     }
 }

@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 public abstract class TabletItem extends CharmItem {
     public static final String POS_TAG = "pos";
     public static final String DIMENSION_TAG = "dimension";
+    public static final String EXACT_TAG = "exact";
 
     public TabletItem(CharmModule module, String name, Item.Settings settings) {
         super(module, name, settings
@@ -20,17 +21,25 @@ public abstract class TabletItem extends CharmItem {
 
     @Nullable
     public static Identifier getDimension(ItemStack tablet) {
-        String string = tablet.getOrCreateTag().getString(DIMENSION_TAG);
-        return string == null ? null : new Identifier(string);
+        if (!tablet.getOrCreateTag().contains(DIMENSION_TAG))
+            return null;
+
+        return new Identifier(tablet.getOrCreateTag().getString(DIMENSION_TAG));
     }
 
     @Nullable
     public static BlockPos getPos(ItemStack tablet) {
-        long tag = tablet.getOrCreateTag().getLong(POS_TAG);
-        if (tag == 0)
+        if (!tablet.getOrCreateTag().contains(POS_TAG))
             return null;
 
-        return BlockPos.fromLong(tag);
+        return BlockPos.fromLong(tablet.getOrCreateTag().getLong(POS_TAG));
+    }
+
+    public static boolean getExact(ItemStack tablet) {
+        if (!tablet.getOrCreateTag().contains(EXACT_TAG))
+            return false;
+
+        return tablet.getOrCreateTag().getBoolean(EXACT_TAG);
     }
 
     public static void setDimension(ItemStack tablet, Identifier dimension) {
@@ -39,5 +48,9 @@ public abstract class TabletItem extends CharmItem {
 
     public static void setPos(ItemStack tablet, BlockPos pos) {
         tablet.getOrCreateTag().putLong(POS_TAG, pos.asLong());
+    }
+
+    public static void setExact(ItemStack tablet, boolean exact) {
+        tablet.getOrCreateTag().putBoolean(EXACT_TAG, exact);
     }
 }
