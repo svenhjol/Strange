@@ -1,12 +1,12 @@
 package svenhjol.strange.structure.ruin;
 
+import svenhjol.charm.base.structure.BaseStructure;
 import svenhjol.strange.Strange;
-import svenhjol.strange.structure.BasePiece;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BambiMountainsRuin extends BasePiece {
+public class BambiMountainsRuin extends BaseStructure {
     private final Map<String, Integer> ROOMS = new HashMap<>();
     private final Map<String, Integer> CORRIDORS = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();

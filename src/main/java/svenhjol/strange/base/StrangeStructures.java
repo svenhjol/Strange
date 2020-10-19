@@ -1,18 +1,25 @@
 package svenhjol.strange.base;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;
-import net.minecraft.structure.processor.BlockIgnoreStructureProcessor;
-import svenhjol.strange.helper.StructureHelper;
-import svenhjol.strange.structure.DataBlockProcessor;
-
-import java.util.Arrays;
+import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.structure.DataBlockProcessor;
+import svenhjol.strange.module.Excavation;
+import svenhjol.strange.module.Runestones;
 
 public class StrangeStructures {
     public static void init() {
-        StructureHelper.SINGLE_POOL_ELEMENT_PROCESSORS.addAll(Arrays.asList(
-            new BlockIgnoreStructureProcessor(ImmutableList.of(Blocks.GRAY_STAINED_GLASS)),
-            new DataBlockProcessor()
-        ));
+        DataBlockProcessor.callbacks.put("rubble", processor -> {
+            if (processor.random.nextFloat() < 0.9F)
+                processor.state = Excavation.ANCIENT_RUBBLE.getDefaultState();
+        });
+
+        DataBlockProcessor.callbacks.put("runestone", processor -> {
+            if (ModuleHandler.enabled("strange:runestones")
+                && processor.random.nextFloat() < 0.75F) {
+                processor.state = Runestones.RUNESTONE_BLOCKS.get(processor.random.nextInt(Runestones.numberOfRunes)).getDefaultState();
+            } else {
+                processor.state = Blocks.STONE.getDefaultState();
+            }
+        });
     }
 }

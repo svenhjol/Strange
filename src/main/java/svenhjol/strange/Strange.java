@@ -18,7 +18,6 @@ public class Strange implements ModInitializer {
         StrangeLoot.init();
 
         ModuleHandler.AVAILABLE_MODULES.put(Strange.MOD_ID, new ArrayList<>(Arrays.asList(
-            EntitySpawner.class,
             Excavation.class,
             Ruins.class,
             Runestones.class,

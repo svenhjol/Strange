@@ -100,7 +100,7 @@ public class Ruins extends CharmModule {
 
         FabricStructureBuilder.create(ANCIENT_RUIN_ID, ANCIENT_RUIN_FEATURE)
             .step(GenerationStep.Feature.UNDERGROUND_STRUCTURES)
-            .defaultConfig(96, 16, 4231521)
+            .defaultConfig(48, 24, 4231521)
             .register();
 
         // create configuredFeature objects for each jigsaw pool
@@ -139,18 +139,9 @@ public class Ruins extends CharmModule {
         // builds and registers all custom ruins into pools
         AncientRuinGenerator.init();
 
-        // TODO: method to add to all biomes
         if (!AncientRuinGenerator.OVERWORLD_RUINS.isEmpty()) {
-            addToBiome(BiomeHelper.BADLANDS, OVERWORLD);
-            addToBiome(BiomeHelper.DESERT, OVERWORLD);
-            addToBiome(BiomeHelper.FOREST, OVERWORLD);
-            addToBiome(BiomeHelper.JUNGLE, OVERWORLD);
             addToBiome(BiomeHelper.MOUNTAINS, OVERWORLD);
-            addToBiome(BiomeHelper.NETHER, OVERWORLD);
             addToBiome(BiomeHelper.PLAINS, OVERWORLD);
-            addToBiome(BiomeHelper.SAVANNA, OVERWORLD);
-            addToBiome(BiomeHelper.SNOWY, OVERWORLD);
-            addToBiome(BiomeHelper.TAIGA, OVERWORLD);
         }
     }
 
