@@ -51,8 +51,6 @@ public class BlankTabletItem extends TabletItem {
         TabletItem.setPos(tablet, pos);
         TabletItem.setExact(tablet, true);
 
-
-
         Optional<RegistryKey<Biome>> biomeKeyAtPosition = BiomeHelper.getBiomeKeyAtPosition((ServerWorld)world, pos);
         if (!biomeKeyAtPosition.isPresent()) {
             tablet.setCustomName(new TranslatableText("item.strange.runic_tablet"));
