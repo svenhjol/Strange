@@ -44,9 +44,7 @@ public class AncientRubbleBlock extends CharmBlock {
 
         ItemStack held = player.getStackInHand(Hand.MAIN_HAND);
 
-        if (held.getItem() instanceof ShovelItem
-            && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, held) > 0
-        ) {
+        if (held.getItem() instanceof ShovelItem && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, held) > 0 || player.isCreative()) {
             float chance = 0.05F;
 
             int efficiency = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, held);
@@ -56,7 +54,7 @@ public class AncientRubbleBlock extends CharmBlock {
             chance += (fortune * 0.1F);
             chance += (player.getLuck() * 0.1F);
 
-            if (world.random.nextFloat() < chance) {
+            if (world.random.nextFloat() < chance || player.isCreative()) {
                 dropTreasure(player, serverWorld, pos);
                 return;
             }
