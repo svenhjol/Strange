@@ -2,7 +2,6 @@ package svenhjol.strange.module;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -12,24 +11,21 @@ import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.structure.AncientRuinFeature;
-import svenhjol.strange.structure.AncientRuinGenerator;
 import svenhjol.strange.structure.RuinFeature;
 import svenhjol.strange.structure.RuinGenerator;
-import svenhjol.strange.structure.ancientruin.StoneRoomRuin;
-import svenhjol.strange.structure.ruin.*;
+import svenhjol.strange.structure.ruin.BambiMountainsRuin;
+import svenhjol.strange.structure.ruin.ForestRuin;
+import svenhjol.strange.structure.ruin.PlainsRuin;
 
-import java.util.List;
-
+import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
+import static svenhjol.charm.base.helper.StructureHelper.registerConfiguredFeature;
 import static svenhjol.strange.structure.RuinGenerator.*;
 
 @Module(mod = Strange.MOD_ID, description = "Underground ruins with different themes according to the biome.")
 public class Ruins extends CharmModule {
     public static final Identifier RUIN_ID = new Identifier(Strange.MOD_ID, "ruin");
-    public static final Identifier ANCIENT_RUIN_ID = new Identifier(Strange.MOD_ID, "ancient_ruin");
 
     public static StructureFeature<StructurePoolFeatureConfig> RUIN_FEATURE;
-    public static StructureFeature<StructurePoolFeatureConfig> ANCIENT_RUIN_FEATURE;
 
     public static ConfiguredStructureFeature<?, ?> BADLANDS;
     public static ConfiguredStructureFeature<?, ?> DESERT;
@@ -42,23 +38,17 @@ public class Ruins extends CharmModule {
     public static ConfiguredStructureFeature<?, ?> SNOWY;
     public static ConfiguredStructureFeature<?, ?> TAIGA;
 
-    public static ConfiguredStructureFeature<?, ?> OVERWORLD;
-
     @Config(name = "Ruin size", description = "Size of the generated ruins. For reference, villages are 6.")
     public static int ruinSize = 6;
-
-    public static int ancientRuinSize = 2;
 
     @Override
     public void register() {
         registerRuins();
-        registerAncientRuins();
     }
 
     @Override
     public void init() {
         initRuins();
-        initAncientRuins();
     }
 
     private void registerRuins() {
@@ -83,31 +73,16 @@ public class Ruins extends CharmModule {
         TAIGA       = RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> TAIGA_POOL, ruinSize));
 
         // register each configuredFeature with MC registry against the RUIN_STRUCTURE
-        registerConfiguredFeature("ruin_badlands", BADLANDS);
-        registerConfiguredFeature("ruin_desert", DESERT);
-        registerConfiguredFeature("ruin_forest", FOREST);
-        registerConfiguredFeature("ruin_jungle", JUNGLE);
-        registerConfiguredFeature("ruin_mountains", MOUNTAINS);
-        registerConfiguredFeature("ruin_nether", NETHER);
-        registerConfiguredFeature("ruin_plains", PLAINS);
-        registerConfiguredFeature("ruin_savanna", SAVANNA);
-        registerConfiguredFeature("ruin_snowy", SNOWY);
-        registerConfiguredFeature("ruin_taiga", TAIGA);
-    }
-
-    private void registerAncientRuins() {
-        ANCIENT_RUIN_FEATURE = new AncientRuinFeature(StructurePoolFeatureConfig.CODEC);
-
-        FabricStructureBuilder.create(ANCIENT_RUIN_ID, ANCIENT_RUIN_FEATURE)
-            .step(GenerationStep.Feature.UNDERGROUND_STRUCTURES)
-            .defaultConfig(48, 24, 4231521)
-            .register();
-
-        // create configuredFeature objects for each jigsaw pool
-        OVERWORLD = ANCIENT_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> AncientRuinGenerator.OVERWORLD_POOL, ancientRuinSize));
-
-        // register each configuredFeature with MC registry against the ANCIENT_RUIN_STRUCTURE
-        registerConfiguredFeature("ancient_ruin_overworld", OVERWORLD);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_badlands"), BADLANDS);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_desert"), DESERT);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_forest"), FOREST);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_jungle"), JUNGLE);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_mountains"), MOUNTAINS);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_nether"), NETHER);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_plains"), PLAINS);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_savanna"), SAVANNA);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_snowy"), SNOWY);
+        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_taiga"), TAIGA);
     }
 
     private void initRuins() {
@@ -130,27 +105,5 @@ public class Ruins extends CharmModule {
         if (!RuinGenerator.SAVANNA_RUINS.isEmpty()) addToBiome(BiomeHelper.SAVANNA, SAVANNA);
         if (!RuinGenerator.SNOWY_RUINS.isEmpty()) addToBiome(BiomeHelper.SNOWY, SNOWY);
         if (!RuinGenerator.TAIGA_RUINS.isEmpty()) addToBiome(BiomeHelper.TAIGA, TAIGA);
-    }
-
-    private void initAncientRuins() {
-        // register all custom overworld ancient ruins here
-        AncientRuinGenerator.OVERWORLD_RUINS.add(new StoneRoomRuin());
-
-        // builds and registers all custom ruins into pools
-        AncientRuinGenerator.init();
-
-        if (!AncientRuinGenerator.OVERWORLD_RUINS.isEmpty()) {
-            addToBiome(BiomeHelper.MOUNTAINS, OVERWORLD);
-            addToBiome(BiomeHelper.PLAINS, OVERWORLD);
-        }
-    }
-
-    private void registerConfiguredFeature(String id, ConfiguredStructureFeature<?, ?> configuredFeature) {
-        BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, new Identifier(Strange.MOD_ID, id), configuredFeature);
-    }
-
-    private void addToBiome(List<String> biomeGroup, ConfiguredStructureFeature<?, ?> configuredFeature) {
-        biomeGroup.forEach(id -> BuiltinRegistries.BIOME.getOrEmpty(new Identifier(id))
-            .ifPresent(biome -> BiomeHelper.addStructureFeature(biome, configuredFeature)));
     }
 }
