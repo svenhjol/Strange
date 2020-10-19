@@ -13,6 +13,8 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -44,7 +46,7 @@ public class AncientRubbleBlock extends CharmBlock {
 
         ItemStack held = player.getStackInHand(Hand.MAIN_HAND);
 
-        if (held.getItem() instanceof ShovelItem && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, held) > 0 || player.isCreative()) {
+        if ((held.getItem() instanceof ShovelItem && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, held) > 0) || player.isCreative()) {
             float chance = 0.05F;
 
             int efficiency = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, held);
@@ -52,7 +54,7 @@ public class AncientRubbleBlock extends CharmBlock {
 
             chance += (efficiency * 0.01F);
             chance += (fortune * 0.1F);
-            chance += (player.getLuck() * 0.1F);
+            chance += (player.getLuck() * 0.16F);
 
             if (world.random.nextFloat() < chance || player.isCreative()) {
                 dropTreasure(player, serverWorld, pos);
@@ -77,6 +79,7 @@ public class AncientRubbleBlock extends CharmBlock {
             .build(LootContextTypes.CHEST));
 
         if (!list.isEmpty()) {
+            world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 0.8F);
             drop(world, pos, list.get(rand.nextInt(list.size())));
         } else {
             Charm.LOG.warn("Could not get item from loot table");
@@ -85,6 +88,7 @@ public class AncientRubbleBlock extends CharmBlock {
     }
 
     private void drop(ServerWorld world, BlockPos pos, ItemStack stack) {
+        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.8F);
         ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, stack);
         world.spawnEntity(entity);
     }
