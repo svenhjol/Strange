@@ -43,7 +43,6 @@ public class AncientRubbleBlock extends CharmBlock {
             return;
 
         ServerWorld serverWorld = (ServerWorld)world;
-
         ItemStack held = player.getStackInHand(Hand.MAIN_HAND);
 
         if ((held.getItem() instanceof ShovelItem && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, held) > 0) || player.isCreative()) {
