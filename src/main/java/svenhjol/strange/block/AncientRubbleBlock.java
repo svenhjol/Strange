@@ -169,24 +169,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
         if (list.isEmpty())
             return false;
 
-        // each possible loot pool beyond the main one is increasingly unlikely
-        ItemStack stack = null;
-        float chance = 0.75F;
-
-        for (int i = 2; i <= list.size(); i++) {
-            if (random.nextFloat() < (chance / i)) {
-                stack = list.get(i - 1);
-                break;
-            }
-        }
-
-        // if a loot pool > 0 is not found, then fetch an item from the main pool
-        if (stack == null)
-            stack = list.get(0);
-
-        if (stack.isEmpty())
-            return false;
-
+        ItemStack stack = list.get(random.nextInt(list.size()));
         rubble.setItemStack(stack);
         rubble.markDirty();
         rubble.sync();
