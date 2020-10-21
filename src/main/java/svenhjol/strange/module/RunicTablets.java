@@ -14,6 +14,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.DecorationHelper;
+import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
@@ -53,6 +55,9 @@ public class RunicTablets extends CharmModule {
     @Override
     public void init() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
+
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.TABLET);
+        DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.TABLET);
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
@@ -62,7 +67,7 @@ public class RunicTablets extends CharmModule {
         // TODO: foundations loot
 
         if (addRunicTabletsToLoot || addBlankTabletsToLoot) {
-            if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
+            if (id.equals(StrangeLoot.TABLET)) {
                 FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                     .rolls(ConstantLootTableRange.create(1))
                     .with(ItemEntry.builder(Items.AIR)
