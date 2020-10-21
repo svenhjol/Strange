@@ -90,13 +90,17 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
             if (!world.isClient) {
                 ServerWorld serverWorld = (ServerWorld) world;
 
+                if (random.nextFloat() < 0.6F)
+                    return ActionResult.PASS;
+
                 // get the block entity
                 AncientRubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
                 if (rubble == null)
                     return fail(serverWorld, pos);
 
-                if (random.nextFloat() < 0.6F)
-                    return ActionResult.PASS;
+                // is block supported underneath?
+                if (!world.getBlockState(pos.down()).isOpaque())
+                    return fail(serverWorld, pos);
 
                 // populate for first time
                 if (level == 0 && !populate((ServerWorld) world, pos, player))
