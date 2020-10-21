@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.PosHelper;
 
 public class RunicTabletItem extends TabletItem {
     public RunicTabletItem(CharmModule module, String name) {
@@ -72,23 +73,9 @@ public class RunicTabletItem extends TabletItem {
         }
 
         if (!exact) {
-            // TODO: move to helper, this is shared with Runestone code
-            int surface = 0;
-
-            for (int y = world.getHeight(); y >= 0; --y) {
-                BlockPos n = new BlockPos(pos.getX(), y, pos.getZ());
-                if (world.isAir(n) && !world.isAir(n.down())) {
-                    surface = y;
-                    break;
-                }
-            }
-
-            if (surface <= 0) {
-                Charm.LOG.warn("Failed to find a surface value to spawn the player");
+            pos = PosHelper.getSurfacePos(world, pos);
+            if (pos == null)
                 return;
-            }
-
-            pos = new BlockPos(pos.getX(), surface, pos.getZ());
         }
 
         user.teleport(pos.getX(), pos.getY(), pos.getZ(), true);
