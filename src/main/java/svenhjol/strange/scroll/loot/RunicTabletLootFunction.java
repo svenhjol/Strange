@@ -34,6 +34,9 @@ public class RunicTabletLootFunction extends ConditionalLootFunction {
     }
 
     private ItemStack tryCreateRunicTablet(ItemStack stack, LootContext context) {
+        if (!RunicTablets.addRunicTabletsToLoot)
+            return stack;
+
         if (!DimensionHelper.isOverworld(context.getWorld()))
             return stack;
 

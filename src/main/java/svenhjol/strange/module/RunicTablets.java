@@ -61,24 +61,15 @@ public class RunicTablets extends CharmModule {
 
         // TODO: foundations loot
 
-        if (addRunicTabletsToLoot) {
+        if (addRunicTabletsToLoot || addBlankTabletsToLoot) {
             if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
                 FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                     .rolls(ConstantLootTableRange.create(1))
-                    .with(ItemEntry.builder(Items.CLAY_BALL)
+                    .with(ItemEntry.builder(Items.AIR)
                         .weight(20)
-                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
-
-                supplier.pool(builder);
-            }
-        }
-
-        if (addBlankTabletsToLoot) {
-            if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
-                FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                    .rolls(ConstantLootTableRange.create(1))
-                    .with(ItemEntry.builder(Items.CLAY_BALL)
-                        .weight(2)
+                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])))
+                    .with(ItemEntry.builder(Items.AIR)
+                        .weight(10)
                         .apply(() -> new BlankTabletLootFunction(new LootCondition[0])));
 
                 supplier.pool(builder);

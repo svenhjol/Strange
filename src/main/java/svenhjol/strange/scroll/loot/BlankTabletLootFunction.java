@@ -25,6 +25,9 @@ public class BlankTabletLootFunction extends ConditionalLootFunction {
     }
 
     private ItemStack tryCreateBlankTablet(ItemStack stack, LootContext context) {
+        if (!RunicTablets.addBlankTabletsToLoot)
+            return stack;
+
         return new ItemStack(RunicTablets.BLANK_TABLET);
     }
 
