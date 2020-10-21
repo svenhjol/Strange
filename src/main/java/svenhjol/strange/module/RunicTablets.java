@@ -79,7 +79,7 @@ public class RunicTablets extends CharmModule {
                     .rolls(ConstantLootTableRange.create(1))
                     .with(ItemEntry.builder(Items.CLAY_BALL)
                         .weight(2)
-                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
+                        .apply(() -> new BlankTabletLootFunction(new LootCondition[0])));
 
                 supplier.pool(builder);
             }
