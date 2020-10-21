@@ -27,6 +27,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
@@ -273,27 +274,14 @@ public class Runestones extends CharmModule {
             playerTeleportPos.remove(uid);
 
             World world = player.world;
-            int surface = 0;
-
-            for (int y = world.getHeight(); y >= 0; --y) {
-                BlockPos n = new BlockPos(destPos.getX(), y, destPos.getZ());
-                if (world.isAir(n) && !world.isAir(n.down())) {
-                    surface = y;
-                    break;
-                }
-            }
-
-            if (surface <= 0) {
-                Charm.LOG.warn("Failed to find a surface value to spawn the player");
-                return;
-            }
+            BlockPos surfacePos = PosHelper.getSurfacePos(world, destPos);
 
             int duration = protectionDuration * 20;
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, duration, 2));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, duration, 2));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, duration, 2));
 
-            player.teleport(destPos.getX(), surface, destPos.getZ());
+            player.teleport(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
             WorldHelper.removeForcedChunk((ServerWorld)player.world, destPos);
         }
     }

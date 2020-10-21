@@ -1,8 +1,23 @@
 {
     "variants": {
-        "facing=north": { "model": "strange:block/writing_desk" },
-        "facing=south": { "model": "strange:block/writing_desk", "y": 180 },
-        "facing=west":  { "model": "strange:block/writing_desk", "y": 270 },
-        "facing=east":  { "model": "strange:block/writing_desk", "y": 90 }
+        "facing=north,variant=0": { "model": "strange:block/writing_desk/writing_desk_variant0" },
+        "facing=south,variant=0": { "model": "strange:block/writing_desk/writing_desk_variant0", "y": 180 },
+        "facing=west,variant=0":  { "model": "strange:block/writing_desk/writing_desk_variant0", "y": 270 },
+        "facing=east,variant=0":  { "model": "strange:block/writing_desk/writing_desk_variant0", "y": 90 },
+
+        "facing=north,variant=1": { "model": "strange:block/writing_desk/writing_desk_variant1" },
+        "facing=south,variant=1": { "model": "strange:block/writing_desk/writing_desk_variant1", "y": 180 },
+        "facing=west,variant=1":  { "model": "strange:block/writing_desk/writing_desk_variant1", "y": 270 },
+        "facing=east,variant=1":  { "model": "strange:block/writing_desk/writing_desk_variant1", "y": 90 },
+
+        "facing=north,variant=2": { "model": "strange:block/writing_desk/writing_desk_variant2" },
+        "facing=south,variant=2": { "model": "strange:block/writing_desk/writing_desk_variant2", "y": 180 },
+        "facing=west,variant=2":  { "model": "strange:block/writing_desk/writing_desk_variant2", "y": 270 },
+        "facing=east,variant=2":  { "model": "strange:block/writing_desk/writing_desk_variant2", "y": 90 },
+
+        "facing=north,variant=3": { "model": "strange:block/writing_desk/writing_desk_variant3" },
+        "facing=south,variant=3": { "model": "strange:block/writing_desk/writing_desk_variant3", "y": 180 },
+        "facing=west,variant=3":  { "model": "strange:block/writing_desk/writing_desk_variant3", "y": 270 },
+        "facing=east,variant=3":  { "model": "strange:block/writing_desk/writing_desk_variant3", "y": 90 }
     }
 }

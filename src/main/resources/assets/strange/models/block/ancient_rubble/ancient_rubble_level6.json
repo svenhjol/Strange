@@ -1,0 +1,17 @@
+{
+  "parent": "strange:block/ancient_rubble/ancient_rubble_level0",
+  "elements": [
+    {
+      "from": [ 0, 0, 0 ],
+      "to": [ 16, 6, 16 ],
+      "faces": {
+        "north": { "texture": "#side" },
+        "east": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west": { "texture": "#side" },
+        "up": { "texture": "#end" },
+        "down": { "texture": "#end" }
+      }
+    }
+  ]
+}
