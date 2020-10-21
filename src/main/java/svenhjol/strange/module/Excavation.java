@@ -6,8 +6,10 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.block.AncientRubbleBlock;
 import svenhjol.strange.blockentity.AncientRubbleBlockEntity;
 import svenhjol.strange.client.ExcavationClient;
@@ -32,5 +34,10 @@ public class Excavation extends CharmModule {
     public void clientRegister() {
         client = new ExcavationClient(this);
         BlockRenderLayerMap.INSTANCE.putBlock(ANCIENT_RUBBLE, RenderLayer.getCutout());
+    }
+
+    @Override
+    public void init() {
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.ANCIENT_RUBBLE);
     }
 }

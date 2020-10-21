@@ -14,8 +14,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.structure.RuinFeature;
 import svenhjol.strange.structure.RuinGenerator;
 import svenhjol.strange.structure.ruin.BambiMountainsRuin;
-import svenhjol.strange.structure.ruin.ForestRuin;
-import svenhjol.strange.structure.ruin.PlainsRuin;
 
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
 import static svenhjol.charm.base.helper.StructureHelper.registerConfiguredFeature;
@@ -88,8 +86,8 @@ public class Ruins extends CharmModule {
     private void initRuins() {
         // register all custom ruins here
         RuinGenerator.MOUNTAINS_RUINS.add(new BambiMountainsRuin());
-        RuinGenerator.FOREST_RUINS.add(new ForestRuin());
-        RuinGenerator.PLAINS_RUINS.add(new PlainsRuin());
+//        RuinGenerator.FOREST_RUINS.add(new ForestRuin());
+//        RuinGenerator.PLAINS_RUINS.add(new PlainsRuin());
 
         // builds and registers all custom ruins into pools
         RuinGenerator.init();
