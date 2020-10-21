@@ -5,6 +5,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -17,8 +18,10 @@ import svenhjol.charm.base.block.CharmBlock;
 import svenhjol.strange.module.Scrollkeepers;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class WritingDeskBlock extends CharmBlock {
+    public static final IntProperty VARIANT = IntProperty.of("variant", 0, 3);
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final VoxelShape TOP;
     public static final VoxelShape LEGS;
@@ -27,6 +30,7 @@ public class WritingDeskBlock extends CharmBlock {
 
     public WritingDeskBlock(CharmModule module) {
         super(module, Scrollkeepers.BLOCK_ID.getPath(), AbstractBlock.Settings.copy(Blocks.CARTOGRAPHY_TABLE));
+        this.setDefaultState(getDefaultState().with(VARIANT, 0));
     }
 
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -40,7 +44,9 @@ public class WritingDeskBlock extends CharmBlock {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+        return this.getDefaultState()
+            .with(FACING, ctx.getPlayerFacing().getOpposite())
+            .with(VARIANT, new Random().nextInt(4));
     }
 
     public BlockState rotate(BlockState state, BlockRotation rotation) {
@@ -58,9 +64,8 @@ public class WritingDeskBlock extends CharmBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, VARIANT);
     }
-
 
     static {
         TOP = Block.createCuboidShape(0.0D, 13.0D, 0.0D, 16.0D, 13.0D, 16.0D);
