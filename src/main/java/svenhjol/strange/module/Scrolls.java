@@ -39,7 +39,7 @@ import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.scroll.JsonDefinition;
 import svenhjol.strange.scroll.QuestManager;
-import svenhjol.strange.scroll.loot.ScrollLootFunction;
+import svenhjol.strange.loot.ScrollLootFunction;
 import svenhjol.strange.scroll.tag.Quest;
 
 import javax.annotation.Nullable;

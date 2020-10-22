@@ -1,17 +1,17 @@
-package svenhjol.strange.legendaryitems;
+package svenhjol.strange.legendary.items;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.iface.ILegendaryItem;
+import svenhjol.strange.iface.ILegendaryTool;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EldritchBow implements ILegendaryItem {
+public class EldritchBow implements ILegendaryTool {
 
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
@@ -27,15 +27,13 @@ public class EldritchBow implements ILegendaryItem {
     }
 
     @Override
-    public ItemStack getItemStack() {
-        return new ItemStack(Items.BOW);
+    public TranslatableText getName(ItemStack itemStack) {
+        return new TranslatableText("item.strange.legendary.eldritch_bow");
     }
 
     @Override
-    public ItemStack getTreasureItem() {
-        ItemStack itemStack = getItemStack();
-        itemStack.setCustomName(new TranslatableText("item.strange.legendary.eldritch_bow"));
-        return itemStack;
+    public ItemStack getItemStack() {
+        return new ItemStack(Items.BOW);
     }
 
     @Override

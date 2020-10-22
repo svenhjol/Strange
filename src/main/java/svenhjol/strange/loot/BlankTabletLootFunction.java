@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll.loot;
+package svenhjol.strange.loot;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -33,7 +33,7 @@ public class BlankTabletLootFunction extends ConditionalLootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return RunicTablets.RUNIC_TABLET_LOOT_FUNCTION;
+        return RunicTablets.BLANK_TABLET_LOOT_FUNCTION;
     }
 
     public static class Serializer extends ConditionalLootFunction.Serializer<BlankTabletLootFunction> {

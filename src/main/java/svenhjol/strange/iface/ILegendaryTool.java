@@ -1,6 +1,7 @@
 package svenhjol.strange.iface;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -9,12 +10,18 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 
-public interface ILegendaryItem {
+public interface ILegendaryTool {
     List<String> getValidEnchantments();
 
     ItemStack getItemStack();
 
     int getMaxAdditionalLevels();
+
+    default TranslatableText getName(ItemStack itemStack) {
+        int i = new Random().nextInt(16) + 1;
+        Text word = new TranslatableText("legendary.strange.tool.adjective" + i);
+        return new TranslatableText("item.strange.legendary", word, itemStack.getName());
+    }
 
     default Map<Enchantment, Integer> getEnchantments() {
         List<String> validEnchantments = getValidEnchantments();
@@ -33,12 +40,17 @@ public interface ILegendaryItem {
         return map;
     }
 
-    default ItemStack getTreasureItem() {
-        ItemStack treasure = getItemStack();
-        int i = new Random().nextInt(16) + 1;
+    default ItemStack getTreasureItemStack() {
+        ItemStack itemStack = getItemStack();
 
-        Text word = new TranslatableText("legendary.strange.word" + i);
-        treasure.setCustomName(new TranslatableText("item.strange.legendary", word, treasure.getName()));
-        return treasure;
+        // apply custom name
+        itemStack.setCustomName(getName(itemStack));
+
+        // apply the enchantments
+        EnchantmentHelper.set(getEnchantments(), itemStack);
+
+        // TODO: color glint
+
+        return itemStack;
     }
 }

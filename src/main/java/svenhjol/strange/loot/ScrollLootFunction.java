@@ -1,4 +1,4 @@
-package svenhjol.strange.scroll.loot;
+package svenhjol.strange.loot;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

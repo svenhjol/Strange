@@ -23,8 +23,8 @@ import svenhjol.strange.item.BlankTabletItem;
 import svenhjol.strange.item.ClayTabletItem;
 import svenhjol.strange.item.RunicTabletItem;
 import svenhjol.strange.item.TabletItem;
-import svenhjol.strange.scroll.loot.BlankTabletLootFunction;
-import svenhjol.strange.scroll.loot.RunicTabletLootFunction;
+import svenhjol.strange.loot.BlankTabletLootFunction;
+import svenhjol.strange.loot.RunicTabletLootFunction;
 
 @Module(mod = Strange.MOD_ID)
 public class RunicTablets extends CharmModule {
@@ -63,8 +63,6 @@ public class RunicTablets extends CharmModule {
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
         if (!ModuleHandler.enabled("strange:excavation"))
             return;
-
-        // TODO: foundations loot
 
         if (addRunicTabletsToLoot || addBlankTabletsToLoot) {
             if (id.equals(StrangeLoot.TABLET)) {
