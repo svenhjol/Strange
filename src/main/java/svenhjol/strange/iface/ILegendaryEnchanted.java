@@ -10,17 +10,21 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 
-public interface ILegendaryTool {
+public interface ILegendaryEnchanted {
     List<String> getValidEnchantments();
 
     ItemStack getItemStack();
 
     int getMaxAdditionalLevels();
 
+    default boolean damaged() {
+        return true;
+    }
+
     default TranslatableText getName(ItemStack itemStack) {
         int i = new Random().nextInt(16) + 1;
-        Text word = new TranslatableText("legendary.strange.tool.adjective" + i);
-        return new TranslatableText("item.strange.legendary", word, itemStack.getName());
+        Text word = new TranslatableText("item.strange.legendary.enchanted.adjective" + i);
+        return new TranslatableText("item.strange.legendary.enchanted", word, itemStack.getName());
     }
 
     default Map<Enchantment, Integer> getEnchantments() {

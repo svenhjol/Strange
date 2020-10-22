@@ -169,7 +169,14 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
         if (list.isEmpty())
             return false;
 
-        ItemStack stack = list.get(random.nextInt(list.size()));
+        // always prefer custom loot tables
+        ItemStack stack;
+        if (random.nextFloat() < 0.35F) {
+            stack = list.get(0);
+        } else {
+            stack = list.get(random.nextInt(list.size() - 1) + 1);
+        }
+
         rubble.setItemStack(stack);
         rubble.markDirty();
         rubble.sync();

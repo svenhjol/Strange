@@ -5,13 +5,13 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
-import svenhjol.strange.iface.ILegendaryTool;
+import svenhjol.strange.iface.ILegendaryEnchanted;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EldritchBow implements ILegendaryTool {
+public class EldritchBow implements ILegendaryEnchanted {
 
     @Override
     public Map<Enchantment, Integer> getEnchantments() {

@@ -20,10 +20,9 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.iface.ILegendaryPotion;
-import svenhjol.strange.iface.ILegendaryTool;
-import svenhjol.strange.legendary.items.AmbitiousCrossbow;
-import svenhjol.strange.legendary.items.EldritchBow;
-import svenhjol.strange.legendary.potions.Luck;
+import svenhjol.strange.iface.ILegendaryEnchanted;
+import svenhjol.strange.legendary.items.*;
+import svenhjol.strange.legendary.potions.LegendaryPotion;
 import svenhjol.strange.loot.LegendaryItemLootFunction;
 
 import java.util.HashMap;
@@ -34,17 +33,28 @@ public class LegendaryItems extends CharmModule {
     public static final Identifier LEGENDARY_ITEMS_LOOT_ID = new Identifier(Strange.MOD_ID, "legendary_items_loot");
     public static LootFunctionType LEGENDARY_ITEMS_LOOT_FUNCTION;
 
-    public static Map<Integer, ILegendaryTool> LEGENDARY_TOOLS = new HashMap<>();
-    public static Map<Integer, ILegendaryPotion> LEGENDARY_POTIONS = new HashMap<>();
+    public static Map<ILegendaryEnchanted, Integer> LEGENDARY_ENCHANTED = new HashMap<>();
+    public static Map<ILegendaryPotion, Integer> LEGENDARY_POTIONS = new HashMap<>();
 
     private Identifier lootTable;
 
     @Override
     public void register() {
         // TODO: config to enable/disable each item/group
-        LEGENDARY_TOOLS.put(1, new AmbitiousCrossbow());
-        LEGENDARY_TOOLS.put(1, new EldritchBow());
-        LEGENDARY_POTIONS.put(1, new Luck());
+        LEGENDARY_ENCHANTED.put(new LegendaryAxe(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryBoots(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendaryBow(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryChestplate(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendaryCrossbow(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryHelmet(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendaryLeggings(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendarySword(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryTrident(), 5);
+        LEGENDARY_ENCHANTED.put(new AngeryPotato(), 1);
+        LEGENDARY_ENCHANTED.put(new AmbitiousCrossbow(), 1);
+        LEGENDARY_ENCHANTED.put(new EldritchBow(), 1);
+
+        LEGENDARY_POTIONS.put(new LegendaryPotion(), 1);
 
         LEGENDARY_ITEMS_LOOT_FUNCTION = new LootFunctionType(new LegendaryItemLootFunction.Serializer());
         Registry.register(Registry.LOOT_FUNCTION_TYPE, LEGENDARY_ITEMS_LOOT_ID, LEGENDARY_ITEMS_LOOT_FUNCTION);

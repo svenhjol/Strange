@@ -25,12 +25,10 @@ public interface ILegendaryPotion {
 
     int getMaxAmplifier();
 
-    default TranslatableText getName(StatusEffectInstance effectInstance) {
+    default TranslatableText getName() {
         int i = new Random().nextInt(16) + 1;
         Text word = new TranslatableText("item.strange.legendary.potion.adjective" + i);
-
-        TranslatableText effectText = new TranslatableText(effectInstance.getTranslationKey());
-        return new TranslatableText("item.strange.legendary", word, effectText);
+        return new TranslatableText("item.strange.legendary.potion", word);
     }
 
     default List<StatusEffectInstance> getEffects() {
@@ -56,13 +54,11 @@ public interface ILegendaryPotion {
     default ItemStack getTreasurePotion() {
         ItemStack bottle = PotionHelper.getFilledWaterBottle();
 
-        List<StatusEffectInstance> effects = getEffects();
-
         // apply effects
         PotionUtil.setCustomPotionEffects(bottle, getEffects());
 
         // apply custom name
-        bottle.setCustomName(getName(effects.get(0)));
+        bottle.setCustomName(getName());
 
         return bottle;
     }

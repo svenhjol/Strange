@@ -9,7 +9,7 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.iface.ILegendaryPotion;
-import svenhjol.strange.iface.ILegendaryTool;
+import svenhjol.strange.iface.ILegendaryEnchanted;
 import svenhjol.strange.module.LegendaryItems;
 
 import java.util.ArrayList;
@@ -32,23 +32,24 @@ public class LegendaryItemLootFunction extends ConditionalLootFunction {
 
     private ItemStack tryCreateLegendaryItem(ItemStack stack, LootContext context) {
 
-        Map<Integer, ILegendaryTool> items = LegendaryItems.LEGENDARY_TOOLS;
-        Map<Integer, ILegendaryPotion> potions = LegendaryItems.LEGENDARY_POTIONS;
+        Map<ILegendaryEnchanted, Integer> items = LegendaryItems.LEGENDARY_ENCHANTED;
+        Map<ILegendaryPotion, Integer> potions = LegendaryItems.LEGENDARY_POTIONS;
         ItemStack itemStack;
 
-        if (false) {
-            List<ILegendaryTool> weighted = new ArrayList<>();
+        // prefer items over potions
+        if (context.getRandom().nextFloat() < 0.66F) {
+            List<ILegendaryEnchanted> weighted = new ArrayList<>();
 
             if (items.isEmpty())
                 return stack;
 
-            items.forEach((weight, item) -> {
+            items.forEach((item, weight) -> {
                 for (int i = 0; i < weight; i++) {
                     weighted.add(item); // this is so dumb but I'm too tired to implement a better weighted list
                 }
             });
 
-            ILegendaryTool item = weighted.get(context.getRandom().nextInt(weighted.size()));
+            ILegendaryEnchanted item = weighted.get(context.getRandom().nextInt(weighted.size()));
             itemStack = item.getTreasureItemStack();
 
         } else {
@@ -57,9 +58,9 @@ public class LegendaryItemLootFunction extends ConditionalLootFunction {
             if (potions.isEmpty())
                 return stack;
 
-            potions.forEach((weight, item) -> {
+            potions.forEach((potion, weight) -> {
                 for (int i = 0; i < weight; i++) {
-                    weighted.add(item); // this is so dumb but I'm too tired to implement a better weighted list
+                    weighted.add(potion); // this is so dumb but I'm too tired to implement a better weighted list
                 }
             });
 
