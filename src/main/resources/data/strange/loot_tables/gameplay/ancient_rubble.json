@@ -6,53 +6,55 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 5,
-          "name": "minecraft:iron_shovel",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "min": 5,
-                "max": 15
-              },
-              "treasure": true
-            },
-            {
-              "function": "minecraft:set_damage",
-              "damage": {
-                "min": 0.2,
-                "max": 0.9
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
           "name": "minecraft:diamond_ore"
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
-          "name": "minecraft:iron_shovel",
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly",
-              "enchantments": [
-                "minecraft:efficiency",
-                "minecraft:looting",
-                "minecraft:silk_touch"
-              ]
-            },
-            {
-              "function": "minecraft:set_name",
-              "entity": "this",
-              "name": {
-                "text": "Treasure Hunter's Shovel",
-                "translate": "item.strange.treasure_shovel"
-              }
-            }
-          ]
+          "name": "minecraft:gold_ore"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald_ore"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:enchanted_golden_apple"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:clay_ball"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:brick"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:glass_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bone"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bowl"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:flint"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:charcoal"
         }
       ]
     }
