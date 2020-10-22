@@ -56,7 +56,6 @@ public class AncientRubbleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         tag.putLong(LEVELTICKS_TAG, levelTicks);
-
         return tag;
     }
 
