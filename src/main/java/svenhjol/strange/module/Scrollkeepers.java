@@ -26,12 +26,12 @@ import svenhjol.charm.base.helper.VillagerHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.block.WritingDeskBlock;
 import svenhjol.strange.client.ScrollKeepersClient;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
-import svenhjol.strange.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.scroll.tag.Quest;
 import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 

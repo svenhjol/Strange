@@ -40,8 +40,8 @@ import svenhjol.strange.blockentity.RunestoneBlockEntity;
 import svenhjol.strange.destination.BiomeDestination;
 import svenhjol.strange.destination.Destination;
 import svenhjol.strange.destination.StructureDestination;
-import svenhjol.strange.event.PlayerLoadDataCallback;
-import svenhjol.strange.event.PlayerSaveDataCallback;
+import svenhjol.charm.event.PlayerLoadDataCallback;
+import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.strange.helper.RunestoneHelper;
 
 import java.io.File;
