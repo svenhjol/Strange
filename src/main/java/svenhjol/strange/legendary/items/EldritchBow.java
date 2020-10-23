@@ -5,6 +5,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import svenhjol.strange.iface.ILegendaryEnchanted;
 
 import java.util.HashMap;
@@ -12,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 public class EldritchBow implements ILegendaryEnchanted {
+    @Override
+    public DyeColor getColor() {
+        return DyeColor.BLACK;
+    }
 
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
