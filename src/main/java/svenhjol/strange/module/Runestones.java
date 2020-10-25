@@ -102,7 +102,7 @@ public class Runestones extends CharmModule {
             RUNESTONE_BLOCKS.add(new RunestoneBlock(this, i));
         }
 
-        RegistryHandler.blockEntity(ID, RunestoneBlockEntity::new);
+        BLOCK_ENTITY = RegistryHandler.blockEntity(ID, RunestoneBlockEntity::new);
     }
 
     @Override

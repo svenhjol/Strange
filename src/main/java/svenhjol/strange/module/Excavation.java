@@ -25,8 +25,7 @@ public class Excavation extends CharmModule {
     @Override
     public void register() {
         ANCIENT_RUBBLE = new AncientRubbleBlock(this);
-
-        RegistryHandler.blockEntity(ID, AncientRubbleBlockEntity::new, ANCIENT_RUBBLE);
+        BLOCK_ENTITY = RegistryHandler.blockEntity(ID, AncientRubbleBlockEntity::new, ANCIENT_RUBBLE);
     }
 
     @Override
