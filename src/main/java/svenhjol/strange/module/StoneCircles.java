@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -12,6 +11,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
@@ -49,18 +49,15 @@ public class StoneCircles extends CharmModule {
 
     @Override
     public void register() {
-        STONE_CIRCLE_PIECE = StoneCircleGenerator::new;
         STONE_CIRCLE_STRUCTURE = new StoneCircleFeature(DefaultFeatureConfig.CODEC);
-        STONE_CIRCLE = STONE_CIRCLE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
-
-        Registry.register(Registry.STRUCTURE_PIECE, PIECE_ID, STONE_CIRCLE_PIECE);
+        STONE_CIRCLE_PIECE = RegistryHandler.structurePiece(PIECE_ID, StoneCircleGenerator::new);
 
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE)
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
             .defaultConfig(spacing, 8, 515122)
             .register();
 
-        BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_ID, STONE_CIRCLE);
+        STONE_CIRCLE = RegistryHandler.configuredFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT));
 
         enabled = ModuleHandler.enabled("strange:runestones");
     }

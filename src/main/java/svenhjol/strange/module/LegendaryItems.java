@@ -12,15 +12,15 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.iface.ILegendaryPotion;
 import svenhjol.strange.iface.ILegendaryEnchanted;
+import svenhjol.strange.iface.ILegendaryPotion;
 import svenhjol.strange.legendary.items.*;
 import svenhjol.strange.legendary.potions.LegendaryPotion;
 import svenhjol.strange.loot.LegendaryItemLootFunction;
@@ -57,8 +57,7 @@ public class LegendaryItems extends CharmModule {
 
         LEGENDARY_POTIONS.put(new LegendaryPotion(), 1);
 
-        LEGENDARY_ITEMS_LOOT_FUNCTION = new LootFunctionType(new LegendaryItemLootFunction.Serializer());
-        Registry.register(Registry.LOOT_FUNCTION_TYPE, LEGENDARY_ITEMS_LOOT_ID, LEGENDARY_ITEMS_LOOT_FUNCTION);
+        LEGENDARY_ITEMS_LOOT_FUNCTION = RegistryHandler.lootFunctionType(LEGENDARY_ITEMS_LOOT_ID, new LootFunctionType(new LegendaryItemLootFunction.Serializer()));
     }
 
     @Override

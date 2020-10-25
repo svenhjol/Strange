@@ -27,6 +27,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
@@ -101,8 +102,7 @@ public class Runestones extends CharmModule {
             RUNESTONE_BLOCKS.add(new RunestoneBlock(this, i));
         }
 
-        BLOCK_ENTITY = BlockEntityType.Builder.create(RunestoneBlockEntity::new).build(null);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, ID, BLOCK_ENTITY);
+        RegistryHandler.blockEntity(ID, RunestoneBlockEntity::new);
     }
 
     @Override

@@ -15,8 +15,8 @@ import svenhjol.strange.structure.RuinFeature;
 import svenhjol.strange.structure.RuinGenerator;
 import svenhjol.strange.structure.ruin.BambiMountainsRuin;
 
+import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
-import static svenhjol.charm.base.helper.StructureHelper.registerConfiguredFeature;
 import static svenhjol.strange.structure.RuinGenerator.*;
 
 @Module(mod = Strange.MOD_ID, description = "Underground ruins with different themes according to the biome.")
@@ -71,16 +71,16 @@ public class Ruins extends CharmModule {
         TAIGA       = RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> TAIGA_POOL, ruinSize));
 
         // register each configuredFeature with MC registry against the RUIN_STRUCTURE
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_badlands"), BADLANDS);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_desert"), DESERT);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_forest"), FOREST);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_jungle"), JUNGLE);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_mountains"), MOUNTAINS);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_nether"), NETHER);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_plains"), PLAINS);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_savanna"), SAVANNA);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_snowy"), SNOWY);
-        registerConfiguredFeature(new Identifier(Strange.MOD_ID, "ruin_taiga"), TAIGA);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_badlands"), BADLANDS);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_desert"), DESERT);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_forest"), FOREST);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_jungle"), JUNGLE);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_mountains"), MOUNTAINS);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_nether"), NETHER);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_plains"), PLAINS);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_savanna"), SAVANNA);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_snowy"), SNOWY);
+        configuredFeature(new Identifier(Strange.MOD_ID, "ruin_taiga"), TAIGA);
     }
 
     private void initRuins() {

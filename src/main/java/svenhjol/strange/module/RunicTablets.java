@@ -11,9 +11,9 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
@@ -45,11 +45,8 @@ public class RunicTablets extends CharmModule {
         CLAY_TABLET = new ClayTabletItem(this, "clay_tablet");
         RUNIC_TABLET = new RunicTabletItem(this, "runic_tablet");
         BLANK_TABLET = new BlankTabletItem(this, "blank_tablet");
-
-        RUNIC_TABLET_LOOT_FUNCTION = new LootFunctionType(new RunicTabletLootFunction.Serializer());
-        BLANK_TABLET_LOOT_FUNCTION = new LootFunctionType(new BlankTabletLootFunction.Serializer());
-        Registry.register(Registry.LOOT_FUNCTION_TYPE, RUNIC_TABLET_LOOT_ID, RUNIC_TABLET_LOOT_FUNCTION);
-        Registry.register(Registry.LOOT_FUNCTION_TYPE, BLANK_TABLET_LOOT_ID, BLANK_TABLET_LOOT_FUNCTION);
+        RUNIC_TABLET_LOOT_FUNCTION = RegistryHandler.lootFunctionType(RUNIC_TABLET_LOOT_ID, new LootFunctionType(new RunicTabletLootFunction.Serializer()));
+        BLANK_TABLET_LOOT_FUNCTION = RegistryHandler.lootFunctionType(BLANK_TABLET_LOOT_ID, new LootFunctionType(new BlankTabletLootFunction.Serializer()));
     }
 
     @Override

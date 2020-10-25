@@ -22,12 +22,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.EntityDeathCallback;
@@ -83,8 +83,7 @@ public class Scrolls extends CharmModule {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, "scroll_" + SCROLL_TIER_IDS.get(tier)));
         }
 
-        SCROLL_LOOT_FUNCTION = new LootFunctionType(new ScrollLootFunction.Serializer());
-        Registry.register(Registry.LOOT_FUNCTION_TYPE, SCROLL_LOOT_ID, SCROLL_LOOT_FUNCTION);
+        SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
     }
 
     @Override
