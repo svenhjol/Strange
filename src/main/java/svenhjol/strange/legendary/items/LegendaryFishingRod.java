@@ -15,7 +15,7 @@ public class LegendaryFishingRod implements ILegendaryEnchanted {
             "minecraft:lure",
             "minecraft:luck_of_the_sea",
             "minecraft:unbreaking"
-            );
+        );
     }
 
     @Override
