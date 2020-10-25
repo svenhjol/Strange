@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LegendaryFishingRod implements ILegendaryEnchanted {
-@Override
+
+    @Override
     public List<String> getValidEnchantments() {
         return Arrays.asList(
             "minecraft:lure",
@@ -19,10 +20,11 @@ public class LegendaryFishingRod implements ILegendaryEnchanted {
 
     @Override
     public ItemStack getItemStack() {
-            return new ItemStack(Items.FISHING_ROD);
-        }
+        return new ItemStack(Items.FISHING_ROD);
+    }
 
     @Override
-    public int getMaxAdditionalLevels() {return 3;
+    public int getMaxAdditionalLevels() {
+        return 3;
     }
 }
