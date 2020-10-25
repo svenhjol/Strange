@@ -13,6 +13,7 @@ public class LegendaryTrident implements ILegendaryEnchanted {
         return Arrays.asList(
             "minecraft:loyalty",
             "minecraft:riptide",
+            "minecraft:unbreaking",
             "minecraft:impaling"
         );
     }

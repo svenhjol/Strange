@@ -17,6 +17,7 @@ public class LegendaryAxe implements ILegendaryEnchanted {
             "minecraft:knockback",
             "minecraft:cleaving",
             "minecraft:looting",
+            "minecraft:unbreaking",
             "minecraft:fortune"
         );
     }

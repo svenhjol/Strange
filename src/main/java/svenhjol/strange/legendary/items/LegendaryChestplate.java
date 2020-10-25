@@ -16,6 +16,7 @@ public class LegendaryChestplate implements ILegendaryEnchanted {
             "minecraft:projectile_protection",
             "minecraft:blast_protection",
             "minecraft:protection",
+            "minecraft:unbreaking",
             "minecraft:thorns"
         );
     }

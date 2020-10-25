@@ -12,7 +12,8 @@ public class LegendaryBow implements ILegendaryEnchanted {
     public List<String> getValidEnchantments() {
         return Arrays.asList(
             "minecraft:power",
-            "minecraft:punch"
+            "minecraft:punch",
+            "minecraft:unbreaking"
         );
     }
 

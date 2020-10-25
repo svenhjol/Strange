@@ -20,6 +20,7 @@ public class LegendaryBoots implements ILegendaryEnchanted {
             "minecraft:thorns",
             "minecraft:depth_strider",
             "minecraft:soul_speed",
+            "minecraft:unbreaking",
             "minecraft:frost_walker"
         );
     }

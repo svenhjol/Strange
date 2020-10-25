@@ -18,6 +18,7 @@ public class LegendaryHelmet implements ILegendaryEnchanted {
             "minecraft:protection",
             "minecraft:thorns",
             "minecraft:respiration",
+            "minecraft:unbreaking",
             "minecraft:aqua_affinity"
         );
     }

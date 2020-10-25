@@ -13,8 +13,7 @@ public class LegendaryFishingRod implements ILegendaryEnchanted {
             return Arrays.asList(
                     "minecraft:lure",
                     "minecraft:luck_of_the_sea",
-                    "minecraft:unbreaking",
-                    "minecraft:mending"
+                    "minecraft:unbreaking"
             );
         }
 

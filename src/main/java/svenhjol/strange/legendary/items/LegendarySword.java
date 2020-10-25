@@ -17,6 +17,7 @@ public class LegendarySword implements ILegendaryEnchanted {
             "minecraft:knockback",
             "minecraft:fire_aspect",
             "minecraft:looting",
+            "minecraft:unbreaking",
             "minecraft:sweeping"
         );
     }

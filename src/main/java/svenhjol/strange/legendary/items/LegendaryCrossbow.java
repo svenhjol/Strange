@@ -12,7 +12,8 @@ public class LegendaryCrossbow implements ILegendaryEnchanted {
     public List<String> getValidEnchantments() {
         return Arrays.asList(
             "minecraft:quick_charge",
-            "minecraft:piercing"
+            "minecraft:piercing",
+            "minecraft:unbreaking"
         );
     }
 
