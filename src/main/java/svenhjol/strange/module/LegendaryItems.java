@@ -44,6 +44,7 @@ public class LegendaryItems extends CharmModule {
         LEGENDARY_ENCHANTED.put(new LegendaryAxe(), 5);
         LEGENDARY_ENCHANTED.put(new LegendaryBoots(), 4);
         LEGENDARY_ENCHANTED.put(new LegendaryBow(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryFishingRod(), 5);
         LEGENDARY_ENCHANTED.put(new LegendaryChestplate(), 4);
         LEGENDARY_ENCHANTED.put(new LegendaryCrossbow(), 5);
         LEGENDARY_ENCHANTED.put(new LegendaryHelmet(), 4);
