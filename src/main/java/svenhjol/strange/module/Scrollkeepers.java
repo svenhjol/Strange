@@ -1,8 +1,6 @@
 package svenhjol.strange.module;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -28,7 +26,6 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.block.WritingDeskBlock;
 import svenhjol.strange.client.ScrollKeepersClient;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
@@ -37,11 +34,9 @@ import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
 
 @Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
-    public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35};
 
-    public static WritingDeskBlock WRITING_DESK;
     public static VillagerProfession SCROLLKEEPER;
     public static PointOfInterestType POIT;
 
@@ -53,8 +48,7 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public void register() {
-        WRITING_DESK = new WritingDeskBlock(this);
-        POIT = VillagerHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
+        POIT = VillagerHelper.addPointOfInterestType(WritingDesks.BLOCK_ID, WritingDesks.WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
 
         VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollForEmeralds(1));
@@ -63,14 +57,7 @@ public class Scrollkeepers extends CharmModule {
         VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollForEmeralds(4));
         VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollForEmeralds(5));
 
-        // TODO: village builds for scrollkeepers
-
         enabled = ModuleHandler.enabled("strange:scrolls");
-    }
-
-    @Override
-    public void clientRegister() {
-        BlockRenderLayerMap.INSTANCE.putBlock(WRITING_DESK, RenderLayer.getCutout());
     }
 
     @Override

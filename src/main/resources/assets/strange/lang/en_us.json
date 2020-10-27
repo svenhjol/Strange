@@ -27,6 +27,7 @@
   "block.strange.runestone_24": "Runestone",
   "block.strange.runestone_25": "Runestone",
   "block.strange.writing_desk": "Writing Desk",
+  "container.strange.writing_desk": "Writing Desk",
   "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
   "gui.strange.scrolls.boss": "Battle",
   "gui.strange.scrolls.boss_entity": "%s: %s",

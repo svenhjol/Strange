@@ -15,7 +15,6 @@ import net.minecraft.util.math.Vec3d;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
-import svenhjol.strange.item.TabletItem;
 import svenhjol.strange.module.Foundations;
 import svenhjol.strange.module.RunicTablets;
 

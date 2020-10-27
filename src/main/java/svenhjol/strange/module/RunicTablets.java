@@ -19,34 +19,22 @@ import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.item.BlankTabletItem;
-import svenhjol.strange.item.ClayTabletItem;
 import svenhjol.strange.item.RunicTabletItem;
-import svenhjol.strange.item.TabletItem;
-import svenhjol.strange.loot.BlankTabletLootFunction;
 import svenhjol.strange.loot.RunicTabletLootFunction;
 
 @Module(mod = Strange.MOD_ID)
 public class RunicTablets extends CharmModule {
     public static final Identifier RUNIC_TABLET_LOOT_ID = new Identifier(Strange.MOD_ID, "runic_tablet_loot");
-    public static final Identifier BLANK_TABLET_LOOT_ID = new Identifier(Strange.MOD_ID, "blank_tablet_loot");
     public static LootFunctionType RUNIC_TABLET_LOOT_FUNCTION;
-    public static LootFunctionType BLANK_TABLET_LOOT_FUNCTION;
 
-    public static TabletItem CLAY_TABLET;
-    public static TabletItem RUNIC_TABLET;
-    public static TabletItem BLANK_TABLET;
+    public static RunicTabletItem RUNIC_TABLET;
 
     public static boolean addRunicTabletsToLoot = true;
-    public static boolean addBlankTabletsToLoot = true;
 
     @Override
     public void register() {
-        CLAY_TABLET = new ClayTabletItem(this, "clay_tablet");
         RUNIC_TABLET = new RunicTabletItem(this, "runic_tablet");
-        BLANK_TABLET = new BlankTabletItem(this, "blank_tablet");
         RUNIC_TABLET_LOOT_FUNCTION = RegistryHandler.lootFunctionType(RUNIC_TABLET_LOOT_ID, new LootFunctionType(new RunicTabletLootFunction.Serializer()));
-        BLANK_TABLET_LOOT_FUNCTION = RegistryHandler.lootFunctionType(BLANK_TABLET_LOOT_ID, new LootFunctionType(new BlankTabletLootFunction.Serializer()));
     }
 
     @Override
@@ -61,16 +49,13 @@ public class RunicTablets extends CharmModule {
         if (!ModuleHandler.enabled("strange:excavation"))
             return;
 
-        if (addRunicTabletsToLoot || addBlankTabletsToLoot) {
+        if (addRunicTabletsToLoot) {
             if (id.equals(StrangeLoot.TABLET)) {
                 FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                     .rolls(ConstantLootTableRange.create(1))
                     .with(ItemEntry.builder(Items.AIR)
                         .weight(20)
-                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])))
-                    .with(ItemEntry.builder(Items.AIR)
-                        .weight(10)
-                        .apply(() -> new BlankTabletLootFunction(new LootCondition[0])));
+                        .apply(() -> new RunicTabletLootFunction(new LootCondition[0])));
 
                 supplier.pool(builder);
             }

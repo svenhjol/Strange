@@ -15,23 +15,28 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
+import svenhjol.charm.base.item.CharmItem;
 
-public class RunicTabletItem extends TabletItem {
+import javax.annotation.Nullable;
+
+public class RunicTabletItem extends CharmItem {
+    public static final String POS_TAG = "pos";
+    public static final String DIMENSION_TAG = "dimension";
+    public static final String EXACT_TAG = "exact";
+
     public RunicTabletItem(CharmModule module, String name) {
         super(module, name, new Settings()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
-            .maxCount(1));
+            .maxCount(1)
+            .maxDamage(10));
     }
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
 
-        if (!(stack.getItem() instanceof TabletItem))
-            return TypedActionResult.fail(stack);
-
-        BlockPos pos = TabletItem.getPos(stack);
+        BlockPos pos = getPos(stack);
         if (pos == null)
             return TypedActionResult.fail(stack);
 
@@ -60,9 +65,9 @@ public class RunicTabletItem extends TabletItem {
         if (world.isClient)
             return;
 
-        BlockPos pos = TabletItem.getPos(stack);
-        Identifier dimension = TabletItem.getDimension(stack);
-        boolean exact = TabletItem.getExact(stack);
+        BlockPos pos = getPos(stack);
+        Identifier dimension = getDimension(stack);
+        boolean exact = getExact(stack);
 
         if (!DimensionHelper.isDimension(world, dimension))
             return;
@@ -91,5 +96,40 @@ public class RunicTabletItem extends TabletItem {
     @Override
     public int getEnchantability() {
         return 0;
+    }
+
+    @Nullable
+    public static Identifier getDimension(ItemStack tablet) {
+        if (!tablet.getOrCreateTag().contains(DIMENSION_TAG))
+            return null;
+
+        return new Identifier(tablet.getOrCreateTag().getString(DIMENSION_TAG));
+    }
+
+    @Nullable
+    public static BlockPos getPos(ItemStack tablet) {
+        if (!tablet.getOrCreateTag().contains(POS_TAG))
+            return null;
+
+        return BlockPos.fromLong(tablet.getOrCreateTag().getLong(POS_TAG));
+    }
+
+    public static boolean getExact(ItemStack tablet) {
+        if (!tablet.getOrCreateTag().contains(EXACT_TAG))
+            return false;
+
+        return tablet.getOrCreateTag().getBoolean(EXACT_TAG);
+    }
+
+    public static void setDimension(ItemStack tablet, Identifier dimension) {
+        tablet.getOrCreateTag().putString(DIMENSION_TAG, dimension.toString());
+    }
+
+    public static void setPos(ItemStack tablet, BlockPos pos) {
+        tablet.getOrCreateTag().putLong(POS_TAG, pos.asLong());
+    }
+
+    public static void setExact(ItemStack tablet, boolean exact) {
+        tablet.getOrCreateTag().putBoolean(EXACT_TAG, exact);
     }
 }
