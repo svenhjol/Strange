@@ -70,7 +70,7 @@ public class LegendaryItems extends CharmModule {
                 lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
             } else {
                 Charm.LOG.info("Adding legendary items to ruin loot");
-                lootTable = StrangeLoot.RUIN_GENERAL;
+                lootTable = StrangeLoot.RUIN_RARE;
             }
         } else {
             Charm.LOG.info("Adding legendary items to ancient_rubble loot");
