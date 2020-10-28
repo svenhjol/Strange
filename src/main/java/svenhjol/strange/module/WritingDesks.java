@@ -25,6 +25,8 @@ public class WritingDesks extends CharmModule {
         WRITING_DESK = new WritingDeskBlock(this);
         SCREEN_HANDLER = RegistryHandler.screenHandler(BLOCK_ID, WritingDeskScreenHandler::new);
 
+        Scrollkeepers.registerAfterWritingDesk();
+
         enabled = ModuleHandler.enabled("strange:scrolls")
             && ModuleHandler.enabled("strange:runic_tablets");
     }

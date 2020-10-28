@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
+import svenhjol.strange.item.RunicTabletItem;
 import svenhjol.strange.module.Foundations;
 import svenhjol.strange.module.RunicTablets;
 
@@ -51,8 +52,8 @@ public class RunicTabletLootFunction extends ConditionalLootFunction {
             return stack;
 
         ItemStack tablet = new ItemStack(RunicTablets.RUNIC_TABLET);
-        TabletItem.setDimension(tablet, ServerWorld.OVERWORLD.getValue());
-        TabletItem.setPos(tablet, structurePos);
+        RunicTabletItem.setDimension(tablet, ServerWorld.OVERWORLD.getValue());
+        RunicTabletItem.setPos(tablet, structurePos);
         tablet.setCustomName(new TranslatableText("item.strange.runic_tablet_foundation"));
 
         return tablet;

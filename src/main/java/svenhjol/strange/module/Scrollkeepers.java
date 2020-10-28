@@ -30,7 +30,7 @@ import svenhjol.strange.client.ScrollKeepersClient;
 import svenhjol.strange.helper.ScrollHelper;
 import svenhjol.strange.item.ScrollItem;
 import svenhjol.strange.scroll.tag.Quest;
-import svenhjol.strange.village.ScrollkeeperTradeOffers.ScrollForEmeralds;
+import svenhjol.strange.village.ScrollkeeperTradeOffers;
 
 @Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
@@ -48,16 +48,18 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public void register() {
+        enabled = ModuleHandler.enabled("strange:scrolls");
+    }
+
+    public static void registerAfterWritingDesk() {
         POIT = VillagerHelper.addPointOfInterestType(WritingDesks.BLOCK_ID, WritingDesks.WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
 
-        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollForEmeralds(1));
-        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollForEmeralds(2));
-        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollForEmeralds(3));
-        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollForEmeralds(4));
-        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollForEmeralds(5));
-
-        enabled = ModuleHandler.enabled("strange:scrolls");
+        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));
+        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollkeeperTradeOffers.ScrollForEmeralds(2));
+        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollkeeperTradeOffers.ScrollForEmeralds(3));
+        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollkeeperTradeOffers.ScrollForEmeralds(4));
+        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
     }
 
     @Override
