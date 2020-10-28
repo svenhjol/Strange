@@ -43,8 +43,10 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
         if (origin == null)
             return stack;
 
-        int rune = random.nextInt(Runestones.numberOfRunes);
+        if (random.nextFloat() > RunicTablets.lootChance)
+            return stack;
 
+        int rune = random.nextInt(Runestones.numberOfRunes);
         ItemStack fragment = new ItemStack(RunicTablets.RUNIC_FRAGMENT);
         RunicFragmentItem.setRune(fragment, rune);
 

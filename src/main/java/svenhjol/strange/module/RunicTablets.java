@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
-import net.minecraft.loot.LootTables;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
@@ -15,8 +14,6 @@ import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
-import svenhjol.charm.base.helper.DecorationHelper;
-import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
@@ -33,8 +30,7 @@ public class RunicTablets extends CharmModule {
     public static RunicFragmentItem RUNIC_FRAGMENT;
 
     public static boolean addFragmentsToRuinLoot = true;
-    public static boolean addFragmentsToStrongholdLoot = true;
-    public static boolean addFragmentsToBastionLoot = true;
+    public static double lootChance = 0.75F;
 
     @Override
     public void register() {
@@ -47,19 +43,13 @@ public class RunicTablets extends CharmModule {
     @Override
     public void init() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
-
-        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUIN_GENERAL);
-        DecorationHelper.CHEST_LOOT_TABLES.add(StrangeLoot.RUIN_GENERAL);
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
         if (!ModuleHandler.enabled("strange:excavation"))
             return;
 
-        if (addFragmentsToRuinLoot && id.equals(StrangeLoot.RUIN_GENERAL)
-            || (addFragmentsToStrongholdLoot && id.equals(LootTables.STRONGHOLD_CORRIDOR_CHEST)
-            || (addFragmentsToBastionLoot && id.equals(LootTables.BASTION_TREASURE_CHEST)))
-        ) {
+        if (addFragmentsToRuinLoot && id.equals(StrangeLoot.RUIN_RARE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantLootTableRange.create(1))
                 .with(ItemEntry.builder(Items.AIR)
