@@ -26,7 +26,8 @@ public class Strange implements ModInitializer {
             RunicTablets.class,
             Scrollkeepers.class,
             Scrolls.class,
-            StoneCircles.class
+            StoneCircles.class,
+            WritingDesks.class
         )));
     }
 }
