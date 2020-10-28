@@ -65,12 +65,12 @@ public class LegendaryItems extends CharmModule {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
         if (!ModuleHandler.enabled("strange:excavation")) {
-            if (!ModuleHandler.enabled("strange:runic_tablets")) {
+            if (!ModuleHandler.enabled("strange:ruins")) {
                 Charm.LOG.info("Adding legendary items to simple_dungeon loot");
                 lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
             } else {
-                Charm.LOG.info("Adding legendary items to tablet loot");
-                lootTable = StrangeLoot.TABLET;
+                Charm.LOG.info("Adding legendary items to ruin loot");
+                lootTable = StrangeLoot.RUIN_GENERAL;
             }
         } else {
             Charm.LOG.info("Adding legendary items to ancient_rubble loot");
