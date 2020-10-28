@@ -13,7 +13,7 @@ import svenhjol.strange.screenhandler.WritingDeskScreenHandler;
 
 @Environment(EnvType.CLIENT)
 public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier(Strange.MOD_ID, "textures/gui/container/writing_desk.png");
+    private static final Identifier TEXTURE = new Identifier(Strange.MOD_ID, "textures/gui/writing_desk.png");
 
     public WritingDeskScreen(WritingDeskScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -43,7 +43,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
             || !handler.getSlot(2).hasStack()
             || !handler.getSlot(3).hasStack()
         ) {
-            this.drawTexture(matrices, i + 92, j + 31, this.backgroundWidth, 0, 28, 21);
+            this.drawTexture(matrices, i + 86, j + 32, this.backgroundWidth, 0, 28, 21);
         }
     }
 }

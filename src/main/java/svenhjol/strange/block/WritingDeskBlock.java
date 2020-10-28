@@ -25,6 +25,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlock;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.strange.module.WritingDesks;
 import svenhjol.strange.screenhandler.WritingDeskScreenHandler;
 
@@ -50,7 +51,9 @@ public class WritingDeskBlock extends CharmBlock {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+            if (DimensionHelper.isOverworld(world))
+                player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+
             return ActionResult.CONSUME;
         }
     }

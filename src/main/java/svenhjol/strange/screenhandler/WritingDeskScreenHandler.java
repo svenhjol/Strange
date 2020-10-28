@@ -1,5 +1,6 @@
 package svenhjol.strange.screenhandler;
 
+import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -9,8 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
+import svenhjol.strange.item.RunicTabletItem;
 import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.module.WritingDesks;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WritingDeskScreenHandler extends ScreenHandler {
     private final Inventory input;
@@ -33,23 +38,30 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         };
         this.context = context;
 
+        int index = 0;
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 2; x++) {
-                this.addSlot(new Slot(this.input, 0, 49 + (x * 2), 19 + (y * 2)) {
+                this.addSlot(new Slot(this.input, index++, 37 + (x * 21), 24 + (y * 21)) {
                     public boolean canInsert(ItemStack stack) {
-                        return stack.getItem() == RunicTablets.RUNIC_TABLET;
+                        return stack.getItem() == RunicTablets.RUNIC_FRAGMENT;
                     }
                 });
             }
         }
-        this.addSlot(new Slot(this.result, 2, 129, 34) {
+        this.addSlot(new Slot(this.result, 4, 123, 35) {
             public boolean canInsert(ItemStack stack) {
                 return false;
             }
 
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
                 context.run((world, pos) -> {
-
+                    RunicTabletItem.setOrigin(stack, pos);
+                    int i = 10;
+                    while(i > 0) {
+                        int j = ExperienceOrbEntity.roundToOrbSize(i);
+                        i -= j;
+                        world.spawnEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ() + 0.5D, j));
+                    }
                 });
                 for (int i = 0; i < 4; i++) {
                     WritingDeskScreenHandler.this.input.setStack(i, ItemStack.EMPTY);
@@ -57,6 +69,18 @@ public class WritingDeskScreenHandler extends ScreenHandler {
                 return stack;
             }
         });
+
+        // this adds the player inventory
+        int k;
+        for(k = 0; k < 3; ++k) {
+            for(int j = 0; j < 9; ++j) {
+                this.addSlot(new Slot(playerInventory, j + k * 9 + 9, 8 + j * 18, 84 + k * 18));
+            }
+        }
+
+        for(k = 0; k < 9; ++k) {
+            this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142));
+        }
     }
 
     @Override
@@ -132,6 +156,22 @@ public class WritingDeskScreenHandler extends ScreenHandler {
     }
 
     private void updateResult() {
+        List<ItemStack> fragments = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            ItemStack stack = this.input.getStack(i);
+            if (stack.getItem() == RunicTablets.RUNIC_FRAGMENT)
+                fragments.add(stack);
+        }
+
+        if (fragments.size() < 4) {
+            this.result.setStack(0, ItemStack.EMPTY);
+            return;
+        }
+
+        ItemStack out = new ItemStack(RunicTablets.RUNIC_TABLET);
+        this.result.setStack(0, out);
+
         this.sendContentUpdates();
     }
 }

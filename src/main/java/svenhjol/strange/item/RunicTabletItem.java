@@ -6,43 +6,67 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.*;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
+import svenhjol.strange.module.Foundations;
 
 import javax.annotation.Nullable;
 
 public class RunicTabletItem extends CharmItem {
+    public static final String ORIGIN_TAG = "origin";
     public static final String POS_TAG = "pos";
-    public static final String DIMENSION_TAG = "dimension";
-    public static final String EXACT_TAG = "exact";
 
-    public RunicTabletItem(CharmModule module, String name) {
-        super(module, name, new Settings()
+    public RunicTabletItem(CharmModule module) {
+        super(module, "runic_tablet", new Settings()
             .group(ItemGroup.MISC)
-            .rarity(Rarity.UNCOMMON)
+            .rarity(Rarity.RARE)
             .maxCount(1)
             .maxDamage(10));
     }
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
+        ItemStack tablet = user.getStackInHand(hand);
 
-        BlockPos pos = getPos(stack);
-        if (pos == null)
-            return TypedActionResult.fail(stack);
+        if (!DimensionHelper.isOverworld(world)) {
+            user.sendMessage(new TranslatableText("runictablet.strange.wrong_dimension"), true);
+            return TypedActionResult.fail(tablet);
+        }
 
-        world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.75F, 1.2F);
-        user.setCurrentHand(hand);
-        return TypedActionResult.consume(stack);
+        if (!world.isClient) {
+            BlockPos pos = getPos(tablet);
+            BlockPos origin = getOrigin(tablet);
+
+            if (origin == null)
+                origin = user.getBlockPos();
+
+            if (pos == null) {
+                world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.75F, 1.2F);
+                BlockPos shiftPos = PosHelper.addRandomOffset(origin, world.random, 6000);
+                BlockPos structurePos = ((ServerWorld) world).locateStructure(Foundations.FEATURE, shiftPos, 1500, false);
+
+                if (structurePos == null)
+                    return TypedActionResult.fail(tablet);
+
+                setPos(tablet, structurePos);
+            }
+
+            user.setCurrentHand(hand);
+        }
+
+        return TypedActionResult.consume(tablet);
     }
 
     @Override
@@ -66,22 +90,16 @@ public class RunicTabletItem extends CharmItem {
             return;
 
         BlockPos pos = getPos(stack);
-        Identifier dimension = getDimension(stack);
-        boolean exact = getExact(stack);
 
-        if (!DimensionHelper.isDimension(world, dimension))
+        if (!DimensionHelper.isOverworld(world))
             return;
 
-        if (pos == null) {
-            Charm.LOG.warn("Encoded position was null");
+        if (pos == null)
             return;
-        }
 
-        if (!exact) {
-            pos = PosHelper.getSurfacePos(world, pos);
-            if (pos == null)
-                return;
-        }
+        pos = PosHelper.getSurfacePos(world, pos);
+        if (pos == null)
+            return;
 
         user.teleport(pos.getX(), pos.getY(), pos.getZ(), true);
         world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
@@ -90,7 +108,7 @@ public class RunicTabletItem extends CharmItem {
 
     @Override
     public int getMaxUseTime(ItemStack stack) {
-        return 40000;
+        return 72000;
     }
 
     @Override
@@ -99,11 +117,11 @@ public class RunicTabletItem extends CharmItem {
     }
 
     @Nullable
-    public static Identifier getDimension(ItemStack tablet) {
-        if (!tablet.getOrCreateTag().contains(DIMENSION_TAG))
+    public static BlockPos getOrigin(ItemStack tablet) {
+        if (!tablet.getOrCreateTag().contains(ORIGIN_TAG))
             return null;
 
-        return new Identifier(tablet.getOrCreateTag().getString(DIMENSION_TAG));
+        return BlockPos.fromLong(tablet.getOrCreateTag().getLong(ORIGIN_TAG));
     }
 
     @Nullable
@@ -114,22 +132,11 @@ public class RunicTabletItem extends CharmItem {
         return BlockPos.fromLong(tablet.getOrCreateTag().getLong(POS_TAG));
     }
 
-    public static boolean getExact(ItemStack tablet) {
-        if (!tablet.getOrCreateTag().contains(EXACT_TAG))
-            return false;
-
-        return tablet.getOrCreateTag().getBoolean(EXACT_TAG);
-    }
-
-    public static void setDimension(ItemStack tablet, Identifier dimension) {
-        tablet.getOrCreateTag().putString(DIMENSION_TAG, dimension.toString());
+    public static void setOrigin(ItemStack tablet, BlockPos pos) {
+        tablet.getOrCreateTag().putLong(ORIGIN_TAG, pos.asLong());
     }
 
     public static void setPos(ItemStack tablet, BlockPos pos) {
         tablet.getOrCreateTag().putLong(POS_TAG, pos.asLong());
-    }
-
-    public static void setExact(ItemStack tablet, boolean exact) {
-        tablet.getOrCreateTag().putBoolean(EXACT_TAG, exact);
     }
 }

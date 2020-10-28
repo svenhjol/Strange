@@ -43,8 +43,7 @@
   "gui.strange.scrolls.reward_level": "Experience: %s level",
   "gui.strange.scrolls.reward_item": "%s: %s",
   "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
-  "item.strange.blank_tablet": "Blank Tablet",
-  "item.strange.clay_tablet": "Clay Tablet",
+  "item.strange.runic_fragment": "Runic Fragment",
   "item.strange.runic_tablet": "Runic Tablet",
   "item.strange.runic_tablet_foundation": "Ancient Foundation",
   "item.strange.runic_tablet_bound": "Runic Tablet to %s",
@@ -94,5 +93,6 @@
   "runestone.strange.unknown": "???",
   "runestone.strange.known": "%s...",
   "runestone.strange.discovered": "Discovered %s",
-  "runestone.strange.discoveredby": "Discovered %s by <%s>"
+  "runestone.strange.discoveredby": "Discovered %s by <%s>",
+  "runictablet.strange.wrong_dimension": "You must be in the overworld to use this tablet"
 }
