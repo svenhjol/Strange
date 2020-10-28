@@ -8,9 +8,12 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.BiomeHelper;
+import svenhjol.charm.base.helper.DecorationHelper;
+import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.structure.RuinFeature;
 import svenhjol.strange.structure.RuinGenerator;
 import svenhjol.strange.structure.ruin.BambiMountainsRuin;
@@ -41,15 +44,6 @@ public class Ruins extends CharmModule {
 
     @Override
     public void register() {
-        registerRuins();
-    }
-
-    @Override
-    public void init() {
-        initRuins();
-    }
-
-    private void registerRuins() {
         RUIN_FEATURE = new RuinFeature(StructurePoolFeatureConfig.CODEC);
 
         // register structure so that `strange:ruin` is a valid location and gen spacing is correct
@@ -83,7 +77,12 @@ public class Ruins extends CharmModule {
         configuredFeature(new Identifier(Strange.MOD_ID, "ruin_taiga"), TAIGA);
     }
 
-    private void initRuins() {
+    @Override
+    public void init() {
+        // register rare ruin loot table
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
+        DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
+
         // register all custom ruins here
         RuinGenerator.MOUNTAINS_RUINS.add(new BambiMountainsRuin());
 //        RuinGenerator.FOREST_RUINS.add(new ForestRuin());
