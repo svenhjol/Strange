@@ -53,16 +53,20 @@ public class RunicTabletItem extends CharmItem {
                 origin = user.getBlockPos();
 
             if (pos == null) {
-                world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.75F, 1.2F);
                 BlockPos shiftPos = PosHelper.addRandomOffset(origin, world.random, 6000);
+                setPos(tablet, shiftPos);
+
                 BlockPos structurePos = ((ServerWorld) world).locateStructure(Foundations.FEATURE, shiftPos, 1500, false);
 
-                if (structurePos == null)
-                    return TypedActionResult.fail(tablet);
+                if (structurePos == null) {
+                    world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.75F, 1.2F);
+                    return TypedActionResult.fail(ItemStack.EMPTY);
+                }
 
                 setPos(tablet, structurePos);
             }
 
+            world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.75F, 1.2F);
             user.setCurrentHand(hand);
         }
 
