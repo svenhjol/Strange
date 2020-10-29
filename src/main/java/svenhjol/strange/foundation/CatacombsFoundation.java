@@ -16,6 +16,7 @@ public class CatacombsFoundation extends BaseStructure {
         addStart("start1", 1);
         addStart("start2", 1);
 
+        // add the ends as rooms too, whynot
         ROOMS.put("room_dirt", 1);
         ROOMS.put("room_filled1", 3);
         ROOMS.put("room_filled2", 3);
