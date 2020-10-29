@@ -1,4 +1,4 @@
-package svenhjol.strange.structure.foundation;
+package svenhjol.strange.foundation;
 
 import svenhjol.charm.base.structure.BaseStructure;
 import svenhjol.strange.Strange;
