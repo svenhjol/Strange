@@ -37,7 +37,7 @@ public class LegendaryItemLootFunction extends ConditionalLootFunction {
         ItemStack itemStack;
 
         // prefer items over potions
-        if (context.getRandom().nextFloat() < 0.72F) {
+        if (context.getRandom().nextFloat() < 0.62F) {
             List<ILegendaryEnchanted> weighted = new ArrayList<>();
 
             if (items.isEmpty())
