@@ -1,4 +1,4 @@
-package svenhjol.strange.structure.ruin;
+package svenhjol.strange.ruin;
 
 import svenhjol.charm.base.structure.BaseStructure;
 import svenhjol.strange.Strange;
