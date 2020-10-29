@@ -3,6 +3,7 @@ package svenhjol.strange.legendary.items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import svenhjol.strange.iface.ILegendaryEnchanted;
+import svenhjol.strange.module.LegendaryItems;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,6 @@ public class LegendaryCrossbow implements ILegendaryEnchanted {
 
     @Override
     public int getMaxAdditionalLevels() {
-        return 3;
+        return LegendaryItems.extraLevels;
     }
 }

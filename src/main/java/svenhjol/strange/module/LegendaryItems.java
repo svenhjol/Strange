@@ -38,6 +38,8 @@ public class LegendaryItems extends CharmModule {
 
     private Identifier lootTable;
 
+    public static int extraLevels = 3;
+
     @Override
     public void register() {
         // TODO: config to enable/disable each item/group
