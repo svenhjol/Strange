@@ -6,6 +6,6 @@ import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 public class FoundationFeature extends JigsawFeature {
     public FoundationFeature(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, 4, false, false);
+        super(codec, 3, false, false);
     }
 }
