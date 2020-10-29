@@ -28,13 +28,10 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
         if (!ModuleHandler.enabled("strange:foundations"))
             return stack;
 
-        return tryCreateRunicTablet(stack, context);
+        return tryCreateRunicFragment(stack, context);
     }
 
-    private ItemStack tryCreateRunicTablet(ItemStack stack, LootContext context) {
-        if (!RunicTablets.addFragmentsToRuinLoot)
-            return stack;
-
+    private ItemStack tryCreateRunicFragment(ItemStack stack, LootContext context) {
         if (!DimensionHelper.isOverworld(context.getWorld()))
             return stack;
 
