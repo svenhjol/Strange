@@ -33,7 +33,7 @@ public class AncientRubbleBlockEntityRenderer<T extends AncientRubbleBlockEntity
             return;
 
         matrices.push();
-        matrices.scale(0.65F, 0.65F, 0.65F);
+        matrices.scale(0.62F, 0.62F, 0.62F);
         matrices.translate(0.75F, 0.75F, 0.75F);
 
         matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion((float)entity.hashCode() % 45.0F));
