@@ -11,7 +11,7 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.foundation.CatacombsFoundation;
+import svenhjol.strange.foundation.StoneRoomFoundation;
 import svenhjol.strange.structure.FoundationFeature;
 import svenhjol.strange.structure.FoundationGenerator;
 
@@ -29,8 +29,7 @@ public class Foundations extends CharmModule {
     @Override
     public void init() {
         // register all custom foundations here
-//        FoundationGenerator.FOUNDATIONS.add(new StoneRoomFoundation());
-        FoundationGenerator.FOUNDATIONS.add(new CatacombsFoundation());
+        FoundationGenerator.FOUNDATIONS.add(new StoneRoomFoundation());
 
         // builds and registers all foundations into pools
         FoundationGenerator.init();
