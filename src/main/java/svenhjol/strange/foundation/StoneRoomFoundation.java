@@ -19,26 +19,26 @@ public class StoneRoomFoundation extends BaseStructure {
         addStart("start3", 1);
 
         // add the ends as corridors too, whynot
-        CORRIDORS.put("corridor1", 1);
-        CORRIDORS.put("corridor2", 1);
-        CORRIDORS.put("corridor3", 2);
-        CORRIDORS.put("corridor4", 2);
-        CORRIDORS.put("end1", 3);
-        CORRIDORS.put("end2", 3);
-        CORRIDORS.put("end3", 3);
-        CORRIDORS.put("end4", 3);
+        CORRIDORS.put("corridor1", 2);
+        CORRIDORS.put("corridor2", 2);
+        CORRIDORS.put("corridor3", 3);
+        CORRIDORS.put("corridor4", 3);
+        CORRIDORS.put("end1", 1);
+        CORRIDORS.put("end2", 1);
+        CORRIDORS.put("end3", 1);
+        CORRIDORS.put("end4", 1);
 
         // add the ends as rooms too, whynot
-        ROOMS.put("room_dirt", 1);
+        ROOMS.put("room_dirt", 2);
         ROOMS.put("room_filled1", 3);
         ROOMS.put("room_filled2", 3);
-        ROOMS.put("room_gap", 1);
-        ROOMS.put("room_skulls", 1);
+        ROOMS.put("room_gap", 2);
+        ROOMS.put("room_skulls", 2);
         ROOMS.put("room_tall", 2);
-        ROOMS.put("end1", 3);
-        ROOMS.put("end2", 3);
-        ROOMS.put("end3", 3);
-        ROOMS.put("end4", 3);
+        ROOMS.put("end1", 1);
+        ROOMS.put("end2", 1);
+        ROOMS.put("end3", 1);
+        ROOMS.put("end4", 1);
 
         ENDS.put("end1", 1);
         ENDS.put("end2", 1);
