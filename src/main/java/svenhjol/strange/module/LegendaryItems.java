@@ -43,15 +43,16 @@ public class LegendaryItems extends CharmModule {
     @Override
     public void register() {
         // TODO: config to enable/disable each item/group
-        LEGENDARY_ENCHANTED.put(new LegendaryAxe(), 5);
-        LEGENDARY_ENCHANTED.put(new LegendaryBoots(), 4);
-        LEGENDARY_ENCHANTED.put(new LegendaryBow(), 5);
-        LEGENDARY_ENCHANTED.put(new LegendaryChestplate(), 4);
-        LEGENDARY_ENCHANTED.put(new LegendaryCrossbow(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryAxe(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendaryBoots(), 3);
+        LEGENDARY_ENCHANTED.put(new LegendaryBow(), 4);
+        LEGENDARY_ENCHANTED.put(new LegendaryChestplate(), 3);
+        LEGENDARY_ENCHANTED.put(new LegendaryCrossbow(), 4);
         LEGENDARY_ENCHANTED.put(new LegendaryFishingRod(), 2);
-        LEGENDARY_ENCHANTED.put(new LegendaryHelmet(), 4);
-        LEGENDARY_ENCHANTED.put(new LegendaryLeggings(), 4);
-        LEGENDARY_ENCHANTED.put(new LegendarySword(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendaryHelmet(), 3);
+        LEGENDARY_ENCHANTED.put(new LegendaryLeggings(), 3);
+        LEGENDARY_ENCHANTED.put(new LegendaryShield(), 5);
+        LEGENDARY_ENCHANTED.put(new LegendarySword(), 4);
         LEGENDARY_ENCHANTED.put(new LegendaryTrident(), 2);
         LEGENDARY_ENCHANTED.put(new AngeryPotato(), 1);
         LEGENDARY_ENCHANTED.put(new AmbitiousCrossbow(), 1);
