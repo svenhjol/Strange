@@ -7,6 +7,7 @@ import svenhjol.strange.module.LegendaryItems;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class LegendarySword implements ILegendaryEnchanted {
     @Override
@@ -25,7 +26,7 @@ public class LegendarySword implements ILegendaryEnchanted {
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.DIAMOND_SWORD);
+        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
     }
 
     @Override

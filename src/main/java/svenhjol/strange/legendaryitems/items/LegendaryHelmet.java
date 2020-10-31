@@ -7,6 +7,7 @@ import svenhjol.strange.module.LegendaryItems;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class LegendaryHelmet implements ILegendaryEnchanted {
 
@@ -26,7 +27,7 @@ public class LegendaryHelmet implements ILegendaryEnchanted {
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.DIAMOND_HELMET);
+        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_HELMET : Items.IRON_HELMET);
     }
 
     @Override

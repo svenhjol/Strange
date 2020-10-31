@@ -7,6 +7,7 @@ import svenhjol.strange.module.LegendaryItems;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class LegendaryBoots implements ILegendaryEnchanted {
 
@@ -28,7 +29,7 @@ public class LegendaryBoots implements ILegendaryEnchanted {
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.DIAMOND_BOOTS);
+        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_BOOTS : Items.IRON_BOOTS);
     }
 
     @Override

@@ -6,6 +6,7 @@ import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class LegendaryLeggings implements ILegendaryEnchanted {
 
@@ -23,7 +24,7 @@ public class LegendaryLeggings implements ILegendaryEnchanted {
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.DIAMOND_LEGGINGS);
+        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_LEGGINGS : Items.IRON_LEGGINGS);
     }
 
     @Override
