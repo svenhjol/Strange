@@ -7,14 +7,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StoneRoomFoundation extends BaseStructure {
+    private final Map<String, Integer> CORRIDORS = new HashMap<>();
     private final Map<String, Integer> ROOMS = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();
 
     public StoneRoomFoundation() {
         super(Strange.MOD_ID, "foundations", "stone_room");
 
-        addStart("start1", 1);
-        addStart("start2", 1);
+        addStart("start1", 2);
+        addStart("start2", 2);
+        addStart("start3", 1);
+
+        // add the ends as corridors too, whynot
+        CORRIDORS.put("corridor1", 1);
+        CORRIDORS.put("corridor2", 1);
+        CORRIDORS.put("corridor3", 2);
+        CORRIDORS.put("corridor4", 2);
+        CORRIDORS.put("end1", 3);
+        CORRIDORS.put("end2", 3);
+        CORRIDORS.put("end3", 3);
+        CORRIDORS.put("end4", 3);
 
         // add the ends as rooms too, whynot
         ROOMS.put("room_dirt", 1);
@@ -33,6 +45,7 @@ public class StoneRoomFoundation extends BaseStructure {
         ENDS.put("end3", 1);
         ENDS.put("end4", 1);
 
+        registerPool("corridors", CORRIDORS);
         registerPool("rooms", ROOMS);
         registerPool("ends", ENDS);
     }
