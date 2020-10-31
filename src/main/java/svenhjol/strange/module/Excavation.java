@@ -10,9 +10,9 @@ import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.block.AncientRubbleBlock;
-import svenhjol.strange.blockentity.AncientRubbleBlockEntity;
-import svenhjol.strange.client.ExcavationClient;
+import svenhjol.strange.excavation.AncientRubbleBlock;
+import svenhjol.strange.excavation.AncientRubbleBlockEntity;
+import svenhjol.strange.excavation.ExcavationClient;
 
 @Module(mod = Strange.MOD_ID)
 public class Excavation extends CharmModule {

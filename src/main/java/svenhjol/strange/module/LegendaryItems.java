@@ -19,11 +19,11 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.iface.ILegendaryEnchanted;
-import svenhjol.strange.iface.ILegendaryPotion;
-import svenhjol.strange.legendary.items.*;
-import svenhjol.strange.legendary.potions.LegendaryPotion;
-import svenhjol.strange.loot.LegendaryItemLootFunction;
+import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
+import svenhjol.strange.legendaryitems.ILegendaryPotion;
+import svenhjol.strange.legendaryitems.items.*;
+import svenhjol.strange.legendaryitems.potions.LegendaryPotion;
+import svenhjol.strange.legendaryitems.LegendaryItemLootFunction;
 
 import java.util.HashMap;
 import java.util.Map;

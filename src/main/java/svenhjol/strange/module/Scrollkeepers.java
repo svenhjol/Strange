@@ -26,11 +26,12 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.client.ScrollKeepersClient;
-import svenhjol.strange.helper.ScrollHelper;
-import svenhjol.strange.item.ScrollItem;
-import svenhjol.strange.scroll.tag.Quest;
-import svenhjol.strange.village.ScrollkeeperTradeOffers;
+import svenhjol.strange.scrollkeepers.ScrollKeepersClient;
+import svenhjol.strange.scrolls.ScrollHelper;
+import svenhjol.strange.scrolls.ScrollItem;
+import svenhjol.strange.scrolls.tag.Quest;
+import svenhjol.strange.scrollkeepers.ScrollkeeperTradeOffers;
+import svenhjol.strange.writingdesks.WritingDesks;
 
 @Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {

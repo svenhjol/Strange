@@ -17,9 +17,9 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.item.RunicFragmentItem;
-import svenhjol.strange.item.RunicTabletItem;
-import svenhjol.strange.loot.RunicFragmentLootFunction;
+import svenhjol.strange.runictablets.RunicFragmentItem;
+import svenhjol.strange.runictablets.RunicTabletItem;
+import svenhjol.strange.runictablets.RunicFragmentLootFunction;
 
 @Module(mod = Strange.MOD_ID)
 public class RunicTablets extends CharmModule {

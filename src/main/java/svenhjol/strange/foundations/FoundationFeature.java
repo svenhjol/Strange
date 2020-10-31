@@ -1,0 +1,11 @@
+package svenhjol.strange.foundations;
+
+import com.mojang.serialization.Codec;
+import net.minecraft.world.gen.feature.JigsawFeature;
+import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
+public class FoundationFeature extends JigsawFeature {
+    public FoundationFeature(Codec<StructurePoolFeatureConfig> codec) {
+        super(codec, 3, false, false);
+    }
+}

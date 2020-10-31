@@ -5,6 +5,7 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.module.*;
+import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.ArrayList;
 import java.util.Arrays;

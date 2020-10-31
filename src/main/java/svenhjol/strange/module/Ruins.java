@@ -14,13 +14,13 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.ruin.TestRuin;
-import svenhjol.strange.structure.RuinFeature;
-import svenhjol.strange.structure.RuinGenerator;
+import svenhjol.strange.ruins.builds.TestRuin;
+import svenhjol.strange.ruins.RuinFeature;
+import svenhjol.strange.ruins.RuinGenerator;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
-import static svenhjol.strange.structure.RuinGenerator.*;
+import static svenhjol.strange.ruins.RuinGenerator.*;
 
 @Module(mod = Strange.MOD_ID, description = "Underground ruins with different themes according to the biome.")
 public class Ruins extends CharmModule {

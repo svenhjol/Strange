@@ -16,8 +16,8 @@ import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.structure.StoneCircleFeature;
-import svenhjol.strange.structure.StoneCircleGenerator;
+import svenhjol.strange.stonecircles.StoneCircleFeature;
+import svenhjol.strange.stonecircles.StoneCircleGenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -11,9 +11,9 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.foundation.StoneRoomFoundation;
-import svenhjol.strange.structure.FoundationFeature;
-import svenhjol.strange.structure.FoundationGenerator;
+import svenhjol.strange.foundations.builds.StoneRoomFoundation;
+import svenhjol.strange.foundations.FoundationFeature;
+import svenhjol.strange.foundations.FoundationGenerator;
 
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
 
