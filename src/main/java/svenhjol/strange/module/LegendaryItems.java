@@ -56,6 +56,8 @@ public class LegendaryItems extends CharmModule {
         LEGENDARY_ENCHANTED.put(new AngeryPotato(), 1);
         LEGENDARY_ENCHANTED.put(new AmbitiousCrossbow(), 1);
         LEGENDARY_ENCHANTED.put(new EldritchBow(), 1);
+        LEGENDARY_ENCHANTED.put(new NeedleSword(), 1);
+        LEGENDARY_ENCHANTED.put(new WyvernAxe(), 1);
 
         LEGENDARY_POTIONS.put(new LegendaryPotion(), 1);
 
