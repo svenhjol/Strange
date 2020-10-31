@@ -92,9 +92,13 @@
   "item.strange.legendary.potion.adjective14": "Aromatic",
   "item.strange.legendary.potion.adjective15": "Rare",
   "item.strange.legendary.potion.adjective16": "Peculiar",
+  "item.strange.totem_of_preserving": "Totem of Preserving",
   "runestone.strange.unknown": "???",
   "runestone.strange.known": "%s...",
   "runestone.strange.discovered": "Discovered %s",
   "runestone.strange.discoveredby": "Discovered %s by <%s>",
-  "runictablet.strange.wrong_dimension": "You must be in the overworld to use this tablet"
+  "runictablet.strange.wrong_dimension": "You must be in the overworld to use this tablet",
+  "totem.strange.preserving.item": "Preserving one item",
+  "totem.strange.preserving.items": "Preserving %s items",
+  "totem.strange.preserving.item_name": "%s (%s)"
 }

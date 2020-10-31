@@ -28,6 +28,7 @@ public class Strange implements ModInitializer {
             Scrollkeepers.class,
             Scrolls.class,
             StoneCircles.class,
+            TotemOfPreserving.class,
             WritingDesks.class
         )));
     }
