@@ -169,7 +169,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
             return false;
 
         ItemStack stack;
-        if (list.size() == 1 || random.nextFloat() < 0.45F) {
+        if (list.size() == 1 || random.nextFloat() < 0.5F) {
             // fetch from the default loot table
             stack = list.get(0);
         } else {
