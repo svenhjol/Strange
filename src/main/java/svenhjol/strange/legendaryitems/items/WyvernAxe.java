@@ -21,9 +21,9 @@ public class WyvernAxe implements ILegendaryEnchanted {
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
         HashMap<Enchantment, Integer> map = new HashMap<>();
-        map.put(Enchantments.SHARPNESS, 1);
-        map.put(Enchantments.SMITE, 1);
-        map.put(Enchantments.BANE_OF_ARTHROPODS, 1);
+        map.put(Enchantments.SHARPNESS, 3);
+        map.put(Enchantments.SMITE, 3);
+        map.put(Enchantments.BANE_OF_ARTHROPODS, 3);
         return map;
     }
 
