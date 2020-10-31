@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.ItemHelper;
+import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.strange.Strange;
@@ -22,9 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Module(mod = Strange.MOD_ID)
+@Module(mod = Strange.MOD_ID, description = "With a Totem of Preserving in your inventory, your items will be held in the totem when you die.")
 public class TotemOfPreserving extends CharmModule {
     public static TotemOfPreservingItem TOTEM_OF_PRESERVING;
+
+    @Config(name = "Grave Mode", description = "If true, your items will always drop as a totem even if you don't have one in your inventory.")
+    public static boolean graveMode = false;
 
     @Override
     public void register() {
@@ -51,21 +55,23 @@ public class TotemOfPreserving extends CharmModule {
             -> list.stream().filter(Objects::nonNull).filter(stack -> !stack.isEmpty()).forEach(holdable::add));
 
         // check all inventories for totem
-        boolean found = false;
-        int foundAtIndex = 0;
+        if (!graveMode) {
+            boolean found = false;
+            int foundAtIndex = 0;
 
-        for (int i = 0; i < holdable.size(); i++) {
-            ItemStack stack = holdable.get(i);
-            if (stack.getItem() == TOTEM_OF_PRESERVING) {
-                foundAtIndex = i;
-                found = true;
+            for (int i = 0; i < holdable.size(); i++) {
+                ItemStack stack = holdable.get(i);
+                if (stack.getItem() == TOTEM_OF_PRESERVING) {
+                    foundAtIndex = i;
+                    found = true;
+                }
             }
-        }
 
-        if (found) {
-            holdable.remove(foundAtIndex);
-        } else {
-            return ActionResult.FAIL;
+            if (found) {
+                holdable.remove(foundAtIndex);
+            } else {
+                return ActionResult.FAIL;
+            }
         }
 
         // get all inventories and store them in the totem
