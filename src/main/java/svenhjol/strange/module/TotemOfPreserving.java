@@ -61,7 +61,7 @@ public class TotemOfPreserving extends CharmModule {
 
             for (int i = 0; i < holdable.size(); i++) {
                 ItemStack stack = holdable.get(i);
-                if (stack.getItem() == TOTEM_OF_PRESERVING) {
+                if (stack.getItem() == TOTEM_OF_PRESERVING && TotemOfPreservingItem.getItems(stack).isEmpty()) {
                     foundAtIndex = i;
                     found = true;
                 }
