@@ -6,20 +6,33 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.CompassItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
-import svenhjol.strange.runictablets.RunicTabletItem;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import svenhjol.strange.module.RunicTablets;
+import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runictablets.RunicFragmentItem;
+import svenhjol.strange.runictablets.RunicTabletItem;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class WritingDeskScreenHandler extends ScreenHandler {
     private final Inventory input;
     private final Inventory result;
     private final ScreenHandlerContext context;
+    private PlayerEntity player;
 
     public WritingDeskScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
@@ -37,33 +50,35 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         };
         this.context = context;
 
-        int index = 0;
-        for (int y = 0; y < 2; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new Slot(this.input, index++, 37 + (x * 21), 24 + (y * 21)) {
-                    public boolean canInsert(ItemStack stack) {
-                        return stack.getItem() == RunicTablets.RUNIC_FRAGMENT;
-                    }
-                });
+        this.addSlot(new Slot(this.input, 0, 26, 24) {
+            public boolean canInsert(ItemStack stack) {
+                return stack.getItem() == RunicTablets.RUNIC_FRAGMENT
+                    || stack.getItem() == RunicTablets.RUNIC_TABLET
+                    || stack.getItem() == Items.COMPASS;
             }
-        }
-        this.addSlot(new Slot(this.result, 4, 123, 35) {
+        });
+        this.addSlot(new Slot(this.input, 1, 26, 45) {
+            public boolean canInsert(ItemStack stack) {
+                return stack.getItem() == Items.CLAY_BALL;
+            }
+        });
+
+        this.addSlot(new Slot(this.result, 4, 134, 35) {
             public boolean canInsert(ItemStack stack) {
                 return false;
             }
 
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
                 context.run((world, pos) -> {
-                    RunicTabletItem.setOrigin(stack, pos);
-                    int i = 10;
+                    int i = 50;
                     while(i > 0) {
                         int j = ExperienceOrbEntity.roundToOrbSize(i);
                         i -= j;
                         world.spawnEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ() + 0.5D, j));
                     }
                 });
-                for (int i = 0; i < 4; i++) {
-                    WritingDeskScreenHandler.this.input.setStack(i, ItemStack.EMPTY);
+                for (int i = 0; i < 2; i++) {
+                    WritingDeskScreenHandler.this.input.getStack(i).decrement(1);
                 }
                 return stack;
             }
@@ -85,6 +100,13 @@ public class WritingDeskScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return canUse(this.context, player, WritingDesks.WRITING_DESK);
+    }
+
+    @Override
+    public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
+        // use slot click method to add a reference to the player
+        this.player = playerEntity;
+        return super.onSlotClick(i, j, actionType, playerEntity);
     }
 
     /**
@@ -155,22 +177,82 @@ public class WritingDeskScreenHandler extends ScreenHandler {
     }
 
     private void updateResult() {
-        List<ItemStack> fragments = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            ItemStack stack = this.input.getStack(i);
-            if (stack.getItem() == RunicTablets.RUNIC_FRAGMENT)
-                fragments.add(stack);
-        }
-
-        if (fragments.size() < 4) {
-            this.result.setStack(0, ItemStack.EMPTY);
+        if (player == null)
             return;
+
+        this.result.setStack(0, ItemStack.EMPTY);
+        ItemStack stack0 = this.input.getStack(0);
+        BlockPos pos = getPosFromStack(stack0, player.world);
+
+        if (pos == null)
+            return;
+
+        ItemStack stack1 = this.input.getStack(1);
+        if (stack1.getItem() != Items.CLAY_BALL)
+            return;
+
+        // get runes from this block pos
+        List<Integer> runesFromBlockPos = RunestoneHelper.getRunesFromBlockPos(pos, 6);
+
+        // the player must have these runes to create a runic tablet
+        if (!player.isCreative()) {
+            List<Integer> discovered = RunestoneHelper.getDiscoveredRunes(player);
+
+            for (int rune : runesFromBlockPos) {
+                if (!discovered.contains(rune))
+                    return;
+            }
         }
 
         ItemStack out = new ItemStack(RunicTablets.RUNIC_TABLET);
+        RunicTabletItem.setPos(out, pos);
+        out.setCustomName(getNameFromStack(stack0));
         this.result.setStack(0, out);
-
         this.sendContentUpdates();
+    }
+
+    @Nullable
+    public Text getNameFromStack(ItemStack stack) {
+        Text text = null;
+        Item item = stack.getItem();
+
+        if (item == RunicTablets.RUNIC_FRAGMENT) {
+            text = new TranslatableText("item.strange.runic_tablet_bound", stack.getName());
+        } else if (item == Items.COMPASS) {
+            TranslatableText lodestone = new TranslatableText("block.minecraft.lodestone");
+            text = new TranslatableText("item.strange.runic_tablet_bound", lodestone);
+        }
+
+        return text;
+    }
+
+    @Nullable
+    public BlockPos getPosFromStack(ItemStack stack, World world) {
+        BlockPos pos = null;
+
+        if (stack.getItem() == RunicTablets.RUNIC_FRAGMENT) {
+            pos = RunicFragmentItem.getPos(stack);
+
+            if (!world.isClient) {
+                if (pos == null) {
+                    // try and generate the pos for the fragment
+                    boolean result = RunicFragmentItem.populate(stack, (ServerWorld) world, player.getBlockPos(), world.random);
+                    if (!result)
+                        this.input.setStack(0, ItemStack.EMPTY);
+
+                    return null;
+                }
+
+                pos = RunicFragmentItem.getPos(stack);
+            }
+        } else if (stack.getItem() == Items.COMPASS) {
+            if (!CompassItem.hasLodestone(stack) || !stack.hasTag() || stack.getTag() == null)
+                return null;
+
+            pos = NbtHelper.toBlockPos(stack.getTag().getCompound("LodestonePos"));
+            pos = pos.add(0, 1, 0); // the block above the lodestone
+        }
+
+        return pos;
     }
 }

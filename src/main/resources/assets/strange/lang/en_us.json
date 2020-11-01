@@ -45,7 +45,6 @@
   "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
   "item.strange.runic_fragment": "Runic Fragment",
   "item.strange.runic_tablet": "Runic Tablet",
-  "item.strange.runic_tablet_foundation": "Ancient Foundation",
   "item.strange.runic_tablet_bound": "Runic Tablet to %s",
   "item.strange.scroll_novice": "Novice Scroll",
   "item.strange.scroll_apprentice": "Apprentice Scroll",
@@ -98,6 +97,9 @@
   "runestone.strange.discovered": "Discovered %s",
   "runestone.strange.discoveredby": "Discovered %s by <%s>",
   "runictablet.strange.wrong_dimension": "You must be in the overworld to use this tablet",
+  "runictablet.strange.fragment_symbol": "This fragment has the symbol for %s.",
+  "structure.strange.foundation": "Ancient Foundations",
+  "structure.strange.ruin": "Underground Ruins",
   "totem.strange.preserving.item": "Preserving one item",
   "totem.strange.preserving.items": "Preserving %s items",
   "totem.strange.preserving.item_name": "%s (%s)"

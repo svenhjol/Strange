@@ -36,7 +36,7 @@ public abstract class Destination {
         return weight;
     }
 
-    public abstract BlockPos getDestination(ServerWorld world, BlockPos runePos, Random random, @Nullable ServerPlayerEntity player);
+    public abstract BlockPos getDestination(ServerWorld world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayerEntity player);
 
     protected BlockPos checkBounds(World world, BlockPos pos) {
         WorldBorder border = world.getWorldBorder();

@@ -11,7 +11,6 @@ import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.util.math.Vec3d;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.strange.module.Runestones;
 import svenhjol.strange.module.RunicTablets;
 
 import java.util.Random;
@@ -42,9 +41,8 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
         if (random.nextFloat() > RunicTablets.lootChance)
             return stack;
 
-        int rune = random.nextInt(Runestones.numberOfRunes);
         ItemStack fragment = new ItemStack(RunicTablets.RUNIC_FRAGMENT);
-        RunicFragmentItem.setRune(fragment, rune);
+
 
         return fragment;
     }

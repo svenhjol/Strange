@@ -7,6 +7,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.IntProperty;
@@ -26,6 +27,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlock;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -49,9 +51,12 @@ public class WritingDeskBlock extends CharmBlock {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            if (DimensionHelper.isOverworld(world))
-                player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+            if (!DimensionHelper.isOverworld(world))
+                return ActionResult.FAIL;
 
+            // ensure client has the latest rune discoveries
+            RunestoneHelper.syncDiscoveredRunesToClient((ServerPlayerEntity)player);
+            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             return ActionResult.CONSUME;
         }
     }

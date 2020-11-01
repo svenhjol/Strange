@@ -8,7 +8,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.PosHelper;
-import svenhjol.strange.module.Runestones;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -20,16 +19,15 @@ public class BiomeDestination extends Destination {
     }
 
     @Nullable
-    public BlockPos getDestination(ServerWorld world, BlockPos runePos, Random random, @Nullable ServerPlayerEntity player) {
-        int maxDistance = Runestones.maxDistance;
+    public BlockPos getDestination(ServerWorld world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayerEntity player) {
 
-        BlockPos loadedPos = tryLoad(world, runePos);
+        BlockPos loadedPos = tryLoad(world, startPos);
         if (loadedPos != null)
             return loadedPos;
 
         int xdist = -maxDistance + random.nextInt(maxDistance *2);
         int zdist = -maxDistance + random.nextInt(maxDistance *2);
-        BlockPos destPos = checkBounds(world, runePos.add(xdist, 0, zdist));
+        BlockPos destPos = checkBounds(world, startPos.add(xdist, 0, zdist));
 
         BlockPos foundPos;
 
@@ -55,7 +53,7 @@ public class BiomeDestination extends Destination {
         }
 
         foundPos = PosHelper.addRandomOffset(foundPos, random, 8);
-        store(world, runePos, foundPos, player);
+        store(world, startPos, foundPos, player);
 
         return foundPos;
     }

@@ -5,6 +5,7 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.structure.DataBlockProcessor;
 import svenhjol.strange.module.Excavation;
 import svenhjol.strange.module.Runestones;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 public class StrangeStructures {
     public static void init() {
@@ -16,7 +17,7 @@ public class StrangeStructures {
         DataBlockProcessor.callbacks.put("runestone", processor -> {
             if (ModuleHandler.enabled("strange:runestones")
                 && processor.random.nextFloat() < 0.75F) {
-                processor.state = Runestones.RUNESTONE_BLOCKS.get(processor.random.nextInt(Runestones.numberOfRunes)).getDefaultState();
+                processor.state = Runestones.RUNESTONE_BLOCKS.get(processor.random.nextInt(RunestoneHelper.NUMBER_OF_RUNES)).getDefaultState();
             } else {
                 processor.state = Blocks.STONE.getDefaultState();
             }

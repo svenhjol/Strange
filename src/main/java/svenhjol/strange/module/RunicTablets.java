@@ -11,15 +11,23 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
+import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.runictablets.RunicFragmentItem;
-import svenhjol.strange.runictablets.RunicTabletItem;
 import svenhjol.strange.runictablets.RunicFragmentLootFunction;
+import svenhjol.strange.runictablets.RunicTabletItem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID)
 public class RunicTablets extends CharmModule {
@@ -29,6 +37,15 @@ public class RunicTablets extends CharmModule {
     public static RunicTabletItem RUNIC_TABLET;
     public static RunicFragmentItem RUNIC_FRAGMENT;
 
+    @Config(name = "Knowledge fragment locations", description = "Structures that knowledge fragments may describe. The list is weighted with more likely structures at the top.")
+    public static List<String> configLocations = new ArrayList<>(Arrays.asList(
+        "strange:foundation",
+        "strange:ruin",
+        "strange:stone_circle"
+    ));
+
+    public static List<Identifier> destinations = new ArrayList<>();
+
     public static boolean addFragmentsToRuinLoot = true;
     public static double lootChance = 0.75F;
 
@@ -36,12 +53,19 @@ public class RunicTablets extends CharmModule {
     public void register() {
         RUNIC_TABLET = new RunicTabletItem(this);
         RUNIC_FRAGMENT = new RunicFragmentItem(this);
-
         RUNIC_FRAGMENT_LOOT_FUNCTION = RegistryHandler.lootFunctionType(RUNIC_FRAGMENT_LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
     }
 
     @Override
     public void init() {
+        configLocations.forEach(configLocation -> {
+            Identifier locationId = new Identifier(configLocation);
+            Optional<StructureFeature<?>> location = Registry.STRUCTURE_FEATURE.getOrEmpty(locationId);
+
+            if (location.isPresent())
+                destinations.add(locationId);
+        });
+
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
     }
 
