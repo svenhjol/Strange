@@ -14,7 +14,6 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -31,8 +30,9 @@ import java.util.List;
 public class WritingDeskScreenHandler extends ScreenHandler {
     private final Inventory input;
     private final Inventory result;
+    private final PlayerInventory playerInventory;
+    private final PlayerEntity player;
     private final ScreenHandlerContext context;
-    private PlayerEntity player;
 
     public WritingDeskScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
@@ -41,6 +41,8 @@ public class WritingDeskScreenHandler extends ScreenHandler {
     public WritingDeskScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
         super(WritingDesks.SCREEN_HANDLER, syncId);
 
+        this.playerInventory = playerInventory;
+        this.player = playerInventory.player;
         this.result = new CraftingResultInventory();
         this.input = new SimpleInventory(4) {
             public void markDirty() {
@@ -100,13 +102,6 @@ public class WritingDeskScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return canUse(this.context, player, WritingDesks.WRITING_DESK);
-    }
-
-    @Override
-    public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
-        // use slot click method to add a reference to the player
-        this.player = playerEntity;
-        return super.onSlotClick(i, j, actionType, playerEntity);
     }
 
     /**
