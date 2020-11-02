@@ -60,8 +60,8 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         boolean generatedSomething = false;
         Map<Integer, Float> availableRunes = new HashMap<>();
 
-        for (int i = 0; i < Runestones.availableDestinations.size(); i++) {
-            availableRunes.put(i, Runestones.availableDestinations.get(i).getWeight());
+        for (int i = 0; i < Runestones.worldDestinations.size(); i++) {
+            availableRunes.put(i, Runestones.worldDestinations.get(i).getWeight());
         }
 
         if (availableRunes.size() == 0) {
