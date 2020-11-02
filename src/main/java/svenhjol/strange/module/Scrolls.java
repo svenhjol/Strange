@@ -59,7 +59,7 @@ public class Scrolls extends CharmModule {
     public ScrollsClient client;
     public static QuestManager questManager;
 
-    @Config(name = "Use build-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
+    @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
 
     @Config(name = "Add scrolls to loot", description = "If true, scrolls will be added to dungeon loot chests.")
