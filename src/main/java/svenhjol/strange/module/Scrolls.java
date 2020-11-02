@@ -65,6 +65,9 @@ public class Scrolls extends CharmModule {
     @Config(name = "Add scrolls to loot", description = "If true, scrolls will be added to dungeon loot chests.")
     public static boolean addScrollsToLoot = true;
 
+    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a scroll appearing in dungeon or pillager loot.")
+    public static double lootChance = 0.25F;
+
     @Config(name = "Scroll quest language", description = "The language key to use when displaying quest instructions.")
     public static String language = "en";
 
@@ -207,10 +210,11 @@ public class Scrolls extends CharmModule {
         if (!addScrollsToLoot)
             return;
 
-        if (id.equals(LootTables.SIMPLE_DUNGEON_CHEST)) {
+        if (id.equals(LootTables.SIMPLE_DUNGEON_CHEST)
+            || id.equals(LootTables.PILLAGER_OUTPOST_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantLootTableRange.create(1))
-                .with(ItemEntry.builder(Items.PAPER)
+                .with(ItemEntry.builder(Items.AIR)
                     .weight(1)
                     .apply(() -> new ScrollLootFunction(new LootCondition[0])));
 
