@@ -1,13 +1,22 @@
 package svenhjol.strange.module;
 
 import com.google.common.collect.ImmutableList;
+import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTables;
+import net.minecraft.loot.UniformLootTableRange;
+import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.Charm;
@@ -39,6 +48,7 @@ public class TotemOfPreserving extends CharmModule {
     public void init() {
         ItemHelper.ITEM_LIFETIME.put(TOTEM_OF_PRESERVING, Integer.MAX_VALUE); // probably stupid
         PlayerDropInventoryCallback.EVENT.register(this::tryInterceptDropInventory);
+        LootTableLoadingCallback.EVENT.register(this::handleLootTables);
     }
 
     public ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
@@ -109,5 +119,19 @@ public class TotemOfPreserving extends CharmModule {
         }
 
         return ActionResult.SUCCESS;
+    }
+
+    private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
+        if (graveMode)
+            return;
+
+        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
+            || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
+            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                .rolls(UniformLootTableRange.between(0.0F, 1.0F))
+                .with(ItemEntry.builder(TOTEM_OF_PRESERVING));
+
+            supplier.pool(builder);
+        }
     }
 }
