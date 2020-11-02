@@ -194,7 +194,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         if (!player.isCreative()) {
 
             // the player must have these runes to create a runic tablet
-            List<Integer> discovered = RunestoneHelper.getDiscoveredRunes(player);
+            List<Integer> discovered = RunestoneHelper.getLearnedRunes(player);
 
             for (int rune : runesFromBlockPos) {
                 if (!discovered.contains(rune))

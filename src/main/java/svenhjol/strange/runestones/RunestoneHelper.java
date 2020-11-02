@@ -23,7 +23,7 @@ import java.util.*;
 public class RunestoneHelper {
     public static final int NUMBER_OF_RUNES = 26;
     public static final Identifier SPAWN = new Identifier(Strange.MOD_ID, "spawn_point");
-    public static Map<UUID, List<Integer>> PLAYER_DISCOVERIES = new HashMap<>();
+    public static Map<UUID, List<Integer>> PLAYER_LEARNED = new HashMap<>();
 
     public static boolean explode(World world, BlockPos pos, @Nullable PlayerEntity player, boolean destroyBlock) {
         if (player != null)
@@ -54,39 +54,39 @@ public class RunestoneHelper {
         return runes;
     }
 
-    public static List<Integer> getDiscoveredRunes(PlayerEntity player) {
-        return PLAYER_DISCOVERIES.getOrDefault(player.getUuid(), ImmutableList.of());
+    public static List<Integer> getLearnedRunes(PlayerEntity player) {
+        return PLAYER_LEARNED.getOrDefault(player.getUuid(), ImmutableList.of());
     }
 
-    public static void resetDiscoveredRunes(PlayerEntity player) {
+    public static void resetLearnedRunes(PlayerEntity player) {
         UUID uuid = player.getUuid();
-        PLAYER_DISCOVERIES.remove(uuid);
-        PLAYER_DISCOVERIES.put(uuid, new ArrayList<>());
+        PLAYER_LEARNED.remove(uuid);
+        PLAYER_LEARNED.put(uuid, new ArrayList<>());
     }
 
-    public static void addDiscoveredRune(PlayerEntity player, int rune) {
+    public static void addLearnedRune(PlayerEntity player, int rune) {
         UUID uuid = player.getUuid();
-        if (!PLAYER_DISCOVERIES.containsKey(uuid))
-            PLAYER_DISCOVERIES.put(uuid, new ArrayList<>());
+        if (!PLAYER_LEARNED.containsKey(uuid))
+            PLAYER_LEARNED.put(uuid, new ArrayList<>());
 
-        if (!hasDiscoveredRune(player, rune))
-            PLAYER_DISCOVERIES.get(uuid).add(rune);
+        if (!hasLearnedRune(player, rune))
+            PLAYER_LEARNED.get(uuid).add(rune);
     }
 
-    public static boolean hasDiscoveredRune(PlayerEntity player, int rune) {
-        return getDiscoveredRunes(player).contains(rune);
+    public static boolean hasLearnedRune(PlayerEntity player, int rune) {
+        return getLearnedRunes(player).contains(rune);
     }
 
-    public static void syncDiscoveredRunesToClient(ServerPlayerEntity player) {
-        int[] discovered = getDiscoveredRunes(player).stream().mapToInt(i -> i).toArray();
+    public static void syncLearnedRunesToClient(ServerPlayerEntity player) {
+        int[] learned = getLearnedRunes(player).stream().mapToInt(i -> i).toArray();
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeIntArray(discovered);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_DISCOVERIES, data);
+        data.writeIntArray(learned);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_LEARNED, data);
     }
 
-    public static void populateDiscoveredRunes(PlayerEntity player, int[] discoveries) {
-        for (int rune : discoveries) {
-            addDiscoveredRune(player, rune);
+    public static void populateLearnedRunes(PlayerEntity player, int[] learned) {
+        for (int rune : learned) {
+            addLearnedRune(player, rune);
         }
     }
 

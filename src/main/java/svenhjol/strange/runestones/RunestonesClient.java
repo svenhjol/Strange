@@ -7,10 +7,10 @@ import svenhjol.strange.module.Runestones;
 public class RunestonesClient {
     public RunestonesClient(CharmModule module) {
         // listen for player runestone discoveries being sent from the server
-        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_SYNC_DISCOVERIES, (context, data) -> {
+        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_SYNC_LEARNED, (context, data) -> {
             int[] discoveries = data.readIntArray();
             context.getTaskQueue().execute(() -> {
-                RunestoneHelper.populateDiscoveredRunes(context.getPlayer(), discoveries);
+                RunestoneHelper.populateLearnedRunes(context.getPlayer(), discoveries);
             });
         });
     }

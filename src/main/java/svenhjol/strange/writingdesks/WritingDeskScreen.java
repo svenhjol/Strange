@@ -89,7 +89,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
             if (pos != null)
                 lastRunes = RunestoneHelper.getRunesFromBlockPos(pos, 6);
 
-            lastDiscovered = RunestoneHelper.getDiscoveredRunes(player);
+            lastDiscovered = RunestoneHelper.getLearnedRunes(player);
         }
 
         // conditions for not rendering the grid

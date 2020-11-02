@@ -52,7 +52,7 @@ public class WritingDeskBlock extends CharmBlock {
             return ActionResult.SUCCESS;
         } else {
             // ensure client has the latest rune discoveries
-            RunestoneHelper.syncDiscoveredRunesToClient((ServerPlayerEntity)player);
+            RunestoneHelper.syncLearnedRunesToClient((ServerPlayerEntity)player);
             player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             return ActionResult.CONSUME;
         }
