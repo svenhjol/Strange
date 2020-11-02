@@ -83,7 +83,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
                 for (int i = 0; i < 2; i++) {
                     WritingDeskScreenHandler.this.input.getStack(i).decrement(1);
                 }
-                player.addExperienceLevels(-WritingDesks.requiredLevel);
+                player.addExperienceLevels(-RunicTablets.requiredXpLevels);
                 return stack;
             }
         });
@@ -202,7 +202,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
             }
 
             // the player must have enough XP to create a runic tablet
-            if (player.experienceLevel < WritingDesks.requiredLevel)
+            if (player.experienceLevel < RunicTablets.requiredXpLevels)
                 return;
         }
 

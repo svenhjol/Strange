@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import java.util.ArrayList;
@@ -67,8 +68,8 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
         satisfied = slot0.hasStack() && slot1.hasStack();
 
         // if the player doesn't have enough XP, show the text for this
-        if (slot0.hasStack() && !player.isCreative() && player.experienceLevel < WritingDesks.requiredLevel) {
-            TranslatableText text = new TranslatableText("writingdesk.strange.not_enough_xp", WritingDesks.requiredLevel);
+        if (slot0.hasStack() && !player.isCreative() && player.experienceLevel < RunicTablets.requiredXpLevels) {
+            TranslatableText text = new TranslatableText("writingdesk.strange.not_enough_xp", RunicTablets.requiredXpLevels);
             int y1 = (midHeight - 23);
             int y2 = y1 + 10;
             int x1 = (midWidth + 80) - 8 - this.textRenderer.getWidth(text) - 2;
