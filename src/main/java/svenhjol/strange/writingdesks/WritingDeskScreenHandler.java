@@ -207,6 +207,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
 
         ItemStack out = new ItemStack(RunicTablets.RUNIC_TABLET);
         RunicTabletItem.setPos(out, pos);
+        RunicTabletItem.setDimension(out, DimensionHelper.getDimension(player.world));
         out.setCustomName(getNameFromStack(stack0));
         this.result.setStack(0, out);
         this.sendContentUpdates();

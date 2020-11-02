@@ -9,10 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
@@ -24,6 +21,7 @@ import javax.annotation.Nullable;
 
 public class RunicTabletItem extends CharmItem {
     public static final String POS_TAG = "pos";
+    public static final String DIMENSION_TAG = "dimension";
 
     public RunicTabletItem(CharmModule module) {
         super(module, "runic_tablet", new Settings()
@@ -38,7 +36,11 @@ public class RunicTabletItem extends CharmItem {
         ItemStack tablet = user.getStackInHand(hand);
 
         // TODO: runic tablets should have a dimension tag
-        if (!DimensionHelper.isOverworld(world)) {
+        Identifier dimension = getDimension(tablet);
+        if (dimension == null)
+            return TypedActionResult.fail(tablet);
+
+        if (!DimensionHelper.isDimension(world, dimension)) {
             user.sendMessage(new TranslatableText("runictablet.strange.wrong_dimension"), true);
             return TypedActionResult.fail(tablet);
         }
@@ -95,7 +97,6 @@ public class RunicTabletItem extends CharmItem {
                 return;
         }
 
-
         user.requestTeleport(pos.getX(), pos.getY(), pos.getZ());
         world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
         stack.damage(1, user, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
@@ -119,8 +120,20 @@ public class RunicTabletItem extends CharmItem {
         return BlockPos.fromLong(tablet.getOrCreateTag().getLong(POS_TAG));
     }
 
+    @Nullable
+    public static Identifier getDimension(ItemStack fragment) {
+        if (fragment.getTag() == null || !fragment.getTag().contains(DIMENSION_TAG))
+            return null;
+
+        return new Identifier(fragment.getOrCreateTag().getString(DIMENSION_TAG));
+    }
+
     public static void setPos(ItemStack tablet, BlockPos pos) {
         tablet.getOrCreateTag().putLong(POS_TAG, pos.asLong());
+    }
+
+    public static void setDimension(ItemStack fragment, Identifier dimension) {
+        fragment.getOrCreateTag().putString(DIMENSION_TAG, dimension.toString());
     }
 
     public static float getPullProgress(int useTicks) {
