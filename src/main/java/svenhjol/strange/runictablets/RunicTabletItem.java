@@ -37,6 +37,7 @@ public class RunicTabletItem extends CharmItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack tablet = user.getStackInHand(hand);
 
+        // TODO: runic tablets should have a dimension tag
         if (!DimensionHelper.isOverworld(world)) {
             user.sendMessage(new TranslatableText("runictablet.strange.wrong_dimension"), true);
             return TypedActionResult.fail(tablet);

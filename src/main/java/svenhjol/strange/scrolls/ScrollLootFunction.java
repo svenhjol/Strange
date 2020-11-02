@@ -17,6 +17,7 @@ public class ScrollLootFunction extends ConditionalLootFunction {
 
     @Override
     protected ItemStack process(ItemStack stack, LootContext context) {
+        // TODO: make scrolls spawn less often in dungeon loot
         int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1;
         int rarity = context.getRandom().nextInt(2) + 2;
 

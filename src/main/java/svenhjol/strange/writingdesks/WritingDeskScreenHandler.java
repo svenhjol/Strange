@@ -188,7 +188,6 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         if (stack1.getItem() != Items.CLAY_BALL)
             return;
 
-        // get runes from this block pos
         List<Integer> runesFromBlockPos = RunestoneHelper.getRunesFromBlockPos(pos, 6);
 
         if (!player.isCreative()) {
