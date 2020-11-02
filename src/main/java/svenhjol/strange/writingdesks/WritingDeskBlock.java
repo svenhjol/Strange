@@ -26,6 +26,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlock;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public class WritingDeskBlock extends CharmBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
+        if (world.isClient || !ModuleHandler.enabled("strange:runic_tablets")) {
             return ActionResult.SUCCESS;
         } else {
             // ensure client has the latest rune discoveries
