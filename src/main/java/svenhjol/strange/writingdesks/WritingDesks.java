@@ -18,6 +18,8 @@ public class WritingDesks extends CharmModule {
     public static WritingDeskBlock WRITING_DESK;
     public static ScreenHandlerType<WritingDeskScreenHandler> SCREEN_HANDLER;
 
+    public static int requiredLevel = 20;
+
     @Override
     public void register() {
         WRITING_DESK = new WritingDeskBlock(this);
