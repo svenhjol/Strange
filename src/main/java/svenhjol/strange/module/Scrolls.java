@@ -35,11 +35,7 @@ import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrolls.ScrollsClient;
-import svenhjol.strange.scrolls.ScrollItem;
-import svenhjol.strange.scrolls.ScrollLootFunction;
-import svenhjol.strange.scrolls.JsonDefinition;
-import svenhjol.strange.scrolls.QuestManager;
+import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
