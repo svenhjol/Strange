@@ -3,14 +3,74 @@
   "pools": [
     {
       "rolls": {
-        "min": 2.0,
-        "max": 4.0
+        "min": 1.0,
+        "max": 2.0
       },
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 20,
+          "weight": 12,
           "name": "minecraft:saddle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:clay_ball",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 10.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:leather",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 5.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:brick",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 10.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:string",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 10.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -20,8 +80,8 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 2.0,
-                "max": 4.0,
+                "min": 1.0,
+                "max": 5.0,
                 "type": "minecraft:uniform"
               }
             }
@@ -34,8 +94,8 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 2.0,
-                "max": 4.0,
+                "min": 1.0,
+                "max": 5.0,
                 "type": "minecraft:uniform"
               }
             }
@@ -49,21 +109,33 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 2.0,
-                "max": 7.0,
+                "min": 1.0,
+                "max": 5.0,
                 "type": "minecraft:uniform"
               }
             }
           ],
           "name": "minecraft:diamond"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 5.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "name": "minecraft:emerald"
         }
       ]
     },
     {
-      "rolls": {
-        "min": 1.0,
-        "max": 3.0
-      },
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -74,7 +146,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -89,7 +161,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -104,7 +176,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -119,7 +191,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -134,7 +206,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -149,7 +221,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -164,7 +236,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -179,7 +251,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -188,10 +260,7 @@
       ]
     },
     {
-      "rolls": {
-        "min": 1.0,
-        "max": 2.0
-      },
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -202,7 +271,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -217,7 +286,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -232,7 +301,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -247,7 +316,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -262,7 +331,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -277,7 +346,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -292,7 +361,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
@@ -307,7 +376,7 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "min": 5,
-                "max": 15
+                "max": 10
               },
               "treasure": true
             }
