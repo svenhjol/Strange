@@ -6,6 +6,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
@@ -18,6 +20,7 @@ import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class RunicTabletItem extends CharmItem {
     public static final String POS_TAG = "pos";
@@ -35,7 +38,6 @@ public class RunicTabletItem extends CharmItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack tablet = user.getStackInHand(hand);
 
-        // TODO: runic tablets should have a dimension tag
         Identifier dimension = getDimension(tablet);
         if (dimension == null)
             return TypedActionResult.fail(tablet);
@@ -73,6 +75,8 @@ public class RunicTabletItem extends CharmItem {
     @Override
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
         super.usageTick(world, user, stack, remainingUseTicks);
+        if (!world.isClient)
+            effectUsing((ServerWorld)world, user.getBlockPos());
     }
 
     @Override
@@ -85,7 +89,8 @@ public class RunicTabletItem extends CharmItem {
 
         BlockPos pos = getPos(stack);
 
-        if (!DimensionHelper.isOverworld(world))
+        Identifier dimension = getDimension(stack);
+        if (dimension == null || !DimensionHelper.isDimension(world, dimension))
             return;
 
         if (pos == null)
@@ -98,6 +103,7 @@ public class RunicTabletItem extends CharmItem {
         }
 
         user.requestTeleport(pos.getX(), pos.getY(), pos.getZ());
+        world.sendEntityStatus(user, (byte)46);
         world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
         stack.damage(1, user, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
     }
@@ -144,5 +150,10 @@ public class RunicTabletItem extends CharmItem {
         }
 
         return f;
+    }
+
+    public static void effectUsing(ServerWorld world, BlockPos pos) {
+        Random random = world.random;
+        world.spawnParticles(ParticleTypes.ENCHANT, pos.getX() + 0.25D, pos.getY() + 1.0D, pos.getZ() + 0.25D, 3, random.nextFloat(), random.nextFloat(), random.nextFloat(), 0.25D);
     }
 }
