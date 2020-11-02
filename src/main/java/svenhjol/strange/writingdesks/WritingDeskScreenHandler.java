@@ -1,6 +1,5 @@
 package svenhjol.strange.writingdesks;
 
-import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -15,10 +14,15 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.runestones.RunestoneHelper;
 import svenhjol.strange.runictablets.RunicFragmentItem;
@@ -26,6 +30,7 @@ import svenhjol.strange.runictablets.RunicTabletItem;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class WritingDeskScreenHandler extends ScreenHandler {
     private final Inventory input;
@@ -72,16 +77,13 @@ public class WritingDeskScreenHandler extends ScreenHandler {
 
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
                 context.run((world, pos) -> {
-                    int i = 50;
-                    while(i > 0) {
-                        int j = ExperienceOrbEntity.roundToOrbSize(i);
-                        i -= j;
-                        world.spawnEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ() + 0.5D, j));
-                    }
+                    // might want to do something at the writing desk position
+                    world.playSound(null, pos, SoundEvents.ENTITY_CAT_HISS, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 });
                 for (int i = 0; i < 2; i++) {
                     WritingDeskScreenHandler.this.input.getStack(i).decrement(1);
                 }
+                player.addExperienceLevels(-WritingDesks.requiredLevel);
                 return stack;
             }
         });
@@ -189,14 +191,19 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         // get runes from this block pos
         List<Integer> runesFromBlockPos = RunestoneHelper.getRunesFromBlockPos(pos, 6);
 
-        // the player must have these runes to create a runic tablet
         if (!player.isCreative()) {
+
+            // the player must have these runes to create a runic tablet
             List<Integer> discovered = RunestoneHelper.getDiscoveredRunes(player);
 
             for (int rune : runesFromBlockPos) {
                 if (!discovered.contains(rune))
                     return;
             }
+
+            // the player must have enough XP to create a runic tablet
+            if (player.experienceLevel < WritingDesks.requiredLevel)
+                return;
         }
 
         ItemStack out = new ItemStack(RunicTablets.RUNIC_TABLET);
@@ -228,20 +235,33 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         if (stack.getItem() == RunicTablets.RUNIC_FRAGMENT) {
             pos = RunicFragmentItem.getPos(stack);
 
+            // must be in correct dimension as the fragment
+            Identifier dimension = RunicFragmentItem.getDimension(stack);
+            if (dimension != null && !DimensionHelper.isDimension(world, dimension))
+                return null;
+
             if (!world.isClient) {
+                // check if a failed check was made in this dimension
+                if (RunicFragmentItem.didFailDimensionCheck(stack, world))
+                    return null;
+
+                // try and generate a pos for this runic fragment
                 if (pos == null) {
-                    // try and generate the pos for the fragment
                     boolean result = RunicFragmentItem.populate(stack, (ServerWorld) world, player.getBlockPos(), world.random);
                     if (!result)
-                        this.input.setStack(0, ItemStack.EMPTY);
-
-                    return null;
+                        return null;
                 }
 
                 pos = RunicFragmentItem.getPos(stack);
             }
+
         } else if (stack.getItem() == Items.COMPASS) {
             if (!CompassItem.hasLodestone(stack) || !stack.hasTag() || stack.getTag() == null)
+                return null;
+
+            // must be the correct dimension as the lodestone
+            Optional<RegistryKey<World>> dimension = CompassItem.getLodestoneDimension(stack.getTag());
+            if (!dimension.isPresent() || !DimensionHelper.isDimension(world, dimension.get()))
                 return null;
 
             pos = NbtHelper.toBlockPos(stack.getTag().getCompound("LodestonePos"));
