@@ -240,8 +240,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
                 return null;
 
             if (!world.isClient) {
-                // check if a failed check was made in this dimension
-                if (RunicFragmentItem.didFailDimensionCheck(stack, world))
+                if (RunicFragmentItem.isWaitingForTimeout(stack, world))
                     return null;
 
                 // try and generate a pos for this runic fragment

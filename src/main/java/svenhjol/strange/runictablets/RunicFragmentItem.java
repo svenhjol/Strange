@@ -29,7 +29,7 @@ import java.util.Random;
 public class RunicFragmentItem extends CharmItem {
     public static final String DIMENSION_TAG = "dimension";
     public static final String POS_TAG = "pos";
-    public static final String FAILED_TAG = "failedDimensionCheck";
+    public static final String TRIED_TAG = "tried";
 
     public RunicFragmentItem(CharmModule module) {
         super(module, "runic_fragment", new Settings()
@@ -57,12 +57,16 @@ public class RunicFragmentItem extends CharmItem {
     }
 
     public static boolean populate(ItemStack fragment, ServerWorld world, BlockPos pos, Random random) {
+        // don't try populating again until after timeout
+        if (isWaitingForTimeout(fragment, world))
+            return false;
+
         Identifier locationId = RunicTablets.destinations.get(random.nextInt(RunicTablets.destinations.size()));
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {
-            Charm.LOG.warn("Unable to find structure " + locationId + ", flagging fragment");
-            RunicFragmentItem.setFailedDimensionCheck(fragment, DimensionHelper.getDimension(world));
+            Charm.LOG.warn("Unable to find structure " + locationId + ", setting timeout");
+            RunicFragmentItem.setTried(fragment, world.getTime());
             return false;
         }
 
@@ -70,14 +74,14 @@ public class RunicFragmentItem extends CharmItem {
         BlockPos foundPos = world.locateStructure(structureFeature, pos, 1000, false);
 
         if (foundPos == null) {
-            Charm.LOG.warn("Unable to find position of structure in this dimension, flagging fragment");
-            RunicFragmentItem.setFailedDimensionCheck(fragment, DimensionHelper.getDimension(world));
+            Charm.LOG.warn("Unable to find position of structure in this dimension, setting timeout");
+            RunicFragmentItem.setTried(fragment, world.getTime());
             return false;
         }
 
         setPos(fragment, foundPos);
         setDimension(fragment, DimensionHelper.getDimension(world));
-        setFailedDimensionCheck(fragment, null);
+        setTried(fragment, 0);
 
         // TODO: this should probably be in some kind of helper
         Text label;
@@ -93,9 +97,9 @@ public class RunicFragmentItem extends CharmItem {
         return true;
     }
 
-    public static boolean didFailDimensionCheck(ItemStack fragment, World world) {
-        Identifier failedDimensionCheck = getFailedDimensionCheck(fragment);
-        return failedDimensionCheck != null && DimensionHelper.isDimension(world, failedDimensionCheck);
+    public static boolean isWaitingForTimeout(ItemStack fragment, World world) {
+        long tried = getTried(fragment);
+        return tried > 0 && world.getTime() - tried < 600;
     }
 
     @Nullable
@@ -114,12 +118,11 @@ public class RunicFragmentItem extends CharmItem {
         return BlockPos.fromLong(fragment.getOrCreateTag().getLong(POS_TAG));
     }
 
-    @Nullable
-    public static Identifier getFailedDimensionCheck(ItemStack fragment) {
-        if (fragment.getTag() == null || !fragment.getTag().contains(FAILED_TAG))
-            return null;
+    public static long getTried(ItemStack fragment) {
+        if (fragment.getTag() == null || !fragment.getTag().contains(TRIED_TAG))
+            return 0;
 
-        return new Identifier(fragment.getOrCreateTag().getString(FAILED_TAG));
+        return fragment.getOrCreateTag().getLong(TRIED_TAG);
     }
 
     public static void setPos(ItemStack fragment, BlockPos pos) {
@@ -130,11 +133,7 @@ public class RunicFragmentItem extends CharmItem {
         fragment.getOrCreateTag().putString(DIMENSION_TAG, dimension.toString());
     }
 
-    public static void setFailedDimensionCheck(ItemStack fragment, @Nullable Identifier dimension) {
-        if (dimension == null) {
-            fragment.getOrCreateTag().remove(FAILED_TAG);
-        } else {
-            fragment.getOrCreateTag().putString(FAILED_TAG, dimension.toString());
-        }
+    public static void setTried(ItemStack fragment, long ticks) {
+        fragment.getOrCreateTag().putLong(TRIED_TAG, ticks);
     }
 }
