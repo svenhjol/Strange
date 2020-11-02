@@ -1,9 +1,10 @@
 package svenhjol.strange.writingdesks;
 
 import net.minecraft.block.*;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -40,6 +41,7 @@ public class WritingDeskBlock extends CharmBlock {
     public static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape OUTLINE_SHAPE;
     public static final Text TITLE = new TranslatableText("container.strange.writing_desk");
+    public static final int NUM_VARIANTS = 4;
 
     public WritingDeskBlock(CharmModule module) {
         super(module, WritingDesks.BLOCK_ID.getPath(), AbstractBlock.Settings.copy(Blocks.CARTOGRAPHY_TABLE));
@@ -73,12 +75,11 @@ public class WritingDeskBlock extends CharmBlock {
         return OUTLINE_SHAPE;
     }
 
-    @Nullable
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()
-            .with(FACING, ctx.getPlayerFacing().getOpposite())
-            .with(VARIANT, new Random().nextInt(4));
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
+        Random r = new Random(pos.asLong());
+        world.setBlockState(pos, state.with(VARIANT, r.nextInt(NUM_VARIANTS)));
     }
 
     public BlockState rotate(BlockState state, BlockRotation rotation) {
