@@ -201,6 +201,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
 
     private ActionResult fail(ServerWorld world, BlockPos pos) {
         world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 0.9F);
+        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 0.5F, 1.17F);
 
         dropItem(world, pos, new ItemStack(Blocks.GRAVEL));
         world.removeBlockEntity(pos);
