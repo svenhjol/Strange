@@ -24,7 +24,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(Strange.MOD_ID, "textures/gui/writing_desk.png");
     private static final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
     private int updateTicks = 0;
-    private boolean satisfied = true;
+    private boolean satisfied = false;
 
     private List<Integer> lastRunes = new ArrayList<>();
     private List<Integer> lastDiscovered = new ArrayList<>();
@@ -64,9 +64,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
         Slot slot0 = handler.getSlot(0);
         Slot slot1 = handler.getSlot(1);
 
-        // draw the nope arrow
-        if (!slot0.hasStack() || !slot1.hasStack())
-            satisfied = false;
+        satisfied = slot0.hasStack() && slot1.hasStack();
 
         // if the player doesn't have enough XP, show the text for this
         if (slot0.hasStack() && !player.isCreative() && player.experienceLevel < WritingDesks.requiredLevel) {
@@ -93,11 +91,11 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
             lastDiscovered = RunestoneHelper.getDiscoveredRunes(player);
         }
 
-        if (!slot0.hasStack())
-            return; // don't want to render the rune grid if there's nothing in slot0
-
-        if (lastRunes.size() < 6)
+        // conditions for not rendering the grid
+        if (!slot0.hasStack() || lastRunes.size() < 6) {
+            satisfied = false;
             return;
+        }
 
         // render the rune grid
         int index = 0;
@@ -106,6 +104,8 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
                 int rune = lastRunes.get(index++);
                 String runeChar = Character.toString((char)(rune + 97));
                 boolean isKnownRune = player.isCreative() || lastDiscovered.contains(rune);
+                if (!isKnownRune)
+                    satisfied = false;
 
                 Text runeText = new LiteralText(runeChar).fillStyle(SGA_STYLE);
                 Text questionText = new LiteralText("?");
