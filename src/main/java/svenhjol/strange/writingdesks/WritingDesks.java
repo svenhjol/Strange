@@ -12,13 +12,11 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.Scrollkeepers;
 
-@Module(mod = Strange.MOD_ID, description = "Writing desks allow creation of runic tablets.", alwaysEnabled = true)
+@Module(mod = Strange.MOD_ID, description = "Writing desks are the job site for scrollkeepers and allow creation of runic tablets.", alwaysEnabled = true)
 public class WritingDesks extends CharmModule {
     public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
     public static WritingDeskBlock WRITING_DESK;
     public static ScreenHandlerType<WritingDeskScreenHandler> SCREEN_HANDLER;
-
-    public static int requiredLevel = 20;
 
     @Override
     public void register() {
@@ -27,8 +25,7 @@ public class WritingDesks extends CharmModule {
 
         Scrollkeepers.registerAfterWritingDesk();
 
-        enabled = ModuleHandler.enabled("strange:scrolls")
-            && ModuleHandler.enabled("strange:runic_tablets");
+        enabled = ModuleHandler.enabled("strange:scrolls");
     }
 
     @Override
