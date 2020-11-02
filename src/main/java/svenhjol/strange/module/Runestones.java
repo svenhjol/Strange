@@ -65,7 +65,9 @@ public class Runestones extends CharmModule {
 
     public static List<Destination> availableDestinations = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<Destination> worldDestinations = new ArrayList<>(); // destinations shuffled according to world seed
-    public static Map<UUID, BlockPos> teleportPositions = new HashMap<>(); // location to teleport player who has just used pearl
+
+    public static Map<UUID, BlockPos> teleportFrom = new HashMap<>(); // location of the runestone that the player hit with the pearl
+    public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just used pearl
     public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has used pearl
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
@@ -232,7 +234,6 @@ public class Runestones extends CharmModule {
             if (RUNESTONE_BLOCKS.contains(block)) {
                 TranslatableText message = new TranslatableText("runestone.strange.unknown");
                 int runeValue = getRuneValue((ServerWorld) world, runePos);
-                UUID uid = player.getUuid();
 
                 if (RunestoneHelper.hasLearnedRune(player, runeValue)) {
                     Destination destination = worldDestinations.get(runeValue);
@@ -259,34 +260,50 @@ public class Runestones extends CharmModule {
     }
 
     private void tryTeleport(ServerPlayerEntity player) {
-        if (teleportPositions.isEmpty())
+        if (teleportTo.isEmpty())
             return;
 
         UUID uid = player.getUuid();
 
         if (teleportTicks.containsKey(uid)) {
             int ticks = teleportTicks.get(uid);
+            BlockPos src = teleportFrom.get(uid);
+            BlockPos dest = teleportTo.get(uid);
+
+            // force load the remote chunk for smoother teleport
+            if (ticks == TELEPORT_TICKS) {
+                if (!WorldHelper.addForcedChunk((ServerWorld)player.world, dest)) {
+                    Charm.LOG.warn("Could not load destination chunk, giving up");
+                    RunestoneHelper.explode(player.world, src, player, true);
+                    clearTeleport(player);
+                    return;
+                }
+            }
+
             if (ticks > 0) {
                 teleportTicks.put(uid, --ticks);
                 return;
             }
 
-            if (!teleportPositions.containsKey(uid))
+            if (!teleportTo.containsKey(uid))
                 return;
 
-            BlockPos destPos = teleportPositions.get(uid);
-            teleportTicks.remove(uid);
-            teleportPositions.remove(uid);
-
+            BlockPos destPos = teleportTo.get(uid);
             World world = player.world;
             BlockPos surfacePos = PosHelper.getSurfacePos(world, destPos);
+
+            // don't need the player's teleport info any more
+            clearTeleport(player);
 
             int duration = protectionDuration * 20;
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, duration, 2));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, duration, 2));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, duration, 2));
 
-            player.teleport(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
+            if (surfacePos != null) // should never be null but check anyway
+                player.teleport(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
+
+            // must unload the chunk once finished
             WorldHelper.removeForcedChunk((ServerWorld)player.world, destPos);
         }
     }
@@ -309,7 +326,7 @@ public class Runestones extends CharmModule {
             if (block instanceof RunestoneBlock) {
                 entity.remove();
 
-                boolean result = onPearlImpact((ServerWorld)world, pos, (ServerPlayerEntity)player);
+                boolean result = onPlayerActivateRunestone((ServerWorld)world, pos, (ServerPlayerEntity)player);
                 if (result) {
                     world.playSound(null, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     return ActionResult.SUCCESS;
@@ -320,7 +337,7 @@ public class Runestones extends CharmModule {
         return ActionResult.PASS;
     }
 
-    private boolean onPearlImpact(ServerWorld world, BlockPos runePos, ServerPlayerEntity player) {
+    private boolean onPlayerActivateRunestone(ServerWorld world, BlockPos runePos, ServerPlayerEntity player) {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
             Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toShortString());
@@ -331,22 +348,15 @@ public class Runestones extends CharmModule {
         random.setSeed(runePos.toImmutable().asLong());
         BlockPos destPos = worldDestinations.get(runeValue).getDestination(world, runePos, maxDistance, random, player);
 
-        if (destPos == null) {
+        if (destPos == null)
             return RunestoneHelper.explode(world, runePos, player, true);
-        }
-
-        // force remote chunk
-        boolean result = WorldHelper.addForcedChunk(world, destPos);
-        if (!result) {
-            Charm.LOG.warn("Could not load destination chunk, giving up");
-            return RunestoneHelper.explode(world, runePos, player, true);
-        }
 
         UUID uid = player.getUuid();
 
         // prep for teleport
-        teleportPositions.put(uid, destPos);
-        teleportTicks.put(uid, 10);
+        teleportFrom.put(uid, runePos);
+        teleportTo.put(uid, destPos);
+        teleportTicks.put(uid, TELEPORT_TICKS);
 
         RunestoneHelper.addLearnedRune(player, runeValue);
         return true;
@@ -356,5 +366,12 @@ public class Runestones extends CharmModule {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return -1;
         return ((RunestoneBlock)state.getBlock()).getRuneValue();
+    }
+
+    private void clearTeleport(PlayerEntity player) {
+        UUID uid = player.getUuid();
+        teleportTicks.remove(uid);
+        teleportTo.remove(uid);
+        teleportFrom.remove(uid);
     }
 }
