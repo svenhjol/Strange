@@ -14,7 +14,6 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.ruins.builds.TestRuin;
 import svenhjol.strange.ruins.RuinFeature;
 import svenhjol.strange.ruins.RuinGenerator;
 import svenhjol.strange.ruins.builds.Vaults;
@@ -85,7 +84,7 @@ public class Ruins extends CharmModule {
         DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
 
         // register all custom ruins here
-        PLAINS_RUINS.add(new TestRuin());
+//        PLAINS_RUINS.add(new TestRuin());
         MOUNTAINS_RUINS.add(new Vaults());
 //        RuinGenerator.MOUNTAINS_RUINS.add(new BambiMountainsRuin());
 //        RuinGenerator.FOREST_RUINS.add(new ForestRuin());
