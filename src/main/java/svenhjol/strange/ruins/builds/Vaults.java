@@ -40,7 +40,7 @@ public class Vaults extends BaseStructure {
         ROOMS.put("room_wood_drop", 4);
         ROOMS.put("room_wood_evoker", 4);
 
-        CORRIDORS.put("corridor_stairs", 1);
+        CORRIDORS.put("corridor_stairs", 2);
         CORRIDORS.put("corridor_stone_arches", 2);
         CORRIDORS.put("corridor_stone_broken1", 2);
         CORRIDORS.put("corridor_stone_broken2", 2);
