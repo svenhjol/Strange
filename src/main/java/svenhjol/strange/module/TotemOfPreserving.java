@@ -150,7 +150,7 @@ public class TotemOfPreserving extends CharmModule {
             World world = entity.getEntityWorld();
             BlockPos pos = entity.getBlockPos();
 
-            ItemStack totem = world.random.nextBoolean() ? new ItemStack(TOTEM_OF_PRESERVING) : new ItemStack(TOTEM_OF_UNDYING);
+            ItemStack totem = new ItemStack(world.random.nextBoolean() ? TOTEM_OF_PRESERVING : TOTEM_OF_UNDYING);
             world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), totem));
         }
 
