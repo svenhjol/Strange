@@ -5,6 +5,9 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -19,11 +22,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.ItemHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.EntityDropsCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.totems.TotemOfPreservingItem;
@@ -31,6 +36,8 @@ import svenhjol.strange.totems.TotemOfPreservingItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraft.item.Items.TOTEM_OF_UNDYING;
 
 @Module(mod = Strange.MOD_ID, description = "With a Totem of Preserving in your inventory, your items will be held in the totem when you die.")
 public class TotemOfPreserving extends CharmModule {
@@ -49,6 +56,7 @@ public class TotemOfPreserving extends CharmModule {
         ItemHelper.ITEM_LIFETIME.put(TOTEM_OF_PRESERVING, Integer.MAX_VALUE); // probably stupid
         PlayerDropInventoryCallback.EVENT.register(this::tryInterceptDropInventory);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
+        EntityDropsCallback.EVENT.register(this::tryDropTotemFromIllusioner);
     }
 
     public ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
@@ -133,5 +141,19 @@ public class TotemOfPreserving extends CharmModule {
 
             supplier.pool(builder);
         }
+    }
+
+    public ActionResult tryDropTotemFromIllusioner(LivingEntity entity, DamageSource source, int lootingLevel) {
+        if (!entity.world.isClient
+            && entity instanceof IllusionerEntity
+        ) {
+            World world = entity.getEntityWorld();
+            BlockPos pos = entity.getBlockPos();
+
+            ItemStack totem = world.random.nextBoolean() ? new ItemStack(TOTEM_OF_PRESERVING) : new ItemStack(TOTEM_OF_UNDYING);
+            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), totem));
+        }
+
+        return ActionResult.PASS;
     }
 }
