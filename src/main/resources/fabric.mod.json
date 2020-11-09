@@ -12,6 +12,7 @@
     "homepage": "https://svenhjol.github.io/Strange/",
     "sources": "https://github.com/svenhjol/Strange"
   },
+  "accessWidener": "strange.accesswidener",
 
   "license": "MIT",
   "icon": "assets/strange/icon.png",
