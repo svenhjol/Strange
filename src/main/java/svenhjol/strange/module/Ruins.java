@@ -16,6 +16,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.ruins.RuinFeature;
 import svenhjol.strange.ruins.RuinGenerator;
+import svenhjol.strange.ruins.builds.Castle;
 import svenhjol.strange.ruins.builds.Vaults;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
@@ -85,10 +86,10 @@ public class Ruins extends CharmModule {
 
         // register all custom ruins here
 //        PLAINS_RUINS.add(new TestRuin());
-        MOUNTAINS_RUINS.add(new Vaults());
+//      MOUNTAINS_RUINS.add(new Vaults());
 //        RuinGenerator.MOUNTAINS_RUINS.add(new BambiMountainsRuin());
 //        RuinGenerator.FOREST_RUINS.add(new ForestRuin());
-//        RuinGenerator.PLAINS_RUINS.add(new PlainsRuin());
+        PLAINS_RUINS.add(new Castle());
 
         // builds and registers all custom ruins into pools
         RuinGenerator.init();
