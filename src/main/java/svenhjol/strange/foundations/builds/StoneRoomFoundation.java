@@ -17,6 +17,7 @@ public class StoneRoomFoundation extends BaseStructure {
         addStart("start1", 2);
         addStart("start2", 2);
         addStart("start3", 1);
+        addStart("start4", 1);
 
         // add the ends as corridors too, whynot
         CORRIDORS.put("corridor1", 2);
