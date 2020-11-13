@@ -1,18 +1,15 @@
 package svenhjol.strange.writingdesks;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.charm.base.handler.ClientRegistryHandler;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.Scrollkeepers;
 
-@Module(mod = Strange.MOD_ID, description = "Writing desks are the job site for scrollkeepers and allow creation of runic tablets.", alwaysEnabled = true)
+@Module(mod = Strange.MOD_ID, client = WritingDesksClient.class, description = "Writing desks are the job site for scrollkeepers and allow creation of runic tablets.", alwaysEnabled = true)
 public class WritingDesks extends CharmModule {
     public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
     public static WritingDeskBlock WRITING_DESK;
@@ -28,13 +25,4 @@ public class WritingDesks extends CharmModule {
         enabled = ModuleHandler.enabled("strange:scrolls");
     }
 
-    @Override
-    public void clientRegister() {
-        BlockRenderLayerMap.INSTANCE.putBlock(WRITING_DESK, RenderLayer.getCutout());
-    }
-
-    @Override
-    public void clientInit() {
-        ClientRegistryHandler.screenHandler(SCREEN_HANDLER, WritingDeskScreen::new);
-    }
 }

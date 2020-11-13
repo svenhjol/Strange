@@ -1,5 +1,7 @@
 package svenhjol.strange.excavation;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -30,7 +32,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
-import svenhjol.charm.mixin.accessor.ShovelItemAccessor;
 import svenhjol.strange.base.StrangeLoot;
 
 import javax.annotation.Nullable;
@@ -43,12 +44,12 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
     public static final List<VoxelShape> SHAPES = new ArrayList<>();
 
     public AncientRubbleBlock(CharmModule module) {
-        super(module, "ancient_rubble", AbstractBlock.Settings.of(Material.AGGREGATE, MaterialColor.STONE)
+        super(module, "ancient_rubble", FabricBlockSettings.of(Material.AGGREGATE, MaterialColor.STONE)
             .strength(8.0F)
             .requiresTool()
+            .breakByTool(FabricToolTags.SHOVELS)
             .sounds(BlockSoundGroup.GRAVEL));
 
-        ShovelItemAccessor.getEffectiveBlocks().add(this);
         setDefaultState(getDefaultState().with(LEVEL, 0));
     }
 

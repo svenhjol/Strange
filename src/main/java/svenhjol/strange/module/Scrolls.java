@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-@Module(mod = Strange.MOD_ID, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
+@Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
     public static final int MAX_TIERS = 6;
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
@@ -52,7 +52,6 @@ public class Scrolls extends CharmModule {
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    public ScrollsClient client;
     public static QuestManager questManager;
 
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
@@ -104,11 +103,6 @@ public class Scrolls extends CharmModule {
 
         // tick the questmanager
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
-    }
-
-    @Override
-    public void clientInit() {
-        this.client = new ScrollsClient(this);
     }
 
     private void loadQuestManager(MinecraftServer server) {

@@ -7,7 +7,9 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.module.Scrollkeepers;
@@ -15,11 +17,15 @@ import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;
 
-public class ScrollKeepersClient {
-    private CharmModule module;
+public class ScrollKeepersClient extends CharmClientModule {
 
     public ScrollKeepersClient(CharmModule module) {
-        this.module = module;
+        super(module);
+    }
+
+    @Override
+    public void register() {
+        PlayerTickCallback.EVENT.register(this::villagerInterested);
     }
 
     public void villagerInterested(PlayerEntity player) {

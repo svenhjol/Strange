@@ -23,14 +23,13 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.VillagerHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
-import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrollkeepers.ScrollKeepersClient;
+import svenhjol.strange.scrollkeepers.ScrollkeeperTradeOffers;
 import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;
-import svenhjol.strange.scrollkeepers.ScrollkeeperTradeOffers;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 @Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
@@ -66,12 +65,6 @@ public class Scrollkeepers extends CharmModule {
     @Override
     public void init() {
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
-    }
-
-    @Override
-    public void clientInit() {
-        client = new ScrollKeepersClient(this);
-        PlayerTickCallback.EVENT.register(player -> client.villagerInterested(player));
     }
 
     private ActionResult tryHandInScroll(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult hitResult) {

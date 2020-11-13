@@ -51,7 +51,7 @@ import java.util.*;
 
 import static svenhjol.strange.runestones.RunestoneHelper.NUMBER_OF_RUNES;
 
-@Module(mod = Strange.MOD_ID, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
+@Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "runestone");
     public static final Identifier MSG_CLIENT_SYNC_LEARNED = new Identifier(Strange.MOD_ID, "client_sync_learned");
@@ -60,8 +60,6 @@ public class Runestones extends CharmModule {
 
     public static final List<RunestoneBlock> RUNESTONE_BLOCKS = new ArrayList<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
-
-    public RunestonesClient client;
 
     public static List<Destination> availableDestinations = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<Destination> worldDestinations = new ArrayList<>(); // destinations shuffled according to world seed
@@ -108,11 +106,6 @@ public class Runestones extends CharmModule {
         }
 
         BLOCK_ENTITY = RegistryHandler.blockEntity(ID, RunestoneBlockEntity::new);
-    }
-
-    @Override
-    public void clientRegister() {
-        client = new RunestonesClient(this);
     }
 
     @Override
