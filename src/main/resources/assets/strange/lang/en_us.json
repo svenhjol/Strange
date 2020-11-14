@@ -96,6 +96,8 @@
   "runestone.strange.known": "%s...",
   "runestone.strange.discovered": "Discovered %s",
   "runestone.strange.discoveredby": "Discovered %s by <%s>",
+  "runestone.strange.learned_rune": "Learned rune %s",
+  "runestone.strange.learned_all_runes": "Learned all runes",
   "runictablet.strange.wrong_dimension": "This tablet doesn't work in this dimension.",
   "runictablet.strange.fragment_symbol": "This fragment has the symbol for %s.",
   "scroll.strange.too_many_quests": "You cannot start a new quest at the moment.",
