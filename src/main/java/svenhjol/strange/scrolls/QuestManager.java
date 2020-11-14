@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 public class QuestManager extends PersistentState {
     public static final String TICK_TAG = "Tick";
     public static final String QUESTS_TAG = "Quests";
+    public static final int DEFAULT_EXPIRY = 20; // in minutes
 
     private int currentTime;
     private final Map<String, Quest> quests = new HashMap<>();

@@ -43,9 +43,9 @@ public class JsonDefinition {
 
     public int getTimeLimit() {
         if (timeLimit == 0)
-            timeLimit = 20;
+            timeLimit = QuestManager.DEFAULT_EXPIRY;
 
-        return timeLimit * 60 * 20;
+        return timeLimit * 60 * 20; // in ticks
     }
 
     public boolean isBuiltIn() {
