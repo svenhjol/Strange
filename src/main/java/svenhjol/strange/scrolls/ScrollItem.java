@@ -57,11 +57,15 @@ public class ScrollItem extends CharmItem {
         if (!hasBeenOpened) {
             // if the quest hasn't been populated yet, create it in the quest manager
             JsonDefinition definition = Scrolls.getRandomDefinition(tier, world.random);
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
 
             if (definition == null)
                 return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
 
-            Scrolls.questManager.createQuest(heldScroll, (ServerPlayerEntity)player, definition);
+            if (!Scrolls.questManager.checkPlayerCanStartQuest(serverPlayer))
+                return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
+
+            Scrolls.questManager.createQuest(heldScroll, serverPlayer, definition);
 
             // tell the client to open the scroll
             playerShouldOpenScroll(player, heldScroll);

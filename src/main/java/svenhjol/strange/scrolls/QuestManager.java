@@ -19,6 +19,7 @@ public class QuestManager extends PersistentState {
     public static final String TICK_TAG = "Tick";
     public static final String QUESTS_TAG = "Quests";
     public static final int DEFAULT_EXPIRY = 20; // in minutes
+    public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable
 
     private int currentTime;
     private final Map<String, Quest> quests = new HashMap<>();
@@ -103,6 +104,16 @@ public class QuestManager extends PersistentState {
             return quest;
 
         return null;
+    }
+
+    public boolean checkPlayerCanStartQuest(ServerPlayerEntity player) {
+        // check for too many quests
+        if (playerQuests.getOrDefault(player.getUuid(), new ArrayList<>()).size() >= MAX_PLAYER_QUESTS) {
+            player.sendMessage(new TranslatableText("scrolls.strange.too_many_quests"), true);
+            return false;
+        }
+
+        return true;
     }
 
     public void createQuest(ItemStack scroll, ServerPlayerEntity player, JsonDefinition definition) {
