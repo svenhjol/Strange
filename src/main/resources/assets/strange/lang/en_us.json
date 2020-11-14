@@ -98,7 +98,7 @@
   "runestone.strange.discoveredby": "Discovered %s by <%s>",
   "runictablet.strange.wrong_dimension": "This tablet doesn't work in this dimension.",
   "runictablet.strange.fragment_symbol": "This fragment has the symbol for %s.",
-  "scrolls.strange.too_many_quests": "You cannot start a new quest at the moment.",
+  "scroll.strange.too_many_quests": "You cannot start a new quest at the moment.",
   "structure.strange.foundation": "Ancient Foundations",
   "structure.strange.ruin": "Underground Ruins",
   "totem.strange.preserving.item": "Preserving one item",

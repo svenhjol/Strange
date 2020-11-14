@@ -109,7 +109,7 @@ public class QuestManager extends PersistentState {
     public boolean checkPlayerCanStartQuest(ServerPlayerEntity player) {
         // check for too many quests
         if (playerQuests.getOrDefault(player.getUuid(), new ArrayList<>()).size() >= MAX_PLAYER_QUESTS) {
-            player.sendMessage(new TranslatableText("scrolls.strange.too_many_quests"), true);
+            player.sendMessage(new TranslatableText("scroll.strange.too_many_quests"), true);
             return false;
         }
 
