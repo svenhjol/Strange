@@ -1,4 +1,4 @@
-package svenhjol.strange.writingdesks;
+package svenhjol.strange.runictablets;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,28 +23,25 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.runestones.RunestoneHelper;
-import svenhjol.strange.runictablets.RunicFragmentItem;
-import svenhjol.strange.runictablets.RunicTabletItem;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class WritingDeskScreenHandler extends ScreenHandler {
+public class RunicAltarScreenHandler extends ScreenHandler {
     private final Inventory input;
     private final Inventory result;
     private final PlayerInventory playerInventory;
     private final PlayerEntity player;
     private final ScreenHandlerContext context;
 
-    public WritingDeskScreenHandler(int syncId, PlayerInventory playerInventory) {
+    public RunicAltarScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
     }
 
-    public WritingDeskScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
-        super(WritingDesks.SCREEN_HANDLER, syncId);
+    public RunicAltarScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+        super(RunicTablets.SCREEN_HANDLER, syncId);
 
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;
@@ -52,7 +49,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
         this.input = new SimpleInventory(4) {
             public void markDirty() {
                 super.markDirty();
-                WritingDeskScreenHandler.this.onContentChanged(this);
+                RunicAltarScreenHandler.this.onContentChanged(this);
             }
         };
         this.context = context;
@@ -77,11 +74,11 @@ public class WritingDeskScreenHandler extends ScreenHandler {
 
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
                 context.run((world, pos) -> {
-                    // might want to do something at the writing desk position
+                    // might want to do something at the block position
                     world.playSound(null, pos, SoundEvents.ENTITY_CAT_HISS, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 });
                 for (int i = 0; i < 2; i++) {
-                    WritingDeskScreenHandler.this.input.getStack(i).decrement(1);
+                    RunicAltarScreenHandler.this.input.getStack(i).decrement(1);
                 }
                 player.addExperienceLevels(-RunicTablets.requiredXpLevels);
                 return stack;
@@ -103,7 +100,7 @@ public class WritingDeskScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return canUse(this.context, player, WritingDesks.WRITING_DESK);
+        return canUse(this.context, player, RunicTablets.RUNIC_ALTAR);
     }
 
     /**

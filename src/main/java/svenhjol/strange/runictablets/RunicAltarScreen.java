@@ -1,4 +1,4 @@
-package svenhjol.strange.writingdesks;
+package svenhjol.strange.runictablets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -8,21 +8,23 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.*;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
+public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
     private static final Identifier SGA_TEXTURE = new Identifier("minecraft", "alt");
-    private static final Identifier TEXTURE = new Identifier(Strange.MOD_ID, "textures/gui/writing_desk.png");
+    private static final Identifier TEXTURE = new Identifier(Strange.MOD_ID, "textures/gui/runic_altar.png");
     private static final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
     private int updateTicks = 0;
     private boolean satisfied = false;
@@ -30,7 +32,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
     private List<Integer> lastRunes = new ArrayList<>();
     private List<Integer> lastDiscovered = new ArrayList<>();
 
-    public WritingDeskScreen(WritingDeskScreenHandler handler, PlayerInventory inventory, Text title) {
+    public RunicAltarScreen(RunicAltarScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
     }
 
@@ -61,7 +63,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
         if (!satisfied)
             this.drawTexture(matrices, x + 99, y + 32, this.backgroundWidth, 0, 28, 21);
 
-        WritingDeskScreenHandler handler = this.handler;
+        RunicAltarScreenHandler handler = this.handler;
         Slot slot0 = handler.getSlot(0);
         Slot slot1 = handler.getSlot(1);
 
@@ -69,7 +71,7 @@ public class WritingDeskScreen extends HandledScreen<WritingDeskScreenHandler> {
 
         // if the player doesn't have enough XP, show the text for this
         if (slot0.hasStack() && !player.isCreative() && player.experienceLevel < RunicTablets.requiredXpLevels) {
-            TranslatableText text = new TranslatableText("writingdesk.strange.not_enough_xp", RunicTablets.requiredXpLevels);
+            TranslatableText text = new TranslatableText("runicaltar.strange.not_enough_xp", RunicTablets.requiredXpLevels);
             int y1 = (midHeight - 23);
             int y2 = y1 + 10;
             int x1 = (midWidth + 80) - 8 - this.textRenderer.getWidth(text) - 2;

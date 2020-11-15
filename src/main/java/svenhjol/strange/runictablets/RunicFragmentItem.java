@@ -20,7 +20,6 @@ import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.module.RunicTablets;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;

@@ -6,6 +6,7 @@ import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.module.*;
+import svenhjol.strange.runictablets.RunicTablets;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.ArrayList;

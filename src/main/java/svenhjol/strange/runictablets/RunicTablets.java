@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.runictablets;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
@@ -11,6 +11,7 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -21,22 +22,23 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.runictablets.RunicFragmentItem;
-import svenhjol.strange.runictablets.RunicFragmentLootFunction;
-import svenhjol.strange.runictablets.RunicTabletItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Module(mod = Strange.MOD_ID, description = "Craftable tablets that can teleport you to a point of interest or the location of a lodestone.")
+@Module(mod = Strange.MOD_ID, client = RunicTabletsClient.class, description = "Craftable tablets that can teleport you to a point of interest or the location of a lodestone.")
 public class RunicTablets extends CharmModule {
-    public static final Identifier RUNIC_FRAGMENT_LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
-    public static LootFunctionType RUNIC_FRAGMENT_LOOT_FUNCTION;
+    public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runic_altar");
+    public static final Identifier LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
+    public static LootFunctionType LOOT_FUNCTION;
 
     public static RunicTabletItem RUNIC_TABLET;
     public static RunicFragmentItem RUNIC_FRAGMENT;
+
+    public static RunicAltarBlock RUNIC_ALTAR;
+    public static ScreenHandlerType<RunicAltarScreenHandler> SCREEN_HANDLER;
 
     public static List<Identifier> destinations = new ArrayList<>();
 
@@ -49,14 +51,18 @@ public class RunicTablets extends CharmModule {
     @Config(name = "Loot chance", description = "Chance (out of 1.0) of a runic fragment appearing in ruin loot (or stronghold loot if ruins are disabled).")
     public static double lootChance = 0.75F;
 
-    @Config(name = "Required levels", description = "Experience levels required to create a runic tablet on a writing desk.")
+    @Config(name = "Required levels", description = "Experience levels required to create a runic tablet on a runic altar.")
     public static int requiredXpLevels = 15;
 
     @Override
     public void register() {
+        RUNIC_ALTAR = new RunicAltarBlock(this);
         RUNIC_TABLET = new RunicTabletItem(this);
         RUNIC_FRAGMENT = new RunicFragmentItem(this);
-        RUNIC_FRAGMENT_LOOT_FUNCTION = RegistryHandler.lootFunctionType(RUNIC_FRAGMENT_LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
+
+        LOOT_FUNCTION = RegistryHandler.lootFunctionType(LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
+
+        RunicTablets.SCREEN_HANDLER = RegistryHandler.screenHandler(BLOCK_ID, RunicAltarScreenHandler::new);
     }
 
     @Override

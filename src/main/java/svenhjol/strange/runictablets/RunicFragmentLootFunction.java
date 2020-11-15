@@ -11,7 +11,6 @@ import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.util.math.Vec3d;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.strange.module.RunicTablets;
 
 import java.util.Random;
 
@@ -49,7 +48,7 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return RunicTablets.RUNIC_FRAGMENT_LOOT_FUNCTION;
+        return RunicTablets.LOOT_FUNCTION;
     }
 
     public static class Serializer extends ConditionalLootFunction.Serializer<RunicFragmentLootFunction> {
