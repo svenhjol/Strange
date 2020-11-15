@@ -35,11 +35,9 @@ import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 @Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
@@ -211,17 +209,8 @@ public class Scrolls extends CharmModule {
         }
     }
 
-    private void forEachQuest(PlayerEntity player, BiConsumer<ItemStack, Quest> callback) {
-        player.inventory.main.forEach(stack -> {
-            if (!(stack.getItem() instanceof ScrollItem))
-                return;
-
-            Quest quest = ScrollItem.getScrollQuest(stack);
-            if (quest == null)
-                return;
-
-            callback.accept(stack, quest);
-        });
+    public static Optional<QuestManager> getQuestManager() {
+        return Optional.of(questManager);
     }
 
     @Nullable
@@ -238,6 +227,27 @@ public class Scrolls extends CharmModule {
         }
 
         return new ArrayList<>(definitions.values()).get(random.nextInt(definitions.size()));
+    }
+
+    @Nullable
+    public static JsonDefinition getDefinition(String definition) {
+        if (!definition.contains("."))
+            return null;
+
+        String[] split = definition.split("\\.");
+
+        for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
+            int tierNum = entry.getKey();
+            String tierName = entry.getValue();
+
+            if (tierName.equals(split[0])) {
+                if (AVAILABLE_SCROLLS.containsKey(tierNum)) {
+                    return AVAILABLE_SCROLLS.get(tierNum).getOrDefault("scrolls." + definition, null);
+                }
+            }
+        }
+
+        return null;
     }
 
     public static List<ItemStack> getAllPlayerScrolls(PlayerEntity player) {

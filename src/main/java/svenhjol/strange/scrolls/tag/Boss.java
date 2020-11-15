@@ -171,6 +171,11 @@ public class Boss implements ISerializable {
         BossPopulator.checkEncounter(player, this);
     }
 
+    public void abandon(PlayerEntity player) {
+        entities.clear();
+        BossPopulator.checkEncounter(player, this);
+    }
+
     public void update(PlayerEntity player) {
         satisfied.clear();
 

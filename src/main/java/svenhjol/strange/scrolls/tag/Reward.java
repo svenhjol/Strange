@@ -6,7 +6,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import svenhjol.charm.base.helper.PlayerHelper;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,12 +25,17 @@ public class Reward implements ISerializable {
         this.quest = quest;
     }
 
-    public void complete(PlayerEntity player, MerchantEntity merchant) {
+    public void complete(PlayerEntity player, @Nullable MerchantEntity merchant) {
         for (ItemStack stack : items.keySet()) {
             int count = items.get(stack);
             ItemStack stackToDrop = stack.copy();
             stackToDrop.setCount(count);
-            LookTargetUtil.give(merchant, stackToDrop, player.getPos());
+
+            if (merchant != null) {
+                LookTargetUtil.give(merchant, stackToDrop, player.getPos());
+            } else {
+                PlayerHelper.addOrDropStack(player, stackToDrop);
+            }
         }
 
         if (levels > 0)

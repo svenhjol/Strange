@@ -47,7 +47,7 @@ public class Quest implements ISerializable {
     private Quest() { }
 
     public Quest(JsonDefinition definition, UUID owner, UUID merchant, int rarity, int currentTime) {
-        this.id = RandomStringUtils.randomAlphabetic(10);
+        this.id = RandomStringUtils.randomAlphabetic(4).toLowerCase();
         this.rarity = Math.max(1, rarity);
         this.tier = definition.getTier();
         this.definition = definition.getId();
@@ -191,6 +191,14 @@ public class Quest implements ISerializable {
         explore.complete(player, merchant);
         reward.complete(player, merchant);
         boss.complete(player, merchant);
+
+        this.setDirty(true);
+    }
+
+    public void abandon(PlayerEntity player) {
+        this.expiry = 0; // isActive() will no longer be true
+
+        boss.abandon(player);
 
         this.setDirty(true);
     }

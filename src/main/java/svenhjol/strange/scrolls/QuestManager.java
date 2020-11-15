@@ -1,8 +1,11 @@
 package svenhjol.strange.scrolls;
 
-import net.minecraft.item.ItemStack;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -14,6 +17,7 @@ import svenhjol.strange.scrolls.tag.Quest;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class QuestManager extends PersistentState {
     public static final String TICK_TAG = "Tick";
@@ -53,9 +57,6 @@ public class QuestManager extends PersistentState {
         currentTime = tag.getInt(TICK_TAG);
         ListTag listTag = tag.getList(QUESTS_TAG, 10);
 
-        // this is regenerated when list tags are loaded
-        playerQuests.clear();
-
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
             Quest quest = Quest.getFromTag(questTag);
@@ -71,6 +72,8 @@ public class QuestManager extends PersistentState {
             CompoundTag questTag = quest.toTag();
             listTag.add(questTag);
         });
+
+        regeneratePlayerQuests();
 
         tag.putInt(TICK_TAG, currentTime);
         tag.put(QUESTS_TAG, listTag);
@@ -96,18 +99,52 @@ public class QuestManager extends PersistentState {
         });
     }
 
-    @Nullable
-    public Quest getQuest(String id) {
+    public Optional<Quest> getQuest(String id) {
+        Quest quest = quests.getOrDefault(id, null);
+        return quest == null || !quest.isActive() ? Optional.empty() : Optional.of(quest);
+    }
+
+    public List<Quest> getQuests(PlayerEntity player) {
+        UUID owner = player.getUuid();
+        return playerQuests.containsKey(owner)
+            ? playerQuests.get(owner).stream().filter(Quest::isActive).collect(Collectors.toList())
+            : new ArrayList<>();
+    }
+
+    public List<Quest> getQuests() {
+        return quests.values().stream().filter(Quest::isActive).collect(Collectors.toList());
+    }
+
+    public void openScroll(PlayerEntity player, Quest quest) {
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(quest.toTag());
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_OPEN_SCROLL, data);
+    }
+
+    public boolean abandonQuest(PlayerEntity player, String id) {
         Quest quest = quests.getOrDefault(id, null);
 
-        if (quest != null && quest.isActive())
-            return quest;
+        if (quest != null) {
+            quest.abandon(player);
+            this.markDirty();
+            return true;
+        }
 
-        return null;
+        return false;
+    }
+
+    public void abandonQuests(PlayerEntity player) {
+        List<Quest> quests = getQuests(player);
+        quests.forEach(quest -> quest.abandon(player));
+        this.markDirty();
+    }
+
+    public void abandonAllQuests() {
+        quests.clear();
+        this.markDirty();
     }
 
     public boolean checkPlayerCanStartQuest(ServerPlayerEntity player) {
-        // check for too many quests
         if (playerQuests.getOrDefault(player.getUuid(), new ArrayList<>()).size() >= MAX_PLAYER_QUESTS) {
             player.sendMessage(new TranslatableText("scroll.strange.too_many_quests"), true);
             return false;
@@ -116,12 +153,13 @@ public class QuestManager extends PersistentState {
         return true;
     }
 
-    public void createQuest(ItemStack scroll, ServerPlayerEntity player, JsonDefinition definition) {
-        UUID merchant = ScrollItem.getScrollMerchant(scroll);
+    public Quest createQuest(ServerPlayerEntity player, JsonDefinition definition, int rarity, @Nullable UUID seller) {
         UUID owner = player.getUuid();
 
-        int rarity = Math.min(1, ScrollItem.getScrollRarity(scroll));
-        Quest quest = new Quest(definition, owner, merchant, rarity, currentTime);
+        if (seller == null)
+            seller = ScrollHelper.ANY_UUID;
+
+        Quest quest = new Quest(definition, owner, seller, rarity, currentTime);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(player, quest, definition),
@@ -134,12 +172,10 @@ public class QuestManager extends PersistentState {
 
         populators.forEach(Populator::populate);
 
-        // set scroll name and quest ID
-        ScrollItem.setScrollName(scroll, new TranslatableText(quest.getTitle()));
-        ScrollItem.setScrollQuest(scroll, quest.getId());
-
         // add new quest to the active quests
         addQuest(quest);
+
+        return quest;
     }
 
     public boolean isPresent(String id) {
@@ -151,18 +187,22 @@ public class QuestManager extends PersistentState {
     }
 
     private void addQuest(Quest quest) {
-        if (quest.isActive()) {
+        if (quest.isActive())
             quests.put(quest.getId(), quest);
 
-            // generate transient player quest mapping
+        this.markDirty();
+    }
+
+    private void regeneratePlayerQuests() {
+        playerQuests.clear();
+
+        quests.forEach((id, quest) -> {
             UUID owner = quest.getOwner();
 
             if (!playerQuests.containsKey(owner))
                 playerQuests.put(owner, new ArrayList<>());
 
             playerQuests.get(owner).add(quest);
-        }
-
-        this.markDirty();
+        });
     }
 }

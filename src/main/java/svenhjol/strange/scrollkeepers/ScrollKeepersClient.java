@@ -15,6 +15,7 @@ import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ScrollKeepersClient extends CharmClientModule {
 
@@ -38,9 +39,11 @@ public class ScrollKeepersClient extends CharmClientModule {
             if (!(heldStack.getItem() instanceof ScrollItem))
                 return;
 
-            Quest quest = ScrollItem.getScrollQuest(heldStack);
-            if (quest == null)
+            Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(heldStack);
+            if (!optionalQuest.isPresent())
                 return;
+
+            Quest quest = optionalQuest.get();
 
             int x = playerPos.getX();
             int y = playerPos.getY();

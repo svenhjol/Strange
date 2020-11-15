@@ -30,6 +30,8 @@ import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;
 
+import java.util.Optional;
+
 @Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
@@ -73,9 +75,11 @@ public class Scrollkeepers extends CharmModule {
                 return ActionResult.PASS;
 
             if (!world.isClient) {
-                Quest quest = ScrollItem.getScrollQuest(heldStack);
-                if (quest == null)
+                Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(heldStack);
+                if (!optionalQuest.isPresent())
                     return ActionResult.PASS;
+
+                Quest quest = optionalQuest.get();
 
                 // quest conditions haven't been satisfied yet
                 if (!quest.isSatisfied(playerEntity)) {
