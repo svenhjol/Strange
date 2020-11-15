@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.ruins;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.util.Identifier;
@@ -14,8 +14,6 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.ruins.RuinFeature;
-import svenhjol.strange.ruins.RuinGenerator;
 import svenhjol.strange.ruins.builds.Roguelike;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;

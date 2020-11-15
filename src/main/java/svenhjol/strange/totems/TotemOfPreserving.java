@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.totems;
 
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
@@ -31,7 +31,6 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.EntityDropsCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.strange.Strange;
-import svenhjol.strange.totems.TotemOfPreservingItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,8 +19,7 @@ import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.strange.module.Runestones;
-import svenhjol.strange.module.StoneCircles;
+import svenhjol.strange.runestones.Runestones;
 
 import java.util.*;
 

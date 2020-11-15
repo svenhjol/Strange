@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.scrolls;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
@@ -35,7 +35,6 @@ import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;

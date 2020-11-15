@@ -5,8 +5,16 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeStructures;
-import svenhjol.strange.module.*;
+import svenhjol.strange.excavation.Excavation;
+import svenhjol.strange.foundations.Foundations;
+import svenhjol.strange.legendaryitems.LegendaryItems;
+import svenhjol.strange.ruins.Ruins;
+import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runictablets.RunicTablets;
+import svenhjol.strange.scrollkeepers.Scrollkeepers;
+import svenhjol.strange.scrolls.Scrolls;
+import svenhjol.strange.stonecircles.StoneCircles;
+import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.ArrayList;

@@ -7,7 +7,6 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
-import svenhjol.strange.module.Scrolls;
 
 public class ScrollLootFunction extends ConditionalLootFunction {
 

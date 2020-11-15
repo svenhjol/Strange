@@ -3,7 +3,7 @@ package svenhjol.strange.legendaryitems.items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
-import svenhjol.strange.module.LegendaryItems;
+import svenhjol.strange.legendaryitems.LegendaryItems;
 
 import java.util.Arrays;
 import java.util.List;

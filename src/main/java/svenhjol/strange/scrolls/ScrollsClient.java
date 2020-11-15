@@ -8,7 +8,7 @@ import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.scrolls.tag.Quest;
 
-import static svenhjol.strange.module.Scrolls.MSG_CLIENT_OPEN_SCROLL;
+import static svenhjol.strange.scrolls.Scrolls.MSG_CLIENT_OPEN_SCROLL;
 
 public class ScrollsClient extends CharmClientModule {
     public ScrollsClient(CharmModule module) {

@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegi
 import net.minecraft.client.render.RenderLayer;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.strange.module.Excavation;
 
 public class ExcavationClient extends CharmClientModule {
     public ExcavationClient(CharmModule module) {

@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.runestones;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,10 +38,6 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.event.ThrownEntityImpactCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.runestones.RunestoneBlock;
-import svenhjol.strange.runestones.RunestoneBlockEntity;
-import svenhjol.strange.runestones.RunestoneHelper;
-import svenhjol.strange.runestones.RunestonesClient;
 import svenhjol.strange.runestones.destination.BiomeDestination;
 import svenhjol.strange.runestones.destination.Destination;
 import svenhjol.strange.runestones.destination.StructureDestination;

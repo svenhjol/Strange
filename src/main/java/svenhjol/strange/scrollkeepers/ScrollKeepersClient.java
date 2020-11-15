@@ -12,7 +12,6 @@ import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.ScrollItem;
-import svenhjol.strange.module.Scrollkeepers;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;

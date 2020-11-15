@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.foundations;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.util.Identifier;
@@ -12,8 +12,6 @@ import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.foundations.builds.StoneRoomFoundation;
-import svenhjol.strange.foundations.FoundationFeature;
-import svenhjol.strange.foundations.FoundationGenerator;
 
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
 

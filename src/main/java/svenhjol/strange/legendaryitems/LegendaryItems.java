@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.legendaryitems;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
@@ -19,11 +19,8 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
-import svenhjol.strange.legendaryitems.ILegendaryPotion;
 import svenhjol.strange.legendaryitems.items.*;
 import svenhjol.strange.legendaryitems.potions.LegendaryPotion;
-import svenhjol.strange.legendaryitems.LegendaryItemLootFunction;
 
 import java.util.HashMap;
 import java.util.Map;

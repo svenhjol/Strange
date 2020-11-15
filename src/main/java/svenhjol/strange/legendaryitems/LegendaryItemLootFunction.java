@@ -8,7 +8,6 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import svenhjol.charm.base.handler.ModuleHandler;
-import svenhjol.strange.module.LegendaryItems;
 
 import java.util.ArrayList;
 import java.util.List;

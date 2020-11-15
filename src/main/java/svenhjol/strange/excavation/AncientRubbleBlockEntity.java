@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import svenhjol.strange.module.Excavation;
 
 public class AncientRubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public static final String ITEMSTACK_TAG = "itemstack";

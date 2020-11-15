@@ -5,7 +5,7 @@ import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.Scrollkeepers;
+import svenhjol.strange.scrollkeepers.Scrollkeepers;
 
 @Module(mod = Strange.MOD_ID, client = WritingDesksClient.class, description = "Writing desks are the job site for scrollkeepers.", alwaysEnabled = true)
 public class WritingDesks extends CharmModule {

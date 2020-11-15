@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.module.Scrolls;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;

@@ -19,7 +19,7 @@ import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.*;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.strange.module.Ruins;
+import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Explore;
 import svenhjol.strange.scrolls.tag.Quest;

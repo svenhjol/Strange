@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.scrollkeepers;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.Entity;
@@ -25,8 +25,6 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrollkeepers.ScrollKeepersClient;
-import svenhjol.strange.scrollkeepers.ScrollkeeperTradeOffers;
 import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;

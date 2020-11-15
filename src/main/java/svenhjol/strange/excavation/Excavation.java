@@ -1,4 +1,4 @@
-package svenhjol.strange.module;
+package svenhjol.strange.excavation;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
@@ -8,9 +8,6 @@ import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.excavation.AncientRubbleBlock;
-import svenhjol.strange.excavation.AncientRubbleBlockEntity;
-import svenhjol.strange.excavation.ExcavationClient;
 
 @Module(mod = Strange.MOD_ID, client = ExcavationClient.class)
 public class Excavation extends CharmModule {

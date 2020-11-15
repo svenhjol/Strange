@@ -7,7 +7,7 @@ import net.minecraft.item.Items;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
 import svenhjol.strange.scrolls.ScrollItem;
-import svenhjol.strange.module.Scrolls;
+import svenhjol.strange.scrolls.Scrolls;
 
 import javax.annotation.Nullable;
 import java.util.Random;
