@@ -192,14 +192,14 @@ public class Quest implements ISerializable {
         reward.complete(player, merchant);
         boss.complete(player, merchant);
 
+        this.expiry = 0; // isActive() will no longer be true
         this.setDirty(true);
     }
 
     public void abandon(PlayerEntity player) {
-        this.expiry = 0; // isActive() will no longer be true
-
         boss.abandon(player);
 
+        this.expiry = 0; // isActive() will no longer be true
         this.setDirty(true);
     }
 
