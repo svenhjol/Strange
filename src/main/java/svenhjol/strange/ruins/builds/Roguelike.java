@@ -9,6 +9,7 @@ import java.util.Map;
 public class Roguelike extends BaseStructure {
     private final Map<String, Integer> ROOMS = new HashMap<>();
     private final Map<String, Integer> CORRIDORS = new HashMap<>();
+    private final Map<String, Integer> SURFACES = new HashMap<>();
     private final Map<String, Integer> SIDES = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();
 
@@ -17,28 +18,30 @@ public class Roguelike extends BaseStructure {
 
         addStart("start1", 1);
 
+        SURFACES.put("surface_variant1", 1);
+
         ROOMS.put("room_1_cake", 1);
         ROOMS.put("room_1_fires", 1);
         ROOMS.put("room_1_light", 1);
         ROOMS.put("room_1_tiny", 1);
-        ROOMS.put("room_2_dining", 1);
-        ROOMS.put("room_2_droptrap", 1);
-        ROOMS.put("room_2_music", 1);
-        ROOMS.put("room_2_plants", 1);
-        ROOMS.put("room_3_cells", 1);
-        ROOMS.put("room_3_cornertomb", 1);
-        ROOMS.put("room_3_cross", 1);
-        ROOMS.put("room_3_droptrap", 1);
-        ROOMS.put("room_3_fires", 1);
-        ROOMS.put("room_3_gravel", 1);
-        ROOMS.put("room_3_joining", 1);
-        ROOMS.put("room_3_skulls", 1);
-        ROOMS.put("room_3_tnt", 1);
-        ROOMS.put("room_3_tombs", 1);
-        ROOMS.put("room_4_water", 1);
-        ROOMS.put("stairs_0_1_variant1", 1);
-        ROOMS.put("stairs_1_2_variant1", 1);
-        ROOMS.put("stairs_2_3_variant1", 1);
+        ROOMS.put("room_2_dining", 2);
+        ROOMS.put("room_2_droptrap", 2);
+        ROOMS.put("room_2_music", 2);
+        ROOMS.put("room_2_plants", 2);
+        ROOMS.put("room_3_cells", 3);
+        ROOMS.put("room_3_cornertomb", 3);
+        ROOMS.put("room_3_cross", 3);
+        ROOMS.put("room_3_droptrap", 3);
+        ROOMS.put("room_3_fires", 3);
+        ROOMS.put("room_3_gravel", 3);
+        ROOMS.put("room_3_joining", 3);
+        ROOMS.put("room_3_skulls", 3);
+        ROOMS.put("room_3_tnt", 3);
+        ROOMS.put("room_3_tombs", 3);
+        ROOMS.put("room_4_water", 4);
+        ROOMS.put("stairs_1_2_variant1", 3);
+        ROOMS.put("stairs_2_3_variant1", 4);
+        ROOMS.put("stairs_3_4_variant1", 5);
 
         CORRIDORS.put("corridor_1_variant1", 1);
         CORRIDORS.put("corridor_1_variant2", 1);
@@ -66,6 +69,7 @@ public class Roguelike extends BaseStructure {
         ENDS.put("end_1_variant1", 1);
         ENDS.put("end_3_variant1", 1);
 
+        registerPool("surfaces", SURFACES);
         registerPool("rooms", ROOMS);
         registerPool("corridors", CORRIDORS);
         registerPool("sides", SIDES);

@@ -38,7 +38,7 @@ public class Ruins extends CharmModule {
     public static ConfiguredStructureFeature<?, ?> TAIGA;
 
     @Config(name = "Ruin size", description = "Size of the generated ruins. For reference, villages are 6.")
-    public static int ruinSize = 6;
+    public static int configRuinSize = 6;
 
     @Override
     public void register() {
@@ -49,6 +49,8 @@ public class Ruins extends CharmModule {
             .step(GenerationStep.Feature.UNDERGROUND_STRUCTURES)
             .defaultConfig(24, 8, 12125)
             .register();
+
+        int ruinSize = Math.max(0, Math.min(7, configRuinSize));
 
         // create configuredFeature objects for each jigsaw pool
         BADLANDS    = RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> BADLANDS_POOL, ruinSize));
