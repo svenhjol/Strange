@@ -17,6 +17,14 @@ public class Roguelike extends BaseStructure {
 
         addStart("start1", 1);
 
+        ROOMS.put("room_1_cake", 1);
+        ROOMS.put("room_1_fires", 1);
+        ROOMS.put("room_1_light", 1);
+        ROOMS.put("room_1_tiny", 1);
+        ROOMS.put("room_2_dining", 1);
+        ROOMS.put("room_2_droptrap", 1);
+        ROOMS.put("room_2_music", 1);
+        ROOMS.put("room_2_plants", 1);
         ROOMS.put("room_3_cells", 1);
         ROOMS.put("room_3_cornertomb", 1);
         ROOMS.put("room_3_cross", 1);
@@ -28,8 +36,14 @@ public class Roguelike extends BaseStructure {
         ROOMS.put("room_3_tnt", 1);
         ROOMS.put("room_3_tombs", 1);
         ROOMS.put("room_4_water", 1);
+        ROOMS.put("stairs_0_1_variant1", 1);
+        ROOMS.put("stairs_1_2_variant1", 1);
         ROOMS.put("stairs_2_3_variant1", 1);
 
+        CORRIDORS.put("corridor_1_variant1", 1);
+        CORRIDORS.put("corridor_1_variant2", 1);
+        CORRIDORS.put("corridor_2_variant1", 1);
+        CORRIDORS.put("corridor_2_variant2", 1);
         CORRIDORS.put("corridor_3_spiders", 1);
         CORRIDORS.put("corridor_3_tiny", 1);
         CORRIDORS.put("corridor_3_variant1", 1);
@@ -37,8 +51,19 @@ public class Roguelike extends BaseStructure {
         CORRIDORS.put("corridor_4_variant1", 1);
         CORRIDORS.put("corridor_4_variant2", 1);
 
+        SIDES.put("side_1_blacksmith", 2);
+        SIDES.put("side_1_den", 4);
+        SIDES.put("side_1_fire", 8);
+        SIDES.put("side_1_plain", 10);
+        SIDES.put("side_1_pumpkin", 6);
+        SIDES.put("side_2_bookshelves", 6);
+        SIDES.put("side_2_bteam", 1);
+        SIDES.put("side_2_chest", 4);
+        SIDES.put("side_2_plain", 10);
         SIDES.put("side_3_irondoor", 1);
 
+        ENDS.put("end_1_spawner", 1);
+        ENDS.put("end_1_variant1", 1);
         ENDS.put("end_3_variant1", 1);
 
         registerPool("rooms", ROOMS);
