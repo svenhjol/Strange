@@ -43,6 +43,7 @@ public class Roguelike extends BaseStructure {
         ROOMS.put("level3_room_joining", 5);
         ROOMS.put("level3_room_skulls", 5);
         ROOMS.put("level3_room_tombs", 5);
+        ROOMS.put("level4_room_water1", 2);
 
         SIDES.put("level1_side_blacksmith", 2);
         SIDES.put("level1_side_den", 5);
@@ -63,10 +64,13 @@ public class Roguelike extends BaseStructure {
         CORRIDORS.put("level1_corridor_variant4", 5);
         CORRIDORS.put("level2_corridor_variant1", 5);
         CORRIDORS.put("level2_corridor_variant2", 5);
+        CORRIDORS.put("level2_corridor_variant3", 5);
         CORRIDORS.put("level3_corridor_spiders", 2);
         CORRIDORS.put("level3_corridor_tiny", 3);
         CORRIDORS.put("level3_corridor_variant1", 5);
         CORRIDORS.put("level3_corridor_variant2", 5);
+        CORRIDORS.put("level4_corridor_variant1", 5);
+        CORRIDORS.put("level4_corridor_variant2", 5);
 
         ENDS.put("level1_end1", 5);
         ENDS.put("level2_end1", 5);
