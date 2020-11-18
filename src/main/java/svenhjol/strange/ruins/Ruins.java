@@ -38,7 +38,7 @@ public class Ruins extends CharmModule {
     public static ConfiguredStructureFeature<?, ?> TAIGA;
 
     @Config(name = "Ruin size", description = "Size of the generated ruins. For reference, villages are 6.")
-    public static int configRuinSize = 6;
+    public static int configRuinSize = 7;
 
     @Override
     public void register() {
