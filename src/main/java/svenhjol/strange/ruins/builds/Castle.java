@@ -14,32 +14,36 @@ public class Castle extends BaseStructure {
     public Castle() {
         super(Strange.MOD_ID, "ruins", "castle");
 
-        addStart("start_nature", 1);
-        addStart("start_trap", 1);
+    //    addStart("start_trap", 1);
         addStart("start_tower", 1);
         addStart("start_tower2", 1);
 
 
-        ROOMS.put("room_secret", 3);
-        ROOMS.put("room_smlib", 3);
-        ROOMS.put("room_tower", 1);
-    //    ROOMS.put("room_derp1", 1);
-    //    ROOMS.put("room_skeletons", 1);
-    //    ROOMS.put("room_trap", 1);
+        ROOMS.put("room_secret", 1);
+        ROOMS.put("room_smlib", 2);
+        ROOMS.put("room_tower", 3);
+        ROOMS.put("room_corner", 3);
+        ROOMS.put("room_big1", 3);
+        ROOMS.put("room_trap", 2);
     //    ROOMS.put("room_zombies", 1);
 
-        CORRIDORS.put("corridor_start1", 3);
-        CORRIDORS.put("corridor_start2", 2);
-        CORRIDORS.put("corridor_start3", 2);
+    //    CORRIDORS.put("corridor_start1", 3);
+    //    CORRIDORS.put("corridor_start2", 2);
+    //    CORRIDORS.put("corridor_start3", 2);
         CORRIDORS.put("corridor_stairs", 2);
-        CORRIDORS.put("corridor_stairs_stone", 2);
-    //    CORRIDORS.put("corridor_small3", 3);
+        CORRIDORS.put("corridor_long", 3);
+    //    CORRIDORS.put("corridor_long_high", 2);
+        CORRIDORS.put("corridor_med", 2);
+        CORRIDORS.put("corridor_med_low", 3);
+        CORRIDORS.put("corridor_spawner", 3);
+    //    CORRIDORS.put("corridor_spawner_high", 3);
 
-        ENDS.put("end1", 2);
-        ENDS.put("end_spawner", 2);
-    //    ENDS.put("end_potions", 1);
-    //    ENDS.put("end_wall1", 1);
-    //    ENDS.put("end_wall2", 1);
+        ENDS.put("end_1", 3);
+        ENDS.put("end_2", 3);
+        ENDS.put("end_spawner", 3);
+        ENDS.put("end_deco", 2);
+        ENDS.put("end_deco_high", 2);
+        ENDS.put("end_fire_high", 2);
     //    ENDS.put("end_wall3", 1);
     //    ENDS.put("end_wall4", 1);
 
