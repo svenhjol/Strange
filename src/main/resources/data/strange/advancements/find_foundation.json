@@ -1,0 +1,32 @@
+{
+  "parent": "strange:runic_fragment",
+  "display": {
+    "icon": {
+      "item": "strange:ancient_rubble"
+    },
+    "title": {
+      "translate": "advancements.strange.find_foundation.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_foundation.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "find_foundation": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:foundation"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "find_foundation"
+    ]
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "strange:item/scroll_novice"
+    "layer0": "strange:item/journeyman_scroll"
   }
 }
