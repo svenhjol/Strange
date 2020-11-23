@@ -7,14 +7,22 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.CompassItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.runicaltars.RunicAltars;
+import svenhjol.strange.runicaltars.RunicFragmentItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -87,6 +95,31 @@ public class RunestoneHelper {
         for (int rune : learned) {
             addLearnedRune(player, rune);
         }
+    }
+
+    @Nullable
+    public static BlockPos getBlockPosFromItemStack(World world, ItemStack stack) {
+        if (stack.getItem() == Items.COMPASS) {
+
+            if (!CompassItem.hasLodestone(stack) || !stack.hasTag() || stack.getTag() == null)
+                return null;
+
+            // must be the correct dimension as the lodestone
+            Optional<RegistryKey<World>> dimension = CompassItem.getLodestoneDimension(stack.getTag());
+            if (!dimension.isPresent() || !DimensionHelper.isDimension(world, dimension.get()))
+                return null;
+
+            BlockPos pos = NbtHelper.toBlockPos(stack.getTag().getCompound("LodestonePos"));
+            pos = pos.add(0, 1, 0); // the block above the lodestone
+            return pos;
+
+        } else if (stack.getItem() == RunicAltars.RUNIC_FRAGMENT) {
+
+            if (RunicFragmentItem.isPopulated(stack) && RunicFragmentItem.isCorrectDimension(stack, world))
+                return RunicFragmentItem.getPos(stack);
+        }
+
+        return null;
     }
 
     public static String getFormattedLocationName(Identifier locationId) {

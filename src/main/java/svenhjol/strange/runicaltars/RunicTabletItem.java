@@ -1,4 +1,4 @@
-package svenhjol.strange.runictablets;
+package svenhjol.strange.runicaltars;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
@@ -43,7 +43,7 @@ public class RunicTabletItem extends CharmItem {
             return TypedActionResult.fail(tablet);
 
         if (!DimensionHelper.isDimension(world, dimension)) {
-            user.sendMessage(new TranslatableText("runictablet.strange.wrong_dimension"), true);
+            user.sendMessage(new TranslatableText("runic_altar.strange.wrong_dimension"), true);
             return TypedActionResult.fail(tablet);
         }
 
@@ -84,7 +84,7 @@ public class RunicTabletItem extends CharmItem {
         if (world.isClient)
             return;
 
-        if (getPullProgress(this.getMaxUseTime(stack) - remainingUseTicks) < 0.9D)
+        if (getPullProgress(this.getMaxUseTime(stack) - remainingUseTicks) < 0.9F)
             return;
 
         BlockPos pos = getPos(stack);

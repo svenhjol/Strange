@@ -1,8 +1,9 @@
-package svenhjol.strange.runictablets;
+package svenhjol.strange.runicaltars;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
@@ -28,8 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Module(mod = Strange.MOD_ID, client = RunicTabletsClient.class, description = "Craftable tablets that can teleport you to a point of interest or the location of a lodestone.")
-public class RunicTablets extends CharmModule {
+@Module(mod = Strange.MOD_ID, client = RunicAltarsClient.class, description = "Craftable tablets that can teleport you to a point of interest or the location of a lodestone.")
+public class RunicAltars extends CharmModule {
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runic_altar");
     public static final Identifier LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
     public static LootFunctionType LOOT_FUNCTION;
@@ -38,6 +39,7 @@ public class RunicTablets extends CharmModule {
     public static RunicFragmentItem RUNIC_FRAGMENT;
 
     public static RunicAltarBlock RUNIC_ALTAR;
+    public static BlockEntityType<RunicAltarBlockEntity> BLOCK_ENTITY;
     public static ScreenHandlerType<RunicAltarScreenHandler> SCREEN_HANDLER;
 
     public static List<Identifier> destinations = new ArrayList<>();
@@ -62,7 +64,8 @@ public class RunicTablets extends CharmModule {
 
         LOOT_FUNCTION = RegistryHandler.lootFunctionType(LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
 
-        RunicTablets.SCREEN_HANDLER = RegistryHandler.screenHandler(BLOCK_ID, RunicAltarScreenHandler::new);
+        SCREEN_HANDLER = RegistryHandler.screenHandler(BLOCK_ID, RunicAltarScreenHandler::new);
+        BLOCK_ENTITY = RegistryHandler.blockEntity(BLOCK_ID, RunicAltarBlockEntity::new);
     }
 
     @Override
