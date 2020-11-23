@@ -10,7 +10,7 @@ import svenhjol.strange.foundations.Foundations;
 import svenhjol.strange.legendaryitems.LegendaryItems;
 import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.runestones.Runestones;
-import svenhjol.strange.runictablets.RunicTablets;
+import svenhjol.strange.runicaltars.RunicAltars;
 import svenhjol.strange.scrollkeepers.Scrollkeepers;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.stonecircles.StoneCircles;
@@ -35,7 +35,7 @@ public class Strange implements ModInitializer {
             LegendaryItems.class,
             Ruins.class,
             Runestones.class,
-            RunicTablets.class,
+            RunicAltars.class,
             Scrollkeepers.class,
             Scrolls.class,
             StoneCircles.class,

@@ -236,7 +236,7 @@ public class Runestones extends CharmModule {
                     if (runestone.location != null) {
                         String formattedLocationName = RunestoneHelper.getFormattedLocationName(runestone.location);
                         if (runestone.player != null && !runestone.player.isEmpty()) {
-                            message = new TranslatableText("runestone.strange.discoveredby", formattedLocationName, runestone.player);
+                            message = new TranslatableText("runestone.strange.discovered_by", formattedLocationName, runestone.player);
                         } else {
                             message = new TranslatableText("runestone.strange.discovered", formattedLocationName);
                         }

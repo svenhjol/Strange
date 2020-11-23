@@ -1,4 +1,4 @@
-package svenhjol.strange.runictablets;
+package svenhjol.strange.runicaltars;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -48,38 +48,49 @@ public class RunicFragmentItem extends CharmItem {
                     return TypedActionResult.fail(held);
             }
 
-            user.sendMessage(new TranslatableText("runictablet.strange.fragment_symbol", held.getName()), true);
+            user.sendMessage(new TranslatableText("runic_altar.strange.fragment_symbol", held.getName()), true);
             user.getItemCooldownManager().set(this, 10);
         }
 
         return super.use(world, user, hand);
     }
 
-    public static boolean populate(ItemStack fragment, ServerWorld world, BlockPos pos, Random random) {
+    public static boolean populate(ItemStack fragment, World world, BlockPos startPos, Random random) {
         // don't try populating again until after timeout
         if (isWaitingForTimeout(fragment, world))
             return false;
 
-        Identifier locationId = RunicTablets.destinations.get(random.nextInt(RunicTablets.destinations.size()));
+        if (isPopulated(fragment))
+            return false;
+
+        if (!isCorrectDimension(fragment, world))
+            return false;
+
+        if (world.isClient)
+            return false;
+
+        ServerWorld serverWorld = (ServerWorld)world;
+
+        Identifier locationId = RunicAltars.destinations.get(random.nextInt(RunicAltars.destinations.size()));
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {
             Charm.LOG.warn("Unable to find structure " + locationId + ", setting timeout");
-            RunicFragmentItem.setTried(fragment, world.getTime());
+            RunicFragmentItem.setTried(fragment, serverWorld.getTime());
             return false;
         }
 
-        pos = PosHelper.addRandomOffset(pos, random, 6000);
-        BlockPos foundPos = world.locateStructure(structureFeature, pos, 1000, false);
+        startPos = PosHelper.addRandomOffset(startPos, random, 6000);
+        BlockPos foundPos = serverWorld.locateStructure(structureFeature, startPos, 1000, false);
 
         if (foundPos == null) {
             Charm.LOG.warn("Unable to find position of structure in this dimension, setting timeout");
-            RunicFragmentItem.setTried(fragment, world.getTime());
+            RunicFragmentItem.setTried(fragment, serverWorld.getTime());
             return false;
         }
 
         setPos(fragment, foundPos);
-        setDimension(fragment, DimensionHelper.getDimension(world));
+        setDimension(fragment, DimensionHelper.getDimension(serverWorld));
         setTried(fragment, 0);
 
         // TODO: this should probably be in some kind of helper
@@ -96,9 +107,18 @@ public class RunicFragmentItem extends CharmItem {
         return true;
     }
 
+    public static boolean isPopulated(ItemStack fragment) {
+        return getPos(fragment) != null && getDimension(fragment) != null;
+    }
+
     public static boolean isWaitingForTimeout(ItemStack fragment, World world) {
         long tried = getTried(fragment);
         return tried > 0 && world.getTime() - tried < 600;
+    }
+
+    public static boolean isCorrectDimension(ItemStack fragment, World world) {
+        Identifier dimension = getDimension(fragment);
+        return dimension == null || DimensionHelper.isDimension(world, dimension);
     }
 
     @Nullable
