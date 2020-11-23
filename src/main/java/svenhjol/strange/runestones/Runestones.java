@@ -1,5 +1,6 @@
 package svenhjol.strange.runestones;
 
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -348,6 +349,7 @@ public class Runestones extends CharmModule {
         teleportTo.put(uid, destPos);
         teleportTicks.put(uid, TELEPORT_TICKS);
 
+        Criteria.ENTER_BLOCK.trigger(player, world.getBlockState(runePos));
         RunestoneHelper.addLearnedRune(player, runeValue);
         return true;
     }
