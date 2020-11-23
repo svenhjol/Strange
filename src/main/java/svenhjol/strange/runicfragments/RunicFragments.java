@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Module(mod = Strange.MOD_ID)
+@Module(mod = Strange.MOD_ID, description = "Runic fragments are loot items that provide co-ordinates to rare structures.")
 public class RunicFragments extends CharmModule {
     public static final Identifier LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
     public static LootFunctionType LOOT_FUNCTION;
@@ -40,7 +40,7 @@ public class RunicFragments extends CharmModule {
         "strange:ruin"
     ));
 
-    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a runic fragment appearing in ruin loot (or stronghold loot if ruins are disabled).")
+    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a runic fragment appearing in rare ruin loot (or stronghold loot if ruins are disabled).")
     public static double lootChance = 0.75F;
 
     @Override

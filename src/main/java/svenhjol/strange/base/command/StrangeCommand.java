@@ -15,7 +15,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.base.command.arg.QuestIdArgType;
 import svenhjol.strange.base.command.arg.RuneArgType;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.QuestManager;
 import svenhjol.strange.scrolls.ScrollItem;

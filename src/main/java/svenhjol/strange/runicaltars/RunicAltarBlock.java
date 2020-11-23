@@ -25,8 +25,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
-import svenhjol.charm.base.helper.PosHelper;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.base.helper.PlayerHelper;
+import svenhjol.strange.base.helper.RunestoneHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -47,16 +47,20 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         if (held.getItem() == Items.CHORUS_FLOWER) {
             BlockPos destination = getDestinationFromAltar(world, pos);
             if (destination == null)
-                return ActionResult.PASS;
+                return failToApply(world, pos);
 
-            if (!world.isClient) {
-                if (charges < 4) {
+            if (charges < 4) {
+                // the player must have the right runes to activate it
+                if (charges == 0 && !RunestoneHelper.playerKnowsBlockPosRunes(player, destination, RunicAltars.NUMBER_OF_RUNES))
+                    return failToApply(world, pos);
+
+                if (!world.isClient) {
                     world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     world.setBlockState(pos, state.with(CHARGES, charges + 1));
                     held.decrement(1);
                 }
-                return ActionResult.CONSUME;
             }
+            return ActionResult.CONSUME;
         }
 
         if (charges == 0) {
@@ -66,25 +70,15 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
                 player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             }
         } else {
+            // get the altar and its destination
+            BlockPos destination = getDestinationFromAltar(world, pos);
+            if (destination == null)
+                return failToApply(world, pos);
+
             if (!world.isClient) {
-                // get the altar and its destination
-                BlockPos destination = getDestinationFromAltar(world, pos);
-                if (destination == null)
-                    return ActionResult.FAIL;
-
-                // recalculate position if it's supposed to be at the surface
-                if (destination.getY() == 0) {
-                    destination = PosHelper.getSurfacePos(world, destination);
-                    if (destination == null)
-                        return ActionResult.FAIL;
-                }
-
                 world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state.with(CHARGES, charges - 1));
-
-                player.requestTeleport(destination.getX() + 0.5D, destination.getY() + 0.25D, destination.getZ() + 0.5D);
-                world.sendEntityStatus(player, (byte)46);
-                world.playSound(null, destination, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
+                PlayerHelper.teleport(world, destination, player);
             }
         }
 
@@ -131,6 +125,22 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         return altar.getDestination();
     }
 
+    public ActionResult failToApply(World world, BlockPos pos) {
+        if (world.isClient) {
+            for (int i = 0; i < 10; i++) {
+                double d = (double) pos.getX() + 0.5D + (0.5D - world.random.nextDouble());
+                double e = (double) pos.getY() + 1.0D;
+                double f = (double) pos.getZ() + 0.5D + (0.5D - world.random.nextDouble());
+                double g = (double) world.random.nextFloat() * 0.04D;
+                world.addParticle(ParticleTypes.SMOKE, d, e, f, 0.0D, g, 0.0D);
+            }
+        } else {
+            world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
+
+        return ActionResult.SUCCESS; // wtf
+    }
+
     // copypasta from RespawnAnchorBlock
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
@@ -142,4 +152,5 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             world.addParticle(ParticleTypes.REVERSE_PORTAL, d, e, f, 0.0D, g, 0.0D);
         }
     }
+
 }

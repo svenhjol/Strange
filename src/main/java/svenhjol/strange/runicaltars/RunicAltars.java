@@ -10,6 +10,7 @@ import svenhjol.strange.Strange;
 
 @Module(mod = Strange.MOD_ID, client = RunicAltarsClient.class, description = "Craftable tablets that can teleport you to a point of interest or the location of a lodestone.")
 public class RunicAltars extends CharmModule {
+    public static final int NUMBER_OF_RUNES = 8;
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runic_altar");
 
     public static RunicAltarBlock RUNIC_ALTAR;
