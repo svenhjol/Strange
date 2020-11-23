@@ -1,6 +1,7 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
+		"particle": "strange:block/runic_altar/runic_stone",
 		"base": "strange:block/runic_altar/runic_base",
 		"stone": "strange:block/runic_altar/runic_stone",
 		"surface1": "strange:block/runic_altar/runic_surface1",
