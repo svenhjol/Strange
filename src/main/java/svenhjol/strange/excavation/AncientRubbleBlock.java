@@ -112,16 +112,14 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
                 // test to see if it can be levelled
                 boolean shovel = held.getItem() instanceof ShovelItem;
                 boolean waited = serverWorld.getTime() - rubble.getLevelTicks() > 50 + random.nextInt(10);
-                int efficiency = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, held);
                 int fortune = EnchantmentHelper.getLevel(Enchantments.FORTUNE, held);
                 float luck = player.getLuck();
 
                 float chance = 0.15F;
-                chance += shovel ? 0.05F : 0;
-                chance += waited ? 0.15F : 0;
-                chance += efficiency * 0.05F;
-                chance += fortune * 0.12F;
-                chance += luck * 0.04F;
+                chance += shovel ? 0.15F : 0;
+                chance += waited ? 0.25F : 0;
+                chance += fortune * 0.14F;
+                chance += luck * 0.03F;
 
                 if (world.random.nextFloat() > chance)
                     return fail(serverWorld, pos);
