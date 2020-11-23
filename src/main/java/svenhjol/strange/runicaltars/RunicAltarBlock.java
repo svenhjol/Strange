@@ -25,6 +25,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
@@ -44,11 +45,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         ItemStack held = player.getStackInHand(hand);
 
         if (held.getItem() == Items.CHORUS_FLOWER) {
-            RunicAltarBlockEntity altar = getBlockEntity(world, pos);
-            if (altar == null)
-                return ActionResult.PASS;
-
-            BlockPos destination = altar.getDestination();
+            BlockPos destination = getDestinationFromAltar(world, pos);
             if (destination == null)
                 return ActionResult.PASS;
 
@@ -70,9 +67,24 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             }
         } else {
             if (!world.isClient) {
-                // TODO: teleport
+                // get the altar and its destination
+                BlockPos destination = getDestinationFromAltar(world, pos);
+                if (destination == null)
+                    return ActionResult.FAIL;
+
+                // recalculate position if it's supposed to be at the surface
+                if (destination.getY() == 0) {
+                    destination = PosHelper.getSurfacePos(world, destination);
+                    if (destination == null)
+                        return ActionResult.FAIL;
+                }
+
                 world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state.with(CHARGES, charges - 1));
+
+                player.requestTeleport(destination.getX() + 0.5D, destination.getY() + 0.25D, destination.getZ() + 0.5D);
+                world.sendEntityStatus(player, (byte)46);
+                world.playSound(null, destination, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
             }
         }
 
@@ -108,6 +120,15 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             return (RunicAltarBlockEntity)blockEntity;
         }
         return null;
+    }
+
+    @Nullable
+    private BlockPos getDestinationFromAltar(World world, BlockPos pos) {
+        RunicAltarBlockEntity altar = getBlockEntity(world, pos);
+        if (altar == null)
+            return null;
+
+        return altar.getDestination();
     }
 
     // copypasta from RespawnAnchorBlock
