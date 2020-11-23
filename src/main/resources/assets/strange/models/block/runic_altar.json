@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"mossy": "strange:block/runic_altar/runic_mossy",
+		"base": "strange:block/runic_altar/runic_base",
 		"stone": "strange:block/runic_altar/runic_stone",
 		"surface1": "strange:block/runic_altar/runic_surface1",
 		"surface2": "strange:block/runic_altar/runic_surface2",
@@ -26,12 +26,12 @@
 			"to": [14, 14, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
 			"faces": {
-				"north": {"uv": [2, 0, 14, 12], "texture": "mossy"},
-				"east": {"uv": [0, 0, 12, 12], "texture": "mossy"},
-				"south": {"uv": [0, 0, 12, 12], "texture": "mossy"},
-				"west": {"uv": [0, 0, 12, 12], "texture": "mossy"},
-				"up": {"uv": [0, 0, 12, 12], "texture": "mossy"},
-				"down": {"uv": [0, 0, 12, 12], "texture": "mossy"}
+				"north": {"uv": [2, 0, 14, 12], "texture": "base"},
+				"east": {"uv": [0, 0, 12, 12], "texture": "base"},
+				"south": {"uv": [0, 0, 12, 12], "texture": "base"},
+				"west": {"uv": [0, 0, 12, 12], "texture": "base"},
+				"up": {"uv": [0, 0, 12, 12], "texture": "base"},
+				"down": {"uv": [0, 0, 12, 12], "texture": "base"}
 			}
 		},
 		{

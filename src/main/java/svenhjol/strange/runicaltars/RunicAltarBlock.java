@@ -29,11 +29,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         } else {
             // ensure client has the latest rune discoveries
             RunestoneHelper.syncLearnedRunesToClient((ServerPlayerEntity)player);
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof RunicAltarBlockEntity) {
-                player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-//                player.openHandledScreen((RunicAltarBlockEntity)blockEntity);
-            }
+            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             return ActionResult.CONSUME;
         }
     }
