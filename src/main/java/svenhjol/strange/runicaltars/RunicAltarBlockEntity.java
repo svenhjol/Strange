@@ -144,6 +144,11 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
         return toTag(compoundTag);
     }
 
+    @Nullable
+    public BlockPos getDestination() {
+        return this.destination;
+    }
+
     private void trySetDestination(ItemStack stack) {
         if (stack.getItem() == RunicAltars.RUNIC_FRAGMENT) {
             if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random))
