@@ -1,0 +1,155 @@
+{
+  "parent": "strange:find_stone_circle",
+  "display": {
+    "icon": {
+      "item": "minecraft:ender_pearl"
+    },
+    "title": {
+      "translate": "advancements.strange.runic_travel.title"
+    },
+    "description": {
+      "translate": "advancements.strange.runic_travel.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "entered_rune_0": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_0" }
+    },
+    "entered_rune_1": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_1" }
+    },
+    "entered_rune_2": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_2" }
+    },
+    "entered_rune_3": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_3" }
+    },
+    "entered_rune_4": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_4" }
+    },
+    "entered_rune_5": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_5" }
+    },
+    "entered_rune_6": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_6" }
+    },
+    "entered_rune_7": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_7" }
+    },
+    "entered_rune_8": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_8" }
+    },
+    "entered_rune_9": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_9" }
+    },
+    "entered_rune_10": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_10" }
+    },
+    "entered_rune_11": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_11" }
+    },
+    "entered_rune_12": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_12" }
+    },
+    "entered_rune_13": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_13" }
+    },
+    "entered_rune_14": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_14" }
+    },
+    "entered_rune_15": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_15" }
+    },
+    "entered_rune_16": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_16" }
+    },
+    "entered_rune_17": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_17" }
+    },
+    "entered_rune_18": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_18" }
+    },
+    "entered_rune_19": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_19" }
+    },
+    "entered_rune_20": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_20" }
+    },
+    "entered_rune_21": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_21" }
+    },
+    "entered_rune_22": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_22" }
+    },
+    "entered_rune_23": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_23" }
+    },
+    "entered_rune_24": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_24" }
+    },
+    "entered_rune_25": {
+      "trigger": "minecraft:enter_block",
+      "conditions": { "block": "strange:runestone_25" }
+    }
+  },
+  "requirements": [
+    [
+      "entered_rune_0",
+      "entered_rune_1",
+      "entered_rune_2",
+      "entered_rune_3",
+      "entered_rune_4",
+      "entered_rune_5",
+      "entered_rune_6",
+      "entered_rune_7",
+      "entered_rune_8",
+      "entered_rune_9",
+      "entered_rune_10",
+      "entered_rune_11",
+      "entered_rune_12",
+      "entered_rune_13",
+      "entered_rune_14",
+      "entered_rune_15",
+      "entered_rune_16",
+      "entered_rune_17",
+      "entered_rune_18",
+      "entered_rune_19",
+      "entered_rune_20",
+      "entered_rune_21",
+      "entered_rune_22",
+      "entered_rune_23",
+      "entered_rune_24",
+      "entered_rune_25"
+    ]
+  ]
+}

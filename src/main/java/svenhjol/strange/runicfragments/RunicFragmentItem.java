@@ -59,7 +59,7 @@ public class RunicFragmentItem extends CharmItem {
                     held.decrement(1);
                 }
 
-                user.sendMessage(new TranslatableText("runic_altar.strange.fragment_symbol", held.getName()), true);
+                user.sendMessage(new TranslatableText("runic_fragment.strange.fragment_symbol", held.getName()), true);
             }
         }
 

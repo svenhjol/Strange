@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:story/root",
+  "display": {
+    "icon": {
+      "item": "strange:totem_of_preserving"
+    },
+    "title": {
+      "translate": "advancements.strange.totem_of_preserving.title"
+    },
+    "description": {
+      "translate": "advancements.strange.totem_of_preserving.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "totem_of_preserving": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "strange:totem_of_preserving"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "totem_of_preserving"
+    ]
+  ]
+}

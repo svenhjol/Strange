@@ -2,7 +2,7 @@
   "parent": "strange:place_writing_desk",
   "display": {
     "icon": {
-      "item": "strange:scroll"
+      "item": "strange:legendary_scroll"
     },
     "title": {
       "translate": "advancements.strange.scroll.title"
@@ -17,20 +17,39 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "scrolls": {
+    "novice_scroll": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "item": "strange:scroll"
-          }
-        ]
-      }
+      "conditions": {"items": [{"item": "strange:novice_scroll"}]}
+    },
+    "apprentice_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"item": "strange:apprentice_scroll"}]}
+    },
+    "journeyman_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"item": "strange:journeyman_scroll"}]}
+    },
+    "expert_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"item": "strange:expert_scroll"}]}
+    },
+    "master_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"item": "strange:master_scroll"}]}
+    },
+    "legendary_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"item": "strange:legendary_scroll"}]}
     }
   },
   "requirements": [
     [
-      "scrolls"
+      "novice_scroll",
+      "apprentice_scroll",
+      "journeyman_scroll",
+      "expert_scroll",
+      "master_scroll",
+      "legendary_scroll"
     ]
   ]
 }
