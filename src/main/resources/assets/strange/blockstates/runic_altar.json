@@ -1,6 +1,18 @@
 {
   "variants": {
-    "": {
+    "charges=0": {
+      "model": "strange:block/runic_altar"
+    },
+    "charges=1": {
+      "model": "strange:block/runic_altar"
+    },
+    "charges=2": {
+      "model": "strange:block/runic_altar"
+    },
+    "charges=3": {
+      "model": "strange:block/runic_altar"
+    },
+    "charges=4": {
       "model": "strange:block/runic_altar"
     }
   }
