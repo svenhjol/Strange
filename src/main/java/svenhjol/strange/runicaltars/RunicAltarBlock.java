@@ -57,8 +57,8 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
                     world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     world.setBlockState(pos, state.with(CHARGES, charges + 1));
                     held.decrement(1);
-                    return ActionResult.CONSUME;
                 }
+                return ActionResult.CONSUME;
             }
         }
 
