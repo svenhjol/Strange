@@ -57,10 +57,11 @@ public class RunicFragmentItem extends CharmItem {
                     BlockPos destination = getNormalizedPos(held, world);
                     PlayerHelper.teleport(world, destination, user);
                     held.decrement(1);
+                    return TypedActionResult.success(held);
                 }
-
-                user.sendMessage(new TranslatableText("runic_fragment.strange.fragment_symbol", held.getName()), true);
             }
+
+            user.sendMessage(new TranslatableText("runic_fragment.strange.fragment_symbol", held.getName()), true);
         }
 
         return super.use(world, user, hand);

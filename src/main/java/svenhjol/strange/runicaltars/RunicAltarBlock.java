@@ -2,6 +2,7 @@ package svenhjol.strange.runicaltars;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -78,6 +79,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             if (!world.isClient) {
                 world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state.with(CHARGES, charges - 1));
+                Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, state);
                 PlayerHelper.teleport(world, destination, player);
             }
         }

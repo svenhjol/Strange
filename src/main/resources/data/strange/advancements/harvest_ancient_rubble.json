@@ -1,0 +1,30 @@
+{
+  "parent": "strange:find_foundation",
+  "display": {
+    "icon": {
+      "item": "strange:ancient_rubble"
+    },
+    "title": {
+      "translate": "advancements.strange.harvest_ancient_rubble.title"
+    },
+    "description": {
+      "translate": "advancements.strange.harvest_ancient_rubble.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "harvest_ancient_rubble": {
+      "trigger": "minecraft:enter_block",
+      "conditions": {"block": "strange:ancient_rubble"}
+    }
+  },
+  "requirements": [
+    [
+      "harvest_ancient_rubble"
+    ]
+  ]
+}

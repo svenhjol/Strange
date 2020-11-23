@@ -5,10 +5,10 @@
       "item": "strange:totem_of_preserving"
     },
     "title": {
-      "translate": "advancements.strange.totem_of_preserving.title"
+      "translate": "advancements.strange.use_totem_of_preserving.title"
     },
     "description": {
-      "translate": "advancements.strange.totem_of_preserving.description"
+      "translate": "advancements.strange.use_totem_of_preserving.description"
     },
     "frame": "goal",
     "show_toast": true,
@@ -17,8 +17,8 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "totem_of_preserving": {
-      "trigger": "minecraft:inventory_changed",
+    "use_totem_of_preserving": {
+      "trigger": "minecraft:used_totem",
       "conditions": {
         "items": [
           {
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "totem_of_preserving"
+      "use_totem_of_preserving"
     ]
   ]
 }

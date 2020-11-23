@@ -17,7 +17,7 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "find_circle": {
+    "find_stone_circle": {
       "trigger": "minecraft:location",
       "conditions": {
         "feature": "strange:stone_circle"
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "find_circle"
+      "find_stone_circle"
     ]
   ]
 }

@@ -5,10 +5,10 @@
       "item": "strange:runic_fragment"
     },
     "title": {
-      "translate": "advancements.strange.runic_fragment.title"
+      "translate": "advancements.strange.get_runic_fragment.title"
     },
     "description": {
-      "translate": "advancements.strange.runic_fragment.description"
+      "translate": "advancements.strange.get_runic_fragment.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,7 +17,7 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "runic_fragment": {
+    "get_runic_fragment": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "runic_fragment"
+      "get_runic_fragment"
     ]
   ]
 }

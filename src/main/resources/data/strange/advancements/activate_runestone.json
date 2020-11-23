@@ -5,10 +5,10 @@
       "item": "minecraft:ender_pearl"
     },
     "title": {
-      "translate": "advancements.strange.runic_travel.title"
+      "translate": "advancements.strange.activate_runestone.title"
     },
     "description": {
-      "translate": "advancements.strange.runic_travel.description"
+      "translate": "advancements.strange.activate_runestone.description"
     },
     "frame": "goal",
     "show_toast": true,
