@@ -1,4 +1,4 @@
-package svenhjol.strange.runestones;
+package svenhjol.strange.base.helper;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.Unpooled;
@@ -21,6 +21,7 @@ import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runicfragments.RunicFragments;
 
@@ -59,6 +60,26 @@ public class RunestoneHelper {
             return runes.subList(0, Math.min(runes.size(), limit));
 
         return runes;
+    }
+
+    public static boolean playerKnowsBlockPosRunes(PlayerEntity player, BlockPos pos, int limit) {
+        List<Integer> required = getRunesFromBlockPos(pos, limit);
+        if (required.size() < limit)
+            return false;
+
+        if (player.abilities.creativeMode)
+            return true;
+
+        List<Integer> learned = getLearnedRunes(player);
+        if (learned.size() == 0)
+            return false;
+
+        for (int rune : required) {
+            if (!learned.contains(rune))
+                return false;
+        }
+
+        return true;
     }
 
     public static List<Integer> getLearnedRunes(PlayerEntity player) {
