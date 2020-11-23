@@ -18,7 +18,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
@@ -150,7 +152,7 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
     }
 
     private void trySetDestination(ItemStack stack) {
-        if (stack.getItem() == RunicAltars.RUNIC_FRAGMENT) {
+        if (stack.getItem() == RunicFragments.RUNIC_FRAGMENT) {
             if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random))
                 return;
 

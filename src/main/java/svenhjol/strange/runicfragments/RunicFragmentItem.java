@@ -1,4 +1,4 @@
-package svenhjol.strange.runicaltars;
+package svenhjol.strange.runicfragments;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -71,7 +71,7 @@ public class RunicFragmentItem extends CharmItem {
 
         ServerWorld serverWorld = (ServerWorld)world;
 
-        Identifier locationId = RunicAltars.destinations.get(random.nextInt(RunicAltars.destinations.size()));
+        Identifier locationId = RunicFragments.destinations.get(random.nextInt(RunicFragments.destinations.size()));
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {

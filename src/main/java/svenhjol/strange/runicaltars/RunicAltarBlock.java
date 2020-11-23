@@ -135,10 +135,6 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (state.get(CHARGES) != 0) {
-            if (random.nextInt(100) == 0) {
-                world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_RESPAWN_ANCHOR_AMBIENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            }
-
             double d = (double)pos.getX() + 0.5D + (0.5D - random.nextDouble());
             double e = (double)pos.getY() + 1.0D;
             double f = (double)pos.getZ() + 0.5D + (0.5D - random.nextDouble());
