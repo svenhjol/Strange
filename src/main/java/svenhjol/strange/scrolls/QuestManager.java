@@ -121,6 +121,14 @@ public class QuestManager extends PersistentState {
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_OPEN_SCROLL, data);
     }
 
+    public void sendToast(PlayerEntity player, Quest quest, QuestToastType type, String title) {
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(quest.toTag());
+        data.writeEnumConstant(type);
+        data.writeString(title);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_QUEST_TOAST, data);
+    }
+
     public boolean abandonQuest(PlayerEntity player, String id) {
         Quest quest = quests.getOrDefault(id, null);
 
@@ -176,10 +184,6 @@ public class QuestManager extends PersistentState {
         addQuest(quest);
 
         return quest;
-    }
-
-    public boolean isPresent(String id) {
-        return quests.containsKey(id);
     }
 
     public static String nameFor(DimensionType dimensionType) {

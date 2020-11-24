@@ -39,23 +39,23 @@ public class ScrollItem extends CharmItem {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack heldScroll = player.getStackInHand(hand);
+        ItemStack held = player.getStackInHand(hand);
 
         Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
         if (!optionalQuestManager.isPresent())
-            return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
+            return new TypedActionResult<>(ActionResult.FAIL, held);
 
         QuestManager questManager = optionalQuestManager.get();
 
         if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
-            return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
+            return new TypedActionResult<>(ActionResult.FAIL, held);
 
         player.getItemCooldownManager().set(this, 10);
 
         if (world.isClient)
-            return new TypedActionResult<>(ActionResult.PASS, heldScroll);
+            return new TypedActionResult<>(ActionResult.PASS, held);
 
-        boolean hasBeenOpened = hasBeenOpened(heldScroll);
+        boolean hasBeenOpened = hasBeenOpened(held);
 
         if (!hasBeenOpened) {
             // if the quest hasn't been populated yet, create it in the quest manager
@@ -63,25 +63,25 @@ public class ScrollItem extends CharmItem {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
 
             if (definition == null)
-                return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
+                return new TypedActionResult<>(ActionResult.FAIL, held);
 
             if (!questManager.checkPlayerCanStartQuest(serverPlayer))
-                return new TypedActionResult<>(ActionResult.FAIL, heldScroll);
+                return new TypedActionResult<>(ActionResult.FAIL, held);
 
-
-            UUID seller = getScrollMerchant(heldScroll);
-            int rarity = Math.min(1, getScrollRarity(heldScroll));
+            UUID seller = getScrollMerchant(held);
+            int rarity = Math.min(1, getScrollRarity(held));
 
             Quest quest = questManager.createQuest(serverPlayer, definition, rarity, seller);
-            setScrollQuest(heldScroll, quest);
+            Scrolls.questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
+            setScrollQuest(held, quest);
 
             // tell the client to open the scroll
             questManager.openScroll(player, quest);
-            return new TypedActionResult<>(ActionResult.SUCCESS, heldScroll);
+            return new TypedActionResult<>(ActionResult.SUCCESS, held);
 
         } else {
 
-            Optional<Quest> quest = getScrollQuest(heldScroll);
+            Optional<Quest> quest = getScrollQuest(held);
             if (quest.isPresent()) {
 
                 // tell the client to open the scroll
@@ -91,7 +91,7 @@ public class ScrollItem extends CharmItem {
 
                 // scroll has expired, remove it
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                heldScroll.decrement(1);
+                held.decrement(1);
             }
         }
 

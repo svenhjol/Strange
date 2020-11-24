@@ -35,11 +35,11 @@ public class ScrollKeepersClient extends CharmClientModule {
             int range = Scrollkeepers.interestRange;
 
             // get held item
-            ItemStack heldStack = player.getMainHandStack();
-            if (!(heldStack.getItem() instanceof ScrollItem))
+            ItemStack held = player.getMainHandStack();
+            if (!(held.getItem() instanceof ScrollItem))
                 return;
 
-            Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(heldStack);
+            Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(held);
             if (!optionalQuest.isPresent())
                 return;
 

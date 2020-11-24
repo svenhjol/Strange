@@ -43,7 +43,10 @@ import java.util.*;
 public class Scrolls extends CharmModule {
     public static final int MAX_TIERS = 6;
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
+
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
+    public static final Identifier MSG_CLIENT_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_quest_toast");
+
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
     public static Map<Integer, Map<String, JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();

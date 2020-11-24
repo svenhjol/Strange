@@ -27,14 +27,13 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrolls.ScrollHelper;
-import svenhjol.strange.scrolls.ScrollItem;
+import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Optional;
 
-@Module(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
+@Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35};
@@ -69,9 +68,9 @@ public class Scrollkeepers extends CharmModule {
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
     }
 
-    private ActionResult tryHandInScroll(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         if (entity instanceof VillagerEntity) {
-            ItemStack heldStack = playerEntity.getStackInHand(hand);
+            ItemStack heldStack = player.getStackInHand(hand);
             VillagerEntity villager = (VillagerEntity)entity;
             if (!(heldStack.getItem() instanceof ScrollItem))
                 return ActionResult.PASS;
@@ -84,7 +83,7 @@ public class Scrollkeepers extends CharmModule {
                 Quest quest = optionalQuest.get();
 
                 // quest conditions haven't been satisfied yet
-                if (!quest.isSatisfied(playerEntity)) {
+                if (!quest.isSatisfied(player)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
@@ -97,10 +96,11 @@ public class Scrollkeepers extends CharmModule {
                 }
 
                 // success, tidy up the quest, give rewards etc.
-                world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                world.playSound(null, playerEntity.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                quest.complete(playerEntity, villager);
-                Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)playerEntity, heldStack);
+                world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                world.playSound(null, player.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                quest.complete(player, villager);
+                Scrolls.questManager.sendToast(player, quest, QuestToastType.Success, "event.strange.quests.completed");
+                Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, heldStack);
                 heldStack.decrement(1);
 
                 // handle villager xp increase and level-up
@@ -128,7 +128,7 @@ public class Scrollkeepers extends CharmModule {
                 if (badOmenChance > 0 && villagerLevel >= 3 && world.random.nextFloat() < (Math.min(badOmenChance, 1.0D) * (villagerLevel - 2))) {
                     int amplifier = Math.max(0, villagerLevel - 2);
                     StatusEffectInstance badOmen = new StatusEffectInstance(StatusEffects.BAD_OMEN, 120000, amplifier, false, false, true);
-                    playerEntity.addStatusEffect(badOmen);
+                    player.addStatusEffect(badOmen);
                     Charm.LOG.debug("Applying bad omen of amplifier: " + amplifier);
                 }
             }

@@ -55,6 +55,10 @@
   "container.strange.runic_altar": "Runic Altar",
 
   "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
+  "entity.strange.villager.scrollkeeper": "Scrollkeeper",
+
+  "event.strange.quests.accepted": "Quest accepted",
+  "event.strange.quests.completed": "Quest completed",
 
   "gui.strange.scrolls.boss": "Battle",
   "gui.strange.scrolls.boss_entity": "%s: %s",
