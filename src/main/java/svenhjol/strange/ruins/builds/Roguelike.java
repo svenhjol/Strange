@@ -15,6 +15,20 @@ public class Roguelike extends BaseStructure {
     public Roguelike() {
         super(Strange.MOD_ID, "ruins", "roguelike");
 
+        // TODO: issues with ruin
+
+        // rooms:
+        // level1 anvil room is flooded
+        // level2 piece that has blue concrete marker
+        // level4 creeper room should be an end piece
+        // level4 creeper room showing tnt at surface
+
+        // general:
+        // mob health >20 doesn't seem to be supported
+        // entity armor flags?
+        // pull shipwreck loot tables for ruins
+        // reduce weight of rare chests
+
         addStart("start1", 1);
 
         ROOMS.put("level1_room_cake1", 5);
