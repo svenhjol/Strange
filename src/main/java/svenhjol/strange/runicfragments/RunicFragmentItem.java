@@ -1,4 +1,4 @@
-package svenhjol.strange.runicaltars;
+package svenhjol.strange.runicfragments;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -17,10 +17,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.base.helper.PlayerHelper;
+import svenhjol.strange.base.helper.RunestoneHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -43,13 +45,23 @@ public class RunicFragmentItem extends CharmItem {
 
         if (!world.isClient) {
             if (getPos(held) == null) {
-                boolean result = populate(held, (ServerWorld) world, user.getBlockPos(), world.random);
+                boolean result = populate(held, world, user.getBlockPos(), world.random);
                 if (!result)
                     return TypedActionResult.fail(held);
             }
 
-            user.sendMessage(new TranslatableText("runic_altar.strange.fragment_symbol", held.getName()), true);
             user.getItemCooldownManager().set(this, 10);
+
+            if (!ModuleHandler.enabled("strange:runic_altars")) {
+                if (user.isSneaking() && isPopulated(held) && isCorrectDimension(held, world)) {
+                    BlockPos destination = getNormalizedPos(held, world);
+                    PlayerHelper.teleport(world, destination, user);
+                    held.decrement(1);
+                    return TypedActionResult.success(held);
+                }
+            }
+
+            user.sendMessage(new TranslatableText("runic_fragment.strange.fragment_symbol", held.getName()), true);
         }
 
         return super.use(world, user, hand);
@@ -71,7 +83,7 @@ public class RunicFragmentItem extends CharmItem {
 
         ServerWorld serverWorld = (ServerWorld)world;
 
-        Identifier locationId = RunicAltars.destinations.get(random.nextInt(RunicAltars.destinations.size()));
+        Identifier locationId = RunicFragments.destinations.get(random.nextInt(RunicFragments.destinations.size()));
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {
@@ -119,6 +131,20 @@ public class RunicFragmentItem extends CharmItem {
     public static boolean isCorrectDimension(ItemStack fragment, World world) {
         Identifier dimension = getDimension(fragment);
         return dimension == null || DimensionHelper.isDimension(world, dimension);
+    }
+
+    @Nullable
+    public static BlockPos getNormalizedPos(ItemStack fragment, World world) {
+        if (!isPopulated(fragment))
+            return null;
+
+        BlockPos pos = getPos(fragment);
+
+        // recalculate position if it's supposed to be at the surface
+        if (pos != null && pos.getY() == 0)
+            pos = PosHelper.getSurfacePos(world, pos);
+
+        return pos;
     }
 
     @Nullable

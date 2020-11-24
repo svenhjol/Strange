@@ -9,6 +9,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import svenhjol.charm.base.screenhandler.CharmScreenHandler;
+import svenhjol.strange.runicfragments.RunicFragments;
 
 public class RunicAltarScreenHandler extends CharmScreenHandler {
     private final PlayerInventory playerInventory;
@@ -36,7 +37,7 @@ public class RunicAltarScreenHandler extends CharmScreenHandler {
             }
 
             public boolean canInsert(ItemStack stack) {
-                return stack.getItem() == RunicAltars.RUNIC_FRAGMENT
+                return stack.getItem() == RunicFragments.RUNIC_FRAGMENT
                     || stack.getItem() == Items.COMPASS;
             }
         });

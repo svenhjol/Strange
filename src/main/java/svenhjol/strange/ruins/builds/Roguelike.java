@@ -15,6 +15,20 @@ public class Roguelike extends BaseStructure {
     public Roguelike() {
         super(Strange.MOD_ID, "ruins", "roguelike");
 
+        // TODO: issues with ruin
+
+        // rooms:
+        // level1 anvil room is flooded
+        // level2 piece that has blue concrete marker
+        // level4 creeper room should be an end piece
+        // level4 creeper room showing tnt at surface
+
+        // general:
+        // mob health >20 doesn't seem to be supported
+        // entity armor flags?
+        // pull shipwreck loot tables for ruins
+        // reduce weight of rare chests
+
         addStart("start1", 1);
 
         ROOMS.put("level1_room_cake1", 5);
@@ -43,7 +57,12 @@ public class Roguelike extends BaseStructure {
         ROOMS.put("level3_room_joining", 5);
         ROOMS.put("level3_room_skulls", 5);
         ROOMS.put("level3_room_tombs", 5);
-        ROOMS.put("level4_room_water1", 2);
+        ROOMS.put("level4_room_cells1", 5);
+        ROOMS.put("level4_room_creepers", 4);
+        ROOMS.put("level4_room_crypt1", 4);
+        ROOMS.put("level4_room_junction", 5);
+        ROOMS.put("level4_room_skulls", 4);
+        ROOMS.put("level4_room_water1", 5);
 
         SIDES.put("level1_side_blacksmith", 2);
         SIDES.put("level1_side_den", 5);
@@ -69,14 +88,22 @@ public class Roguelike extends BaseStructure {
         CORRIDORS.put("level3_corridor_tiny", 3);
         CORRIDORS.put("level3_corridor_variant1", 5);
         CORRIDORS.put("level3_corridor_variant2", 5);
-        CORRIDORS.put("level4_corridor_variant1", 5);
-        CORRIDORS.put("level4_corridor_variant2", 5);
+        CORRIDORS.put("level4_corridor_variant1", 4);
+        CORRIDORS.put("level4_corridor_variant2", 4);
+        CORRIDORS.put("level4_corridor_variant3", 4);
+        CORRIDORS.put("level4_corridor_variant4", 5);
+        CORRIDORS.put("level4_corridor_variant5", 5);
+        CORRIDORS.put("level4_corridor_variant6", 5);
 
         ENDS.put("level1_end1", 5);
         ENDS.put("level2_end1", 5);
         ENDS.put("level3_end1", 5);
         ENDS.put("level3_end2", 5);
         ENDS.put("level3_end3", 5);
+        ENDS.put("level4_end1", 4);
+        ENDS.put("level4_end2", 4);
+        ENDS.put("level4_end3", 4);
+        ENDS.put("level4_end_water1", 5);
 
         registerPool("rooms", ROOMS);
         registerPool("sides", SIDES);

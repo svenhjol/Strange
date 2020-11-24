@@ -1,12 +1,14 @@
 package svenhjol.strange.scrollkeepers;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -98,6 +100,7 @@ public class Scrollkeepers extends CharmModule {
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 world.playSound(null, playerEntity.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 quest.complete(playerEntity, villager);
+                Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)playerEntity, heldStack);
                 heldStack.decrement(1);
 
                 // handle villager xp increase and level-up

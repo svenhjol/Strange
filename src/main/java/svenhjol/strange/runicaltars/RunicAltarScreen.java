@@ -5,7 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
@@ -18,7 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.base.helper.RunestoneHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,6 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
 
     private List<Integer> requiredRunes = new ArrayList<>();
     private List<Integer> learnedRunes = new ArrayList<>();
-
-    private int playerRuneCheckTicks = 0;
 
     public RunicAltarScreen(RunicAltarScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -47,7 +44,7 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
             public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
                 if (client != null && slotId == 0) {
                     BlockPos pos = RunestoneHelper.getBlockPosFromItemStack(client.world, handler.getSlot(slotId).getStack());
-                    requiredRunes = pos != null ? RunestoneHelper.getRunesFromBlockPos(pos, 8) : new ArrayList<>();
+                    requiredRunes = pos != null ? RunestoneHelper.getRunesFromBlockPos(pos, RunicAltars.NUMBER_OF_RUNES) : new ArrayList<>();
                     tryUpdatePlayerLearnedRunes();
                 }
             }
@@ -72,10 +69,6 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
         if (this.client == null || this.client.player == null)
             return;
 
-        PlayerEntity player = this.client.player;
-        int midWidth = this.width / 2;
-        int midHeight = this.height / 2;
-
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.client.getTextureManager().bindTexture(TEXTURE);
         int x = (this.width - this.backgroundWidth) / 2;
@@ -86,12 +79,6 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
         Slot slot0 = handler.getSlot(0);
         if (!slot0.hasStack())
             return;
-
-        // poll player runes
-        if (++playerRuneCheckTicks == 15) {
-            playerRuneCheckTicks = 0;
-//            tryUpdatePlayerLearnedRunes();
-        }
 
         // render the rune grid
         float sx = (float) (this.width / 2) - 9;

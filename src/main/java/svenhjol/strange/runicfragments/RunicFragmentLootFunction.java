@@ -1,4 +1,4 @@
-package svenhjol.strange.runicaltars;
+package svenhjol.strange.runicfragments;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -37,18 +37,17 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
         if (origin == null)
             return stack;
 
-        if (random.nextFloat() > RunicAltars.lootChance)
+        if (random.nextFloat() > RunicFragments.lootChance)
             return stack;
 
-        ItemStack fragment = new ItemStack(RunicAltars.RUNIC_FRAGMENT);
-
+        ItemStack fragment = new ItemStack(RunicFragments.RUNIC_FRAGMENT);
 
         return fragment;
     }
 
     @Override
     public LootFunctionType getType() {
-        return RunicAltars.LOOT_FUNCTION;
+        return RunicFragments.LOOT_FUNCTION;
     }
 
     public static class Serializer extends ConditionalLootFunction.Serializer<RunicFragmentLootFunction> {

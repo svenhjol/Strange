@@ -2,6 +2,7 @@ package svenhjol.strange.excavation;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,6 +17,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -107,21 +109,19 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
                     return fail(serverWorld, pos);
 
                 if (level == 8)
-                    return success(serverWorld, pos);
+                    return success(serverWorld, pos, player);
 
                 // test to see if it can be levelled
                 boolean shovel = held.getItem() instanceof ShovelItem;
                 boolean waited = serverWorld.getTime() - rubble.getLevelTicks() > 50 + random.nextInt(10);
-                int efficiency = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, held);
                 int fortune = EnchantmentHelper.getLevel(Enchantments.FORTUNE, held);
                 float luck = player.getLuck();
 
                 float chance = 0.15F;
-                chance += shovel ? 0.05F : 0;
-                chance += waited ? 0.15F : 0;
-                chance += efficiency * 0.05F;
-                chance += fortune * 0.12F;
-                chance += luck * 0.04F;
+                chance += shovel ? 0.15F : 0;
+                chance += waited ? 0.25F : 0;
+                chance += fortune * 0.14F;
+                chance += luck * 0.03F;
 
                 if (world.random.nextFloat() > chance)
                     return fail(serverWorld, pos);
@@ -211,7 +211,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
         return ActionResult.FAIL;
     }
 
-    private ActionResult success(ServerWorld world, BlockPos pos) {
+    private ActionResult success(ServerWorld world, BlockPos pos, PlayerEntity player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
             return ActionResult.FAIL;
@@ -221,6 +221,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
 
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
+        Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, world.getBlockState(pos));
 
         world.removeBlockEntity(pos);
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);

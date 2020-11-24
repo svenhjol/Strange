@@ -1,0 +1,55 @@
+{
+  "parent": "strange:get_scroll",
+  "display": {
+    "icon": {
+      "item": "strange:expert_scroll"
+    },
+    "title": {
+      "translate": "advancements.strange.complete_quest.title"
+    },
+    "description": {
+      "translate": "advancements.strange.complete_quest.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "novice_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:novice_scroll"}}
+    },
+    "apprentice_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:apprentice_scroll"}}
+    },
+    "journeyman_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:journeyman_scroll"}}
+    },
+    "expert_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:expert_scroll"}}
+    },
+    "master_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:master_scroll"}}
+    },
+    "legendary_scroll": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:legendary_scroll"}}
+    }
+  },
+  "requirements": [
+    [
+      "novice_scroll",
+      "apprentice_scroll",
+      "journeyman_scroll",
+      "expert_scroll",
+      "master_scroll",
+      "legendary_scroll"
+    ]
+  ]
+}

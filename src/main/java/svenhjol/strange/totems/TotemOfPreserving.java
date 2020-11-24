@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -17,6 +18,7 @@ import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -116,6 +118,7 @@ public class TotemOfPreserving extends CharmModule {
         totemEntity.setInvulnerable(true);
 
         world.spawnEntity(totemEntity);
+        Criteria.USED_TOTEM.trigger((ServerPlayerEntity)player, totem);
         Charm.LOG.info("Totem of Preserving spawned at " + new BlockPos(x, y, z));
 
         // clear player's inventory

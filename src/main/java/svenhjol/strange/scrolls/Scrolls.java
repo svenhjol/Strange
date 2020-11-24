@@ -75,7 +75,7 @@ public class Scrolls extends CharmModule {
     @Override
     public void register() {
         for (int tier = 1; tier <= MAX_TIERS; tier++) {
-            SCROLL_TIERS.put(tier, new ScrollItem(this, tier, "scroll_" + SCROLL_TIER_IDS.get(tier)));
+            SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
         SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));

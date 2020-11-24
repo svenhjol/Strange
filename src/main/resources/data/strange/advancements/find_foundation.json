@@ -1,0 +1,32 @@
+{
+  "parent": "strange:get_runic_fragment",
+  "display": {
+    "icon": {
+      "item": "minecraft:chiseled_stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.strange.find_foundation.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_foundation.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "find_foundation": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:foundation"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "find_foundation"
+    ]
+  ]
+}
