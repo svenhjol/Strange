@@ -97,7 +97,6 @@ public class Scrollkeepers extends CharmModule {
 
                 // success, tidy up the quest, give rewards etc.
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                world.playSound(null, player.getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 quest.complete(player, villager);
                 Scrolls.questManager.sendToast(player, quest, QuestToastType.Success, "event.strange.quests.completed");
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, heldStack);
