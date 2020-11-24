@@ -19,7 +19,7 @@ public class ScrollLootFunction extends ConditionalLootFunction {
         if (context.getRandom().nextFloat() > Scrolls.lootChance)
             return stack;
 
-        int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS) + 1;
+        int tier = context.getRandom().nextInt(Scrolls.MAX_TIERS - 1) + 1;
         int rarity = context.getRandom().nextInt(2) + 2;
 
         ItemStack scroll = new ItemStack(Scrolls.SCROLL_TIERS.get(tier));
