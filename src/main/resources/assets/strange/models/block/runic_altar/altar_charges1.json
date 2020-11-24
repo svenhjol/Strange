@@ -1,10 +1,14 @@
 {
-	"parent":  "strange:block/runic_altar/runic_altar_base",
+	"credit": "Made with Blockbench",
+	"parent": "strange:block/runic_altar/altar_charges0",
+	"texture_size": [14, 14],
 	"textures": {
+		"4": "strange:block/runic_altar/base_charges4",
 		"5": "strange:block/runic_altar/runic_surface",
-		"7": "strange:block/runic_altar/runic_basep1",
+		"6": "strange:block/runic_altar/base_charges1",
+		"7": "strange:block/runic_altar/charged_top",
 		"12": "strange:block/runic_altar/runic_stone",
-		"particle": "strange:block/runic_altar/runic_base"
+		"particle": "strange:block/runic_altar/charged_top"
 	},
 	"elements": [
 		{
@@ -24,12 +28,12 @@
 			"to": [14, 15, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
 			"faces": {
-				"north": {"uv": [1.143, 1.143, 13.143, 15.143], "texture": "#7"},
-				"east": {"uv": [1.143, 1.143, 13.143, 15.143], "texture": "#7"},
-				"south": {"uv": [1.143, 1.143, 13.143, 15.143], "texture": "#7"},
-				"west": {"uv": [1.143, 1.143, 13.143, 15.143], "texture": "#7"},
-				"up": {"uv": [0, 0, 12, 12], "texture": "#7"},
-				"down": {"uv": [0, 0, 12, 12], "texture": "#7"}
+				"north": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
+				"east": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
+				"south": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
+				"west": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
+				"up": {"uv": [2, 2, 14, 14], "texture": "#6"},
+				"down": {"uv": [0, 0, 12, 12], "texture": "#6"}
 			}
 		},
 		{
@@ -93,8 +97,8 @@
 				"east": {"uv": [0, 0, 16, 1], "texture": "#12"},
 				"south": {"uv": [0, 0, 16, 1], "texture": "#12"},
 				"west": {"uv": [0, 0, 16, 1], "texture": "#12"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#12"}
+				"up": {"uv": [0, 1.14286, 14.85714, 16], "texture": "#7"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#4"}
 			}
 		}
 	],
