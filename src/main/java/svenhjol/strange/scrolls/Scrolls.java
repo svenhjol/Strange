@@ -35,19 +35,23 @@ import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoot;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 @Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
-    public static final int MAX_TIERS = 6;
-    public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
+    public static final int TIERS = 6;
+    public static final Identifier NORMAL_SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "normal_scroll_loot");
+    public static final Identifier LEGENDARY_SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "legendary_scroll_loot");
 
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
     public static final Identifier MSG_CLIENT_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_quest_toast");
 
-    public static LootFunctionType SCROLL_LOOT_FUNCTION;
+    public static LootFunctionType NORMAL_SCROLL_LOOT_FUNCTION;
+    public static LootFunctionType LEGENDARY_SCROLL_LOOT_FUNCTION;
+
     public static Map<Integer, Map<String, JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
@@ -57,10 +61,10 @@ public class Scrolls extends CharmModule {
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
 
-    @Config(name = "Add scrolls to loot", description = "If true, scrolls will be added to dungeon loot chests.")
+    @Config(name = "Add scrolls to loot", description = "If true, normal scrolls will be added to pillager loot and legendary scrolls to ancient rubble.")
     public static boolean addScrollsToLoot = true;
 
-    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a scroll appearing in dungeon or pillager loot.")
+    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a scroll appearing in loot.")
     public static double lootChance = 0.25F;
 
     @Config(name = "Scroll quest language", description = "The language key to use when displaying quest instructions.")
@@ -77,11 +81,13 @@ public class Scrolls extends CharmModule {
 
     @Override
     public void register() {
-        for (int tier = 1; tier <= MAX_TIERS; tier++) {
+        for (int tier = 1; tier <= TIERS; tier++) {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
-        SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
+        NORMAL_SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(NORMAL_SCROLL_LOOT_ID, new LootFunctionType(new NormalScrollLootFunction.Serializer()));
+        LEGENDARY_SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(LEGENDARY_SCROLL_LOOT_ID, new LootFunctionType(new LegendaryScrollLootFunction.Serializer()));
+
     }
 
     @Override
@@ -119,7 +125,7 @@ public class Scrolls extends CharmModule {
     private void tryLoadScrolls(MinecraftServer server) {
         ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
 
-        for (int tier = 1; tier <= MAX_TIERS; tier++) {
+        for (int tier = 1; tier <= TIERS; tier++) {
             AVAILABLE_SCROLLS.put(tier, new HashMap<>());
             Collection<Identifier> scrolls = resources.findResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
 
@@ -165,15 +171,6 @@ public class Scrolls extends CharmModule {
 
         ServerPlayerEntity player = (ServerPlayerEntity) attacker;
         Scrolls.questManager.forEachQuest(quest -> quest.playerKilledEntity(player, entity));
-
-//        forEachQuest(player, (scroll, quest) -> {
-//            quest.playerKilledEntity(player, entity);
-//
-//            if (quest.isDirty()) {
-//                quest.setDirty(false);
-//                ScrollItem.setScrollQuest(scroll, quest);
-//            }
-//        });
     }
 
     private void handlePlayerTick(PlayerEntity player) {
@@ -185,28 +182,29 @@ public class Scrolls extends CharmModule {
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         Scrolls.questManager.forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
-
-//        forEachQuest(player, (scroll, quest) -> {
-//            quest.playerTick(player);
-//
-//            if (quest.isDirty()) {
-//                quest.setDirty(false);
-//                ScrollItem.setScrollQuest(scroll, quest);
-//            }
-//        });
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter) {
         if (!addScrollsToLoot)
             return;
 
-        if (id.equals(LootTables.SIMPLE_DUNGEON_CHEST)
-            || id.equals(LootTables.PILLAGER_OUTPOST_CHEST)) {
+        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
+            || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantLootTableRange.create(1))
                 .with(ItemEntry.builder(Items.AIR)
                     .weight(1)
-                    .apply(() -> new ScrollLootFunction(new LootCondition[0])));
+                    .apply(() -> new NormalScrollLootFunction(new LootCondition[0])));
+
+            supplier.pool(builder);
+        }
+
+        if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
+            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                .rolls(ConstantLootTableRange.create(1))
+                .with(ItemEntry.builder(Items.PAPER)
+                    .weight(1)
+                    .apply(() -> new LegendaryScrollLootFunction(new LootCondition[0])));
 
             supplier.pool(builder);
         }
