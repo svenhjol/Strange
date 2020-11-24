@@ -19,6 +19,9 @@ public class RewardPanel extends Panel {
         Map<ItemStack, Integer> items = reward.getItems();
         int levels = reward.getLevels();
 
+        if (items.size() == 0 && levels == 0)
+            return; // no reward for you, goodbye :(
+
         // panel title
         drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.reward"), mid, top, titleColor);
 
