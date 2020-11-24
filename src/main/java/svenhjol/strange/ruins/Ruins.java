@@ -15,6 +15,7 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.ruins.builds.Roguelike;
+import svenhjol.strange.ruins.builds.Castle;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
@@ -88,8 +89,8 @@ public class Ruins extends CharmModule {
 //        MOUNTAINS_RUINS.add(new Vaults());
 //        MOUNTAINS_RUINS.add(new BambiMountainsRuin());
 //        FOREST_RUINS.add(new ForestRuin());
-//        PLAINS_RUINS.add(new Castle());
-        PLAINS_RUINS.add(new Roguelike());
+            PLAINS_RUINS.add(new Castle());
+//        PLAINS_RUINS.add(new Roguelike());
 
         // builds and registers all custom ruins into pools
         RuinGenerator.init();
