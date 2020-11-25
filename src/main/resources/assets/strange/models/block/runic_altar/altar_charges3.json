@@ -1,24 +1,24 @@
 {
 	"credit": "Made with Blockbench",
 	"parent": "strange:block/runic_altar/altar_charges0",
-	"texture_size": [14, 14],
 	"textures": {
+		"3": "strange:block/runic_altar/runic_bottom",
+		"4": "strange:block/runic_altar/runic_top",
 		"5": "strange:block/runic_altar/runic_surface",
 		"6": "strange:block/runic_altar/base_charges3",
-		"12": "strange:block/runic_altar/runic_stone",
-		"particle": "strange:block/runic_altar/base_charges0"
+		"particle": "strange:block/runic_altar/runic_bottom"
 	},
 	"elements": [
 		{
 			"from": [0, 0, 0],
 			"to": [16, 1, 16],
 			"faces": {
-				"north": {"uv": [0, 15, 16, 16], "texture": "#12"},
-				"east": {"uv": [0, 14, 16, 15], "texture": "#12"},
-				"south": {"uv": [0, 15, 16, 16], "texture": "#12"},
-				"west": {"uv": [0, 15, 16, 16], "texture": "#12"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#12"}
+				"north": {"uv": [0, 15, 16, 16], "texture": "#3"},
+				"east": {"uv": [0, 14, 16, 15], "texture": "#3"},
+				"south": {"uv": [0, 15, 16, 16], "texture": "#3"},
+				"west": {"uv": [0, 15, 16, 16], "texture": "#3"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#3"}
 			}
 		},
 		{
@@ -91,12 +91,12 @@
 			"to": [16, 16, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 22, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 1], "texture": "#12"},
-				"east": {"uv": [0, 0, 16, 1], "texture": "#12"},
-				"south": {"uv": [0, 0, 16, 1], "texture": "#12"},
-				"west": {"uv": [0, 0, 16, 1], "texture": "#12"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#12"}
+				"north": {"uv": [0, 0, 16, 1], "texture": "#4"},
+				"east": {"uv": [0, 0, 16, 1], "texture": "#4"},
+				"south": {"uv": [0, 0, 16, 1], "texture": "#4"},
+				"west": {"uv": [0, 0, 16, 1], "texture": "#4"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#4"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#4"}
 			}
 		}
 	],
