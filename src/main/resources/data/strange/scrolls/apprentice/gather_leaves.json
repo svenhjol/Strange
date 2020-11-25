@@ -1,0 +1,24 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Leaves",
+      "description": "Gather leaves."
+    }
+  },
+  "gather": {
+    "minecraft:acacia_leaves": "12-16",
+    "minecraft:birch_leaves | spruce_leaves": "12-16"
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:acacia_log | minecraft:birch_log | minecraft:spruce_log": "1-2",
+      "minecraft:apple[uncommon]": "2-4",
+      "minecraft:iron_hoe[enchanted][uncommon]": 1
+    },
+    "xp": {
+      "levels": "0-1"
+    }
+  }
+}

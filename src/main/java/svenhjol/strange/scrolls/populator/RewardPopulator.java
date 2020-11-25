@@ -52,7 +52,8 @@ public class RewardPopulator extends Populator {
 
                 // reward scales the number of levels according to the rarity of the scroll
                 int levels = getCountFromValue(definition.get(LEVELS), true);
-                quest.getReward().setLevels(levels);
+                if (levels > 0)
+                    quest.getReward().setLevels(levels);
             }
         }
     }

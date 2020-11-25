@@ -1,0 +1,23 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Hunt Zombies",
+      "description": "Find and kill zombies."
+    }
+  },
+  "hunt": {
+    "minecraft:zombie": 5
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:rotten_flesh": "2-4",
+      "minecraft:leather[rare]": "2-4",
+      "minecraft:zombie_skull[epic]": 1
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}

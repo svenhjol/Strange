@@ -1,0 +1,24 @@
+{
+  "builtIn": true,
+  "modules": [
+    "charm:bookcases"
+  ],
+  "lang": {
+    "en": {
+      "title": "Bookcase",
+      "description": "Craft oak bookcases using planks and a bookshelf."
+    }
+  },
+  "gather": {
+    "charm:oak_bookcase": 3
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:book": 3
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}

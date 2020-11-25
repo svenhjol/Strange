@@ -1,0 +1,21 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Iron Axes",
+      "description": "Craft iron axes."
+    }
+  },
+  "gather": {
+    "minecraft:iron_axe": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": "1-2",
+      "minecraft:iron_axe[common] | minecraft:iron_axe[enchanted][uncommon]": 1
+    },
+    "xp": {
+      "levels": "0-1"
+    }
+  }
+}

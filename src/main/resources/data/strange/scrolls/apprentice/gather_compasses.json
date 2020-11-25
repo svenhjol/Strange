@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Compasses",
+      "description": "Craft compasses."
+    }
+  },
+  "gather": {
+    "minecraft:compass": 3
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": "1-2",
+      "minecraft:iron_ingot[uncommon]": "2-4"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Flowers",
+      "description": "Gather flowers."
+    }
+  },
+  "gather": {
+    "minecraft:dandelion": 4,
+    "minecraft:poppy": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": "1-2",
+      "minecraft:yellow_dye[common] | minecraft:red_dye[common]": "2-4"
+    }
+  }
+}

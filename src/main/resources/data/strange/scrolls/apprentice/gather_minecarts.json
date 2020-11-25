@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Minecarts",
+      "description": "Craft minecarts."
+    }
+  },
+  "gather": {
+    "minecraft:minecart": 2
+  },
+  "reward": {
+    "items": {
+      "minecraft:iron_ingot": "4-8",
+      "minecraft:rail[uncommon]": "8-16",
+      "minecraft:powered_rail[rare]": "2-4"
+    }
+  }
+}
