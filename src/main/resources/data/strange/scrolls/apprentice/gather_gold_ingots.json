@@ -1,0 +1,22 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Gold Ingots",
+      "description": "Gather gold ingots.",
+      "hint": "Find gold ore and smelt it."
+    }
+  },
+  "gather": {
+    "minecraft:gold_ingot": "8-12"
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": "1-2",
+      "minecraft:gold_nugget[common]": "8-16"
+    },
+    "xp": {
+      "levels": "0-1"
+    }
+  }
+}

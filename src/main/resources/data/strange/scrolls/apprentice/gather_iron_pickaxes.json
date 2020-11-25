@@ -1,0 +1,21 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Iron Pickaxes",
+      "description": "Craft iron pickaxes."
+    }
+  },
+  "gather": {
+    "minecraft:iron_pickaxe": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": "1-2",
+      "minecraft:iron_pickaxe[common] | minecraft:iron_pickaxe[enchanted][uncommon]": 1
+    },
+    "xp": {
+      "levels": "0-1"
+    }
+  }
+}

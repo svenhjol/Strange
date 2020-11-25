@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Spruce Trapdoors",
+      "description": "Craft spruce trapdoors."
+    }
+  },
+  "gather": {
+    "minecraft:spruce_trapdoor": 8
+  },
+  "reward": {
+    "items": {
+      "minecraft:spruce_planks": "4-8",
+      "minecraft:emerald": 1
+    }
+  }
+}

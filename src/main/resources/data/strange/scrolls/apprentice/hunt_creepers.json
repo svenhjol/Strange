@@ -1,0 +1,22 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Hunt Creepers",
+      "description": "Find and kill creepers."
+    }
+  },
+  "hunt": {
+    "minecraft:creeper": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:gunpowder": "2-4",
+      "minecraft:tnt[rare]": 1
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}
