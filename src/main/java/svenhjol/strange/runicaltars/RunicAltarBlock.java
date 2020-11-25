@@ -6,6 +6,7 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +23,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
@@ -33,11 +36,24 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class RunicAltarBlock extends CharmBlockWithEntity {
-    public static final IntProperty CHARGES = Properties.CHARGES;
+    public static final IntProperty CHARGES;
+    public static final VoxelShape TOP;
+    public static final VoxelShape MIDDLE;
+    public static final VoxelShape BOTTOM;
+    public static final VoxelShape COLLISION_SHAPE;
+    public static final VoxelShape OUTLINE_SHAPE;
 
     public RunicAltarBlock(CharmModule module) {
         super(module, RunicAltars.BLOCK_ID.getPath(), Settings.copy(Blocks.STONE));
         this.setDefaultState(getDefaultState().with(CHARGES, 0));
+    }
+
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return COLLISION_SHAPE;
+    }
+
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return OUTLINE_SHAPE;
     }
 
     @Override
@@ -77,7 +93,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
                 return failToApply(world, pos);
 
             if (!world.isClient) {
-                world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state.with(CHARGES, charges - 1));
                 Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, state);
                 PlayerHelper.teleport(world, destination, player);
@@ -155,4 +171,12 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         }
     }
 
+    static {
+        CHARGES = Properties.CHARGES;
+        TOP = Block.createCuboidShape(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        MIDDLE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 15.0D, 15.0D);
+        BOTTOM = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+        COLLISION_SHAPE = VoxelShapes.union(TOP, MIDDLE, BOTTOM);
+        OUTLINE_SHAPE = VoxelShapes.union(TOP, MIDDLE, BOTTOM);
+    }
 }
