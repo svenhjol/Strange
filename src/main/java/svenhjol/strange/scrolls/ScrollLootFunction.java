@@ -8,15 +8,15 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 
-public class NormalScrollLootFunction extends ConditionalLootFunction {
+public class ScrollLootFunction extends ConditionalLootFunction {
 
-    public NormalScrollLootFunction(LootCondition[] conditions) {
+    public ScrollLootFunction(LootCondition[] conditions) {
         super(conditions);
     }
 
     @Override
     protected ItemStack process(ItemStack stack, LootContext context) {
-        if (context.getRandom().nextFloat() > Scrolls.lootChance)
+        if (context.getRandom().nextFloat() > 0.5F)
             return stack;
 
         int tier = context.getRandom().nextInt(Scrolls.TIERS - 1) + 1;
@@ -30,13 +30,13 @@ public class NormalScrollLootFunction extends ConditionalLootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return Scrolls.NORMAL_SCROLL_LOOT_FUNCTION;
+        return Scrolls.SCROLL_LOOT_FUNCTION;
     }
 
-    public static class Serializer extends ConditionalLootFunction.Serializer<NormalScrollLootFunction> {
+    public static class Serializer extends ConditionalLootFunction.Serializer<ScrollLootFunction> {
         @Override
-        public NormalScrollLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
-            return new NormalScrollLootFunction(conditions);
+        public ScrollLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+            return new ScrollLootFunction(conditions);
         }
     }
 }

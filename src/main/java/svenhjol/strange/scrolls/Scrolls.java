@@ -14,6 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
+import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
@@ -43,14 +44,12 @@ import java.util.*;
 @Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
-    public static final Identifier NORMAL_SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "normal_scroll_loot");
-    public static final Identifier LEGENDARY_SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "legendary_scroll_loot");
 
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
     public static final Identifier MSG_CLIENT_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_quest_toast");
 
-    public static LootFunctionType NORMAL_SCROLL_LOOT_FUNCTION;
-    public static LootFunctionType LEGENDARY_SCROLL_LOOT_FUNCTION;
+    public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
+    public static LootFunctionType SCROLL_LOOT_FUNCTION;
 
     public static Map<Integer, Map<String, JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
@@ -63,9 +62,6 @@ public class Scrolls extends CharmModule {
 
     @Config(name = "Add scrolls to loot", description = "If true, normal scrolls will be added to pillager loot and legendary scrolls to ancient rubble.")
     public static boolean addScrollsToLoot = true;
-
-    @Config(name = "Loot chance", description = "Chance (out of 1.0) of a scroll appearing in loot.")
-    public static double lootChance = 0.25F;
 
     @Config(name = "Scroll quest language", description = "The language key to use when displaying quest instructions.")
     public static String language = "en";
@@ -85,9 +81,7 @@ public class Scrolls extends CharmModule {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
-        NORMAL_SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(NORMAL_SCROLL_LOOT_ID, new LootFunctionType(new NormalScrollLootFunction.Serializer()));
-        LEGENDARY_SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(LEGENDARY_SCROLL_LOOT_ID, new LootFunctionType(new LegendaryScrollLootFunction.Serializer()));
-
+        SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
     }
 
     @Override
@@ -188,23 +182,20 @@ public class Scrolls extends CharmModule {
         if (!addScrollsToLoot)
             return;
 
-        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
-            || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
+        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST) || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantLootTableRange.create(1))
                 .with(ItemEntry.builder(Items.AIR)
                     .weight(1)
-                    .apply(() -> new NormalScrollLootFunction(new LootCondition[0])));
+                    .apply(() -> new ScrollLootFunction(new LootCondition[0])));
 
             supplier.pool(builder);
         }
 
         if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
-                .with(ItemEntry.builder(Items.PAPER)
-                    .weight(1)
-                    .apply(() -> new LegendaryScrollLootFunction(new LootCondition[0])));
+                .rolls(UniformLootTableRange.between(0.0F, 1.0F))
+                .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS - 1)));
 
             supplier.pool(builder);
         }
