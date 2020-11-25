@@ -1,4 +1,4 @@
-package svenhjol.strange.base.helper;
+package svenhjol.strange.totems;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

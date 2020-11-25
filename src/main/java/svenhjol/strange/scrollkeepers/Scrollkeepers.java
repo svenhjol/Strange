@@ -27,6 +27,7 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
+import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import svenhjol.charm.Charm;
 import svenhjol.strange.runestones.RunestoneBlockEntity;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;

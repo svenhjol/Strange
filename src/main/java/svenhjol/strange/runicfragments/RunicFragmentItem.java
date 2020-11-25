@@ -22,7 +22,7 @@ import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
 import svenhjol.strange.base.helper.PlayerHelper;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;

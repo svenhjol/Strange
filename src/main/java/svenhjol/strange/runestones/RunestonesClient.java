@@ -3,7 +3,6 @@ package svenhjol.strange.runestones;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.strange.base.helper.RunestoneHelper;
 
 public class RunestonesClient extends CharmClientModule {
     public RunestonesClient(CharmModule module) {

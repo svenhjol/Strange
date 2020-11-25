@@ -1,4 +1,4 @@
-package svenhjol.strange.base.helper;
+package svenhjol.strange.runestones;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.Unpooled;
@@ -21,7 +21,6 @@ import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runicfragments.RunicFragments;
 

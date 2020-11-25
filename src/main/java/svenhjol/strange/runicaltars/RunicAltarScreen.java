@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.Strange;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 import java.util.ArrayList;
 import java.util.List;

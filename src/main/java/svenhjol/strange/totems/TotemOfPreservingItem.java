@@ -20,7 +20,6 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.ItemNBTHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.base.helper.TotemHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;

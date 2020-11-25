@@ -21,7 +21,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
