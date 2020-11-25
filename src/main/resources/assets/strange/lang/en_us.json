@@ -73,7 +73,7 @@
   "gui.strange.scrolls.reward_levels": "Experience: %s levels",
   "gui.strange.scrolls.reward_level": "Experience: %s level",
   "gui.strange.scrolls.reward_item": "%s: %s",
-  "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
+  "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s:%s",
 
   "item.strange.runic_fragment": "Runic Fragment",
   "item.strange.runic_tablet": "Runic Tablet",
