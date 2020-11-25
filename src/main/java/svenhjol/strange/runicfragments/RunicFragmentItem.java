@@ -19,9 +19,9 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.base.helper.PlayerHelper;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;
@@ -92,8 +92,8 @@ public class RunicFragmentItem extends CharmItem {
             return false;
         }
 
-        startPos = PosHelper.addRandomOffset(startPos, random, 6000);
-        BlockPos foundPos = serverWorld.locateStructure(structureFeature, startPos, 1000, false);
+        startPos = PosHelper.addRandomOffset(startPos, random, 2000, 4000);
+        BlockPos foundPos = serverWorld.locateStructure(structureFeature, startPos, 500, false);
 
         if (foundPos == null) {
             Charm.LOG.warn("Unable to find position of structure in this dimension, setting timeout");

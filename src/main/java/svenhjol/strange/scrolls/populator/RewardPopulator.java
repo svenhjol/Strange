@@ -9,8 +9,10 @@ import java.util.*;
 
 public class RewardPopulator extends Populator {
     public static final String ITEMS = "items";
-    public static final String LEVELS = "levels";
+    public static final String PLAYER = "player";
+    public static final String VILLAGER = "villager";
     public static final String XP = "xp";
+    public static final String COUNT = "count";
 
     public RewardPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
@@ -18,42 +20,41 @@ public class RewardPopulator extends Populator {
 
     @Override
     public void populate() {
-        Map<String, Map<String, String>> reward = definition.getReward();
+        Map<String, Map<String, Map<String, String>>> reward = definition.getReward();
         if (reward.isEmpty())
             return;
 
         if (reward.containsKey(ITEMS)) {
-            Map<String, String> defined = reward.get(ITEMS);
-            Map<ItemStack, Integer> items = new HashMap<>();
-
-            for (String stackName : defined.keySet()) {
-                ItemStack stack = getItemFromKey(stackName);
-                if (stack == null)
-                    continue;
-
-                // reward scales the number of items according to the rarity of the scroll
-                int count = getCountFromValue(defined.get(stackName), true);
-                items.put(stack, count);
-            }
+            List<ItemStack> items = parseItems(reward.get(ITEMS), true);
 
             // if more than 3 items, shuffle the set and take the top 3
             if (items.size() > 3) {
-                List<ItemStack> itemList = new ArrayList<>(items.keySet());
-                Collections.shuffle(itemList);
-                itemList.subList(0, 3).forEach(stack -> quest.getReward().addItem(stack, items.get(stack)));
+                Collections.shuffle(items);
+                items.subList(0, 3).forEach(stack -> quest.getReward().addItem(stack));
             } else {
                 items.forEach(quest.getReward()::addItem);
             }
         }
 
         if (reward.containsKey(XP)) {
-            Map<String, String> definition = reward.get(XP);
-            if (definition.containsKey(LEVELS)) {
+            Map<String, Map<String, String>> xp = reward.get(XP);
 
-                // reward scales the number of levels according to the rarity of the scroll
-                int levels = getCountFromValue(definition.get(LEVELS), true);
-                if (levels > 0)
-                    quest.getReward().setLevels(levels);
+            // set the player's awarded XP count
+            if (xp.containsKey(PLAYER)) {
+                Map<String, String> player = xp.get(PLAYER);
+
+                int count = getCountFromValue(player.getOrDefault(COUNT, ""), 0, true);
+                if (count > 0)
+                    quest.getReward().setPlayerXp(count);
+            }
+
+            // set the villager's awarded XP count
+            if (xp.containsKey(VILLAGER)) {
+                Map<String, String> villager = xp.get(VILLAGER);
+
+                int count = getCountFromValue(villager.getOrDefault(COUNT, ""), 0, true);
+                if (count > 0)
+                    quest.getReward().setVillagerXp(count);
             }
         }
     }

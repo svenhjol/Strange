@@ -5,31 +5,23 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GatherPopulator extends Populator {
+    public static final String ITEMS = "items";
+
     public GatherPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
 
     @Override
     public void populate() {
-        Map<String, String> gather = definition.getGather();
-        Map<ItemStack, Integer> items = new HashMap<>();
-
-        if (gather.isEmpty())
+        Map<String, Map<String, Map<String, String>>> gather = definition.getGather();
+        if (!gather.containsKey(ITEMS))
             return;
 
-        for (String stackName : gather.keySet()) {
-            ItemStack stack = getItemFromKey(stackName);
-            if (stack == null)
-                continue;
-
-            int count = getCountFromValue(gather.get(stackName), false);
-            items.put(stack, count);
-        }
-
+        List<ItemStack> items = parseItems(gather.get(ITEMS), false);
         items.forEach(quest.getGather()::addItem);
     }
 }

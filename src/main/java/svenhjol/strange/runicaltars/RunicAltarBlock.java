@@ -29,7 +29,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
-import svenhjol.strange.base.helper.PlayerHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.runestones.RunestoneHelper;
 
 import javax.annotation.Nullable;

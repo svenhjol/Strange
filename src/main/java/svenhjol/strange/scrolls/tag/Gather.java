@@ -70,8 +70,8 @@ public class Gather implements ISerializable {
         }
     }
 
-    public void addItem(ItemStack stack, int count) {
-        items.put(stack, count);
+    public void addItem(ItemStack stack) {
+        items.put(stack, stack.getCount());
     }
 
     public Map<ItemStack, Integer> getItems() {

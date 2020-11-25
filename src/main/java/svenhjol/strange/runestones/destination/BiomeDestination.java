@@ -52,7 +52,7 @@ public class BiomeDestination extends Destination {
             return null;
         }
 
-        foundPos = PosHelper.addRandomOffset(foundPos, random, 8);
+        foundPos = PosHelper.addRandomOffset(foundPos, random, 8, 16);
         store(world, startPos, foundPos, player);
 
         return foundPos;

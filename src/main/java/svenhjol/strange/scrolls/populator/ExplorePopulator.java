@@ -19,17 +19,17 @@ import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.*;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Explore;
 import svenhjol.strange.scrolls.tag.Quest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExplorePopulator extends Populator {
+    public static final String ITEMS = "items";
+    public static final String SETTINGS = "settings";
+    public static final String STRUCTURE = "structure";
 
     public ExplorePopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
@@ -37,40 +37,49 @@ public class ExplorePopulator extends Populator {
 
     @Override
     public void populate() {
-        List<String> explore = definition.getExplore();
+        Map<String, Map<String, Map<String, String>>> explore = definition.getExplore();
+        List<ItemStack> items = new ArrayList<>();
 
         if (explore.isEmpty())
             return;
 
-        // find the structure to explore
-        BlockPos min = PosHelper.addRandomOffset(pos, world.random, 1000);
-        BlockPos max = PosHelper.addRandomOffset(min, world.random, 500);
 
-        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(Ruins.RUIN_ID);
+        // populate the items for the quest
+        if (explore.containsKey(ITEMS))
+            items = parseItems(explore.get(ITEMS), false);
+
+        if (items.isEmpty())
+            fail("No items found for quest");
+
+
+        // parse settings
+        Map<String, Map<String, String>> exploreMap = explore.getOrDefault(SETTINGS, new HashMap<>());
+        Map<String, String> structureSettings = exploreMap.getOrDefault(STRUCTURE, new HashMap<>());
+
+        String type = structureSettings.getOrDefault("type", "minecraft:mineshaft");
+        int minDistance = Integer.parseInt(structureSettings.getOrDefault("minDistance", "750"));
+        int maxDistance = Integer.parseInt(structureSettings.getOrDefault("maxDistance", "1500"));
+
+        // get a random distance based on min and max
+        BlockPos structurePos = PosHelper.addRandomOffset(pos, world.random, minDistance, maxDistance);
+
+        // resolve the structure type from the registry, falling back to mineshaft
+        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier(type));
         if (structureFeature == null) {
-            structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier("mineshaft"));
+            structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier("minecraft:mineshaft"));
             if (structureFeature == null)
-                fail("Could not find ruin or mineshaft");
+                fail("Could not find specified structure type or mineshaft");
         }
 
-        BlockPos foundPos = world.locateStructure(structureFeature, max, 500, true);
+
+        // locate structure in the world
+        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, true);
+
         if (foundPos == null)
             fail("Could not locate structure");
 
-        // populate the items for the quest
-        // TODO: handle fun names for items
-        List<ItemStack> items = new ArrayList<>();
 
-        for (String stackName : explore) {
-            ItemStack stack = getItemFromKey(stackName);
-            if (stack == null)
-                continue;
-
-            // set the quest tag of the stack to the quest ID so we can match it later
-            stack.getOrCreateTag().putString(Explore.QUEST, quest.getId());
-            items.add(stack);
-        }
-
+        // set the quest details like items and structure to find
         quest.getExplore().setItems(items);
         quest.getExplore().setDimension(DimensionHelper.getDimension(world));
         quest.getExplore().setStructure(foundPos);

@@ -46,15 +46,14 @@ public class BossPopulator extends Populator {
         if (boss.isEmpty())
             return;
 
-        BlockPos min = PosHelper.addRandomOffset(pos, world.random, 250);
-        BlockPos max = PosHelper.addRandomOffset(min, world.random, 250);
+        BlockPos bossPos = PosHelper.addRandomOffset(pos, world.random, 250, 750);
 
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(StoneCircles.STRUCTURE_ID);
         if (structureFeature == null)
             fail("Could not find stone circle");
 
         // populate target entities
-        BlockPos foundPos = world.locateStructure(structureFeature, max, 500, false);
+        BlockPos foundPos = world.locateStructure(structureFeature, bossPos, 500, false);
         if (foundPos == null)
             fail("Could not locate structure");
 

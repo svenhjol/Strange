@@ -18,11 +18,11 @@ public class JsonDefinition {
     private String title = "";
     private String description = "";
     private List<String> modules = new ArrayList<>();
-    private List<String> explore = new ArrayList<>();
-    private Map<String, String> gather = new HashMap<>();
     private Map<String, String> hunt = new HashMap<>();
+    private Map<String, Map<String, Map<String, String>>> gather = new HashMap<>();
+    private Map<String, Map<String, Map<String, String>>> explore = new HashMap<>();
     private Map<String, Map<String, Map<String, String>>> boss = new HashMap<>();
-    private Map<String, Map<String, String>> reward = new HashMap<>();
+    private Map<String, Map<String, Map<String, String>>> reward = new HashMap<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
 
     public String getId() {
@@ -56,23 +56,23 @@ public class JsonDefinition {
         return modules == null ? new ArrayList<>() : modules;
     }
 
-    public List<String> getExplore() {
-        return explore == null ? new ArrayList<>() : explore;
+    public Map<String, String> getHunt() {
+        return hunt == null ? new HashMap<>() : hunt;
     }
 
-    public Map<String, String> getGather() {
+    public Map<String, Map<String, Map<String, String>>> getGather() {
         return gather == null ? new HashMap<>() : gather;
     }
 
-    public Map<String, String> getHunt() {
-        return hunt == null ? new HashMap<>() : hunt;
+    public Map<String, Map<String, Map<String, String>>> getExplore() {
+        return explore == null ? new HashMap<>() : explore;
     }
 
     public Map<String, Map<String, Map<String, String>>> getBoss() {
         return boss == null ? new HashMap<>() : boss;
     }
 
-    public Map<String, Map<String, String>> getReward() {
+    public Map<String, Map<String, Map<String, String>>> getReward() {
         return reward == null ? new HashMap<>() : reward;
     }
 

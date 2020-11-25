@@ -15,10 +15,12 @@ import java.util.Map;
 public class Reward implements ISerializable {
     public static final String ITEM_DATA = "item_data";
     public static final String ITEM_COUNT = "item_count";
-    public static final String LEVELS_TAG = "levels";
+    public static final String PLAYER_XP_TAG = "player_xp";
+    public static final String VILLAGER_XP_TAG = "villager_xp";
 
-    private int levels;
-    private Quest quest;
+    private int playerXp;
+    private int villagerXp;
+    private final Quest quest;
     private Map<ItemStack, Integer> items = new HashMap<>();
 
     public Reward(Quest quest) {
@@ -38,8 +40,10 @@ public class Reward implements ISerializable {
             }
         }
 
-        if (levels > 0)
-            player.addExperienceLevels(levels);
+        if (playerXp > 0)
+            player.addExperienceLevels(playerXp);
+
+        // TODO: handle merchant XP
     }
 
     public CompoundTag toTag() {
@@ -62,13 +66,14 @@ public class Reward implements ISerializable {
 
         outTag.put(ITEM_DATA, dataTag);
         outTag.put(ITEM_COUNT, countTag);
-        outTag.putInt(LEVELS_TAG, levels);
+        outTag.putInt(PLAYER_XP_TAG, playerXp);
+        outTag.putInt(VILLAGER_XP_TAG, villagerXp);
         return outTag;
     }
 
     public void fromTag(CompoundTag tag) {
-        this.levels = tag.getInt(LEVELS_TAG);
-
+        this.playerXp = tag.getInt(PLAYER_XP_TAG);
+        this.villagerXp = tag.getInt(VILLAGER_XP_TAG);
         CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
         CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
 
@@ -89,19 +94,27 @@ public class Reward implements ISerializable {
         }
     }
 
-    public void addItem(ItemStack stack, int count) {
-        this.items.put(stack, count);
+    public void addItem(ItemStack stack) {
+        this.items.put(stack, stack.getCount());
     }
 
     public Map<ItemStack, Integer> getItems() {
         return items;
     }
 
-    public int getLevels() {
-        return levels;
+    public int getPlayerXp() {
+        return playerXp;
     }
 
-    public void setLevels(int levels) {
-        this.levels = levels;
+    public int getVillagerXp() {
+        return villagerXp;
+    }
+
+    public void setPlayerXp(int count) {
+        this.playerXp = count;
+    }
+
+    public void setVillagerXp(int count) {
+        this.villagerXp = count;
     }
 }

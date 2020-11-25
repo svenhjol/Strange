@@ -26,7 +26,7 @@ public class HuntPopulator extends Populator {
             if (entityId == null)
                 continue;
 
-            int count = getCountFromValue(hunt.get(id), false);
+            int count = getCountFromValue(hunt.get(id), 1, false);
             entities.put(entityId, count);
         }
 

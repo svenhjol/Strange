@@ -17,7 +17,7 @@ public class RewardPanel extends Panel {
     public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
         Reward reward = quest.getReward();
         Map<ItemStack, Integer> items = reward.getItems();
-        int levels = reward.getLevels();
+        int levels = reward.getPlayerXp();
 
         if (items.size() == 0 && levels == 0)
             return; // no reward for you, goodbye :(
