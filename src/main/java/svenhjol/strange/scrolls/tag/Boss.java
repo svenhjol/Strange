@@ -145,7 +145,7 @@ public class Boss implements ISerializable {
         if (entities.isEmpty())
             return true;
 
-        return getSatisfied().values().stream().allMatch(r -> r);
+        return entities.size() == satisfied.size() && getSatisfied().values().stream().allMatch(r -> r);
     }
 
     public void forceKill(MobEntity entity) {

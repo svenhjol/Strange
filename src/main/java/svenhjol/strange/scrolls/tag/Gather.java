@@ -86,7 +86,7 @@ public class Gather implements ISerializable {
         if (items.isEmpty())
             return true;
 
-        return getSatisfied().values().stream().allMatch(r -> r);
+        return satisfied.size() == items.size() && getSatisfied().values().stream().allMatch(r -> r);
     }
 
     public void complete(PlayerEntity player, MerchantEntity merchant) {

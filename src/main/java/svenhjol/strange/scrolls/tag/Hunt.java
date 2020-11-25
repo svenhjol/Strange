@@ -109,7 +109,7 @@ public class Hunt implements ISerializable {
         if (entities.isEmpty())
             return true;
 
-        return getSatisfied().values().stream().allMatch(r -> r);
+        return satisfied.size() == entities.size() && getSatisfied().values().stream().allMatch(r -> r);
     }
 
     public void update(PlayerEntity player) {
