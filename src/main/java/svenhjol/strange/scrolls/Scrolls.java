@@ -128,7 +128,7 @@ public class Scrolls extends CharmModule {
                     JsonDefinition definition = JsonDefinition.deserialize(resources.getResource(scroll));
 
                     // check that scroll definition is built-in and configured to be used
-                    if (definition.isBuiltIn() && !useBuiltInScrolls)
+                    if (definition.isDefaultPack() && !useBuiltInScrolls)
                         continue;
 
                     // check that scroll modules are present and enabled

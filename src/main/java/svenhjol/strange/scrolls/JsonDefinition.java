@@ -14,7 +14,7 @@ public class JsonDefinition {
     private String id;
     private int tier;
     private int timeLimit; // in minutes
-    private boolean builtIn;
+    private boolean defaultPack;
     private String title = "";
     private String description = "";
     private List<String> modules = new ArrayList<>();
@@ -48,8 +48,8 @@ public class JsonDefinition {
         return timeLimit * 60 * 20; // in ticks
     }
 
-    public boolean isBuiltIn() {
-        return builtIn;
+    public boolean isDefaultPack() {
+        return defaultPack;
     }
 
     public List<String> getModules() {

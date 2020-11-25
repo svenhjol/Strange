@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class QuestManager extends PersistentState {
     public static final String TICK_TAG = "Tick";
     public static final String QUESTS_TAG = "Quests";
-    public static final int DEFAULT_EXPIRY = 120; // in minutes
-    public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable
+    public static final int DEFAULT_EXPIRY = 240; // in real world minutes
+    public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable?
 
     private int currentTime;
     private final Map<String, Quest> quests = new HashMap<>();
