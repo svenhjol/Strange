@@ -5,7 +5,7 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.structure.DataBlockProcessor;
 import svenhjol.strange.excavation.Excavation;
 import svenhjol.strange.runestones.Runestones;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 
 public class StrangeStructures {
     public static void init() {

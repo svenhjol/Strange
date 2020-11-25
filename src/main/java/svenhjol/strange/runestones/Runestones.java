@@ -39,7 +39,6 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.event.ThrownEntityImpactCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.base.helper.RunestoneHelper;
 import svenhjol.strange.runestones.destination.BiomeDestination;
 import svenhjol.strange.runestones.destination.Destination;
 import svenhjol.strange.runestones.destination.StructureDestination;
@@ -47,7 +46,7 @@ import svenhjol.strange.runestones.destination.StructureDestination;
 import java.io.File;
 import java.util.*;
 
-import static svenhjol.strange.base.helper.RunestoneHelper.NUMBER_OF_RUNES;
+import static svenhjol.strange.runestones.RunestoneHelper.NUMBER_OF_RUNES;
 
 @Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends CharmModule {

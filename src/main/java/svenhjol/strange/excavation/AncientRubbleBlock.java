@@ -186,7 +186,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
     }
 
     private ActionResult level(ServerWorld world, BlockPos pos, BlockState state, int level) {
-        world.playSound(null, pos, SoundEvents.BLOCK_COMPOSTER_FILL_SUCCESS, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
         world.setBlockState(pos, state.with(LEVEL, level + 1), 2);
 
         AncientRubbleBlockEntity rubble = getBlockEntity(world, pos);
@@ -201,8 +201,8 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
     }
 
     private ActionResult fail(ServerWorld world, BlockPos pos) {
-        world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 0.9F);
-        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 0.5F, 1.17F);
+        world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 0.9F, 0.9F);
+        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 0.65F, 1.17F);
 
         dropItem(world, pos, new ItemStack(Blocks.GRAVEL));
         world.removeBlockEntity(pos);

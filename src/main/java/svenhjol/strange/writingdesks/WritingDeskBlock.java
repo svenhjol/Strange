@@ -38,7 +38,6 @@ public class WritingDeskBlock extends CharmBlock {
         this.setDefaultState(getDefaultState().with(VARIANT, 0));
     }
 
-
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return COLLISION_SHAPE;
     }

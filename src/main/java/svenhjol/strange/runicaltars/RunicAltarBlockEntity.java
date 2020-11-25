@@ -13,13 +13,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
-import svenhjol.strange.base.helper.RunestoneHelper;
+import svenhjol.strange.runestones.RunestoneHelper;
 import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
@@ -93,6 +95,9 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
         if (stack.getCount() > this.getMaxCountPerStack())
             stack.setCount(this.getMaxCountPerStack());
+
+        if (!world.isClient)
+            world.playSound(null, pos, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
         trySetDestination(stack);
 
