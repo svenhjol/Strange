@@ -46,9 +46,14 @@ public class ScrollScreen extends Screen {
 
         int timeLeft = quest.getTimeLeft() / 20; // time left in seconds
         int timeColor = timeLeft < 60 ? 0xFF0000 : 0x777777; // color to render time. If less than 60 seconds, red
-        int minutes = timeLeft / 60; // time left in minutes
-        int seconds = timeLeft % 60; // number of seconds left in this minute
-        String strSeconds = seconds < 10 ? "0" + seconds : String.valueOf(seconds); // padded with zero for display
+
+        // work out display for the time
+        int minutesLeft = timeLeft / 60; // time left in minutes
+        int minutesPerHour = minutesLeft % 60;
+        int secondsLeft = timeLeft % 60; // number of seconds left in this minute
+        String hours = minutesLeft > 59 ? String.valueOf((int)Math.floor(minutesLeft / 60.0D)) : "0";
+        String minutes = minutesPerHour < 10 ? "0" + (minutesPerHour == 0 ? "0" : "") : String.valueOf(minutesPerHour);
+        String seconds = secondsLeft < 10 ? "0" + secondsLeft : String.valueOf(secondsLeft); // padded with zero for display
 
         // render title
         if (!title.isEmpty()) {
@@ -63,7 +68,7 @@ public class ScrollScreen extends Screen {
         }
 
         // render time remaining
-        GuiHelper.drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.time_remaining", minutes, strSeconds), mid, textTop, timeColor);
+        GuiHelper.drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.time_remaining", hours, minutes, seconds), mid, textTop, timeColor);
 
         // render scroll requirements panels
         List<Panel> panels = new ArrayList<>();
