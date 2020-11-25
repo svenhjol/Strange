@@ -1,10 +1,7 @@
 {
-	"credit": "Made with Blockbench",
 	"parent": "strange:block/runic_altar/altar_charges0",
-	"texture_size": [14, 14],
 	"textures": {
 		"3": "strange:block/runic_altar/runic_top",
-		"4": "strange:block/runic_altar/base_charges4",
 		"5": "strange:block/runic_altar/runic_surface",
 		"6": "strange:block/runic_altar/base_charges1",
 		"7": "strange:block/runic_altar/runic_bottom",
@@ -28,10 +25,10 @@
 			"to": [14, 15, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
 			"faces": {
-				"north": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
-				"east": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
-				"south": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
-				"west": {"uv": [1.14286, 0, 14.85714, 16], "texture": "#6"},
+				"north": {"uv": [2, 1, 14, 15], "texture": "#6"},
+				"east": {"uv": [2, 1, 14, 15], "texture": "#6"},
+				"south": {"uv": [2, 1, 14, 15], "texture": "#6"},
+				"west": {"uv": [2, 1, 14, 15], "texture": "#6"},
 				"up": {"uv": [2, 2, 14, 14], "texture": "#6"},
 				"down": {"uv": [0, 0, 12, 12], "texture": "#6"}
 			}
@@ -80,7 +77,7 @@
 			"to": [15, 15, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [9, 12, 6]},
 			"faces": {
-				"north": {"uv": [0, 1.143, 1, 15.143], "texture": "#5"},
+				"north": {"uv": [1, 1, 2, 15], "texture": "#5"},
 				"east": {"uv": [2, 1, 15, 15], "texture": "#5"},
 				"south": {"uv": [0, 1, 1, 15], "texture": "#5"},
 				"west": {"uv": [15, 1, 2, 15], "texture": "#5"},
@@ -93,12 +90,12 @@
 			"to": [16, 16, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 22, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 1], "texture": "#3"},
-				"east": {"uv": [0, 0, 16, 1], "texture": "#3"},
-				"south": {"uv": [0, 0, 16, 1], "texture": "#3"},
-				"west": {"uv": [0, 0, 16, 1], "texture": "#3"},
+				"north": {"uv": [0, 0, 16, 1], "texture": "#7"},
+				"east": {"uv": [0, 0, 16, 1], "texture": "#7"},
+				"south": {"uv": [0, 0, 16, 1], "texture": "#7"},
+				"west": {"uv": [0, 0, 16, 1], "texture": "#7"},
 				"up": {"uv": [0, 0, 16, 16], "texture": "#3"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#4"}
+				"down": {"uv": [0, 0, 16, 16], "texture": "#7"}
 			}
 		}
 	],
