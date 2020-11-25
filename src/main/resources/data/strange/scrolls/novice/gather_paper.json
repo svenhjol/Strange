@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Paper",
+      "description": "Craft paper from sugar cane."
+    }
+  },
+  "gather": {
+    "minecraft:paper": 6
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:book[common]": 1,
+      "minecraft:map[uncommon]": 1
+    }
+  }
+}

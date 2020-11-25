@@ -1,0 +1,23 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Chests",
+      "description": "Craft oak chests."
+    }
+  },
+  "modules": [
+    "charm:variant_chests"
+  ],
+  "gather": {
+    "charm:oak_chest": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:oak_planks[common]": 8
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}

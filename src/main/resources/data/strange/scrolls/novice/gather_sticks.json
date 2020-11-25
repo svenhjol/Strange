@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Sticks",
+      "description": "Stick at it."
+    }
+  },
+  "gather": {
+    "minecraft:stick": 50
+  },
+  "reward": {
+    "items": {
+      "minecraft:oak_planks": "4-8",
+      "minecraft:emerald[uncommon]": 1
+    }
+  }
+}

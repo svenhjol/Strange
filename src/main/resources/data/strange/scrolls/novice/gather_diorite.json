@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Diorite",
+      "description": "Gather diorite to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:diorite": 10
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:polished_diorite[uncommon]": 5
+    }
+  }
+}

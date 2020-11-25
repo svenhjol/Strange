@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Granite",
+      "description": "Gather granite to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:granite": 10
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:polished_granite[uncommon]": 5,
+      "minecraft:wooden_pickaxe[enchanted][common]": 1
+    }
+  }
+}

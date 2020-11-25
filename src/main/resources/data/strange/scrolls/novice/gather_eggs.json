@@ -2,16 +2,16 @@
   "builtIn": true,
   "lang": {
     "en": {
-      "title": "Sand",
-      "description": "Gather sand to complete this quest."
+      "title": "Eggs",
+      "description": "Collect eggs to complete this quest."
     }
   },
   "gather": {
-    "minecraft:sand": 20
+    "minecraft:egg": 5
   },
   "reward": {
     "items": {
-      "minecraft:sandstone": "4-8",
+      "minecraft:cake": 1,
       "minecraft:emerald[common]": 1
     }
   }

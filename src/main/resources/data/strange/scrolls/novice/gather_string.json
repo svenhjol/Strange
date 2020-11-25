@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "String",
+      "description": "Gather string to complete this quest."
+    }
+  },
+  "gather": {
+    "minecraft:string": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:white_wool": "1-2",
+      "minecraft:tripwire_hook[uncommon]": "1-2",
+      "minecraft:lead[rare]": "1-2"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Sugar Cane",
+      "description": "Gather sugar cane to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:sugar_cane": 6
+  },
+  "reward": {
+    "items": {
+      "minecraft:sugar": "3-6",
+      "minecraft:paper[common]": "4-8"
+    }
+  }
+}

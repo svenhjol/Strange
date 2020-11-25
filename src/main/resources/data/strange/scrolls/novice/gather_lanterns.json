@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Lanterns",
+      "description": "Craft lanterns from iron nuggets and torches."
+    }
+  },
+  "gather": {
+    "minecraft:lantern": 2
+  },
+  "reward": {
+    "items": {
+      "minecraft:torch": "4-8",
+      "minecraft:iron_ingot[common]": 1
+    }
+  }
+}

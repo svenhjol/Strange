@@ -1,0 +1,20 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Oak Logs",
+      "description": "Gather oak logs."
+    }
+  },
+  "gather": {
+    "minecraft:oak_log": 16
+  },
+  "reward": {
+    "items": {
+      "minecraft:oak_planks": 16,
+      "minecraft:stone_axe[enchanted]": 1,
+      "minecraft:emerald[uncommon]": 1,
+      "minecraft:iron_axe[rare]": 1
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Bread",
+      "description": "Craft bread from wheat."
+    }
+  },
+  "gather": {
+    "minecraft:bread": 2
+  },
+  "reward": {
+    "items": {
+      "minecraft:wheat": "3-6",
+      "minecraft:bread[common]": "1-3",
+      "minecraft:hay_block[uncommon]": "1-3"
+    }
+  }
+}

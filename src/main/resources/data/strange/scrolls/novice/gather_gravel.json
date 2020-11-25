@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Gravel",
+      "description": "Find gravel to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:gravel": 12
+  },
+  "reward": {
+    "items": {
+      "minecraft:white_concrete_powder[common] | minecraft:light_gray_concrete_powder[common]": 3,
+      "minecraft:flint": "2-4",
+      "minecraft:white_concrete[rare] | minecraft:light_gray_concrete[rare]": 3
+    }
+  }
+}

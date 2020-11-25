@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Apples",
+      "description": "Gather apples to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:apple": 6
+  },
+  "reward": {
+    "items": {
+      "minecraft:apple": 3,
+      "minecraft:emerald[common]": 1,
+      "minecraft:golden_apple[rare]": 1
+    }
+  }
+}

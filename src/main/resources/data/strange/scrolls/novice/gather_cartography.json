@@ -1,0 +1,21 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Cartography",
+      "description": "Craft cartography table."
+    }
+  },
+  "gather": {
+    "minecraft:cartography_table": 1
+  },
+  "reward": {
+    "items": {
+      "minecraft:map[common]": "1-2",
+      "minecraft:paper[uncommon]": "1-4"
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Boats",
+      "description": "Craft oak boats from oak wood planks."
+    }
+  },
+  "gather": {
+    "minecraft:oak_boat": 2
+  },
+  "reward": {
+    "items": {
+      "minecraft:oak_planks": "3-6"
+    }
+  }
+}

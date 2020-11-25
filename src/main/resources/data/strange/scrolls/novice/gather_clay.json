@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Clay",
+      "description": "Find clay and add it to your inventory.",
+      "hint": "Often found at the bottom of pools of water."
+    }
+  },
+  "gather": {
+    "minecraft:clay_ball": 12
+  },
+  "reward": {
+    "items": {
+      "minecraft:bricks": "3-6",
+      "minecraft:terracotta[uncommon]": 3
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Kelp",
+      "description": "Help with the kelp."
+    }
+  },
+  "gather": {
+    "minecraft:kelp": 12
+  },
+  "reward": {
+    "items": {
+      "minecraft:kelp": 4,
+      "minecraft:emerald[common]": 1,
+      "minecraft:dried_kelp[common]": 4
+    },
+    "xp": {
+      "levels": 1
+    }
+  }
+}

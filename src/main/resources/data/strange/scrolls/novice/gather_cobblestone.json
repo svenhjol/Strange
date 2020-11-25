@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Cobblestone",
+      "description": "Gather cobblestone in your inventory."
+    }
+  },
+  "gather": {
+    "minecraft:cobblestone": 30
+  },
+  "reward": {
+    "items": {
+      "minecraft:stone": "2-4",
+      "minecraft:emerald[common]": 1,
+      "minecraft:mossy_cobblestone[uncommon]": 4
+    }
+  }
+}

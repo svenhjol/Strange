@@ -1,0 +1,19 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Coal",
+      "description": "Mine coal ore and fetch some coal."
+    }
+  },
+  "gather": {
+    "minecraft:coal": 16
+  },
+  "reward": {
+    "items": {
+      "minecraft:emerald": 1,
+      "minecraft:iron_ingot[uncommon]": 2,
+      "minecraft:cooked_beef[common]": 2
+    }
+  }
+}

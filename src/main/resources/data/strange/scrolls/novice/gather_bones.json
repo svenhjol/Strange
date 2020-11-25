@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Bones",
+      "description": "Gather bones to complete the quest."
+    }
+  },
+  "gather": {
+    "minecraft:bone": 4
+  },
+  "reward": {
+    "items": {
+      "minecraft:bone_meal": "4-8",
+      "minecraft:white_dye[common]": 4
+    }
+  }
+}

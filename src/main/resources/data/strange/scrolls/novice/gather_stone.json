@@ -1,0 +1,18 @@
+{
+  "builtIn": true,
+  "lang": {
+    "en": {
+      "title": "Stone",
+      "description": "Stone is needed for the village foundations."
+    }
+  },
+  "gather": {
+    "minecraft:stone": 8
+  },
+  "reward": {
+    "items": {
+      "minecraft:smooth_stone": "2-4",
+      "minecraft:emerald[common]": 1
+    }
+  }
+}
