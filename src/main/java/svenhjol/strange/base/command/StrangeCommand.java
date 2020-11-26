@@ -29,33 +29,41 @@ public class StrangeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal(Strange.MOD_ID)
             .then(CommandManager
-                .literal("abandonquest")
+                .literal("abandon_quest")
                 .then(CommandManager.argument("id", QuestIdArgType.id())
-                    .executes(StrangeCommand::abandonquest)))
+                    .executes(StrangeCommand::abandonQuest)))
             .then(CommandManager
-                .literal("abandonquests")
-                .executes(StrangeCommand::abandonquests))
+                .literal("abandon_my_quests")
+                .executes(StrangeCommand::abandonMyQuests))
             .then(CommandManager
-                .literal("learnrune")
+                .literal("abandon_all_quests")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(StrangeCommand::abandonAllQuests))
+            .then(CommandManager
+                .literal("learn_rune")
                 .requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.argument("letter", RuneArgType.letter())
-                    .executes(StrangeCommand::learnrune)))
+                    .executes(StrangeCommand::learnRune)))
             .then(CommandManager
-                .literal("learnrunes")
+                .literal("learn_all_runes")
                 .requires(source -> source.hasPermissionLevel(2))
-                .executes(StrangeCommand::learnrunes))
+                .executes(StrangeCommand::learnAllRunes))
             .then(CommandManager
-                .literal("listquests")
-                .executes(StrangeCommand::listquests))
+                .literal("list_my_quests")
+                .executes(StrangeCommand::listMyQuests))
             .then(CommandManager
-                .literal("startquest")
+                .literal("list_all_quests")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(StrangeCommand::listAllQuests))
+            .then(CommandManager
+                .literal("start_quest")
                 .requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.argument("definition", QuestDefinitionArgType.definition())
-                    .executes(StrangeCommand::startquest)))
+                    .executes(StrangeCommand::startQuest)))
         );
     }
 
-    private static int abandonquest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int abandonQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
         QuestManager questManager = getQuestManager();
 
@@ -66,7 +74,7 @@ public class StrangeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int abandonquests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int abandonMyQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
         QuestManager questManager = getQuestManager();
         questManager.abandonQuests(player);
@@ -76,7 +84,16 @@ public class StrangeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int learnrune(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int abandonAllQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        QuestManager questManager = getQuestManager();
+        questManager.abandonAllQuests();
+
+        context.getSource().sendFeedback(new TranslatableText("scroll.strange.abandoned_all_quests"), false);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int learnRune(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         Character rune = RuneArgType.getLetter(context, "letter");
 
         int runeVal = (int)rune - 97;
@@ -90,7 +107,7 @@ public class StrangeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int learnrunes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int learnAllRunes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
 
         for (int i = 0; i < RunestoneHelper.NUMBER_OF_RUNES; i++) {
@@ -101,7 +118,22 @@ public class StrangeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int listquests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int listAllQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        QuestManager questManager = getQuestManager();
+
+        List<Quest> quests = questManager.getQuests();
+
+        if (!quests.isEmpty()) {
+            quests.forEach(quest
+                -> context.getSource().sendFeedback(new LiteralText(quest.getTitle() + " > ").append(new LiteralText(quest.getId()).formatted(Formatting.AQUA)), false));
+        } else {
+            context.getSource().sendFeedback(new TranslatableText("scroll.strange.no_quests"), false);
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int listMyQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
         QuestManager questManager = getQuestManager();
 
@@ -117,7 +149,7 @@ public class StrangeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int startquest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int startQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
         QuestManager questManager = getQuestManager();
 
