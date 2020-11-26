@@ -161,7 +161,13 @@ public class Boss implements ISerializable {
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 260) {
-            BossPopulator.startEncounter(player, this);
+            boolean result = BossPopulator.startEncounter(player, this);
+
+            if (!result) {
+                this.abandon(player);
+                return;
+            }
+
             quest.setDirty(true);
             spawned = true;
         }

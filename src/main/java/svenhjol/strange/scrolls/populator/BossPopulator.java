@@ -91,24 +91,24 @@ public class BossPopulator extends Populator {
         PlayerHelper.addOrDropStack(player, map);
     }
 
-    public static void startEncounter(PlayerEntity player, Boss tag) {
+    public static boolean startEncounter(PlayerEntity player, Boss tag) {
         Quest quest = tag.getQuest();
         ServerWorld world = (ServerWorld)player.world;
         BlockPos pos = tag.getStructure();
 
         if (pos == null)
-            return; // TODO: handle scroll errors
+            return false;
 
         JsonDefinition definition = Scrolls.AVAILABLE_SCROLLS.get(quest.getTier()).getOrDefault(quest.getDefinition(), null);
         if (definition == null)
-            return; // TODO: handle scroll errors
+            return false;
 
         Map<String, Map<String, Map<String, String>>> boss = definition.getBoss();
 
         // try and spawn the boss target entities
         if (boss.containsKey(TARGETS)) {
             if (!trySpawnEntities(world, pos, quest, boss.get(TARGETS), true))
-                return; // TODO: handle scroll errors
+                return false;
         }
 
         // try and spawn supporting entities
@@ -116,6 +116,7 @@ public class BossPopulator extends Populator {
             trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
 
         world.playSound(null, pos, SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F);
+        return true;
     }
 
     public static void checkEncounter(PlayerEntity player, Boss tag) {

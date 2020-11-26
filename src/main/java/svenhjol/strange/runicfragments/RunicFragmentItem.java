@@ -105,7 +105,6 @@ public class RunicFragmentItem extends CharmItem {
         setDimension(fragment, DimensionHelper.getDimension(serverWorld));
         setTried(fragment, 0);
 
-        // TODO: this should probably be in some kind of helper
         Text label;
         if (locationId.getPath().equals("foundation")) {
             label = new TranslatableText("structure.strange.foundation");
