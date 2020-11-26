@@ -201,6 +201,9 @@ public class QuestManager extends PersistentState {
         playerQuests.clear();
 
         quests.forEach((id, quest) -> {
+            if (!quest.isActive())
+                return;
+
             UUID owner = quest.getOwner();
 
             if (!playerQuests.containsKey(owner))
