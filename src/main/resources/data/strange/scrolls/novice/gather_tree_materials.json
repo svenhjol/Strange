@@ -1,0 +1,47 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "From the trees",
+      "description": "Find the materials to complete the quest."
+    }
+  },
+  "gather": {
+    "items": {
+      "apple | oak_sapling": {
+        "count": "4-8"
+      },
+      "stick": {
+        "count": "12-16",
+        "chance": 0.75
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "0-2"
+      },
+      "loot0": {
+        "table": "village_lumberjack",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "village_fletcher",
+        "limit": 2
+      },
+      "pool": {
+        "items": "stone_hoe,iron_hoe,wooden_hoe,stone_shovel,iron_shovel,wooden_shovel",
+        "limit": 1,
+        "enchanted": true,
+        "enchantment_level": 3,
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

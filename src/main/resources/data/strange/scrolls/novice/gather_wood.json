@@ -1,0 +1,46 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Gather Wood Materials",
+      "description": "Find the materials to complete the quest."
+    }
+  },
+  "gather": {
+    "items": {
+      "oak_log": {
+        "count": "12-16"
+      },
+      "oak_planks | oak_slab": {
+        "count": "12-16"
+      },
+      "stick": {
+        "count": "10-20",
+        "chance": 0.5
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "0-2"
+      },
+      "loot": {
+        "table": "village_lumberjack",
+        "limit": 2
+      },
+      "pool": {
+        "items": "stone_axe,iron_axe,wooden_axe",
+        "limit": 1,
+        "enchanted": true,
+        "enchantment_level": 5,
+        "chance": 0.7
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}
