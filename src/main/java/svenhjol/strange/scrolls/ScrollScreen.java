@@ -76,7 +76,7 @@ public class ScrollScreen extends Screen {
                 }
 
                 int titleWidth = textRenderer.getWidth(descriptionText);
-                if (mouseX > mid + (titleWidth / 2) && mouseX < mid + 14 + (titleWidth / 2) && mouseY > textTop && mouseY < textTop + 11)
+                if (mouseX > mid + 4 + (titleWidth / 2) && mouseX < mid + 15 + (titleWidth / 2) && mouseY > textTop && mouseY < textTop + 11)
                     renderTooltip(matrices, hintText, mouseX, mouseY);
             }
 
