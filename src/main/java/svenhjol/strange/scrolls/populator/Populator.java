@@ -1,6 +1,8 @@
 package svenhjol.strange.scrolls.populator;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
@@ -27,10 +29,13 @@ public abstract class Populator {
     public static final String ENCHANTED = "enchanted";
     public static final String ENCHANTMENT_LEVEL = "enchantment_level";
     public static final String ENCHANTMENT_TREASURE = "enchantment_treasure";
+    public static final String ENCHANTMENT_FORCE = "enchantment_force";
     public static final String ITEMS = "items";
     public static final String LOOT = "loot";
     public static final String POOL = "pool";
     public static final String TABLE = "table";
+
+    private static final List<Enchantment> FORCED_ENCHANTS = new ArrayList<>(Arrays.asList(Enchantments.FIRE_ASPECT, Enchantments.KNOCKBACK, Enchantments.UNBREAKING));
 
     protected final ServerPlayerEntity player;
     protected final ServerWorld world;
@@ -61,6 +66,7 @@ public abstract class Populator {
             float chance = getChanceFromValue(props.get(CHANCE), 1.0F, scale);
             int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL), 5, scale);
             boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE, "false"));
+            boolean enchantmentForce = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_FORCE, "false"));
             boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED, "false"));
             String items = props.getOrDefault(ITEMS, "");
 
@@ -133,8 +139,8 @@ public abstract class Populator {
                         stack = new ItemStack(item);
 
                         // add enchantments to each stack separately
-                        if (enchanted && !stack.hasEnchantments())
-                            EnchantmentHelper.enchant(world.random, stack, enchantmentLevel, enchantmentTreasure);
+                        if (enchanted)
+                            tryEnchant(stack, enchantmentLevel, enchantmentTreasure, enchantmentForce);
 
                         stacks.add(stack);
                     }
@@ -142,8 +148,8 @@ public abstract class Populator {
                     // single stack with count as stacksize
                     stack.setCount(count);
 
-                    if (enchanted && !stack.hasEnchantments())
-                        EnchantmentHelper.enchant(world.random, stack, enchantmentLevel, enchantmentTreasure);
+                    if (enchanted)
+                        tryEnchant(stack, enchantmentLevel, enchantmentTreasure, enchantmentForce);
 
                     stacks.add(stack);
                 }
@@ -210,5 +216,15 @@ public abstract class Populator {
 
         key = key.trim();
         return key;
+    }
+
+    private void tryEnchant(ItemStack stack, int enchantmentLevel, boolean treasure, boolean force) {
+        if (!stack.hasEnchantments()) {
+            if (stack.isEnchantable()) {
+                EnchantmentHelper.enchant(world.random, stack, enchantmentLevel, treasure);
+            } else if (force) {
+                stack.addEnchantment(FORCED_ENCHANTS.get(world.random.nextInt(FORCED_ENCHANTS.size())), 1);
+            }
+        }
     }
 }
