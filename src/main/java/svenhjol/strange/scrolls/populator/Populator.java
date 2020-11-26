@@ -38,7 +38,14 @@ public abstract class Populator {
     public static final String POOL = "pool";
     public static final String TABLE = "table";
 
-    private static final List<Enchantment> FORCED_ENCHANTS = new ArrayList<>(Arrays.asList(Enchantments.FIRE_ASPECT, Enchantments.KNOCKBACK, Enchantments.UNBREAKING));
+    private static final List<Enchantment> FORCED_ENCHANTS = new ArrayList<>(Arrays.asList(
+        Enchantments.FIRE_ASPECT,
+        Enchantments.KNOCKBACK,
+        Enchantments.UNBREAKING,
+        Enchantments.SHARPNESS,
+        Enchantments.LOOTING,
+        Enchantments.FORTUNE
+    ));
 
     protected final ServerPlayerEntity player;
     protected final ServerWorld world;
@@ -127,7 +134,8 @@ public abstract class Populator {
             }
 
             // itemIds contains a list of all parseable items for this json entry
-            for (String parseableItemId : itemIds) {
+            for (String s : itemIds) {
+                String parseableItemId = splitOptionalRandomly(s);
 
                 // try and parse a minecraft/modded item
                 Optional<Item> optionalItem = Registry.ITEM.getOrEmpty(new Identifier(parseableItemId));
@@ -233,11 +241,20 @@ public abstract class Populator {
     }
 
     private void tryEnchant(ItemStack stack, int enchantmentLevel, boolean treasure, boolean force) {
+        Random random = world.random;
+
         if (!stack.hasEnchantments()) {
             if (stack.isEnchantable()) {
-                EnchantmentHelper.enchant(world.random, stack, enchantmentLevel, treasure);
+                EnchantmentHelper.enchant(random, stack, enchantmentLevel, treasure);
             } else if (force) {
-                stack.addEnchantment(FORCED_ENCHANTS.get(world.random.nextInt(FORCED_ENCHANTS.size())), 1);
+                List<Enchantment> forcedEnchants = new ArrayList<>(FORCED_ENCHANTS);
+                Collections.shuffle(forcedEnchants);
+
+                for (Enchantment enchantment : forcedEnchants) {
+                    stack.addEnchantment(enchantment, Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1));
+                    if (random.nextFloat() < 0.75F)
+                        break;
+                }
             }
         }
     }
