@@ -213,7 +213,7 @@ public abstract class Populator {
                 String[] split = value.split("-");
                 int min = Integer.parseInt(split[0]);
                 int max = Integer.parseInt(split[1]);
-                count = world.random.nextInt(max - min) + min;
+                count = world.random.nextInt(Math.max(2, max - min)) + min;
             } else if (!value.isEmpty()) {
                 count = Integer.parseInt(value);
             } else {
