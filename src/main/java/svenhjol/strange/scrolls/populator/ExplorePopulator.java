@@ -57,8 +57,10 @@ public class ExplorePopulator extends Populator {
         Map<String, String> structureSettings = exploreMap.getOrDefault(STRUCTURE, new HashMap<>());
 
         String type = structureSettings.getOrDefault("type", "minecraft:mineshaft");
-        int minDistance = Integer.parseInt(structureSettings.getOrDefault("minDistance", "750"));
-        int maxDistance = Integer.parseInt(structureSettings.getOrDefault("maxDistance", "1500"));
+        int minDistance = Integer.parseInt(structureSettings.getOrDefault("min_distance", "750"));
+        int maxDistance = Integer.parseInt(structureSettings.getOrDefault("max_distance", "1500"));
+        int chestStart = Integer.parseInt(structureSettings.getOrDefault("chest_start", "32"));
+        int chestRange = Integer.parseInt(structureSettings.getOrDefault("chest_range", "24"));
 
         // get a random distance based on min and max
         BlockPos structurePos = PosHelper.addRandomOffset(pos, world.random, minDistance, maxDistance);
@@ -171,6 +173,9 @@ public class ExplorePopulator extends Populator {
             if (blockEntity instanceof ChestBlockEntity) {
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
                 chestBlockEntity.setStack(slot++, stack);
+
+                // for easier identification of target chest, set the block under the chest
+                world.setBlockState(place.down(), Blocks.POLISHED_DIORITE.getDefaultState(), 2);
             }
             placements.add(place);
         }
