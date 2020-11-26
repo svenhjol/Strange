@@ -163,6 +163,12 @@ public class Explore implements ISerializable {
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 1200) {
             List<BlockPos> chestPositions = ExplorePopulator.addLootToChests(player, this);
+
+            if (chestPositions.isEmpty()) {
+                quest.abandon(player);
+                return;
+            }
+
             quest.setDirty(true);
 
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
