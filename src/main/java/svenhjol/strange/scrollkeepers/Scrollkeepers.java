@@ -73,6 +73,10 @@ public class Scrollkeepers extends CharmModule {
         if (entity instanceof VillagerEntity) {
             ItemStack heldStack = player.getStackInHand(hand);
             VillagerEntity villager = (VillagerEntity)entity;
+
+            if (villager.getVillagerData().getProfession() != SCROLLKEEPER)
+                return ActionResult.PASS;
+
             if (!(heldStack.getItem() instanceof ScrollItem))
                 return ActionResult.PASS;
 
