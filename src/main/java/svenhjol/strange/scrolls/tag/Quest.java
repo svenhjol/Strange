@@ -15,6 +15,7 @@ public class Quest implements ISerializable {
     private static final String DEFINITION_TAG = "definition";
     private static final String TITLE_TAG = "title";
     private static final String DESCRIPTION_TAG = "description";
+    private static final String HINT_TAG = "hint";
     private static final String MERCHANT_TAG = "merchant";
     private static final String OWNER_TAG = "owner";
     private static final String REWARD_TAG = "reward";
@@ -31,6 +32,7 @@ public class Quest implements ISerializable {
     private String definition = "";
     private String title = "";
     private String description = "";
+    private String hint = "";
     private UUID owner = ScrollHelper.ANY_UUID;
     private UUID merchant = ScrollHelper.ANY_UUID;
     private int tier = 1;
@@ -70,6 +72,7 @@ public class Quest implements ISerializable {
         tag.putString(DEFINITION_TAG, definition);
         tag.putString(TITLE_TAG, title);
         tag.putString(DESCRIPTION_TAG, description);
+        tag.putString(HINT_TAG, hint);
         tag.put(REWARD_TAG, reward.toTag());
         tag.put(GATHER_TAG, gather.toTag());
         tag.put(HUNT_TAG, hunt.toTag());
@@ -90,6 +93,7 @@ public class Quest implements ISerializable {
         definition = tag.getString(DEFINITION_TAG);
         title = tag.getString(TITLE_TAG);
         description = tag.getString(DESCRIPTION_TAG);
+        hint = tag.getString(HINT_TAG);
         reward.fromTag(tag.getCompound(REWARD_TAG));
         gather.fromTag(tag.getCompound(GATHER_TAG));
         hunt.fromTag(tag.getCompound(HUNT_TAG));
@@ -141,6 +145,10 @@ public class Quest implements ISerializable {
         return description;
     }
 
+    public String getHint() {
+        return hint;
+    }
+
     public UUID getMerchant() {
         return merchant;
     }
@@ -175,6 +183,10 @@ public class Quest implements ISerializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     public void tick(int currentTime) {

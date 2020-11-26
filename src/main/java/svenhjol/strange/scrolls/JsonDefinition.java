@@ -13,10 +13,11 @@ import java.util.Map;
 public class JsonDefinition {
     private String id;
     private int tier;
-    private int timeLimit; // in minutes
-    private boolean defaultPack;
+    private int time_limit; // in minutes
+    private boolean default_pack;
     private String title = "";
     private String description = "";
+    private String hint = "";
     private List<String> modules = new ArrayList<>();
     private Map<String, String> hunt = new HashMap<>();
     private Map<String, Map<String, Map<String, String>>> gather = new HashMap<>();
@@ -29,27 +30,19 @@ public class JsonDefinition {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public int getTier() {
         return tier;
     }
 
     public int getTimeLimit() {
-        if (timeLimit == 0)
-            timeLimit = QuestManager.DEFAULT_EXPIRY;
+        if (time_limit == 0)
+            time_limit = QuestManager.DEFAULT_EXPIRY;
 
-        return timeLimit * 60 * 20; // in ticks
+        return time_limit * 60 * 20; // in ticks
     }
 
     public boolean isDefaultPack() {
-        return defaultPack;
+        return default_pack;
     }
 
     public List<String> getModules() {
@@ -90,10 +83,6 @@ public class JsonDefinition {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public static JsonDefinition deserialize(Resource resource) {
