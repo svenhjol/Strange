@@ -5,6 +5,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
+import svenhjol.strange.base.StrangeIcons;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.scrolls.tag.Reward;
 
@@ -22,14 +23,16 @@ public class RewardPanel extends Panel {
         if (items.size() == 0 && levels == 0)
             return; // no reward for you, goodbye :(
 
-        // panel title
-        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.reward"), mid, top, titleColor);
+        // panel title and icon
+        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.reward");
+        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_STAR, mid - 14 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
 
         top += rowHeight;
 
         // if the reward provides XP levels then show it here
         if (levels > 0) {
-            TranslatableText text = new TranslatableText(levels == 1 ? "gui.strange.scrolls.reward_level" : "gui.strange.scrolls.reward_levels", levels);
+            TranslatableText text = new TranslatableText("gui.strange.scrolls.reward_levels", levels);
             renderItemStack(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, top, textColor);
             top += rowHeight;

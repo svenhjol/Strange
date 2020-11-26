@@ -21,8 +21,10 @@ public class ExplorePanel extends Panel {
         List<ItemStack> stacks = explore.getItems();
         Map<Item, Boolean> satisfied = explore.getSatisfied();
 
-        // panel title
-        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.explore"), mid, top, titleColor);
+        // panel title and icon
+        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.explore");
+        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_COMPASS, mid - 16 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
 
         top += rowHeight;
 
@@ -33,9 +35,9 @@ public class ExplorePanel extends Panel {
             renderItemStack(stack, mid - 60, baseTop - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
-            // if this item is collected, show a tick next to it
+            // show task satisfaction status
             if (satisfied.containsKey(stack.getItem()) && satisfied.get(stack.getItem()))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 72, baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 4 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
 
             baseTop += rowHeight;
         }

@@ -22,8 +22,10 @@ public class GatherPanel extends Panel {
         if (items.isEmpty())
             return;
 
-        // panel title
-        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.gather"), mid, top, titleColor);
+        // panel title and icon
+        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.gather");
+        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_WHEAT, mid - 14 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
 
         top += rowHeight;
 
@@ -38,9 +40,9 @@ public class GatherPanel extends Panel {
             renderItemStack(stack, mid - 60, baseTop - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
-            // if all of this type is collected, show a tick next to it
+            // show task satisfaction status
             if (satisfied.containsKey(stack) && satisfied.get(stack))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 72, baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 4 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
 
             baseTop += rowHeight;
         }
@@ -48,11 +50,9 @@ public class GatherPanel extends Panel {
         // tooltips
         baseTop = top;
         for (ItemStack stack : stacks) {
-            if (mouseX > mid - 60 && mouseX < mid - 44
-                && mouseY > baseTop - 5 && mouseY < baseTop + 11
-            ) {
+            if (mouseX > mid - 60 && mouseX < mid - 44 && mouseY > baseTop - 5 && mouseY < baseTop + 11)
                 screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
-            }
+
             baseTop += rowHeight;
         }
     }

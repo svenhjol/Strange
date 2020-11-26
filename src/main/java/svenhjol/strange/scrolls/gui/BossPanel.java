@@ -25,8 +25,10 @@ public class BossPanel extends Panel {
         if (entities.isEmpty())
             return;
 
-        // panel title
-        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.boss"), mid, top, titleColor);
+        // panel title and icon
+        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.boss");
+        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_SWORD, mid - 14 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
 
         top += rowHeight;
 

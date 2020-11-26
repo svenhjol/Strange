@@ -2,6 +2,8 @@ package svenhjol.strange.scrolls.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import svenhjol.strange.base.StrangeIcons;
@@ -26,8 +28,10 @@ public class HuntPanel extends Panel {
         if (entities.isEmpty())
             return;
 
-        // panel title
-        drawCenteredTitle(matrices, new TranslatableText("gui.strange.scrolls.hunt"), mid, top, titleColor);
+        // panel title and icon
+        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.hunt");
+        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_SWORD, mid - 16 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
 
         top += rowHeight;
 
@@ -41,11 +45,12 @@ public class HuntPanel extends Panel {
             int remaining = Math.max(0, entities.get(entityId) - killed.getOrDefault(entityId, 0));
             String name = names.get(entityId);
             TranslatableText text = new TranslatableText("gui.strange.scrolls.hunt_entity", name, remaining);
+            renderItemStack(new ItemStack(Items.STONE_SWORD), mid - 60, baseTop - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
-            // if all of this type is killed, show a tick next to it
+            // show task satisfaction status
             if (satisfied.get(entityId))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 50, baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 4 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
 
             baseTop += rowHeight;
         }
