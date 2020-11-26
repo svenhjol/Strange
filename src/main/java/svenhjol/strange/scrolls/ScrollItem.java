@@ -47,9 +47,6 @@ public class ScrollItem extends CharmItem {
 
         QuestManager questManager = optionalQuestManager.get();
 
-        if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
-            return new TypedActionResult<>(ActionResult.FAIL, held);
-
         player.getItemCooldownManager().set(this, 10);
 
         if (world.isClient)
@@ -57,13 +54,16 @@ public class ScrollItem extends CharmItem {
 
         boolean hasBeenOpened = hasBeenOpened(held);
 
+        // if the quest hasn't been populated yet, create it in the quest manager
         if (!hasBeenOpened) {
-            // if the quest hasn't been populated yet, create it in the quest manager
             JsonDefinition definition = Scrolls.getRandomDefinition(tier, world.random);
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
 
-            if (definition == null)
+            if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
                 return new TypedActionResult<>(ActionResult.FAIL, held);
+
+            if (definition == null)
+                return destroyScroll(world, player, held);
 
             if (!questManager.checkPlayerCanStartQuest(serverPlayer))
                 return new TypedActionResult<>(ActionResult.FAIL, held);
@@ -72,6 +72,9 @@ public class ScrollItem extends CharmItem {
             int rarity = Math.min(1, getScrollRarity(held));
 
             Quest quest = questManager.createQuest(serverPlayer, definition, rarity, seller);
+            if (quest == null)
+                return destroyScroll(world, player, held);
+
             Scrolls.questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
 
@@ -83,15 +86,11 @@ public class ScrollItem extends CharmItem {
 
             Optional<Quest> quest = getScrollQuest(held);
             if (quest.isPresent()) {
-
                 // tell the client to open the scroll
                 questManager.openScroll(player, quest.get());
-
             } else {
-
                 // scroll has expired, remove it
-                world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                held.decrement(1);
+                return destroyScroll(world, player, held);
             }
         }
 
@@ -144,5 +143,11 @@ public class ScrollItem extends CharmItem {
 
     public static void setScrollRarity(ItemStack scroll, int rarity) {
         scroll.getOrCreateTag().putInt(RARITY_TAG, rarity);
+    }
+
+    public TypedActionResult<ItemStack> destroyScroll(World world, PlayerEntity player, ItemStack scroll) {
+        world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        scroll.decrement(1);
+        return new TypedActionResult<>(ActionResult.FAIL, scroll);
     }
 }

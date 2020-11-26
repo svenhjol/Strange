@@ -159,7 +159,11 @@ public class StrangeCommand {
             throw makeException("Invalid definition", "Quest definition not found");
 
         Quest quest = questManager.createQuest(player, definition, rarity, null);
-        ScrollItem.giveScrollToPlayer(quest, player);
+        if (quest != null) {
+            ScrollItem.giveScrollToPlayer(quest, player);
+        } else {
+            throw makeException("Quest failure", "Failed to create quest, see log");
+        }
 
         context.getSource().sendFeedback(new TranslatableText("scroll.strange.started_quest", quest.getId()), false);
         return Command.SINGLE_SUCCESS;

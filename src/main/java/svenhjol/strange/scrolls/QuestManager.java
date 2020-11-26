@@ -11,6 +11,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.charm.Charm;
 import svenhjol.strange.scrolls.populator.*;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -161,6 +162,7 @@ public class QuestManager extends PersistentState {
         return true;
     }
 
+    @Nullable
     public Quest createQuest(ServerPlayerEntity player, JsonDefinition definition, int rarity, @Nullable UUID seller) {
         UUID owner = player.getUuid();
 
@@ -178,7 +180,12 @@ public class QuestManager extends PersistentState {
             new BossPopulator(player, quest, definition)
         ));
 
-        populators.forEach(Populator::populate);
+        try {
+            populators.forEach(Populator::populate);
+        } catch (Exception e) {
+            Charm.LOG.warn(e.getMessage());
+            return null;
+        }
 
         // add new quest to the active quests
         addQuest(quest);
