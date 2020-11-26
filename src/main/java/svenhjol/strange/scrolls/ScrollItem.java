@@ -9,10 +9,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.item.CharmItem;
 import svenhjol.strange.scrolls.tag.Quest;
@@ -56,14 +58,14 @@ public class ScrollItem extends CharmItem {
 
         // if the quest hasn't been populated yet, create it in the quest manager
         if (!hasBeenOpened) {
-            JsonDefinition definition = Scrolls.getRandomDefinition(tier, world.random);
+            JsonDefinition definition = Scrolls.getRandomDefinition(tier, world, world.random);
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
-
-            if (!DimensionHelper.isDimension(world, new Identifier("overworld")) || player.isSneaking())
-                return new TypedActionResult<>(ActionResult.FAIL, held);
 
             if (definition == null)
                 return destroyScroll(world, player, held);
+
+            if (player.isSneaking())
+                return new TypedActionResult<>(ActionResult.FAIL, held);
 
             if (!questManager.checkPlayerCanStartQuest(serverPlayer))
                 return new TypedActionResult<>(ActionResult.FAIL, held);

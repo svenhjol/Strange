@@ -18,6 +18,7 @@ public class JsonDefinition {
     private String title = "";
     private String description = "";
     private String hint = "";
+    private List<String> valid_dimensions = new ArrayList<>();
     private List<String> modules = new ArrayList<>();
     private Map<String, String> hunt = new HashMap<>();
     private Map<String, Map<String, Map<String, String>>> gather = new HashMap<>();
@@ -43,6 +44,10 @@ public class JsonDefinition {
 
     public boolean isDefaultPack() {
         return default_pack;
+    }
+
+    public List<String> getValidDimensions() {
+        return valid_dimensions;
     }
 
     public List<String> getModules() {

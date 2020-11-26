@@ -29,6 +29,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.EntityDeathCallback;
@@ -206,7 +207,7 @@ public class Scrolls extends CharmModule {
     }
 
     @Nullable
-    public static JsonDefinition getRandomDefinition(int tier, Random random) {
+    public static JsonDefinition getRandomDefinition(int tier, World world, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
             Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
             return null;
@@ -218,7 +219,23 @@ public class Scrolls extends CharmModule {
             return null;
         }
 
-        return new ArrayList<>(definitions.values()).get(random.nextInt(definitions.size()));
+        ArrayList<JsonDefinition> allDefinitions = new ArrayList<>(definitions.values());
+
+        // try and fetch a random definition, checking the dimension restrictions of this scroll
+        for (int tries = 0; tries < 10; tries++) {
+            JsonDefinition definition = allDefinitions.get(random.nextInt(definitions.size()));
+            List<String> validDimensions = definition.getValidDimensions();
+
+            if (validDimensions.isEmpty())
+                return definition;
+
+            for (String validDimension : validDimensions) {
+                if (DimensionHelper.isDimension(world, new Identifier(validDimension)))
+                    return definition;
+            }
+        }
+
+        return null;
     }
 
     @Nullable
