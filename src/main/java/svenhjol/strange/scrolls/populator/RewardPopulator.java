@@ -14,6 +14,8 @@ public class RewardPopulator extends Populator {
     public static final String XP = "xp";
     public static final String COUNT = "count";
 
+    public static final int MAX_ITEM_REWARDS = 3;
+
     public RewardPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
     }
@@ -27,10 +29,10 @@ public class RewardPopulator extends Populator {
         if (reward.containsKey(ITEMS)) {
             List<ItemStack> items = parseItems(reward.get(ITEMS), true);
 
-            // if more than 3 items, shuffle the set and take the top 3
-            if (items.size() > 3) {
+            // if more than max items, shuffle the set and limit
+            if (items.size() > MAX_ITEM_REWARDS) {
                 Collections.shuffle(items);
-                items.subList(0, 3).forEach(stack -> quest.getReward().addItem(stack));
+                items.subList(0, MAX_ITEM_REWARDS).forEach(stack -> quest.getReward().addItem(stack));
             } else {
                 items.forEach(quest.getReward()::addItem);
             }
