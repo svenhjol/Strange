@@ -52,6 +52,10 @@ public class ExplorePopulator extends Populator {
             fail("No items found for quest");
 
 
+        // set the quest tag of each item stack to the quest ID so we can match it later
+        items.forEach(item -> item.getOrCreateTag().putString(Explore.QUEST, quest.getId()));
+
+
         // parse settings
         Map<String, Map<String, String>> exploreMap = explore.getOrDefault(SETTINGS, new HashMap<>());
         Map<String, String> structureSettings = exploreMap.getOrDefault(STRUCTURE, new HashMap<>());
@@ -85,6 +89,8 @@ public class ExplorePopulator extends Populator {
         quest.getExplore().setItems(items);
         quest.getExplore().setDimension(DimensionHelper.getDimension(world));
         quest.getExplore().setStructure(foundPos);
+        quest.getExplore().setChestRange(chestRange);
+        quest.getExplore().setChestStart(chestStart);
 
         // give map to the location
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
@@ -101,12 +107,12 @@ public class ExplorePopulator extends Populator {
         if (pos.getY() != 0)
             pos = new BlockPos(pos.getX(), 0, pos.getZ());
 
-        int checkRange = 32;
         int fallbackRange = 8;
-        int startHeight = 32;
+        int chestRange = explore.getChestRange();
+        int chestStart = explore.getChestStart();
 
-        BlockPos pos1 = pos.add(-checkRange, startHeight - (checkRange / 4), -checkRange);
-        BlockPos pos2 = pos.add(checkRange, startHeight + (checkRange / 4), checkRange);
+        BlockPos pos1 = pos.add(-chestRange, chestStart - (chestRange / 4), -chestRange);
+        BlockPos pos2 = pos.add(chestRange, chestStart + (chestRange / 4), chestRange);
 
         List<BlockPos> chests = BlockPos.stream(pos1, pos2).map(BlockPos::toImmutable).filter(p -> {
             BlockState state = world.getBlockState(p);
@@ -130,7 +136,7 @@ public class ExplorePopulator extends Populator {
             BlockPos place = null;
 
             outerloop:
-            for (int sy = startHeight; sy < startHeight + 4; sy++) {
+            for (int sy = chestStart; sy < chestStart + 4; sy++) {
                 for (int sx = -fallbackRange; sx <= fallbackRange; sx++) {
                     for (int sz = -fallbackRange; sz <= fallbackRange; sz++) {
                         BlockPos checkPos = new BlockPos(pos.add(sx, sy, sz));
@@ -145,7 +151,7 @@ public class ExplorePopulator extends Populator {
             if (place == null) {
                 int x = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
                 int z = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
-                place = new BlockPos(pos.add(x, startHeight, z));
+                place = new BlockPos(pos.add(x, chestStart, z));
             }
 
             // build a little 3x3x3 cube of air to house the chest

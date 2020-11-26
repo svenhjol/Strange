@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public class Explore implements ISerializable {
     public static final String STRUCTURE = "structure";
     public static final String DIMENSION = "dimension";
+    public static final String CHEST_START = "chest_start";
+    public static final String CHEST_RANGE = "chest_range";
     public static final String CHESTS = "chests";
     public static final String ITEMS = "items";
     public static final String QUEST = "quest";
@@ -32,6 +34,8 @@ public class Explore implements ISerializable {
     private BlockPos structure;
     private List<BlockPos> chests;
     private Identifier dimension;
+    private int chestStart;
+    private int chestRange;
     private List<ItemStack> items = new ArrayList<>();
     private final Map<Item, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
 
@@ -70,11 +74,16 @@ public class Explore implements ISerializable {
         if (dimension != null)
             outTag.putString(DIMENSION, dimension.toString());
 
+        outTag.putInt(CHEST_START, chestStart);
+        outTag.putInt(CHEST_RANGE, chestRange);
+
         return outTag;
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
+        chestRange = tag.getInt(CHEST_RANGE);
+        chestStart = tag.getInt(CHEST_START);
         structure = tag.contains(STRUCTURE) ? BlockPos.fromLong(tag.getLong(STRUCTURE)) : null;
         dimension = Identifier.tryParse(tag.getString(DIMENSION));
 
@@ -108,6 +117,14 @@ public class Explore implements ISerializable {
         return structure;
     }
 
+    public int getChestStart() {
+        return chestStart;
+    }
+
+    public int getChestRange() {
+        return chestRange;
+    }
+
     public Map<Item, Boolean> getSatisfied() {
         return satisfied;
     }
@@ -122,6 +139,14 @@ public class Explore implements ISerializable {
 
     public void setItems(List<ItemStack> items) {
         this.items = items;
+    }
+
+    public void setChestStart(int chestStart) {
+        this.chestStart = chestStart;
+    }
+
+    public void setChestRange(int chestRange) {
+        this.chestRange = chestRange;
     }
 
     public boolean isSatisfied() {
