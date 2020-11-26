@@ -48,7 +48,7 @@ public class StructureDestination extends Destination {
             return null;
         }
 
-        foundPos = PosHelper.addRandomOffset(foundPos, random, 500, 1500);
+        foundPos = PosHelper.addRandomOffset(foundPos, random, 6, 12);
         store(world, startPos, foundPos, player);
 
         return foundPos;
