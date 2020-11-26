@@ -37,7 +37,7 @@ public class ExplorePanel extends Panel {
 
             // show task satisfaction status
             if (satisfied.containsKey(stack.getItem()) && satisfied.get(stack.getItem()))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 4 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 14 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
 
             baseTop += rowHeight;
         }
