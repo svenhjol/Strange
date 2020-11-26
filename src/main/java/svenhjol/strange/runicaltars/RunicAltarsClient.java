@@ -14,6 +14,6 @@ public class RunicAltarsClient extends CharmClientModule {
     @Override
     public void init() {
         ScreenRegistry.register(RunicAltars.SCREEN_HANDLER, RunicAltarScreen::new);
-        BlockRenderLayerMap.INSTANCE.putBlock(RunicAltars.RUNIC_ALTAR, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(RunicAltars.RUNIC_ALTAR, RenderLayer.getTranslucent());
     }
 }
