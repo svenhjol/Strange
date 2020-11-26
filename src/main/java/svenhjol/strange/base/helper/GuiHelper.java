@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
@@ -42,5 +43,14 @@ public class GuiHelper extends DrawableHelper {
         getTextureManager().bindTexture(StrangeIcons.ICONS);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
+    }
+
+    public static void renderIcon(Screen screen, MatrixStack matrices, int[] icon, int x, int y) {
+        int w = StrangeIcons.ICON_WIDTH;
+        int h = StrangeIcons.ICON_HEIGHT;
+
+        getTextureManager().bindTexture(StrangeIcons.ICONS);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        screen.drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 }
