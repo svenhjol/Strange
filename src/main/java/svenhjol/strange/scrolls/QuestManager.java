@@ -183,7 +183,7 @@ public class QuestManager extends PersistentState {
         try {
             populators.forEach(Populator::populate);
         } catch (Exception e) {
-            Charm.LOG.warn(e.getMessage());
+            Charm.LOG.warn(e.toString());
             return null;
         }
 

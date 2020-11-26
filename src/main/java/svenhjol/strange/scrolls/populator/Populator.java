@@ -74,7 +74,7 @@ public abstract class Populator {
 
             // get all values from item props
             int count = getCountFromValue(props.get(COUNT), 1, scale);
-            int limit = Integer.parseInt(props.get(LIMIT));
+            int limit = Integer.parseInt(props.getOrDefault(LIMIT, "1"));
             float chance = getChanceFromValue(props.get(CHANCE), 1.0F, scale);
             int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL), 5, scale);
             boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE, "false"));
