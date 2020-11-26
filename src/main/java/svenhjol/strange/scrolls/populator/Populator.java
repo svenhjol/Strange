@@ -72,8 +72,8 @@ public abstract class Populator {
             if (count <= 0)
                 continue;
 
-            // parse the item from loot, pool or as an item id
-            if (itemId.equals(LOOT)) {
+            if (itemId.startsWith(LOOT)) {
+                // parse multiple items from a specified loot table (up to count)
                 if (!props.containsKey(TABLE))
                     continue;
 
@@ -90,7 +90,7 @@ public abstract class Populator {
                 if (list.isEmpty())
                     continue;
 
-                // filter out empty items and shuffle them, fetching up to the number of items
+                // filter out empty items and shuffle loot items, fetching up to count
                 List<ItemStack> lootItems = list.stream().filter(item -> !item.isEmpty()).collect(Collectors.toList());
                 Collections.shuffle(lootItems, world.random);
 
@@ -100,8 +100,8 @@ public abstract class Populator {
                 }
                 continue;
 
-            } else if (itemId.equals(POOL)) {
-
+            } else if (itemId.startsWith(POOL)) {
+                // parse multiple items from a specified pool list (up to count)
                 if (items.isEmpty())
                     continue;
 
@@ -112,6 +112,7 @@ public abstract class Populator {
                 }
 
             } else {
+                // just add the specified item id to parseable list
                 itemIds.add(itemId);
             }
 
