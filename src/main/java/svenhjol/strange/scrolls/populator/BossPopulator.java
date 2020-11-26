@@ -123,7 +123,6 @@ public class BossPopulator extends Populator {
     }
 
     private void fail(String message) {
-        // TODO: handle fail conditions
         throw new RuntimeException("Could not start boss quest: " + message);
     }
 
