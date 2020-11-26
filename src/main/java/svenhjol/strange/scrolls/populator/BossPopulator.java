@@ -123,7 +123,7 @@ public class BossPopulator extends Populator {
     }
 
     private void fail(String message) {
-        throw new RuntimeException("Could not start boss quest: " + message);
+        throw new IllegalStateException("Could not start boss quest: " + message);
     }
 
     private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
