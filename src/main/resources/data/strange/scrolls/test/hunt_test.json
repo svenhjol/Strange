@@ -9,7 +9,7 @@
   },
   "time_limit": 1,
   "hunt": {
-    "minecraft:skeleton": "10-12"
+    "skeleton": "10-12"
   },
   "reward": {
     "items": {
