@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -32,6 +33,10 @@ public class ExplorePopulator extends Populator {
     public static final String ITEMS = "items";
     public static final String SETTINGS = "settings";
     public static final String STRUCTURE = "structure";
+
+    private static final BlockState OVERWORLD_PLATFORM_BASE = Blocks.STONE.getDefaultState();
+    private static final BlockState NETHER_PLATFORM_BASE = Blocks.BLACKSTONE.getDefaultState();
+    private static final BlockState END_PLATFORM_BASE = Blocks.END_STONE_BRICKS.getDefaultState();
 
     public ExplorePopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
         super(player, quest, definition);
@@ -113,8 +118,8 @@ public class ExplorePopulator extends Populator {
         int chestRange = explore.getChestRange();
         int chestStart = explore.getChestStart();
 
-        BlockPos pos1 = pos.add(-chestRange, chestStart - (chestRange / 4), -chestRange);
-        BlockPos pos2 = pos.add(chestRange, chestStart + (chestRange / 4), chestRange);
+        BlockPos pos1 = pos.add(-chestRange, chestStart - chestRange, -chestRange);
+        BlockPos pos2 = pos.add(chestRange, chestStart + chestRange, chestRange);
 
         List<BlockPos> chests = BlockPos.stream(pos1, pos2).map(BlockPos::toImmutable).filter(p -> {
             BlockState state = world.getBlockState(p);
@@ -157,8 +162,17 @@ public class ExplorePopulator extends Populator {
             }
 
             // build a little 3x3x3 cube of air to house the chest
+            BlockState platformBaseState;
+            if (DimensionHelper.isDimension(world, ServerWorld.NETHER)) {
+                platformBaseState = NETHER_PLATFORM_BASE;
+            } else if (DimensionHelper.isDimension(world, ServerWorld.END)) {
+                platformBaseState = END_PLATFORM_BASE;
+            } else {
+                platformBaseState = OVERWORLD_PLATFORM_BASE;
+            }
+
             for (int py = -1; py <= 1; py++) {
-                BlockState state = py == -1 ? Blocks.STONE.getDefaultState() : Blocks.AIR.getDefaultState();
+                BlockState state = py == -1 ? platformBaseState : Blocks.AIR.getDefaultState();
                 for (int px = -1; px <= 1; px++) {
                     for (int pz = -1; pz <= 1; pz++) {
                         world.setBlockState(place.add(px, py, pz), state, 2);
@@ -190,7 +204,7 @@ public class ExplorePopulator extends Populator {
                             chestBlockEntity.setStack(s, stack);
 
                             // for easier identification of target chest, set the block under the chest
-                            world.setBlockState(place.down(), Blocks.POLISHED_GRANITE.getDefaultState(), 2);
+                            world.setBlockState(place.down(), Blocks.GLOWSTONE.getDefaultState(), 2);
 
                             placements.add(place);
                             didPlaceItem = true;
