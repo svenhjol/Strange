@@ -1,0 +1,40 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Explore Test",
+      "description": "The village that stole the potato",
+      "hint": "Really exciting\nWatch out for goats\n"
+    }
+  },
+  "explore": {
+    "items": {
+      "potato": {
+        "enchanted": true,
+        "enchantment_force": true
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "village",
+        "min_distance": 500,
+        "max_distance": 1000,
+        "chest_range": 24,
+        "chest_start": 64
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot": {
+        "table": "village",
+        "count": 10
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 1
+      }
+    }
+  }
+}

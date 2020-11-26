@@ -1,5 +1,5 @@
 {
-  "builtIn": true,
+  "default_pack": true,
   "lang": {
     "en": {
       "title": "Boss Test",
@@ -23,11 +23,19 @@
   },
   "reward": {
     "items": {
-      "minecraft:egg": 4,
-      "minecraft:crossbow[enchanted][epic]!": 1
+      "egg": {
+        "count": 4
+      },
+      "crossbow": {
+        "enchanted": true,
+        "enchantment_levels": 30,
+        "enchantment_treasure": true
+      }
     },
     "xp": {
-      "levels": 10
+      "player": {
+        "count": 15
+      }
     }
   }
 }

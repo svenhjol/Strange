@@ -1,0 +1,48 @@
+{
+  "default_pack": true,
+  "time_limit": 10,
+  "lang": {
+    "en": {
+      "title": "Gather Test",
+      "description": "Go find acacia logs.",
+      "hint": "You are amazing"
+    }
+  },
+  "gather": {
+    "items": {
+      "acacia_log": {
+        "count": "12-16"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": 1
+      },
+      "acacia_planks": {
+        "count": "16-24",
+        "chance": 0.75
+      },
+      "loot": {
+        "table": "simple_dungeon",
+        "count": 3
+      },
+      "pool": {
+        "items": "iron_helmet,iron_chestplate,iron_leggings,iron_boots",
+        "enchanted": true,
+        "enchantment_treasure": true,
+        "enchantment_level": 15,
+        "chance": 0.75
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 4
+      },
+      "villager": {
+        "count": 1
+      }
+    }
+  }
+}

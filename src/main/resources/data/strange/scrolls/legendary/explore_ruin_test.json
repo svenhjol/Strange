@@ -1,0 +1,30 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Explore Test",
+      "description": "The Lost Compass",
+      "hint": "Oooh\nYeah\nMultiline\nTest"
+    }
+  },
+  "explore": {
+    "items": {
+      "compass": {}
+    },
+    "settings": {
+      "structure": {
+        "type": "strange:ruin",
+        "min_distance": 500,
+        "max_distance": 1000,
+        "chest_range": 8
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "cobblestone": {
+        "count": 1
+      }
+    }
+  }
+}

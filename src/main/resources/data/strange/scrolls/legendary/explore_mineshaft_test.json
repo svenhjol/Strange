@@ -1,0 +1,39 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Explore Test",
+      "description": "Find The Magic Trousers"
+    }
+  },
+  "explore": {
+    "items": {
+      "diamond_leggings": {
+        "enchanted": true
+      },
+      "chainmail_leggings": {
+        "enchanted": true
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "mineshaft",
+        "min_distance": 200,
+        "max_distance": 400,
+        "chest_range": 4
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond": {
+        "count": 64
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 30
+      }
+    }
+  }
+}

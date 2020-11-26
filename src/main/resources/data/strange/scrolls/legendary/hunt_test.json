@@ -1,0 +1,34 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Hunt Skeletons",
+      "description": "Kill all skeletons before the time runs out!",
+      "hint": "Multiline\nworks?"
+    }
+  },
+  "time_limit": 1,
+  "hunt": {
+    "minecraft:skeleton": "10-12"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-4"
+      },
+      "loot0": {
+        "table": "simple_dungeon",
+        "count": 5
+      },
+      "loot1": {
+        "table": "abandoned_mineshaft",
+        "count": 5
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-4"
+      }
+    }
+  }
+}

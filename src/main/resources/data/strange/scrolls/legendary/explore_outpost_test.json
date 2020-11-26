@@ -1,0 +1,40 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Explore Test",
+      "description": "The PILLAGERS that stole the potato",
+      "hint": "Really exciting\nWatch out for sheeps\n"
+    }
+  },
+  "explore": {
+    "items": {
+      "potato": {
+        "enchanted": true,
+        "enchantment_force": true
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "pillager_outpost",
+        "min_distance": 500,
+        "max_distance": 1000,
+        "chest_range": 24,
+        "chest_start": 80
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot": {
+        "table": "pillager_outpost",
+        "count": 10
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 1
+      }
+    }
+  }
+}
