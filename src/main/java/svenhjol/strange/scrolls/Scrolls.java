@@ -68,6 +68,7 @@ public class Scrolls extends CharmModule {
     public static String language = "en";
 
     public Scrolls() {
+        SCROLL_TIER_IDS.put(0, "test");
         SCROLL_TIER_IDS.put(1, "novice");
         SCROLL_TIER_IDS.put(2, "apprentice");
         SCROLL_TIER_IDS.put(3, "journeyman");
@@ -78,7 +79,7 @@ public class Scrolls extends CharmModule {
 
     @Override
     public void register() {
-        for (int tier = 1; tier <= TIERS; tier++) {
+        for (int tier = 0; tier <= TIERS; tier++) {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
@@ -120,7 +121,7 @@ public class Scrolls extends CharmModule {
     private void tryLoadScrolls(MinecraftServer server) {
         ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
 
-        for (int tier = 1; tier <= TIERS; tier++) {
+        for (int tier = 0; tier <= TIERS; tier++) {
             AVAILABLE_SCROLLS.put(tier, new HashMap<>());
             Collection<Identifier> scrolls = resources.findResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
 
@@ -196,7 +197,7 @@ public class Scrolls extends CharmModule {
         if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(UniformLootTableRange.between(0.0F, 1.0F))
-                .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS - 1)));
+                .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS)));
 
             supplier.pool(builder);
         }

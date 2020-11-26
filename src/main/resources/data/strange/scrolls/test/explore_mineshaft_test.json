@@ -1,5 +1,6 @@
 {
   "default_pack": true,
+  "valid_dimensions": ["overworld"],
   "lang": {
     "en": {
       "title": "Explore Test",
