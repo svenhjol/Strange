@@ -48,7 +48,7 @@ public class ExplorePopulator extends Populator {
 
         // populate the items for the quest
         if (explore.containsKey(ITEMS))
-            items = parseItems(explore.get(ITEMS), false);
+            items = parseItems(explore.get(ITEMS), 4, false);
 
         if (items.isEmpty())
             fail("No items found for quest");

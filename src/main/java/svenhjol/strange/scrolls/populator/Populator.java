@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 public abstract class Populator {
     public static final String COUNT = "count";
+    public static final String LIMIT = "limit";
     public static final String NAME = "name";
     public static final String CHANCE = "chance";
     public static final String ENCHANTED = "enchanted";
@@ -63,7 +64,7 @@ public abstract class Populator {
 
     public abstract void populate();
 
-    public List<ItemStack> parseItems(Map<String, Map<String, String>> map, boolean scale) {
+    public List<ItemStack> parseItems(Map<String, Map<String, String>> map, int listLimit, boolean scale) {
         List<ItemStack> stacks = new ArrayList<>();
 
         for (String itemId : map.keySet()) {
@@ -73,6 +74,7 @@ public abstract class Populator {
 
             // get all values from item props
             int count = getCountFromValue(props.get(COUNT), 1, scale);
+            int limit = Integer.parseInt(props.get(LIMIT));
             float chance = getChanceFromValue(props.get(CHANCE), 1.0F, scale);
             int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL), 5, scale);
             boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE, "false"));
@@ -111,19 +113,21 @@ public abstract class Populator {
                 List<ItemStack> lootItems = list.stream().filter(item -> !item.isEmpty()).collect(Collectors.toList());
                 Collections.shuffle(lootItems, world.random);
 
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < limit; i++) {
                     if (lootItems.size() > i)
                         stacks.add(lootItems.get(i));
                 }
                 continue;
 
             } else if (itemId.startsWith(POOL)) {
-                // parse multiple items from a specified pool list (up to count)
+                // parse multiple items from a specified pool list (up to limit)
                 if (items.isEmpty())
                     continue;
 
                 if (items.contains(",")) {
-                    itemIds.addAll(Arrays.asList(items.split(",")));
+                    List<String> poolItems = Arrays.asList(items.split(","));
+                    Collections.shuffle(poolItems);
+                    itemIds.addAll(poolItems.subList(0, Math.min(poolItems.size(), limit)));
                 } else {
                     itemIds.add(items);
                 }
@@ -176,6 +180,12 @@ public abstract class Populator {
                     stacks.add(stack);
                 }
             }
+        }
+
+        // if more than limit, shuffle the set and return sublist
+        if (stacks.size() > listLimit) {
+            Collections.shuffle(stacks);
+            return stacks.subList(0, listLimit);
         }
 
         return stacks;

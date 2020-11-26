@@ -27,15 +27,8 @@ public class RewardPopulator extends Populator {
             return;
 
         if (reward.containsKey(ITEMS)) {
-            List<ItemStack> items = parseItems(reward.get(ITEMS), true);
-
-            // if more than max items, shuffle the set and limit
-            if (items.size() > MAX_ITEM_REWARDS) {
-                Collections.shuffle(items);
-                items.subList(0, MAX_ITEM_REWARDS).forEach(stack -> quest.getReward().addItem(stack));
-            } else {
-                items.forEach(quest.getReward()::addItem);
-            }
+            List<ItemStack> items = parseItems(reward.get(ITEMS), MAX_ITEM_REWARDS, true);
+            items.forEach(quest.getReward()::addItem);
         }
 
         if (reward.containsKey(XP)) {

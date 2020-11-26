@@ -21,7 +21,7 @@ public class GatherPopulator extends Populator {
         if (!gather.containsKey(ITEMS))
             return;
 
-        List<ItemStack> items = parseItems(gather.get(ITEMS), false);
+        List<ItemStack> items = parseItems(gather.get(ITEMS), 4, false);
         items.forEach(quest.getGather()::addItem);
     }
 }
