@@ -233,7 +233,6 @@ public class ExplorePopulator extends Populator {
     }
 
     private void fail(String message) {
-        // TODO: handle this fail condition
         throw new RuntimeException("Could not start exploration quest: " + message);
     }
 }
