@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -113,15 +115,10 @@ public class BossPopulator extends Populator {
         if (boss.containsKey(SUPPORT))
             trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
 
-        WorldHelper.stormyWeather(world, 3600);
+        world.playSound(null, pos, SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F);
     }
 
     public static void checkEncounter(PlayerEntity player, Boss tag) {
-        if (player.world.isClient)
-            return;
-
-        if (tag.isSatisfied())
-            WorldHelper.clearWeather((ServerWorld)player.world);
     }
 
     private void fail(String message) {
@@ -130,7 +127,7 @@ public class BossPopulator extends Populator {
     }
 
     private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
-        int effectDuration = 10000; // something that doesn't run out very quickly
+        int effectDuration = 999999; // something that doesn't run out very quickly
         int effectAmplifier = Math.max(1, quest.getTier() - 3);
         boolean didAnySpawn = false;
 
