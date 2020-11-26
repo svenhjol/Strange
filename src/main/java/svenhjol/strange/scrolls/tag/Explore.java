@@ -162,7 +162,7 @@ public class Explore implements ISerializable {
 
         double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
         if (dist < 1200) {
-            List<BlockPos> chestPositions = ExplorePopulator.addLootToChests(player, this);
+            List<BlockPos> chestPositions = ExplorePopulator.addScrollItemsToChests(player, this);
 
             if (chestPositions.isEmpty()) {
                 quest.abandon(player);

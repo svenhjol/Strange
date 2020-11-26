@@ -99,7 +99,7 @@ public class ExplorePopulator extends Populator {
         PlayerHelper.addOrDropStack(player, map);
     }
 
-    public static List<BlockPos> addLootToChests(PlayerEntity player, Explore explore) {
+    public static List<BlockPos> addScrollItemsToChests(PlayerEntity player, Explore explore) {
         World world = player.world;
         BlockPos pos = explore.getStructure();
         List<ItemStack> items = explore.getItems();
