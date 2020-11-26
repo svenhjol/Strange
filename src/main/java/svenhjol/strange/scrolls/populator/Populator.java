@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.helper.LootHelper;
+import svenhjol.charm.handler.InventoryTidyingHandler;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -182,6 +183,10 @@ public abstract class Populator {
             }
         }
 
+        // if any stacks can be combined, do that here
+        InventoryTidyingHandler.mergeInventory(stacks);
+
+
         // if more than limit, shuffle the set and return sublist
         if (stacks.size() > listLimit) {
             Collections.shuffle(stacks);
@@ -206,7 +211,9 @@ public abstract class Populator {
 
             if (value.contains("-")) {
                 String[] split = value.split("-");
-                count = world.random.nextInt(Integer.parseInt(split[1])) + Integer.parseInt(split[0]);
+                int min = Integer.parseInt(split[1]);
+                int max = Integer.parseInt(split[0]);
+                count = world.random.nextInt(max - min) + min;
             } else if (!value.isEmpty()) {
                 count = Integer.parseInt(value);
             } else {
