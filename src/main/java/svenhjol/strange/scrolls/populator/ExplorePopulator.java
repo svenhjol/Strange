@@ -79,7 +79,7 @@ public class ExplorePopulator extends Populator {
 
 
         // locate structure in the world
-        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, true);
+        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, false);
 
         if (foundPos == null)
             fail("Could not locate structure");
