@@ -211,8 +211,8 @@ public abstract class Populator {
 
             if (value.contains("-")) {
                 String[] split = value.split("-");
-                int min = Integer.parseInt(split[1]);
-                int max = Integer.parseInt(split[0]);
+                int min = Integer.parseInt(split[0]);
+                int max = Integer.parseInt(split[1]);
                 count = world.random.nextInt(max - min) + min;
             } else if (!value.isEmpty()) {
                 count = Integer.parseInt(value);
