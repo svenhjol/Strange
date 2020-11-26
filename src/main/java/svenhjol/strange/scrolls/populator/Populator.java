@@ -12,6 +12,8 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 public abstract class Populator {
     public static final String COUNT = "count";
+    public static final String NAME = "name";
     public static final String CHANCE = "chance";
     public static final String ENCHANTED = "enchanted";
     public static final String ENCHANTMENT_LEVEL = "enchantment_level";
@@ -69,6 +72,7 @@ public abstract class Populator {
             boolean enchantmentForce = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_FORCE, "false"));
             boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED, "false"));
             String items = props.getOrDefault(ITEMS, "");
+            String name = props.getOrDefault(NAME, "");
 
             // if no chance for this item to generate, skip
             if (world.random.nextFloat() > chance)
@@ -132,6 +136,16 @@ public abstract class Populator {
 
                 Item item = optionalItem.get();
                 stack = new ItemStack(item);
+
+                // try adding custom name to item
+                if (!name.isEmpty()) {
+                    if (name.contains(".")) {
+                        // shitty test for lang key
+                        stack.setCustomName(new TranslatableText(name));
+                    } else {
+                        stack.setCustomName(new LiteralText(name));
+                    }
+                }
 
                 if (stack.getMaxCount() < count) {
                     // separate stacks up to the count level
