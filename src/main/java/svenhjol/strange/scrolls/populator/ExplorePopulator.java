@@ -3,6 +3,7 @@ package svenhjol.strange.scrolls.populator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,6 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -135,14 +137,14 @@ public class ExplorePopulator extends Populator {
             // get a location near the start position
             BlockPos place = null;
 
-            outerloop:
+            findloop:
             for (int sy = chestStart; sy < chestStart + 4; sy++) {
                 for (int sx = -fallbackRange; sx <= fallbackRange; sx++) {
                     for (int sz = -fallbackRange; sz <= fallbackRange; sz++) {
                         BlockPos checkPos = new BlockPos(pos.add(sx, sy, sz));
                         if (world.getBlockState(checkPos).isAir()) {
                             place = checkPos;
-                            break outerloop;
+                            break findloop;
                         }
                     }
                 }
@@ -167,23 +169,64 @@ public class ExplorePopulator extends Populator {
             chests.add(place);
         }
 
+        Collections.shuffle(chests);
         List<BlockPos> placements = new ArrayList<>();
 
-        // select a chest at random and write the loot into it
-        int slot = 0;
+        // try and write the item stack into the available chests
         for (ItemStack itemStack : items) {
             ItemStack stack = itemStack.copy();
-            BlockPos place = chests.get(random.nextInt(chests.size()));
-            BlockEntity blockEntity = world.getBlockEntity(place);
+            boolean didPlaceItem = false;
 
-            if (blockEntity instanceof ChestBlockEntity) {
-                ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
-                chestBlockEntity.setStack(slot++, stack);
+            placeloop:
+            for (BlockPos place : chests) {
+                BlockEntity blockEntity = world.getBlockEntity(place);
 
-                // for easier identification of target chest, set the block under the chest
-                world.setBlockState(place.down(), Blocks.POLISHED_DIORITE.getDefaultState(), 2);
+                // iterate over all chest slots to find an empty slot for the item
+                if (blockEntity instanceof ChestBlockEntity) {
+                    ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
+                    for (int s = 0; s < chestBlockEntity.size(); s++) {
+                        ItemStack stackInSlot = chestBlockEntity.getStack(s);
+                        if (stackInSlot.isEmpty()) {
+                            chestBlockEntity.setStack(s, stack);
+
+                            // for easier identification of target chest, set the block under the chest
+                            world.setBlockState(place.down(), Blocks.POLISHED_GRANITE.getDefaultState(), 2);
+
+                            placements.add(place);
+                            didPlaceItem = true;
+                            break placeloop;
+                        }
+                    }
+                }
             }
-            placements.add(place);
+
+
+            // if unable to place the item in any of the chests, try and create a trapped chest next to existing one.
+            if (!didPlaceItem) {
+                BlockPos chestPos = chests.get(random.nextInt(chests.size()));
+                BlockState chestState = world.getBlockState(chestPos);
+                Direction facing = chestState.get(ChestBlock.FACING);
+                List<BlockPos> tryPositions = new ArrayList<>();
+
+                if (facing == Direction.NORTH || facing == Direction.SOUTH) {
+                    tryPositions.addAll(Arrays.asList(chestPos.offset(Direction.EAST), chestPos.offset(Direction.WEST)));
+                } else {
+                    tryPositions.addAll(Arrays.asList(chestPos.offset(Direction.NORTH), chestPos.offset(Direction.SOUTH)));
+                }
+
+                for (BlockPos tryPos : tryPositions) {
+                    BlockState state = world.getBlockState(tryPos);
+                    if (state.isAir() || state.getMaterial() == Material.WATER) {
+                        world.setBlockState(pos, Blocks.TRAPPED_CHEST.getDefaultState().with(ChestBlock.FACING, facing));
+                        ChestBlockEntity chestBlockEntity = (ChestBlockEntity)world.getBlockEntity(pos);
+                        if (chestBlockEntity != null) {
+                            chestBlockEntity.setStack(0, stack);
+                            placements.add(tryPos);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         return placements;
