@@ -37,7 +37,7 @@ import java.util.Optional;
 @Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
-    public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35};
+    public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
 
     public static VillagerProfession SCROLLKEEPER;
     public static PointOfInterestType POIT;
@@ -111,7 +111,7 @@ public class Scrollkeepers extends CharmModule {
                 int questRarity = quest.getRarity();
 
                 if (questTier >= villagerLevel) {
-                    int tierXp = QUEST_XP[Math.max(5, questTier) - 1];
+                    int tierXp = QUEST_XP[Math.max(Scrolls.TIERS, questTier) - 1];
                     if (questTier > villagerLevel)
                         tierXp /= 2;
 
