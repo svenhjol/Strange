@@ -172,7 +172,7 @@ public class Explore implements ISerializable {
             quest.setDirty(true);
 
             player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
-            chestPositions.forEach(pos -> Charm.LOG.info("Added quest loot to chest at: " + pos.toShortString()));
+            chestPositions.forEach(pos -> Charm.LOG.info("Added quest loot to chest at: " + pos.toString()));
 
             chests = chestPositions;
         }

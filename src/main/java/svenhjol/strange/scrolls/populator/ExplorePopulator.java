@@ -105,7 +105,7 @@ public class ExplorePopulator extends Populator {
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
         PlayerHelper.addOrDropStack(player, map);
 
-        Charm.LOG.info("Created explore quest at pos: " + foundPos.toShortString());
+        Charm.LOG.info("Created explore quest at pos: " + foundPos.toString());
     }
 
     public static List<BlockPos> addScrollItemsToChests(PlayerEntity player, Explore explore) {
