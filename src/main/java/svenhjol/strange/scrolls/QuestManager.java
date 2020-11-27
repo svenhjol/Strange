@@ -17,6 +17,7 @@ import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,8 @@ public class QuestManager extends PersistentState {
     public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable?
 
     private int currentTime;
-    private final Map<String, Quest> quests = new HashMap<>();
-    private final Map<UUID, List<Quest>> playerQuests = new HashMap<>();
+    private final Map<String, Quest> quests = new ConcurrentHashMap<>();
+    private final Map<UUID, List<Quest>> playerQuests = new ConcurrentHashMap<>();
 
     public QuestManager(ServerWorld world) {
         super(nameFor(world.getDimension()));
@@ -74,11 +75,15 @@ public class QuestManager extends PersistentState {
             listTag.add(questTag);
         });
 
-        regeneratePlayerQuests();
 
         tag.putInt(TICK_TAG, currentTime);
         tag.put(QUESTS_TAG, listTag);
         return tag;
+    }
+
+    @Override
+    public void markDirty() {
+        regeneratePlayerQuests();
     }
 
     public void forEachQuest(Consumer<Quest> callback) {
