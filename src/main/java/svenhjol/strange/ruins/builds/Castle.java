@@ -22,24 +22,24 @@ public class Castle extends BaseStructure {
         ROOMS.put("room_secret", 1);
         ROOMS.put("room_smlib", 2);
         ROOMS.put("room_tower", 3);
-        ROOMS.put("room_corner", 3);
-        ROOMS.put("room_big1", 3);
-        ROOMS.put("room_trap", 2);
-    //    ROOMS.put("room_zombies", 1);
+        ROOMS.put("room_corner_upper", 3);
+        ROOMS.put("room_corner_lower", 3);
+        ROOMS.put("room_wood", 3);
+        ROOMS.put("room_trap", 3);
+        ROOMS.put("room_nature", 3);
 
     //    CORRIDORS.put("corridor_start1", 3);
     //    CORRIDORS.put("corridor_start2", 2);
     //    CORRIDORS.put("corridor_start3", 2);
         CORRIDORS.put("corridor_stairs", 2);
         CORRIDORS.put("corridor_long", 3);
-    //    CORRIDORS.put("corridor_long_high", 2);
         CORRIDORS.put("corridor_med", 2);
         CORRIDORS.put("corridor_med_low", 3);
-        CORRIDORS.put("corridor_spawner", 3);
-    //    CORRIDORS.put("corridor_spawner_high", 3);
+        CORRIDORS.put("corridor_spawner_lower", 3);
+        CORRIDORS.put("corridor_spawner_upper", 3);
 
-        ENDS.put("end_1", 3);
-        ENDS.put("end_2", 3);
+        ENDS.put("end1", 3);
+        ENDS.put("end2", 3);
         ENDS.put("end_spawner", 3);
         ENDS.put("end_deco", 2);
         ENDS.put("end_deco_high", 2);
