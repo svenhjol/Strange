@@ -56,7 +56,7 @@ public class Scrolls extends CharmModule {
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    public static QuestManager questManager;
+    private static QuestManager questManager;
 
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
@@ -162,7 +162,11 @@ public class Scrolls extends CharmModule {
 
     private void handleEntityDeath(LivingEntity entity, DamageSource source) {
         Entity attacker = source.getAttacker();
-        Scrolls.questManager.forEachQuest(quest -> quest.entityKilled(entity, attacker));
+        if (!Scrolls.getQuestManager().isPresent())
+            return;
+
+        Scrolls.getQuestManager().get()
+            .forEachQuest(quest -> quest.entityKilled(entity, attacker));
     }
 
     private void handlePlayerTick(PlayerEntity player) {
@@ -172,8 +176,12 @@ public class Scrolls extends CharmModule {
         if (!(player instanceof ServerPlayerEntity))
             return; // must be server-side
 
+        if (!Scrolls.getQuestManager().isPresent())
+            return; // must have an instantiated quest manager
+
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-        Scrolls.questManager.forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
+        Scrolls.getQuestManager().get()
+            .forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter) {
@@ -200,7 +208,7 @@ public class Scrolls extends CharmModule {
     }
 
     public static Optional<QuestManager> getQuestManager() {
-        return Optional.of(questManager);
+        return questManager != null ? Optional.of(questManager) : Optional.empty();
     }
 
     @Nullable

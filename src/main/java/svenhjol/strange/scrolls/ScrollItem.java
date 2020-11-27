@@ -43,6 +43,9 @@ public class ScrollItem extends CharmItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack held = player.getStackInHand(hand);
 
+        if (world.isClient)
+            return new TypedActionResult<>(ActionResult.PASS, held);
+
         Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
         if (!optionalQuestManager.isPresent())
             return new TypedActionResult<>(ActionResult.FAIL, held);
@@ -50,10 +53,6 @@ public class ScrollItem extends CharmItem {
         QuestManager questManager = optionalQuestManager.get();
 
         player.getItemCooldownManager().set(this, 10);
-
-        if (world.isClient)
-            return new TypedActionResult<>(ActionResult.PASS, held);
-
         boolean hasBeenOpened = hasBeenOpened(held);
 
         // if the quest hasn't been populated yet, create it in the quest manager
@@ -77,7 +76,7 @@ public class ScrollItem extends CharmItem {
             if (quest == null)
                 return destroyScroll(world, player, held);
 
-            Scrolls.questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
+            questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
 
             // tell the client to open the scroll
@@ -86,7 +85,12 @@ public class ScrollItem extends CharmItem {
 
         } else {
 
-            Optional<Quest> quest = getScrollQuest(held);
+            String questId = getScrollQuest(held);
+            if (questId == null)
+                return destroyScroll(world, player, held);
+
+            Optional<Quest> quest = questManager.getQuest(questId);
+
             if (quest.isPresent()) {
                 // tell the client to open the scroll
                 questManager.openScroll(player, quest.get());
@@ -121,9 +125,8 @@ public class ScrollItem extends CharmItem {
         return UUID.fromString(string);
     }
 
-    public static Optional<Quest> getScrollQuest(ItemStack scroll) {
-        String questId = scroll.getOrCreateTag().getString(QUEST_TAG);
-        return Scrolls.questManager.getQuest(questId);
+    public static String getScrollQuest(ItemStack scroll) {
+        return scroll.getOrCreateTag().getString(QUEST_TAG);
     }
 
     public static int getScrollRarity(ItemStack scroll) {
