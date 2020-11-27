@@ -115,7 +115,7 @@ public class Scrollkeepers extends CharmModule {
                 int questRarity = quest.getRarity();
 
                 if (questTier >= villagerLevel) {
-                    int tierXp = QUEST_XP[Math.max(Scrolls.TIERS, questTier) - 1];
+                    int tierXp = QUEST_XP[Math.min(Scrolls.TIERS, questTier) - 1];
                     if (questTier > villagerLevel)
                         tierXp /= 2;
 
