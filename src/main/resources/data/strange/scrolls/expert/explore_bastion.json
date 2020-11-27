@@ -1,0 +1,47 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["the_nether"],
+  "time_limit": 120,
+  "lang": {
+    "en": {
+      "title": "Those were the days",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "ancient_debris | netherite_ingot": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "4-7"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "bastion_remnant",
+        "min_distance": 750,
+        "max_distance": 1500,
+        "chest_range": 32,
+        "chest_start": 64
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "bastion_treasure",
+        "limit": 3
+      },
+      "loot1": {
+        "items": "ruined_portal",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}

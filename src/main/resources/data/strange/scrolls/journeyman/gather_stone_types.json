@@ -1,0 +1,35 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Gather Stone",
+      "description": "Find the required stone types to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "obsidian": {
+        "count": "16-20"
+      },
+      "netherrack": {
+        "count": "48-64"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot": {
+        "table": "village_mason",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-3"
+      }
+    }
+  }
+}

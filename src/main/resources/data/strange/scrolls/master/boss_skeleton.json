@@ -1,0 +1,38 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "lang": {
+    "en": {
+      "title": "Skeletal Horde",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:skeleton": {
+        "count": "16-20",
+        "health": 20,
+        "effects": "regeneration,fire_protection"
+      },
+      "minecraft:stray": {
+        "count": "16-20",
+        "health": 20,
+        "effects": "regeneration,fire_protection"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block": {
+        "count": "4-8"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}

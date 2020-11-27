@@ -1,0 +1,37 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "lang": {
+    "en": {
+      "title": "The magician",
+      "description": "Defeat the evoker in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:evoker": {
+        "count": 1,
+        "health": 40,
+        "effects": "regeneration"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "totem_of_undying": {
+        "count": 1
+      },
+      "crossbow": {
+        "enchanted": true,
+        "enchantment_level": "7-12",
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "4-7"
+      }
+    }
+  }
+}

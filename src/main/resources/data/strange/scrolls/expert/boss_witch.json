@@ -1,0 +1,52 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "lang": {
+    "en": {
+      "title": "The coven",
+      "description": "Defeat the witches in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:witch": {
+        "count": "5-6",
+        "health": 30,
+        "effects": "regeneration"
+      }
+    },
+    "support": {
+      "minecraft:zombie_villager": {
+        "count": 3
+      },
+      "minecraft:skeleton": {
+        "count": 3
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "totem_of_undying": {
+        "count": 1
+      },
+      "bow": {
+        "enchanted": true,
+        "enchantment_level": "12-17",
+        "enchantment_treasure": true
+      },
+      "pool": {
+        "items": "diamond_sword,diamond_pickaxe,diamond_chestplate,diamond_leggings",
+        "enchanted": true,
+        "enchantment_level": "12-17",
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}

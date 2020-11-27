@@ -1,0 +1,28 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Illager hunt",
+      "description": "Seek out and destroy the enemies."
+    }
+  },
+  "hunt": {
+    "vindicator": "5-8",
+    "pillager": "5-8",
+    "witch": "2-4"
+  },
+  "reward": {
+    "items": {
+      "pool": {
+        "items": "emerald,diamond,gold_ingot,iron_ingot",
+        "limit": 3,
+        "count": "10-14"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "3-5"
+      }
+    }
+  }
+}

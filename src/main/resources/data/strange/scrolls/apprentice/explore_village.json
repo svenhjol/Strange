@@ -2,14 +2,14 @@
   "default_pack": true,
   "lang": {
     "en": {
-      "title": "The stolen potato",
-      "description": "Use the map to find the stolen potato.",
+      "title": "The village thief",
+      "description": "Use the map to find the stolen item.",
       "hint": "This scroll provides a map.\nFollow the map to a village and\nsearch all chests for the item."
     }
   },
   "explore": {
     "items": {
-      "potato": {
+      "potato | carrot | apple | wheat": {
         "enchanted": true,
         "enchantment_force": true,
         "enchantment_level": 1
@@ -34,8 +34,10 @@
         "table": "simple_dungeon",
         "limit": 3
       },
-      "potato": {
-        "count": "10"
+      "pool": {
+        "items": "potato,carrot,apple,wheat",
+        "count": "10",
+        "limit": 3
       }
     },
     "xp": {

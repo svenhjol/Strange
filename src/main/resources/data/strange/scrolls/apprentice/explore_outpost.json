@@ -3,13 +3,13 @@
   "lang": {
     "en": {
       "title": "The enemy hideout",
-      "description": "Use the map to find the stolen iron.",
+      "description": "Use the map to find the stolen item.",
       "hint": "This scroll provides a map.\nFollow the map to an outpost and\nsearch all chests for the item."
     }
   },
   "explore": {
     "items": {
-      "iron_block": {
+      "iron_block | gold_block | redstone_block": {
         "enchanted": true,
         "enchantment_force": true,
         "enchantment_level": 1
@@ -34,7 +34,8 @@
         "table": "pillager_outpost",
         "limit": 3
       },
-      "iron_ingot": {
+      "pool": {
+        "items": "iron_ingot,gold_ingot,redstone",
         "count": "12-14"
       }
     },

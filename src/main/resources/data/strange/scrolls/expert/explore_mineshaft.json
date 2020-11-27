@@ -1,0 +1,55 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 120,
+  "lang": {
+    "en": {
+      "title": "The old mineshaft",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "diamond_block | emerald_block": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "4-7"
+      },
+      "gold_block | iron_block": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "4-7"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "mineshaft",
+        "min_distance": 1000,
+        "max_distance": 1500,
+        "chest_range": 32,
+        "chest_start": 32
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "10-14"
+      },
+      "loot0": {
+        "table": "desert_pyramid",
+        "limit": 3
+      },
+      "loot1": {
+        "items": "simple_dungeon",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}
