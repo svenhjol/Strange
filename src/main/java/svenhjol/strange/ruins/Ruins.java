@@ -16,6 +16,10 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.ruins.builds.Castle;
 import svenhjol.strange.ruins.builds.Roguelike;
+import svenhjol.strange.ruins.builds.Vaults;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
 import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
@@ -40,6 +44,13 @@ public class Ruins extends CharmModule {
 
     @Config(name = "Ruin size", description = "Size of the generated ruins. For reference, villages are 6.")
     public static int configRuinSize = 7;
+
+    @Config(name = "Generated ruins", description = "Specify which ruins are generated. If this list is left empty, the Ruins module will be disabled.")
+    public static List<String> configRuins = Arrays.asList(
+        "castle",
+        "roguelike",
+        "vaults"
+    );
 
     @Override
     public void register() {
@@ -79,18 +90,33 @@ public class Ruins extends CharmModule {
     }
 
     @Override
+    public boolean depends() {
+        return configRuins.size() > 0;
+    }
+
+    @Override
     public void init() {
         // register rare ruin loot table
         LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
         DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
 
-        // register all custom ruins here
-//        PLAINS_RUINS.add(new TestRuin());
-//        MOUNTAINS_RUINS.add(new Vaults());
-//        MOUNTAINS_RUINS.add(new BambiMountainsRuin());
-//        FOREST_RUINS.add(new ForestRuin());
-            PLAINS_RUINS.add(new Castle());
-        PLAINS_RUINS.add(new Roguelike());
+        if (configRuins.contains("castle")) {
+            Castle castleRuin = new Castle();
+            PLAINS_RUINS.add(castleRuin);
+            FOREST_RUINS.add(castleRuin);
+            SNOWY_RUINS.add(castleRuin);
+        }
+
+        if (configRuins.contains("roguelike")) {
+            Roguelike roguelikeRuin = new Roguelike();
+            FOREST_RUINS.add(roguelikeRuin);
+            SNOWY_RUINS.add(roguelikeRuin);
+        }
+
+        if (configRuins.contains("vaults")) {
+            Vaults vaultsRuin = new Vaults();
+            MOUNTAINS_RUINS.add(vaultsRuin);
+        }
 
         // builds and registers all custom ruins into pools
         RuinGenerator.init();
