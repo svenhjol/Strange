@@ -21,6 +21,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.*;
+import svenhjol.strange.base.helper.ScrollDefinitionHelper;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.scrolls.JsonDefinition;
@@ -140,7 +141,7 @@ public class BossPopulator extends Populator {
                 return false;
 
             // get the count property and spawn this many mobs default to 1 if not set
-            int count = Integer.parseInt(props.getOrDefault(COUNT, "1"));
+            int count = ScrollDefinitionHelper.getCountFromValue(props.get(COUNT), 1, quest.getRarity(), world.random, false);
 
             for (int n = 0; n < count; n++) {
 
@@ -152,7 +153,7 @@ public class BossPopulator extends Populator {
                 MobEntity mobEntity = (MobEntity) entity;
 
                 // get the health property, default to 20 hearts if not set
-                int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
+                int health = ScrollDefinitionHelper.getCountFromValue(props.get(HEALTH), 20, quest.getRarity(), world.random, false);
 
                 // parse effectsString into list of effects
                 String effectsDef = props.getOrDefault(EFFECTS, "");
