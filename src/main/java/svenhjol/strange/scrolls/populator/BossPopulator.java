@@ -72,7 +72,7 @@ public class BossPopulator extends Populator {
                 int count = 0;
                 Map<String, String> targetProps = targets.get(id);
                 if (targetProps.containsKey(COUNT))
-                    count = Integer.parseInt(targetProps.get(COUNT));
+                    count = getCountFromValue(targetProps.get(COUNT), 1, false);
 
                 entities.put(entityId, Math.max(1, count));
             }
