@@ -12,7 +12,7 @@
   "boss": {
     "targets": {
       "minecraft:witch": {
-        "count": "5-6",
+        "count": 5,
         "health": 30,
         "effects": "regeneration"
       }

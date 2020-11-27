@@ -12,12 +12,12 @@
   "boss": {
     "targets": {
       "minecraft:skeleton": {
-        "count": "16-20",
+        "count": 16,
         "health": 20,
         "effects": "regeneration,fire_protection"
       },
       "minecraft:stray": {
-        "count": "16-20",
+        "count": 16,
         "health": 20,
         "effects": "regeneration,fire_protection"
       }

@@ -17,7 +17,7 @@
         "effects": "regeneration"
       },
       "minecraft:vindicator": {
-        "count": "4-6",
+        "count": 5,
         "health": 40
       }
     }
