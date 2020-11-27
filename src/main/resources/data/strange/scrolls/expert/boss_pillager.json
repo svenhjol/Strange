@@ -11,23 +11,24 @@
   },
   "boss": {
     "targets": {
-      "minecraft:pillager": {
-        "count": "10-14",
+      "pillager": {
+        "count": "4-6",
         "health": 20,
         "effects": "regeneration"
-      },
-      "minecraft:vindicator": {
-        "count": "2-4",
-        "health": 20
-      },
-      "minecraft:witch": {
-        "count": "2-4",
-        "health": 20
-      },
-      "minecraft:ravager": {
+      }
+    },
+    "support": {
+      "ravager": {
         "count": 1,
-        "health": 1,
-        "chance": 0.8
+        "health": 10
+      },
+      "witch": {
+        "count": "2-4",
+        "health": 20
+      },
+      "vindicator": {
+        "count": "4-5",
+        "health": 20
       }
     }
   },
