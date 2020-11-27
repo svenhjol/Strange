@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.handler.InventoryTidyingHandler;
+import svenhjol.strange.base.helper.ScrollDefinitionHelper;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -198,63 +199,19 @@ public abstract class Populator {
 
     @Nullable
     public Identifier getEntityIdFromKey(String key) {
-        key = splitOptionalRandomly(key);
-        return Identifier.tryParse(key);
+        return ScrollDefinitionHelper.getEntityIdFromKey(key, world.random);
     }
 
     public int getCountFromValue(String value, int fallback, boolean scale) {
-        int count;
-
-        try {
-            if (value.contains("!"))
-                return Integer.parseInt(value.replace("!", ""));
-
-            if (value.contains("-")) {
-                String[] split = value.split("-");
-                int min = Integer.parseInt(split[0]);
-                int max = Integer.parseInt(split[1]);
-                count = world.random.nextInt(Math.max(2, max - min)) + min;
-            } else if (!value.isEmpty()) {
-                count = Integer.parseInt(value);
-            } else {
-                count = fallback;
-            }
-
-        } catch (Exception e) {
-            count = fallback;
-        }
-
-        return scale ? count * quest.getRarity() : count;
+        return ScrollDefinitionHelper.getCountFromValue(value, fallback, quest.getRarity(), world.random, scale);
     }
 
     public float getChanceFromValue(String value, float fallback, boolean scale) {
-        float chance;
-
-        try {
-            if (value.contains("!"))
-                return Float.parseFloat(value.replace("!", ""));
-
-            if (!value.isEmpty()) {
-                chance = Float.parseFloat(value);
-            } else {
-                chance = fallback;
-            }
-
-        } catch (Exception e) {
-            chance = fallback;
-        }
-
-        return scale ? chance + 0.1F * quest.getRarity() : chance;
+        return ScrollDefinitionHelper.getChanceFromValue(value, fallback, quest.getRarity(), scale);
     }
 
     public String splitOptionalRandomly(String key) {
-        if (key.contains("|")) {
-            String[] split = key.split("\\|");
-            key = split[world.random.nextInt(split.length)];
-        }
-
-        key = key.trim();
-        return key;
+        return ScrollDefinitionHelper.splitOptionalRandomly(key, world.random);
     }
 
     private void tryEnchant(ItemStack stack, int enchantmentLevel, boolean treasure, boolean force) {
