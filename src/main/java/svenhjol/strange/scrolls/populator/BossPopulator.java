@@ -90,7 +90,7 @@ public class BossPopulator extends Populator {
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, 0x770000);
         PlayerHelper.addOrDropStack(player, map);
 
-        Charm.LOG.info("Created boss quest at pos: " + foundPos.toShortString());
+        Charm.LOG.info("Created boss quest at pos: " + foundPos.toString());
     }
 
     public static boolean startEncounter(PlayerEntity player, Boss tag) {
@@ -198,7 +198,7 @@ public class BossPopulator extends Populator {
                         });
                     }
 
-                    Charm.LOG.info("Spawned " + id + " at " + mobPos.toShortString());
+                    Charm.LOG.info("Spawned " + id + " at " + mobPos.toString());
                 });
 
                 if (didSpawn) {

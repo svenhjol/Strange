@@ -330,7 +330,7 @@ public class Runestones extends CharmModule {
     private boolean onPlayerActivateRunestone(ServerWorld world, BlockPos runePos, ServerPlayerEntity player) {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
-            Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toShortString());
+            Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toString());
             return RunestoneHelper.explode(world, runePos, player, true);
         }
 
