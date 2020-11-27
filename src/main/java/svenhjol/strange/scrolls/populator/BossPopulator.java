@@ -21,12 +21,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.*;
-import svenhjol.strange.base.helper.ScrollDefinitionHelper;
-import svenhjol.strange.scrolls.Scrolls;
-import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.scrolls.JsonDefinition;
+import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Boss;
 import svenhjol.strange.scrolls.tag.Quest;
+import svenhjol.strange.stonecircles.StoneCircles;
 
 import java.util.*;
 
@@ -73,7 +72,7 @@ public class BossPopulator extends Populator {
                 int count = 0;
                 Map<String, String> targetProps = targets.get(id);
                 if (targetProps.containsKey(COUNT))
-                    count = getCountFromValue(targetProps.get(COUNT), 1, false);
+                    count = Integer.parseInt(targetProps.getOrDefault(COUNT, "1"));
 
                 entities.put(entityId, Math.max(1, count));
             }
@@ -90,6 +89,8 @@ public class BossPopulator extends Populator {
         // give map to the location
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, 0x770000);
         PlayerHelper.addOrDropStack(player, map);
+
+        Charm.LOG.info("Created boss quest at pos: " + foundPos.toShortString());
     }
 
     public static boolean startEncounter(PlayerEntity player, Boss tag) {
@@ -140,8 +141,8 @@ public class BossPopulator extends Populator {
             if (!optionalType.isPresent())
                 return false;
 
-            // get the count property and spawn this many mobs default to 1 if not set
-            int count = ScrollDefinitionHelper.getCountFromValue(props.get(COUNT), 1, quest.getRarity(), world.random, false);
+            // get the count property and spawn this many mobs, default to 1 if not set
+            int count = Integer.parseInt(props.getOrDefault(COUNT, "1"));
 
             for (int n = 0; n < count; n++) {
 
@@ -153,7 +154,7 @@ public class BossPopulator extends Populator {
                 MobEntity mobEntity = (MobEntity) entity;
 
                 // get the health property, default to 20 hearts if not set
-                int health = ScrollDefinitionHelper.getCountFromValue(props.get(HEALTH), 20, quest.getRarity(), world.random, false);
+                int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
 
                 // parse effectsString into list of effects
                 String effectsDef = props.getOrDefault(EFFECTS, "");

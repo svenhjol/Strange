@@ -18,6 +18,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
+import svenhjol.charm.Charm;
 import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.*;
@@ -103,6 +104,8 @@ public class ExplorePopulator extends Populator {
         // give map to the location
         ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
         PlayerHelper.addOrDropStack(player, map);
+
+        Charm.LOG.info("Created explore quest at pos: " + foundPos.toShortString());
     }
 
     public static List<BlockPos> addScrollItemsToChests(PlayerEntity player, Explore explore) {
