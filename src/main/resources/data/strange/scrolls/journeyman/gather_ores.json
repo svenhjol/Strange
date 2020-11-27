@@ -1,0 +1,43 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Deep in the earth",
+      "description": "Find the materials to complete the quest."
+    }
+  },
+  "time_limit": 45,
+  "gather": {
+    "items": {
+      "coal | redstone": {
+        "count": "40-60"
+      },
+      "iron_ore | lapis_lazuli": {
+        "count": "20-24"
+      },
+      "diamond": {
+        "count": "6-9"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "4-6"
+      },
+      "loot0": {
+        "table": "simple_dungeon",
+        "limit": 3
+      },
+      "loot1": {
+        "items": "pillager_outpost",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-4"
+      }
+    }
+  }
+}

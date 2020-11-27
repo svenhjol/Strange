@@ -1,0 +1,52 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The apprentice crafter",
+      "description": "Find or craft the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "oak_boat": {
+        "count": 1
+      },
+      "bookshelf": {
+        "count": "2-4"
+      },
+      "crafting_table": {
+        "count": "1-2"
+      },
+      "strange:writing_desk": {
+        "count": "1-2"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-5"
+      },
+      "loot0": {
+        "table": "village_lumberjack",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "simple_dungeon",
+        "limit": 1,
+        "chance": 0.4
+      },
+      "pool": {
+        "items": "iron_axe,iron_pickaxe",
+        "enchanted": true,
+        "enchantment_level": 7,
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

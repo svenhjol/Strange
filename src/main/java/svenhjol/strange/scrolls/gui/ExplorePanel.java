@@ -23,8 +23,8 @@ public class ExplorePanel extends Panel {
 
         // panel title and icon
         TranslatableText titleText = new TranslatableText("gui.strange.scrolls.explore");
-        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
-        renderIcon(matrices, StrangeIcons.ICON_COMPASS, mid - 16 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
+        drawTextWithShadow(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_COMPASS, mid - 60, top - 1);
 
         top += rowHeight;
 
@@ -37,7 +37,7 @@ public class ExplorePanel extends Panel {
 
             // show task satisfaction status
             if (satisfied.containsKey(stack.getItem()) && satisfied.get(stack.getItem()))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid + 14 + (getTextRenderer().getWidth(text) / 2), baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 30 + getTextRenderer().getWidth(text), baseTop - 1);
 
             baseTop += rowHeight;
         }

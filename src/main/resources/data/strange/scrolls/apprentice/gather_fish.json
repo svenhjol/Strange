@@ -1,0 +1,43 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The apprentice fisherman",
+      "description": "Fish or find the necessary items for this scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "cod": {
+        "count": "5-10"
+      },
+      "salmon": {
+        "count": "5-10"
+      },
+      "pufferfish": {
+        "count": "2-3"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-4"
+      },
+      "loot0": {
+        "table": "villager_fisherman",
+        "limit": 2
+      },
+      "fishing_rod": {
+        "enchanted": true,
+        "enchantment_level": "7-10",
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

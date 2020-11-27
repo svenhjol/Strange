@@ -1,0 +1,44 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["the_nether"],
+  "lang": {
+    "en": {
+      "title": "Explore Test",
+      "description": "Find The Magic Ingot"
+    }
+  },
+  "explore": {
+    "items": {
+      "pool": {
+        "items": "oak_sign,spruce_sign,acacia_sign,dark_oak_sign,birch_sign,jungle_sign,warped_sign,crimson_sign",
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": 15,
+        "name": "Zistonian Battlesign",
+        "limit": 1
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "bastion_remnant",
+        "min_distance": 500,
+        "max_distance": 1000,
+        "chest_start": 64,
+        "chest_range": 32
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot": {
+        "table": "bastion",
+        "count": 6
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 1
+      }
+    }
+  }
+}

@@ -25,8 +25,8 @@ public class RewardPanel extends Panel {
 
         // panel title and icon
         TranslatableText titleText = new TranslatableText("gui.strange.scrolls.reward");
-        drawCenteredTitle(matrices, titleText, mid, top, titleColor);
-        renderIcon(matrices, StrangeIcons.ICON_STAR, mid - 14 - (getTextRenderer().getWidth(titleText) / 2), top - 1);
+        drawTextWithShadow(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
+        renderIcon(matrices, StrangeIcons.ICON_STAR, mid - 60, top - 1);
 
         top += rowHeight;
 

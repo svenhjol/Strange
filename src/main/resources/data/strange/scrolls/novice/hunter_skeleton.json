@@ -1,0 +1,40 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Skeleton hunt",
+      "description": "Seek out and destroy the skeletons."
+    }
+  },
+  "hunt": {
+    "skeleton": "4-5"
+  },
+  "gather": {
+    "items": {
+      "bone": {
+        "count": "3-6"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot": {
+        "table": "village_toolsmith",
+        "limit": 3
+      },
+      "pool": {
+        "items": "iron_sword,stone_sword,wooden_sword",
+        "enchanted": true,
+        "chance": 0.75
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

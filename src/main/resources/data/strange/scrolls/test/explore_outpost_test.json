@@ -1,10 +1,11 @@
 {
   "default_pack": true,
+  "valid_dimensions": ["overworld"],
   "lang": {
     "en": {
       "title": "Explore Test",
-      "description": "The village that stole the potato",
-      "hint": "Really exciting\nWatch out for goats\n"
+      "description": "The PILLAGERS that stole the potato",
+      "hint": "Really exciting\nWatch out for sheeps\n"
     }
   },
   "explore": {
@@ -16,18 +17,18 @@
     },
     "settings": {
       "structure": {
-        "type": "village",
+        "type": "pillager_outpost",
         "min_distance": 500,
         "max_distance": 1000,
         "chest_range": 24,
-        "chest_start": 64
+        "chest_start": 80
       }
     }
   },
   "reward": {
     "items": {
       "loot": {
-        "table": "village",
+        "table": "pillager_outpost",
         "count": 10
       }
     },

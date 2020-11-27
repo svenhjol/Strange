@@ -46,7 +46,7 @@ public class Scrollkeepers extends CharmModule {
     public static int interestRange = 16;
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when handing in a scroll.")
-    public static double badOmenChance = 0.03D;
+    public static double badOmenChance = 0.05D;
 
     @Override
     public void register() {
@@ -73,6 +73,10 @@ public class Scrollkeepers extends CharmModule {
         if (entity instanceof VillagerEntity) {
             ItemStack heldStack = player.getStackInHand(hand);
             VillagerEntity villager = (VillagerEntity)entity;
+
+            if (villager.getVillagerData().getProfession() != SCROLLKEEPER)
+                return ActionResult.PASS;
+
             if (!(heldStack.getItem() instanceof ScrollItem))
                 return ActionResult.PASS;
 
@@ -111,7 +115,7 @@ public class Scrollkeepers extends CharmModule {
                 int questRarity = quest.getRarity();
 
                 if (questTier >= villagerLevel) {
-                    int tierXp = QUEST_XP[Math.max(Scrolls.TIERS, questTier) - 1];
+                    int tierXp = QUEST_XP[Math.min(Scrolls.TIERS, questTier) - 1];
                     if (questTier > villagerLevel)
                         tierXp /= 2;
 

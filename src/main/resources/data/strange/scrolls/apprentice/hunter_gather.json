@@ -1,0 +1,53 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Hunter Gatherer",
+      "description": "Find the items and destroy the monsters."
+    }
+  },
+  "gather": {
+    "items": {
+      "apple": {
+        "count": "3-6"
+      },
+      "sweet_berries": {
+        "count": "4-8"
+      },
+      "wheat": {
+        "count": "6-10"
+      }
+    }
+  },
+  "hunt": {
+    "skeleton": "2-4",
+    "zombie": "2-4",
+    "spider": "1-2"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-5"
+      },
+      "loot0": {
+        "table": "village_weaponsmith",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "village_tannery",
+        "limit": 1
+      },
+      "pool": {
+        "items": "iron_sword,iron_axe,iron_chestplate,gold_sword,gold_axe,gold_chestplate",
+        "enchanted": true,
+        "enchantment_level": "7-10",
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-2"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The novice's hunt",
+      "description": "Seek out and destroy the monsters."
+    }
+  },
+  "hunt": {
+    "skeleton": "3-4",
+    "zombie": "3-4"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-2"
+      },
+      "loot0": {
+        "table": "village_weaponsmith",
+        "limit": 2
+      },
+      "stone_sword": {
+        "enchanted": true,
+        "chance": 0.75
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}
