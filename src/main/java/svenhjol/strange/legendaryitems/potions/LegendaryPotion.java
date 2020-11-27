@@ -32,12 +32,12 @@ public class LegendaryPotion implements ILegendaryPotion {
 
     @Override
     public int getMinDuration() {
-        return 240;
+        return 480;
     }
 
     @Override
     public int getMaxDuration() {
-        return 480;
+        return 960;
     }
 
     @Override
