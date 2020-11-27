@@ -2,6 +2,8 @@ package svenhjol.strange.scrolls.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import svenhjol.strange.base.StrangeIcons;
@@ -42,6 +44,7 @@ public class BossPanel extends Panel {
             int remaining = Math.max(0, entities.get(entityId) - killed.getOrDefault(entityId, 0));
             String name = names.get(entityId);
             TranslatableText text = new TranslatableText("gui.strange.scrolls.boss_entity", name, remaining);
+            renderItemStack(new ItemStack(Items.DIAMOND_SWORD), mid - 60, baseTop - 5);
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // if all of this type is killed, show a tick next to it
