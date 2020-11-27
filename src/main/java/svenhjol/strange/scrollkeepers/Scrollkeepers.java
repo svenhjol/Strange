@@ -46,7 +46,7 @@ public class Scrollkeepers extends CharmModule {
     public static int interestRange = 16;
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when handing in a scroll.")
-    public static double badOmenChance = 0.03D;
+    public static double badOmenChance = 0.05D;
 
     @Override
     public void register() {
