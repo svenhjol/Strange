@@ -1,0 +1,52 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The apprentice weaponsmith",
+      "description": "Find or craft the weapons to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "iron_sword": {
+        "count": 1
+      },
+      "iron_axe": {
+        "count": 1
+      },
+      "bow": {
+        "count": 1,
+        "chance": 0.8
+      },
+      "crossbow": {
+        "count": 1,
+        "chance": 0.4
+      },
+      "anvil": {
+        "count": 1
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot0": {
+        "table": "village_weaponsmith",
+        "limit": 2
+      },
+      "pool": {
+        "items": "iron_shovel,iron_sword",
+        "enchanted": true,
+        "enchantment_level": 7,
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

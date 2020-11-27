@@ -1,0 +1,47 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The stolen potato",
+      "description": "Use the map to find the stolen potato.",
+      "hint": "This scroll provides a map.\nFollow the map to a village and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "potato": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": 1
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "village",
+        "min_distance": 250,
+        "max_distance": 500,
+        "chest_range": 24,
+        "chest_start": 64
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot1": {
+        "table": "simple_dungeon",
+        "limit": 3
+      },
+      "potato": {
+        "count": "10"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}

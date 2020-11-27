@@ -1,0 +1,39 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "An explosive mission",
+      "description": "Destroy the creepers and collect gunpowder."
+    }
+  },
+  "gather": {
+    "items": {
+      "gunpowder": {
+        "count": "4-6"
+      }
+    }
+  },
+  "hunt": {
+    "creeper": "4-6"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-4"
+      },
+      "loot1": {
+        "table": "village_tannery",
+        "limit": 3
+      },
+      "pool": {
+        "items": "tnt,sand,gravel",
+        "count": "10-12"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-3"
+      }
+    }
+  }
+}

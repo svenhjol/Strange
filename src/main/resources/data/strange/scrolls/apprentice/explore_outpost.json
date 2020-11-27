@@ -1,0 +1,47 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The enemy hideout",
+      "description": "Use the map to find the stolen iron.",
+      "hint": "This scroll provides a map.\nFollow the map to an outpost and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "iron_block": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": 1
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "pillager_outpost",
+        "min_distance": 300,
+        "max_distance": 600,
+        "chest_range": 24,
+        "chest_start": 80
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot1": {
+        "table": "pillager_outpost",
+        "limit": 3
+      },
+      "iron_ingot": {
+        "count": "12-14"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}

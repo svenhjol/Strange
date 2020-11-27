@@ -8,38 +8,45 @@
   },
   "gather": {
     "items": {
-      "apple | oak_sapling": {
+      "apple": {
         "count": "3-6"
       },
-      "wheat | wheat_seeds": {
-        "count": "4-6"
+      "sweet_berries": {
+        "count": "4-8"
+      },
+      "wheat": {
+        "count": "6-10"
       }
     }
   },
   "hunt": {
-    "skeleton | zombie": "2-3"
+    "skeleton": "2-4",
+    "zombie": "2-4",
+    "spider": "1-2"
   },
   "reward": {
     "items": {
       "emerald": {
-        "count": "1-2"
+        "count": "2-5"
       },
       "loot0": {
-        "table": "village_butcher",
+        "table": "village_weaponsmith",
         "limit": 1
       },
       "loot1": {
         "table": "village_tannery",
         "limit": 1
       },
-      "iron_sword": {
+      "pool": {
+        "items": "iron_sword,iron_axe,iron_chestplate,gold_sword,gold_axe,gold_chestplate",
         "enchanted": true,
-        "chance": 0.5
+        "enchantment_level": "7-10",
+        "chance": 0.8
       }
     },
     "xp": {
       "player": {
-        "count": "0-1"
+        "count": "1-2"
       }
     }
   }

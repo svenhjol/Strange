@@ -1,0 +1,35 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Batman",
+      "description": "Grab bats using a bucket."
+    }
+  },
+  "modules": [
+    "charm:batbuckets"
+  ],
+  "gather": {
+    "items": {
+      "charm:bat_bucket": {
+        "count": "2-3"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot0": {
+        "table": "village_armorer",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}
