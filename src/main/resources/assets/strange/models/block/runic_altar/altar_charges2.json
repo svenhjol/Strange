@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "strange:block/runic_altar/altar_charges0",
+	"parent": "block/cube_all",
 	"textures": {
 		"3": "strange:block/runic_altar/runic_top",
 		"4": "strange:block/runic_altar/runic_bottom",

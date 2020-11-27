@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "strange:block/runic_altar/altar_charges0",
+	"parent": "block/cube_all",
+	"ambientocclusion": false,
 	"textures": {
 		"3": "strange:block/runic_altar/runic_top",
 		"4": "strange:block/runic_altar/base_charges4",
@@ -40,7 +41,6 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [-4, 12, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 1, 14], "texture": "#5"},
-				"east": {"uv": [15, 1, 2, 15], "texture": "#5"},
 				"south": {"uv": [1, 1, 2, 15], "texture": "#5"},
 				"west": {"uv": [2, 1, 15, 15], "texture": "#5"},
 				"up": {"uv": [0, 0, 1, 13], "texture": "#missing"},
@@ -54,7 +54,6 @@
 			"faces": {
 				"north": {"uv": [2, 1, 15, 15], "texture": "#5"},
 				"east": {"uv": [0, 1, 1, 15], "texture": "#5"},
-				"south": {"uv": [15, 1, 2, 15], "texture": "#5"},
 				"west": {"uv": [1, 1, 2, 15], "texture": "#5"},
 				"up": {"uv": [0, 0, 1, 13], "rotation": 90, "texture": "#missing"},
 				"down": {"uv": [7, 2, 8, 15], "rotation": 270, "texture": "#missing"}
@@ -65,12 +64,9 @@
 			"to": [15, 15, 15],
 			"rotation": {"angle": 0, "axis": "y", "origin": [9, 12, 9]},
 			"faces": {
-				"north": {"uv": [15, 1, 2, 15], "texture": "#5"},
-				"east": {"uv": [1, 1, 2, 15], "texture": "#5"},
-				"south": {"uv": [2, 1, 15, 15], "texture": "#5"},
-				"west": {"uv": [0, 0, 1, 14], "texture": "#5"},
-				"up": {"uv": [0, 0, 1, 13], "rotation": 90, "texture": "#missing"},
-				"down": {"uv": [5, 1, 6, 14], "rotation": 270, "texture": "#missing"}
+				"east": {"uv": [1, 1, 2, 15], "texture": "#5", "tintindex": 0},
+				"south": {"uv": [2, 1, 15, 15], "texture": "#5", "tintindex": 0},
+				"west": {"uv": [0, 0, 1, 14], "texture": "#5", "tintindex": 0}
 			}
 		},
 		{
@@ -81,7 +77,6 @@
 				"north": {"uv": [1, 1, 2, 15], "texture": "#5"},
 				"east": {"uv": [2, 1, 15, 15], "texture": "#5"},
 				"south": {"uv": [0, 1, 1, 15], "texture": "#5"},
-				"west": {"uv": [15, 1, 2, 15], "texture": "#5"},
 				"up": {"uv": [0, 0, 1, 13], "texture": "#missing"},
 				"down": {"uv": [5, 1, 6, 14], "texture": "#missing"}
 			}
