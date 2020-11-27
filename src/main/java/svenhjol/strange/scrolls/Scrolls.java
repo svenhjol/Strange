@@ -162,11 +162,7 @@ public class Scrolls extends CharmModule {
 
     private void handleEntityDeath(LivingEntity entity, DamageSource source) {
         Entity attacker = source.getAttacker();
-        if (!(attacker instanceof ServerPlayerEntity))
-            return;
-
-        ServerPlayerEntity player = (ServerPlayerEntity) attacker;
-        Scrolls.questManager.forEachQuest(quest -> quest.playerKilledEntity(player, entity));
+        Scrolls.questManager.forEachQuest(quest -> quest.entityKilled(entity, attacker));
     }
 
     private void handlePlayerTick(PlayerEntity player) {

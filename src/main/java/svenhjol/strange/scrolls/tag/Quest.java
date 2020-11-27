@@ -1,5 +1,6 @@
 package svenhjol.strange.scrolls.tag;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -230,9 +231,9 @@ public class Quest implements ISerializable {
         boss.update(player);
     }
 
-    public void playerKilledEntity(PlayerEntity player, LivingEntity entity) {
-        hunt.playerKilledEntity(player, entity);
-        boss.playerKilledEntity(player, entity);
+    public void entityKilled(LivingEntity entity, Entity attacker) {
+        hunt.entityKilled(entity, attacker);
+        boss.entityKilled(entity, attacker);
     }
 
     public static Quest getFromTag(CompoundTag fromTag) {

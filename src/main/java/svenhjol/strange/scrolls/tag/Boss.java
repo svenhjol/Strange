@@ -1,11 +1,13 @@
 package svenhjol.strange.scrolls.tag;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -196,7 +198,7 @@ public class Boss implements ISerializable {
         });
     }
 
-    public void playerKilledEntity(PlayerEntity player, LivingEntity entity) {
+    public void entityKilled(LivingEntity entity, Entity attacker) {
         List<String> tags = new ArrayList<>(entity.getScoreboardTags());
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
 
@@ -205,9 +207,14 @@ public class Boss implements ISerializable {
             killed.put(id, count + 1);
 
             quest.setDirty(true);
-            update(player);
+
+            if (!(attacker instanceof ServerPlayerEntity))
+                return;
+
+            ServerPlayerEntity player = (ServerPlayerEntity) attacker;
+            quest.update(player);
+            BossPopulator.checkEncounter(player, this);
         }
 
-        BossPopulator.checkEncounter(player, this);
     }
 }
