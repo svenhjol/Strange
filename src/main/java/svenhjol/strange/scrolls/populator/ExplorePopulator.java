@@ -72,6 +72,7 @@ public class ExplorePopulator extends Populator {
         int maxDistance = Integer.parseInt(structureSettings.getOrDefault("max_distance", "1500"));
         int chestStart = Integer.parseInt(structureSettings.getOrDefault("chest_start", "32"));
         int chestRange = Integer.parseInt(structureSettings.getOrDefault("chest_range", "24"));
+        boolean skipExistingChunks = Boolean.parseBoolean(structureSettings.getOrDefault("skip_existing_chunks", "false"));
 
         // get a random distance based on min and max
         BlockPos structurePos = PosHelper.addRandomOffset(pos, world.random, minDistance, maxDistance);
@@ -86,7 +87,7 @@ public class ExplorePopulator extends Populator {
 
 
         // locate structure in the world
-        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, false);
+        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, skipExistingChunks);
 
         if (foundPos == null)
             fail("Could not locate structure");
