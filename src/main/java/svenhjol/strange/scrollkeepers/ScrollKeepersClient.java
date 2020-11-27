@@ -1,8 +1,13 @@
 package svenhjol.strange.scrollkeepers;
 
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -15,21 +20,24 @@ import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ScrollKeepersClient extends CharmClientModule {
-
     public ScrollKeepersClient(CharmModule module) {
         super(module);
     }
 
+    private static Quest heldScrollQuest;
+
     @Override
     public void register() {
         PlayerTickCallback.EVENT.register(this::villagerInterested);
+
+        // listen for quest tag being sent from the server to this player
+        ClientSidePacketRegistry.INSTANCE.register(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
     }
 
     public void villagerInterested(PlayerEntity player) {
-        if (player.world.isClient && player.world.getTime() % 10 == 0) {
+        if (player.world.isClient && player.world.getTime() % 20 == 0) {
             World world = player.world;
             BlockPos playerPos = player.getBlockPos();
             int range = Scrollkeepers.interestRange;
@@ -39,11 +47,17 @@ public class ScrollKeepersClient extends CharmClientModule {
             if (!(held.getItem() instanceof ScrollItem))
                 return;
 
-            Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(held);
-            if (!optionalQuest.isPresent())
+            String questId = ScrollItem.getScrollQuest(held);
+            if (questId == null)
                 return;
 
-            Quest quest = optionalQuest.get();
+            // fire a request to the server to fetch the quest data for this questId
+            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+            buffer.writeString(questId);
+            ClientSidePacketRegistry.INSTANCE.sendToServer(Scrollkeepers.MSG_SERVER_GET_SCROLL_QUEST, buffer);
+
+            if (heldScrollQuest == null || !heldScrollQuest.getId().equals(questId))
+                return;
 
             int x = playerPos.getX();
             int y = playerPos.getY();
@@ -57,12 +71,12 @@ public class ScrollKeepersClient extends CharmClientModule {
             if (villagers.isEmpty())
                 return;
 
-            if (!quest.isSatisfied(player))
+            if (!heldScrollQuest.isSatisfied(player))
                 return;
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
-                    if (quest.getMerchant().equals(ScrollHelper.ANY_UUID) || quest.getMerchant().equals(villager.getUuid()))
+                    if (heldScrollQuest.getMerchant().equals(ScrollHelper.ANY_UUID) || heldScrollQuest.getMerchant().equals(villager.getUuid()))
                         effectShowInterest(villager);
                 }
             });
@@ -77,5 +91,16 @@ public class ScrollKeepersClient extends CharmClientModule {
             double pz = villager.getBlockPos().getZ() + 0.5D + (Math.random() - 0.5D) * spread;
             villager.world.addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0, 0, 0.12D);
         }
+    }
+
+    private void handleReceiveScrollQuest(PacketContext context, PacketByteBuf data) {
+        CompoundTag compoundTag = data.readCompoundTag();
+        if (compoundTag == null || compoundTag.isEmpty())
+            return;
+
+        Quest quest = Quest.getFromTag(compoundTag);
+        context.getTaskQueue().execute(() -> {
+            heldScrollQuest = quest;
+        });
     }
 }

@@ -1,6 +1,9 @@
 package svenhjol.strange.scrollkeepers;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -8,6 +11,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -27,7 +31,6 @@ import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
-import svenhjol.strange.scrolls.ScrollHelper;
 import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;
@@ -38,6 +41,8 @@ import java.util.Optional;
 public class Scrollkeepers extends CharmModule {
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
+    public static final Identifier MSG_SERVER_GET_SCROLL_QUEST = new Identifier(Strange.MOD_ID, "server_quest_satisfied");
+    public static final Identifier MSG_CLIENT_RECEIVE_SCROLL_QUEST = new Identifier(Strange.MOD_ID, "client_quest_satisfied");
 
     public static VillagerProfession SCROLLKEEPER;
     public static PointOfInterestType POIT;
@@ -66,7 +71,11 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public void init() {
+        // listen for entity interaction events
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
+
+        // listen for quest satisfied request coming from the client
+        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
@@ -81,7 +90,17 @@ public class Scrollkeepers extends CharmModule {
                 return ActionResult.PASS;
 
             if (!world.isClient) {
-                Optional<Quest> optionalQuest = ScrollItem.getScrollQuest(heldStack);
+                Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
+                if (!optionalQuestManager.isPresent())
+                    return ActionResult.PASS;
+
+                QuestManager questManager = optionalQuestManager.get();
+
+                String questId = ScrollItem.getScrollQuest(heldStack);
+                if (questId == null)
+                    return ActionResult.PASS;
+
+                Optional<Quest> optionalQuest = questManager.getQuest(questId);
                 if (!optionalQuest.isPresent())
                     return ActionResult.PASS;
 
@@ -103,7 +122,7 @@ public class Scrollkeepers extends CharmModule {
                 // success, tidy up the quest, give rewards etc.
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 quest.complete(player, villager);
-                Scrolls.questManager.sendToast(player, quest, QuestToastType.Success, "event.strange.quests.completed");
+                questManager.sendToast(player, quest, QuestToastType.Success, "event.strange.quests.completed");
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, heldStack);
                 heldStack.decrement(1);
 
@@ -141,5 +160,27 @@ public class Scrollkeepers extends CharmModule {
         }
 
         return ActionResult.PASS;
+    }
+
+    private void handleGetScrollQuest(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(4);
+        context.getTaskQueue().execute(() -> {
+            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+            if (player == null)
+                return;
+
+            if (!Scrolls.getQuestManager().isPresent())
+                return;
+
+            QuestManager questManager = Scrolls.getQuestManager().get();
+            if (!questManager.getQuest(questId).isPresent())
+                return;
+
+            Quest quest = questManager.getQuest(questId).get();
+
+            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+            buffer.writeCompoundTag(quest.toTag());
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
+        });
     }
 }
