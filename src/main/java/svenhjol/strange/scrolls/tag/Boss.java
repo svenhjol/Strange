@@ -57,6 +57,8 @@ public class Boss implements ISerializable {
                 entitiesTag.putString(tagIndex, id.toString());
                 countTag.putInt(tagIndex, entityCount);
                 killedTag.putInt(tagIndex, entityKilled);
+
+                index++;
             }
             outTag.put(TARGET_ENTITIES, entitiesTag);
             outTag.put(TARGET_COUNT, countTag);
