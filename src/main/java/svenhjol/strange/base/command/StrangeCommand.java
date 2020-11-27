@@ -37,27 +37,27 @@ public class StrangeCommand {
                 .executes(StrangeCommand::abandonMyQuests))
             .then(CommandManager
                 .literal("abandon_all_quests")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(1))
                 .executes(StrangeCommand::abandonAllQuests))
             .then(CommandManager
                 .literal("learn_rune")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(1))
                 .then(CommandManager.argument("letter", RuneArgType.letter())
                     .executes(StrangeCommand::learnRune)))
             .then(CommandManager
                 .literal("learn_all_runes")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(1))
                 .executes(StrangeCommand::learnAllRunes))
             .then(CommandManager
                 .literal("list_my_quests")
                 .executes(StrangeCommand::listMyQuests))
             .then(CommandManager
                 .literal("list_all_quests")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(1))
                 .executes(StrangeCommand::listAllQuests))
             .then(CommandManager
                 .literal("start_quest")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(1))
                 .then(CommandManager.argument("definition", QuestDefinitionArgType.definition())
                     .executes(StrangeCommand::startQuest)))
         );
