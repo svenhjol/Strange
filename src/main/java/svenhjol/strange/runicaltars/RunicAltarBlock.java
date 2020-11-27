@@ -96,6 +96,8 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
                 world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state.with(CHARGES, charges - 1));
                 Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, state);
+
+                world.playSound(null, destination, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
                 PlayerHelper.teleport(world, destination, player);
             }
         }
