@@ -26,6 +26,7 @@ public class Castle extends BaseStructure {
         ROOMS.put("room_wood", 3);
         ROOMS.put("room_trap", 2);
         ROOMS.put("room_nature", 2);
+        ROOMS.put("room_damaged", 2);
 
         CORRIDORS.put("corridor_long", 3);
         CORRIDORS.put("corridor_stairs", 3);
