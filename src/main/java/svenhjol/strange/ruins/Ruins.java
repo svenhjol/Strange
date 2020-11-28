@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
-import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
+import static svenhjol.charm.base.helper.BiomeHelper.addStructureFeatureToBiomes;
 import static svenhjol.strange.ruins.RuinGenerator.*;
 
 @Module(mod = Strange.MOD_ID, description = "Underground ruins with different themes according to the biome.")
@@ -122,15 +122,15 @@ public class Ruins extends CharmModule {
         RuinGenerator.init();
 
         // add registered ruin pools to biomes
-        if (!RuinGenerator.BADLANDS_RUINS.isEmpty()) addToBiome(BiomeHelper.BADLANDS, BADLANDS);
-        if (!RuinGenerator.DESERT_RUINS.isEmpty()) addToBiome(BiomeHelper.DESERT, DESERT);
-        if (!RuinGenerator.FOREST_RUINS.isEmpty()) addToBiome(BiomeHelper.FOREST, FOREST);
-        if (!RuinGenerator.JUNGLE_RUINS.isEmpty()) addToBiome(BiomeHelper.JUNGLE, JUNGLE);
-        if (!RuinGenerator.MOUNTAINS_RUINS.isEmpty()) addToBiome(BiomeHelper.MOUNTAINS, MOUNTAINS);
-        if (!RuinGenerator.NETHER_RUINS.isEmpty()) addToBiome(BiomeHelper.NETHER, NETHER);
-        if (!RuinGenerator.PLAINS_RUINS.isEmpty()) addToBiome(BiomeHelper.PLAINS, PLAINS);
-        if (!RuinGenerator.SAVANNA_RUINS.isEmpty()) addToBiome(BiomeHelper.SAVANNA, SAVANNA);
-        if (!RuinGenerator.SNOWY_RUINS.isEmpty()) addToBiome(BiomeHelper.SNOWY, SNOWY);
-        if (!RuinGenerator.TAIGA_RUINS.isEmpty()) addToBiome(BiomeHelper.TAIGA, TAIGA);
+        if (!RuinGenerator.BADLANDS_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.BADLANDS, BADLANDS);
+        if (!RuinGenerator.DESERT_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.DESERT, DESERT);
+        if (!RuinGenerator.FOREST_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.FOREST, FOREST);
+        if (!RuinGenerator.JUNGLE_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.JUNGLE, JUNGLE);
+        if (!RuinGenerator.MOUNTAINS_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.MOUNTAINS, MOUNTAINS);
+        if (!RuinGenerator.NETHER_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.NETHER, NETHER);
+        if (!RuinGenerator.PLAINS_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.PLAINS, PLAINS);
+        if (!RuinGenerator.SAVANNA_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.SAVANNA, SAVANNA);
+        if (!RuinGenerator.SNOWY_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.SNOWY, SNOWY);
+        if (!RuinGenerator.TAIGA_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.TAIGA, TAIGA);
     }
 }
