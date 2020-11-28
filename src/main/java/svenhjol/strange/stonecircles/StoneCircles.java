@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -20,7 +19,6 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, description = "Circles of stone columns. Runestones may appear at the top of a column.")
 public class StoneCircles extends CharmModule {
@@ -62,9 +60,8 @@ public class StoneCircles extends CharmModule {
 
     @Override
     public void init() {
-        configBiomes.forEach(biomeId -> {
-            Optional<Biome> biome = BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId));
-            biome.ifPresent(value -> BiomeHelper.addStructureFeature(value, STONE_CIRCLE));
-        });
+        configBiomes.forEach(biomeId -> BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId))
+            .flatMap(BuiltinRegistries.BIOME::getKey) // flatmap is shorthand for ifPresent(thing) -> return do(thing)
+                .ifPresent(biomeKey -> BiomeHelper.addStructureFeature(biomeKey, STONE_CIRCLE)));
     }
 }

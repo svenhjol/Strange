@@ -13,7 +13,7 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.foundations.builds.StoneRoomFoundation;
 
-import static svenhjol.charm.base.helper.StructureHelper.addToBiome;
+import static svenhjol.charm.base.helper.BiomeHelper.addStructureFeatureToBiomes;
 
 @Module(mod = Strange.MOD_ID)
 public class Foundations extends CharmModule {
@@ -33,8 +33,8 @@ public class Foundations extends CharmModule {
         FoundationGenerator.init();
 
         if (!FoundationGenerator.FOUNDATIONS.isEmpty()) {
-            addToBiome(BiomeHelper.MOUNTAINS, CONFIGURED_FEATURE);
-            addToBiome(BiomeHelper.PLAINS, CONFIGURED_FEATURE);
+            addStructureFeatureToBiomes(BiomeHelper.MOUNTAINS, CONFIGURED_FEATURE);
+            addStructureFeatureToBiomes(BiomeHelper.PLAINS, CONFIGURED_FEATURE);
         }
     }
 
