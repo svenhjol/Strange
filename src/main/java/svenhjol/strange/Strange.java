@@ -18,7 +18,6 @@ import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.writingdesks.WritingDesks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Strange implements ModInitializer {
@@ -30,7 +29,7 @@ public class Strange implements ModInitializer {
         StrangeLoot.init();
         StrangeCommands.init();
 
-        ModuleHandler.AVAILABLE_MODULES.put(Strange.MOD_ID, new ArrayList<>(Arrays.asList(
+        ModuleHandler.INSTANCE.registerFabricMod(MOD_ID, Arrays.asList(
             Excavation.class,
             Foundations.class,
             LegendaryItems.class,
@@ -43,6 +42,6 @@ public class Strange implements ModInitializer {
             StoneCircles.class,
             TotemOfPreserving.class,
             WritingDesks.class
-        )));
+        ));
     }
 }
