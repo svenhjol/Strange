@@ -1,6 +1,7 @@
 package svenhjol.strange.ruins;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -10,8 +11,10 @@ import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.base.helper.LootHelper;
+import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.module.PlayerState;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.ruins.builds.Castle;
@@ -132,5 +135,11 @@ public class Ruins extends CharmModule {
         if (!RuinGenerator.SAVANNA_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.SAVANNA, SAVANNA);
         if (!RuinGenerator.SNOWY_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.SNOWY, SNOWY);
         if (!RuinGenerator.TAIGA_RUINS.isEmpty()) addStructureFeatureToBiomes(BiomeHelper.TAIGA, TAIGA);
+
+        // add player location callback
+        PlayerState.listeners.add((player, tag) -> {
+            if (player != null && player.world != null && !player.world.isClient)
+                PosHelper.isInsideStructure((ServerWorld)player.world, player.getBlockPos(), RUIN_FEATURE);
+        });
     }
 }
