@@ -56,7 +56,7 @@ public class Foundations extends CharmModule {
         // add player location callback
         PlayerState.listeners.add((player, tag) -> {
             if (player != null && player.world != null && !player.world.isClient)
-                PosHelper.isInsideStructure((ServerWorld)player.world, player.getBlockPos(), FEATURE);
+                tag.putBoolean("ruin", PosHelper.isInsideStructure((ServerWorld)player.world, player.getBlockPos(), FEATURE));
         });
     }
 }
