@@ -168,7 +168,7 @@ public class Boss implements ISerializable {
             boolean result = BossPopulator.startEncounter(player, this);
 
             if (!result) {
-                this.abandon(player);
+                quest.abandon(player);
                 return;
             }
 
