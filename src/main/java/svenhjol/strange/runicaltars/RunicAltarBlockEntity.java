@@ -21,7 +21,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
@@ -163,7 +163,7 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
             this.destination = RunicFragmentItem.getNormalizedPos(stack, world);
         } else {
-            this.destination = RunestoneHelper.getBlockPosFromItemStack(world, stack);
+            this.destination = RunestonesHelper.getBlockPosFromItemStack(world, stack);
         }
     }
 }

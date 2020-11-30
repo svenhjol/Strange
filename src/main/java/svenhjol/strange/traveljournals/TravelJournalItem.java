@@ -12,6 +12,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.item.CharmItem;
+import svenhjol.strange.runestones.Runestones;
 
 public class TravelJournalItem extends CharmItem {
     public TravelJournalItem(CharmModule module) {
@@ -24,7 +25,7 @@ public class TravelJournalItem extends CharmItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack journal = user.getStackInHand(hand);
 
-        if (!world.isClient) {
+        if (world.isClient) {
             ClientSidePacketRegistry.INSTANCE.sendToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
             return TypedActionResult.success(journal);
         }

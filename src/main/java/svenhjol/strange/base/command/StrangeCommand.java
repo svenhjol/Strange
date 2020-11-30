@@ -15,7 +15,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.base.command.arg.QuestIdArgType;
 import svenhjol.strange.base.command.arg.RuneArgType;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.QuestManager;
 import svenhjol.strange.scrolls.ScrollItem;
@@ -97,11 +97,11 @@ public class StrangeCommand {
         Character rune = RuneArgType.getLetter(context, "letter");
 
         int runeVal = (int)rune - 97;
-        if (runeVal < 0 || runeVal > RunestoneHelper.NUMBER_OF_RUNES - 1)
-            throw makeException("Invalid rune value", "Must be lowercase letter from a to " + (char) (RunestoneHelper.NUMBER_OF_RUNES-1) + 97);
+        if (runeVal < 0 || runeVal > RunestonesHelper.NUMBER_OF_RUNES - 1)
+            throw makeException("Invalid rune value", "Must be lowercase letter from a to " + (char) (RunestonesHelper.NUMBER_OF_RUNES-1) + 97);
 
         ServerPlayerEntity player = context.getSource().getPlayer();
-        RunestoneHelper.addLearnedRune(player, runeVal);
+        RunestonesHelper.addLearnedRune(player, runeVal);
 
         context.getSource().sendFeedback(new TranslatableText("runestone.strange.learned_rune", rune), false);
         return Command.SINGLE_SUCCESS;
@@ -110,8 +110,8 @@ public class StrangeCommand {
     private static int learnAllRunes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayer();
 
-        for (int i = 0; i < RunestoneHelper.NUMBER_OF_RUNES; i++) {
-            RunestoneHelper.addLearnedRune(player, i);
+        for (int i = 0; i < RunestonesHelper.NUMBER_OF_RUNES; i++) {
+            RunestonesHelper.addLearnedRune(player, i);
         }
 
         context.getSource().sendFeedback(new TranslatableText("runestone.strange.learned_all_runes"), false);

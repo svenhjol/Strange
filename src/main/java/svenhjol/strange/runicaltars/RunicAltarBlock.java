@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
 import svenhjol.charm.base.helper.PlayerHelper;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -68,7 +68,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
 
             if (charges < 4) {
                 // the player must have the right runes to activate it
-                if (charges == 0 && !RunestoneHelper.playerKnowsBlockPosRunes(player, destination, RunicAltars.NUMBER_OF_RUNES))
+                if (charges == 0 && !RunestonesHelper.playerKnowsBlockPosRunes(player, destination, RunicAltars.NUMBER_OF_RUNES))
                     return failToApply(world, pos);
 
                 if (!world.isClient) {
@@ -83,7 +83,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         if (charges == 0) {
             if (!world.isClient) {
                 // ensure client has the latest rune discoveries
-                RunestoneHelper.syncLearnedRunesToClient((ServerPlayerEntity) player);
+                RunestonesHelper.syncLearnedRunesToClient((ServerPlayerEntity) player);
                 player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             }
         } else {

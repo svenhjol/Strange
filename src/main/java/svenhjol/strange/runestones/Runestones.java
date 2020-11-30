@@ -46,12 +46,13 @@ import svenhjol.strange.runestones.destination.StructureDestination;
 import java.io.File;
 import java.util.*;
 
-import static svenhjol.strange.runestones.RunestoneHelper.NUMBER_OF_RUNES;
+import static svenhjol.strange.runestones.RunestonesHelper.NUMBER_OF_RUNES;
 
 @Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "runestone");
     public static final Identifier MSG_CLIENT_SYNC_LEARNED = new Identifier(Strange.MOD_ID, "client_sync_learned");
+    public static final Identifier MSG_CLIENT_SYNC_DESTINATION_NAMES = new Identifier(Strange.MOD_ID, "client_sync_destination_names");
     public static final String LEARNED_TAG = "learned";
     public static final int TELEPORT_TICKS = 10;
 
@@ -109,7 +110,7 @@ public class Runestones extends CharmModule {
     public void init() {
         // write player learned runes to disk
         PlayerSaveDataCallback.EVENT.register(((player, playerDataDir) -> {
-            List<Integer> runes = RunestoneHelper.getLearnedRunes(player);
+            List<Integer> runes = RunestonesHelper.getLearnedRunes(player);
             CompoundTag tag = new CompoundTag();
             tag.putIntArray(LEARNED_TAG, runes);
             PlayerSaveDataCallback.writeFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"), tag);
@@ -119,11 +120,11 @@ public class Runestones extends CharmModule {
         PlayerLoadDataCallback.EVENT.register(((player, playerDataDir) -> {
             CompoundTag tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"));
             if (tag.contains(LEARNED_TAG)) {
-                RunestoneHelper.resetLearnedRunes(player);
+                RunestonesHelper.resetLearnedRunes(player);
 
                 int[] intArray = tag.getIntArray(LEARNED_TAG);
                 for (int rune : intArray) {
-                    RunestoneHelper.addLearnedRune(player, rune);
+                    RunestonesHelper.addLearnedRune(player, rune);
                 }
                 Charm.LOG.debug("Loaded player rune learned data");
             }
@@ -175,13 +176,13 @@ public class Runestones extends CharmModule {
                 Identifier locationId = new Identifier(configStructure);
 
                 float weight = 1.0F - (j / (float) (NUMBER_OF_RUNES + 10));
-                boolean addStructure = locationId.equals(RunestoneHelper.SPAWN) || Registry.STRUCTURE_FEATURE.get(locationId) != null;
+                boolean addStructure = locationId.equals(RunestonesHelper.SPAWN) || Registry.STRUCTURE_FEATURE.get(locationId) != null;
 
                 if (addStructure) {
                     availableDestinations.add(new StructureDestination(locationId, weight));
                 } else {
                     Charm.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
-                    availableDestinations.add(new StructureDestination(RunestoneHelper.SPAWN, weight));
+                    availableDestinations.add(new StructureDestination(RunestonesHelper.SPAWN, weight));
                 }
                 r++;
             }
@@ -198,7 +199,7 @@ public class Runestones extends CharmModule {
                     availableDestinations.add(new BiomeDestination(locationId, weight));
                 } else {
                     Charm.LOG.warn("Could not find registered biome " + configBiome + ", ignoring as runestone destination");
-                    availableDestinations.add(new BiomeDestination(RunestoneHelper.SPAWN, weight));
+                    availableDestinations.add(new BiomeDestination(RunestonesHelper.SPAWN, weight));
                 }
                 r++;
             }
@@ -225,9 +226,9 @@ public class Runestones extends CharmModule {
                 TranslatableText message = new TranslatableText("runestone.strange.unknown");
                 int runeValue = getRuneValue((ServerWorld) world, runePos);
 
-                if (RunestoneHelper.hasLearnedRune(player, runeValue)) {
+                if (RunestonesHelper.hasLearnedRune(player, runeValue)) {
                     Destination destination = worldDestinations.get(runeValue);
-                    message = new TranslatableText("runestone.strange.known", RunestoneHelper.getFormattedLocationName(destination.getLocation()));
+                    message = new TranslatableText("runestone.strange.known", RunestonesHelper.getFormattedLocationName(destination.getLocation()));
                 }
 
                 BlockEntity blockEntity = world.getBlockEntity(runePos);
@@ -235,7 +236,7 @@ public class Runestones extends CharmModule {
                     RunestoneBlockEntity runestone = (RunestoneBlockEntity)blockEntity;
 
                     if (runestone.location != null) {
-                        String formattedLocationName = RunestoneHelper.getFormattedLocationName(runestone.location);
+                        String formattedLocationName = RunestonesHelper.getFormattedLocationName(runestone.location);
                         if (runestone.player != null && !runestone.player.isEmpty()) {
                             message = new TranslatableText("runestone.strange.discovered_by", formattedLocationName, runestone.player);
                         } else {
@@ -264,7 +265,7 @@ public class Runestones extends CharmModule {
             if (ticks == TELEPORT_TICKS) {
                 if (!WorldHelper.addForcedChunk((ServerWorld)player.world, dest)) {
                     Charm.LOG.warn("Could not load destination chunk, giving up");
-                    RunestoneHelper.explode(player.world, src, player, true);
+                    RunestonesHelper.explode(player.world, src, player, true);
                     clearTeleport(player);
                     return;
                 }
@@ -331,7 +332,7 @@ public class Runestones extends CharmModule {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
             Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toString());
-            return RunestoneHelper.explode(world, runePos, player, true);
+            return RunestonesHelper.explode(world, runePos, player, true);
         }
 
         Random random = new Random();
@@ -339,7 +340,7 @@ public class Runestones extends CharmModule {
         BlockPos destPos = worldDestinations.get(runeValue).getDestination(world, runePos, maxDistance, random, player);
 
         if (destPos == null)
-            return RunestoneHelper.explode(world, runePos, player, true);
+            return RunestonesHelper.explode(world, runePos, player, true);
 
         UUID uid = player.getUuid();
 
@@ -349,7 +350,7 @@ public class Runestones extends CharmModule {
         teleportTicks.put(uid, TELEPORT_TICKS);
 
         Criteria.ENTER_BLOCK.trigger(player, world.getBlockState(runePos));
-        RunestoneHelper.addLearnedRune(player, runeValue);
+        RunestonesHelper.addLearnedRune(player, runeValue);
         return true;
     }
 

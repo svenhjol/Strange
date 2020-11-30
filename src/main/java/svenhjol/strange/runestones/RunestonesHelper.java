@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CompassItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,16 +22,17 @@ import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.destination.Destination;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class RunestoneHelper {
+public class RunestonesHelper {
     public static final int NUMBER_OF_RUNES = 26;
     public static final Identifier SPAWN = new Identifier(Strange.MOD_ID, "spawn_point");
-    public static Map<UUID, List<Integer>> PLAYER_LEARNED = new HashMap<>();
+    public static Map<UUID, List<Integer>> PLAYER_LEARNED_RUNES = new HashMap<>();
 
     public static boolean explode(World world, BlockPos pos, @Nullable PlayerEntity player, boolean destroyBlock) {
         if (player != null)
@@ -82,22 +84,22 @@ public class RunestoneHelper {
     }
 
     public static List<Integer> getLearnedRunes(PlayerEntity player) {
-        return PLAYER_LEARNED.getOrDefault(player.getUuid(), ImmutableList.of());
+        return PLAYER_LEARNED_RUNES.getOrDefault(player.getUuid(), ImmutableList.of());
     }
 
     public static void resetLearnedRunes(PlayerEntity player) {
         UUID uuid = player.getUuid();
-        PLAYER_LEARNED.remove(uuid);
-        PLAYER_LEARNED.put(uuid, new ArrayList<>());
+        PLAYER_LEARNED_RUNES.remove(uuid);
+        PLAYER_LEARNED_RUNES.put(uuid, new ArrayList<>());
     }
 
     public static void addLearnedRune(PlayerEntity player, int rune) {
         UUID uuid = player.getUuid();
-        if (!PLAYER_LEARNED.containsKey(uuid))
-            PLAYER_LEARNED.put(uuid, new ArrayList<>());
+        if (!PLAYER_LEARNED_RUNES.containsKey(uuid))
+            PLAYER_LEARNED_RUNES.put(uuid, new ArrayList<>());
 
         if (!hasLearnedRune(player, rune))
-            PLAYER_LEARNED.get(uuid).add(rune);
+            PLAYER_LEARNED_RUNES.get(uuid).add(rune);
     }
 
     public static boolean hasLearnedRune(PlayerEntity player, int rune) {
@@ -105,10 +107,28 @@ public class RunestoneHelper {
     }
 
     public static void syncLearnedRunesToClient(ServerPlayerEntity player) {
-        int[] learned = getLearnedRunes(player).stream().mapToInt(i -> i).toArray();
+        List<Integer> learnedRunes = getLearnedRunes(player);
+        int[] learned = learnedRunes.stream().mapToInt(i -> i).toArray();
+
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeIntArray(learned);
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_LEARNED, data);
+    }
+
+    public static void syncDestinationNamesToClient(ServerPlayerEntity player) {
+        List<Integer> learnedRunes = getLearnedRunes(player);
+
+        CompoundTag outTag = new CompoundTag();
+
+        for (int rune : learnedRunes) {
+            Destination destination = Runestones.worldDestinations.get(rune);
+            String name = RunestonesHelper.getFormattedLocationName(destination.getLocation());
+            outTag.putString(String.valueOf(rune), name);
+        }
+
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(outTag);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_DESTINATION_NAMES, data);
     }
 
     public static void populateLearnedRunes(PlayerEntity player, int[] learned) {

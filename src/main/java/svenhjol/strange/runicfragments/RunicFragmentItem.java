@@ -22,7 +22,7 @@ import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -111,7 +111,7 @@ public class RunicFragmentItem extends CharmItem {
         } else if (locationId.getPath().equals("ruin")) {
             label = new TranslatableText("structure.strange.ruin");
         } else {
-            label = new LiteralText(RunestoneHelper.getFormattedLocationName(locationId));
+            label = new LiteralText(RunestonesHelper.getFormattedLocationName(locationId));
         }
         fragment.setCustomName(label);
 

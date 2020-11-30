@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
             @Override
             public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
                 if (client != null && slotId == 0) {
-                    BlockPos pos = RunestoneHelper.getBlockPosFromItemStack(client.world, handler.getSlot(slotId).getStack());
-                    requiredRunes = pos != null ? RunestoneHelper.getRunesFromBlockPos(pos, RunicAltars.NUMBER_OF_RUNES) : new ArrayList<>();
+                    BlockPos pos = RunestonesHelper.getBlockPosFromItemStack(client.world, handler.getSlot(slotId).getStack());
+                    requiredRunes = pos != null ? RunestonesHelper.getRunesFromBlockPos(pos, RunicAltars.NUMBER_OF_RUNES) : new ArrayList<>();
                     tryUpdatePlayerLearnedRunes();
                 }
             }
@@ -114,6 +114,6 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
 
     private void tryUpdatePlayerLearnedRunes() {
         if (client != null && client.player != null)
-            learnedRunes = RunestoneHelper.getLearnedRunes(client.player);
+            learnedRunes = RunestonesHelper.getLearnedRunes(client.player);
     }
 }

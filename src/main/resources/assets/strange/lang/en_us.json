@@ -92,6 +92,9 @@
   "gui.strange.travel_journal.page": "Page %s",
   "gui.strange.travel_journal.entry_location": "X %s, Z %s, Dim %s",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
+  "gui.strange.travel_journal.runes": "Learned Runes",
+  "gui.strange.travel_journal.learned_runes": "You have learned %s of %s runes",
+  "gui.strange.travel_journal.learned_all_runes": "You have learned all the runes",
 
   "item.strange.runic_fragment": "Runic Fragment",
   "item.strange.novice_scroll": "Novice Scroll",

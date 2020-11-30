@@ -38,8 +38,8 @@ public class UpdateEntryScreen extends BaseScreen {
     private boolean hasRenderedTrashButton = false;
     private boolean hasRenderedMapButton = false;
 
-    private int yoffset = 18;
-    private int xoffset = 113;
+    private int buttonLeftOffset = 18;
+    private int buttonRightOffset = 113;
 
     private final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
@@ -191,22 +191,22 @@ public class UpdateEntryScreen extends BaseScreen {
 
 
         /*
-         * --- Buttons on left of page ---
+         * --- Buttons on right of page ---
          */
 
         top = 13;
 
         // button to take photo
         if (!hasRenderedAddPhotoButton && atEntryPosition) {
-            top += yoffset;
-            this.addButton(new TexturedButtonWidget(mid + xoffset, top, 20, 18, 80, 0, 19, BUTTONS, r -> prepareScreenshot()));
+            top += buttonLeftOffset;
+            this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 80, 0, 19, BUTTONS, button -> prepareScreenshot()));
             hasRenderedAddPhotoButton = true;
         }
 
         // button to make map
         if (!hasRenderedMapButton && hasMap) {
-            top += yoffset;
-            this.addButton(new TexturedButtonWidget(mid + xoffset, top, 20, 18, 40, 0, 19, BUTTONS, r -> makeMap()));
+            top += buttonLeftOffset;
+            this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
         }
     }

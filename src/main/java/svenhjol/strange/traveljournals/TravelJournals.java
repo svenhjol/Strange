@@ -14,9 +14,12 @@ import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.strange.Strange;
+import svenhjol.strange.runestones.RunestonesHelper;
+import svenhjol.strange.runestones.Runestones;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -76,6 +79,11 @@ public class TravelJournals extends CharmModule {
         processClientPacket(context, (player, manager) -> {
             ListTag listTag = manager.serializePlayerEntries(player.getUuid());
             sendJournalEntriesPacket(player, listTag);
+
+            if (ModuleHandler.enabled(Runestones.class)) {
+                RunestonesHelper.syncLearnedRunesToClient(player);
+                RunestonesHelper.syncDestinationNamesToClient(player);
+            }
         });
     }
 

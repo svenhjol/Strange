@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import svenhjol.charm.Charm;
 import svenhjol.strange.runestones.RunestoneBlockEntity;
-import svenhjol.strange.runestones.RunestoneHelper;
+import svenhjol.strange.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -25,7 +25,7 @@ public abstract class Destination {
     }
 
     public boolean isSpawnPoint() {
-        return this.location.equals(RunestoneHelper.SPAWN);
+        return this.location.equals(RunestonesHelper.SPAWN);
     }
 
     public Identifier getLocation() {
