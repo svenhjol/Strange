@@ -10,7 +10,7 @@
   },
   "boss": {
     "targets": {
-      "minecraft:evoker": {
+      "evoker": {
         "count": 1,
         "health": 40,
         "effects": "regeneration"
