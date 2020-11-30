@@ -16,6 +16,7 @@ import svenhjol.strange.scrollkeepers.Scrollkeepers;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.totems.TotemOfPreserving;
+import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Arrays;
@@ -40,6 +41,7 @@ public class Strange implements ModInitializer {
             Scrollkeepers.class,
             Scrolls.class,
             StoneCircles.class,
+            TravelJournals.class,
             TotemOfPreserving.class,
             WritingDesks.class
         ));
