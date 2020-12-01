@@ -29,6 +29,7 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.VillagerHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.StructureSetupCallback;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.*;
@@ -36,6 +37,8 @@ import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Optional;
+
+import static svenhjol.charm.event.StructureSetupCallback.addVillageHouse;
 
 @Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
@@ -76,6 +79,14 @@ public class Scrollkeepers extends CharmModule {
 
         // listen for quest satisfied request coming from the client
         ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
+
+        // register scrollkeeper structures
+        StructureSetupCallback.EVENT.register(() -> {
+            addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/scrollkeeper"), 10);
+            addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/scrollkeeper"), 10);
+            addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/scrollkeeper"), 10);
+            addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/scrollkeeper"), 10);
+        });
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
