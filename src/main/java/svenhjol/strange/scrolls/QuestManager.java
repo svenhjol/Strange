@@ -83,6 +83,7 @@ public class QuestManager extends PersistentState {
 
     @Override
     public void markDirty() {
+        super.markDirty();
         regeneratePlayerQuests();
     }
 
@@ -193,6 +194,8 @@ public class QuestManager extends PersistentState {
 
         // add new quest to the active quests
         addQuest(quest);
+
+        this.markDirty();
 
         return quest;
     }
