@@ -10,6 +10,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -351,6 +352,12 @@ public class Runestones extends CharmModule {
 
         Criteria.ENTER_BLOCK.trigger(player, world.getBlockState(runePos));
         RunestonesHelper.addLearnedRune(player, runeValue);
+
+
+        if (RunestonesHelper.getLearnedRunes(player).size() == NUMBER_OF_RUNES) {
+            Criteria.CONSUME_ITEM.trigger(player, new ItemStack(RUNESTONE_BLOCKS.get(0))); // this is stupidland
+        }
+
         return true;
     }
 
