@@ -32,7 +32,7 @@ public class RunicFragments extends CharmModule {
     public static final Identifier LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
     public static LootFunctionType LOOT_FUNCTION;
     public static RunicFragmentItem RUNIC_FRAGMENT;
-    public static List<Identifier> destinations = new ArrayList<>();
+    public static List<Identifier> DESTINATIONS = new ArrayList<>();
 
     @Config(name = "Runic fragment destinations", description = "Structures that runic fragments may describe. The list is weighted with more likely structures at the top.")
     public static List<String> configStructures = new ArrayList<>(Arrays.asList(
@@ -57,7 +57,7 @@ public class RunicFragments extends CharmModule {
             Optional<StructureFeature<?>> location = Registry.STRUCTURE_FEATURE.getOrEmpty(locationId);
 
             if (location.isPresent())
-                RunicFragments.destinations.add(locationId);
+                RunicFragments.DESTINATIONS.add(locationId);
         });
 
         // listen for loot events so that we can add the fragment to loot tables on demand

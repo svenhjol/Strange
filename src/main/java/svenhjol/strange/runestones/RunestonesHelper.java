@@ -1,8 +1,6 @@
 package svenhjol.strange.runestones;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -10,10 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CompassItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
@@ -22,7 +17,6 @@ import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.destination.Destination;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runicfragments.RunicFragments;
 
@@ -104,31 +98,6 @@ public class RunestonesHelper {
 
     public static boolean hasLearnedRune(PlayerEntity player, int rune) {
         return getLearnedRunes(player).contains(rune);
-    }
-
-    public static void syncLearnedRunesToClient(ServerPlayerEntity player) {
-        List<Integer> learnedRunes = getLearnedRunes(player);
-        int[] learned = learnedRunes.stream().mapToInt(i -> i).toArray();
-
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeIntArray(learned);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_LEARNED, data);
-    }
-
-    public static void syncDestinationNamesToClient(ServerPlayerEntity player) {
-        List<Integer> learnedRunes = getLearnedRunes(player);
-
-        CompoundTag outTag = new CompoundTag();
-
-        for (int rune : learnedRunes) {
-            Destination destination = Runestones.worldDestinations.get(rune);
-            String name = RunestonesHelper.getFormattedLocationName(destination.getLocation());
-            outTag.putString(String.valueOf(rune), name);
-        }
-
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompoundTag(outTag);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Runestones.MSG_CLIENT_SYNC_DESTINATION_NAMES, data);
     }
 
     public static void populateLearnedRunes(PlayerEntity player, int[] learned) {

@@ -25,6 +25,11 @@ public abstract class BaseScreen extends Screen {
     public static final int BGHEIGHT = 192;
     public static final int NAME_CUTOFF = 27;
 
+    protected int leftButtonXOffset = -127;
+    protected int leftButtonYOffset = 18;
+    protected int rightButtonXOffset = 113;
+    protected int rightButtonYOffset = 18;
+
     public static final Identifier BACKGROUND = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_background.png");
     public static final Identifier BUTTONS = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_buttons.png");
     public static final Identifier COLORS = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_colors.png");

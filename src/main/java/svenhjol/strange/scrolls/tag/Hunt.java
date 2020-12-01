@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import svenhjol.strange.scrolls.ScrollHelper;
+import svenhjol.strange.scrolls.ScrollsHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -133,7 +133,7 @@ public class Hunt implements ISerializable {
         ServerPlayerEntity player = (ServerPlayerEntity) attacker;
 
         // must be the player who owns the quest
-        if (quest.getOwner().equals(player.getUuid()) || quest.getOwner().equals(ScrollHelper.ANY_UUID)) {
+        if (quest.getOwner().equals(player.getUuid()) || quest.getOwner().equals(ScrollsHelper.ANY_UUID)) {
             Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
 
             if (entities.containsKey(id)) {

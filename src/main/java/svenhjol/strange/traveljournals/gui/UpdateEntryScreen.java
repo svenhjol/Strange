@@ -40,9 +40,6 @@ public class UpdateEntryScreen extends BaseScreen {
     private boolean hasRenderedTrashButton = false;
     private boolean hasRenderedMapButton = false;
 
-    private int buttonLeftOffset = 18;
-    private int buttonRightOffset = 113;
-
     private final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.GRAY
     );
@@ -156,8 +153,9 @@ public class UpdateEntryScreen extends BaseScreen {
 
         // button to delete entry
         if (!hasRenderedTrashButton) {
-            this.addButton(new TexturedButtonWidget(mid - 127, top, 20, 18, 160, 0, 19, BUTTONS, r -> delete()));
+            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 160, 0, 19, BUTTONS, r -> delete()));
             hasRenderedTrashButton = true;
+            top += leftButtonYOffset;
         }
 
 
@@ -169,9 +167,9 @@ public class UpdateEntryScreen extends BaseScreen {
 
         // button to make map
         if (!hasRenderedMapButton && hasMap) {
-            this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
+            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
-            top += buttonLeftOffset;
+            top += rightButtonYOffset;
         }
     }
 

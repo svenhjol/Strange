@@ -47,7 +47,9 @@ public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
 
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
-    public static final Identifier MSG_CLIENT_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_quest_toast");
+    public static final Identifier MSG_CLIENT_SHOW_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_show_quest_toast");
+    public static final Identifier MSG_CLIENT_CACHE_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "client_cache_current_quests");
+    public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests");
 
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
@@ -56,7 +58,7 @@ public class Scrolls extends CharmModule {
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    private static QuestManager questManager;
+    private static QuestManager questManager; // always access this via the optional: getQuestManager()
 
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
@@ -83,6 +85,7 @@ public class Scrolls extends CharmModule {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
+        // handle adding normal scrolls to loot
         SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
     }
 
@@ -105,6 +108,9 @@ public class Scrolls extends CharmModule {
 
         // tick the questmanager
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
+
+        ScrollsServer server = new ScrollsServer();
+        server.init();
     }
 
     private void loadQuestManager(MinecraftServer server) {

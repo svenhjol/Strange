@@ -54,8 +54,11 @@ public class StoneCircles extends CharmModule {
             .register();
 
         STONE_CIRCLE = RegistryHandler.configuredFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT));
+    }
 
-        enabled = ModuleHandler.enabled("strange:runestones");
+    @Override
+    public boolean depends() {
+        return ModuleHandler.enabled("strange:runestones");
     }
 
     @Override

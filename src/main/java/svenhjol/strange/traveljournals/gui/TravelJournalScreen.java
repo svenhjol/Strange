@@ -24,9 +24,9 @@ public class TravelJournalScreen extends BaseScreen {
     private int titleSpacing = 11;
     private int titleTop = 15;
     private int rowHeight = 20;
-    private int buttonRightOffset = 113;
 
     boolean hasRenderedRuneButton = false;
+    boolean hasRenderedScrollButton = false;
 
     public TravelJournalScreen() {
         super(I18n.translate("item.strange.travel_journal"));
@@ -37,6 +37,7 @@ public class TravelJournalScreen extends BaseScreen {
     protected void init() {
         super.init();
         hasRenderedRuneButton = false;
+        hasRenderedScrollButton = false;
     }
 
     @Override
@@ -120,8 +121,16 @@ public class TravelJournalScreen extends BaseScreen {
 
         // button to open rune page
         if (!hasRenderedRuneButton) {
-            this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 180, 0, 19, BUTTONS, button -> openRunesScreen()));
+            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 180, 0, 19, BUTTONS, button -> openRuneScreen()));
             hasRenderedRuneButton = true;
+            top += rightButtonYOffset;
+        }
+
+        // button to open scroll page
+        if (!hasRenderedScrollButton) {
+            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, button -> openScrollScreen()));
+            hasRenderedScrollButton = true;
+            top += rightButtonYOffset;
         }
     }
 
@@ -147,7 +156,9 @@ public class TravelJournalScreen extends BaseScreen {
         client.openScreen(new UpdateEntryScreen(entry));
     }
 
-    private void openRunesScreen() {
+    private void openRuneScreen() {
         client.openScreen(new LearnedRunesScreen());
     }
+
+    private void openScrollScreen() { client.openScreen(new ScrollScreen()); }
 }
