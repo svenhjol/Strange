@@ -7,6 +7,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -146,7 +147,7 @@ public class TravelJournalScreen extends BaseScreen {
 
     private void addEntry() {
         if (entries.size() < TravelJournals.MAX_ENTRIES) {
-            TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_ADD_ENTRY, null);
+            NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_ADD_ENTRY);
         } else {
             message = I18n.translate("gui.strange.travel_journal.journal_full");
         }
@@ -160,5 +161,5 @@ public class TravelJournalScreen extends BaseScreen {
         client.openScreen(new LearnedRunesScreen());
     }
 
-    private void openScrollScreen() { client.openScreen(new ScrollScreen()); }
+    private void openScrollScreen() { client.openScreen(new ActiveScrollsScreen()); }
 }

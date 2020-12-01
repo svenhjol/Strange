@@ -15,6 +15,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
+import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -201,7 +202,7 @@ public class UpdateEntryScreen extends BaseScreen {
     }
 
     private void delete() {
-        TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_DELETE_ENTRY, this.entry.toTag());
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_DELETE_ENTRY, buffer -> buffer.writeCompoundTag(entry.toTag()));
         this.backToMainScreen();
     }
 
@@ -226,17 +227,18 @@ public class UpdateEntryScreen extends BaseScreen {
 
     private void makeMap() {
         this.saveProgress();
-        TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_MAKE_MAP, this.entry.toTag());
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        init();
     }
 
     private void saveProgress() {
-        TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_UPDATE_ENTRY, this.entry.toTag());
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_UPDATE_ENTRY, buffer -> buffer.writeCompoundTag(entry.toTag()));
     }
 
     private void backToMainScreen() {
         if (client != null) {
             client.openScreen(null);
-            TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_OPEN_JOURNAL, null);
+            NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
         }
     }
 

@@ -1,6 +1,5 @@
 package svenhjol.strange.traveljournals;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +11,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
@@ -22,7 +20,6 @@ import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.traveljournals.gui.TravelJournalScreen;
 import svenhjol.strange.traveljournals.gui.UpdateEntryScreen;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,15 +56,6 @@ public class TravelJournalsClient extends CharmClientModule {
 
     public static boolean isPlayerAtEntryPosition(PlayerEntity player, JournalEntry entry) {
         return entry.pos != null && PosHelper.getDistanceSquared(player.getBlockPos(), entry.pos) < TravelJournals.SCREENSHOT_DISTANCE;
-    }
-
-    public static void sendServerPacket(Identifier id, @Nullable CompoundTag tag) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-
-        if (tag != null)
-            buffer.writeCompoundTag(tag);
-
-        ClientSidePacketRegistry.INSTANCE.sendToServer(id, buffer);
     }
 
     private void handlePlayerTick(PlayerEntity player) {

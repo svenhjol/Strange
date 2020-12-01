@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.item.CharmItem;
+import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.Optional;
@@ -80,7 +81,7 @@ public class ScrollItem extends CharmItem {
             setScrollQuest(held, quest);
 
             // tell the client to open the scroll
-            questManager.openScroll(player, quest);
+            ScrollsServer.sendPlayerOpenScrollPacket(serverPlayer, quest);
             return new TypedActionResult<>(ActionResult.SUCCESS, held);
 
         } else {
@@ -89,11 +90,11 @@ public class ScrollItem extends CharmItem {
             if (questId == null)
                 return destroyScroll(world, player, held);
 
-            Optional<Quest> quest = questManager.getQuest(questId);
+            Optional<Quest> optionalQuest = questManager.getQuest(questId);
 
-            if (quest.isPresent()) {
+            if (optionalQuest.isPresent()) {
                 // tell the client to open the scroll
-                questManager.openScroll(player, quest.get());
+                ScrollsServer.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
             } else {
                 // scroll has expired, remove it
                 return destroyScroll(world, player, held);
@@ -153,6 +154,8 @@ public class ScrollItem extends CharmItem {
     public TypedActionResult<ItemStack> destroyScroll(World world, PlayerEntity player, ItemStack scroll) {
         world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
         scroll.decrement(1);
+
+        NetworkHelper.sendEmptyPacketToClient((ServerPlayerEntity)player, Scrolls.MSG_CLIENT_DESTROY_SCROLL);
         return new TypedActionResult<>(ActionResult.FAIL, scroll);
     }
 }

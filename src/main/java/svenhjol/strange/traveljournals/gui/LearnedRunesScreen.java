@@ -11,6 +11,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesClient;
 import svenhjol.strange.runestones.RunestonesHelper;
@@ -19,9 +20,11 @@ import svenhjol.strange.traveljournals.TravelJournalsClient;
 
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class LearnedRunesScreen extends BaseScreen {
     private static final Identifier SGA_TEXTURE = new Identifier("minecraft", "alt");
-
+    private List<Integer> learnedRunes;
+    private int maxRunes;
     private int titleTop = 15;
 
     private final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
@@ -29,6 +32,14 @@ public class LearnedRunesScreen extends BaseScreen {
     public LearnedRunesScreen() {
         super(I18n.translate("item.strange.travel_journal.runes"));
         this.passEvents = false;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.learnedRunes = RunestonesHelper.getLearnedRunes(client.player);
+        this.maxRunes = RunestonesHelper.NUMBER_OF_RUNES;
     }
 
     @Override
@@ -41,8 +52,6 @@ public class LearnedRunesScreen extends BaseScreen {
         super.render(matrices, mouseX, mouseY, delta);
 
         PlayerEntity player = this.client.player;
-        List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
-        int maxRunes = RunestonesHelper.NUMBER_OF_RUNES;
         String title;
 
         if (learnedRunes.size() >= RunestonesHelper.NUMBER_OF_RUNES) {
@@ -52,12 +61,11 @@ public class LearnedRunesScreen extends BaseScreen {
         }
 
         int mid = this.width / 2;
+        int top = 34;
+        int left = mid - 62;
 
         // draw title
         centeredString(matrices, textRenderer, title, mid, titleTop, TEXT_COLOR);
-
-        int top = 34;
-        int left = mid - 62;
 
         int index = 0;
 
@@ -115,7 +123,7 @@ public class LearnedRunesScreen extends BaseScreen {
     private void backToMainScreen() {
         if (client != null) {
             client.openScreen(null);
-            TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_OPEN_JOURNAL, null);
+            NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
         }
     }
 }
