@@ -41,7 +41,8 @@ public class TravelJournals extends CharmModule {
         // load travel journal manager when world starts
         LoadWorldCallback.EVENT.register(this::loadTravelJournalManager);
 
-        new TravelJournalsServer();
+        TravelJournalsServer server = new TravelJournalsServer();
+        server.init();
     }
 
     public static Optional<TravelJournalManager> getTravelJournalManager() {

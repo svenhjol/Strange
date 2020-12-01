@@ -81,7 +81,8 @@ public class Scrollkeepers extends CharmModule {
             addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/scrollkeeper"), 10);
         });
 
-        new ScrollkeepersServer();
+        ScrollkeepersServer server = new ScrollkeepersServer();
+        server.init();
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {

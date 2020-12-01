@@ -109,7 +109,8 @@ public class Scrolls extends CharmModule {
         // tick the questmanager
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
 
-        new ScrollsServer();
+        ScrollsServer server = new ScrollsServer();
+        server.init();
     }
 
     private void loadQuestManager(MinecraftServer server) {
