@@ -97,7 +97,9 @@
   "gui.strange.travel_journal.entry_location": "X %s, Z %s, Dim %s",
   "gui.strange.travel_journal.journal_full": "This journal is full.",
   "gui.strange.travel_journal.runes": "Learned Runes",
-  "gui.strange.travel_journal.scrolls": "Active Scrolls",
+  "gui.strange.travel_journal.active_scrolls": "Active Scrolls",
+  "gui.strange.travel_journal.no_active_scrolls": "You have no active scrolls",
+  "gui.strange.travel_journal.active_scrolls": "Your active scrolls",
   "gui.strange.travel_journal.learned_runes": "You have learned %s of %s runes",
   "gui.strange.travel_journal.learned_all_runes": "You have learned all the runes",
 

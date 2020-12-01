@@ -11,43 +11,90 @@ import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
-import static svenhjol.strange.scrolls.Scrolls.MSG_CLIENT_CACHE_CURRENT_QUESTS;
-import static svenhjol.strange.scrolls.Scrolls.MSG_SERVER_FETCH_CURRENT_QUESTS;
 
 public class ScrollsServer {
     public void init() {
         // handle incoming client packets
-        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_OPEN_SCROLL, this::handleServerOpenScroll);
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
     }
 
-    public static void sendCurrentQuestsPacket(ServerPlayerEntity player) {
+    public static void sendPlayerQuestsPacket(ServerPlayerEntity player) {
         Optional<QuestManager> questManager = Scrolls.getQuestManager();
         questManager.ifPresent(manager -> {
-            List<Quest> quests = manager.getQuests(player);
+            sendQuestsPacket(player, manager.getQuests(player));
+        });
+    }
 
-            // convert to nbt and write to packet buffer
-            ListTag listTag = new ListTag();
-            for (Quest quest : quests) {
-                listTag.add(quest.toTag());
-            }
-            CompoundTag outTag = new CompoundTag();
-            outTag.put("quests", listTag);
+    public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(quest.toTag());
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_OPEN_SCROLL, data);
+    }
 
-            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-            buffer.writeCompoundTag(outTag);
+    public static void sendQuestsPacket(ServerPlayerEntity player, List<Quest> quests) {
+        // convert to nbt and write to packet buffer
+        ListTag listTag = new ListTag();
+        for (Quest quest : quests) {
+            listTag.add(quest.toTag());
+        }
+        CompoundTag outTag = new CompoundTag();
+        outTag.put("quests", listTag);
 
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        buffer.writeCompoundTag(outTag);
+
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
+    }
+
+    private void handleServerOpenScroll(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(16);
+        if (questId == null || questId.isEmpty())
+            return;
+
+        processClientPacket(context, (player, manager) -> {
+            Optional<Quest> optionalQuest = manager.getQuest(questId);
+            if (!optionalQuest.isPresent())
+                return;
+
+            sendPlayerOpenScrollPacket(player, optionalQuest.get());
         });
     }
 
     private void handleServerFetchCurrentQuests(PacketContext context, PacketByteBuf data) {
+        processClientPacket(context, (player, manager) -> {
+            sendPlayerQuestsPacket(player);
+        });
+    }
+
+    private void handleServerAbandonQuest(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(16);
+        if (questId == null || questId.isEmpty())
+            return;
+
+        processClientPacket(context, (player, manager) -> {
+            Optional<Quest> optionalQuest = manager.getQuest(questId);
+            if (!optionalQuest.isPresent())
+                return;
+
+            Quest quest = optionalQuest.get();
+            quest.abandon(player);
+
+            sendPlayerQuestsPacket(player);
+        });
+    }
+
+    private void processClientPacket(PacketContext context, BiConsumer<ServerPlayerEntity, QuestManager> callback) {
         context.getTaskQueue().execute(() -> {
             ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
             if (player == null)
                 return;
 
-            sendCurrentQuestsPacket(player);
+            Optional<QuestManager> questManager = Scrolls.getQuestManager();
+            questManager.ifPresent(manager -> callback.accept(player, manager));
         });
     }
 }

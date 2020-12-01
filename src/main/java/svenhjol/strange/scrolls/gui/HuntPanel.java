@@ -49,7 +49,7 @@ public class HuntPanel extends Panel {
             drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // show task satisfaction status
-            if (satisfied.get(entityId))
+            if (satisfied.get(entityId) != null && satisfied.get(entityId))
                 renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 30 + getTextRenderer().getWidth(text), baseTop - 1);
 
             baseTop += rowHeight;

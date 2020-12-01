@@ -110,6 +110,11 @@ public class QuestManager extends PersistentState {
         return quest == null || !quest.isActive() ? Optional.empty() : Optional.of(quest);
     }
 
+    public Optional<Quest> getQuest(Quest questIn) {
+        Quest quest = quests.getOrDefault(questIn.getId(), null);
+        return quest != null ? Optional.of(quest) : Optional.empty();
+    }
+
     public List<Quest> getQuests(PlayerEntity player) {
         UUID owner = player.getUuid();
         return playerQuests.containsKey(owner)
@@ -119,12 +124,6 @@ public class QuestManager extends PersistentState {
 
     public List<Quest> getQuests() {
         return quests.values().stream().filter(Quest::isActive).collect(Collectors.toList());
-    }
-
-    public void openScroll(PlayerEntity player, Quest quest) {
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompoundTag(quest.toTag());
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_OPEN_SCROLL, data);
     }
 
     public void sendToast(PlayerEntity player, Quest quest, QuestToastType type, String title) {

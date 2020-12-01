@@ -46,10 +46,13 @@ import java.util.*;
 public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
 
-    public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
-    public static final Identifier MSG_CLIENT_SHOW_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_show_quest_toast");
-    public static final Identifier MSG_CLIENT_CACHE_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "client_cache_current_quests");
-    public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests");
+    public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll"); // open the scroll screen with a populated quest
+    public static final Identifier MSG_CLIENT_SHOW_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_show_quest_toast"); // trigger a toast on the client
+    public static final Identifier MSG_CLIENT_CACHE_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "client_cache_current_quests"); // cache a list of all the player's quests
+    public static final Identifier MSG_CLIENT_DESTROY_SCROLL = new Identifier(Strange.MOD_ID, "client_destroy_scroll"); // used for displaying particle effects
+    public static final Identifier MSG_SERVER_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "server_open_scroll"); // instruct server to fetch a quest (by id) and callback the client
+    public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests"); // instruct server to fetch a list of all player's quests
+    public static final Identifier MSG_SERVER_ABANDON_QUEST = new Identifier(Strange.MOD_ID, "server_abandon_quest"); // instruct server to abandon a quest (by id)
 
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;

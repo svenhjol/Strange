@@ -63,7 +63,7 @@ public class TravelJournalsServer {
             }
 
             if (ModuleHandler.enabled(Scrolls.class)) {
-                ScrollsServer.sendCurrentQuestsPacket(player);
+                ScrollsServer.sendPlayerQuestsPacket(player);
             }
         });
     }
