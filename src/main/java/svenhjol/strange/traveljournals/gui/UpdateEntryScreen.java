@@ -227,9 +227,8 @@ public class UpdateEntryScreen extends BaseScreen {
     }
 
     private void makeMap() {
+        this.saveProgress();
         TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_MAKE_MAP, this.entry.toTag());
-        hasMap = false;
-        hasRenderedMapButton = false;
     }
 
     private void saveProgress() {
