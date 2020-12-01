@@ -8,6 +8,8 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
@@ -24,6 +26,7 @@ import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class UpdateEntryScreen extends BaseScreen {
     private JournalEntry entry;
     private TextFieldWidget nameField;
@@ -33,7 +36,6 @@ public class UpdateEntryScreen extends BaseScreen {
     private boolean hasScreenshot;
     private boolean hasMap;
 
-    private boolean hasRenderedAddPhotoButton = false;
     private boolean hasRenderedColorButtons = false;
     private boolean hasRenderedTrashButton = false;
     private boolean hasRenderedMapButton = false;
@@ -42,9 +44,8 @@ public class UpdateEntryScreen extends BaseScreen {
     private int buttonRightOffset = 113;
 
     private final List<DyeColor> colors = Arrays.asList(
-        DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.LIGHT_GRAY
+        DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.GRAY
     );
-    private File screenshotFile = null;
     private NativeImageBackedTexture screenshotTexture = null;
     private Identifier registeredScreenshotTexture = null;
     private int screenshotFailureRetries = 0;
@@ -60,12 +61,8 @@ public class UpdateEntryScreen extends BaseScreen {
     protected void init() {
         super.init();
 
-        if (client == null || client.world == null || !client.world.isClient)
+        if (client == null || client.world == null || client.player == null || !client.world.isClient)
             return;
-
-        atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
-        hasScreenshot = hasScreenshot();
-        screenshotFile = getScreenshot();
 
         // set up the input field for editing the entry name
         nameField = new TextFieldWidget(textRenderer, (width / 2) - 72, 34, 149, 12, new LiteralText("NameField"));
@@ -85,14 +82,15 @@ public class UpdateEntryScreen extends BaseScreen {
 
 
         // reset cached rendered items
-        hasRenderedAddPhotoButton = false;
         hasRenderedColorButtons = false;
         hasRenderedTrashButton = false;
         hasRenderedMapButton = false;
 
 
-        // reset check on inv items
-        hasMap = false;
+        // reset state
+        hasMap = client.player.inventory.contains(new ItemStack(Items.MAP));
+        atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
+        hasScreenshot = hasScreenshot();
     }
 
     @Override
@@ -122,42 +120,11 @@ public class UpdateEntryScreen extends BaseScreen {
             coordsTop = top + 65;
         }
 
+        // render screenshot
         if (hasScreenshot) {
-            if (screenshotTexture == null) {
-                try {
-                    RandomAccessFile raf = new RandomAccessFile(screenshotFile, "r");
-                    if (raf != null)
-                        raf.close();
-
-                    InputStream stream = new FileInputStream(screenshotFile);
-                    NativeImage screenshot = NativeImage.read(stream);
-                    screenshotTexture = new NativeImageBackedTexture(screenshot);
-                    registeredScreenshotTexture = client.getTextureManager().registerDynamicTexture("screenshot", screenshotTexture);
-                    stream.close();
-
-                    if (screenshotTexture == null || registeredScreenshotTexture == null)
-                        Charm.LOG.debug("Null problems with screenshot texture / registered texture");
-
-                } catch (Exception e) {
-                    Charm.LOG.debug("Error loading screenshot: " + e);
-                    screenshotFailureRetries++;
-
-                    if (screenshotFailureRetries > 4) {
-                        Charm.LOG.warn("Failure loading screenshot, aborting retries");
-                        hasScreenshot = false;
-                        registeredScreenshotTexture = null;
-                        screenshotTexture = null;
-                    }
-                }
-            }
-
-            if (registeredScreenshotTexture != null) {
-                client.getTextureManager().bindTexture(registeredScreenshotTexture);
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.66F, 0.4F, 0.66F);
-                this.drawTexture(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
-                GlStateManager.popMatrix();
-            }
+            tryRenderScreenshot(matrices);
+        } else {
+            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop - 30, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
         }
 
         // render color selection buttons
@@ -183,9 +150,11 @@ public class UpdateEntryScreen extends BaseScreen {
          * --- Buttons on left of page ---
          */
 
+        top = 13;
+
         // button to delete entry
         if (!hasRenderedTrashButton) {
-            this.addButton(new TexturedButtonWidget(mid - 127, top + 13, 20, 18, 160, 0, 19, BUTTONS, r -> delete()));
+            this.addButton(new TexturedButtonWidget(mid - 127, top, 20, 18, 160, 0, 19, BUTTONS, r -> delete()));
             hasRenderedTrashButton = true;
         }
 
@@ -196,18 +165,11 @@ public class UpdateEntryScreen extends BaseScreen {
 
         top = 13;
 
-        // button to take photo
-        if (!hasRenderedAddPhotoButton && atEntryPosition) {
-            top += buttonLeftOffset;
-            this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 80, 0, 19, BUTTONS, button -> prepareScreenshot()));
-            hasRenderedAddPhotoButton = true;
-        }
-
         // button to make map
         if (!hasRenderedMapButton && hasMap) {
-            top += buttonLeftOffset;
             this.addButton(new TexturedButtonWidget(mid + buttonRightOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
+            top += buttonLeftOffset;
         }
     }
 
@@ -218,7 +180,7 @@ public class UpdateEntryScreen extends BaseScreen {
         int h = 20;
         final boolean atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
 
-        int buttonX = atEntryPosition ? -110 : -40;
+        int buttonX = atEntryPosition ? -110 : -50;
         int buttonDist = 120;
 
         if (atEntryPosition) {
@@ -263,7 +225,8 @@ public class UpdateEntryScreen extends BaseScreen {
     }
 
     private void makeMap() {
-
+        TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_MAKE_MAP, this.entry.toTag());
+        hasMap = false;
     }
 
     private void saveProgress() {
@@ -280,5 +243,44 @@ public class UpdateEntryScreen extends BaseScreen {
     private void save() {
         this.saveProgress();
         this.backToMainScreen();
+    }
+
+    private void tryRenderScreenshot(MatrixStack matrices) {
+        if (screenshotTexture == null) {
+            try {
+                File screenshotFile = getScreenshot();
+                RandomAccessFile raf = new RandomAccessFile(screenshotFile, "r");
+                if (raf != null)
+                    raf.close();
+
+                InputStream stream = new FileInputStream(screenshotFile);
+                NativeImage screenshot = NativeImage.read(stream);
+                screenshotTexture = new NativeImageBackedTexture(screenshot);
+                registeredScreenshotTexture = client.getTextureManager().registerDynamicTexture("screenshot", screenshotTexture);
+                stream.close();
+
+                if (screenshotTexture == null || registeredScreenshotTexture == null)
+                    Charm.LOG.debug("Null problems with screenshot texture / registered texture");
+
+            } catch (Exception e) {
+                Charm.LOG.debug("Error loading screenshot: " + e);
+                screenshotFailureRetries++;
+
+                if (screenshotFailureRetries > 4) {
+                    Charm.LOG.warn("Failure loading screenshot, aborting retries");
+                    hasScreenshot = false;
+                    registeredScreenshotTexture = null;
+                    screenshotTexture = null;
+                }
+            }
+        }
+
+        if (registeredScreenshotTexture != null) {
+            client.getTextureManager().bindTexture(registeredScreenshotTexture);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(0.66F, 0.4F, 0.66F);
+            this.drawTexture(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
+            GlStateManager.popMatrix();
+        }
     }
 }

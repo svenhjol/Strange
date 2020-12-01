@@ -29,18 +29,18 @@ public class TravelJournalManager extends PersistentState {
         markDirty();
     }
 
-    public Optional<JournalEntry> getJournalEntry(PlayerEntity player, @Nullable String id) {
-        if (id == null)
+    public Optional<JournalEntry> getJournalEntry(PlayerEntity player, @Nullable JournalEntry entry) {
+        if (entry == null)
             return Optional.empty();
 
         UUID uuid = player.getUuid();
         List<JournalEntry> entries = playerJournalEntries.getOrDefault(uuid, new ArrayList<>());
-        return entries.stream().filter(e -> e.id.equals(id)).findFirst();
+        return entries.stream().filter(e -> e.id.equals(entry.id)).findFirst();
     }
 
     @Nullable
     public JournalEntry updateJournalEntry(PlayerEntity player, JournalEntry entry) {
-        Optional<JournalEntry> optionalEntry = getJournalEntry(player, entry.id);
+        Optional<JournalEntry> optionalEntry = getJournalEntry(player, entry);
         if (!optionalEntry.isPresent())
             return null;
 
@@ -55,7 +55,7 @@ public class TravelJournalManager extends PersistentState {
     }
 
     public void deleteJournalEntry(PlayerEntity player, JournalEntry entry) {
-        Optional<JournalEntry> optionalEntry = getJournalEntry(player, entry.id);
+        Optional<JournalEntry> optionalEntry = getJournalEntry(player, entry);
         if (!optionalEntry.isPresent())
             return;
 
