@@ -1,6 +1,10 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "strange:item/apprentice_scroll"
-  }
+    "layer0": "strange:item/scroll/apprentice_scroll_closed"
+  },
+  "overrides": [
+    { "predicate": { "scroll_state": 0 }, "model": "strange:item/scroll/apprentice_scroll_closed" },
+    { "predicate": { "scroll_state": 0.1 }, "model": "strange:item/scroll/apprentice_scroll_opened" }
+  ]
 }

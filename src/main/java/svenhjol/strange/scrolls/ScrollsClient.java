@@ -2,9 +2,11 @@ package svenhjol.strange.scrolls;
 
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.scrolls.tag.Quest;
@@ -24,6 +26,10 @@ public class ScrollsClient extends CharmClientModule {
 
         // listen for quest toast update events being sent from the server
         ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_QUEST_TOAST, this::handleClientQuestToast);
+
+        // set up scroll item model predicate
+        ModelPredicateProviderRegistryAccessor.callRegister(new Identifier("scroll_state"), (stack, world, entity)
+            -> ScrollItem.hasBeenOpened(stack) ? 0.1F : 0.0F);
     }
 
     private void handleClientOpenScroll(PacketContext context, PacketByteBuf data) {
