@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -152,7 +153,7 @@ public class TravelJournals extends CharmModule {
             ItemStack heldMap = player.inventory.getStack(slotWithStack);
             heldMap.decrement(1);
 
-            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), MapIcon.Type.TARGET_X, entry.color);
+            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), MapIcon.Type.TARGET_X, DyeColor.byId(entry.color).getSignColor());
             PlayerHelper.addOrDropStack(player, outMap);
 
             sendJournalEntryPacket(player, entry.toTag());
