@@ -117,10 +117,12 @@ public class Gather implements ISerializable {
 
         itemsCopy.forEach((requiredStack, requiredCount) -> {
             int removeIndex = -1;
+            int sum = 0;
 
             for (int i = 0; i < invCopy.size(); i++) {
                 ItemStack invStack = invCopy.get(i);
-                if (requiredStack.isItemEqualIgnoreDamage(invStack)) {
+                sum += invStack.getCount();
+                if (requiredStack.isItemEqualIgnoreDamage(invStack) && sum >= requiredCount) {
                     satisfied.put(requiredStack, true);
                     removeIndex = i;
                 }
