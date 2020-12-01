@@ -113,7 +113,7 @@ public class TravelJournalsClient extends CharmClientModule {
         if (entriesTag == null)
             return;
 
-        entries = TravelJournalHelper.getEntriesFromListTag((ListTag)entriesTag);
+        entries = TravelJournalsHelper.getEntriesFromListTag((ListTag)entriesTag);
         client.openScreen(new TravelJournalScreen());
     }
 

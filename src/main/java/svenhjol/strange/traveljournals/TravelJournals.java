@@ -3,23 +3,30 @@ package svenhjol.strange.traveljournals;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.map.MapIcon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.MapHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.runestones.Runestones;
+import svenhjol.strange.runestones.RunestonesHelper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -27,14 +34,15 @@ import java.util.function.BiConsumer;
 
 @Module(mod = Strange.MOD_ID, client = TravelJournalsClient.class)
 public class TravelJournals extends CharmModule {
-    public static final int MAX_ENTRIES = 30;
-    public static final int MAX_NAME_LENGTH = 24;
+    public static final int MAX_ENTRIES = 50;
+    public static final int MAX_NAME_LENGTH = 32;
     public static final int SCREENSHOT_DISTANCE = 10;
 
     public static final Identifier MSG_SERVER_OPEN_JOURNAL = new Identifier(Strange.MOD_ID, "server_open_journal");
     public static final Identifier MSG_SERVER_ADD_ENTRY = new Identifier(Strange.MOD_ID, "server_add_entry");
     public static final Identifier MSG_SERVER_UPDATE_ENTRY = new Identifier(Strange.MOD_ID, "server_update_entry");
     public static final Identifier MSG_SERVER_DELETE_ENTRY = new Identifier(Strange.MOD_ID, "server_delete_entry");
+    public static final Identifier MSG_SERVER_MAKE_MAP = new Identifier(Strange.MOD_ID, "server_make_map");
     public static final Identifier MSG_CLIENT_RECEIVE_ENTRY = new Identifier(Strange.MOD_ID, "client_receive_entry");
     public static final Identifier MSG_CLIENT_RECEIVE_ENTRIES = new Identifier(Strange.MOD_ID, "client_receive_entries");
 
@@ -53,7 +61,7 @@ public class TravelJournals extends CharmModule {
         ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_ADD_ENTRY, this::handleServerAddEntry);
         ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_UPDATE_ENTRY, this::handleServerUpdateEntry);
         ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_DELETE_ENTRY, this::handleServerDeleteEntry);
-
+        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_MAKE_MAP, this::handleServerMakeMap);
 
         // load travel journal manager when world starts
         LoadWorldCallback.EVENT.register(this::loadTravelJournalManager);
@@ -120,6 +128,43 @@ public class TravelJournals extends CharmModule {
                 Charm.LOG.warn("Failed to create a new journal entry, doing nothing");
                 return;
             }
+
+            sendJournalEntryPacket(player, entry.toTag());
+        });
+    }
+
+    private void handleServerMakeMap(PacketContext context, PacketByteBuf data) {
+        CompoundTag entryTag = data.readCompoundTag();
+        if (entryTag == null || entryTag.isEmpty())
+            return;
+
+        processClientPacket(context, (player, manager) -> {
+            ItemStack requiredItem = new ItemStack(Items.MAP);
+            Optional<JournalEntry> optionalEntry = manager.getJournalEntry(player, new JournalEntry(entryTag));
+            if (!optionalEntry.isPresent())
+                return;
+
+            JournalEntry entry = optionalEntry.get();
+
+            int slotWithStack = player.inventory.method_7371(requiredItem);
+            if (slotWithStack == -1)
+                return;
+
+            ItemStack heldMap = player.inventory.getStack(slotWithStack);
+            heldMap.decrement(1);
+
+            DyeColor col = DyeColor.byId(entry.color);
+            MapIcon.Type decoration = MapIcon.Type.TARGET_X;
+            if (col == DyeColor.BLACK) decoration = MapIcon.Type.BANNER_BLACK;
+            if (col == DyeColor.BLUE) decoration = MapIcon.Type.BANNER_BLUE;
+            if (col == DyeColor.PURPLE) decoration = MapIcon.Type.BANNER_PURPLE;
+            if (col == DyeColor.RED) decoration = MapIcon.Type.BANNER_RED;
+            if (col == DyeColor.BROWN) decoration = MapIcon.Type.BANNER_BROWN;
+            if (col == DyeColor.GREEN) decoration = MapIcon.Type.BANNER_GREEN;
+            if (col == DyeColor.GRAY) decoration = MapIcon.Type.BANNER_GRAY;
+
+            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), decoration, col.getFireworkColor());
+            PlayerHelper.addOrDropStack(player, outMap);
 
             sendJournalEntryPacket(player, entry.toTag());
         });

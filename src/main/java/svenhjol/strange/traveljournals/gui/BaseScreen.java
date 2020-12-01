@@ -23,6 +23,7 @@ public abstract class BaseScreen extends Screen {
     public static final int SUB_COLOR = 0xB4B0A8;
     public static final int BGWIDTH = 256;
     public static final int BGHEIGHT = 192;
+    public static final int NAME_CUTOFF = 27;
 
     public static final Identifier BACKGROUND = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_background.png");
     public static final Identifier BUTTONS = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_buttons.png");
@@ -84,7 +85,7 @@ public abstract class BaseScreen extends Screen {
         this.renderButtons();
     }
 
-    protected void centredString(MatrixStack matrices, TextRenderer textRenderer, String string, int x, int y, int color) {
+    protected void centeredString(MatrixStack matrices, TextRenderer textRenderer, String string, int x, int y, int color) {
         textRenderer.draw(matrices, string, x - (float)(textRenderer.getWidth(string) / 2), y, color);
     }
 

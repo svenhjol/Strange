@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
+import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.StrangeStructures;
 import svenhjol.strange.excavation.Excavation;
 import svenhjol.strange.foundations.Foundations;
@@ -29,6 +30,7 @@ public class Strange implements ModInitializer {
         StrangeStructures.init();
         StrangeLoot.init();
         StrangeCommands.init();
+        StrangeSounds.init();
 
         ModuleHandler.INSTANCE.registerFabricMod(MOD_ID, Arrays.asList(
             Excavation.class,

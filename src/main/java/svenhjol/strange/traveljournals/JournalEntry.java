@@ -42,7 +42,7 @@ public class JournalEntry {
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
         tag.putString(ID, id);
-        tag.putString(NAME, name);
+        tag.putString(NAME, name.substring(0, Math.min(name.length(), TravelJournals.MAX_NAME_LENGTH)));
         tag.putInt(COLOR, color);
 
         if (dim != null)

@@ -57,7 +57,7 @@ public class TravelJournalScreen extends BaseScreen {
         int size = entries.size();
 
         // draw title
-        centredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.title", size), mid, titleTop, TEXT_COLOR);
+        centeredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.title", size), mid, titleTop, TEXT_COLOR);
         top += titleSpacing;
 
 
@@ -80,7 +80,8 @@ public class TravelJournalScreen extends BaseScreen {
 
             // draw row
             String bold = atEntryPosition ? "§o" : "";
-            this.textRenderer.draw(matrices, bold + entry.name, left + 2, top + 10, DyeColor.byId(entry.color).getSignColor()); // TODO: how to get color not signColor
+            String name = entry.name.substring(0, Math.min(entry.name.length(), NAME_CUTOFF));
+            this.textRenderer.draw(matrices, bold + name, left + 2, top + 10, DyeColor.byId(entry.color).getSignColor()); // TODO: how to get color not signColor
 
             // update button
             this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 220, 0, 19, BUTTONS, button -> updateEntry(entry)));
@@ -108,7 +109,7 @@ public class TravelJournalScreen extends BaseScreen {
 
         // display generic messages on the journal screen
         if (!message.isEmpty())
-            drawCenteredString(matrices, textRenderer, message, mid, 143, WARN_COLOR);
+            centeredString(matrices, textRenderer, message, mid, 143, WARN_COLOR);
 
 
         /*
@@ -135,7 +136,7 @@ public class TravelJournalScreen extends BaseScreen {
     }
 
     private void addEntry() {
-        if (entries.size() <= TravelJournals.MAX_ENTRIES) {
+        if (entries.size() < TravelJournals.MAX_ENTRIES) {
             TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_ADD_ENTRY, null);
         } else {
             message = I18n.translate("gui.strange.travel_journal.journal_full");

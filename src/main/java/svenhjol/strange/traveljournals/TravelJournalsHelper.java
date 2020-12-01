@@ -7,7 +7,7 @@ import net.minecraft.nbt.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TravelJournalHelper {
+public class TravelJournalsHelper {
     public static List<JournalEntry> getEntriesFromListTag(ListTag tag) {
         List<JournalEntry> entries = new ArrayList<>();
 
