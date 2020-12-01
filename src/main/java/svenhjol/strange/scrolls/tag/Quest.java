@@ -6,7 +6,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.scrolls.ScrollHelper;
+import svenhjol.strange.scrolls.ScrollsHelper;
 import svenhjol.strange.scrolls.JsonDefinition;
 
 import java.util.UUID;
@@ -34,8 +34,8 @@ public class Quest implements ISerializable {
     private String title = "";
     private String description = "";
     private String hint = "";
-    private UUID owner = ScrollHelper.ANY_UUID;
-    private UUID merchant = ScrollHelper.ANY_UUID;
+    private UUID owner = ScrollsHelper.ANY_UUID;
+    private UUID merchant = ScrollsHelper.ANY_UUID;
     private int tier = 1;
     private int rarity = 1;
     private int expiry = 0;

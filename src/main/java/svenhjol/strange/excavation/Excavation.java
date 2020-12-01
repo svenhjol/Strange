@@ -11,7 +11,7 @@ import svenhjol.strange.base.StrangeLoot;
 
 @Module(mod = Strange.MOD_ID, client = ExcavationClient.class)
 public class Excavation extends CharmModule {
-    public static final Identifier ID = new Identifier(Strange.MOD_ID, "ancient_rubble");
+    public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "ancient_rubble");
     public static AncientRubbleBlock ANCIENT_RUBBLE;
     public static BlockEntityType<AncientRubbleBlockEntity> BLOCK_ENTITY;
 
@@ -20,7 +20,7 @@ public class Excavation extends CharmModule {
     @Override
     public void register() {
         ANCIENT_RUBBLE = new AncientRubbleBlock(this);
-        BLOCK_ENTITY = RegistryHandler.blockEntity(ID, AncientRubbleBlockEntity::new, ANCIENT_RUBBLE);
+        BLOCK_ENTITY = RegistryHandler.blockEntity(BLOCK_ID, AncientRubbleBlockEntity::new, ANCIENT_RUBBLE);
     }
 
     @Override

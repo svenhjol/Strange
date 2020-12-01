@@ -172,7 +172,7 @@ public class QuestManager extends PersistentState {
         UUID owner = player.getUuid();
 
         if (seller == null)
-            seller = ScrollHelper.ANY_UUID;
+            seller = ScrollsHelper.ANY_UUID;
 
         Quest quest = new Quest(definition, owner, seller, rarity, currentTime);
 

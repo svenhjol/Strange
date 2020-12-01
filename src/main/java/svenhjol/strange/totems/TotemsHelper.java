@@ -9,7 +9,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
-public class TotemHelper {
+public class TotemsHelper {
     public static boolean destroy(PlayerEntity player, ItemStack totem) {
         if (player.isSpectator() || player.isCreative())
             return false;

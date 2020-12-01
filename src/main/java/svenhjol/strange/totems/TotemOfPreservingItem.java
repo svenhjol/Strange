@@ -46,7 +46,7 @@ public class TotemOfPreservingItem extends CharmItem {
         CompoundTag items = getItems(totem);
 
         if (!items.isEmpty()) {
-            TotemHelper.destroy(user, totem);
+            TotemsHelper.destroy(user, totem);
 
             if (!world.isClient) {
                 for (int i = 0; i < items.getSize(); i++) {

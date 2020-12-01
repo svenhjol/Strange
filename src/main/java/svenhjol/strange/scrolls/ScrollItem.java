@@ -120,7 +120,7 @@ public class ScrollItem extends CharmItem {
     public static UUID getScrollMerchant(ItemStack scroll) {
         String string = scroll.getOrCreateTag().getString(MERCHANT_TAG);
         if (string.isEmpty())
-            return ScrollHelper.ANY_UUID;
+            return ScrollsHelper.ANY_UUID;
 
         return UUID.fromString(string);
     }

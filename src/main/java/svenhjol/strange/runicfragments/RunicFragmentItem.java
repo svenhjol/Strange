@@ -83,7 +83,7 @@ public class RunicFragmentItem extends CharmItem {
 
         ServerWorld serverWorld = (ServerWorld)world;
 
-        Identifier locationId = RunicFragments.destinations.get(random.nextInt(RunicFragments.destinations.size()));
+        Identifier locationId = RunicFragments.DESTINATIONS.get(random.nextInt(RunicFragments.DESTINATIONS.size()));
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {

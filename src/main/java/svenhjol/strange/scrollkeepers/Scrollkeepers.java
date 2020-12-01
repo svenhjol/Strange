@@ -1,9 +1,6 @@
 package svenhjol.strange.scrollkeepers;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -11,7 +8,6 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -77,9 +73,6 @@ public class Scrollkeepers extends CharmModule {
         // listen for entity interaction events
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
 
-        // listen for quest satisfied request coming from the client
-        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
-
         // register scrollkeeper structures
         StructureSetupCallback.EVENT.register(() -> {
             addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/scrollkeeper"), 10);
@@ -87,6 +80,8 @@ public class Scrollkeepers extends CharmModule {
             addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/scrollkeeper"), 10);
             addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/scrollkeeper"), 10);
         });
+
+        new ScrollkeepersServer();
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
@@ -125,7 +120,7 @@ public class Scrollkeepers extends CharmModule {
 
                 // must be the merchant you bought the scroll from, or a scroll you found
                 if (!villager.getUuid().equals(quest.getMerchant())
-                    && !quest.getMerchant().equals(ScrollHelper.ANY_UUID)) {
+                    && !quest.getMerchant().equals(ScrollsHelper.ANY_UUID)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
@@ -171,27 +166,5 @@ public class Scrollkeepers extends CharmModule {
         }
 
         return ActionResult.PASS;
-    }
-
-    private void handleGetScrollQuest(PacketContext context, PacketByteBuf data) {
-        String questId = data.readString(4);
-        context.getTaskQueue().execute(() -> {
-            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
-            if (player == null)
-                return;
-
-            if (!Scrolls.getQuestManager().isPresent())
-                return;
-
-            QuestManager questManager = Scrolls.getQuestManager().get();
-            if (!questManager.getQuest(questId).isPresent())
-                return;
-
-            Quest quest = questManager.getQuest(questId).get();
-
-            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-            buffer.writeCompoundTag(quest.toTag());
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
-        });
     }
 }

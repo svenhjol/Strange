@@ -16,6 +16,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
+import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
@@ -35,6 +36,7 @@ public class LegendaryItems extends CharmModule {
 
     private Identifier lootTable;
 
+    @Config(name = "Additional enchantment levels", description = "Number of levels above the maximum that legendary enchantments can use.")
     public static int extraLevels = 3;
 
     @Override

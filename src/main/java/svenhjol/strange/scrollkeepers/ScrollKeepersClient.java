@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.strange.scrolls.ScrollHelper;
+import svenhjol.strange.scrolls.ScrollsHelper;
 import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -76,7 +76,7 @@ public class ScrollKeepersClient extends CharmClientModule {
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
-                    if (heldScrollQuest.getMerchant().equals(ScrollHelper.ANY_UUID) || heldScrollQuest.getMerchant().equals(villager.getUuid()))
+                    if (heldScrollQuest.getMerchant().equals(ScrollsHelper.ANY_UUID) || heldScrollQuest.getMerchant().equals(villager.getUuid()))
                         effectShowInterest(villager);
                 }
             });
