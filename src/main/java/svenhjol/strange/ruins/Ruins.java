@@ -114,11 +114,14 @@ public class Ruins extends CharmModule {
             Roguelike roguelikeRuin = new Roguelike();
             FOREST_RUINS.add(roguelikeRuin);
             SNOWY_RUINS.add(roguelikeRuin);
+            TAIGA_RUINS.add(roguelikeRuin);
         }
 
         if (configRuins.contains("vaults")) {
             Vaults vaultsRuin = new Vaults();
             MOUNTAINS_RUINS.add(vaultsRuin);
+            DESERT_RUINS.add(vaultsRuin);
+            SAVANNA_RUINS.add(vaultsRuin);
         }
 
         // builds and registers all custom ruins into pools
