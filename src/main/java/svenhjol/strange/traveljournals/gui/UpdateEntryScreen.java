@@ -71,7 +71,7 @@ public class UpdateEntryScreen extends BaseScreen {
         nameField.setEditableColor(-1);
         nameField.setUneditableColor(-1);
         nameField.setHasBorder(true);
-        nameField.setMaxLength(255);
+        nameField.setMaxLength(TravelJournals.MAX_NAME_LENGTH);
         nameField.setChangedListener(this::responder);
         nameField.setText(this.name);
         nameField.setEditable(true);
@@ -139,10 +139,12 @@ public class UpdateEntryScreen extends BaseScreen {
         // render coordinates if in creative mode
         if (entry.pos != null) {
             if (client.player.isCreative())
-                drawCenteredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim), (width / 2), coordsTop, TEXT_COLOR);
+                centeredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim.getPath()), (width / 2), coordsTop, TEXT_COLOR);
         }
 
-        centredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.update", this.name), width / 2, top, DyeColor.byId(entry.color).getSignColor());
+        // render title and input field
+        String title = I18n.translate("gui.strange.travel_journal.update", this.name);
+        centeredString(matrices, textRenderer, title.substring(0, Math.min(title.length(), NAME_CUTOFF)), width / 2, top, DyeColor.byId(entry.color).getSignColor());
         nameField.render(matrices, mouseX, mouseY, delta);
 
 
@@ -227,6 +229,7 @@ public class UpdateEntryScreen extends BaseScreen {
     private void makeMap() {
         TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_MAKE_MAP, this.entry.toTag());
         hasMap = false;
+        hasRenderedMapButton = false;
     }
 
     private void saveProgress() {

@@ -54,7 +54,7 @@ public class LearnedRunesScreen extends BaseScreen {
         int mid = this.width / 2;
 
         // draw title
-        centredString(matrices, textRenderer, title, mid, titleTop, TEXT_COLOR);
+        centeredString(matrices, textRenderer, title, mid, titleTop, TEXT_COLOR);
 
         int top = 34;
         int left = mid - 62;
