@@ -4,7 +4,8 @@
 		"bottom": "strange:block/runic_altar/runic_bottom",
 		"top": "strange:block/runic_altar/runic_top",
 		"surface": "strange:block/runic_altar/runic_surface",
-		"charges1": "strange:block/runic_altar/base_charges1"
+		"charges1": "strange:block/runic_altar/base_charges1",
+		"particle": "strange:block/runic_altar/runic_top"
 	},
 	"elements": [
 		{
