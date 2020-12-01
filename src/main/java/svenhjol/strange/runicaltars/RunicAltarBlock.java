@@ -30,6 +30,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
 import svenhjol.charm.base.helper.PlayerHelper;
+import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
@@ -83,7 +84,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         if (charges == 0) {
             if (!world.isClient) {
                 // ensure client has the latest rune discoveries
-                RunestonesHelper.syncLearnedRunesToClient((ServerPlayerEntity) player);
+                Runestones.sendLearnedRunesPacket((ServerPlayerEntity) player);
                 player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             }
         } else {

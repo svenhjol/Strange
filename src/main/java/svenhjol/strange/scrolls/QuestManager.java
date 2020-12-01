@@ -132,7 +132,7 @@ public class QuestManager extends PersistentState {
         data.writeCompoundTag(quest.toTag());
         data.writeEnumConstant(type);
         data.writeString(title);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_QUEST_TOAST, data);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);
     }
 
     public boolean abandonQuest(PlayerEntity player, String id) {

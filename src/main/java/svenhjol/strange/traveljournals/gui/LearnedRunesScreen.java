@@ -73,8 +73,8 @@ public class LearnedRunesScreen extends BaseScreen {
                     if (knownRune) {
                         itemStack = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(index));
 
-                        if (RunestonesClient.DESTINATION_NAMES.containsKey(index))
-                            hoverText = new TranslatableText("runestone.strange.known", RunestonesClient.DESTINATION_NAMES.get(index));
+                        if (RunestonesClient.CACHED_DESTINATION_NAMES.containsKey(index))
+                            hoverText = new TranslatableText("runestone.strange.known", RunestonesClient.CACHED_DESTINATION_NAMES.get(index));
 
                         String runeChar = Character.toString((char) (index + 97));
                         runeText = new LiteralText(runeChar).fillStyle(SGA_STYLE);

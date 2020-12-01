@@ -1,10 +1,13 @@
 package svenhjol.strange.scrolls;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback.LootTableSetter;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -18,6 +21,9 @@ import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,6 +44,7 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
+import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -47,7 +54,9 @@ public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
 
     public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll");
-    public static final Identifier MSG_CLIENT_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_quest_toast");
+    public static final Identifier MSG_CLIENT_SHOW_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_show_quest_toast");
+    public static final Identifier MSG_CLIENT_CACHE_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "client_cache_current_quests");
+    public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests");
 
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
@@ -83,6 +92,7 @@ public class Scrolls extends CharmModule {
             SCROLL_TIERS.put(tier, new ScrollItem(this, tier, SCROLL_TIER_IDS.get(tier) + "_scroll"));
         }
 
+        // handle adding normal scrolls to loot
         SCROLL_LOOT_FUNCTION = RegistryHandler.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
     }
 
@@ -105,6 +115,9 @@ public class Scrolls extends CharmModule {
 
         // tick the questmanager
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
+
+        // handle incoming client packets
+        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
     }
 
     private void loadQuestManager(MinecraftServer server) {
@@ -276,5 +289,35 @@ public class Scrolls extends CharmModule {
         });
 
         return scrolls;
+    }
+
+    public static void sendCurrentQuestsPacket(ServerPlayerEntity player) {
+        Optional<QuestManager> questManager = getQuestManager();
+        questManager.ifPresent(manager -> {
+            List<Quest> quests = manager.getQuests(player);
+
+            // convert to nbt and write to packet buffer
+            ListTag listTag = new ListTag();
+            for (Quest quest : quests) {
+                listTag.add(quest.toTag());
+            }
+            CompoundTag outTag = new CompoundTag();
+            outTag.put("quests", listTag);
+
+            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+            buffer.writeCompoundTag(outTag);
+
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
+        });
+    }
+
+    private void handleServerFetchCurrentQuests(PacketContext context, PacketByteBuf data) {
+        context.getTaskQueue().execute(() -> {
+            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+            if (player == null)
+                return;
+
+            sendCurrentQuestsPacket(player);
+        });
     }
 }

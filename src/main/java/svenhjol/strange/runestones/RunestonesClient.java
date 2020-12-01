@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RunestonesClient extends CharmClientModule {
-    public static Map<Integer, String> DESTINATION_NAMES = new HashMap<>();
+    public static Map<Integer, String> CACHED_DESTINATION_NAMES = new HashMap<>();
 
     public RunestonesClient(CharmModule module) {
         super(module);
@@ -19,31 +19,29 @@ public class RunestonesClient extends CharmClientModule {
 
     @Override
     public void register() {
-        // listen for player runestone discoveries being sent from the server
-        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_SYNC_LEARNED, this::handleClientSyncLearned);
-
-        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_SYNC_DESTINATION_NAMES, this::handleClientSyncDestinationNames);
+        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_LEARNED_RUNES, this::handleClientCacheLearnedRunes);
+        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_DESTINATION_NAMES, this::handleClientCacheDestinationNames);
     }
 
-    private void handleClientSyncLearned(PacketContext context, PacketByteBuf data) {
+    private void handleClientCacheLearnedRunes(PacketContext context, PacketByteBuf data) {
         int[] discoveries = data.readIntArray();
         context.getTaskQueue().execute(() -> {
             RunestonesHelper.populateLearnedRunes(context.getPlayer(), discoveries);
         });
     }
 
-    private void handleClientSyncDestinationNames(PacketContext context, PacketByteBuf data) {
+    private void handleClientCacheDestinationNames(PacketContext context, PacketByteBuf data) {
         CompoundTag inTag = data.readCompoundTag();
         if (inTag == null || inTag.isEmpty())
             return;
 
         context.getTaskQueue().execute(() -> {
-            DESTINATION_NAMES.clear();
+            CACHED_DESTINATION_NAMES.clear();
 
             for (int i = 0; i < RunestonesHelper.NUMBER_OF_RUNES; i++) {
                 String name = inTag.getString(String.valueOf(i));
                 if (!name.isEmpty())
-                    DESTINATION_NAMES.put(i, name);
+                    CACHED_DESTINATION_NAMES.put(i, name);
             }
         });
     }

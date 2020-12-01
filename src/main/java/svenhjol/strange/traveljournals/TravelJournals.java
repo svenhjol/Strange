@@ -26,7 +26,7 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.Runestones;
-import svenhjol.strange.runestones.RunestonesHelper;
+import svenhjol.strange.scrolls.Scrolls;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -89,8 +89,12 @@ public class TravelJournals extends CharmModule {
             sendJournalEntriesPacket(player, listTag);
 
             if (ModuleHandler.enabled(Runestones.class)) {
-                RunestonesHelper.syncLearnedRunesToClient(player);
-                RunestonesHelper.syncDestinationNamesToClient(player);
+                Runestones.sendLearnedRunesPacket(player);
+                Runestones.sendDestinationNamesPacket(player);
+            }
+
+            if (ModuleHandler.enabled(Scrolls.class)) {
+                Scrolls.sendCurrentQuestsPacket(player);
             }
         });
     }
