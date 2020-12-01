@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,17 +112,23 @@ public class Gather implements ISerializable {
     public void update(PlayerEntity player) {
         satisfied.clear();
 
-        final Map<ItemStack, Integer> sum = new HashMap<>();
+        Map<ItemStack, Integer> itemsCopy = new HashMap<>(items);
+        ArrayList<ItemStack> invCopy = new ArrayList<>(player.inventory.main);
 
-        player.inventory.main.forEach(invStack -> {
-            if (!invStack.isEmpty()) {
-                items.forEach((stack, count) -> {
-                    if (stack.isItemEqualIgnoreDamage(invStack))
-                        sum.merge(stack, invStack.getCount(), Integer::sum);
-                });
+        itemsCopy.forEach((requiredStack, requiredCount) -> {
+            int removeIndex = -1;
+
+            for (int i = 0; i < invCopy.size(); i++) {
+                ItemStack invStack = invCopy.get(i);
+                if (requiredStack.isItemEqualIgnoreDamage(invStack)) {
+                    satisfied.put(requiredStack, true);
+                    removeIndex = i;
+                }
+            }
+
+            if (removeIndex >= 0) {
+                invCopy.remove(removeIndex);
             }
         });
-
-        sum.forEach((stack, count) -> satisfied.put(stack, count >= items.get(stack)));
     }
 }
