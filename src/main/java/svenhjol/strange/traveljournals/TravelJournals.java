@@ -163,7 +163,7 @@ public class TravelJournals extends CharmModule {
             if (col == DyeColor.GREEN) decoration = MapIcon.Type.BANNER_GREEN;
             if (col == DyeColor.GRAY) decoration = MapIcon.Type.BANNER_GRAY;
 
-            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), decoration, col.getSignColor());
+            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), decoration, col.getFireworkColor());
             PlayerHelper.addOrDropStack(player, outMap);
 
             sendJournalEntryPacket(player, entry.toTag());
