@@ -74,7 +74,7 @@ public class TravelJournalManager extends PersistentState {
 
         List<JournalEntry> entries = playerJournalEntries.get(uuid);
 
-        if (entries.size() > TravelJournals.MAX_ENTRIES) {
+        if (entries.size() >= TravelJournals.MAX_ENTRIES) {
             Charm.LOG.warn("Too many journal entries for player " + uuid.toString());
             return null;
         }

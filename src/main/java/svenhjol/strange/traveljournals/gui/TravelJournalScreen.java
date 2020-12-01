@@ -109,7 +109,7 @@ public class TravelJournalScreen extends BaseScreen {
 
         // display generic messages on the journal screen
         if (!message.isEmpty())
-            drawCenteredString(matrices, textRenderer, message, mid, 143, WARN_COLOR);
+            centeredString(matrices, textRenderer, message, mid, 143, WARN_COLOR);
 
 
         /*
@@ -136,7 +136,7 @@ public class TravelJournalScreen extends BaseScreen {
     }
 
     private void addEntry() {
-        if (entries.size() <= TravelJournals.MAX_ENTRIES) {
+        if (entries.size() < TravelJournals.MAX_ENTRIES) {
             TravelJournalsClient.sendServerPacket(TravelJournals.MSG_SERVER_ADD_ENTRY, null);
         } else {
             message = I18n.translate("gui.strange.travel_journal.journal_full");
