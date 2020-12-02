@@ -18,13 +18,13 @@ public class Castle extends BaseStructure {
         addStart("start_tower2", 1);
 
 
-        ROOMS.put("room_secret", 1);
+        ROOMS.put("room_secret", 2);
         ROOMS.put("room_smlib", 1);
-        ROOMS.put("room_tower", 3);
+        ROOMS.put("room_tower", 2);
         ROOMS.put("room_corner_upper", 3);
         ROOMS.put("room_corner_lower", 3);
-        ROOMS.put("room_wood", 3);
-        ROOMS.put("room_trap", 2);
+        ROOMS.put("room_wood", 2);
+        ROOMS.put("room_trap", 1);
         ROOMS.put("room_nature", 2);
         ROOMS.put("room_damaged", 2);
 
