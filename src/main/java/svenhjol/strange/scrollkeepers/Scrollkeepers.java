@@ -79,6 +79,8 @@ public class Scrollkeepers extends CharmModule {
             addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/scrollkeeper"), 10);
             addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/scrollkeeper"), 10);
             addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/scrollkeeper"), 10);
+            addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/scrollkeeper"), 10);
+
         });
 
         ScrollkeepersServer server = new ScrollkeepersServer();
