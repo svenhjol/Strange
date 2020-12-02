@@ -20,6 +20,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.runicfragments.RunicFragmentItem;
 import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.runicfragments.RunicFragments;
@@ -159,12 +160,21 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
     private void trySetDestination(ItemStack stack) {
         if (stack.getItem() == RunicFragments.RUNIC_FRAGMENT) {
-            if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random))
+            if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random)) {
+                this.destination = null;
                 return;
+            }
 
             this.destination = RunicFragmentItem.getNormalizedPos(stack, world);
         } else {
             this.destination = RunestonesHelper.getBlockPosFromItemStack(world, stack);
+        }
+
+        // to trigger the place_on_altar advancement, send server packet here
+        if (this.destination != null) {
+            NetworkHelper.sendPacketToServer(RunicAltars.MSG_SERVER_PLACED_ON_ALTAR, buffer -> {
+                buffer.writeLong(pos.asLong());
+            });
         }
     }
 

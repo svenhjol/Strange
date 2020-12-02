@@ -1,5 +1,5 @@
 {
-  "parent": "strange:activate_runestone",
+  "parent": "strange:empower_altar",
   "display": {
     "icon": {
       "item": "strange:runic_altar"

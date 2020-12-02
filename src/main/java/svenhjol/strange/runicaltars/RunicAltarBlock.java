@@ -75,6 +75,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
                 if (!world.isClient) {
                     world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     world.setBlockState(pos, state.with(CHARGES, charges + 1));
+                    Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Blocks.CHORUS_FLOWER)); // to trigger empower_altar advancement
                     held.decrement(1);
                 }
             }

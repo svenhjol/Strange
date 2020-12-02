@@ -12,6 +12,7 @@ import svenhjol.strange.Strange;
 public class RunicAltars extends CharmModule {
     public static final int NUMBER_OF_RUNES = 8;
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runic_altar");
+    public static final Identifier MSG_SERVER_PLACED_ON_ALTAR = new Identifier(Strange.MOD_ID, "server_placed_on_altar");
 
     public static RunicAltarBlock RUNIC_ALTAR;
     public static BlockEntityType<RunicAltarBlockEntity> BLOCK_ENTITY;
@@ -22,5 +23,11 @@ public class RunicAltars extends CharmModule {
         RUNIC_ALTAR = new RunicAltarBlock(this);
         SCREEN_HANDLER = RegistryHandler.screenHandler(BLOCK_ID, RunicAltarScreenHandler::new);
         BLOCK_ENTITY = RegistryHandler.blockEntity(BLOCK_ID, RunicAltarBlockEntity::new);
+    }
+
+    @Override
+    public void init() {
+        RunicAltarsServer server = new RunicAltarsServer();
+        server.init();
     }
 }
