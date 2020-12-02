@@ -160,7 +160,7 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
     private void trySetDestination(ItemStack stack) {
         if (stack.getItem() == RunicFragments.RUNIC_FRAGMENT) {
-            if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random)) {
+            if (!RunicFragmentItem.isPopulated(stack) && !RunicFragmentItem.populate(stack, world, pos, world.random, null)) {
                 this.destination = null;
                 return;
             }

@@ -44,14 +44,17 @@ public class RunicFragmentItem extends CharmItem {
         ItemStack held = user.getStackInHand(hand);
 
         if (!world.isClient) {
+
+            // if no position recorded, try and populate this fragment.
             if (getPos(held) == null) {
-                boolean result = populate(held, world, user.getBlockPos(), world.random);
+                boolean result = populate(held, world, user.getBlockPos(), world.random, null);
                 if (!result)
                     return TypedActionResult.fail(held);
             }
 
             user.getItemCooldownManager().set(this, 10);
 
+            // if runic altars module not enabled then the fragment itself can teleport you when crouching
             if (!ModuleHandler.enabled("strange:runic_altars")) {
                 if (user.isSneaking() && isPopulated(held) && isCorrectDimension(held, world)) {
                     BlockPos destination = getNormalizedPos(held, world);
@@ -67,7 +70,7 @@ public class RunicFragmentItem extends CharmItem {
         return super.use(world, user, hand);
     }
 
-    public static boolean populate(ItemStack fragment, World world, BlockPos startPos, Random random) {
+    public static boolean populate(ItemStack fragment, World world, BlockPos startPos, Random random, @Nullable Identifier locationId) {
         // don't try populating again until after timeout
         if (isWaitingForTimeout(fragment, world))
             return false;
@@ -83,7 +86,10 @@ public class RunicFragmentItem extends CharmItem {
 
         ServerWorld serverWorld = (ServerWorld)world;
 
-        Identifier locationId = RunicFragments.DESTINATIONS.get(random.nextInt(RunicFragments.DESTINATIONS.size()));
+        // if no location specified, fetch one from the random pool
+        if (locationId == null)
+            locationId = RunicFragments.DESTINATIONS.get(random.nextInt(RunicFragments.DESTINATIONS.size()));
+
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(locationId);
 
         if (structureFeature == null) {
