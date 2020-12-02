@@ -51,6 +51,9 @@ public class ScrollKeepersClient extends CharmClientModule {
             if (questId == null)
                 return;
 
+            if (!player.getUuid().equals(ScrollItem.getScrollOwner(held)))
+                return;
+
             // fire a request to the server to fetch the quest data for this questId
             PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
             buffer.writeString(questId);

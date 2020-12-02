@@ -81,7 +81,7 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             return ActionResult.CONSUME;
         }
 
-        if (charges == 0) {
+        if (charges == 0 || player.isSneaking()) {
             if (!world.isClient) {
                 // ensure client has the latest rune discoveries
                 RunestonesServer.sendLearnedRunesPacket((ServerPlayerEntity) player);

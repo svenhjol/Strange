@@ -20,6 +20,7 @@ import svenhjol.charm.base.item.CharmItem;
 import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.scrolls.tag.Quest;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class ScrollItem extends CharmItem {
     private static final String QUEST_TAG = "quest";
     private static final String RARITY_TAG = "rarity";
     private static final String MERCHANT_TAG = "merchant";
+    private static final String OWNER_TAG = "owner";
 
     private final int tier;
 
@@ -79,6 +81,7 @@ public class ScrollItem extends CharmItem {
 
             questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
+            setScrollOwner(held, player);
 
             // tell the client to open the scroll
             ScrollsServer.sendPlayerOpenScrollPacket(serverPlayer, quest);
@@ -90,10 +93,18 @@ public class ScrollItem extends CharmItem {
             if (questId == null)
                 return destroyScroll(world, player, held);
 
+            // check if it belongs to current player
+            UUID owner = getScrollOwner(held);
+            if (owner != null && !player.getUuid().equals(owner) && !player.isCreative()) {
+                player.sendMessage(new TranslatableText("gui.strange.scrolls.wrong_owner"), true);
+                return TypedActionResult.fail(held);
+            }
+
+
+            // try and open the quest, or destroy it if it's no longer valid
             Optional<Quest> optionalQuest = questManager.getQuest(questId);
 
             if (optionalQuest.isPresent()) {
-                // tell the client to open the scroll
                 ScrollsServer.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
             } else {
                 // scroll has expired, remove it
@@ -130,6 +141,15 @@ public class ScrollItem extends CharmItem {
         return scroll.getOrCreateTag().getString(QUEST_TAG);
     }
 
+    @Nullable
+    public static UUID getScrollOwner(ItemStack scroll) {
+        String string = scroll.getOrCreateTag().getString(OWNER_TAG);
+        if (string.isEmpty())
+            return null;
+
+        return UUID.fromString(string);
+    }
+
     public static int getScrollRarity(ItemStack scroll) {
         return scroll.getOrCreateTag().getInt(RARITY_TAG);
     }
@@ -145,6 +165,10 @@ public class ScrollItem extends CharmItem {
 
     public static void setScrollName(ItemStack scroll, Quest quest) {
         scroll.setCustomName(new TranslatableText(quest.getTitle()));
+    }
+
+    public static void setScrollOwner(ItemStack scroll, PlayerEntity player) {
+        scroll.getOrCreateTag().putString(OWNER_TAG, player.getUuidAsString());
     }
 
     public static void setScrollRarity(ItemStack scroll, int rarity) {

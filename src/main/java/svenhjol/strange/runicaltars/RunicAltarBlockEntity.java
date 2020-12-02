@@ -76,16 +76,17 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
+        this.tryRemoveCharges();
         ItemStack itemStack = Inventories.splitStack(this.items, slot, amount);
-        if (!itemStack.isEmpty()) {
+        if (!itemStack.isEmpty())
             this.markDirty();
-        }
 
         return itemStack;
     }
 
     @Override
     public ItemStack removeStack(int slot) {
+        this.tryRemoveCharges();
         return Inventories.removeStack(this.items, slot);
     }
 
@@ -164,6 +165,20 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
             this.destination = RunicFragmentItem.getNormalizedPos(stack, world);
         } else {
             this.destination = RunestonesHelper.getBlockPosFromItemStack(world, stack);
+        }
+    }
+
+    /**
+     * If player modifies the stack while there are charges on the altar,
+     * deplete all the charges in one go.
+     */
+    private void tryRemoveCharges() {
+        if (world != null && !world.isClient) {
+            if (world.getBlockState(pos).get(RunicAltarBlock.CHARGES) > 0) {
+                world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 0.8F, 1.0F);
+                world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1.0F, 0.9F);
+                world.setBlockState(pos, RunicAltars.RUNIC_ALTAR.getDefaultState());
+            }
         }
     }
 }

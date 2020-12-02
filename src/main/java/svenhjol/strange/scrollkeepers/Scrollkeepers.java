@@ -115,6 +115,12 @@ public class Scrollkeepers extends CharmModule {
 
                 Quest quest = optionalQuest.get();
 
+                // must be the owner of the scroll
+                if (!player.getUuid().equals(ScrollItem.getScrollOwner(heldStack))) {
+                    ((VillagerEntityAccessor)villager).invokeSayNo();
+                    return ActionResult.FAIL;
+                }
+
                 // quest conditions haven't been satisfied yet
                 if (!quest.isSatisfied(player)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();

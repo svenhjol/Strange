@@ -78,6 +78,7 @@
   "gui.strange.scrolls.reward_item": "%s: %s",
   "gui.strange.scrolls.time_remaining": "Time remaining: %s:%s",
   "gui.strange.scrolls.hint": "More information",
+  "gui.strange.scrolls.wrong_owner": "This scroll does not belong to you",
   "gui.strange.travel_journal.new_entry": "New Location",
   "gui.strange.travel_journal.new_biome_entry": "%s",
   "gui.strange.travel_journal.new_screenshot": "Take Photo",
