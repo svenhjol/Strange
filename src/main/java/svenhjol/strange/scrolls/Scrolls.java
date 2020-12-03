@@ -72,6 +72,9 @@ public class Scrolls extends CharmModule {
     @Config(name = "Scroll quest language", description = "The language key to use when displaying quest instructions.")
     public static String language = "en";
 
+    @Config(name = "Exploration hint", description = "If true, the player who has an exploration quest will receive a visual and audible hint when reaching the location to start exploring.")
+    public static boolean exploreHint = true;
+
     public Scrolls() {
         SCROLL_TIER_IDS.put(0, "test");
         SCROLL_TIER_IDS.put(1, "novice");

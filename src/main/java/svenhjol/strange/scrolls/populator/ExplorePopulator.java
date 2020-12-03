@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -22,8 +24,10 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.*;
+import svenhjol.charm.module.Core;
 import svenhjol.charm.module.VariantChests;
 import svenhjol.strange.scrolls.JsonDefinition;
+import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Explore;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -130,7 +134,7 @@ public class ExplorePopulator extends Populator {
             return state.getBlock() instanceof ChestBlock;
         }).collect(Collectors.toList());
 
-        // if not possible to find any chests, place one in the world.
+        // if not possible to find any chests, place one in the world
         if (chests.isEmpty()) {
             BlockState chest;
 
@@ -165,7 +169,7 @@ public class ExplorePopulator extends Populator {
                 place = new BlockPos(pos.add(x, chestStart, z));
             }
 
-            // build a little 3x3x3 cube of air to house the chest
+            // build a little 3x3x3 cube of air/water to house the chest
             BlockState platformBaseState;
             if (DimensionHelper.isDimension(world, ServerWorld.NETHER)) {
                 platformBaseState = NETHER_PLATFORM_BASE;
@@ -179,7 +183,11 @@ public class ExplorePopulator extends Populator {
                 BlockState state = py == -1 ? platformBaseState : Blocks.AIR.getDefaultState();
                 for (int px = -1; px <= 1; px++) {
                     for (int pz = -1; pz <= 1; pz++) {
-                        world.setBlockState(place.add(px, py, pz), state, 2);
+                        BlockPos buildPos = place.add(px, py, pz);
+                        if (state.isAir() && world.getBlockState(buildPos).getMaterial() == Material.WATER)
+                            state = Blocks.WATER.getDefaultState();
+
+                        world.setBlockState(buildPos, state, 2);
                     }
                 }
             }
@@ -207,8 +215,15 @@ public class ExplorePopulator extends Populator {
                         if (stackInSlot.isEmpty()) {
                             chestBlockEntity.setStack(s, stack);
 
-                            // for easier identification of target chest, set the block under the chest
-                            world.setBlockState(place.down(), Blocks.GLOWSTONE.getDefaultState(), 2);
+                            // if in debug mode then place glowstone beneath the chest for easier identification
+                            if (Core.debug) {
+                                BlockPos downPos = place.down();
+                                BlockEntity downBlockEntity = world.getBlockEntity(downPos);
+                                if (downBlockEntity != null)
+                                    continue; // don't set the block underneath if it's a blockentity/tile
+
+                                world.setBlockState(place.down(), Blocks.GLOWSTONE.getDefaultState(), 2);
+                            }
 
                             placements.add(place);
                             didPlaceItem = true;
@@ -245,6 +260,15 @@ public class ExplorePopulator extends Populator {
                     }
                 }
             }
+        }
+
+        if (!placements.isEmpty()) {
+            if (Scrolls.exploreHint) {
+                player.sendMessage(new TranslatableText("gui.strange.scrolls.explore_placed"), true);
+                player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.6F, 1.2F);
+            }
+
+            placements.forEach(p -> Charm.LOG.info("Added quest loot to chest at: " + p.toString()));
         }
 
         return placements;

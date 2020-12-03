@@ -7,11 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.scrolls.populator.ExplorePopulator;
 
@@ -170,10 +167,6 @@ public class Explore implements ISerializable {
             }
 
             quest.setDirty(true);
-
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.55F, 1.2F);
-            chestPositions.forEach(pos -> Charm.LOG.info("Added quest loot to chest at: " + pos.toString()));
-
             chests = chestPositions;
         }
     }
