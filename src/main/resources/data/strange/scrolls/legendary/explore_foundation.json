@@ -1,0 +1,65 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "modules": [
+    "strange:foundations"
+  ],
+  "lang": {
+    "en": {
+      "title": "Depths of the earth",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "wither_skeleton_skull": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "skeleton_skull": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "zombie_head": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "creeper_head": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "strange:foundation",
+        "min_distance": 6000,
+        "max_distance": 8000,
+        "chest_range": 5,
+        "chest_start": 5
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "bastion_treasure",
+        "limit": 3
+      },
+      "loot1": {
+        "items": "end_city_treasure",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-12"
+      }
+    }
+  }
+}
