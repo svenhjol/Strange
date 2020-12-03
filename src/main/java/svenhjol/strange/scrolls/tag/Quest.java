@@ -186,6 +186,10 @@ public class Quest implements ISerializable {
         this.description = description;
     }
 
+    public void setOwner(UUID uuid) {
+        this.owner = uuid;
+    }
+
     public void setHint(String hint) {
         this.hint = hint;
     }

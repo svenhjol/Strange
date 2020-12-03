@@ -133,6 +133,7 @@ public class ScrollItem extends CharmItem {
 
         // create a new scroll for this quest and give it to the player
         ItemStack scroll = new ItemStack(Scrolls.SCROLL_TIERS.get(quest.getTier()));
+        quest.setOwner(player.getUuid());
         ScrollItem.setScrollQuest(scroll, quest);
         PlayerHelper.addOrDropStack(player, scroll);
     }
