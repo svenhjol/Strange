@@ -26,7 +26,7 @@
   "reward": {
     "items": {
       "diamond_block | emerald_block": {
-        "count": "1-2"
+        "count": 1
       },
       "loot0": {
         "table": "end_city",
