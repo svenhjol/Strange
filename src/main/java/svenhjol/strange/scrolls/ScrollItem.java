@@ -127,11 +127,9 @@ public class ScrollItem extends CharmItem {
         player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
         String questId = ScrollItem.getScrollQuest(scroll);
 
-        Scrolls.getQuestManager().ifPresent(manager -> {
-            manager.getQuest(questId).ifPresent(quest -> {
-                quest.setOwner(player.getUuid());
-            });
-        });
+        Scrolls.getQuestManager().flatMap(manager
+            -> manager.getQuest(questId)).ifPresent(quest
+                -> quest.setOwner(player.getUuid()));
 
         ScrollItem.setScrollOwner(scroll, player);
     }
