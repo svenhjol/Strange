@@ -100,14 +100,15 @@ public class ScrollItem extends CharmItem {
                 return TypedActionResult.fail(held);
             }
 
-            // if there's no owner, then set it to current player
-            if (owner == null)
-                claimOwnership(held, player);
-
             // try and open the quest, or destroy it if it's no longer valid
             Optional<Quest> optionalQuest = questManager.getQuest(questId);
 
             if (optionalQuest.isPresent()) {
+
+                // if there's no owner, then set it to current player
+                if (owner == null)
+                    claimOwnership(held, player);
+
                 ScrollsServer.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
             } else {
                 // scroll has expired, remove it
@@ -124,6 +125,14 @@ public class ScrollItem extends CharmItem {
 
     public static void claimOwnership(ItemStack scroll, PlayerEntity player) {
         player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
+        String questId = ScrollItem.getScrollQuest(scroll);
+
+        Scrolls.getQuestManager().ifPresent(manager -> {
+            manager.getQuest(questId).ifPresent(quest -> {
+                quest.setOwner(player.getUuid());
+            });
+        });
+
         ScrollItem.setScrollOwner(scroll, player);
     }
 
