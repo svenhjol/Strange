@@ -101,10 +101,8 @@ public class ScrollItem extends CharmItem {
             }
 
             // if there's no owner, then set it to current player
-            if (owner == null) {
-                player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
-                ScrollItem.setScrollOwner(held, player);
-            }
+            if (owner == null)
+                claimOwnership(held, player);
 
             // try and open the quest, or destroy it if it's no longer valid
             Optional<Quest> optionalQuest = questManager.getQuest(questId);
@@ -122,6 +120,11 @@ public class ScrollItem extends CharmItem {
 
     public static boolean hasBeenOpened(ItemStack scroll) {
         return scroll.getOrCreateTag().contains(QUEST_TAG);
+    }
+
+    public static void claimOwnership(ItemStack scroll, PlayerEntity player) {
+        player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
+        ScrollItem.setScrollOwner(scroll, player);
     }
 
     public static void giveScrollToPlayer(Quest quest, PlayerEntity player) {

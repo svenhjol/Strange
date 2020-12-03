@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -60,6 +61,10 @@ public class StrangeCommand {
                 .requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.argument("definition", QuestDefinitionArgType.definition())
                     .executes(StrangeCommand::startQuest)))
+            .then(CommandManager
+                .literal("claim_scroll")
+                .requires(source -> source.hasPermissionLevel(2))
+                    .executes(StrangeCommand::claimQuest))
         );
     }
 
@@ -90,6 +95,16 @@ public class StrangeCommand {
 
         context.getSource().sendFeedback(new TranslatableText("scroll.strange.abandoned_all_quests"), false);
 
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int claimQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        ItemStack held = player.getMainHandStack();
+        if (!(held.getItem() instanceof ScrollItem))
+            throw makeException("Invalid scroll", "You must hold the scroll in main hand to claim it");
+
+        ScrollItem.claimOwnership(held, player);
         return Command.SINGLE_SUCCESS;
     }
 
