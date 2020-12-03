@@ -1,0 +1,28 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Star of the show",
+      "description": "Collect the items to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "nether_star": {
+        "count": 1
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "beacon": {
+        "count": "1-2"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "10-13"
+      }
+    }
+  }
+}

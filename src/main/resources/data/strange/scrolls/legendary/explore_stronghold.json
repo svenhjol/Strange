@@ -1,0 +1,71 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "lang": {
+    "en": {
+      "title": "The Stronghold",
+      "description": "Use the map to find the lost items.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "explore": {
+    "items": {
+      "ender_pearl": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "ender_eye": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "silverfish_spawn_egg": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      },
+      "creeper_spawn_egg": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "stronghold",
+        "min_distance": 2000,
+        "max_distance": 3000,
+        "chest_range": 64,
+        "chest_start": 32
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "lodestone | netherite_ingot": {
+        "count": 1
+      },
+      "strange:runic_fragment | strange:ancient_rubble": {
+        "count": 2
+      },
+      "loot": {
+        "items": "end_city_treasure",
+        "limit": 1
+      },
+      "pool": {
+        "items": "diamond_pickaxe,diamond_shovel,diamond_sword,diamond_chestplate,diamond_leggings,diamond_boots,diamond_helmet",
+        "enchanted": true,
+        "enchantment_treasure": true,
+        "enchantment_level": 30,
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "12-15"
+      }
+    }
+  }
+}

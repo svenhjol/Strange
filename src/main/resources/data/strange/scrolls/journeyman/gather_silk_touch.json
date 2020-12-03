@@ -1,0 +1,37 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Silk Touch",
+      "description": "Find or enchant items to complete this scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "iron_pickaxe": {
+        "enchanted": true,
+        "enchantments": "silk_touch#1"
+      },
+      "iron_hoe": {
+        "enchanted": true,
+        "enchantments": "silk_touch#1"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "4-7"
+      },
+      "pool": {
+        "items": "iron_ingot,gold_ingot",
+        "count": "10-15"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-4"
+      }
+    }
+  }
+}

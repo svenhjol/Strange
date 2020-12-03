@@ -1,0 +1,39 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The master's hunt",
+      "description": "Seek out and destroy the enemies."
+    }
+  },
+  "hunt": {
+    "enderman": "12-16",
+    "shulker": "10-12",
+    "wither_skeleton": "10-12",
+    "evoker": "2-3"
+  },
+  "reward": {
+    "items": {
+      "loot": {
+        "table": "end_city_treasure",
+        "limit": 1
+      },
+      "pool0": {
+        "items": "diamond_sword,diamond_axe,diamond_leggings,diamond_chestplate,diamond_boots,diamond_helmet",
+        "enchanted": true,
+        "enchantment_level": "15-22",
+        "limit": 1
+      },
+      "pool1": {
+        "items": "shulker_shell,shulker_box",
+        "count": 3,
+        "limit": 1
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "10-20"
+      }
+    }
+  }
+}

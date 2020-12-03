@@ -1,0 +1,33 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Pig fight",
+      "description": "Destroy the piglins and zombified piglins."
+    }
+  },
+  "hunt": {
+    "piglin": "12-16",
+    "zombified_piglin": "12-16"
+  },
+  "reward": {
+    "items": {
+      "gold_ingot": {
+        "count": "5-12"
+      },
+      "loot0": {
+        "table": "bastion",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "piglin_batering",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "4-7"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The expert's hunt",
+      "description": "Seek out and destroy the enemies."
+    }
+  },
+  "hunt": {
+    "cave_spider": "12-16",
+    "silverfish": "12-16",
+    "skeleton | zombie": "16-20",
+    "witch": "5-10"
+  },
+  "reward": {
+    "items": {
+      "pool": {
+        "items": "diamond_sword,diamond_leggings,diamond_chestplate,diamond_boots,diamond_helmet",
+        "enchanted": true,
+        "enchantment_level": "10-14",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "7-10"
+      }
+    }
+  }
+}

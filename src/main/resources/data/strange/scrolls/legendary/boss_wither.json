@@ -1,0 +1,32 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "lang": {
+    "en": {
+      "title": "Hither and Wither",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:wither": {
+        "count": 2,
+        "health": 300
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "nether_star": {
+        "count": "3-4"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "15-20"
+      }
+    }
+  }
+}

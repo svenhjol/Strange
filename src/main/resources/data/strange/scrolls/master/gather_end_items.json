@@ -1,0 +1,42 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "The End is in sight",
+      "description": "Find the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "dragon_head": {
+        "count": "3-4"
+      },
+      "elytra": {
+        "count": "1-2"
+      },
+      "dragon_breath": {
+        "count": "1-2"
+      },
+      "ender_pearl": {
+        "count": "12-16"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "end_city_treasure",
+        "limit": 2
+      },
+      "elytra": {
+        "count": "2-3",
+        "enchanted": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "10-20"
+      }
+    }
+  }
+}

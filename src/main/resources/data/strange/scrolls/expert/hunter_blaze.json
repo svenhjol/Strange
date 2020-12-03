@@ -1,0 +1,43 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Fire demons",
+      "description": "Destroy the blazes and collect blaze rods."
+    }
+  },
+  "gather": {
+    "items": {
+      "blaze_rod": {
+        "count": "12-16"
+      }
+    }
+  },
+  "hunt": {
+    "blaze": "15-20"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "5-12"
+      },
+      "loot0": {
+        "table": "bastion",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "piglin_batering",
+        "limit": 1
+      },
+      "pool": {
+        "items": "blaze_powder,blaze_rod",
+        "count": "10-12"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "3-5"
+      }
+    }
+  }
+}
