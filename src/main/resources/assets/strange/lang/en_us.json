@@ -73,6 +73,7 @@
   "gui.strange.scrolls.close": "Close",
   "gui.strange.scrolls.explore": "Explore and find items",
   "gui.strange.scrolls.explore_item": "%s",
+  "gui.strange.scrolls.explore_placed": "This seems like the right place to search...",
   "gui.strange.scrolls.gather": "Collect these items",
   "gui.strange.scrolls.gather_item": "%s: %s",
   "gui.strange.scrolls.hunt": "Search and destroy",
