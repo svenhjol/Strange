@@ -82,13 +82,10 @@ public class ExplorePopulator extends Populator {
         // get a random distance based on min and max
         BlockPos structurePos = PosHelper.addRandomOffset(pos, world.random, minDistance, maxDistance);
 
-        // resolve the structure type from the registry, falling back to mineshaft
+        // resolve the structure type from the registry
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier(type));
-        if (structureFeature == null) {
-            structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier("minecraft:mineshaft"));
-            if (structureFeature == null)
-                fail("Could not find specified structure type or mineshaft");
-        }
+        if (structureFeature == null)
+            fail("Could not find specified structure type");
 
 
         // locate structure in the world
