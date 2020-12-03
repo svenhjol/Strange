@@ -19,10 +19,10 @@
     },
     "support": {
       "minecraft:zombie_villager": {
-        "count": 3
+        "count": 5
       },
       "minecraft:skeleton": {
-        "count": 3
+        "count": 5
       }
     }
   },
@@ -45,7 +45,7 @@
     },
     "xp": {
       "player": {
-        "count": "5-10"
+        "count": "8-13"
       }
     }
   }

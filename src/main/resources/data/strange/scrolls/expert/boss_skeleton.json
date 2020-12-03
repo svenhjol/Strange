@@ -1,7 +1,7 @@
 {
   "default_pack": true,
   "valid_dimensions": ["overworld"],
-  "time_limit": 60,
+  "time_limit": 120,
   "lang": {
     "en": {
       "title": "Skeletal Horde",
@@ -12,12 +12,12 @@
   "boss": {
     "targets": {
       "minecraft:skeleton": {
-        "count": 16,
+        "count": 12,
         "health": 20,
         "effects": "regeneration,fire_protection"
       },
       "minecraft:stray": {
-        "count": 16,
+        "count": 12,
         "health": 20,
         "effects": "regeneration,fire_protection"
       }
@@ -29,7 +29,7 @@
         "count": 1
       },
       "loot0": {
-        "table": "end_city",
+        "table": "bastion",
         "limit": 1
       },
       "loot1": {

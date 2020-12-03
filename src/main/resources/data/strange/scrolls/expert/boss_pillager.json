@@ -13,7 +13,7 @@
     "targets": {
       "pillager": {
         "count": 5,
-        "health": 20,
+        "health": 30,
         "effects": "regeneration"
       }
     },
