@@ -100,7 +100,7 @@ public class Gather implements ISerializable {
                 if (remainder <= 0)
                     continue;
 
-                if (stack.isItemEqualIgnoreDamage(invStack)) {
+                if (ItemStack.areEqual(stack, invStack)) {
                     int decrement = Math.min(remainder, invStack.getCount());
                     remainder -= decrement;
                     invStack.decrement(decrement);
@@ -122,7 +122,7 @@ public class Gather implements ISerializable {
             for (int i = 0; i < invCopy.size(); i++) {
                 ItemStack invStack = invCopy.get(i);
                 sum += invStack.getCount();
-                if (requiredStack.isItemEqualIgnoreDamage(invStack) && sum >= requiredCount) {
+                if (ItemStack.areEqual(requiredStack, invStack) && sum >= requiredCount) {
                     satisfied.put(requiredStack, true);
                     removeIndex = i;
                 }

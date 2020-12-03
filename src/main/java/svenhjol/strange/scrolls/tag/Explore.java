@@ -177,7 +177,7 @@ public class Explore implements ISerializable {
 
         items.forEach(stack -> {
             for (ItemStack invStack : player.inventory.main) {
-                if (stack.isItemEqualIgnoreDamage(invStack)
+                if (ItemStack.areEqual(stack, invStack)
                     && stack.getOrCreateTag().getString(QUEST).equals(quest.getId())
                 ) {
                     invStack.decrement(1);
