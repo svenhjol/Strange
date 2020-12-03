@@ -17,23 +17,28 @@
       "wither_skeleton_skull": {
         "enchanted": true,
         "enchantment_force": true,
-        "enchantment_level": "5-10"
+        "enchantment_level": "1-2"
       },
       "skeleton_skull": {
         "enchanted": true,
         "enchantment_force": true,
-        "enchantment_level": "5-10"
+        "enchantment_level": "1-2"
       },
-      "zombie_skull": {
+      "zombie_head": {
         "enchanted": true,
         "enchantment_force": true,
-        "enchantment_level": "5-10"
+        "enchantment_level": "1-2"
+      },
+      "creeper_head": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
       }
     },
     "settings": {
       "structure": {
         "type": "strange:ruin",
-        "min_distance": 1500,
+        "min_distance": 2000,
         "max_distance": 3000,
         "chest_range": 32,
         "chest_start": 32
@@ -53,7 +58,7 @@
     },
     "xp": {
       "player": {
-        "count": "12-15"
+        "count": "13-17"
       }
     }
   }
