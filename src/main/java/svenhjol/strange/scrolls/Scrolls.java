@@ -257,10 +257,15 @@ public class Scrolls extends CharmModule {
 
     @Nullable
     public static JsonDefinition getDefinition(String definition) {
+        String[] split;
+
+        if (definition.contains("/"))
+            definition = definition.replace("/", ".");
+
         if (!definition.contains("."))
             return null;
 
-        String[] split = definition.split("\\.");
+        split = definition.split("\\.");
 
         for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
             int tierNum = entry.getKey();
