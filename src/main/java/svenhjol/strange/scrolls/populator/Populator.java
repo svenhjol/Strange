@@ -35,7 +35,7 @@ public abstract class Populator {
     public static final String ENCHANTED = "enchanted";
     public static final String ENCHANTMENT_LEVEL = "enchantment_level";
     public static final String ENCHANTMENT_TREASURE = "enchantment_treasure";
-    public static final String ENCHANTMENT_FORCE = "enchantment_force";
+    public static final String ENCHANTMENTS = "enchantments";
     public static final String ITEMS = "items";
     public static final String LOOT = "loot";
     public static final String POOL = "pool";
@@ -80,9 +80,9 @@ public abstract class Populator {
             float chance = getChanceFromValue(props.get(CHANCE), 1.0F, scale);
             int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL), 5, scale);
             boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE, "false"));
-            boolean enchantmentForce = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_FORCE, "false"));
             boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED, "false"));
             String items = props.getOrDefault(ITEMS, "");
+            String enchantments = props.getOrDefault(ENCHANTMENTS, "");
             String name = props.getOrDefault(NAME, "");
 
             // if no chance for this item to generate, skip
@@ -168,7 +168,7 @@ public abstract class Populator {
 
                         // add enchantments to each stack separately
                         if (enchanted)
-                            tryEnchant(stack, enchantmentLevel, enchantmentTreasure, enchantmentForce);
+                            tryEnchant(stack, enchantments, enchantmentLevel, enchantmentTreasure);
 
                         stacks.add(stack);
                     }
@@ -177,7 +177,7 @@ public abstract class Populator {
                     stack.setCount(count);
 
                     if (enchanted)
-                        tryEnchant(stack, enchantmentLevel, enchantmentTreasure, enchantmentForce);
+                        tryEnchant(stack, enchantments, enchantmentLevel, enchantmentTreasure);
 
                     stacks.add(stack);
                 }
@@ -214,18 +214,46 @@ public abstract class Populator {
         return ScrollDefinitionHelper.splitOptionalRandomly(key, world.random);
     }
 
-    private void tryEnchant(ItemStack stack, int enchantmentLevel, boolean treasure, boolean force) {
+    private void tryEnchant(ItemStack stack, String enchantments, int enchantmentLevel, boolean treasure) {
         Random random = world.random;
+        List<String> specificEnchantments = new ArrayList<>();
+
+        if (!enchantments.isEmpty()) {
+            if (enchantments.contains(",")) {
+                specificEnchantments.addAll(Arrays.asList(enchantments.split(",")));
+            } else {
+                specificEnchantments.add(enchantments);
+            }
+        }
 
         if (!stack.hasEnchantments()) {
-            if (stack.isEnchantable()) {
+            if (!specificEnchantments.isEmpty()) {
+
+                // if a set of enchantments has been defined, apply them with a random level (using enchantmentLevel)
+                Map<Enchantment, Integer> toApply = new HashMap<>();
+                for (String e : specificEnchantments) {
+                    Optional<Enchantment> optionalEnchantment = Registry.ENCHANTMENT.getOrEmpty(new Identifier(e));
+                    optionalEnchantment.ifPresent(enchantment -> {
+                        int level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
+                        toApply.put(enchantment, level);
+                    });
+                }
+                EnchantmentHelper.set(toApply, stack);
+
+            } else if (stack.isEnchantable()) {
+
+                // if the stack can be enchanted, just enchant randomly
                 EnchantmentHelper.enchant(random, stack, enchantmentLevel, treasure);
-            } else if (force) {
+
+            } else if (enchantmentLevel > 0) {
+
+                // if the stack isn't naturally enchantable, force from the FORCED_ENCHANTS map
                 List<Enchantment> forcedEnchants = new ArrayList<>(FORCED_ENCHANTS);
                 Collections.shuffle(forcedEnchants);
 
                 for (Enchantment enchantment : forcedEnchants) {
-                    stack.addEnchantment(enchantment, Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1));
+                    int level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
+                    stack.addEnchantment(enchantment, level);
                     if (random.nextFloat() < 0.75F)
                         break;
                 }
