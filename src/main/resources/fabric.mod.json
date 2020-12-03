@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "svenhjol.strange.Strange"
+    ],
+    "client": [
+      "svenhjol.strange.StrangeClient"
     ]
   },
   "mixins": [
