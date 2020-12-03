@@ -8,6 +8,8 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 
+import java.util.Random;
+
 public class ScrollLootFunction extends ConditionalLootFunction {
 
     public ScrollLootFunction(LootCondition[] conditions) {
@@ -16,11 +18,16 @@ public class ScrollLootFunction extends ConditionalLootFunction {
 
     @Override
     protected ItemStack process(ItemStack stack, LootContext context) {
-        if (context.getRandom().nextFloat() > 0.5F)
+        Random random = context.getRandom();
+        if (random.nextFloat() > 0.66F)
             return stack;
 
         int tier = context.getRandom().nextInt(Scrolls.TIERS - 1) + 1;
         int rarity = context.getRandom().nextInt(2) + 2;
+
+        float chance = 1.0F - (0.1F * tier);
+        if (random.nextFloat() > chance)
+            return stack;
 
         ItemStack scroll = new ItemStack(Scrolls.SCROLL_TIERS.get(tier));
         ScrollItem.setScrollRarity(scroll, rarity);
