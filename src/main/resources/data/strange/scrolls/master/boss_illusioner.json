@@ -1,0 +1,41 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["overworld"],
+  "time_limit": 60,
+  "lang": {
+    "en": {
+      "title": "Trick of the light",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:illusioner": {
+        "count": 8,
+        "health": 30,
+        "effects": "regeneration,fire_protection,water_breathing"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block | emerald_block": {
+        "count": 1
+      },
+      "loot0": {
+        "table": "end_city",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}
