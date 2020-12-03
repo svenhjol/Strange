@@ -100,6 +100,11 @@ public class ScrollItem extends CharmItem {
                 return TypedActionResult.fail(held);
             }
 
+            // if there's no owner, then set it to current player
+            if (owner == null) {
+                player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
+                ScrollItem.setScrollOwner(held, player);
+            }
 
             // try and open the quest, or destroy it if it's no longer valid
             Optional<Quest> optionalQuest = questManager.getQuest(questId);

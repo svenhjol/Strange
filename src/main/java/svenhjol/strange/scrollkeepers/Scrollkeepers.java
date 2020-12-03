@@ -33,6 +33,7 @@ import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static svenhjol.charm.event.StructureSetupCallback.addVillageHouse;
 
@@ -116,7 +117,8 @@ public class Scrollkeepers extends CharmModule {
                 Quest quest = optionalQuest.get();
 
                 // must be the owner of the scroll
-                if (!player.getUuid().equals(ScrollItem.getScrollOwner(heldStack))) {
+                UUID owner = ScrollItem.getScrollOwner(heldStack);
+                if (owner != null && !player.getUuid().equals(owner)) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
