@@ -124,11 +124,13 @@ public class Gather implements ISerializable {
                 if (invStack.isEmpty())
                     continue;
 
-                sum += invStack.getCount();
-                if (requiredStack.isItemEqualIgnoreDamage(invStack) && sum >= requiredCount) {
-                    satisfied.put(requiredStack, true);
-                    removeIndex = i;
-                    break;
+                if (requiredStack.isItemEqualIgnoreDamage(invStack)) {
+                    sum += invStack.getCount();
+                    if (sum >= requiredCount) {
+                        satisfied.put(requiredStack, true);
+                        removeIndex = i;
+                        break;
+                    }
                 }
             }
 
