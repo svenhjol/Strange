@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
@@ -279,19 +278,5 @@ public class Scrolls extends CharmModule {
         }
 
         return null;
-    }
-
-    public static List<ItemStack> getAllPlayerScrolls(PlayerEntity player) {
-        List<ItemStack> scrolls = new ArrayList<>();
-
-        player.inventory.main.forEach(stack -> {
-            if (stack.isEmpty())
-                return;
-
-            if (stack.getItem() instanceof ScrollItem)
-                scrolls.add(stack);
-        });
-
-        return scrolls;
     }
 }
