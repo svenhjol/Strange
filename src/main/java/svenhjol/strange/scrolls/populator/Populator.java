@@ -127,7 +127,7 @@ public abstract class Populator {
                     continue;
 
                 if (items.contains(",")) {
-                    List<String> poolItems = Arrays.asList(items.split(","));
+                    List<String> poolItems = splitByComma(items);
                     Collections.shuffle(poolItems);
                     itemIds.addAll(poolItems.subList(0, Math.min(poolItems.size(), limit)));
                 } else {
@@ -214,17 +214,16 @@ public abstract class Populator {
         return ScrollDefinitionHelper.splitOptionalRandomly(key, world.random);
     }
 
+    public List<String> splitByComma(String key) {
+        return ScrollDefinitionHelper.splitByComma(key);
+    }
+
     private void tryEnchant(ItemStack stack, String enchantments, int enchantmentLevel, boolean treasure) {
         Random random = world.random;
         List<String> specificEnchantments = new ArrayList<>();
 
-        if (!enchantments.isEmpty()) {
-            if (enchantments.contains(",")) {
-                specificEnchantments.addAll(Arrays.asList(enchantments.split(",")));
-            } else {
-                specificEnchantments.add(enchantments);
-            }
-        }
+        if (!enchantments.isEmpty())
+            specificEnchantments = splitByComma(splitOptionalRandomly(enchantments));
 
         if (!stack.hasEnchantments()) {
             if (!specificEnchantments.isEmpty()) {
@@ -232,12 +231,27 @@ public abstract class Populator {
                 // if a set of enchantments has been defined, apply them with a random level (using enchantmentLevel)
                 Map<Enchantment, Integer> toApply = new HashMap<>();
                 for (String e : specificEnchantments) {
+                    int level = 0;
+
+                    // enchantments can be specified as name#level
+                    if (e.contains("#")) {
+                        String[] split = e.split("#");
+                        e = split[0];
+                        level = Integer.parseInt(split[1]);
+                    }
+
                     Optional<Enchantment> optionalEnchantment = Registry.ENCHANTMENT.getOrEmpty(new Identifier(e));
-                    optionalEnchantment.ifPresent(enchantment -> {
-                        int level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
-                        toApply.put(enchantment, level);
-                    });
+                    if (!optionalEnchantment.isPresent())
+                        continue;
+
+                    Enchantment enchantment = optionalEnchantment.get();
+
+                    if (level == 0)
+                        level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
+
+                    toApply.put(enchantment, level);
                 }
+
                 EnchantmentHelper.set(toApply, stack);
 
             } else if (stack.isEnchantable()) {

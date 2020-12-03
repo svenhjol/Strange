@@ -3,6 +3,9 @@ package svenhjol.strange.base.helper;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ScrollDefinitionHelper {
@@ -65,5 +68,17 @@ public class ScrollDefinitionHelper {
 
         key = key.trim();
         return key;
+    }
+
+    public static List<String> splitByComma(String key) {
+        List<String> split = new ArrayList<>();
+
+        if (key.contains(",")) {
+            split.addAll(Arrays.asList(key.split(",")));
+        } else {
+            split.add(key);
+        }
+
+        return split;
     }
 }
