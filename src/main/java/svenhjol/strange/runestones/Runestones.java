@@ -91,7 +91,7 @@ public class Runestones extends CharmModule {
     @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
     public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
         "minecraft:desert_lakes",
-        "minecraft:mountain_edge",
+        "minecraft:flower_forest",
         "minecraft:giant_tree_taiga",
         "minecraft:badlands",
         "minecraft:bamboo_jungle",
