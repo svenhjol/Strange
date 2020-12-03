@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "tag": "minecraft:stone"
+      "item": "minecraft:stone"
     },
     "@": {
       "item": "minecraft:clay_ball"
