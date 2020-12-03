@@ -52,11 +52,6 @@ public class Scrollkeepers extends CharmModule {
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when handing in a scroll.")
     public static double badOmenChance = 0.05D;
 
-    @Override
-    public void register() {
-        enabled = ModuleHandler.enabled("strange:scrolls");
-    }
-
     public static void registerAfterWritingDesk() {
         POIT = VillagerHelper.addPointOfInterestType(WritingDesks.BLOCK_ID, WritingDesks.WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
@@ -66,6 +61,11 @@ public class Scrollkeepers extends CharmModule {
         VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollkeeperTradeOffers.ScrollForEmeralds(3));
         VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollkeeperTradeOffers.ScrollForEmeralds(4));
         VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
+    }
+
+    @Override
+    public boolean depends() {
+        return ModuleHandler.enabled(Scrolls.class);
     }
 
     @Override
