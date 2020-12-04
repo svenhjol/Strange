@@ -16,11 +16,11 @@ public class RuneArgType implements ArgumentType<Character> {
 
         if (raw.length() != 1) {
             reader.setCursor(cursor);
-            throw StrangeCommand.makeException("Invalid letter", "%s is not a valid length", raw);
+            throw StrangeCommand.makeException("Invalid length", "%s is not a valid length", raw);
         }
 
         if (!Pattern.compile("[a-z]").matcher(raw).find()) {
-            throw StrangeCommand.makeException("Invalid letter", "%s is not a valid letter", raw);
+            throw StrangeCommand.makeException("Invalid input", "%s is not a valid letter", raw);
         }
 
         raw = raw.toLowerCase();
