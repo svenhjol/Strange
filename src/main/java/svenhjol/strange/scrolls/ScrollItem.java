@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -75,13 +76,21 @@ public class ScrollItem extends CharmItem {
             UUID seller = getScrollMerchant(held);
             int rarity = Math.min(1, getScrollRarity(held));
 
+            // if quest fails to generate then destroy it here
             Quest quest = questManager.createQuest(serverPlayer, definition, rarity, seller);
-            if (quest == null)
-                return destroyScroll(world, player, held);
+            if (quest == null) {
 
-            questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
+                // if the scroll was purchased, refund the emeralds with stack count equal to the tier
+                if (!seller.equals(ScrollsHelper.ANY_UUID))
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Items.EMERALD, tier));
+
+                return destroyScroll(world, player, held);
+            }
+
+//            questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
             setScrollOwner(held, player);
+
 
             // tell the client to open the scroll
             ScrollsServer.sendPlayerOpenScrollPacket(serverPlayer, quest);
