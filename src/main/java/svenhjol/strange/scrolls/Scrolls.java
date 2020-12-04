@@ -274,12 +274,18 @@ public class Scrolls extends CharmModule {
         for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
             int tierNum = entry.getKey();
             String tierName = entry.getValue();
+            String defName;
 
-            if (tierName.equals(split[0])) {
-                if (AVAILABLE_SCROLLS.containsKey(tierNum)) {
-                    return AVAILABLE_SCROLLS.get(tierNum).getOrDefault("scrolls." + definition, null);
-                }
+            if (split[0].equals("scrolls")) {
+                defName = definition;
+            } else if (tierName.equals(split[0])) {
+                defName = "scrolls." + definition;
+            } else {
+                return null;
             }
+
+            if (AVAILABLE_SCROLLS.containsKey(tierNum))
+                return AVAILABLE_SCROLLS.get(tierNum).getOrDefault(defName, null);
         }
 
         return null;

@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HuntPopulator extends Populator {
-    public HuntPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public HuntPopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override

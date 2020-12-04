@@ -11,8 +11,8 @@ import java.util.Map;
 public class GatherPopulator extends Populator {
     public static final String ITEMS = "items";
 
-    public GatherPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public GatherPopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override

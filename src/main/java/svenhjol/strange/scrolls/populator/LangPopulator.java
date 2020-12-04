@@ -14,8 +14,8 @@ public class LangPopulator extends Populator {
     public static final String DESCRIPTION = "description";
     public static final String HINT = "hint";
 
-    public LangPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public LangPopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override

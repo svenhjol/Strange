@@ -37,8 +37,10 @@ public class BossPopulator extends Populator {
     public static final String HEALTH = "health";
     public static final String EFFECTS = "effects";
 
-    public BossPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public static final int MAP_COLOR = 0x770000;
+
+    public BossPopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override
@@ -87,10 +89,14 @@ public class BossPopulator extends Populator {
         entities.forEach(quest.getBoss()::addTarget);
 
         // give map to the location
-        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, 0x770000);
-        PlayerHelper.addOrDropStack(player, map);
+        PlayerHelper.addOrDropStack(player, getMap());
 
-        Charm.LOG.info("Created boss quest at pos: " + foundPos.toString());
+        Charm.LOG.info("[BossPopulator] Created boss quest at pos: " + foundPos.toString());
+    }
+
+    @Override
+    public ItemStack getMap() {
+        return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, MAP_COLOR);
     }
 
     public static boolean startEncounter(PlayerEntity player, Boss tag) {
@@ -198,13 +204,13 @@ public class BossPopulator extends Populator {
                         });
                     }
 
-                    Charm.LOG.info("Spawned " + id + " at " + mobPos.toString());
+                    Charm.LOG.info("[BossPopulator] Spawned " + id + " at " + mobPos.toString());
                 });
 
                 if (didSpawn) {
                     didAnySpawn = true;
                 } else {
-                    Charm.LOG.info("Failed to spawn " + id);
+                    Charm.LOG.info("[BossPopulator] Failed to spawn " + id);
 
                     // if a boss entity couldn't spawn, flag it as a kill
                     if (isBoss)

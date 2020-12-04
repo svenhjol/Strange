@@ -21,6 +21,7 @@ import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.handler.InventoryTidyingHandler;
 import svenhjol.strange.base.helper.ScrollDefinitionHelper;
 import svenhjol.strange.scrolls.JsonDefinition;
+import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
@@ -56,15 +57,19 @@ public abstract class Populator {
     protected final Quest quest;
     protected final JsonDefinition definition;
 
-    public Populator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
+    public Populator(ServerPlayerEntity player, Quest quest) {
         this.player = player;
         this.world = (ServerWorld)player.world;
         this.pos = player.getBlockPos();
         this.quest = quest;
-        this.definition = definition;
+        this.definition = Scrolls.getDefinition(quest.getDefinition());
     }
 
     public abstract void populate();
+
+    public ItemStack getMap() {
+        return ItemStack.EMPTY;
+    }
 
     public List<ItemStack> parseItems(Map<String, Map<String, String>> map, int listLimit, boolean scale) {
         List<ItemStack> stacks = new ArrayList<>();

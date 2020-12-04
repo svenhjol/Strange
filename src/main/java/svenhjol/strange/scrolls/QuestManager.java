@@ -177,12 +177,12 @@ public class QuestManager extends PersistentState {
         Quest quest = new Quest(definition, owner, seller, rarity, currentTime);
 
         List<Populator> populators = new ArrayList<>(Arrays.asList(
-            new LangPopulator(player, quest, definition),
-            new RewardPopulator(player, quest, definition),
-            new GatherPopulator(player, quest, definition),
-            new HuntPopulator(player, quest, definition),
-            new ExplorePopulator(player, quest, definition),
-            new BossPopulator(player, quest, definition)
+            new LangPopulator(player, quest),
+            new RewardPopulator(player, quest),
+            new GatherPopulator(player, quest),
+            new HuntPopulator(player, quest),
+            new ExplorePopulator(player, quest),
+            new BossPopulator(player, quest)
         ));
 
         try {

@@ -39,12 +39,14 @@ public class ExplorePopulator extends Populator {
     public static final String SETTINGS = "settings";
     public static final String STRUCTURE = "structure";
 
+    public static final int MAP_COLOR = 0x007700;
+
     private static final BlockState OVERWORLD_PLATFORM_BASE = Blocks.STONE.getDefaultState();
     private static final BlockState NETHER_PLATFORM_BASE = Blocks.BLACKSTONE.getDefaultState();
     private static final BlockState END_PLATFORM_BASE = Blocks.END_STONE_BRICKS.getDefaultState();
 
-    public ExplorePopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public ExplorePopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override
@@ -103,10 +105,14 @@ public class ExplorePopulator extends Populator {
         quest.getExplore().setChestStart(chestStart);
 
         // give map to the location
-        ItemStack map = MapHelper.getMap(world, foundPos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, 0x007700);
-        PlayerHelper.addOrDropStack(player, map);
+        PlayerHelper.addOrDropStack(player, getMap());
 
-        Charm.LOG.info("Created explore quest at pos: " + foundPos.toString());
+        Charm.LOG.info("[ExplorePopulator] Created explore quest at pos: " + foundPos.toString());
+    }
+
+    @Override
+    public ItemStack getMap() {
+        return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, MAP_COLOR);
     }
 
     public static List<BlockPos> addScrollItemsToChests(PlayerEntity player, Explore explore) {
@@ -265,7 +271,7 @@ public class ExplorePopulator extends Populator {
                 player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.6F, 1.2F);
             }
 
-            placements.forEach(p -> Charm.LOG.info("Added quest loot to chest at: " + p.toString()));
+            placements.forEach(p -> Charm.LOG.info("[ExplorePopulator] Added quest loot to chest at: " + p.toString()));
         }
 
         return placements;

@@ -2,10 +2,10 @@ package svenhjol.strange.scrolls.populator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class RewardPopulator extends Populator {
     public static final String ITEMS = "items";
@@ -16,8 +16,8 @@ public class RewardPopulator extends Populator {
 
     public static final int MAX_ITEM_REWARDS = 3;
 
-    public RewardPopulator(ServerPlayerEntity player, Quest quest, JsonDefinition definition) {
-        super(player, quest, definition);
+    public RewardPopulator(ServerPlayerEntity player, Quest quest) {
+        super(player, quest);
     }
 
     @Override
