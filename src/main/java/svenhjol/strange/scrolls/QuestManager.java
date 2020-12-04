@@ -175,7 +175,23 @@ public class QuestManager extends PersistentState {
             seller = ScrollsHelper.ANY_UUID;
 
         Quest quest = new Quest(definition, owner, seller, rarity, currentTime);
+        List<Populator> populators = getPopulatorsForQuest(player, quest);
 
+        try {
+            populators.forEach(Populator::populate);
+        } catch (Exception e) {
+            Charm.LOG.warn(e.getMessage());
+            return null;
+        }
+
+        // add new quest to the active quests
+        addQuest(quest);
+
+        this.markDirty();
+        return quest;
+    }
+
+    public List<Populator> getPopulatorsForQuest(ServerPlayerEntity player, Quest quest) {
         List<Populator> populators = new ArrayList<>(Arrays.asList(
             new LangPopulator(player, quest),
             new RewardPopulator(player, quest),
@@ -185,19 +201,7 @@ public class QuestManager extends PersistentState {
             new BossPopulator(player, quest)
         ));
 
-        try {
-            populators.forEach(Populator::populate);
-        } catch (Exception e) {
-            Charm.LOG.warn(e.toString());
-            return null;
-        }
-
-        // add new quest to the active quests
-        addQuest(quest);
-
-        this.markDirty();
-
-        return quest;
+        return populators;
     }
 
     public static String nameFor(DimensionType dimensionType) {

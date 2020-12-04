@@ -26,7 +26,6 @@ import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.*;
 import svenhjol.charm.module.Core;
 import svenhjol.charm.module.VariantChests;
-import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Explore;
 import svenhjol.strange.scrolls.tag.Quest;
@@ -106,12 +105,15 @@ public class ExplorePopulator extends Populator {
 
         // give map to the location
         PlayerHelper.addOrDropStack(player, getMap());
-
-        Charm.LOG.info("[ExplorePopulator] Created explore quest at pos: " + foundPos.toString());
     }
 
     @Override
     public ItemStack getMap() {
+        BlockPos pos = quest.getExplore().getStructure();
+        if (pos == null)
+            return ItemStack.EMPTY;
+
+        Charm.LOG.info("[ExplorePopulator] Map created for explore quest at pos: " + pos);
         return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, MAP_COLOR);
     }
 

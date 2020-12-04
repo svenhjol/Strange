@@ -262,6 +262,7 @@ public class Scrolls extends CharmModule {
     @Nullable
     public static JsonDefinition getDefinition(String definition) {
         String[] split;
+        String tierName;
 
         if (definition.contains("/"))
             definition = definition.replace("/", ".");
@@ -270,22 +271,21 @@ public class Scrolls extends CharmModule {
             return null;
 
         split = definition.split("\\.");
+        if (split.length == 3) {
+            // full form, used by quest populators
+            tierName = split[1];
+        } else {
+            // short-hand form, used in commands
+            tierName = split[0];
+            definition = "scrolls." + definition;
+        }
 
         for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
-            int tierNum = entry.getKey();
-            String tierName = entry.getValue();
-            String defName;
+            int scrollTierNum = entry.getKey();
+            String scrollTierName = entry.getValue();
 
-            if (split[0].equals("scrolls")) {
-                defName = definition;
-            } else if (tierName.equals(split[0])) {
-                defName = "scrolls." + definition;
-            } else {
-                return null;
-            }
-
-            if (AVAILABLE_SCROLLS.containsKey(tierNum))
-                return AVAILABLE_SCROLLS.get(tierNum).getOrDefault(defName, null);
+            if (tierName.equals(scrollTierName) && AVAILABLE_SCROLLS.containsKey(scrollTierNum))
+                return AVAILABLE_SCROLLS.get(scrollTierNum).getOrDefault(definition, null);
         }
 
         return null;

@@ -111,8 +111,10 @@ public class Scrollkeepers extends CharmModule {
                     return ActionResult.PASS;
 
                 Optional<Quest> optionalQuest = questManager.getQuest(questId);
-                if (!optionalQuest.isPresent())
-                    return ActionResult.PASS;
+                if (!optionalQuest.isPresent()) {
+                    ((VillagerEntityAccessor)villager).invokeSayNo();
+                    return ActionResult.FAIL;
+                }
 
                 Quest quest = optionalQuest.get();
 

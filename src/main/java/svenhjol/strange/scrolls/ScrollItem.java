@@ -87,7 +87,7 @@ public class ScrollItem extends CharmItem {
                 return destroyScroll(world, player, held);
             }
 
-//            questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
+            questManager.sendToast(player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
             setScrollOwner(held, player);
 

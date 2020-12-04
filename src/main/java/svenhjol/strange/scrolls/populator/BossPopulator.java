@@ -90,12 +90,15 @@ public class BossPopulator extends Populator {
 
         // give map to the location
         PlayerHelper.addOrDropStack(player, getMap());
-
-        Charm.LOG.info("[BossPopulator] Created boss quest at pos: " + foundPos.toString());
     }
 
     @Override
     public ItemStack getMap() {
+        BlockPos pos = quest.getBoss().getStructure();
+        if (pos == null)
+            return ItemStack.EMPTY;
+
+        Charm.LOG.info("[BossPopulator] Map created for boss quest at pos: " + pos);
         return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, MAP_COLOR);
     }
 
