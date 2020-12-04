@@ -1,5 +1,5 @@
 {
-  "parent": "strange:place_writing_desk",
+  "parent": "minecraft:story/root",
   "display": {
     "icon": {
       "item": "strange:apprentice_scroll"
