@@ -35,6 +35,7 @@ import svenhjol.charm.event.EntityDeathCallback;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
+import svenhjol.charm.module.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 
@@ -113,6 +114,10 @@ public class Scrolls extends CharmModule {
 
         // tick the questmanager
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
+
+        // allow scrolls on Charm's bookcases
+        if (ModuleHandler.enabled(Bookcases.class))
+            Bookcases.validItems.add(ScrollItem.class);
 
         ScrollsServer server = new ScrollsServer();
         server.init();

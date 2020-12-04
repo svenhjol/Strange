@@ -7,8 +7,10 @@ import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
+import svenhjol.charm.module.Bookcases;
 import svenhjol.strange.Strange;
 
 import java.util.Optional;
@@ -40,6 +42,10 @@ public class TravelJournals extends CharmModule {
     public void init() {
         // load travel journal manager when world starts
         LoadWorldCallback.EVENT.register(this::loadTravelJournalManager);
+
+        // allow travel journals on Charm's bookcases
+        if (ModuleHandler.enabled(Bookcases.class))
+            Bookcases.validItems.add(TravelJournalItem.class);
 
         TravelJournalsServer server = new TravelJournalsServer();
         server.init();
