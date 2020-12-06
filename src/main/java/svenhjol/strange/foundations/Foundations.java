@@ -50,7 +50,6 @@ public class Foundations extends CharmModule {
 
         if (!FoundationGenerator.FOUNDATIONS.isEmpty()) {
             addStructureFeatureToBiomes(BiomeHelper.MOUNTAINS, CONFIGURED_FEATURE);
-            addStructureFeatureToBiomes(BiomeHelper.PLAINS, CONFIGURED_FEATURE);
         }
 
         // add player location callback
