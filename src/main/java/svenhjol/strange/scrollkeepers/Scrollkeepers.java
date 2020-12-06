@@ -76,11 +76,11 @@ public class Scrollkeepers extends CharmModule {
 
         // register scrollkeeper structures
         StructureSetupCallback.EVENT.register(() -> {
-            addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/scrollkeeper"), 5);
+            addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);
+            addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
+            addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
+            addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
+            addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
         });
 
         ScrollkeepersServer server = new ScrollkeepersServer();
