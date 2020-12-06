@@ -8,6 +8,8 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import svenhjol.strange.Strange;
 
@@ -92,6 +94,11 @@ public abstract class BaseScreen extends Screen {
 
     protected void centeredString(MatrixStack matrices, TextRenderer textRenderer, String string, int x, int y, int color) {
         textRenderer.draw(matrices, string, x - (float)(textRenderer.getWidth(string) / 2), y, color);
+    }
+
+    public static void centeredText(MatrixStack matrices, TextRenderer textRenderer, Text text, int x, int y, int color) {
+        OrderedText orderedText = text.asOrderedText();
+        textRenderer.draw(matrices, orderedText, (float)(x - textRenderer.getWidth(orderedText) / 2), (float)y, color);
     }
 
     protected void renderButtons() {

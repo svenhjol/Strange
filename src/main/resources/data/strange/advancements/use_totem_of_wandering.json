@@ -1,0 +1,34 @@
+{
+  "parent": "strange:get_travel_journal",
+  "display": {
+    "icon": {
+      "item": "strange:totem_of_wandering"
+    },
+    "title": {
+      "translate": "advancements.strange.use_totem_of_wandering.title"
+    },
+    "description": {
+      "translate": "advancements.strange.use_totem_of_wandering.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "use_totem_of_wandering": {
+      "trigger": "minecraft:used_totem",
+      "conditions": {
+        "item": {
+          "item": "strange:totem_of_wandering"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "use_totem_of_wandering"
+    ]
+  ]
+}

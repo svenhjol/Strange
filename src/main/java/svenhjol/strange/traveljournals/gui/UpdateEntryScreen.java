@@ -11,11 +11,17 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
+import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
+import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -36,10 +42,12 @@ public class UpdateEntryScreen extends BaseScreen {
     private boolean atEntryPosition;
     private boolean hasScreenshot;
     private boolean hasMap;
+    private boolean hasTotem;
 
     private boolean hasRenderedColorButtons = false;
     private boolean hasRenderedTrashButton = false;
     private boolean hasRenderedMapButton = false;
+    private boolean hasRenderedTotemButton = false;
 
     private final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.GRAY
@@ -78,15 +86,14 @@ public class UpdateEntryScreen extends BaseScreen {
         children.add(nameField);
         setFocused(nameField);
 
-
         // reset cached rendered items
         hasRenderedColorButtons = false;
         hasRenderedTrashButton = false;
         hasRenderedMapButton = false;
 
-
         // reset state
         hasMap = client.player.inventory.contains(new ItemStack(Items.MAP));
+        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && client.player.inventory.contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
         atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
         hasScreenshot = hasScreenshot();
     }
@@ -136,8 +143,13 @@ public class UpdateEntryScreen extends BaseScreen {
 
         // render coordinates if in creative mode or config allows it
         if (entry.pos != null) {
-            if (client.player.isCreative() || TravelJournals.showCoordinates)
-                centeredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim.getPath()), (width / 2), coordsTop, TEXT_COLOR);
+            if (client.player.isCreative() || TravelJournals.showCoordinates) {
+                Text coords = (new LiteralText("X:").append(String.valueOf(entry.pos.getX()))).setStyle(Style.EMPTY.withColor(Formatting.DARK_RED))
+                    .append((new LiteralText(" Z:").append(String.valueOf(entry.pos.getZ()))).setStyle(Style.EMPTY.withColor(Formatting.DARK_BLUE)))
+                    .append((new LiteralText(" ").append(StringHelper.capitalize(String.valueOf(entry.dim.getPath())))).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+
+                centeredText(matrices, textRenderer, coords, (width / 2), coordsTop, TEXT_COLOR);
+            }
         }
 
         // render title and input field
@@ -170,6 +182,13 @@ public class UpdateEntryScreen extends BaseScreen {
         if (!hasRenderedMapButton && hasMap) {
             this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
+            top += rightButtonYOffset;
+        }
+
+        // button to use totem
+        if (!hasRenderedTotemButton && hasTotem) {
+            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
+            hasRenderedTotemButton = true;
             top += rightButtonYOffset;
         }
     }
@@ -228,6 +247,12 @@ public class UpdateEntryScreen extends BaseScreen {
     private void makeMap() {
         this.saveProgress();
         NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        init();
+    }
+
+    private void useTotem() {
+        this.saveProgress();
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompoundTag(entry.toTag()));
         init();
     }
 
