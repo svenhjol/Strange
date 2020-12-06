@@ -5,9 +5,12 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
+import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -26,8 +29,10 @@ public class TravelJournalScreen extends BaseScreen {
     private int titleTop = 15;
     private int rowHeight = 20;
 
+    boolean hasTotem = false;
     boolean hasRenderedRuneButton = false;
     boolean hasRenderedScrollButton = false;
+    boolean hasRenderedEntries = false;
 
     public TravelJournalScreen() {
         super(I18n.translate("item.strange.travel_journal"));
@@ -39,6 +44,9 @@ public class TravelJournalScreen extends BaseScreen {
         super.init();
         hasRenderedRuneButton = false;
         hasRenderedScrollButton = false;
+        hasRenderedEntries = false;
+
+        hasTotem = client.player.inventory.contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
     }
 
     @Override
@@ -89,6 +97,11 @@ public class TravelJournalScreen extends BaseScreen {
             this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 220, 0, 19, BUTTONS, button -> updateEntry(entry)));
             buttonOffsetX -= buttonSpacing;
 
+            // totem button
+            if (hasTotem && DimensionHelper.isDimension(client.world, entry.dim)) {
+                this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 200, 0, 19, BUTTONS, button -> useTotem(entry)));
+            }
+
             top += rowHeight;
         }
 
@@ -97,13 +110,13 @@ public class TravelJournalScreen extends BaseScreen {
             if (page > 1) {
                 this.addButton(new TexturedButtonWidget(left + 140, 152, 20, 18, 140, 0, 19, BUTTONS, button -> {
                     --page;
-                    redraw();
+                    init();
                 }));
             }
             if (page * PER_PAGE < size) {
                 this.addButton(new TexturedButtonWidget(left + 160, 152, 20, 18, 120, 0, 19, BUTTONS, button -> {
                     ++page;
-                    redraw();
+                    init();
                 }));
             }
         }
@@ -136,6 +149,11 @@ public class TravelJournalScreen extends BaseScreen {
     }
 
     @Override
+    protected void redraw() {
+        super.redraw();
+    }
+
+    @Override
     protected void renderButtons() {
         int y = (height / 4) + 140;
         int w = 100;
@@ -162,4 +180,9 @@ public class TravelJournalScreen extends BaseScreen {
     }
 
     private void openScrollScreen() { client.openScreen(new ActiveScrollsScreen()); }
+
+    private void useTotem(JournalEntry entry) {
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        init();
+    }
 }

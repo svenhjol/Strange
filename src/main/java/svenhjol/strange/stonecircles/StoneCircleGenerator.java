@@ -46,7 +46,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
     public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator gen, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
 
-        Identifier lootTable = random.nextFloat() < 0.5F ? LootTables.PILLAGER_OUTPOST_CHEST : LootTables.SIMPLE_DUNGEON_CHEST;
+        Identifier lootTable = LootTables.PILLAGER_OUTPOST_CHEST;
 
         List<BlockState> blocks = new ArrayList<>(Arrays.asList(
             Blocks.STONE.getDefaultState(),

@@ -3,6 +3,7 @@ package svenhjol.strange.traveljournals;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapIcon;
@@ -13,14 +14,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.MapHelper;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesServer;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.ScrollsServer;
+import svenhjol.strange.totems.TotemOfWandering;
+import svenhjol.strange.totems.TotemsHelper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,6 +38,7 @@ public class TravelJournalsServer {
         ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_UPDATE_ENTRY, this::handleServerUpdateEntry);
         ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_DELETE_ENTRY, this::handleServerDeleteEntry);
         ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_MAKE_MAP, this::handleServerMakeMap);
+        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_USE_TOTEM, this::handleServerUseTotem);
     }
 
     public static void sendJournalEntriesPacket(ServerPlayerEntity player, ListTag entries) {
@@ -50,7 +56,6 @@ public class TravelJournalsServer {
         buffer.writeCompoundTag(entry);
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
-
 
     private void handleServerOpenJournal(PacketContext context, PacketByteBuf data) {
         processClientPacket(context, (player, manager) -> {
@@ -106,23 +111,57 @@ public class TravelJournalsServer {
         });
     }
 
+    private void handleServerUseTotem(PacketContext context, PacketByteBuf data) {
+        CompoundTag entryTag = data.readCompoundTag();
+        if (entryTag == null || entryTag.isEmpty())
+            return;
+
+        processClientPacket(context, (player, manager) -> {
+            // check the player has a totem
+            ItemStack requiredItem = new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING);
+            int slotWithStack = player.inventory.method_7371(requiredItem);
+            if (slotWithStack == -1)
+                return;
+
+            // check the journal entry exists
+            Optional<JournalEntry> optionalEntry = manager.getJournalEntry(player, new JournalEntry(entryTag));
+            if (!optionalEntry.isPresent())
+                return;
+
+            // check the player is in the right dimension for this entry
+            JournalEntry entry = optionalEntry.get();
+            if (!DimensionHelper.isDimension(player.world, entry.dim))
+                return;
+
+            // destroy totem
+            ItemStack heldTotem = player.inventory.getStack(slotWithStack);
+            TotemsHelper.destroy(player, heldTotem);
+
+            World world = player.world;
+            Criteria.USED_TOTEM.trigger(player, new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+            PlayerHelper.teleport(world, entry.pos, player);
+        });
+    }
+
     private void handleServerMakeMap(PacketContext context, PacketByteBuf data) {
         CompoundTag entryTag = data.readCompoundTag();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
         processClientPacket(context, (player, manager) -> {
+            // check the player has a map
             ItemStack requiredItem = new ItemStack(Items.MAP);
-            Optional<JournalEntry> optionalEntry = manager.getJournalEntry(player, new JournalEntry(entryTag));
-            if (!optionalEntry.isPresent())
-                return;
-
-            JournalEntry entry = optionalEntry.get();
-
             int slotWithStack = player.inventory.method_7371(requiredItem);
             if (slotWithStack == -1)
                 return;
 
+            // check the journal entry exists
+            Optional<JournalEntry> optionalEntry = manager.getJournalEntry(player, new JournalEntry(entryTag));
+            if (!optionalEntry.isPresent())
+                return;
+
+            // get the entry and reduce the map stack by 1
+            JournalEntry entry = optionalEntry.get();
             ItemStack heldMap = player.inventory.getStack(slotWithStack);
             heldMap.decrement(1);
 
