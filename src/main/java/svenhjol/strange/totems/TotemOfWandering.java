@@ -47,6 +47,7 @@ public class TotemOfWandering extends CharmModule {
     @Override
     public void init() {
         EntityDropsCallback.EVENT.register(this::tryDropTotemFromWanderingTrader);
+        LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         VillagerHelper.addWanderingTrade(new TotemOfWanderingForEmeraldsTrade(), false);
     }
 

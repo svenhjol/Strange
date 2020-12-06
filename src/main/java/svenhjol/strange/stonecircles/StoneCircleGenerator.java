@@ -130,7 +130,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                 BlockState checkState = world.getBlockState(checkPos);
                 BlockState checkUpState = world.getBlockState(checkUpPos);
 
-                if (checkState.isOpaque() && checkUpState.isAir() && lootTable != null) {
+                if (checkState.isOpaque() && !checkUpState.isOpaque() && !checkUpState.getMaterial().isLiquid() && lootTable != null) {
                     BlockState chest;
                     if (useVariantChests) {
                         IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
