@@ -141,6 +141,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
 
                     world.setBlockState(checkUpPos, chest, 2);
                     LootableContainerBlockEntity.setLootTable(world, random, checkUpPos, lootTable);
+                    break;
                 }
             }
         }
