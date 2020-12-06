@@ -45,7 +45,8 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
     public static final VoxelShape OUTLINE_SHAPE;
 
     public RunicAltarBlock(CharmModule module) {
-        super(module, RunicAltars.BLOCK_ID.getPath(), Settings.copy(Blocks.STONE));
+        super(module, RunicAltars.BLOCK_ID.getPath(), Settings.copy(Blocks.STONE)
+            .luminance(state -> state.get(CHARGES) > 0 ? 8 : 0));
         this.setDefaultState(getDefaultState().with(CHARGES, 0));
     }
 
