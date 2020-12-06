@@ -20,11 +20,9 @@
     "use_totem_of_preserving": {
       "trigger": "minecraft:used_totem",
       "conditions": {
-        "items": [
-          {
-            "item": "strange:totem_of_preserving"
-          }
-        ]
+        "item": {
+          "item": "strange:totem_of_preserving"
+        }
       }
     }
   },
