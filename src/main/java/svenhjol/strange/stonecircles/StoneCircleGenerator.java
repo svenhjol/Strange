@@ -78,7 +78,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                 BlockState checkUpState = world.getBlockState(checkUpPos);
 
                 boolean validSurfacePos = ((checkState.isOpaque() || checkState.getBlock() == Blocks.LAVA)
-                    && (checkUpState.isAir() || world.isWater(checkUpPos)));
+                    && (checkUpState.isAir() || !checkUpState.isOpaque() || world.isWater(checkUpPos)));
 
                 if (!validSurfacePos)
                     continue;
