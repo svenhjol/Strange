@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.module.Bookcases;
@@ -32,6 +33,9 @@ public class TravelJournals extends CharmModule {
     public static TravelJournalItem TRAVEL_JOURNAL;
 
     private static TravelJournalManager travelJournalManager;
+
+    @Config(name = "Show coordinates", description = "If true, the coordinates and dimension are shown on the update entry screen.")
+    public static boolean showCoordinates = true;
 
     @Override
     public void register() {

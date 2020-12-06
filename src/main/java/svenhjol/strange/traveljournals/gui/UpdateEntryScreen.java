@@ -134,9 +134,9 @@ public class UpdateEntryScreen extends BaseScreen {
             hasRenderedColorButtons = true;
         }
 
-        // render coordinates if in creative mode
+        // render coordinates if in creative mode or config allows it
         if (entry.pos != null) {
-            if (client.player.isCreative())
+            if (client.player.isCreative() || TravelJournals.showCoordinates)
                 centeredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.entry_location", entry.pos.getX(), entry.pos.getZ(), entry.dim.getPath()), (width / 2), coordsTop, TEXT_COLOR);
         }
 
