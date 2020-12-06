@@ -183,6 +183,6 @@ public class TravelJournalScreen extends BaseScreen {
 
     private void useTotem(JournalEntry entry) {
         NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompoundTag(entry.toTag()));
-        init();
+        client.openScreen(null);
     }
 }
