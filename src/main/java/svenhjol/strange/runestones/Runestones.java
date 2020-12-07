@@ -1,5 +1,7 @@
 package svenhjol.strange.runestones;
 
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -12,6 +14,7 @@ import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -122,8 +125,6 @@ public class Runestones extends CharmModule {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
         initDestinations();
-
-        new RunestonesServer();
     }
 
     /**
@@ -144,6 +145,32 @@ public class Runestones extends CharmModule {
 
         WORLD_DESTINATIONS = new ArrayList<>(AVAILABLE_DESTINATIONS);
         Collections.shuffle(WORLD_DESTINATIONS, random);
+    }
+
+
+    public static void sendLearnedRunesPacket(ServerPlayerEntity player) {
+        List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
+        int[] learned = learnedRunes.stream().mapToInt(i -> i).toArray();
+
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeIntArray(learned);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_LEARNED_RUNES, data);
+    }
+
+    public static void sendDestinationNamesPacket(ServerPlayerEntity player) {
+        List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
+
+        CompoundTag outTag = new CompoundTag();
+
+        for (int rune : learnedRunes) {
+            Destination destination = WORLD_DESTINATIONS.get(rune);
+            String name = RunestonesHelper.getFormattedLocationName(destination.getLocation());
+            outTag.putString(String.valueOf(rune), name);
+        }
+
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(outTag);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
     }
 
     private void initDestinations() {

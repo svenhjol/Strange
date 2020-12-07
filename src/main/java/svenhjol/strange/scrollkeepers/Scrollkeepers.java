@@ -1,6 +1,9 @@
 package svenhjol.strange.scrollkeepers;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -8,6 +11,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -83,8 +87,14 @@ public class Scrollkeepers extends CharmModule {
             addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
         });
 
-        ScrollkeepersServer server = new ScrollkeepersServer();
-        server.init();
+        // listen for quest satisfied request coming from the client
+        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
+    }
+
+    public static void sendScrollQuestPacket(ServerPlayerEntity player, Quest quest) {
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        buffer.writeCompoundTag(quest.toTag());
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
@@ -178,5 +188,24 @@ public class Scrollkeepers extends CharmModule {
         }
 
         return ActionResult.PASS;
+    }
+
+    private void handleGetScrollQuest(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(4);
+        context.getTaskQueue().execute(() -> {
+            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+            if (player == null)
+                return;
+
+            if (!Scrolls.getQuestManager().isPresent())
+                return;
+
+            QuestManager questManager = Scrolls.getQuestManager().get();
+            if (!questManager.getQuest(questId).isPresent())
+                return;
+
+            Quest quest = questManager.getQuest(questId).get();
+            Scrollkeepers.sendScrollQuestPacket(player, quest);
+        });
     }
 }

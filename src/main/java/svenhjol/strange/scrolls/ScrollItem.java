@@ -93,7 +93,7 @@ public class ScrollItem extends CharmItem {
 
 
             // tell the client to open the scroll
-            ScrollsServer.sendPlayerOpenScrollPacket(serverPlayer, quest);
+            Scrolls.sendPlayerOpenScrollPacket(serverPlayer, quest);
             return new TypedActionResult<>(ActionResult.SUCCESS, held);
 
         } else {
@@ -118,7 +118,7 @@ public class ScrollItem extends CharmItem {
                 if (owner == null)
                     claimOwnership(held, player);
 
-                ScrollsServer.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
+                Scrolls.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
             } else {
                 // scroll has expired, remove it
                 return destroyScroll(world, player, held);

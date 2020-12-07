@@ -1,10 +1,13 @@
 package svenhjol.strange.scrolls;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback.LootTableSetter;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -17,6 +20,9 @@ import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,9 +44,11 @@ import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.charm.module.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
+import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
@@ -119,9 +127,108 @@ public class Scrolls extends CharmModule {
         if (ModuleHandler.enabled(Bookcases.class))
             Bookcases.validItems.add(ScrollItem.class);
 
-        ScrollsServer server = new ScrollsServer();
-        server.init();
+        // handle incoming client packets
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_OPEN_SCROLL, this::handleServerOpenScroll);
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
+        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
     }
+
+    public static void sendPlayerQuestsPacket(ServerPlayerEntity player) {
+        Optional<QuestManager> questManager = getQuestManager();
+        questManager.ifPresent(manager -> {
+            sendQuestsPacket(player, manager.getQuests(player));
+        });
+    }
+
+    public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeCompoundTag(quest.toTag());
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_OPEN_SCROLL, data);
+    }
+
+    public static void sendQuestsPacket(ServerPlayerEntity player, List<Quest> quests) {
+        // convert to nbt and write to packet buffer
+        ListTag listTag = new ListTag();
+        for (Quest quest : quests) {
+            listTag.add(quest.toTag());
+        }
+        CompoundTag outTag = new CompoundTag();
+        outTag.put("quests", listTag);
+
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        buffer.writeCompoundTag(outTag);
+
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
+    }
+
+    public static Optional<QuestManager> getQuestManager() {
+        return questManager != null ? Optional.of(questManager) : Optional.empty();
+    }
+
+    @Nullable
+    public static JsonDefinition getRandomDefinition(int tier, World world, Random random) {
+        if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
+            Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
+            return null;
+        }
+
+        Map<String, JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        if (definitions.isEmpty()) {
+            Charm.LOG.warn("No scroll definitions found in this tier: " + tier);
+            return null;
+        }
+
+        ArrayList<JsonDefinition> allDefinitions = new ArrayList<>(definitions.values());
+
+        // try and fetch a random definition, checking the dimension restrictions of this scroll
+        for (int tries = 0; tries < 10; tries++) {
+            JsonDefinition definition = allDefinitions.get(random.nextInt(definitions.size()));
+            List<String> validDimensions = definition.getValidDimensions();
+
+            if (validDimensions.isEmpty())
+                return definition;
+
+            for (String validDimension : validDimensions) {
+                if (DimensionHelper.isDimension(world, new Identifier(validDimension)))
+                    return definition;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static JsonDefinition getDefinition(String definition) {
+        String[] split;
+        String tierName;
+
+        if (definition.contains("/"))
+            definition = definition.replace("/", ".");
+
+        if (!definition.contains("."))
+            return null;
+
+        split = definition.split("\\.");
+        if (split.length == 3) {
+            // full form, used by quest populators
+            tierName = split[1];
+        } else {
+            // short-hand form, used in commands
+            tierName = split[0];
+            definition = "scrolls." + definition;
+        }
+
+        for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
+            int scrollTierNum = entry.getKey();
+            String scrollTierName = entry.getValue();
+
+            if (tierName.equals(scrollTierName) && AVAILABLE_SCROLLS.containsKey(scrollTierNum))
+                return AVAILABLE_SCROLLS.get(scrollTierNum).getOrDefault(definition, null);
+        }
+
+        return null;
+    }
+
 
     private void loadQuestManager(MinecraftServer server) {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
@@ -223,71 +330,51 @@ public class Scrolls extends CharmModule {
         }
     }
 
-    public static Optional<QuestManager> getQuestManager() {
-        return questManager != null ? Optional.of(questManager) : Optional.empty();
+    private void handleServerOpenScroll(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(16);
+        if (questId == null || questId.isEmpty())
+            return;
+
+        processClientPacket(context, (player, manager) -> {
+            Optional<Quest> optionalQuest = manager.getQuest(questId);
+            if (!optionalQuest.isPresent())
+                return;
+
+            Scrolls.sendPlayerOpenScrollPacket(player, optionalQuest.get());
+        });
     }
 
-    @Nullable
-    public static JsonDefinition getRandomDefinition(int tier, World world, Random random) {
-        if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
-            Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
-            return null;
-        }
-
-        Map<String, JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
-        if (definitions.isEmpty()) {
-            Charm.LOG.warn("No scroll definitions found in this tier: " + tier);
-            return null;
-        }
-
-        ArrayList<JsonDefinition> allDefinitions = new ArrayList<>(definitions.values());
-
-        // try and fetch a random definition, checking the dimension restrictions of this scroll
-        for (int tries = 0; tries < 10; tries++) {
-            JsonDefinition definition = allDefinitions.get(random.nextInt(definitions.size()));
-            List<String> validDimensions = definition.getValidDimensions();
-
-            if (validDimensions.isEmpty())
-                return definition;
-
-            for (String validDimension : validDimensions) {
-                if (DimensionHelper.isDimension(world, new Identifier(validDimension)))
-                    return definition;
-            }
-        }
-
-        return null;
+    private void handleServerFetchCurrentQuests(PacketContext context, PacketByteBuf data) {
+        processClientPacket(context, (player, manager) -> {
+            Scrolls.sendPlayerQuestsPacket(player);
+        });
     }
 
-    @Nullable
-    public static JsonDefinition getDefinition(String definition) {
-        String[] split;
-        String tierName;
+    private void handleServerAbandonQuest(PacketContext context, PacketByteBuf data) {
+        String questId = data.readString(16);
+        if (questId == null || questId.isEmpty())
+            return;
 
-        if (definition.contains("/"))
-            definition = definition.replace("/", ".");
+        processClientPacket(context, (player, manager) -> {
+            Optional<Quest> optionalQuest = manager.getQuest(questId);
+            if (!optionalQuest.isPresent())
+                return;
 
-        if (!definition.contains("."))
-            return null;
+            Quest quest = optionalQuest.get();
+            quest.abandon(player);
 
-        split = definition.split("\\.");
-        if (split.length == 3) {
-            // full form, used by quest populators
-            tierName = split[1];
-        } else {
-            // short-hand form, used in commands
-            tierName = split[0];
-            definition = "scrolls." + definition;
-        }
+            Scrolls.sendPlayerQuestsPacket(player);
+        });
+    }
 
-        for (Map.Entry<Integer, String> entry : SCROLL_TIER_IDS.entrySet()) {
-            int scrollTierNum = entry.getKey();
-            String scrollTierName = entry.getValue();
+    private void processClientPacket(PacketContext context, BiConsumer<ServerPlayerEntity, QuestManager> callback) {
+        context.getTaskQueue().execute(() -> {
+            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+            if (player == null)
+                return;
 
-            if (tierName.equals(scrollTierName) && AVAILABLE_SCROLLS.containsKey(scrollTierNum))
-                return AVAILABLE_SCROLLS.get(scrollTierNum).getOrDefault(definition, null);
-        }
-
-        return null;
+            Optional<QuestManager> questManager = Scrolls.getQuestManager();
+            questManager.ifPresent(manager -> callback.accept(player, manager));
+        });
     }
 }
