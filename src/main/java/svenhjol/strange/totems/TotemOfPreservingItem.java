@@ -45,22 +45,20 @@ public class TotemOfPreservingItem extends CharmItem {
         ItemStack totem = user.getStackInHand(hand);
         CompoundTag items = getItems(totem);
 
-        if (!items.isEmpty()) {
-            TotemsHelper.destroy(user, totem);
+        TotemsHelper.destroy(user, totem);
 
-            if (!world.isClient) {
-                for (int i = 0; i < items.getSize(); i++) {
-                    Tag tag = items.get(String.valueOf(i));
-                    if (tag == null) {
-                        Charm.LOG.warn("Item tag missing from totem");
-                        continue;
-                    }
-
-                    ItemStack stack = ItemStack.fromTag((CompoundTag) tag);
-                    BlockPos pos = user.getBlockPos();
-                    ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ(), stack);
-                    world.spawnEntity(itemEntity);
+        if (!world.isClient) {
+            for (int i = 0; i < items.getSize(); i++) {
+                Tag tag = items.get(String.valueOf(i));
+                if (tag == null) {
+                    Charm.LOG.warn("Item tag missing from totem");
+                    continue;
                 }
+
+                ItemStack stack = ItemStack.fromTag((CompoundTag) tag);
+                BlockPos pos = user.getBlockPos();
+                ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ(), stack);
+                world.spawnEntity(itemEntity);
             }
         }
 
