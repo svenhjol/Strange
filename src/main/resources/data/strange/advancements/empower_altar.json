@@ -1,5 +1,5 @@
 {
-  "parent": "strange:place_on_altar",
+  "parent": "strange:get_runic_fragment",
   "display": {
     "icon": {
       "item": "minecraft:chorus_flower"
