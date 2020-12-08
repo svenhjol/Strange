@@ -41,7 +41,7 @@ public class RunicFragments extends CharmModule {
     ));
 
     @Config(name = "Loot chance", description = "Chance (out of 1.0) of a runic fragment appearing in rare ruin loot (or stronghold loot if ruins are disabled).")
-    public static double lootChance = 0.75F;
+    public static double lootChance = 0.5F;
 
     @Override
     public void register() {
