@@ -19,6 +19,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -75,6 +76,9 @@ public class Runestones extends CharmModule {
 
     @Config(name = "Travel protection time", description = "Number of seconds of regeneration and slow-fall when teleporting through a runestone.")
     public static int protectionDuration = 10;
+
+    @Config(name = "Learn from other players", description = "If true, looking at a runestone whose location has already been discovered by another player lets you immediately learn that rune.")
+    public static boolean learnFromOtherPlayers = true;
 
     @Config(name = "Available structures", description = "Structures that runestones may teleport you to. The list is weighted with more likely structures at the top.")
     public static List<String> configStructures = new ArrayList<>(Arrays.asList(
@@ -247,6 +251,11 @@ public class Runestones extends CharmModule {
                             message = new TranslatableText("runestone.strange.discovered_by", formattedLocationName, runestone.player);
                         } else {
                             message = new TranslatableText("runestone.strange.discovered", formattedLocationName);
+                        }
+
+                        if (learnFromOtherPlayers && !RunestonesHelper.hasLearnedRune(player, runeValue)) {
+                            world.playSound(null, runePos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            RunestonesHelper.addLearnedRune(player, runeValue);
                         }
                     }
                 }
