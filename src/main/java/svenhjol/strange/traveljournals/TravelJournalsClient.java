@@ -28,6 +28,7 @@ public class TravelJournalsClient extends CharmClientModule {
 
     public static JournalEntry entryHavingScreenshot;
     public static int screenshotTicks;
+    public static int lastPage;
 
     public TravelJournalsClient(CharmModule module) {
         super(module);

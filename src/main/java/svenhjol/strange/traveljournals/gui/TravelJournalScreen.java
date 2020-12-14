@@ -37,6 +37,7 @@ public class TravelJournalScreen extends BaseScreen {
     public TravelJournalScreen() {
         super(I18n.translate("item.strange.travel_journal"));
         this.passEvents = false;
+        this.page = TravelJournalsClient.lastPage;
     }
 
     @Override
@@ -125,6 +126,10 @@ public class TravelJournalScreen extends BaseScreen {
         // display generic messages on the journal screen
         if (!message.isEmpty())
             centeredString(matrices, textRenderer, message, mid, 143, WARN_COLOR);
+
+
+        // remember the page of this journal
+        TravelJournalsClient.lastPage = page;
 
 
         /*
