@@ -270,6 +270,7 @@ public class Runestones extends CharmModule {
             return;
 
         UUID uid = player.getUuid();
+        player.stopRiding();
 
         if (teleportTicks.containsKey(uid)) {
             int ticks = teleportTicks.get(uid);
