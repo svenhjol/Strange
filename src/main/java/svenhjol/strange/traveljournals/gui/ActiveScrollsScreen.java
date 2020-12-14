@@ -121,10 +121,8 @@ public class ActiveScrollsScreen extends BaseScreen {
     }
 
     private void backToMainScreen() {
-        if (client != null) {
-            client.openScreen(null);
+        if (client != null)
             NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
-        }
     }
 
     private void abandonQuest(Quest quest) {
