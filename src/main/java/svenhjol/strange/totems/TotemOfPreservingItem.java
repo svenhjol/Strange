@@ -32,6 +32,7 @@ public class TotemOfPreservingItem extends CharmItem {
         super(module, "totem_of_preserving", new Item.Settings()
             .group(ItemGroup.MISC)
             .rarity(Rarity.UNCOMMON)
+            .fireproof()
             .maxCount(1));
     }
 

@@ -105,7 +105,7 @@ public class TotemOfPreserving extends CharmModule {
 
         BlockPos playerPos = player.getBlockPos();
         double x = playerPos.getX() + 0.5D;
-        double y = playerPos.getY() + 2.25D;
+        double y = playerPos.getY() + 1.0D;
         double z = playerPos.getZ() + 0.5D;
 
         if (y < 1)
