@@ -28,11 +28,6 @@ public class Strange implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        StrangeStructures.init();
-        StrangeLoot.init();
-        StrangeCommands.init();
-        StrangeSounds.init();
-
         ModuleHandler.INSTANCE.registerFabricMod(MOD_ID, Arrays.asList(
             Excavation.class,
             Foundations.class,
@@ -49,5 +44,10 @@ public class Strange implements ModInitializer {
             TotemOfWandering.class,
             WritingDesks.class
         ));
+
+        StrangeStructures.init();
+        StrangeLoot.init();
+        StrangeCommands.init();
+        StrangeSounds.init();
     }
 }
