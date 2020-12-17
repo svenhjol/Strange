@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.9
+* Depends on Charm 2.1.9
+
 ## 2.1.6
 * Ancient fragment chance has been reduced
 * Rare ruin loot rolls have been increased
