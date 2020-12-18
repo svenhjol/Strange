@@ -70,7 +70,7 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public boolean depends() {
-        return ModuleHandler.enabled(Scrolls.class);
+        return ModuleHandler.enabled("strange:scrolls");
     }
 
     @Override
