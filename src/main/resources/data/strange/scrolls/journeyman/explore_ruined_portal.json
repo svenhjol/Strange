@@ -2,7 +2,7 @@
   "default_pack": true,
   "lang": {
     "en": {
-      "title": "Nether again",
+      "title": "Portal to the underworld",
       "description": "Use the map to find the lost item.",
       "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
     }
@@ -18,10 +18,10 @@
     "settings": {
       "structure": {
         "type": "ruined_portal",
-        "min_distance": 750,
-        "max_distance": 1000,
-        "chest_range": 20,
-        "chest_start": 48
+        "min_distance": 600,
+        "max_distance": 800,
+        "chest_range": 10,
+        "chest_start": 62
       }
     }
   },
