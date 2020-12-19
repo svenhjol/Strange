@@ -39,6 +39,7 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import static net.minecraft.item.Items.TOTEM_OF_UNDYING;
 
@@ -67,6 +68,7 @@ public class TotemOfPreserving extends CharmModule {
             return ActionResult.PASS;
 
         ServerWorld world = (ServerWorld)player.world;
+        Random random = world.getRandom();
         ItemStack totem = new ItemStack(TOTEM_OF_PRESERVING);
         CompoundTag serialized = new CompoundTag();
         List<ItemStack> holdable = new ArrayList<>();
@@ -95,31 +97,53 @@ public class TotemOfPreserving extends CharmModule {
             }
         }
 
+        List<ItemStack> totemsToSpawn = new ArrayList<>();
+
         // get all inventories and store them in the totem
         for (int i = 0; i < holdable.size(); i++) {
+            ItemStack stack = holdable.get(i);
+
+            // if there's already a filled totem in the inventory, spawn this separately
+            if (stack.getItem() == TOTEM_OF_PRESERVING && !TotemOfPreservingItem.getItems(stack).isEmpty()) {
+                totemsToSpawn.add(stack);
+                continue;
+            }
+
             serialized.put(Integer.toString(i), holdable.get(i).toTag(new CompoundTag()));
         }
 
         TotemOfPreservingItem.setItems(totem, serialized);
         TotemOfPreservingItem.setMessage(totem, player.getEntityName());
 
+        if (!TotemOfPreservingItem.getItems(totem).isEmpty())
+            totemsToSpawn.add(totem);
+
         BlockPos playerPos = player.getBlockPos();
-        double x = playerPos.getX() + 0.5D;
-        double y = playerPos.getY() + 1.0D;
-        double z = playerPos.getZ() + 0.5D;
+
+        double x = playerPos.getX() + 0.25D;
+        double y = playerPos.getY() + 0.75D;
+        double z = playerPos.getZ() + 0.25D;
 
         if (y < 1)
             y = 64; // fetching your totem from the void is sad
 
-        ItemEntity totemEntity = new ItemEntity(world, x, y, z, totem);
-        totemEntity.setNoGravity(true);
-        totemEntity.setVelocity(0, 0, 0);
-        totemEntity.setPos(x, y, z);
-        totemEntity.setCovetedItem();
-        totemEntity.setGlowing(true);
-        totemEntity.setInvulnerable(true);
+        // spawn totems
+        for (ItemStack stack : totemsToSpawn) {
+            double tx = x + random.nextFloat() * 0.25D;
+            double ty = y + random.nextFloat() * 0.25D;
+            double tz = z + random.nextFloat() * 0.25D;
 
-        world.spawnEntity(totemEntity);
+            ItemEntity totemEntity = new ItemEntity(world, x, y, z, stack);
+            totemEntity.setNoGravity(true);
+            totemEntity.setVelocity(0, 0, 0);
+            totemEntity.setPos(tx, ty, tz);
+            totemEntity.setCovetedItem();
+            totemEntity.setGlowing(true);
+            totemEntity.setInvulnerable(true);
+
+            world.spawnEntity(totemEntity);
+        }
+
         Criteria.USED_TOTEM.trigger((ServerPlayerEntity)player, totem);
         Charm.LOG.info("Totem of Preserving spawned at " + new BlockPos(x, y, z));
 
