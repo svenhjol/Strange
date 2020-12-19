@@ -92,16 +92,12 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
             if (!world.isClient) {
                 ServerWorld serverWorld = (ServerWorld) world;
 
-                if (random.nextFloat() < 0.6F)
+                if (random.nextFloat() < 0.1F)
                     return ActionResult.PASS;
 
                 // get the block entity
                 AncientRubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
                 if (rubble == null)
-                    return fail(serverWorld, pos);
-
-                // is block supported underneath?
-                if (!world.getBlockState(pos.down()).isOpaque())
                     return fail(serverWorld, pos);
 
                 // populate for first time
@@ -115,13 +111,11 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
                 boolean shovel = held.getItem() instanceof ShovelItem;
                 boolean waited = serverWorld.getTime() - rubble.getLevelTicks() > 50 + random.nextInt(10);
                 int fortune = EnchantmentHelper.getLevel(Enchantments.FORTUNE, held);
-                float luck = player.getLuck();
 
                 float chance = 0.15F;
                 chance += shovel ? 0.15F : 0;
                 chance += waited ? 0.25F : 0;
-                chance += fortune * 0.14F;
-                chance += luck * 0.03F;
+                chance += fortune * 0.15F;
 
                 if (world.random.nextFloat() > chance)
                     return fail(serverWorld, pos);
