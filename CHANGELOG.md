@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.10
+* Fix photo button offset
+* Dying now adds your death totem position to your travel journal, if possible
+* Totems of Preserving no longer hold other Totems of Preserving
+* Removed time limit from legendary wither quest
+* Ancient Rubble now removes layers faster and has 100% drop chance when waiting long enough between layers
+* Tweaked ruined portal quest
+
 ## 2.1.9
 * Depends on Charm 2.1.9
 
