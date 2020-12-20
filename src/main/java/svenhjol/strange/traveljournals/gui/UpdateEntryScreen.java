@@ -129,7 +129,7 @@ public class UpdateEntryScreen extends BaseScreen {
         if (hasScreenshot) {
             tryRenderScreenshot(matrices);
         } else {
-            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop - 30, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
+            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop + 50, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
         }
 
         // render color selection buttons
