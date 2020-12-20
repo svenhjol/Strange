@@ -161,7 +161,7 @@ public class TravelJournals extends CharmModule {
 
     private void handleServerAddEntry(PacketContext context, PacketByteBuf data) {
         processClientPacket(context, (player, manager) -> {
-            JournalEntry entry = manager.addJournalEntry(player);
+            JournalEntry entry = manager.initJournalEntry(player);
             if (entry == null) {
                 Charm.LOG.warn("Failed to create a new journal entry, doing nothing");
                 return;

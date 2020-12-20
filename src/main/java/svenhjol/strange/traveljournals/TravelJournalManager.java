@@ -12,11 +12,9 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -67,7 +65,7 @@ public class TravelJournalManager extends PersistentState {
     }
 
     @Nullable
-    public JournalEntry addJournalEntry(PlayerEntity player) {
+    public JournalEntry addJournalEntry(PlayerEntity player, JournalEntry entry) {
         UUID uuid = player.getUuid();
         if (!playerJournalEntries.containsKey(uuid))
             playerJournalEntries.put(uuid, new ArrayList<>());
@@ -79,7 +77,13 @@ public class TravelJournalManager extends PersistentState {
             return null;
         }
 
-        String id = Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4);
+        entries.add(entry);
+        markDirty();
+        return entry;
+    }
+
+    @Nullable
+    public JournalEntry initJournalEntry(PlayerEntity player) {
         String name = "";
 
         if (!player.world.isClient) {
@@ -96,12 +100,9 @@ public class TravelJournalManager extends PersistentState {
 
         BlockPos pos = player.getBlockPos();
         Identifier dim = DimensionHelper.getDimension(player.world);
-        JournalEntry entry = new JournalEntry(id, name, pos, dim, 15);
+        JournalEntry entry = new JournalEntry(name, pos, dim, 15);
 
-        entries.add(entry);
-
-        markDirty();
-        return entry;
+        return addJournalEntry(player, entry);
     }
 
     @Override

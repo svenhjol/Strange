@@ -3,6 +3,8 @@ package svenhjol.strange.traveljournals;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.RandomStringUtils;
+import svenhjol.strange.Strange;
 
 public class JournalEntry {
     public String id = "";
@@ -21,6 +23,10 @@ public class JournalEntry {
         this.id = id;
         this.pos = pos;
         this.dim = dim;
+    }
+
+    public JournalEntry(String name, BlockPos pos, Identifier dim, int color) {
+        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4), name, pos, dim, color);
     }
 
     public JournalEntry(String id, String name, BlockPos pos, Identifier dim, int color) {
