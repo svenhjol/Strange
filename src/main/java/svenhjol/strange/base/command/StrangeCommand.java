@@ -245,9 +245,9 @@ public class StrangeCommand {
     }
 
     private static void consumeRequiredItem(ServerPlayerEntity player, ItemStack requiredStack, String key) throws CommandSyntaxException {
-        int slotWithStack = player.inventory.getSlotWithStack(requiredStack);
+        int slotWithStack = player.inventory.method_7371(requiredStack);
         if (!player.abilities.creativeMode) {
-            if (slotWithStack< 0){
+            if (slotWithStack < 0){
                 throw makeException("Invalid item", new TranslatableText(key).getString());
             } else {
                 player.inventory.getStack(slotWithStack).decrement(1);
