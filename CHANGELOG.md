@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.11
+* Advancements are now in their own tab
+
 ## 2.1.10
 * Fix photo button offset
 * Dying now adds your death totem position to your travel journal, if possible
