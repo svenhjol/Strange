@@ -148,6 +148,11 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
         return altar.getDestination();
     }
 
+    public static void charge(World world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, state.with(CHARGES, state.get(CHARGES) + 1), 3);
+        world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    }
+
     public ActionResult failToApply(World world, BlockPos pos) {
         if (world.isClient) {
             for (int i = 0; i < 10; i++) {
