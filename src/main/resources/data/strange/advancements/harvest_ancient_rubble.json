@@ -18,8 +18,8 @@
   },
   "criteria": {
     "harvest_ancient_rubble": {
-      "trigger": "minecraft:enter_block",
-      "conditions": {"block": "strange:ancient_rubble"}
+      "trigger": "minecraft:consume_item",
+      "conditions": {"item": {"item": "strange:ancient_rubble"}}
     }
   },
   "requirements": [

@@ -215,7 +215,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
 
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
-        Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, world.getBlockState(pos));
+        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Excavation.ANCIENT_RUBBLE));
 
         world.removeBlockEntity(pos);
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);

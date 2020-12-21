@@ -1,5 +1,5 @@
 {
-  "parent": "strange:get_travel_journal",
+  "parent": "strange:root",
   "display": {
     "icon": {
       "item": "strange:totem_of_wandering"
