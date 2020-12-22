@@ -1,11 +1,11 @@
 package svenhjol.strange;
 
 import net.fabricmc.api.ClientModInitializer;
-import svenhjol.charm.base.handler.ClientHandler;
+import svenhjol.charm.base.CharmClientLoader;
 
 public class StrangeClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ClientHandler.INSTANCE.registerFabricMod(Strange.MOD_ID);
+        new CharmClientLoader(Strange.MOD_ID);
     }
 }

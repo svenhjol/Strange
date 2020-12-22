@@ -1,7 +1,8 @@
 package svenhjol.strange;
 
 import net.fabricmc.api.ModInitializer;
-import svenhjol.charm.base.handler.ModuleHandler;
+import svenhjol.charm.Charm;
+import svenhjol.charm.base.CharmLoader;
 import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeSounds;
@@ -28,7 +29,9 @@ public class Strange implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModuleHandler.INSTANCE.registerFabricMod(MOD_ID, Arrays.asList(
+        Charm.runFirst();
+
+        new CharmLoader(MOD_ID, Arrays.asList(
             Excavation.class,
             Foundations.class,
             LegendaryItems.class,

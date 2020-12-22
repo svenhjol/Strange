@@ -8,6 +8,7 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
+import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
@@ -65,6 +66,9 @@ public class StoneCircles extends CharmModule {
     public void init() {
         configBiomes.forEach(biomeId -> BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId))
             .flatMap(BuiltinRegistries.BIOME::getKey) // flatmap is shorthand for ifPresent(thing) -> return do(thing)
-                .ifPresent(biomeKey -> BiomeHelper.addStructureFeature(biomeKey, STONE_CIRCLE)));
+            .ifPresent(biomeKey -> {
+                Charm.LOG.debug("[StoneCircles] Added stone circle to biome: " + biomeId);
+                BiomeHelper.addStructureFeature(biomeKey, STONE_CIRCLE);
+            }));
     }
 }
