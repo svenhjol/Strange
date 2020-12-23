@@ -9,6 +9,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -27,6 +29,7 @@ import java.util.List;
 public class TotemOfPreservingItem extends CharmItem {
     public static final String MESSAGE_TAG = "message";
     public static final String ITEMS_TAG = "items";
+    public static final String XP_TAG = "xp";
 
     public TotemOfPreservingItem(CharmModule module) {
         super(module, "totem_of_preserving", new Item.Settings()
@@ -45,6 +48,11 @@ public class TotemOfPreservingItem extends CharmItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack totem = user.getStackInHand(hand);
         CompoundTag items = getItems(totem);
+        int xp = getXp(totem);
+        if (xp > 0) {
+            world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 0.8F, 1.0F);
+            user.addExperience(xp);
+        }
 
         TotemsHelper.destroy(user, totem);
 
@@ -91,11 +99,19 @@ public class TotemOfPreservingItem extends CharmItem {
         ItemNBTHelper.setCompound(totem, ITEMS_TAG, items);
     }
 
+    public static void setXp(ItemStack totem, int xp) {
+        ItemNBTHelper.setInt(totem, XP_TAG, xp);
+    }
+
     public static String getMessage(ItemStack totem) {
         return ItemNBTHelper.getString(totem, MESSAGE_TAG, "");
     }
 
     public static CompoundTag getItems(ItemStack totem) {
         return ItemNBTHelper.getCompound(totem, ITEMS_TAG);
+    }
+
+    public static int getXp(ItemStack totem) {
+        return ItemNBTHelper.getInt(totem, XP_TAG, 0);
     }
 }
