@@ -52,6 +52,9 @@ public class TotemOfPreserving extends CharmModule {
     @Config(name = "Grave Mode", description = "If true, your items will always drop as a totem even if you don't have one in your inventory.")
     public static boolean graveMode = true;
 
+    @Config(name = "Preserve XP", description = "If true, the totem will preserve the player's experience and restore when broken.")
+    public static boolean preserveXp = false;
+
     @Override
     public void register() {
         TOTEM_OF_PRESERVING = new TotemOfPreservingItem(this);
