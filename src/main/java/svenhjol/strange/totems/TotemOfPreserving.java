@@ -50,7 +50,7 @@ public class TotemOfPreserving extends CharmModule {
     public static TotemOfPreservingItem TOTEM_OF_PRESERVING;
 
     @Config(name = "Grave Mode", description = "If true, your items will always drop as a totem even if you don't have one in your inventory.")
-    public static boolean graveMode = false;
+    public static boolean graveMode = true;
 
     @Override
     public void register() {
