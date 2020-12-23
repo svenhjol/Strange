@@ -35,6 +35,7 @@ import svenhjol.charm.base.helper.ItemHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.EntityDropsCallback;
+import svenhjol.charm.event.EntityDropsXpCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.traveljournals.JournalEntry;
@@ -64,8 +65,16 @@ public class TotemOfPreserving extends CharmModule {
     public void init() {
         ItemHelper.ITEM_LIFETIME.put(TOTEM_OF_PRESERVING, Integer.MAX_VALUE); // probably stupid
         PlayerDropInventoryCallback.EVENT.register(this::tryInterceptDropInventory);
+        EntityDropsXpCallback.BEFORE.register(this::tryInterceptDropXp);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         EntityDropsCallback.AFTER.register(this::tryDropTotemFromIllusioner);
+    }
+
+    public ActionResult tryInterceptDropXp(LivingEntity entity) {
+        if (!preserveXp || !(entity instanceof PlayerEntity) || entity.world.isClient)
+            return ActionResult.PASS;
+
+        return ActionResult.SUCCESS;
     }
 
     public ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
@@ -119,6 +128,9 @@ public class TotemOfPreserving extends CharmModule {
 
         TotemOfPreservingItem.setItems(totem, serialized);
         TotemOfPreservingItem.setMessage(totem, player.getEntityName());
+
+        if (preserveXp)
+            TotemOfPreservingItem.setXp(totem, player.totalExperience);
 
         if (!TotemOfPreservingItem.getItems(totem).isEmpty())
             totemsToSpawn.add(totem);
