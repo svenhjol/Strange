@@ -65,7 +65,7 @@ public class TotemOfPreserving extends CharmModule {
         ItemHelper.ITEM_LIFETIME.put(TOTEM_OF_PRESERVING, Integer.MAX_VALUE); // probably stupid
         PlayerDropInventoryCallback.EVENT.register(this::tryInterceptDropInventory);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
-        EntityDropsCallback.EVENT.register(this::tryDropTotemFromIllusioner);
+        EntityDropsCallback.AFTER.register(this::tryDropTotemFromIllusioner);
     }
 
     public ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
