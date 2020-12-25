@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0
+* Depends on Charm 2.2.0
+* Altars now accept chorus flowers from dispensers #101
+* Advancement title change #103
+
 ## 2.1.11
 * Advancements are now in their own tab
 
