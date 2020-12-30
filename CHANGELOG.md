@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+* Depends on Charm 2.2.2
+* Luck now guarantees rubble won't break when excavating
+
 ## 2.2.0
 * Depends on Charm 2.2.0
 * Altars now accept chorus flowers from dispensers #101
