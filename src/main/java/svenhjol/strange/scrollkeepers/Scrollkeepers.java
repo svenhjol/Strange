@@ -79,13 +79,11 @@ public class Scrollkeepers extends CharmModule {
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
 
         // register scrollkeeper structures
-        StructureSetupCallback.EVENT.register(() -> {
-            addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
-            addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
-        });
+        addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);
+        addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
+        addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
+        addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
+        addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
 
         // listen for quest satisfied request coming from the client
         ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
