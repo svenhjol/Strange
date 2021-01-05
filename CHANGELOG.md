@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.3
+* Depends on Charm 2.2.3 (event fix)
+
 ## 2.2.2
 * Depends on Charm 2.2.2
 * Luck now guarantees rubble won't break when excavating
