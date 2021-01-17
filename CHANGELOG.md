@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.1
+* Depends on Charm 2.3.1
+
 ## 2.2.3
 * Depends on Charm 2.2.3 (event fix)
 
