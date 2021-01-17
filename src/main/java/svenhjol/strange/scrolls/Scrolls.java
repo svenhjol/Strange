@@ -124,8 +124,9 @@ public class Scrolls extends CharmModule {
         ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
 
         // allow scrolls on Charm's bookcases
-        if (ModuleHandler.enabled(Bookcases.class))
-            Bookcases.validItems.add(ScrollItem.class);
+        if (ModuleHandler.enabled(Bookcases.class)) {
+            Bookcases.validItems.addAll(Scrolls.SCROLL_TIERS.values());
+        }
 
         // handle incoming client packets
         ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_OPEN_SCROLL, this::handleServerOpenScroll);

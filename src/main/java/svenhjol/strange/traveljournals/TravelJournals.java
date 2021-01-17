@@ -74,7 +74,7 @@ public class TravelJournals extends CharmModule {
 
         // allow travel journals on Charm's bookcases
         if (ModuleHandler.enabled(Bookcases.class))
-            Bookcases.validItems.add(TravelJournalItem.class);
+            Bookcases.validItems.add(TRAVEL_JOURNAL);
 
         ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_OPEN_JOURNAL, this::handleServerOpenJournal);
         ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_ADD_ENTRY, this::handleServerAddEntry);
