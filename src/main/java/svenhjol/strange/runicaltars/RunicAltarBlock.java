@@ -31,7 +31,6 @@ import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.runestones.Runestones;
-import svenhjol.strange.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -62,17 +61,13 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         int charges = state.get(CHARGES);
         ItemStack held = player.getStackInHand(hand);
+        BlockPos destination = getDestinationFromAltar(world, pos);
 
         if (held.getItem() == Items.CHORUS_FLOWER) {
-            BlockPos destination = getDestinationFromAltar(world, pos);
             if (destination == null)
                 return failToApply(world, pos);
 
             if (charges < 4) {
-                // the player must have the right runes to activate it
-                if (charges == 0 && !RunestonesHelper.playerKnowsBlockPosRunes(player, destination, RunicAltars.NUMBER_OF_RUNES))
-                    return failToApply(world, pos);
-
                 if (!world.isClient) {
                     world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     world.setBlockState(pos, state.with(CHARGES, charges + 1));
@@ -83,25 +78,24 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
             return ActionResult.CONSUME;
         }
 
-        if (charges == 0 || player.isSneaking()) {
+        if (destination == null || player.isSneaking()) {
             if (!world.isClient) {
                 // ensure client has the latest rune discoveries
                 Runestones.sendLearnedRunesPacket((ServerPlayerEntity) player);
                 player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             }
         } else {
-            // get the altar and its destination
-            BlockPos destination = getDestinationFromAltar(world, pos);
-            if (destination == null)
-                return failToApply(world, pos);
-
             if (!world.isClient) {
-                world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                world.setBlockState(pos, state.with(CHARGES, charges - 1));
-                Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity)player, state);
+                if (state.get(CHARGES) > 0) {
+                    world.playSound(null, pos, SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.setBlockState(pos, state.with(CHARGES, charges - 1));
+                    Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity) player, state);
 
-                PlayerHelper.teleport(world, destination, player);
-                world.playSound(null, destination, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
+                    PlayerHelper.teleport(world, destination, player);
+                    world.playSound(null, destination, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.PLAYERS, 0.5F, 1.25F);
+                } else {
+                    return failToApply(world, pos);
+                }
             }
         }
 
