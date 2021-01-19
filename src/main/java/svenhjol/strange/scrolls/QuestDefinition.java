@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonDefinition {
+public class QuestDefinition {
     private String id;
     private int tier;
     private int time_limit; // in minutes
@@ -90,8 +90,8 @@ public class JsonDefinition {
         this.title = title;
     }
 
-    public static JsonDefinition deserialize(Resource resource) {
+    public static QuestDefinition deserialize(Resource resource) {
         Reader reader = new InputStreamReader(resource.getInputStream());
-        return new Gson().fromJson(reader, JsonDefinition.class);
+        return new Gson().fromJson(reader, QuestDefinition.class);
     }
 }

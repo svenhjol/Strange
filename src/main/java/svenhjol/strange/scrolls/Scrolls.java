@@ -65,7 +65,7 @@ public class Scrolls extends CharmModule {
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
 
-    public static Map<Integer, Map<String, JsonDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
+    public static Map<Integer, Map<String, QuestDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
@@ -167,23 +167,23 @@ public class Scrolls extends CharmModule {
     }
 
     @Nullable
-    public static JsonDefinition getRandomDefinition(int tier, World world, Random random) {
+    public static QuestDefinition getRandomDefinition(int tier, World world, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
             Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
             return null;
         }
 
-        Map<String, JsonDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
+        Map<String, QuestDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
         if (definitions.isEmpty()) {
             Charm.LOG.warn("No scroll definitions found in this tier: " + tier);
             return null;
         }
 
-        ArrayList<JsonDefinition> allDefinitions = new ArrayList<>(definitions.values());
+        ArrayList<QuestDefinition> allDefinitions = new ArrayList<>(definitions.values());
 
         // try and fetch a random definition, checking the dimension restrictions of this scroll
         for (int tries = 0; tries < 10; tries++) {
-            JsonDefinition definition = allDefinitions.get(random.nextInt(definitions.size()));
+            QuestDefinition definition = allDefinitions.get(random.nextInt(definitions.size()));
             List<String> validDimensions = definition.getValidDimensions();
 
             if (validDimensions.isEmpty())
@@ -199,7 +199,7 @@ public class Scrolls extends CharmModule {
     }
 
     @Nullable
-    public static JsonDefinition getDefinition(String definition) {
+    public static QuestDefinition getDefinition(String definition) {
         String[] split;
         String tierName;
 
@@ -251,7 +251,7 @@ public class Scrolls extends CharmModule {
 
             for (Identifier scroll : scrolls) {
                 try {
-                    JsonDefinition definition = JsonDefinition.deserialize(resources.getResource(scroll));
+                    QuestDefinition definition = QuestDefinition.deserialize(resources.getResource(scroll));
 
                     // check that scroll definition is built-in and configured to be used
                     if (definition.isDefaultPack() && !useBuiltInScrolls)

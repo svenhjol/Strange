@@ -2,7 +2,6 @@ package svenhjol.strange.scrolls.populator;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.HashMap;

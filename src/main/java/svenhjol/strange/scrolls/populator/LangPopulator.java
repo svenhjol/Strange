@@ -2,7 +2,6 @@ package svenhjol.strange.scrolls.populator;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.scrolls.Scrolls;
-import svenhjol.strange.scrolls.JsonDefinition;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.ArrayList;

@@ -19,7 +19,7 @@ import svenhjol.strange.base.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.base.command.arg.QuestIdArgType;
 import svenhjol.strange.base.command.arg.RuneArgType;
 import svenhjol.strange.runestones.RunestonesHelper;
-import svenhjol.strange.scrolls.JsonDefinition;
+import svenhjol.strange.scrolls.QuestDefinition;
 import svenhjol.strange.scrolls.QuestManager;
 import svenhjol.strange.scrolls.ScrollItem;
 import svenhjol.strange.scrolls.Scrolls;
@@ -221,7 +221,7 @@ public class StrangeCommand {
         QuestManager questManager = getQuestManager();
 
         int rarity = 1;
-        JsonDefinition definition = Scrolls.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
+        QuestDefinition definition = Scrolls.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
         if (definition == null)
             throw makeException("Invalid definition", new TranslatableText("scroll.strange.no_scroll_definition").getString());
 

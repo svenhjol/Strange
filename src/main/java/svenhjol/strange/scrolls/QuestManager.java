@@ -168,7 +168,7 @@ public class QuestManager extends PersistentState {
     }
 
     @Nullable
-    public Quest createQuest(ServerPlayerEntity player, JsonDefinition definition, int rarity, @Nullable UUID seller) {
+    public Quest createQuest(ServerPlayerEntity player, QuestDefinition definition, int rarity, @Nullable UUID seller) {
         UUID owner = player.getUuid();
 
         if (seller == null)
