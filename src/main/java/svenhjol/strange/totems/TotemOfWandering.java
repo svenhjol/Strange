@@ -85,7 +85,7 @@ public class TotemOfWandering extends CharmModule {
             if (!trader.world.isClient) {
                 ItemStack in = new ItemStack(Items.EMERALD, rand.nextInt(3) + 3);
                 ItemStack out = new ItemStack(TOTEM_OF_WANDERING);
-                return new TradeOffer(in, out, 4, 5, 0.2F);
+                return new TradeOffer(in, out, 1, 5, 0.2F);
             }
 
             return null;
