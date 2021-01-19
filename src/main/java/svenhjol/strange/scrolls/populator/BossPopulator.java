@@ -21,7 +21,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.*;
-import svenhjol.strange.scrolls.QuestDefinition;
+import svenhjol.strange.scrolls.ScrollDefinition;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Boss;
 import svenhjol.strange.scrolls.tag.Quest;
@@ -110,7 +110,7 @@ public class BossPopulator extends Populator {
         if (pos == null)
             return false;
 
-        QuestDefinition definition = Scrolls.AVAILABLE_SCROLLS.get(quest.getTier()).getOrDefault(quest.getDefinition(), null);
+        ScrollDefinition definition = Scrolls.AVAILABLE_SCROLLS.get(quest.getTier()).getOrDefault(quest.getDefinition(), null);
         if (definition == null)
             return false;
 

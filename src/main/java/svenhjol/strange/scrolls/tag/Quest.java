@@ -6,8 +6,8 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.RandomStringUtils;
+import svenhjol.strange.scrolls.ScrollDefinition;
 import svenhjol.strange.scrolls.ScrollsHelper;
-import svenhjol.strange.scrolls.QuestDefinition;
 
 import java.util.UUID;
 
@@ -49,7 +49,7 @@ public class Quest implements ISerializable {
 
     private Quest() { }
 
-    public Quest(QuestDefinition definition, UUID owner, UUID merchant, int rarity, int currentTime) {
+    public Quest(ScrollDefinition definition, UUID owner, UUID merchant, int rarity, int currentTime) {
         this.id = RandomStringUtils.randomAlphabetic(4).toLowerCase();
         this.rarity = Math.max(1, rarity);
         this.tier = definition.getTier();

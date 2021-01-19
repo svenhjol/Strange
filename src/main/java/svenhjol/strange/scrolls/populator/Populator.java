@@ -20,7 +20,7 @@ import net.minecraft.util.registry.Registry;
 import svenhjol.charm.base.helper.LootHelper;
 import svenhjol.charm.handler.InventoryTidyingHandler;
 import svenhjol.strange.base.helper.ScrollDefinitionHelper;
-import svenhjol.strange.scrolls.QuestDefinition;
+import svenhjol.strange.scrolls.ScrollDefinition;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.tag.Quest;
 
@@ -55,7 +55,7 @@ public abstract class Populator {
     protected final ServerWorld world;
     protected final BlockPos pos;
     protected final Quest quest;
-    protected final QuestDefinition definition;
+    protected final ScrollDefinition definition;
 
     public Populator(ServerPlayerEntity player, Quest quest) {
         this.player = player;
