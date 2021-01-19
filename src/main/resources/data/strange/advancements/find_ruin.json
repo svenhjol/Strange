@@ -17,16 +17,30 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "find_ruin": {
+    "find_surface_ruin": {
       "trigger": "minecraft:location",
       "conditions": {
-        "feature": "strange:ruin"
+        "feature": "strange:surface_ruin"
+      }
+    },
+    "find_underground_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:underground_ruin"
+      }
+    },
+    "find_foundation_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:foundation_ruin"
       }
     }
   },
   "requirements": [
     [
-      "find_ruin"
+      "find_surface_ruin",
+      "find_underground_ruin",
+      "find_foundation_ruin"
     ]
   ]
 }

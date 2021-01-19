@@ -7,10 +7,8 @@
   "advancements.strange.complete_quest.description": "Hand a completed scroll to a scrollkeeper",
   "advancements.strange.empower_altar.title": "Flower Power",
   "advancements.strange.empower_altar.description": "Use chorus flowers to empower an altar",
-  "advancements.strange.find_foundation.title": "Far Below",
-  "advancements.strange.find_foundation.description": "Locate the lost foundations",
   "advancements.strange.find_ruin.title": "A Forgotten Ruin",
-  "advancements.strange.find_ruin.description": "Locate an underground ruin",
+  "advancements.strange.find_ruin.description": "Locate a ruin",
   "advancements.strange.find_stone_circle.title": "Stone Circles",
   "advancements.strange.find_stone_circle.description": "Locate a stone circle in the overworld",
   "advancements.strange.get_runic_fragment.title": "Piece of the puzzle",
@@ -186,8 +184,8 @@
   "scroll.strange.started_quest": "Started quest with ID %s",
   "scroll.strange.too_many_quests": "You cannot start a new scroll at the moment.",
 
-  "structure.strange.foundation": "Ancient Foundations",
-  "structure.strange.ruin": "Underground Ruins",
+  "structure.strange.foundation": "Foundations",
+  "structure.strange.ruin": "Ruins",
 
   "totem.strange.preserving.item": "Preserving one item",
   "totem.strange.preserving.items": "Preserving %s items",

@@ -1,5 +1,5 @@
 {
-  "parent": "strange:find_foundation",
+  "parent": "strange:find_ruin",
   "display": {
     "icon": {
       "item": "strange:ancient_rubble"
