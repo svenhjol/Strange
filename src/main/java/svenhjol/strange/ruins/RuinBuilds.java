@@ -1,12 +1,11 @@
 package svenhjol.strange.ruins;
 
-import svenhjol.strange.ruins.builds.Castle;
-import svenhjol.strange.ruins.builds.Roguelike;
-import svenhjol.strange.ruins.builds.StoneRoom;
-import svenhjol.strange.ruins.builds.Vaults;
+import svenhjol.strange.ruins.builds.*;
 
 public class RuinBuilds {
     public static void init() {
+        // generate underground ruins
+
         Castle castle = new Castle();
         UndergroundRuinGenerator.PLAINS_RUINS.add(castle);
         UndergroundRuinGenerator.FOREST_RUINS.add(castle);
@@ -17,12 +16,15 @@ public class RuinBuilds {
         UndergroundRuinGenerator.SNOWY_RUINS.add(roguelike);
         UndergroundRuinGenerator.TAIGA_RUINS.add(roguelike);
 
-        StoneRoom stoneRoom = new StoneRoom();
-        FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneRoom);
-
         Vaults vaults = new Vaults();
         UndergroundRuinGenerator.MOUNTAINS_RUINS.add(vaults);
-        UndergroundRuinGenerator.DESERT_RUINS.add(vaults);
         UndergroundRuinGenerator.SAVANNA_RUINS.add(vaults);
+        UndergroundRuinGenerator.DESERT_RUINS.add(vaults);
+
+        // generate foundation ruins
+
+        StoneFoundations stoneFoundations = new StoneFoundations();
+        FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneFoundations);
+        FoundationRuinGenerator.BADLANDS_RUINS.add(stoneFoundations);
     }
 }

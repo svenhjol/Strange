@@ -1,5 +1,6 @@
 package svenhjol.strange.ruins.builds;
 
+import net.minecraft.structure.pool.StructurePool;
 import svenhjol.charm.base.structure.BaseStructure;
 import svenhjol.strange.Strange;
 
@@ -65,8 +66,8 @@ public class Vaults extends BaseStructure {
         ENDS.put("end_wood_books", 1);
         ENDS.put("end_wood_chests", 1);
 
-        registerPool("rooms", ROOMS);
-        registerPool("corridors", CORRIDORS);
-        registerPool("ends", ENDS);
+        registerPool("rooms", ROOMS, StructurePool.Projection.RIGID);
+        registerPool("corridors", CORRIDORS, StructurePool.Projection.RIGID);
+        registerPool("ends", ENDS, StructurePool.Projection.RIGID);
     }
 }
