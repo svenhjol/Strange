@@ -86,8 +86,9 @@ public class ActiveScrollsScreen extends BaseScreen {
             Pair<Integer, Integer> buttonTopLeft = new Pair<>(left, qy);
             if (!scrollButtons.containsKey(buttonTopLeft)) {
                 scrollButtons.put(buttonTopLeft, () -> {
-                    NetworkHelper.sendPacketToServer(Scrolls.MSG_SERVER_OPEN_SCROLL, buffer
-                        -> buffer.writeString(quest.getId()));
+                    NetworkHelper.sendPacketToServer(Scrolls.MSG_SERVER_OPEN_SCROLL, buffer -> {
+                        buffer.writeString(quest.getId());
+                    });
                 });
             }
 

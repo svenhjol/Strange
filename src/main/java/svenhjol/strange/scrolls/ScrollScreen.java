@@ -9,17 +9,20 @@ import svenhjol.strange.base.StrangeIcons;
 import svenhjol.strange.base.helper.GuiHelper;
 import svenhjol.strange.scrolls.gui.*;
 import svenhjol.strange.scrolls.tag.Quest;
+import svenhjol.strange.traveljournals.gui.ActiveScrollsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollScreen extends Screen {
     private final Quest quest;
+    private boolean backToJournal;
 
-    public ScrollScreen(Quest quest) {
+    public ScrollScreen(Quest quest, boolean backToJournal) {
         super(new TranslatableText(quest.getTitle()));
         this.quest = quest;
         this.passEvents = true;
+        this.backToJournal = backToJournal;
     }
 
     @Override
@@ -138,11 +141,17 @@ public class ScrollScreen extends Screen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText("gui.strange.scrolls.close"), this::close));
+        String key = backToJournal ? "gui.strange.scrolls.back_to_journal" : "gui.strange.scrolls.close";
+        this.addButton(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText(key), this::close));
     }
 
     private void close(ButtonWidget button) {
-        if (client != null)
-            client.openScreen(null);
+        if (client != null) {
+            if (backToJournal) {
+                client.openScreen(new ActiveScrollsScreen());
+            } else {
+                client.openScreen(null);
+            }
+        }
     }
 }

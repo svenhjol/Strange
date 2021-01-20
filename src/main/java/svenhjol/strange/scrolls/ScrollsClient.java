@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.scrolls.tag.Quest;
+import svenhjol.strange.traveljournals.gui.ActiveScrollsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,12 @@ public class ScrollsClient extends CharmClientModule {
     private void handleClientOpenScroll(PacketContext context, PacketByteBuf data) {
         CompoundTag questTag = data.readCompoundTag();
         context.getTaskQueue().execute(() -> {
+            MinecraftClient mc = MinecraftClient.getInstance();
             Quest quest = Quest.getFromTag(questTag);
             quest.update(context.getPlayer());
-            MinecraftClient.getInstance().openScreen(new ScrollScreen(quest));
+
+            boolean backToJournal = mc.currentScreen instanceof ActiveScrollsScreen;
+            mc.openScreen(new ScrollScreen(quest, backToJournal));
         });
     }
 
