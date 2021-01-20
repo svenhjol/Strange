@@ -38,7 +38,11 @@ public class StoneCircles extends CharmModule {
         "minecraft:swamp",
         "minecraft:sunflower_plains",
         "minecraft:flower_forest",
-        "minecraft:snowy_tundra"
+        "minecraft:snowy_tundra",
+        "terrestria:cypress_swamp",
+        "terrestria:lush_desert",
+        "traverse:meadow",
+        "traverse:lush_swamp"
     ));
 
     @Config(name = "Distance between stone circles", description = "Distance between stone circles. As a guide, ruined portals are 25.")
