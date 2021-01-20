@@ -2,13 +2,13 @@
   "parent": "strange:find_ruin",
   "display": {
     "icon": {
-      "item": "strange:ancient_rubble"
+      "item": "strange:rubble"
     },
     "title": {
-      "translate": "advancements.strange.harvest_ancient_rubble.title"
+      "translate": "advancements.strange.harvest_rubble.title"
     },
     "description": {
-      "translate": "advancements.strange.harvest_ancient_rubble.description"
+      "translate": "advancements.strange.harvest_rubble.description"
     },
     "frame": "challenge",
     "show_toast": true,
@@ -17,14 +17,14 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "harvest_ancient_rubble": {
+    "harvest_rubble": {
       "trigger": "minecraft:consume_item",
-      "conditions": {"item": {"item": "strange:ancient_rubble"}}
+      "conditions": {"item": {"item": "strange:rubble"}}
     }
   },
   "requirements": [
     [
-      "harvest_ancient_rubble"
+      "harvest_rubble"
     ]
   ]
 }

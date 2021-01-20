@@ -9,11 +9,9 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.strange.ruins.Ruins;
 
 import java.util.Random;
 
@@ -45,12 +43,7 @@ public class RunicFragmentLootFunction extends ConditionalLootFunction {
             return stack;
 
         ItemStack fragment = new ItemStack(RunicFragments.RUNIC_FRAGMENT);
-
-        // always try and set the destination to foundations if fragment is found in loot
-        if (ModuleHandler.enabled("strange:foundations")) {
-            BlockPos pos = new BlockPos(origin);
-            RunicFragmentItem.populate(fragment, world, pos, random, Ruins.FOUNDATION_RUIN_ID);
-        }
+        RunicFragmentItem.setWord(fragment, "aa"); // TODO: word generator here
 
         return fragment;
     }

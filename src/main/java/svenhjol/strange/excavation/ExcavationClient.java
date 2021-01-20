@@ -13,7 +13,7 @@ public class ExcavationClient extends CharmClientModule {
 
     @Override
     public void register() {
-        BlockRenderLayerMap.INSTANCE.putBlock(Excavation.ANCIENT_RUBBLE, RenderLayer.getCutout());
-        BlockEntityRendererRegistry.INSTANCE.register(Excavation.BLOCK_ENTITY, AncientRubbleBlockEntityRenderer::new);
+        BlockRenderLayerMap.INSTANCE.putBlock(Excavation.RUBBLE, RenderLayer.getCutout());
+        BlockEntityRendererRegistry.INSTANCE.register(Excavation.BLOCK_ENTITY, RubbleBlockEntityRenderer::new);
     }
 }

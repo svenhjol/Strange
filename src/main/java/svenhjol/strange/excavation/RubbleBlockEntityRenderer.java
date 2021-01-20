@@ -11,8 +11,8 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class AncientRubbleBlockEntityRenderer<T extends AncientRubbleBlockEntity> extends BlockEntityRenderer<T> {
-    public AncientRubbleBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
+public class RubbleBlockEntityRenderer<T extends RubbleBlockEntity> extends BlockEntityRenderer<T> {
+    public RubbleBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 

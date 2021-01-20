@@ -6,14 +6,14 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-public class AncientRubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public static final String ITEMSTACK_TAG = "itemstack";
     public static final String LEVELTICKS_TAG = "levelticks";
 
     public long levelTicks;
     public ItemStack itemStack;
 
-    public AncientRubbleBlockEntity() {
+    public RubbleBlockEntity() {
         super(Excavation.BLOCK_ENTITY);
     }
 

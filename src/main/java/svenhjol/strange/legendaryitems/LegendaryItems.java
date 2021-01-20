@@ -80,7 +80,7 @@ public class LegendaryItems extends CharmModule {
             }
         } else {
             Charm.LOG.info("Adding legendary items to ancient_rubble loot");
-            lootTable = StrangeLoot.ANCIENT_RUBBLE;
+            lootTable = StrangeLoot.RUBBLE;
         }
     }
 

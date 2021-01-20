@@ -41,12 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AncientRubbleBlock extends CharmBlockWithEntity {
+public class RubbleBlock extends CharmBlockWithEntity {
     public static IntProperty LEVEL;
     public static final List<VoxelShape> SHAPES = new ArrayList<>();
 
-    public AncientRubbleBlock(CharmModule module) {
-        super(module, "ancient_rubble", FabricBlockSettings.of(Material.AGGREGATE, MaterialColor.STONE)
+    public RubbleBlock(CharmModule module) {
+        super(module, "rubble", FabricBlockSettings.of(Material.AGGREGATE, MaterialColor.STONE)
             .strength(8.0F)
             .requiresTool()
             .breakByTool(FabricToolTags.SHOVELS)
@@ -58,7 +58,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
-        return new AncientRubbleBlockEntity();
+        return new RubbleBlockEntity();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
                     return ActionResult.PASS;
 
                 // get the block entity
-                AncientRubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
+                RubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
                 if (rubble == null)
                     return fail(serverWorld, pos);
 
@@ -140,22 +140,22 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
     }
 
     @Nullable
-    public AncientRubbleBlockEntity getBlockEntity(World world, BlockPos pos) {
+    public RubbleBlockEntity getBlockEntity(World world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (!(blockEntity instanceof AncientRubbleBlockEntity))
+        if (!(blockEntity instanceof RubbleBlockEntity))
             return null;
 
-        return (AncientRubbleBlockEntity) blockEntity;
+        return (RubbleBlockEntity) blockEntity;
     }
 
     private boolean populate(ServerWorld world, BlockPos pos, LivingEntity entity) {
         Random random = world.random;
 
-        AncientRubbleBlockEntity rubble = getBlockEntity(world, pos);
+        RubbleBlockEntity rubble = getBlockEntity(world, pos);
         if (rubble == null)
             return false;
 
-        LootTable lootTable = world.getServer().getLootManager().getTable(StrangeLoot.ANCIENT_RUBBLE);
+        LootTable lootTable = world.getServer().getLootManager().getTable(StrangeLoot.RUBBLE);
         List<ItemStack> list = lootTable.generateLoot((new LootContext.Builder(world)
             .parameter(LootContextParameters.THIS_ENTITY, entity)
             .parameter(LootContextParameters.ORIGIN, entity.getPos())
@@ -185,7 +185,7 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
         world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
         world.setBlockState(pos, state.with(LEVEL, level + 1), 2);
 
-        AncientRubbleBlockEntity rubble = getBlockEntity(world, pos);
+        RubbleBlockEntity rubble = getBlockEntity(world, pos);
         if (rubble == null)
             return ActionResult.FAIL;
 
@@ -212,12 +212,12 @@ public class AncientRubbleBlock extends CharmBlockWithEntity {
         if (blockEntity == null)
             return ActionResult.FAIL;
 
-        AncientRubbleBlockEntity rubble = (AncientRubbleBlockEntity)blockEntity;
+        RubbleBlockEntity rubble = (RubbleBlockEntity)blockEntity;
         ItemStack itemStack = rubble.getItemStack();
 
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
-        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Excavation.ANCIENT_RUBBLE));
+        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Excavation.RUBBLE));
 
         world.removeBlockEntity(pos);
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);

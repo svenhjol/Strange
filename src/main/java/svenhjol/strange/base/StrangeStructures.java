@@ -11,7 +11,7 @@ public class StrangeStructures {
     public static void init() {
         DataBlockProcessor.callbacks.put("rubble", processor -> {
             if (ModuleHandler.enabled("strange:excavation") && processor.withChance(0.9F)) {
-                processor.state = Excavation.ANCIENT_RUBBLE.getDefaultState();
+                processor.state = Excavation.RUBBLE.getDefaultState();
             } else {
                 processor.state = Blocks.GRAVEL.getDefaultState();
             }

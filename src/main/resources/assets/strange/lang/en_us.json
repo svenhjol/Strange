@@ -17,8 +17,8 @@
   "advancements.strange.get_scroll.description": "Obtain a quest scroll",
   "advancements.strange.root.title": "Strange",
   "advancements.strange.root.description": "Adventure, exploration and quests",
-  "advancements.strange.harvest_ancient_rubble.title": "Archaeologist",
-  "advancements.strange.harvest_ancient_rubble.description": "Successfully extract an item from ancient rubble",
+  "advancements.strange.harvest_rubble.title": "Archaeologist",
+  "advancements.strange.harvest_rubble.description": "Successfully extract an item from ancient rubble",
   "advancements.strange.learn_all_runes.title": "Runemaster",
   "advancements.strange.learn_all_runes.description": "Learn every rune's destination",
   "advancements.strange.use_totem_of_preserving.title": "Safe Hands",
@@ -65,6 +65,7 @@
   "event.strange.quests.accepted": "Quest accepted",
   "event.strange.quests.completed": "Quest completed",
 
+  "gui.strange.scrolls.back_to_journal": "Back to Journal",
   "gui.strange.scrolls.boss": "Battle and destroy",
   "gui.strange.scrolls.boss_entity": "%s: %s",
   "gui.strange.scrolls.close": "Close",

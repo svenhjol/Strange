@@ -322,7 +322,7 @@ public class Scrolls extends CharmModule {
             supplier.pool(builder);
         }
 
-        if (id.equals(StrangeLoot.ANCIENT_RUBBLE)) {
+        if (id.equals(StrangeLoot.RUBBLE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(UniformLootTableRange.between(0.0F, 1.0F))
                 .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS)));
