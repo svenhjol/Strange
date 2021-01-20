@@ -25,7 +25,7 @@ import java.util.*;
 
 public class StoneCircleGenerator extends StructurePieceWithDimensions {
     public static float chestChance = 0.3F;
-    public static float runeChance = 0.8F;
+    public static float runeChance = 0.5F;
     public static int maxCheckSurface = 5;
     public static int minCheckSurface = -15;
     public static int maxRadius = 12;
