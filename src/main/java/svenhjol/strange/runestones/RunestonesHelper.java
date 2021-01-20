@@ -17,8 +17,6 @@ import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.runicfragments.RunicFragmentItem;
-import svenhjol.strange.runicfragments.RunicFragments;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -122,10 +120,6 @@ public class RunestonesHelper {
             pos = pos.add(0, 1, 0); // the block above the lodestone
             return pos;
 
-        } else if (stack.getItem() == RunicFragments.RUNIC_FRAGMENT) {
-
-            if (RunicFragmentItem.isPopulated(stack) && RunicFragmentItem.isCorrectDimension(stack, world))
-                return RunicFragmentItem.getPos(stack);
         }
 
         return null;
