@@ -34,9 +34,11 @@ public class Ruins extends CharmModule {
 
     public static ConfiguredStructureFeature<?, ?> SURFACE_BADLANDS;
     public static ConfiguredStructureFeature<?, ?> SURFACE_DESERT;
+    public static ConfiguredStructureFeature<?, ?> SURFACE_END;
     public static ConfiguredStructureFeature<?, ?> SURFACE_FOREST;
     public static ConfiguredStructureFeature<?, ?> SURFACE_JUNGLE;
     public static ConfiguredStructureFeature<?, ?> SURFACE_MOUNTAINS;
+    public static ConfiguredStructureFeature<?, ?> SURFACE_OCEAN;
     public static ConfiguredStructureFeature<?, ?> SURFACE_PLAINS;
     public static ConfiguredStructureFeature<?, ?> SURFACE_SAVANNA;
     public static ConfiguredStructureFeature<?, ?> SURFACE_SNOWY;
@@ -100,9 +102,11 @@ public class Ruins extends CharmModule {
 
         SURFACE_BADLANDS    = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.BADLANDS_POOL, surfaceRuinSize));
         SURFACE_DESERT      = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.DESERT_POOL, surfaceRuinSize));
+        SURFACE_END         = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.END_POOL, surfaceRuinSize));
         SURFACE_FOREST      = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.FOREST_POOL, surfaceRuinSize));
         SURFACE_JUNGLE      = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.JUNGLE_POOL, surfaceRuinSize));
         SURFACE_MOUNTAINS   = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.MOUNTAINS_POOL, surfaceRuinSize));
+        SURFACE_OCEAN       = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.OCEAN_POOL, surfaceRuinSize));
         SURFACE_PLAINS      = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.PLAINS_POOL, surfaceRuinSize));
         SURFACE_SAVANNA     = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.SAVANNA_POOL, surfaceRuinSize));
         SURFACE_SNOWY       = SURFACE_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> SurfaceRuinGenerator.SNOWY_POOL, surfaceRuinSize));
@@ -133,9 +137,11 @@ public class Ruins extends CharmModule {
         // register each configuredFeature with MC registry against the RUIN_STRUCTURE
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_badlands"), SURFACE_BADLANDS);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_desert"), SURFACE_DESERT);
+        configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_end"), SURFACE_END);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_forest"), SURFACE_FOREST);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_jungle"), SURFACE_JUNGLE);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_mountains"), SURFACE_MOUNTAINS);
+        configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_ocean"), SURFACE_OCEAN);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_plains"), SURFACE_PLAINS);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_savanna"), SURFACE_SAVANNA);
         configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin_snowy"), SURFACE_SNOWY);
@@ -180,9 +186,11 @@ public class Ruins extends CharmModule {
         // add registered ruin pools to biomes
         if (!SurfaceRuinGenerator.BADLANDS_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.MESA, SURFACE_BADLANDS);
         if (!SurfaceRuinGenerator.DESERT_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.DESERT, SURFACE_DESERT);
+        if (!SurfaceRuinGenerator.END_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.THEEND, SURFACE_END);
         if (!SurfaceRuinGenerator.FOREST_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.FOREST, SURFACE_FOREST);
         if (!SurfaceRuinGenerator.JUNGLE_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.JUNGLE, SURFACE_JUNGLE);
         if (!SurfaceRuinGenerator.MOUNTAINS_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.EXTREME_HILLS, SURFACE_MOUNTAINS);
+        if (!SurfaceRuinGenerator.OCEAN_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.OCEAN, SURFACE_OCEAN);
         if (!SurfaceRuinGenerator.PLAINS_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.PLAINS, SURFACE_PLAINS);
         if (!SurfaceRuinGenerator.SAVANNA_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.SAVANNA, SURFACE_SAVANNA);
         if (!SurfaceRuinGenerator.SNOWY_RUINS.isEmpty()) addStructureFeatureToBiomes(Category.ICY, SURFACE_SNOWY);
