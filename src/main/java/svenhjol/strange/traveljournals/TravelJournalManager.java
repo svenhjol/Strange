@@ -8,12 +8,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import svenhjol.charm.Charm;
-import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.helper.DimensionHelper;
 
 import javax.annotation.Nullable;
@@ -84,19 +81,7 @@ public class TravelJournalManager extends PersistentState {
 
     @Nullable
     public JournalEntry initJournalEntry(PlayerEntity player) {
-        String name = "";
-
-        if (!player.world.isClient) {
-            Optional<RegistryKey<Biome>> biomeKey = BiomeHelper.getBiomeKeyAtPosition((ServerWorld) player.world, player.getBlockPos());
-            if (biomeKey.isPresent()) {
-                Identifier biomeId = biomeKey.get().getValue();
-                if (biomeId != null)
-                    name = new TranslatableText("biome.minecraft." + biomeId.getPath()).getString();
-            }
-        }
-
-        if (name.isEmpty())
-            name = "New location";
+        String name = new TranslatableText("gui.strange.travel_journal.new_entry").getString();
 
         BlockPos pos = player.getBlockPos();
         Identifier dim = DimensionHelper.getDimension(player.world);

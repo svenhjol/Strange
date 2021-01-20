@@ -54,7 +54,6 @@ public class JournalEntry {
         if (dim != null)
             tag.putString(DIM, dim.toString());
 
-
         if (pos != null)
             tag.putLong(POS, pos.asLong());
 
