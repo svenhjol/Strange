@@ -92,17 +92,17 @@ public class Runestones extends CharmModule {
         "minecraft:ocean_ruin",
         "minecraft:swamp_hut",
         "minecraft:igloo",
-        "minecraft:ruined_portal"
+        "minecraft:ruined_portal",
+        "strange:underground_ruin",
+        "strange:surface_ruin",
+        "strange:foundation_ruin"
     ));
 
     @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
     public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
-        "minecraft:desert_lakes",
         "minecraft:flower_forest",
-        "minecraft:giant_tree_taiga",
-        "minecraft:badlands",
-        "minecraft:bamboo_jungle",
-        "minecraft:ice_spikes"
+        "minecraft:ice_spikes",
+        "minecraft:badlands"
     ));
 
     @Override
@@ -185,7 +185,7 @@ public class Runestones extends CharmModule {
                 String configStructure = configStructures.get(j);
                 Identifier locationId = new Identifier(configStructure);
 
-                float weight = 1.0F - (j / (float) (NUMBER_OF_RUNES + 10));
+                float weight = 1.0F - (j / (float)NUMBER_OF_RUNES);
                 boolean addStructure = locationId.equals(RunestonesHelper.SPAWN) || Registry.STRUCTURE_FEATURE.get(locationId) != null;
 
                 if (addStructure) {
@@ -202,7 +202,7 @@ public class Runestones extends CharmModule {
                 String configBiome = configBiomes.get(j);
                 Identifier locationId = new Identifier(configBiome);
 
-                float weight = 1.0F - (j / (float) (NUMBER_OF_RUNES + 10));
+                float weight = 1.0F - (j / (float)NUMBER_OF_RUNES);
                 boolean addBiome = BuiltinRegistries.BIOME.get(locationId) != null;
 
                 if (addBiome) {
