@@ -4,8 +4,11 @@ import svenhjol.strange.ruins.builds.*;
 
 public class RuinBuilds {
     public static void init() {
-        // generate underground ruins
+        // --- SURFACE ---
+        StoneFort stoneFort = new StoneFort();
+        SurfaceRuinGenerator.PLAINS_RUINS.add(stoneFort);
 
+        // --- UNDERGROUND ---
         Castle castle = new Castle();
         UndergroundRuinGenerator.PLAINS_RUINS.add(castle);
         UndergroundRuinGenerator.FOREST_RUINS.add(castle);
@@ -21,8 +24,7 @@ public class RuinBuilds {
         UndergroundRuinGenerator.SAVANNA_RUINS.add(vaults);
         UndergroundRuinGenerator.DESERT_RUINS.add(vaults);
 
-        // generate foundation ruins
-
+        // --- FOUNDATIONS ---
         StoneFoundations stoneFoundations = new StoneFoundations();
         FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneFoundations);
         FoundationRuinGenerator.BADLANDS_RUINS.add(stoneFoundations);

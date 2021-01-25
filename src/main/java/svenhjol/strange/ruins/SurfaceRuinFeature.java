@@ -6,6 +6,6 @@ import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 public class SurfaceRuinFeature extends JigsawFeature {
     public SurfaceRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, 64, false, true);
+        super(codec, 64, true, true);
     }
 }
