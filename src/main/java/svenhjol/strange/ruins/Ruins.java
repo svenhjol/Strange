@@ -172,9 +172,14 @@ public class Ruins extends CharmModule {
 
     @Override
     public void init() {
-        // register rare ruin loot table
-        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
-        DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUIN_RARE);
+        // register ruin loot tables
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUINS_COMMON);
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUINS_UNCOMMON);
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUINS_RARE);
+        LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.RUINS_EPIC);
+
+        DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUINS_RARE);
+        DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.RUINS_EPIC);
 
         RuinBuilds.init();
 
