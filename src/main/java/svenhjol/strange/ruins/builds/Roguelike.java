@@ -16,6 +16,7 @@ public class Roguelike extends BaseStructure {
         super(Strange.MOD_ID, "ruins", "roguelike");
 
         addStart("start1", 1);
+        addStart("start2", 1);
 
         ROOMS.put("level1_room_cake1", 5);
         ROOMS.put("level1_room_cake2", 5);
