@@ -6,18 +6,17 @@ import svenhjol.strange.Strange;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StoneFoundations extends BaseStructure {
+public class StoneRoom extends BaseStructure {
     private final Map<String, Integer> CORRIDORS = new HashMap<>();
     private final Map<String, Integer> ROOMS = new HashMap<>();
     private final Map<String, Integer> ENDS = new HashMap<>();
 
-    public StoneFoundations() {
+    public StoneRoom() {
         super(Strange.MOD_ID, "ruins", "stone_room");
 
         addStart("start1", 2);
         addStart("start2", 2);
         addStart("start3", 1);
-        addStart("start4", 1);
 
         // add the ends as corridors too, whynot
         CORRIDORS.put("corridor1", 2);

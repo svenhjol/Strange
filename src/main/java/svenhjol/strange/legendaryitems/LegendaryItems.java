@@ -70,17 +70,13 @@ public class LegendaryItems extends CharmModule {
     public void init() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
-        if (!ModuleHandler.enabled("strange:excavation")) {
-            if (!ModuleHandler.enabled("strange:ruins")) {
-                Charm.LOG.info("Adding legendary items to simple_dungeon loot");
-                lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
-            } else {
-                Charm.LOG.info("Adding legendary items to ruin loot");
-                lootTable = StrangeLoot.RUINS_RARE;
-            }
+        if (!ModuleHandler.enabled("strange:ruins")) {
+            Charm.LOG.info("Adding legendary items to simple_dungeon loot");
+            lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
         } else {
-            Charm.LOG.info("Adding legendary items to ancient_rubble loot");
-            lootTable = StrangeLoot.RUBBLE;
+            // TODO: this will use loot table for outerlands when finished
+            Charm.LOG.info("Adding legendary items to epic ruin loot");
+            lootTable = StrangeLoot.RUINS_EPIC;
         }
     }
 

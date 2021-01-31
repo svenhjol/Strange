@@ -25,8 +25,8 @@ public class RuinBuilds {
         UndergroundRuinGenerator.DESERT_RUINS.add(vaults);
 
         // --- FOUNDATIONS ---
-        StoneFoundations stoneFoundations = new StoneFoundations();
-        FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneFoundations);
-        FoundationRuinGenerator.BADLANDS_RUINS.add(stoneFoundations);
+        StoneRoom stoneRoom = new StoneRoom();
+        FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneRoom);
+        FoundationRuinGenerator.BADLANDS_RUINS.add(stoneRoom);
     }
 }
