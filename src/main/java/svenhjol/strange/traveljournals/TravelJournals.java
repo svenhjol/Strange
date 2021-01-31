@@ -108,7 +108,7 @@ public class TravelJournals extends CharmModule {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
 
         if (overworld == null) {
-            Charm.LOG.warn("Overworld is null, cannot load persistent state manager");
+            Charm.LOG.warn("[Travel Journal] Overworld is null, cannot load persistent state manager");
             return;
         }
 

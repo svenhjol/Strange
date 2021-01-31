@@ -234,7 +234,7 @@ public class Scrolls extends CharmModule {
     private void loadQuestManager(MinecraftServer server) {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
         if (overworld == null) {
-            Charm.LOG.warn("Overworld is null, cannot load persistent state manager");
+            Charm.LOG.warn("[Scrolls] Overworld is null, cannot load persistent state manager");
             return;
         }
 
