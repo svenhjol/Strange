@@ -239,6 +239,8 @@ public class Scrolls extends CharmModule {
 
         PersistentStateManager stateManager = overworld.getPersistentStateManager();
         questManager = stateManager.getOrCreate(() -> new QuestManager(overworld), QuestManager.nameFor(overworld.getDimension()));
+
+        Charm.LOG.info("[Scrolls] Loaded quest state manager");
     }
 
     private void tryLoadScrolls(MinecraftServer server) {

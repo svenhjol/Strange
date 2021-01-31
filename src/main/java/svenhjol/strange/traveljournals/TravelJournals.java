@@ -114,6 +114,8 @@ public class TravelJournals extends CharmModule {
 
         PersistentStateManager stateManager = overworld.getPersistentStateManager();
         travelJournalManager = stateManager.getOrCreate(() -> new TravelJournalManager(overworld), TravelJournalManager.nameFor(overworld.getDimension()));
+
+        Charm.LOG.info("[Travel Journal] Loaded travel journal state manager");
     }
 
 
