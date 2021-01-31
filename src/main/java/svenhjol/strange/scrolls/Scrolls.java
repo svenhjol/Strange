@@ -230,7 +230,6 @@ public class Scrolls extends CharmModule {
         return null;
     }
 
-
     private void loadQuestManager(MinecraftServer server) {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
         if (overworld == null) {
