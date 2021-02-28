@@ -15,6 +15,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.Strange;
 
@@ -60,7 +61,7 @@ public class RunestonesHelper {
         if (required.size() < limit)
             return false;
 
-        if (player.abilities.creativeMode)
+        if (PlayerHelper.getAbilities(player).creativeMode)
             return true;
 
         List<Integer> learned = getLearnedRunes(player);

@@ -120,8 +120,8 @@ public class RunicAltarBlock extends CharmBlockWithEntity {
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new RunicAltarBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RunicAltarBlockEntity(pos, state);
     }
 
     @Nullable

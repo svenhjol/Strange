@@ -57,7 +57,7 @@ public class Reward implements ISerializable {
                 String stackIndex = Integer.toString(index);
 
                 CompoundTag itemTag = new CompoundTag();
-                stack.toTag(itemTag);
+                stack.writeNbt(itemTag);
                 dataTag.put(stackIndex, itemTag);
                 countTag.putInt(stackIndex, items.get(stack));
                 index++;
@@ -87,7 +87,7 @@ public class Reward implements ISerializable {
                 if (tagAtIndex == null)
                     continue;
 
-                ItemStack stack = ItemStack.fromTag((CompoundTag)tagAtIndex);
+                ItemStack stack = ItemStack.fromNbt((CompoundTag)tagAtIndex);
                 int count = Math.max(countTag.getInt(stackIndex), 1);
                 items.put(stack, count);
             }

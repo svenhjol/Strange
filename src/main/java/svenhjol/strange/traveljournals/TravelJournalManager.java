@@ -9,6 +9,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.DimensionHelper;
@@ -18,9 +19,10 @@ import java.util.*;
 
 public class TravelJournalManager extends PersistentState {
     private Map<UUID, List<JournalEntry>> playerJournalEntries = new HashMap<>();
+    private final World world;
 
     public TravelJournalManager(ServerWorld world) {
-        super(nameFor(world.getDimension()));
+        this.world = world;
         markDirty();
     }
 
@@ -90,22 +92,25 @@ public class TravelJournalManager extends PersistentState {
         return addJournalEntry(player, entry);
     }
 
-    @Override
-    public void fromTag(CompoundTag tag) {
+    public static TravelJournalManager fromTag(ServerWorld world, CompoundTag tag) {
+        TravelJournalManager manager = new TravelJournalManager(world);
+
         // inflate into hashmap
-        playerJournalEntries = new HashMap<>();
+        manager.playerJournalEntries = new HashMap<>();
 
         Set<String> uuids = tag.getKeys();
         for (String uuid : uuids) {
             UUID player = UUID.fromString(uuid);
             ListTag listTag = tag.getList(uuid, 10);
-            List<JournalEntry> entries = unserializePlayerEntries(listTag);
-            playerJournalEntries.put(player, entries);
+            List<JournalEntry> entries = manager.unserializePlayerEntries(listTag);
+            manager.playerJournalEntries.put(player, entries);
         }
+
+        return manager;
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag writeNbt(CompoundTag tag) {
         // serialize all player journal entries into the master tag
         for (UUID uuid : playerJournalEntries.keySet()) {
             ListTag listTag = serializePlayerEntries(uuid);

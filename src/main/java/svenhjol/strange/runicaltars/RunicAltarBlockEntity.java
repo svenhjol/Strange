@@ -32,24 +32,24 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
     private DefaultedList<ItemStack> items = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
     private BlockPos destination;
 
-    public RunicAltarBlockEntity() {
-        super(RunicAltars.BLOCK_ENTITY);
+    public RunicAltarBlockEntity(BlockPos pos, BlockState state) {
+        super(RunicAltars.BLOCK_ENTITY, pos, state);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
         this.items = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
-        Inventories.fromTag(tag, this.items);
+        Inventories.readNbt(tag, this.items);
 
         if (tag.contains(DESTINATION_TAG))
             this.destination = BlockPos.fromLong(tag.getLong(DESTINATION_TAG));
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        Inventories.toTag(tag, this.items, false);
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
+        Inventories.writeNbt(tag, this.items, false);
 
         if (destination != null)
             tag.putLong(DESTINATION_TAG, destination.asLong());
@@ -142,12 +142,12 @@ public class RunicAltarBlockEntity extends BlockEntity implements Inventory, Sid
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(null, compoundTag);
+        readNbt(compoundTag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag compoundTag) {
-        return toTag(compoundTag);
+        return writeNbt(compoundTag);
     }
 
     @Nullable

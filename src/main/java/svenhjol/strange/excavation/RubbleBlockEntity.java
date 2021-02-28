@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 
 public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public static final String ITEMSTACK_TAG = "itemstack";
@@ -13,8 +14,8 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     public long levelTicks;
     public ItemStack itemStack;
 
-    public RubbleBlockEntity() {
-        super(Excavation.BLOCK_ENTITY);
+    public RubbleBlockEntity(BlockPos pos, BlockState state) {
+        super(Excavation.BLOCK_ENTITY, pos, state);
     }
 
     public void setLevelTicks(long levelTicks) {
@@ -34,23 +35,23 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
 
         if (tag.contains(ITEMSTACK_TAG))
-            this.itemStack = ItemStack.fromTag((CompoundTag) tag.get(ITEMSTACK_TAG));
+            this.itemStack = ItemStack.fromNbt((CompoundTag) tag.get(ITEMSTACK_TAG));
 
         if (tag.contains(LEVELTICKS_TAG))
             this.levelTicks = tag.getLong(LEVELTICKS_TAG);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
 
         if (this.itemStack != null) {
             CompoundTag itemTag = new CompoundTag();
-            this.itemStack.toTag(itemTag);
+            this.itemStack.writeNbt(itemTag);
             tag.put(ITEMSTACK_TAG, itemTag);
         }
 
@@ -60,11 +61,11 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(null, compoundTag);
+        readNbt(compoundTag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag compoundTag) {
-        return toTag(compoundTag);
+        return writeNbt(compoundTag);
     }
 }

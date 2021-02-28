@@ -331,7 +331,7 @@ public class Runestones extends CharmModule {
             Block block = state.getBlock();
 
             if (block instanceof RunestoneBlock) {
-                entity.remove();
+                entity.discard();
 
                 boolean result = onPlayerActivateRunestone((ServerWorld)world, pos, (ServerPlayerEntity)player);
                 if (result) {

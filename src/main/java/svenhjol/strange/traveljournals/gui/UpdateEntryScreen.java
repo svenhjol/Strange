@@ -19,6 +19,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.totems.TotemOfWandering;
@@ -76,7 +77,7 @@ public class UpdateEntryScreen extends BaseScreen {
         nameField.setFocusUnlocked(false);
         nameField.setEditableColor(-1);
         nameField.setUneditableColor(-1);
-        nameField.setHasBorder(true);
+        nameField.setDrawsBackground(false);
         nameField.setMaxLength(TravelJournals.MAX_NAME_LENGTH);
         nameField.setChangedListener(this::responder);
         nameField.setText(this.name);
@@ -92,8 +93,8 @@ public class UpdateEntryScreen extends BaseScreen {
         hasRenderedMapButton = false;
 
         // reset state
-        hasMap = client.player.inventory.contains(new ItemStack(Items.MAP));
-        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && client.player.inventory.contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+        hasMap = PlayerHelper.getInventory(client.player).contains(new ItemStack(Items.MAP));
+        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
         atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
         hasScreenshot = hasScreenshot();
     }

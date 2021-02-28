@@ -13,8 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
-import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -55,7 +55,7 @@ public class TotemOfWandering extends CharmModule {
         if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
             || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformLootTableRange.between(0.0F, 1.0F))
+                .rolls(UniformLootNumberProvider.create(0.0F, 1.0F))
                 .with(ItemEntry.builder(TOTEM_OF_WANDERING));
 
             supplier.pool(builder);

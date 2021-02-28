@@ -37,7 +37,7 @@ public class ScrollsClient extends CharmClientModule {
         ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_DESTROY_SCROLL, this::handleClientDestroyScroll);
 
         // set up scroll item model predicate
-        ModelPredicateProviderRegistryAccessor.callRegister(new Identifier("scroll_state"), (stack, world, entity)
+        ModelPredicateProviderRegistryAccessor.callRegister(new Identifier("scroll_state"), (stack, world, entity, i)
             -> ScrollItem.hasBeenOpened(stack) ? 0.1F : 0.0F);
     }
 

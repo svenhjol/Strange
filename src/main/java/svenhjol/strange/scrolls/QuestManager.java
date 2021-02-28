@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import svenhjol.charm.Charm;
 import svenhjol.strange.scrolls.populator.*;
@@ -28,11 +29,12 @@ public class QuestManager extends PersistentState {
     public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable?
 
     private int currentTime;
+    private final World world;
     private final Map<String, Quest> quests = new ConcurrentHashMap<>();
     private final Map<UUID, List<Quest>> playerQuests = new ConcurrentHashMap<>();
 
     public QuestManager(ServerWorld world) {
-        super(nameFor(world.getDimension()));
+        this.world = world;
         markDirty();
     }
 
@@ -54,20 +56,22 @@ public class QuestManager extends PersistentState {
             markDirty();
     }
 
-    @Override
-    public void fromTag(CompoundTag tag) {
-        currentTime = tag.getInt(TICK_TAG);
+    public static QuestManager fromNbt(ServerWorld world, CompoundTag tag) {
+        QuestManager questManager = new QuestManager(world);
+        questManager.currentTime = tag.getInt(TICK_TAG);
         ListTag listTag = tag.getList(QUESTS_TAG, 10);
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
             Quest quest = Quest.getFromTag(questTag);
-            addQuest(quest);
+            questManager.addQuest(quest);
         }
+
+        return questManager;
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag writeNbt(CompoundTag tag) {
         ListTag listTag = new ListTag();
 
         forEachQuest(quest -> {

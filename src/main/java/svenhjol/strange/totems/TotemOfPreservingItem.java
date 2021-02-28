@@ -64,7 +64,7 @@ public class TotemOfPreservingItem extends CharmItem {
                     continue;
                 }
 
-                ItemStack stack = ItemStack.fromTag((CompoundTag) tag);
+                ItemStack stack = ItemStack.fromNbt((CompoundTag) tag);
                 BlockPos pos = user.getBlockPos();
                 ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ(), stack);
                 world.spawnEntity(itemEntity);

@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import svenhjol.charm.base.helper.DimensionHelper;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.JournalEntry;
@@ -47,7 +48,7 @@ public class TravelJournalScreen extends BaseScreen {
         hasRenderedScrollButton = false;
         hasRenderedEntries = false;
 
-        hasTotem = client.player.inventory.contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+        hasTotem = PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
     }
 
     @Override

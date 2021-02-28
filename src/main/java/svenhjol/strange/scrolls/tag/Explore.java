@@ -9,6 +9,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.strange.scrolls.populator.ExplorePopulator;
 
@@ -48,7 +49,7 @@ public class Explore implements ISerializable {
             ListTag itemDataTag = new ListTag();
             for (ItemStack stack : items) {
                 CompoundTag itemTag = new CompoundTag();
-                stack.toTag(itemTag);
+                stack.writeNbt(itemTag);
                 itemDataTag.add(itemTag);
             }
 
@@ -100,7 +101,7 @@ public class Explore implements ISerializable {
         ListTag itemDataTag = (ListTag)tag.get(ITEMS);
         if (itemDataTag != null && itemDataTag.size() > 0) {
             for (Tag itemTag : itemDataTag) {
-                ItemStack stack = ItemStack.fromTag((CompoundTag)itemTag);
+                ItemStack stack = ItemStack.fromNbt((CompoundTag)itemTag);
                 items.add(stack);
             }
         }
@@ -176,7 +177,7 @@ public class Explore implements ISerializable {
             return;
 
         items.forEach(stack -> {
-            for (ItemStack invStack : player.inventory.main) {
+            for (ItemStack invStack : PlayerHelper.getInventory(player).main) {
                 if (ItemStack.areEqual(stack, invStack)
                     && stack.getOrCreateTag().getString(QUEST).equals(quest.getId())
                 ) {
@@ -194,7 +195,7 @@ public class Explore implements ISerializable {
             Item item = stack.getItem();
             satisfied.put(item, false);
 
-            player.inventory.main.forEach(invStack -> {
+            PlayerHelper.getInventory(player).main.forEach(invStack -> {
                 // skip if already added
                 if (satisfied.containsKey(item) && satisfied.get(item))
                     return;

@@ -113,7 +113,10 @@ public class TravelJournals extends CharmModule {
         }
 
         PersistentStateManager stateManager = overworld.getPersistentStateManager();
-        travelJournalManager = stateManager.getOrCreate(() -> new TravelJournalManager(overworld), TravelJournalManager.nameFor(overworld.getDimension()));
+        travelJournalManager = stateManager.getOrCreate(
+            (tag) -> TravelJournalManager.fromTag(overworld, tag),
+            () -> new TravelJournalManager(overworld),
+            TravelJournalManager.nameFor(overworld.getDimension()));
 
         Charm.LOG.info("[Travel Journal] Loaded travel journal state manager");
     }
@@ -181,7 +184,7 @@ public class TravelJournals extends CharmModule {
         processClientPacket(context, (player, manager) -> {
             // check the player has a totem
             ItemStack requiredItem = new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING);
-            int slotWithStack = player.inventory.method_7371(requiredItem);
+            int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
             if (slotWithStack == -1)
                 return;
 
@@ -196,7 +199,7 @@ public class TravelJournals extends CharmModule {
                 return;
 
             // destroy totem
-            ItemStack heldTotem = player.inventory.getStack(slotWithStack);
+            ItemStack heldTotem = PlayerHelper.getInventory(player).getStack(slotWithStack);
             TotemsHelper.destroy(player, heldTotem);
 
             World world = player.world;
@@ -214,7 +217,7 @@ public class TravelJournals extends CharmModule {
         processClientPacket(context, (player, manager) -> {
             // check the player has a map
             ItemStack requiredItem = new ItemStack(Items.MAP);
-            int slotWithStack = player.inventory.method_7371(requiredItem);
+            int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
             if (slotWithStack == -1)
                 return;
 
@@ -225,7 +228,7 @@ public class TravelJournals extends CharmModule {
 
             // get the entry and reduce the map stack by 1
             JournalEntry entry = optionalEntry.get();
-            ItemStack heldMap = player.inventory.getStack(slotWithStack);
+            ItemStack heldMap = PlayerHelper.getInventory(player).getStack(slotWithStack);
             heldMap.decrement(1);
 
             DyeColor col = DyeColor.byId(entry.color);

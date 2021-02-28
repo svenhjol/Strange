@@ -46,7 +46,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
     public static final List<VoxelShape> SHAPES = new ArrayList<>();
 
     public RubbleBlock(CharmModule module) {
-        super(module, "rubble", FabricBlockSettings.of(Material.AGGREGATE, MaterialColor.STONE)
+        super(module, "rubble", FabricBlockSettings.of(Material.AGGREGATE, MapColor.GRAY)
             .strength(8.0F)
             .requiresTool()
             .breakByTool(FabricToolTags.SHOVELS)
@@ -57,8 +57,8 @@ public class RubbleBlock extends CharmBlockWithEntity {
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new RubbleBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RubbleBlockEntity(pos, state);
     }
 
     @Override

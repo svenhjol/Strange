@@ -15,8 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
-import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -123,7 +123,7 @@ public class TotemOfPreserving extends CharmModule {
                 continue;
             }
 
-            serialized.put(Integer.toString(i), holdable.get(i).toTag(new CompoundTag()));
+            serialized.put(Integer.toString(i), holdable.get(i).writeNbt(new CompoundTag()));
         }
 
         TotemOfPreservingItem.setItems(totem, serialized);
@@ -193,7 +193,7 @@ public class TotemOfPreserving extends CharmModule {
         if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
             || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformLootTableRange.between(0.0F, 1.0F))
+                .rolls(UniformLootNumberProvider.create(0.0F, 1.0F))
                 .with(ItemEntry.builder(TOTEM_OF_PRESERVING));
 
             supplier.pool(builder);

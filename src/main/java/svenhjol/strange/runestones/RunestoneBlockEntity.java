@@ -18,13 +18,13 @@ public class RunestoneBlockEntity extends BlockEntity {
     public Identifier location;
     public String player;
 
-    public RunestoneBlockEntity() {
-        super(Runestones.BLOCK_ENTITY);
+    public RunestoneBlockEntity(BlockPos pos, BlockState state) {
+        super(Runestones.BLOCK_ENTITY, pos, state);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
         this.position = BlockPos.fromLong(tag.getLong(POSITION_TAG));
         this.player = tag.getString(PLAYER_TAG);
 
@@ -33,8 +33,8 @@ public class RunestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
         if (this.position != null) {
             tag.putLong(POSITION_TAG, this.position.asLong());
 
@@ -50,6 +50,6 @@ public class RunestoneBlockEntity extends BlockEntity {
     @Nullable
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(this.pos, 3, this.toInitialChunkDataTag());
+        return new BlockEntityUpdateS2CPacket(this.pos, 3, this.toInitialChunkDataNbt());
     }
 }

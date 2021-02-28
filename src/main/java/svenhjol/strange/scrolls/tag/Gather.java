@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import svenhjol.charm.base.helper.PlayerHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class Gather implements ISerializable {
 
                 // write the data to the tags at the specified index
                 CompoundTag itemTag = new CompoundTag();
-                stack.toTag(itemTag);
+                stack.writeNbt(itemTag);
                 dataTag.put(tagIndex, itemTag);
                 countTag.putInt(tagIndex, itemCount);
 
@@ -64,7 +65,7 @@ public class Gather implements ISerializable {
                 if (tagAtIndex == null)
                     continue;
 
-                ItemStack stack = ItemStack.fromTag((CompoundTag)tagAtIndex);
+                ItemStack stack = ItemStack.fromNbt((CompoundTag)tagAtIndex);
                 int count = Math.max(countTag.getInt(tagIndex), 1);
                 items.put(stack, count);
             }
@@ -96,7 +97,7 @@ public class Gather implements ISerializable {
 
         items.forEach((stack, count) -> {
             int remainder = count;
-            for (ItemStack invStack : player.inventory.main) {
+            for (ItemStack invStack : PlayerHelper.getInventory(player).main) {
                 if (remainder <= 0)
                     continue;
 
@@ -113,7 +114,7 @@ public class Gather implements ISerializable {
         satisfied.clear();
 
         Map<ItemStack, Integer> itemsCopy = new HashMap<>(items);
-        ArrayList<ItemStack> invCopy = new ArrayList<>(player.inventory.main);
+        ArrayList<ItemStack> invCopy = new ArrayList<>(PlayerHelper.getInventory(player).main);
 
         itemsCopy.forEach((requiredStack, requiredCount) -> {
             int removeIndex = -1;

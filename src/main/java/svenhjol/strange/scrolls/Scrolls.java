@@ -13,13 +13,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
-import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
-import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
@@ -238,7 +238,10 @@ public class Scrolls extends CharmModule {
         }
 
         PersistentStateManager stateManager = overworld.getPersistentStateManager();
-        questManager = stateManager.getOrCreate(() -> new QuestManager(overworld), QuestManager.nameFor(overworld.getDimension()));
+        questManager = stateManager.getOrCreate(
+            (tag) -> QuestManager.fromNbt(overworld, tag),
+            () -> new QuestManager(overworld),
+            QuestManager.nameFor(overworld.getDimension()));
 
         Charm.LOG.info("[Scrolls] Loaded quest state manager");
     }
@@ -315,7 +318,7 @@ public class Scrolls extends CharmModule {
 
         if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST) || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
+                .rolls(ConstantLootNumberProvider.create(1))
                 .with(ItemEntry.builder(Items.AIR)
                     .weight(1)
                     .apply(() -> new ScrollLootFunction(new LootCondition[0])));
@@ -325,7 +328,7 @@ public class Scrolls extends CharmModule {
 
         if (id.equals(StrangeLoot.RUBBLE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformLootTableRange.between(0.0F, 1.0F))
+                .rolls(UniformLootNumberProvider.create(0.0F, 1.0F))
                 .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS)));
 
             supplier.pool(builder);
