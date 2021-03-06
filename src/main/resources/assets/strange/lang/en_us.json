@@ -11,8 +11,6 @@
   "advancements.strange.find_ruin.description": "Locate a ruin",
   "advancements.strange.find_stone_circle.title": "Stone Circles",
   "advancements.strange.find_stone_circle.description": "Locate a stone circle in the overworld",
-  "advancements.strange.get_runic_fragment.title": "Piece of the puzzle",
-  "advancements.strange.get_runic_fragment.description": "Find a Runic Fragment",
   "advancements.strange.get_scroll.title": "A Strange Quest",
   "advancements.strange.get_scroll.description": "Obtain a quest scroll",
   "advancements.strange.root.title": "Strange",
@@ -106,7 +104,6 @@
   "gui.strange.travel_journal.learned_runes": "You have learned %s of %s runes",
   "gui.strange.travel_journal.learned_all_runes": "You have learned all the runes",
 
-  "item.strange.runic_fragment": "Runic Fragment",
   "item.strange.novice_scroll": "Novice Scroll",
   "item.strange.apprentice_scroll": "Apprentice Scroll",
   "item.strange.journeyman_scroll": "Journeyman Scroll",
@@ -165,9 +162,7 @@
   "runestone.strange.learned_all_runes": "Learned all runes",
 
   "runic_altar.strange.weird_item": "Item doesn't seem to make sense.",
-  "runic_altar.strange.wrong_dimension": "This tablet doesn't work in this dimension.",
-
-  "runic_fragment.strange.fragment_symbol": "This fragment has the symbol for %s.",
+  "runic_altar.strange.wrong_dimension": "This altar doesn't work in this dimension.",
 
   "scroll.strange.abandoned_quest": "Quest %s has been abandoned.",
   "scroll.strange.abandoned_quests": "All player quests have been abandoned.",

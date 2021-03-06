@@ -1,5 +1,5 @@
 {
-  "parent": "strange:get_runic_fragment",
+  "parent": "strange:activate_runestone",
   "display": {
     "icon": {
       "item": "minecraft:chorus_flower"

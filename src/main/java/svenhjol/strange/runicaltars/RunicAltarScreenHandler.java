@@ -9,7 +9,6 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import svenhjol.charm.base.screenhandler.CharmScreenHandler;
-import svenhjol.strange.runicfragments.RunicFragments;
 
 public class RunicAltarScreenHandler extends CharmScreenHandler {
     private final PlayerInventory playerInventory;
@@ -37,28 +36,9 @@ public class RunicAltarScreenHandler extends CharmScreenHandler {
             }
 
             public boolean canInsert(ItemStack stack) {
-                return stack.getItem() == RunicFragments.RUNIC_FRAGMENT
-                    || stack.getItem() == Items.COMPASS;
+                return stack.getItem() == Items.COMPASS;
             }
         });
-
-//        this.addSlot(new Slot(this.result, 4, 134, 35) {
-//            public boolean canInsert(ItemStack stack) {
-//                return false;
-//            }
-//
-//            public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
-//                context.run((world, pos) -> {
-//                    // might want to do something at the block position
-//                    world.playSound(null, pos, SoundEvents.ENTITY_CAT_HISS, SoundCategory.BLOCKS, 1.0F, 1.0F);
-//                });
-//                for (int i = 0; i < 2; i++) {
-//                    RunicAltarScreenHandler.this.input.getStack(i).decrement(1);
-//                }
-//                player.addExperienceLevels(-RunicAltars.requiredXpLevels);
-//                return stack;
-//            }
-//        });
 
         // this adds the player inventory
         int k;
