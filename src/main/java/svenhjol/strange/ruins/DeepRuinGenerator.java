@@ -9,12 +9,12 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SurfaceRuinGenerator extends BaseGenerator {
+public class DeepRuinGenerator extends BaseGenerator {
     public static StructurePool POOL;
+
     public static List<BaseStructure> RUINS = new ArrayList<>();
 
     public static void init() {
-        StructurePool.Projection projection = StructurePool.Projection.TERRAIN_MATCHING;
-        POOL = registerPool(new Identifier(Strange.MOD_ID, "ruins/surface/starts"), RUINS, projection);
+        POOL = registerPool(new Identifier(Strange.MOD_ID, "ruins/deep/starts"), RUINS);
     }
 }

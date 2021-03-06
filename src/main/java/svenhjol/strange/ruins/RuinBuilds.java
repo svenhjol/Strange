@@ -6,27 +6,27 @@ public class RuinBuilds {
     public static void init() {
         // --- SURFACE ---
         StoneFort stoneFort = new StoneFort();
-        SurfaceRuinGenerator.PLAINS_RUINS.add(stoneFort);
+        SurfaceRuinGenerator.RUINS.add(stoneFort);
 
-        // --- UNDERGROUND ---
+        // --- CAVE ---
         Castle castle = new Castle();
-        UndergroundRuinGenerator.PLAINS_RUINS.add(castle);
-        UndergroundRuinGenerator.FOREST_RUINS.add(castle);
-        UndergroundRuinGenerator.SNOWY_RUINS.add(castle);
+        CaveRuinGenerator.RUINS.add(castle);
+        CaveRuinGenerator.RUINS.add(castle);
+        CaveRuinGenerator.RUINS.add(castle);
 
         Roguelike roguelike = new Roguelike();
-        UndergroundRuinGenerator.FOREST_RUINS.add(roguelike);
-        UndergroundRuinGenerator.SNOWY_RUINS.add(roguelike);
-        UndergroundRuinGenerator.TAIGA_RUINS.add(roguelike);
+        CaveRuinGenerator.RUINS.add(roguelike);
+        CaveRuinGenerator.RUINS.add(roguelike);
+        CaveRuinGenerator.RUINS.add(roguelike);
 
         Vaults vaults = new Vaults();
-        UndergroundRuinGenerator.MOUNTAINS_RUINS.add(vaults);
-        UndergroundRuinGenerator.SAVANNA_RUINS.add(vaults);
-        UndergroundRuinGenerator.DESERT_RUINS.add(vaults);
+        CaveRuinGenerator.RUINS.add(vaults);
+        CaveRuinGenerator.RUINS.add(vaults);
+        CaveRuinGenerator.RUINS.add(vaults);
 
-        // --- FOUNDATIONS ---
+        // --- DEEP ---
         StoneRoom stoneRoom = new StoneRoom();
-        FoundationRuinGenerator.MOUNTAINS_RUINS.add(stoneRoom);
-        FoundationRuinGenerator.BADLANDS_RUINS.add(stoneRoom);
+        DeepRuinGenerator.RUINS.add(stoneRoom);
+        DeepRuinGenerator.RUINS.add(stoneRoom);
     }
 }
