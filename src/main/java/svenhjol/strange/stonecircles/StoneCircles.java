@@ -72,7 +72,7 @@ public class StoneCircles extends CharmModule {
             .flatMap(BuiltinRegistries.BIOME::getKey) // flatmap is shorthand for ifPresent(thing) -> return do(thing)
             .ifPresent(biomeKey -> {
                 Charm.LOG.debug("[StoneCircles] Added stone circle to biome: " + biomeId);
-                BiomeHelper.addStructureFeature(biomeKey, STONE_CIRCLE);
+                BiomeHelper.addStructureToBiome(STONE_CIRCLE, biomeKey);
             }));
     }
 }

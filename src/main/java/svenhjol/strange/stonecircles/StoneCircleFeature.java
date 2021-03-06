@@ -31,8 +31,8 @@ public class StoneCircleFeature extends StructureFeature<DefaultFeatureConfig> {
 
         @Override
         public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, Biome biome, DefaultFeatureConfig config, HeightLimitView heightLimitView) {
-            int x = chunkPos.method_33939(7);
-            int z = chunkPos.method_33941(7);
+            int x = chunkPos.getStartX();
+            int z = chunkPos.getStartZ();
             int y = chunkGenerator.getHeightInGround(x, z, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
             children.add(new StoneCircleGenerator(random, new BlockPos(x, y, z)));

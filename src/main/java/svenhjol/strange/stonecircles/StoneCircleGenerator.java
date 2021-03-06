@@ -55,7 +55,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         ));
 
         // generate the circle
-        boolean generatedSomething = false;
+        boolean generated = false;
         Map<Integer, Float> availableRunes = new HashMap<>();
 
         for (int i = 0; i < Runestones.WORLD_DESTINATIONS.size(); i++) {
@@ -115,7 +115,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                 }
 
                 if (generatedColumn) {
-                    generatedSomething = true;
+                    generated = true;
                     break;
                 }
             }
@@ -146,9 +146,9 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
             }
         }
 
-        if (!generatedSomething)
+        if (!generated)
             Charm.LOG.debug("Did not generate a stone circle at: " + blockPos);
 
-        return generatedSomething;
+        return generated;
     }
 }
