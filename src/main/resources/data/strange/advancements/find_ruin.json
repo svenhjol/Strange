@@ -23,24 +23,24 @@
         "feature": "strange:surface_ruin"
       }
     },
-    "find_underground_ruin": {
+    "find_cave_ruin": {
       "trigger": "minecraft:location",
       "conditions": {
-        "feature": "strange:underground_ruin"
+        "feature": "strange:cave_ruin"
       }
     },
-    "find_foundation_ruin": {
+    "find_deep_ruin": {
       "trigger": "minecraft:location",
       "conditions": {
-        "feature": "strange:foundation_ruin"
+        "feature": "strange:deep_ruin"
       }
     }
   },
   "requirements": [
     [
       "find_surface_ruin",
-      "find_underground_ruin",
-      "find_foundation_ruin"
+      "find_cave_ruin",
+      "find_deep_ruin"
     ]
   ]
 }
