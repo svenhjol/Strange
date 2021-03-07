@@ -18,7 +18,6 @@ import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.TravelJournals;
-import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Arrays;
 
@@ -40,8 +39,7 @@ public class Strange implements ModInitializer {
             StoneCircles.class,
             TravelJournals.class,
             TotemOfPreserving.class,
-            TotemOfWandering.class,
-            WritingDesks.class
+            TotemOfWandering.class
         ));
 
         StrangeStructures.init();

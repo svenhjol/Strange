@@ -34,7 +34,6 @@ import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.*;
 import svenhjol.strange.scrolls.tag.Quest;
-import svenhjol.strange.writingdesks.WritingDesks;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +44,9 @@ import static svenhjol.charm.event.StructureSetupCallback.addVillageHouse;
 public class Scrollkeepers extends CharmModule {
     public static Identifier VILLAGER_ID = new Identifier(Strange.MOD_ID, "scrollkeeper");
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
+    public static Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "writing_desk");
+    public static WritingDeskBlock WRITING_DESK;
+
     public static final Identifier MSG_SERVER_GET_SCROLL_QUEST = new Identifier(Strange.MOD_ID, "server_quest_satisfied");
     public static final Identifier MSG_CLIENT_RECEIVE_SCROLL_QUEST = new Identifier(Strange.MOD_ID, "client_quest_satisfied");
 
@@ -57,8 +59,10 @@ public class Scrollkeepers extends CharmModule {
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when handing in a scroll.")
     public static double badOmenChance = 0.05D;
 
-    public static void registerAfterWritingDesk() {
-        POIT = VillagerHelper.addPointOfInterestType(WritingDesks.BLOCK_ID, WritingDesks.WRITING_DESK, 1);
+    @Override
+    public void register() {
+        WRITING_DESK = new WritingDeskBlock(this);
+        POIT = VillagerHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
 
         VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));

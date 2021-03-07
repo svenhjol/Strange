@@ -1,8 +1,10 @@
 package svenhjol.strange.scrollkeepers;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -15,8 +17,8 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.strange.scrolls.ScrollsHelper;
 import svenhjol.strange.scrolls.ScrollItem;
+import svenhjol.strange.scrolls.ScrollsHelper;
 import svenhjol.strange.scrolls.tag.Quest;
 
 import java.util.List;
@@ -34,6 +36,9 @@ public class ScrollKeepersClient extends CharmClientModule {
 
         // listen for quest tag being sent from the server to this player
         ClientSidePacketRegistry.INSTANCE.register(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
+
+        // cut-out for 3D writing desk
+        BlockRenderLayerMap.INSTANCE.putBlock(Scrollkeepers.WRITING_DESK, RenderLayer.getCutout());
     }
 
     public void villagerInterested(PlayerEntity player) {

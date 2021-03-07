@@ -1,4 +1,4 @@
-package svenhjol.strange.writingdesks;
+package svenhjol.strange.scrollkeepers;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,7 +34,7 @@ public class WritingDeskBlock extends CharmBlock {
     public static final int NUM_VARIANTS = 4;
 
     public WritingDeskBlock(CharmModule module) {
-        super(module, WritingDesks.BLOCK_ID.getPath(), Settings.copy(Blocks.CARTOGRAPHY_TABLE));
+        super(module, Scrollkeepers.BLOCK_ID.getPath(), Settings.copy(Blocks.CARTOGRAPHY_TABLE));
         this.setDefaultState(getDefaultState().with(VARIANT, 0));
     }
 
