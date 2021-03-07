@@ -1,4 +1,4 @@
-package svenhjol.strange.excavation;
+package svenhjol.strange.rubble;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;

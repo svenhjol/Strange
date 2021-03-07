@@ -23,10 +23,12 @@ import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.legendaryitems.items.*;
 import svenhjol.strange.legendaryitems.potions.LegendaryPotion;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@Module(mod = Strange.MOD_ID)
+@Module(mod = Strange.MOD_ID, description = "Tools, weapons and armor with enchantments beyond the maximum enchantment level.")
 public class LegendaryItems extends CharmModule {
     public static final Identifier LEGENDARY_ITEMS_LOOT_ID = new Identifier(Strange.MOD_ID, "legendary_items_loot");
     public static LootFunctionType LEGENDARY_ITEMS_LOOT_FUNCTION;
@@ -34,10 +36,13 @@ public class LegendaryItems extends CharmModule {
     public static Map<ILegendaryEnchanted, Integer> LEGENDARY_ENCHANTED = new HashMap<>();
     public static Map<ILegendaryPotion, Integer> LEGENDARY_POTIONS = new HashMap<>();
 
-    private Identifier lootTable;
+    private final List<Identifier> lootTables = new ArrayList<>();
 
     @Config(name = "Additional enchantment levels", description = "Number of levels above the maximum that legendary enchantments can use.")
     public static int extraLevels = 3;
+
+    @Config(name = "Add to ruin loot", description = "If true, legendary items will be added to epic ruin loot.")
+    public static boolean addToRuinLoot = false;
 
     @Override
     public void register() {
@@ -70,18 +75,22 @@ public class LegendaryItems extends CharmModule {
     public void init() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
-        if (!ModuleHandler.enabled("strange:ruins")) {
+        if (!ModuleHandler.enabled("strange:rubble")) {
             Charm.LOG.info("Adding legendary items to simple_dungeon loot");
-            lootTable = LootTables.SIMPLE_DUNGEON_CHEST;
+            lootTables.add(LootTables.SIMPLE_DUNGEON_CHEST);
         } else {
-            // TODO: this will use loot table for outerlands when finished
+            Charm.LOG.info("Adding legendary items to rubble loot");
+            lootTables.add(StrangeLoot.RUBBLE);
+        }
+
+        if (addToRuinLoot && ModuleHandler.enabled("strange:ruins")) {
             Charm.LOG.info("Adding legendary items to epic ruin loot");
-            lootTable = StrangeLoot.RUINS_EPIC;
+            lootTables.add(StrangeLoot.RUINS_EPIC);
         }
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
-        if (id.equals(lootTable)) {
+        if (lootTables.contains(id)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantLootNumberProvider.create(1))
                 .with(ItemEntry.builder(Items.AIR)

@@ -1,12 +1,10 @@
-package svenhjol.strange.excavation;
+package svenhjol.strange.rubble;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -92,9 +90,6 @@ public class RubbleBlock extends CharmBlockWithEntity {
             if (!world.isClient) {
                 ServerWorld serverWorld = (ServerWorld) world;
 
-                if (random.nextFloat() < 0.1F)
-                    return ActionResult.PASS;
-
                 // get the block entity
                 RubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
                 if (rubble == null)
@@ -108,19 +103,17 @@ public class RubbleBlock extends CharmBlockWithEntity {
                     return success(serverWorld, pos, player);
 
                 // test to see if it can be levelled
+                long levelTicks = rubble.getLevelTicks();
                 boolean shovel = held.getItem() instanceof ShovelItem;
-                boolean waited = serverWorld.getTime() - rubble.getLevelTicks() > 50 + random.nextInt(10);
-                int fortune = EnchantmentHelper.getLevel(Enchantments.FORTUNE, held);
-                float luck = player.getLuck();
+                boolean waited = levelTicks > 0 && serverWorld.getTime() - levelTicks > 10;
 
-                float chance = 0.15F;
-                chance += shovel ? 0.15F : 0;
-                chance += waited ? 0.25F : 0;
-                chance += fortune * 0.15F;
-                chance += luck;
-
-                if (world.random.nextFloat() > chance)
+                if (waited || !shovel)
                     return fail(serverWorld, pos);
+
+                rubble.setLevelTicks(world.getTime());
+
+                if (random.nextFloat() < 0.92F)
+                    return ActionResult.PASS;
 
                 return level(serverWorld, pos, state, level);
             }
@@ -189,7 +182,6 @@ public class RubbleBlock extends CharmBlockWithEntity {
         if (rubble == null)
             return ActionResult.FAIL;
 
-        rubble.setLevelTicks(world.getTime());
         rubble.markDirty();
         rubble.sync();
 
@@ -217,7 +209,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
 
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
-        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Excavation.RUBBLE));
+        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Rubble.RUBBLE));
 
         world.removeBlockEntity(pos);
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);

@@ -1,4 +1,4 @@
-package svenhjol.strange.excavation;
+package svenhjol.strange.rubble;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
@@ -9,13 +9,13 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 
-@Module(mod = Strange.MOD_ID, client = ExcavationClient.class)
-public class Excavation extends CharmModule {
+@Module(mod = Strange.MOD_ID, client = RubbleClient.class)
+public class Rubble extends CharmModule {
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "rubble");
     public static RubbleBlock RUBBLE;
     public static BlockEntityType<RubbleBlockEntity> BLOCK_ENTITY;
 
-    public ExcavationClient client;
+    public RubbleClient client;
 
     @Override
     public void register() {

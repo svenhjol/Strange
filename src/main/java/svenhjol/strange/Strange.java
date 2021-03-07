@@ -7,8 +7,8 @@ import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.StrangeStructures;
-import svenhjol.strange.excavation.Excavation;
 import svenhjol.strange.legendaryitems.LegendaryItems;
+import svenhjol.strange.rubble.Rubble;
 import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runicaltars.RunicAltars;
@@ -30,8 +30,8 @@ public class Strange implements ModInitializer {
         Charm.runFirst();
 
         new CharmLoader(MOD_ID, Arrays.asList(
-            Excavation.class,
             LegendaryItems.class,
+            Rubble.class,
             Ruins.class,
             Runestones.class,
             RunicAltars.class,

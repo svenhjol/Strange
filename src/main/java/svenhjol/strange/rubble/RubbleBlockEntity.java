@@ -1,4 +1,4 @@
-package svenhjol.strange.excavation;
+package svenhjol.strange.rubble;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
@@ -15,7 +15,7 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     public ItemStack itemStack;
 
     public RubbleBlockEntity(BlockPos pos, BlockState state) {
-        super(Excavation.BLOCK_ENTITY, pos, state);
+        super(Rubble.BLOCK_ENTITY, pos, state);
     }
 
     public void setLevelTicks(long levelTicks) {
