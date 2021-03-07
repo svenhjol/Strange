@@ -6,6 +6,6 @@ import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 public class DeepRuinFeature extends JigsawFeature {
     public DeepRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, 3, false, false);
+        super(codec, -61, false, false);
     }
 }
