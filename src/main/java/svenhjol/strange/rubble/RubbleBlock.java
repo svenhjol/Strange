@@ -112,7 +112,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
 
                 rubble.setLevelTicks(world.getTime());
 
-                if (random.nextFloat() < 0.92F)
+                if (random.nextFloat() < 0.9F)
                     return ActionResult.PASS;
 
                 return level(serverWorld, pos, state, level);
