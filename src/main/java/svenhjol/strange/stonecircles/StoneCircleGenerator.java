@@ -24,15 +24,15 @@ import svenhjol.strange.runestones.Runestones;
 import java.util.*;
 
 public class StoneCircleGenerator extends StructurePieceWithDimensions {
-    public static float chestChance = 0.3F;
-    public static float runeChance = 0.5F;
+    public static float chestChance = 0.25F; // the chance that a loot chest will be generated in the middle of the circle
+    public static float runeChance = 0.3F; // the chance that a single stone column will have a rune on top
     public static int maxCheckSurface = 5;
     public static int minCheckSurface = -15;
-    public static int maxRadius = 12;
+    public static int maxRadius = 13;
     public static int minRadius = 5;
     public static int maxHeight = 8;
     public static int minHeight = 4;
-    public static int runeTries = 10;
+    public static int runeTries = 10; // if the runeChance passes, this is the number of attempts at rune placement from available runes
 
     public StoneCircleGenerator(Random random, BlockPos pos) {
         super(StoneCircles.STONE_CIRCLE_PIECE, random, pos.getX(), 64, pos.getZ(), 16, 8, 16);
