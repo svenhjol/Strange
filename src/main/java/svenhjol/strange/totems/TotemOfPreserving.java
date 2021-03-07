@@ -190,8 +190,7 @@ public class TotemOfPreserving extends CharmModule {
         if (graveMode)
             return;
 
-        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST)
-            || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
+        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST) || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(UniformLootNumberProvider.create(0.0F, 1.0F))
                 .with(ItemEntry.builder(TOTEM_OF_PRESERVING));
