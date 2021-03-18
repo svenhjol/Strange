@@ -1,11 +1,10 @@
 package svenhjol.strange.base.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
@@ -32,7 +31,6 @@ public class GuiHelper extends DrawableHelper {
     }
 
     public static void renderItemStack(ItemStack stack, int x, int y) {
-        DiffuseLighting.enable();
         getItemRenderer().renderGuiItemIcon(stack, x, y);
     }
 
@@ -40,8 +38,8 @@ public class GuiHelper extends DrawableHelper {
         int w = StrangeIcons.ICON_WIDTH;
         int h = StrangeIcons.ICON_HEIGHT;
 
-        getTextureManager().bindTexture(StrangeIcons.ICONS);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, StrangeIcons.ICONS);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 
@@ -49,8 +47,8 @@ public class GuiHelper extends DrawableHelper {
         int w = StrangeIcons.ICON_WIDTH;
         int h = StrangeIcons.ICON_HEIGHT;
 
-        getTextureManager().bindTexture(StrangeIcons.ICONS);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, StrangeIcons.ICONS);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         screen.drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 }

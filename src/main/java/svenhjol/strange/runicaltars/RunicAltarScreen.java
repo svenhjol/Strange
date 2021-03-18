@@ -14,7 +14,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.RunestonesHelper;
@@ -35,11 +34,6 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
         super(handler, inventory, title);
 
         handler.addListener(new ScreenHandlerListener() {
-            @Override
-            public void onHandlerRegistered(ScreenHandler handler, DefaultedList<ItemStack> stacks) {
-                // nah
-            }
-
             @Override
             public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
                 if (client != null && slotId == 0) {
@@ -69,8 +63,8 @@ public class RunicAltarScreen extends HandledScreen<RunicAltarScreenHandler> {
         if (this.client == null || this.client.player == null)
             return;
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(TEXTURE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);

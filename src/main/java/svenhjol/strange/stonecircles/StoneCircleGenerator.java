@@ -5,7 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.structure.StructureManager;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePieceWithDimensions;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
@@ -34,11 +34,11 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
     public static int minHeight = 4;
     public static int runeTries = 10; // if the runeChance passes, this is the number of attempts at rune placement from available runes
 
-    public StoneCircleGenerator(Random random, BlockPos pos) {
-        super(StoneCircles.STONE_CIRCLE_PIECE, random, pos.getX(), 64, pos.getZ(), 16, 8, 16);
+    public StoneCircleGenerator(Random random, int x, int y, int z) {
+        super(StoneCircles.STONE_CIRCLE_PIECE, random, x, y, z, 16, 8, 16);
     }
 
-    public StoneCircleGenerator(StructureManager structureManager, CompoundTag tag) {
+    public StoneCircleGenerator(ServerWorld world, CompoundTag tag) {
         super(StoneCircles.STONE_CIRCLE_PIECE, tag);
     }
 

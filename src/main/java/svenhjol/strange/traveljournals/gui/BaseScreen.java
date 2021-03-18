@@ -78,9 +78,9 @@ public abstract class BaseScreen extends Screen {
 
     protected void renderTravelJournalBackground(MatrixStack matrices) {
         this.renderBackground(matrices);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         if (this.client != null) {
-            this.client.getTextureManager().bindTexture(BACKGROUND);
+            RenderSystem.setShaderTexture(0, BACKGROUND);
             int mid = (this.width - BGWIDTH) / 2;
             this.drawTexture(matrices, mid, 2, 0, 0, BGWIDTH, BGHEIGHT);
         }

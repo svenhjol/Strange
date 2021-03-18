@@ -1,6 +1,7 @@
 package svenhjol.strange.traveljournals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
@@ -302,11 +303,11 @@ public class UpdateEntryScreen extends BaseScreen {
         }
 
         if (registeredScreenshotTexture != null) {
-            client.getTextureManager().bindTexture(registeredScreenshotTexture);
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.66F, 0.4F, 0.66F);
+            RenderSystem.setShaderTexture(0, registeredScreenshotTexture);
+            matrices.push();
+            matrices.scale(0.66F, 0.4F, 0.66F);
             this.drawTexture(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
-            GlStateManager.popMatrix();
+            matrices.pop();
         }
     }
 }

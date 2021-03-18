@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
@@ -35,7 +34,7 @@ public class StoneCircleFeature extends StructureFeature<DefaultFeatureConfig> {
             int z = chunkPos.getStartZ();
             int y = chunkGenerator.getHeightInGround(x, z, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
-            children.add(new StoneCircleGenerator(random, new BlockPos(x, y, z)));
+            children.add(new StoneCircleGenerator(random, x, y, z));
             setBoundingBoxFromChildren();
         }
     }
