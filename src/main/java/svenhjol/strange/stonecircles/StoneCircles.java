@@ -22,7 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Module(mod = Strange.MOD_ID, description = "Circles of stone columns. Runestones may appear at the top of a column.")
-public class StoneCircles extends CharmModule {
+public class
+StoneCircles extends CharmModule {
     public static final Identifier STRUCTURE_ID = new Identifier(Strange.MOD_ID, "stone_circle");
     public static final Identifier PIECE_ID = new Identifier(Strange.MOD_ID, "stone_circle_piece");
 
@@ -41,6 +42,8 @@ public class StoneCircles extends CharmModule {
         "minecraft:snowy_tundra",
         "terrestria:cypress_swamp",
         "terrestria:lush_desert",
+        "terrestria:volcanic_island",
+        "terrestria:dunes",
         "traverse:meadow",
         "traverse:lush_swamp"
     ));
