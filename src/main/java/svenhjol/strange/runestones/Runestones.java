@@ -67,6 +67,8 @@ public class Runestones extends CharmModule {
     public static List<Destination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<Destination> WORLD_DESTINATIONS = new ArrayList<>(); // destinations shuffled according to world seed
 
+    public static int SPAWN_RUNE = -1; // value of a rune that links back to spawn point
+
     public static Map<UUID, BlockPos> teleportFrom = new HashMap<>(); // location of the runestone that the player hit with the pearl
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just used pearl
     public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has used pearl
@@ -186,7 +188,8 @@ public class Runestones extends CharmModule {
                 Identifier locationId = new Identifier(configStructure);
 
                 float weight = 1.0F - (j / (float)NUMBER_OF_RUNES);
-                boolean addStructure = locationId.equals(RunestonesHelper.SPAWN) || Registry.STRUCTURE_FEATURE.get(locationId) != null;
+                boolean isSpawnRune = locationId.equals(RunestonesHelper.SPAWN);
+                boolean addStructure = isSpawnRune || Registry.STRUCTURE_FEATURE.get(locationId) != null;
 
                 if (addStructure) {
                     AVAILABLE_DESTINATIONS.add(new StructureDestination(locationId, weight));
@@ -194,6 +197,11 @@ public class Runestones extends CharmModule {
                     Charm.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
                     AVAILABLE_DESTINATIONS.add(new StructureDestination(RunestonesHelper.SPAWN, weight));
                 }
+
+                if (isSpawnRune && SPAWN_RUNE == -1) {
+                    SPAWN_RUNE = r;
+                }
+
                 r++;
             }
 
@@ -412,7 +420,9 @@ public class Runestones extends CharmModule {
         if (player.world.isClient || AVAILABLE_DESTINATIONS.isEmpty())
             return;
 
-        tryLookingAtRunestone((ServerPlayerEntity)player);
-        tryTeleport((ServerPlayerEntity)player);
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+
+        tryLookingAtRunestone(serverPlayer);
+        tryTeleport(serverPlayer);
     }
 }

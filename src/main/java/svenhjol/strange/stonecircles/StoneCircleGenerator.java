@@ -55,7 +55,8 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
         ));
 
         // generate the circle
-        boolean generated = false;
+        boolean generatedSomething = false;
+        boolean generatedSpawnRune = false;
         Map<Integer, Float> availableRunes = new HashMap<>();
 
         for (int i = 0; i < Runestones.WORLD_DESTINATIONS.size(); i++) {
@@ -91,22 +92,28 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                     BlockState state = blocks.get(random.nextInt(blocks.size()));
 
                     boolean isTop = y == height - 1;
-                    if (isTop && random.nextFloat() < runeChance) {
 
-                        // Try and generate a rune. Replace the state with the runestone if successful
-                        for (int tries = 0; tries < runeTries; tries++) {
-                            List<Integer> keys = new ArrayList<>(availableRunes.keySet());
-                            int rune = keys.get(random.nextInt(keys.size()));
+                    if (isTop) {
+                        if (!generatedSpawnRune && Runestones.SPAWN_RUNE >= 0) {
+                            // generate a spawn destination rune
+                            state = Runestones.RUNESTONE_BLOCKS.get(Runestones.SPAWN_RUNE).getDefaultState();
+                            generatedSpawnRune = true;
+                        } else if (random.nextFloat() < runeChance) {
+                            // Try and generate a rune. Replace the state with the runestone if successful
+                            for (int tries = 0; tries < runeTries; tries++) {
+                                List<Integer> keys = new ArrayList<>(availableRunes.keySet());
+                                int rune = keys.get(random.nextInt(keys.size()));
 
-                            float f = random.nextFloat();
-                            float weight = availableRunes.get(rune);
+                                float f = random.nextFloat();
+                                float weight = availableRunes.get(rune);
 
-                            if (f >= weight)
-                                continue;
+                                if (f >= weight)
+                                    continue;
 
-                            availableRunes.remove(rune);
-                            state = Runestones.RUNESTONE_BLOCKS.get(rune).getDefaultState();
-                            break;
+                                availableRunes.remove(rune);
+                                state = Runestones.RUNESTONE_BLOCKS.get(rune).getDefaultState();
+                                break;
+                            }
                         }
                     }
 
@@ -115,7 +122,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                 }
 
                 if (generatedColumn) {
-                    generated = true;
+                    generatedSomething = true;
                     break;
                 }
             }
@@ -146,9 +153,9 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
             }
         }
 
-        if (!generated)
+        if (!generatedSomething)
             Charm.LOG.debug("Did not generate a stone circle at: " + blockPos);
 
-        return generated;
+        return generatedSomething;
     }
 }
