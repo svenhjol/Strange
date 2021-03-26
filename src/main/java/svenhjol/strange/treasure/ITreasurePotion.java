@@ -1,4 +1,4 @@
-package svenhjol.strange.legendaryitems;
+package svenhjol.strange.treasure;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public interface ILegendaryPotion {
+public interface ITreasurePotion {
     List<StatusEffect> getValidStatusEffects();
 
     // in seconds
@@ -27,8 +27,8 @@ public interface ILegendaryPotion {
 
     default TranslatableText getName() {
         int i = new Random().nextInt(16) + 1;
-        Text word = new TranslatableText("item.strange.legendary.potion.adjective" + i);
-        return new TranslatableText("item.strange.legendary.potion", word);
+        Text word = new TranslatableText("item.strange.treasure.potion.adjective" + i);
+        return new TranslatableText("item.strange.treasure.potion", word);
     }
 
     default List<StatusEffectInstance> getEffects() {

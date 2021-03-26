@@ -7,7 +7,6 @@ import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.base.StrangeStructures;
-import svenhjol.strange.legendaryitems.LegendaryItems;
 import svenhjol.strange.rubble.Rubble;
 import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.runestones.Runestones;
@@ -18,6 +17,7 @@ import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.TravelJournals;
+import svenhjol.strange.treasure.Treasure;
 
 import java.util.Arrays;
 
@@ -29,7 +29,6 @@ public class Strange implements ModInitializer {
         Charm.runFirst();
 
         new CharmLoader(MOD_ID, Arrays.asList(
-            LegendaryItems.class,
             Rubble.class,
             Ruins.class,
             Runestones.class,
@@ -39,7 +38,8 @@ public class Strange implements ModInitializer {
             StoneCircles.class,
             TravelJournals.class,
             TotemOfPreserving.class,
-            TotemOfWandering.class
+            TotemOfWandering.class,
+            Treasure.class
         ));
 
         StrangeStructures.init();

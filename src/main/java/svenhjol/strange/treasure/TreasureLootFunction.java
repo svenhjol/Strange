@@ -1,4 +1,4 @@
-package svenhjol.strange.legendaryitems;
+package svenhjol.strange.treasure;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -13,44 +13,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LegendaryItemLootFunction extends ConditionalLootFunction {
+public class TreasureLootFunction extends ConditionalLootFunction {
 
-    public LegendaryItemLootFunction(LootCondition[] conditions) {
+    public TreasureLootFunction(LootCondition[] conditions) {
         super(conditions);
     }
 
     @Override
     protected ItemStack process(ItemStack stack, LootContext context) {
-        if (!ModuleHandler.enabled("strange:legendary_items"))
+        if (!ModuleHandler.enabled("strange:treasure"))
             return stack;
 
-        return tryCreateLegendaryItem(stack, context);
+        return tryCreateTreasureItem(stack, context);
     }
 
-    private ItemStack tryCreateLegendaryItem(ItemStack stack, LootContext context) {
+    private ItemStack tryCreateTreasureItem(ItemStack stack, LootContext context) {
 
-        Map<ILegendaryEnchanted, Integer> items = LegendaryItems.LEGENDARY_ENCHANTED;
-        Map<ILegendaryPotion, Integer> potions = LegendaryItems.LEGENDARY_POTIONS;
+        Map<ITreasureTool, Integer> tools = Treasure.TOOLS;
+        Map<ITreasurePotion, Integer> potions = Treasure.POTIONS;
         ItemStack itemStack;
 
         // prefer items over potions
         if (context.getRandom().nextFloat() < 0.62F) {
-            List<ILegendaryEnchanted> weighted = new ArrayList<>();
+            List<ITreasureTool> weighted = new ArrayList<>();
 
-            if (items.isEmpty())
+            if (tools.isEmpty())
                 return stack;
 
-            items.forEach((item, weight) -> {
+            tools.forEach((item, weight) -> {
                 for (int i = 0; i < weight; i++) {
                     weighted.add(item); // this is so dumb but I'm too tired to implement a better weighted list
                 }
             });
 
-            ILegendaryEnchanted item = weighted.get(context.getRandom().nextInt(weighted.size()));
+            ITreasureTool item = weighted.get(context.getRandom().nextInt(weighted.size()));
             itemStack = item.getTreasureItemStack();
 
         } else {
-            List<ILegendaryPotion> weighted = new ArrayList<>();
+            List<ITreasurePotion> weighted = new ArrayList<>();
 
             if (potions.isEmpty())
                 return stack;
@@ -61,7 +61,7 @@ public class LegendaryItemLootFunction extends ConditionalLootFunction {
                 }
             });
 
-            ILegendaryPotion potion = weighted.get(context.getRandom().nextInt(weighted.size()));
+            ITreasurePotion potion = weighted.get(context.getRandom().nextInt(weighted.size()));
             itemStack = potion.getTreasurePotion();
         }
 
@@ -70,13 +70,13 @@ public class LegendaryItemLootFunction extends ConditionalLootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return LegendaryItems.LEGENDARY_ITEMS_LOOT_FUNCTION;
+        return Treasure.TREASURE_LOOT_FUNCTION;
     }
 
-    public static class Serializer extends ConditionalLootFunction.Serializer<LegendaryItemLootFunction> {
+    public static class Serializer extends ConditionalLootFunction.Serializer<TreasureLootFunction> {
         @Override
-        public LegendaryItemLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
-            return new LegendaryItemLootFunction(conditions);
+        public TreasureLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+            return new TreasureLootFunction(conditions);
         }
     }
 }

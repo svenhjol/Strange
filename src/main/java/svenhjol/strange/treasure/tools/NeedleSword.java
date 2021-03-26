@@ -1,4 +1,4 @@
-package svenhjol.strange.legendaryitems.items;
+package svenhjol.strange.treasure.tools;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -6,13 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
-import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
+import svenhjol.strange.treasure.ITreasureTool;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NeedleSword implements ILegendaryEnchanted {
+public class NeedleSword implements ITreasureTool {
     @Override
     public DyeColor getColor() {
         return DyeColor.BLACK;
@@ -34,7 +34,7 @@ public class NeedleSword implements ILegendaryEnchanted {
 
     @Override
     public TranslatableText getName(ItemStack itemStack) {
-        return new TranslatableText("item.strange.legendary.needle_sword");
+        return new TranslatableText("item.strange.treasure.needle_sword");
     }
 
     @Override

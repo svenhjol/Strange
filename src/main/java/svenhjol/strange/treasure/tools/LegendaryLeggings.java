@@ -1,14 +1,14 @@
-package svenhjol.strange.legendaryitems.items;
+package svenhjol.strange.treasure.tools;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
+import svenhjol.strange.treasure.ITreasureTool;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class LegendaryLeggings implements ILegendaryEnchanted {
+public class LegendaryLeggings implements ITreasureTool {
 
     @Override
     public List<String> getValidEnchantments() {

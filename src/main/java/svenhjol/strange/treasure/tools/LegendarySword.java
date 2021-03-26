@@ -1,15 +1,15 @@
-package svenhjol.strange.legendaryitems.items;
+package svenhjol.strange.treasure.tools;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import svenhjol.strange.legendaryitems.ILegendaryEnchanted;
-import svenhjol.strange.legendaryitems.LegendaryItems;
+import svenhjol.strange.treasure.ITreasureTool;
+import svenhjol.strange.treasure.Treasure;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class LegendaryAxe implements ILegendaryEnchanted {
+public class LegendarySword implements ITreasureTool {
     @Override
     public List<String> getValidEnchantments() {
         return Arrays.asList(
@@ -17,20 +17,20 @@ public class LegendaryAxe implements ILegendaryEnchanted {
             "minecraft:smite",
             "minecraft:bane_of_arthropods",
             "minecraft:knockback",
-            "minecraft:cleaving",
+            "minecraft:fire_aspect",
             "minecraft:looting",
             "minecraft:unbreaking",
-            "minecraft:fortune"
+            "minecraft:sweeping"
         );
     }
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_AXE : Items.IRON_AXE);
+        return new ItemStack(new Random().nextFloat() < 0.5F ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
     }
 
     @Override
     public int getMaxAdditionalLevels() {
-        return LegendaryItems.extraLevels;
+        return Treasure.extraLevels;
     }
 }

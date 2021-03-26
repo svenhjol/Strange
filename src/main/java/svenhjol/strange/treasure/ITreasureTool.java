@@ -1,4 +1,4 @@
-package svenhjol.strange.legendaryitems;
+package svenhjol.strange.treasure;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -12,7 +12,7 @@ import svenhjol.charm.handler.ColoredGlintHandler;
 
 import java.util.*;
 
-public interface ILegendaryEnchanted {
+public interface ITreasureTool {
     List<String> getValidEnchantments();
 
     ItemStack getItemStack();
@@ -29,8 +29,8 @@ public interface ILegendaryEnchanted {
 
     default TranslatableText getName(ItemStack itemStack) {
         int i = new Random().nextInt(16) + 1;
-        Text word = new TranslatableText("item.strange.legendary.enchanted.adjective" + i);
-        return new TranslatableText("item.strange.legendary.enchanted", word, itemStack.getName());
+        Text word = new TranslatableText("item.strange.treasure.enchanted.adjective" + i);
+        return new TranslatableText("item.strange.treasure.enchanted", word, itemStack.getName());
     }
 
     default DyeColor getColor() {

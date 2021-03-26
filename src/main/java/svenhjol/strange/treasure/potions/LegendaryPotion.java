@@ -1,15 +1,15 @@
-package svenhjol.strange.legendaryitems.potions;
+package svenhjol.strange.treasure.potions;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
-import svenhjol.strange.legendaryitems.ILegendaryPotion;
+import svenhjol.strange.treasure.ITreasurePotion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class LegendaryPotion implements ILegendaryPotion {
+public class LegendaryPotion implements ITreasurePotion {
     @Override
     public List<StatusEffect> getValidStatusEffects() {
         List<StatusEffect> possibleEffects = new ArrayList<>(Arrays.asList(
