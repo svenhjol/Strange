@@ -1,12 +1,8 @@
 {
-  "advancements.strange.activate_altar.title": "Altar-native Transport",
-  "advancements.strange.activate_altar.description": "Use a Runic Altar to teleport",
   "advancements.strange.activate_runestone.title": "The Rune Less Travelled",
   "advancements.strange.activate_runestone.description": "Use an ender pearl to travel via a runestone",
   "advancements.strange.complete_quest.title": "Gainful employment",
   "advancements.strange.complete_quest.description": "Hand a completed scroll to a scrollkeeper",
-  "advancements.strange.empower_altar.title": "Flower Power",
-  "advancements.strange.empower_altar.description": "Use chorus flowers to empower an altar",
   "advancements.strange.find_ruin.title": "A Forgotten Ruin",
   "advancements.strange.find_ruin.description": "Locate a ruin",
   "advancements.strange.find_stone_circle.title": "Stone Circles",
@@ -52,10 +48,7 @@
   "block.strange.runestone_23": "Runestone X",
   "block.strange.runestone_24": "Runestone Y",
   "block.strange.runestone_25": "Runestone Z",
-  "block.strange.runic_altar": "Runic Altar",
   "block.strange.writing_desk": "Writing Desk",
-
-  "container.strange.runic_altar": "Runic Altar",
 
   "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
   "entity.strange.villager.scrollkeeper": "Scrollkeeper",
@@ -160,9 +153,6 @@
   "runestone.strange.discovered_by": "Discovered %s by <%s>",
   "runestone.strange.learned_rune": "Learned rune %s",
   "runestone.strange.learned_all_runes": "Learned all runes",
-
-  "runic_altar.strange.weird_item": "Item doesn't seem to make sense.",
-  "runic_altar.strange.wrong_dimension": "This altar doesn't work in this dimension.",
 
   "scroll.strange.abandoned_quest": "Quest %s has been abandoned.",
   "scroll.strange.abandoned_quests": "All player quests have been abandoned.",
