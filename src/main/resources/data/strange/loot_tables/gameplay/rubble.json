@@ -6,39 +6,38 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_ore"
+          "name": "minecraft:stick",
+          "weight": 1
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:enchanted_golden_apple"
+          "name": "minecraft:bone",
+          "weight": 1
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:brick"
+          "name": "minecraft:bowl",
+          "weight": 1
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:stick"
+          "name": "minecraft:flint",
+          "weight": 1
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:bone"
+          "name": "minecraft:diamond_ore",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:bowl"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:flint"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:charcoal"
+          "name": "minecraft:enchanted_golden_apple",
+          "weight": 4
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_helmet",
+          "weight": 10,
           "functions": [
             {
               "function": "minecraft:enchant_with_levels",
@@ -53,6 +52,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_chestplate",
+          "weight": 10,
           "functions": [
             {
               "function": "minecraft:enchant_with_levels",
@@ -67,6 +67,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_leggings",
+          "weight": 10,
           "functions": [
             {
               "function": "minecraft:enchant_with_levels",
@@ -81,6 +82,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_boots",
+          "weight": 10,
           "functions": [
             {
               "function": "minecraft:enchant_with_levels",
