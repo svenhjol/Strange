@@ -200,7 +200,6 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                             spawnerEntity.persist = true;
                             spawnerEntity.writeNbt(tag);
                         }
-
                     }
                     break;
                 }
