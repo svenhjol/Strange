@@ -1,7 +1,7 @@
 package svenhjol.strange.runestones;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -168,7 +168,7 @@ public class Runestones extends CharmModule {
 
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeIntArray(learned);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_LEARNED_RUNES, data);
+        ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_LEARNED_RUNES, data);
     }
 
     public static void sendDestinationNamesPacket(ServerPlayerEntity player) {
@@ -184,7 +184,7 @@ public class Runestones extends CharmModule {
 
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeCompoundTag(outTag);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
+        ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
     }
 
     private void initDestinations() {

@@ -1,7 +1,7 @@
 package svenhjol.strange.scrolls;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -131,12 +131,12 @@ public class QuestManager extends PersistentState {
         return quests.values().stream().filter(Quest::isActive).collect(Collectors.toList());
     }
 
-    public void sendToast(PlayerEntity player, Quest quest, QuestToastType type, String title) {
+    public void sendToast(ServerPlayerEntity player, Quest quest, QuestToastType type, String title) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeCompoundTag(quest.toTag());
         data.writeEnumConstant(type);
         data.writeString(title);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);
+        ServerPlayNetworking.send(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);
     }
 
     public boolean abandonQuest(PlayerEntity player, String id) {

@@ -2,8 +2,8 @@ package svenhjol.strange.scrollkeepers;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -12,6 +12,8 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -90,13 +92,13 @@ public class Scrollkeepers extends CharmModule {
         addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
 
         // listen for quest satisfied request coming from the client
-        ServerSidePacketRegistry.INSTANCE.register(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
     }
 
     public static void sendScrollQuestPacket(ServerPlayerEntity player, Quest quest) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         buffer.writeCompoundTag(quest.toTag());
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
+        ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
     }
 
     private ActionResult tryHandInScroll(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
@@ -152,7 +154,7 @@ public class Scrollkeepers extends CharmModule {
                 // success, tidy up the quest, give rewards etc.
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 quest.complete(player, villager);
-                questManager.sendToast(player, quest, QuestToastType.Success, "event.strange.quests.completed");
+                questManager.sendToast((ServerPlayerEntity) player, quest, QuestToastType.Success, "event.strange.quests.completed");
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, heldStack);
                 heldStack.decrement(1);
 
@@ -192,10 +194,10 @@ public class Scrollkeepers extends CharmModule {
         return ActionResult.PASS;
     }
 
-    private void handleGetScrollQuest(PacketContext context, PacketByteBuf data) {
+    private void handleGetScrollQuest(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         String questId = data.readString(4);
-        context.getTaskQueue().execute(() -> {
-            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+
+        server.execute(() -> {
             if (player == null)
                 return;
 

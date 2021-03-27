@@ -1,8 +1,8 @@
 package svenhjol.strange.traveljournals;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -38,7 +39,7 @@ import svenhjol.strange.totems.TotemsHelper;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @Module(mod = Strange.MOD_ID, client = TravelJournalsClient.class)
 public class TravelJournals extends CharmModule {
@@ -76,12 +77,12 @@ public class TravelJournals extends CharmModule {
         if (ModuleHandler.enabled(Bookcases.class))
             Bookcases.validItems.add(TRAVEL_JOURNAL);
 
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_OPEN_JOURNAL, this::handleServerOpenJournal);
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_ADD_ENTRY, this::handleServerAddEntry);
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_UPDATE_ENTRY, this::handleServerUpdateEntry);
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_DELETE_ENTRY, this::handleServerDeleteEntry);
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_MAKE_MAP, this::handleServerMakeMap);
-        ServerSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_SERVER_USE_TOTEM, this::handleServerUseTotem);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_OPEN_JOURNAL, this::handleServerOpenJournal);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_ADD_ENTRY, this::handleServerAddEntry);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_UPDATE_ENTRY, this::handleServerUpdateEntry);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_DELETE_ENTRY, this::handleServerDeleteEntry);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_MAKE_MAP, this::handleServerMakeMap);
+        ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_USE_TOTEM, this::handleServerUseTotem);
     }
 
     public static Optional<TravelJournalManager> getTravelJournalManager() {
@@ -95,13 +96,13 @@ public class TravelJournals extends CharmModule {
 
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         buffer.writeCompoundTag(outTag);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_ENTRIES, buffer);
+        ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRIES, buffer);
     }
 
     public static void sendJournalEntryPacket(ServerPlayerEntity player, CompoundTag entry) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         buffer.writeCompoundTag(entry);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
+        ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
 
     private void loadTravelJournalManager(MinecraftServer server) {
@@ -122,8 +123,8 @@ public class TravelJournals extends CharmModule {
     }
 
 
-    private void handleServerOpenJournal(PacketContext context, PacketByteBuf data) {
-        processClientPacket(context, (player, manager) -> {
+    private void handleServerOpenJournal(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+        processClientPacket(server, player, manager -> {
             ListTag listTag = manager.serializePlayerEntries(player.getUuid());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
 
@@ -138,12 +139,12 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerUpdateEntry(PacketContext context, PacketByteBuf data) {
+    private void handleServerUpdateEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag entry = data.readCompoundTag();
         if (entry == null || entry.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             JournalEntry updated = manager.updateJournalEntry(player, new JournalEntry(entry));
             if (updated == null)
                 return;
@@ -152,20 +153,20 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerDeleteEntry(PacketContext context, PacketByteBuf data) {
+    private void handleServerDeleteEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag entry = data.readCompoundTag();
         if (entry == null || entry.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             manager.deleteJournalEntry(player, new JournalEntry(entry));
             ListTag listTag = manager.serializePlayerEntries(player.getUuid());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
         });
     }
 
-    private void handleServerAddEntry(PacketContext context, PacketByteBuf data) {
-        processClientPacket(context, (player, manager) -> {
+    private void handleServerAddEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+        processClientPacket(server, player, manager -> {
             JournalEntry entry = manager.initJournalEntry(player);
             if (entry == null) {
                 Charm.LOG.warn("Failed to create a new journal entry, doing nothing");
@@ -176,12 +177,12 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerUseTotem(PacketContext context, PacketByteBuf data) {
+    private void handleServerUseTotem(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag entryTag = data.readCompoundTag();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             // check the player has a totem
             ItemStack requiredItem = new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING);
             int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
@@ -209,12 +210,12 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerMakeMap(PacketContext context, PacketByteBuf data) {
+    private void handleServerMakeMap(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag entryTag = data.readCompoundTag();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             // check the player has a map
             ItemStack requiredItem = new ItemStack(Items.MAP);
             int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
@@ -248,14 +249,13 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void processClientPacket(PacketContext context, BiConsumer<ServerPlayerEntity, TravelJournalManager> callback) {
-        context.getTaskQueue().execute(() -> {
-            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+    private void processClientPacket(MinecraftServer server, ServerPlayerEntity player, Consumer<TravelJournalManager> callback) {
+        server.execute(() -> {
             if (player == null)
                 return;
 
             Optional<TravelJournalManager> travelJournalManager = TravelJournals.getTravelJournalManager();
-            travelJournalManager.ifPresent(manager -> callback.accept(player, manager));
+            travelJournalManager.ifPresent(callback);
         });
     }
 }

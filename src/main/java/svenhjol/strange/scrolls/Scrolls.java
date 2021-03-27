@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback.LootTableSetter;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -25,6 +25,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -48,7 +49,7 @@ import svenhjol.strange.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
@@ -129,9 +130,9 @@ public class Scrolls extends CharmModule {
         }
 
         // handle incoming client packets
-        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_OPEN_SCROLL, this::handleServerOpenScroll);
-        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
-        ServerSidePacketRegistry.INSTANCE.register(Scrolls.MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
+        ServerPlayNetworking.registerGlobalReceiver(Scrolls.MSG_SERVER_OPEN_SCROLL, this::handleServerOpenScroll);
+        ServerPlayNetworking.registerGlobalReceiver(Scrolls.MSG_SERVER_FETCH_CURRENT_QUESTS, this::handleServerFetchCurrentQuests);
+        ServerPlayNetworking.registerGlobalReceiver(Scrolls.MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
     }
 
     public static void sendPlayerQuestsPacket(ServerPlayerEntity player) {
@@ -144,7 +145,7 @@ public class Scrolls extends CharmModule {
     public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeCompoundTag(quest.toTag());
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_OPEN_SCROLL, data);
+        ServerPlayNetworking.send(player, MSG_CLIENT_OPEN_SCROLL, data);
     }
 
     public static void sendQuestsPacket(ServerPlayerEntity player, List<Quest> quests) {
@@ -159,7 +160,7 @@ public class Scrolls extends CharmModule {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         buffer.writeCompoundTag(outTag);
 
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
+        ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
     }
 
     public static Optional<QuestManager> getQuestManager() {
@@ -335,12 +336,12 @@ public class Scrolls extends CharmModule {
         }
     }
 
-    private void handleServerOpenScroll(PacketContext context, PacketByteBuf data) {
+    private void handleServerOpenScroll(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         String questId = data.readString(16);
         if (questId == null || questId.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             Optional<Quest> optionalQuest = manager.getQuest(questId);
             if (!optionalQuest.isPresent())
                 return;
@@ -349,18 +350,16 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    private void handleServerFetchCurrentQuests(PacketContext context, PacketByteBuf data) {
-        processClientPacket(context, (player, manager) -> {
-            Scrolls.sendPlayerQuestsPacket(player);
-        });
+    private void handleServerFetchCurrentQuests(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+        processClientPacket(server, player, manager -> Scrolls.sendPlayerQuestsPacket(player));
     }
 
-    private void handleServerAbandonQuest(PacketContext context, PacketByteBuf data) {
+    private void handleServerAbandonQuest(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         String questId = data.readString(16);
         if (questId == null || questId.isEmpty())
             return;
 
-        processClientPacket(context, (player, manager) -> {
+        processClientPacket(server, player, manager -> {
             Optional<Quest> optionalQuest = manager.getQuest(questId);
             if (!optionalQuest.isPresent())
                 return;
@@ -372,14 +371,13 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    private void processClientPacket(PacketContext context, BiConsumer<ServerPlayerEntity, QuestManager> callback) {
-        context.getTaskQueue().execute(() -> {
-            ServerPlayerEntity player = (ServerPlayerEntity)context.getPlayer();
+    private void processClientPacket(MinecraftServer server, ServerPlayerEntity player, Consumer<QuestManager> callback) {
+        server.execute(() -> {
             if (player == null)
                 return;
 
             Optional<QuestManager> questManager = Scrolls.getQuestManager();
-            questManager.ifPresent(manager -> callback.accept(player, manager));
+            questManager.ifPresent(callback);
         });
     }
 }

@@ -1,8 +1,10 @@
 package svenhjol.strange.traveljournals;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,8 +40,8 @@ public class TravelJournalsClient extends CharmClientModule {
     public void init() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
-        ClientSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_CLIENT_RECEIVE_ENTRIES, this::handleClientReceiveEntries);
-        ClientSidePacketRegistry.INSTANCE.register(TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, this::handleClientReceiveEntry);
+        ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRIES, this::handleClientReceiveEntries);
+        ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, this::handleClientReceiveEntry);
     }
 
     public static void closeIfNotHolding(MinecraftClient client) {
@@ -69,6 +71,7 @@ public class TravelJournalsClient extends CharmClientModule {
             } else if (++screenshotTicks > 30) {
                 MinecraftClient client = MinecraftClient.getInstance();
                 Window win = client.getWindow();
+
                 ScreenshotUtils.saveScreenshot(
                     client.runDirectory,
                     entryHavingScreenshot.id + ".png",
@@ -78,9 +81,11 @@ public class TravelJournalsClient extends CharmClientModule {
                     i -> {
                         client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
                         client.options.hudHidden = false;
-                        client.openScreen(new UpdateEntryScreen(entryHavingScreenshot));
+                        client.execute(() -> {
+                            client.openScreen(new UpdateEntryScreen(entryHavingScreenshot));
+                            entryHavingScreenshot = null;
+                        });
                         Charm.LOG.debug("Screenshot taken");
-                        entryHavingScreenshot = null;
                     }
                 );
                 screenshotTicks = 0;
@@ -88,39 +93,39 @@ public class TravelJournalsClient extends CharmClientModule {
         }
     }
 
-    private void handleClientReceiveEntries(PacketContext context, PacketByteBuf data) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client == null || client.player == null)
-            return;
-
+    private void handleClientReceiveEntries(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag tag = data.readCompoundTag();
         if (tag == null)
             return;
 
-        String uuid = client.player.getUuidAsString();
-        Tag entriesTag = tag.get(uuid);
-        if (entriesTag == null)
-            return;
+        client.execute(() -> {
+            ClientPlayerEntity player = client.player;
+            if (player == null)
+                return;
 
-        entries = TravelJournalsHelper.getEntriesFromListTag((ListTag)entriesTag);
-        client.openScreen(new TravelJournalScreen());
+            String uuid = player.getUuidAsString();
+            Tag entriesTag = tag.get(uuid);
+            if (entriesTag == null)
+                return;
+
+            entries = TravelJournalsHelper.getEntriesFromListTag((ListTag)entriesTag);
+            client.openScreen(new TravelJournalScreen());
+        });
     }
 
-    private void handleClientReceiveEntry(PacketContext context, PacketByteBuf data) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client == null)
-            return;
-
+    private void handleClientReceiveEntry(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag tag = data.readCompoundTag();
         if (tag == null)
             return;
 
-        JournalEntry entry = new JournalEntry(tag);
+        client.execute(() -> {
+            JournalEntry entry = new JournalEntry(tag);
 
-        if (client.player != null)
-            client.player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1.0F, 1.0F);
+            if (client.player != null)
+                client.player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1.0F, 1.0F);
 
-        if (!(client.currentScreen instanceof UpdateEntryScreen))
-            client.openScreen(new UpdateEntryScreen(entry));
+            if (!(client.currentScreen instanceof UpdateEntryScreen))
+                client.openScreen(new UpdateEntryScreen(entry));
+        });
     }
 }
