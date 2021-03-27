@@ -53,8 +53,6 @@ public class TravelJournalScreen extends BaseScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        TravelJournalsClient.closeIfNotHolding(this.client);
-
         if (!isClientValid())
             return;
 

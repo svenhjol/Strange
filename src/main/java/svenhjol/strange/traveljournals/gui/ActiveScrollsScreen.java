@@ -13,7 +13,6 @@ import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.ScrollsClient;
 import svenhjol.strange.scrolls.tag.Quest;
 import svenhjol.strange.traveljournals.TravelJournals;
-import svenhjol.strange.traveljournals.TravelJournalsClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +43,6 @@ public class ActiveScrollsScreen extends BaseScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        TravelJournalsClient.closeIfNotHolding(this.client);
-
         if (!isClientValid())
             return;
 

@@ -17,7 +17,7 @@
   },
   "criteria": {
     "travel_journal": {
-      "trigger": "minecraft:inventory_changed",
+      "trigger": "minecraft:consume_item",
       "conditions": {"items": [{"item": "strange:travel_journal"}]}
     }
   },

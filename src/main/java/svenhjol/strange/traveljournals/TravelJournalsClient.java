@@ -1,8 +1,12 @@
 package svenhjol.strange.traveljournals;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.ScreenshotUtils;
@@ -17,13 +21,17 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.PosHelper;
+import svenhjol.charm.base.helper.ScreenHelper;
+import svenhjol.charm.event.GuiSetupCallback;
 import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.strange.base.StrangeResources;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.traveljournals.gui.TravelJournalScreen;
 import svenhjol.strange.traveljournals.gui.UpdateEntryScreen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TravelJournalsClient extends CharmClientModule {
     public static List<JournalEntry> entries = new ArrayList<>();
@@ -37,6 +45,11 @@ public class TravelJournalsClient extends CharmClientModule {
     }
 
     @Override
+    public void register() {
+        GuiSetupCallback.EVENT.register(this::handleGuiSetup);
+    }
+
+    @Override
     public void init() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
@@ -44,21 +57,26 @@ public class TravelJournalsClient extends CharmClientModule {
         ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, this::handleClientReceiveEntry);
     }
 
-    public static void closeIfNotHolding(MinecraftClient client) {
-        if (client != null) {
-            if (client.player != null) {
-                if (client.player.getMainHandStack().getItem() == TravelJournals.TRAVEL_JOURNAL
-                    || client.player.getOffHandStack().getItem() == TravelJournals.TRAVEL_JOURNAL) {
-                    return; // don't close the screen if holding a travel journal
-                }
-            }
-
-            client.openScreen(null);
-        }
-    }
-
     public static boolean isPlayerAtEntryPosition(PlayerEntity player, JournalEntry entry) {
         return entry.pos != null && PosHelper.getDistanceSquared(player.getBlockPos(), entry.pos) < TravelJournals.SCREENSHOT_DISTANCE;
+    }
+
+    private void handleGuiSetup(MinecraftClient client, int width, int height, List<AbstractButtonWidget> buttons, Consumer<AbstractButtonWidget> addButton) {
+        if (client.player == null
+            || !(client.currentScreen instanceof HandledScreen)
+            || client.player.isCreative())
+            return;
+
+        HandledScreen<?> screen = (HandledScreen<?>)client.currentScreen;
+
+        int x = ScreenHelper.getX(screen) + 158;
+        int y = ScreenHelper.getY(screen) + 5;
+
+        TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click -> {
+            ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
+        });
+
+        addButton.accept(button);
     }
 
     private void handlePlayerTick(PlayerEntity player) {

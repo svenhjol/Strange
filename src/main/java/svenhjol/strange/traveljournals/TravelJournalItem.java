@@ -1,7 +1,7 @@
 package svenhjol.strange.traveljournals;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -12,7 +12,6 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.item.CharmItem;
-import svenhjol.strange.runestones.Runestones;
 
 public class TravelJournalItem extends CharmItem {
     public TravelJournalItem(CharmModule module) {
@@ -26,7 +25,7 @@ public class TravelJournalItem extends CharmItem {
         ItemStack journal = user.getStackInHand(hand);
 
         if (world.isClient) {
-            ClientSidePacketRegistry.INSTANCE.sendToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
+            ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
             return TypedActionResult.success(journal);
         }
 

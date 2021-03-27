@@ -16,7 +16,6 @@ import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesClient;
 import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.traveljournals.TravelJournals;
-import svenhjol.strange.traveljournals.TravelJournalsClient;
 
 import java.util.List;
 
@@ -44,8 +43,6 @@ public class LearnedRunesScreen extends BaseScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        TravelJournalsClient.closeIfNotHolding(this.client);
-
         if (!isClientValid())
             return;
 
