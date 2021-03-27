@@ -98,7 +98,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                             // generate a spawn destination rune
                             state = Runestones.RUNESTONE_BLOCKS.get(Runestones.SPAWN_RUNE).getDefaultState();
                             generatedSpawnRune = true;
-                        } else if (numberOfRunesGenerated < 4 && random.nextFloat() < 0.2F - (numberOfRunesGenerated * 0.05F)) {
+                        } else if (numberOfRunesGenerated < 4 && random.nextFloat() < 0.5F - (numberOfRunesGenerated * 0.15F)) {
 
                             // Try and generate a rune. Replace the state with the runestone if successful
                             for (int tries = 0; tries < runeTries; tries++) {
