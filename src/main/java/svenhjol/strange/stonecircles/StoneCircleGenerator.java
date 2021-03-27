@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.PillarBlock;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,8 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DecorationHelper;
+import svenhjol.charm.blockentity.EntitySpawnerBlockEntity;
+import svenhjol.charm.module.EntitySpawners;
 import svenhjol.charm.module.VariantChests;
 import svenhjol.strange.runestones.Runestones;
 
@@ -139,8 +142,8 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                 BlockState checkUpState = world.getBlockState(checkUpPos);
 
                 if (checkState.isOpaque() && !checkUpState.isOpaque() && !checkUpState.getMaterial().isLiquid() && lootTable != null) {
-
                     boolean generateChest = random.nextBoolean();
+                    boolean generateMob = random.nextBoolean();
 
                     if (generateChest) {
                         BlockState chest;
@@ -160,6 +163,44 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
 
                         world.setBlockState(checkPos, hay, 2);
                         world.setBlockState(checkUpPos, fire, 2);
+                    }
+
+                    if (generateMob) {
+                        BlockPos spawnerPos = checkUpPos.up();
+                        BlockState spawner = EntitySpawners.ENTITY_SPAWNER.getDefaultState();
+                        world.setBlockState(spawnerPos, spawner, 2);
+
+                        BlockEntity blockEntity = world.getBlockEntity(spawnerPos);
+
+                        if (blockEntity instanceof EntitySpawnerBlockEntity) {
+                            EntitySpawnerBlockEntity spawnerEntity = (EntitySpawnerBlockEntity)blockEntity;
+                            CompoundTag tag = new CompoundTag();
+
+                            Identifier mobId;
+                            int mobCount;
+
+                            float chance = random.nextFloat();
+                            if (chance < 0.4F) {
+                                mobId = new Identifier("witch");
+                                mobCount = random.nextInt(2) + 2;
+                            } else if (chance < 0.8F) {
+                                mobId = new Identifier("pillager");
+                                mobCount = random.nextInt(3) + 3;
+                            } else {
+                                if (random.nextBoolean()) {
+                                    mobId = new Identifier("illusioner");
+                                } else {
+                                    mobId = new Identifier("evoker");
+                                }
+                                mobCount = 1;
+                            }
+
+                            spawnerEntity.entity = mobId;
+                            spawnerEntity.count = mobCount;
+                            spawnerEntity.persist = true;
+                            spawnerEntity.writeNbt(tag);
+                        }
+
                     }
                     break;
                 }
