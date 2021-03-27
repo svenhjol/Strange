@@ -1,11 +1,11 @@
 package svenhjol.strange.ruins;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+import svenhjol.charm.base.structure.JigsawVariableHeightFeature;
 
-public class EndRuinFeature extends JigsawFeature {
+public class EndRuinFeature extends JigsawVariableHeightFeature {
     public EndRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, 100, false, false);
+        super(codec, 100, 20, false);
     }
 }
