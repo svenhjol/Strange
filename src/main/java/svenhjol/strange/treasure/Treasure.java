@@ -64,7 +64,7 @@ public class Treasure extends CharmModule {
 
         if (addToRuinLoot && ModuleHandler.enabled("strange:ruins")) {
             Charm.LOG.info("Adding treasure to epic ruin loot");
-            lootTables.add(StrangeLoot.RUINS_EPIC);
+            lootTables.add(StrangeLoot.OVERWORLD_RUINS_EPIC);
         }
     }
 
