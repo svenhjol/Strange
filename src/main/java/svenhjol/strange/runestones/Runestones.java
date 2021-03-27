@@ -151,6 +151,14 @@ public class Runestones extends CharmModule {
 
         WORLD_DESTINATIONS = new ArrayList<>(AVAILABLE_DESTINATIONS);
         Collections.shuffle(WORLD_DESTINATIONS, random);
+
+        SPAWN_RUNE = -1;
+        for (int i = 0; i < WORLD_DESTINATIONS.size(); i++) {
+            if (WORLD_DESTINATIONS.get(i).isSpawnPoint()) {
+                SPAWN_RUNE = i;
+                break;
+            }
+        }
     }
 
 
@@ -196,10 +204,6 @@ public class Runestones extends CharmModule {
                 } else {
                     Charm.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
                     AVAILABLE_DESTINATIONS.add(new StructureDestination(RunestonesHelper.SPAWN, weight));
-                }
-
-                if (isSpawnRune && SPAWN_RUNE == -1) {
-                    SPAWN_RUNE = r;
                 }
 
                 r++;
