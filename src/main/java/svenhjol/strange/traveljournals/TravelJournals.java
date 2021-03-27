@@ -63,6 +63,9 @@ public class TravelJournals extends CharmModule {
     @Config(name = "Show coordinates", description = "If true, the coordinates and dimension are shown on the update entry screen.")
     public static boolean showCoordinates = true;
 
+    @Config(name = "Enable keybind", description = "If true, sets a keybind for opening the travel journal (defaults to 'v').")
+    public static boolean enableKeybind = true;
+
     @Override
     public void register() {
         TRAVEL_JOURNAL = new TravelJournalItem(this);

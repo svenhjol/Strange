@@ -1,6 +1,8 @@
 package svenhjol.strange.traveljournals;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
@@ -9,6 +11,8 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +21,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvents;
+import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
@@ -35,6 +40,7 @@ import java.util.function.Consumer;
 
 public class TravelJournalsClient extends CharmClientModule {
     public static List<JournalEntry> entries = new ArrayList<>();
+    public static KeyBinding keyBinding;
 
     public static JournalEntry entryHavingScreenshot;
     public static int screenshotTicks;
@@ -52,6 +58,24 @@ public class TravelJournalsClient extends CharmClientModule {
     @Override
     public void init() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+
+        if (TravelJournals.enableKeybind) {
+            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.charm.openTravelJournal",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_B,
+                "key.categories.inventory"
+            ));
+
+            ClientTickEvents.END_WORLD_TICK.register(world -> {
+                if (keyBinding == null || world == null)
+                    return;
+
+                while (keyBinding.wasPressed()) {
+                    triggerOpenTravelJournal();
+                }
+            });
+        }
 
         ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRIES, this::handleClientReceiveEntries);
         ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, this::handleClientReceiveEntry);
@@ -72,9 +96,8 @@ public class TravelJournalsClient extends CharmClientModule {
         int x = ScreenHelper.getX(screen) + 158;
         int y = ScreenHelper.getY(screen) + 5;
 
-        TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click -> {
-            ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
-        });
+        TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click
+            -> triggerOpenTravelJournal());
 
         addButton.accept(button);
     }
@@ -145,5 +168,9 @@ public class TravelJournalsClient extends CharmClientModule {
             if (!(client.currentScreen instanceof UpdateEntryScreen))
                 client.openScreen(new UpdateEntryScreen(entry));
         });
+    }
+
+    private void triggerOpenTravelJournal() {
+        ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
     }
 }
