@@ -12,7 +12,6 @@ import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.scrolls.ScrollsClient;
 import svenhjol.strange.scrolls.tag.Quest;
-import svenhjol.strange.traveljournals.TravelJournals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("ConstantConditions")
-public class ActiveScrollsScreen extends BaseScreen {
+public class ScrollsScreen extends TravelJournalBaseScreen {
     private List<Quest> currentQuests;
     private int titleTop = 15;
 
     private List<Integer> hasRenderedTrashButtons = new ArrayList<>();
     private Map<Pair<Integer, Integer>, Runnable> scrollButtons = new HashMap<>();
 
-    public ActiveScrollsScreen() {
+    public ScrollsScreen() {
         super(I18n.translate("item.strange.travel_journal.active_scrolls"));
         this.passEvents = false;
     }
@@ -36,14 +35,15 @@ public class ActiveScrollsScreen extends BaseScreen {
     protected void init() {
         super.init();
 
-        this.hasRenderedTrashButtons.clear();
-        this.scrollButtons.clear();
-        this.currentQuests = ScrollsClient.CACHED_CURRENT_QUESTS;
+        hasRenderedTrashButtons.clear();
+        scrollButtons.clear();
+        currentQuests = ScrollsClient.CACHED_CURRENT_QUESTS;
+        previousPage = Page.SCROLLS;
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (!isClientValid())
+        if (!getClient().isPresent())
             return;
 
         super.render(matrices, mouseX, mouseY, delta);
@@ -115,12 +115,7 @@ public class ActiveScrollsScreen extends BaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.back"), button -> this.backToMainScreen()));
-    }
-
-    private void backToMainScreen() {
-        if (client != null)
-            NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
+        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
     }
 
     private void abandonQuest(Quest quest) {

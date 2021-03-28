@@ -9,7 +9,7 @@ import svenhjol.strange.base.StrangeIcons;
 import svenhjol.strange.base.helper.GuiHelper;
 import svenhjol.strange.scrolls.gui.*;
 import svenhjol.strange.scrolls.tag.Quest;
-import svenhjol.strange.traveljournals.gui.ActiveScrollsScreen;
+import svenhjol.strange.traveljournals.gui.ScrollsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +148,7 @@ public class ScrollScreen extends Screen {
     private void close(ButtonWidget button) {
         if (client != null) {
             if (backToJournal) {
-                client.openScreen(new ActiveScrollsScreen());
+                client.openScreen(new ScrollsScreen());
             } else {
                 client.openScreen(null);
             }

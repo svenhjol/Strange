@@ -44,7 +44,7 @@ public class TravelJournalsClient extends CharmClientModule {
 
     public static JournalEntry entryHavingScreenshot;
     public static int screenshotTicks;
-    public static int lastPage;
+    public static int lastEntryPage;
 
     public TravelJournalsClient(CharmModule module) {
         super(module);
@@ -83,6 +83,10 @@ public class TravelJournalsClient extends CharmClientModule {
 
     public static boolean isPlayerAtEntryPosition(PlayerEntity player, JournalEntry entry) {
         return entry.pos != null && PosHelper.getDistanceSquared(player.getBlockPos(), entry.pos) < TravelJournals.SCREENSHOT_DISTANCE;
+    }
+
+    public static void triggerOpenTravelJournal() {
+        ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
     }
 
     private void handleGuiSetup(MinecraftClient client, int width, int height, List<AbstractButtonWidget> buttons, Consumer<AbstractButtonWidget> addButton) {
@@ -168,9 +172,5 @@ public class TravelJournalsClient extends CharmClientModule {
             if (!(client.currentScreen instanceof UpdateEntryScreen))
                 client.openScreen(new UpdateEntryScreen(entry));
         });
-    }
-
-    private void triggerOpenTravelJournal() {
-        ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
     }
 }

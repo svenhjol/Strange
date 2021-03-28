@@ -1,6 +1,5 @@
 package svenhjol.strange.traveljournals.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -36,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class UpdateEntryScreen extends BaseScreen {
+public class UpdateEntryScreen extends TravelJournalBaseScreen {
     private JournalEntry entry;
     private TextFieldWidget nameField;
     private String name;
@@ -78,7 +77,7 @@ public class UpdateEntryScreen extends BaseScreen {
         nameField.setFocusUnlocked(false);
         nameField.setEditableColor(-1);
         nameField.setUneditableColor(-1);
-        nameField.setDrawsBackground(false);
+        nameField.setDrawsBackground(true);
         nameField.setMaxLength(TravelJournals.MAX_NAME_LENGTH);
         nameField.setChangedListener(this::responder);
         nameField.setText(this.name);
@@ -102,13 +101,10 @@ public class UpdateEntryScreen extends BaseScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (!isClientValid())
-            return;
-
         super.render(matrices, mouseX, mouseY, delta);
 
         int mid = width / 2;
-        int top = 20;
+        int top = leftButtonYOffset;
 
         int colorsTop;
         int coordsTop;
@@ -129,7 +125,7 @@ public class UpdateEntryScreen extends BaseScreen {
         if (hasScreenshot) {
             tryRenderScreenshot(matrices);
         } else {
-            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop + 50, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
+            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop + 51, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
         }
 
         // render color selection buttons
@@ -157,40 +153,7 @@ public class UpdateEntryScreen extends BaseScreen {
         centeredString(matrices, textRenderer, title.substring(0, Math.min(title.length(), NAME_CUTOFF)), width / 2, top, DyeColor.byId(entry.color).getSignColor());
         nameField.render(matrices, mouseX, mouseY, delta);
 
-
-        /*
-         * --- Buttons on left of page ---
-         */
-
-        top = 13;
-
-        // button to delete entry
-        if (!hasRenderedTrashButton) {
-            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 160, 0, 19, BUTTONS, r -> delete()));
-            hasRenderedTrashButton = true;
-            top += leftButtonYOffset;
-        }
-
-
-        /*
-         * --- Buttons on right of page ---
-         */
-
-        top = 13;
-
-        // button to make map
-        if (!hasRenderedMapButton && hasMap) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
-            hasRenderedMapButton = true;
-            top += rightButtonYOffset;
-        }
-
-        // button to use totem
-        if (!hasRenderedTotemButton && hasTotem) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
-            hasRenderedTotemButton = true;
-            top += rightButtonYOffset;
-        }
+        this.renderNavigation(matrices, mouseX, mouseY, delta);
     }
 
     @Override
@@ -306,6 +269,35 @@ public class UpdateEntryScreen extends BaseScreen {
             matrices.scale(0.66F, 0.4F, 0.66F);
             this.drawTexture(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
             matrices.pop();
+        }
+    }
+
+    private void renderNavigation(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        int mid = width / 2;
+        int top = leftButtonYOffset;
+
+        // button to make map
+        if (!hasRenderedMapButton && hasMap) {
+            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
+            hasRenderedMapButton = true;
+            top += rightButtonYOffset;
+        }
+
+        // button to use totem
+        if (!hasRenderedTotemButton && hasTotem) {
+            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
+            hasRenderedTotemButton = true;
+            top += rightButtonYOffset;
+        }
+
+        // buttons at bottom
+        top = 136;
+
+        // button to delete entry
+        if (!hasRenderedTrashButton) {
+            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, r -> delete()));
+            hasRenderedTrashButton = true;
+            top += leftButtonYOffset;
         }
     }
 }

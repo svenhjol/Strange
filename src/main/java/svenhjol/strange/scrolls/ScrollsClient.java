@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.strange.scrolls.tag.Quest;
-import svenhjol.strange.traveljournals.gui.ActiveScrollsScreen;
+import svenhjol.strange.traveljournals.gui.ScrollsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class ScrollsClient extends CharmClientModule {
             Quest quest = Quest.getFromTag(questTag);
             quest.update(context.getPlayer());
 
-            boolean backToJournal = mc.currentScreen instanceof ActiveScrollsScreen;
+            boolean backToJournal = mc.currentScreen instanceof ScrollsScreen;
             mc.openScreen(new ScrollScreen(quest, backToJournal));
         });
     }

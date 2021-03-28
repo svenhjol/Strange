@@ -11,16 +11,14 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesClient;
 import svenhjol.strange.runestones.RunestonesHelper;
-import svenhjol.strange.traveljournals.TravelJournals;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class LearnedRunesScreen extends BaseScreen {
+public class RunesScreen extends TravelJournalBaseScreen {
     private static final Identifier SGA_TEXTURE = new Identifier("minecraft", "alt");
     private List<Integer> learnedRunes;
     private int maxRunes;
@@ -28,7 +26,7 @@ public class LearnedRunesScreen extends BaseScreen {
 
     private final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
 
-    public LearnedRunesScreen() {
+    public RunesScreen() {
         super(I18n.translate("item.strange.travel_journal.runes"));
         this.passEvents = false;
     }
@@ -37,13 +35,14 @@ public class LearnedRunesScreen extends BaseScreen {
     protected void init() {
         super.init();
 
-        this.learnedRunes = RunestonesHelper.getLearnedRunes(client.player);
-        this.maxRunes = RunestonesHelper.NUMBER_OF_RUNES;
+        learnedRunes = RunestonesHelper.getLearnedRunes(client.player);
+        maxRunes = RunestonesHelper.NUMBER_OF_RUNES;
+        previousPage = Page.RUNES;
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (!isClientValid())
+        if (!getClient().isPresent())
             return;
 
         super.render(matrices, mouseX, mouseY, delta);
@@ -93,7 +92,6 @@ public class LearnedRunesScreen extends BaseScreen {
                     int ix = left + (sx * 36);
                     int iy = top + (sy * 18);
 
-
                     itemRenderer.renderGuiItemIcon(itemStack, ix, iy);
 
                     if (knownRune && hoverText != null) {
@@ -114,11 +112,6 @@ public class LearnedRunesScreen extends BaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.back"), button -> this.backToMainScreen()));
-    }
-
-    private void backToMainScreen() {
-        if (client != null)
-            NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
+        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
     }
 }
