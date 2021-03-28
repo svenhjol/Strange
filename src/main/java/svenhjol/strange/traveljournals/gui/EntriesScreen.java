@@ -87,12 +87,12 @@ public class EntriesScreen extends TravelJournalBaseScreen {
             this.textRenderer.draw(matrices, bold + name, left + 2, top + 10, DyeColor.byId(entry.color).getSignColor()); // TODO: how to get color not signColor
 
             // update button
-            this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 220, 0, 19, BUTTONS, button -> updateEntry(entry)));
+            this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 180, 0, 19, BUTTONS, button -> updateEntry(entry)));
             buttonOffsetX -= buttonSpacing;
 
             // totem button
             if (hasTotem && DimensionHelper.isDimension(client.world, entry.dim)) {
-                this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 200, 0, 19, BUTTONS, button -> useTotem(entry)));
+                this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 160, 0, 19, BUTTONS, button -> useTotem(entry)));
             }
 
             top += rowHeight;
