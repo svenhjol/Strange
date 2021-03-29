@@ -462,7 +462,7 @@ public class Runestones extends CharmModule {
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
         int runeValue = getRuneValue((ServerWorld) world, pos);
         if (runeValue >= 0) {
-            int drops = 1 + world.random.nextInt(EnchantmentsHelper.getFortune(player) + 3);
+            int drops = 1 + world.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);
             for (int i = 0; i < drops; i++) {
                 world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
             }
