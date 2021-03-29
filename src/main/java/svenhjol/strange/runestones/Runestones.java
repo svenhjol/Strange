@@ -1,12 +1,18 @@
 package svenhjol.strange.runestones;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +40,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.RegistryHandler;
+import svenhjol.charm.base.helper.EnchantmentsHelper;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
@@ -48,6 +55,7 @@ import svenhjol.strange.runestones.destination.BiomeDestination;
 import svenhjol.strange.runestones.destination.Destination;
 import svenhjol.strange.runestones.destination.StructureDestination;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 
@@ -56,13 +64,16 @@ import static svenhjol.strange.runestones.RunestonesHelper.NUMBER_OF_RUNES;
 @Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends CharmModule {
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runestone");
+    public static final Identifier RUNESTONE_DUST_ID = new Identifier(Strange.MOD_ID, "runestone_dust");
     public static final Identifier MSG_CLIENT_CACHE_LEARNED_RUNES = new Identifier(Strange.MOD_ID, "client_cache_learned_runes");
     public static final Identifier MSG_CLIENT_CACHE_DESTINATION_NAMES = new Identifier(Strange.MOD_ID, "client_cache_destination_names");
     public static final String LEARNED_TAG = "learned";
     public static final int TELEPORT_TICKS = 10;
 
-    public static final List<RunestoneBlock> RUNESTONE_BLOCKS = new ArrayList<>();
+    public static List<RunestoneBlock> RUNESTONE_BLOCKS = new ArrayList<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
+    public static RunestoneDustItem RUNESTONE_DUST;
+    public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
 
     public static List<Destination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<Destination> WORLD_DESTINATIONS = new ArrayList<>(); // destinations shuffled according to world seed
@@ -114,6 +125,14 @@ public class Runestones extends CharmModule {
         }
 
         BLOCK_ENTITY = RegistryHandler.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
+
+        // setup runestone dust item and entity
+        RUNESTONE_DUST = new RunestoneDustItem(this);
+        RUNESTONE_DUST_ENTITY = RegistryHandler.entity(RUNESTONE_DUST_ID, FabricEntityTypeBuilder
+            .<RunestoneDustEntity>create(SpawnGroup.MISC, RunestoneDustEntity::new)
+            .trackRangeBlocks(80)
+            .trackedUpdateRate(10)
+            .dimensions(EntityDimensions.fixed(2.0F, 2.0F)));
     }
 
     @Override
@@ -129,6 +148,9 @@ public class Runestones extends CharmModule {
 
         // listen for player ticks
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+
+        // listen for broken runestones
+        PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
 
         initDestinations();
     }
@@ -160,7 +182,6 @@ public class Runestones extends CharmModule {
             }
         }
     }
-
 
     public static void sendLearnedRunesPacket(ServerPlayerEntity player) {
         List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
@@ -420,13 +441,33 @@ public class Runestones extends CharmModule {
         }
     }
 
+    /**
+     * Ticks the player to check if certain actions need to be taken:
+     * - if the player is looking at a runestone
+     * - if the player is scheduled to be teleported
+     */
     private void handlePlayerTick(PlayerEntity player) {
         if (player.world.isClient || AVAILABLE_DESTINATIONS.isEmpty())
             return;
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
-
         tryLookingAtRunestone(serverPlayer);
         tryTeleport(serverPlayer);
+    }
+
+    /**
+     * Called just before a runestone block is broken.
+     * This is where we do drops for runestone dust and fragments.
+     */
+    private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+        int runeValue = getRuneValue((ServerWorld) world, pos);
+        if (runeValue >= 0) {
+            int drops = 1 + world.random.nextInt(EnchantmentsHelper.getFortune(player) + 3);
+            for (int i = 0; i < drops; i++) {
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
+            }
+        }
+
+        return true; // always allow runestone to be broken
     }
 }

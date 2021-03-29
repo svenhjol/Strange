@@ -1,5 +1,6 @@
 package svenhjol.strange.runestones;
 
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,8 @@ public class RunestonesClient extends CharmClientModule {
     public void register() {
         ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_LEARNED_RUNES, this::handleClientCacheLearnedRunes);
         ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_DESTINATION_NAMES, this::handleClientCacheDestinationNames);
+
+        EntityRendererRegistry.INSTANCE.register(Runestones.RUNESTONE_DUST_ENTITY, RunestoneDustEntityRenderer::new);
     }
 
     private void handleClientCacheLearnedRunes(PacketContext context, PacketByteBuf data) {
