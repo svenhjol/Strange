@@ -1,9 +1,10 @@
 package svenhjol.strange.scrolls;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,42 +32,42 @@ public class ScrollsClient extends CharmClientModule {
 
     @Override
     public void register() {
-        ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_OPEN_SCROLL, this::handleClientOpenScroll);
-        ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_SHOW_QUEST_TOAST, this::handleClientShowQuestToast);
-        ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_CACHE_CURRENT_QUESTS, this::handleClientCacheCurrentQuests);
-        ClientSidePacketRegistry.INSTANCE.register(MSG_CLIENT_DESTROY_SCROLL, this::handleClientDestroyScroll);
+        ClientPlayNetworking.registerGlobalReceiver(MSG_CLIENT_OPEN_SCROLL, this::handleClientOpenScroll);
+        ClientPlayNetworking.registerGlobalReceiver(MSG_CLIENT_SHOW_QUEST_TOAST, this::handleClientShowQuestToast);
+        ClientPlayNetworking.registerGlobalReceiver(MSG_CLIENT_CACHE_CURRENT_QUESTS, this::handleClientCacheCurrentQuests);
+        ClientPlayNetworking.registerGlobalReceiver(MSG_CLIENT_DESTROY_SCROLL, this::handleClientDestroyScroll);
 
         // set up scroll item model predicate
         ModelPredicateProviderRegistryAccessor.callRegister(new Identifier("scroll_state"), (stack, world, entity, i)
             -> ScrollItem.hasBeenOpened(stack) ? 0.1F : 0.0F);
     }
 
-    private void handleClientOpenScroll(PacketContext context, PacketByteBuf data) {
+    private void handleClientOpenScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag questTag = data.readCompoundTag();
-        context.getTaskQueue().execute(() -> {
+        client.execute(() -> {
             MinecraftClient mc = MinecraftClient.getInstance();
             Quest quest = Quest.getFromTag(questTag);
-            quest.update(context.getPlayer());
+            quest.update(client.player);
 
             boolean backToJournal = mc.currentScreen instanceof ScrollsScreen;
             mc.openScreen(new ScrollScreen(quest, backToJournal));
         });
     }
 
-    private void handleClientShowQuestToast(PacketContext context, PacketByteBuf data) {
+    private void handleClientShowQuestToast(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag questTag = data.readCompoundTag();
         QuestToastType type = data.readEnumConstant(QuestToastType.class);
         String title = data.readString();
 
-        context.getTaskQueue().execute(() -> {
+        client.execute(() -> {
             Quest quest = Quest.getFromTag(questTag);
             MinecraftClient.getInstance().getToastManager().add(new QuestToast(quest, type, quest.getTitle(), title));
         });
     }
 
-    private void handleClientDestroyScroll(PacketContext context, PacketByteBuf data) {
-        context.getTaskQueue().execute(() -> {
-            PlayerEntity player = context.getPlayer();
+    private void handleClientDestroyScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+        client.execute(() -> {
+            PlayerEntity player = client.player;
             if (player == null) return;
 
             double spread = 1.1D;
@@ -80,7 +81,7 @@ public class ScrollsClient extends CharmClientModule {
         });
     }
 
-    private void handleClientCacheCurrentQuests(PacketContext context, PacketByteBuf data) {
+    private void handleClientCacheCurrentQuests(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag inTag = data.readCompoundTag();
         if (inTag == null || !inTag.contains("quests"))
             return;

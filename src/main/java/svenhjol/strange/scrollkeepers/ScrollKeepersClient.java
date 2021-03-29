@@ -2,8 +2,10 @@ package svenhjol.strange.scrollkeepers;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +37,7 @@ public class ScrollKeepersClient extends CharmClientModule {
         PlayerTickCallback.EVENT.register(this::villagerInterested);
 
         // listen for quest tag being sent from the server to this player
-        ClientSidePacketRegistry.INSTANCE.register(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
+        ClientPlayNetworking.registerGlobalReceiver(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
 
         // cut-out for 3D writing desk
         BlockRenderLayerMap.INSTANCE.putBlock(Scrollkeepers.WRITING_DESK, RenderLayer.getCutout());
@@ -62,7 +64,7 @@ public class ScrollKeepersClient extends CharmClientModule {
             // fire a request to the server to fetch the quest data for this questId
             PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
             buffer.writeString(questId);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(Scrollkeepers.MSG_SERVER_GET_SCROLL_QUEST, buffer);
+            ClientPlayNetworking.send(Scrollkeepers.MSG_SERVER_GET_SCROLL_QUEST, buffer);
 
             if (heldScrollQuest == null || !heldScrollQuest.getId().equals(questId))
                 return;
@@ -101,14 +103,12 @@ public class ScrollKeepersClient extends CharmClientModule {
         }
     }
 
-    private void handleReceiveScrollQuest(PacketContext context, PacketByteBuf data) {
+    private void handleReceiveScrollQuest(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag compoundTag = data.readCompoundTag();
         if (compoundTag == null || compoundTag.isEmpty())
             return;
 
         Quest quest = Quest.getFromTag(compoundTag);
-        context.getTaskQueue().execute(() -> {
-            heldScrollQuest = quest;
-        });
+        client.execute(() -> heldScrollQuest = quest);
     }
 }

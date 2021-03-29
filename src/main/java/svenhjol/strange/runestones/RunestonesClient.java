@@ -1,8 +1,10 @@
 package svenhjol.strange.runestones;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import svenhjol.charm.base.CharmClientModule;
@@ -20,25 +22,23 @@ public class RunestonesClient extends CharmClientModule {
 
     @Override
     public void register() {
-        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_LEARNED_RUNES, this::handleClientCacheLearnedRunes);
-        ClientSidePacketRegistry.INSTANCE.register(Runestones.MSG_CLIENT_CACHE_DESTINATION_NAMES, this::handleClientCacheDestinationNames);
+        ClientPlayNetworking.registerGlobalReceiver(Runestones.MSG_CLIENT_CACHE_LEARNED_RUNES, this::handleClientCacheLearnedRunes);
+        ClientPlayNetworking.registerGlobalReceiver(Runestones.MSG_CLIENT_CACHE_DESTINATION_NAMES, this::handleClientCacheDestinationNames);
 
         EntityRendererRegistry.INSTANCE.register(Runestones.RUNESTONE_DUST_ENTITY, RunestoneDustEntityRenderer::new);
     }
 
-    private void handleClientCacheLearnedRunes(PacketContext context, PacketByteBuf data) {
+    private void handleClientCacheLearnedRunes(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         int[] discoveries = data.readIntArray();
-        context.getTaskQueue().execute(() -> {
-            RunestonesHelper.populateLearnedRunes(context.getPlayer(), discoveries);
-        });
+        client.execute(() -> RunestonesHelper.populateLearnedRunes(client.player, discoveries));
     }
 
-    private void handleClientCacheDestinationNames(PacketContext context, PacketByteBuf data) {
+    private void handleClientCacheDestinationNames(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         CompoundTag inTag = data.readCompoundTag();
         if (inTag == null || inTag.isEmpty())
             return;
 
-        context.getTaskQueue().execute(() -> {
+        client.execute(() -> {
             CACHED_DESTINATION_NAMES.clear();
 
             for (int i = 0; i < RunestonesHelper.NUMBER_OF_RUNES; i++) {
