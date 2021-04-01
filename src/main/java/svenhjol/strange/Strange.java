@@ -3,10 +3,8 @@ package svenhjol.strange;
 import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmLoader;
-import svenhjol.strange.base.StrangeCommands;
-import svenhjol.strange.base.StrangeLoot;
-import svenhjol.strange.base.StrangeSounds;
-import svenhjol.strange.base.StrangeStructures;
+import svenhjol.strange.base.*;
+import svenhjol.strange.bronze.Bronze;
 import svenhjol.strange.rubble.Rubble;
 import svenhjol.strange.ruins.Ruins;
 import svenhjol.strange.runestones.Runestones;
@@ -29,6 +27,7 @@ public class Strange implements ModInitializer {
         Charm.runFirst();
 
         new CharmLoader(MOD_ID, Arrays.asList(
+            Bronze.class,
             Rubble.class,
             Ruins.class,
             Runestones.class,
