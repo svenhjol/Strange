@@ -20,6 +20,11 @@ public class Bronze extends CharmModule {
     }
 
     @Override
+    public boolean depends() {
+        return ModuleHandler.enabled("charm:bronze");
+    }
+
+    @Override
     public List<Identifier> getRecipesToRemove() {
         List<Identifier> remove = new ArrayList<>();
 
