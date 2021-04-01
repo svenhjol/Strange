@@ -6,7 +6,6 @@ import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePieceWithDimensions;
@@ -25,6 +24,7 @@ import svenhjol.charm.base.helper.DecorationHelper;
 import svenhjol.charm.blockentity.EntitySpawnerBlockEntity;
 import svenhjol.charm.module.EntitySpawners;
 import svenhjol.charm.module.VariantChests;
+import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.runestones.Runestones;
 
 import java.util.*;
@@ -50,7 +50,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
     @Override
     public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator gen, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
-        Identifier lootTable = LootTables.PILLAGER_OUTPOST_CHEST; // TODO: should be stone circle specific loot table
+        Identifier lootTable = StrangeLoot.STONE_CIRCLE;
 
         List<BlockState> blocks = new ArrayList<>(Arrays.asList(
             Blocks.STONE.getDefaultState(),

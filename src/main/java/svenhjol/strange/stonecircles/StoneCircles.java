@@ -1,6 +1,16 @@
 package svenhjol.strange.stonecircles;
 
+import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.minecraft.item.Items;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -16,6 +26,7 @@ import svenhjol.charm.base.helper.BiomeHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
+import svenhjol.strange.base.StrangeLoot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +36,8 @@ import java.util.List;
 public class StoneCircles extends CharmModule {
     public static final Identifier STRUCTURE_ID = new Identifier(Strange.MOD_ID, "stone_circle");
     public static final Identifier PIECE_ID = new Identifier(Strange.MOD_ID, "stone_circle_piece");
+    public static final Identifier LOOT_ID = new Identifier(Strange.MOD_ID, "stone_circle");
+    public static LootFunctionType LOOT_FUNCTION;
 
     public static StructurePieceType STONE_CIRCLE_PIECE;
     public static StructureFeature<DefaultFeatureConfig> STONE_CIRCLE_STRUCTURE;
@@ -50,6 +63,7 @@ public class StoneCircles extends CharmModule {
 
     @Override
     public void register() {
+        LOOT_FUNCTION = RegistryHandler.lootFunctionType(LOOT_ID, new LootFunctionType(new StoneCircleLootFunction.Serializer()));
         STONE_CIRCLE_STRUCTURE = new StoneCircleFeature(DefaultFeatureConfig.CODEC);
         STONE_CIRCLE_PIECE = RegistryHandler.structurePiece(PIECE_ID, StoneCircleGenerator::new);
 
@@ -68,11 +82,25 @@ public class StoneCircles extends CharmModule {
 
     @Override
     public void init() {
+        LootTableLoadingCallback.EVENT.register(this::handleLootTables);
+
         configBiomes.forEach(biomeId -> BuiltinRegistries.BIOME.getOrEmpty(new Identifier(biomeId))
             .flatMap(BuiltinRegistries.BIOME::getKey) // flatmap is shorthand for ifPresent(thing) -> return do(thing)
             .ifPresent(biomeKey -> {
                 Charm.LOG.debug("[StoneCircles] Added stone circle to biome: " + biomeId);
                 BiomeHelper.addStructureToBiome(STONE_CIRCLE, biomeKey);
             }));
+    }
+
+    private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
+        if (StrangeLoot.STONE_CIRCLE.equals(id)) {
+            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                .rolls(ConstantLootNumberProvider.create(1))
+                .with(ItemEntry.builder(Items.AIR)
+                    .weight(1)
+                    .apply(() -> new StoneCircleLootFunction(new LootCondition[0])));
+
+            supplier.pool(builder);
+        }
     }
 }
