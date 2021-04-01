@@ -7,8 +7,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
@@ -47,7 +47,7 @@ public class TotemOfPreservingItem extends CharmItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack totem = user.getStackInHand(hand);
-        CompoundTag items = getItems(totem);
+        NbtCompound items = getItems(totem);
         int xp = getXp(totem);
         if (xp > 0) {
             world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 0.8F, 1.0F);
@@ -58,13 +58,13 @@ public class TotemOfPreservingItem extends CharmItem {
 
         if (!world.isClient) {
             for (int i = 0; i < items.getSize(); i++) {
-                Tag tag = items.get(String.valueOf(i));
+                NbtElement tag = items.get(String.valueOf(i));
                 if (tag == null) {
                     Charm.LOG.warn("Item tag missing from totem");
                     continue;
                 }
 
-                ItemStack stack = ItemStack.fromNbt((CompoundTag) tag);
+                ItemStack stack = ItemStack.fromNbt((NbtCompound) tag);
                 BlockPos pos = user.getBlockPos();
                 ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 0.5D, pos.getZ(), stack);
                 world.spawnEntity(itemEntity);
@@ -77,7 +77,7 @@ public class TotemOfPreservingItem extends CharmItem {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         String message = getMessage(stack);
-        CompoundTag items = getItems(stack);
+        NbtCompound items = getItems(stack);
 
         if (!message.isEmpty())
             tooltip.add(new LiteralText(message));
@@ -95,7 +95,7 @@ public class TotemOfPreservingItem extends CharmItem {
         ItemNBTHelper.setString(totem, MESSAGE_TAG, message);
     }
 
-    public static void setItems(ItemStack totem, CompoundTag items) {
+    public static void setItems(ItemStack totem, NbtCompound items) {
         ItemNBTHelper.setCompound(totem, ITEMS_TAG, items);
     }
 
@@ -107,7 +107,7 @@ public class TotemOfPreservingItem extends CharmItem {
         return ItemNBTHelper.getString(totem, MESSAGE_TAG, "");
     }
 
-    public static CompoundTag getItems(ItemStack totem) {
+    public static NbtCompound getItems(ItemStack totem) {
         return ItemNBTHelper.getCompound(totem, ITEMS_TAG);
     }
 

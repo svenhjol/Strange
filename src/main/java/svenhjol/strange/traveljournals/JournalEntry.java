@@ -1,6 +1,6 @@
 package svenhjol.strange.traveljournals;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,7 +37,7 @@ public class JournalEntry {
         this.color = color;
     }
 
-    public JournalEntry(CompoundTag tag) {
+    public JournalEntry(NbtCompound tag) {
         fromTag(tag);
     }
 
@@ -45,8 +45,8 @@ public class JournalEntry {
         fromEntry(entry);
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound tag = new NbtCompound();
         tag.putString(ID, id);
         tag.putString(NAME, name.substring(0, Math.min(name.length(), TravelJournals.MAX_NAME_LENGTH)));
         tag.putInt(COLOR, color);
@@ -60,7 +60,7 @@ public class JournalEntry {
         return tag;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         id = tag.getString(ID);
         name = tag.getString(NAME);
         color = tag.getInt(COLOR);

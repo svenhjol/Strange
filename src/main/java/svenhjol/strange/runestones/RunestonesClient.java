@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
@@ -34,7 +34,7 @@ public class RunestonesClient extends CharmClientModule {
     }
 
     private void handleClientCacheDestinationNames(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag inTag = data.readCompoundTag();
+        NbtCompound inTag = data.readCompound();
         if (inTag == null || inTag.isEmpty())
             return;
 

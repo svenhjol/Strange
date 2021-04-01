@@ -150,7 +150,7 @@ public class EntriesScreen extends TravelJournalBaseScreen {
     }
 
     private void useTotem(JournalEntry entry) {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompound(entry.toTag()));
         client.openScreen(null);
     }
 }

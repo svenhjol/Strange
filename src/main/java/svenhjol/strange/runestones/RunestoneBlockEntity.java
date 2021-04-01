@@ -2,7 +2,7 @@ package svenhjol.strange.runestones;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +23,7 @@ public class RunestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         super.readNbt(tag);
         this.position = BlockPos.fromLong(tag.getLong(POSITION_TAG));
         this.player = tag.getString(PLAYER_TAG);
@@ -33,7 +33,7 @@ public class RunestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag writeNbt(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         if (this.position != null) {
             tag.putLong(POSITION_TAG, this.position.asLong());

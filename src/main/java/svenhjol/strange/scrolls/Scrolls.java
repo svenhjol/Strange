@@ -20,8 +20,8 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
@@ -144,21 +144,21 @@ public class Scrolls extends CharmModule {
 
     public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompoundTag(quest.toTag());
+        data.writeCompound(quest.toTag());
         ServerPlayNetworking.send(player, MSG_CLIENT_OPEN_SCROLL, data);
     }
 
     public static void sendQuestsPacket(ServerPlayerEntity player, List<Quest> quests) {
         // convert to nbt and write to packet buffer
-        ListTag listTag = new ListTag();
+        NbtList listTag = new NbtList();
         for (Quest quest : quests) {
             listTag.add(quest.toTag());
         }
-        CompoundTag outTag = new CompoundTag();
+        NbtCompound outTag = new NbtCompound();
         outTag.put("quests", listTag);
 
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompoundTag(outTag);
+        buffer.writeCompound(outTag);
 
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
     }

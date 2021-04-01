@@ -7,8 +7,8 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapIcon;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -92,19 +92,19 @@ public class TravelJournals extends CharmModule {
         return travelJournalManager != null ? Optional.of(travelJournalManager) : Optional.empty();
     }
 
-    public static void sendJournalEntriesPacket(ServerPlayerEntity player, ListTag entries) {
+    public static void sendJournalEntriesPacket(ServerPlayerEntity player, NbtList entries) {
         UUID uuid = player.getUuid();
-        CompoundTag outTag = new CompoundTag();
+        NbtCompound outTag = new NbtCompound();
         outTag.put(uuid.toString(), entries);
 
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompoundTag(outTag);
+        buffer.writeCompound(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRIES, buffer);
     }
 
-    public static void sendJournalEntryPacket(ServerPlayerEntity player, CompoundTag entry) {
+    public static void sendJournalEntryPacket(ServerPlayerEntity player, NbtCompound entry) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompoundTag(entry);
+        buffer.writeCompound(entry);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
 
@@ -128,7 +128,7 @@ public class TravelJournals extends CharmModule {
 
     private void handleServerOpenJournal(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         processClientPacket(server, player, manager -> {
-            ListTag listTag = manager.serializePlayerEntries(player.getUuid());
+            NbtList listTag = manager.serializePlayerEntries(player.getUuid());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
 
             if (ModuleHandler.enabled(Runestones.class)) {
@@ -143,7 +143,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerUpdateEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag entry = data.readCompoundTag();
+        NbtCompound entry = data.readCompound();
         if (entry == null || entry.isEmpty())
             return;
 
@@ -157,13 +157,13 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerDeleteEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag entry = data.readCompoundTag();
+        NbtCompound entry = data.readCompound();
         if (entry == null || entry.isEmpty())
             return;
 
         processClientPacket(server, player, manager -> {
             manager.deleteJournalEntry(player, new JournalEntry(entry));
-            ListTag listTag = manager.serializePlayerEntries(player.getUuid());
+            NbtList listTag = manager.serializePlayerEntries(player.getUuid());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
         });
     }
@@ -181,7 +181,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerUseTotem(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag entryTag = data.readCompoundTag();
+        NbtCompound entryTag = data.readCompound();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
@@ -214,7 +214,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerMakeMap(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag entryTag = data.readCompoundTag();
+        NbtCompound entryTag = data.readCompound();
         if (entryTag == null || entryTag.isEmpty())
             return;
 

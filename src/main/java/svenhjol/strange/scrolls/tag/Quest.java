@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.scrolls.ScrollDefinition;
 import svenhjol.strange.scrolls.ScrollsHelper;
@@ -60,8 +60,8 @@ public class Quest implements ISerializable {
         this.owner = owner;
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound tag = new NbtCompound();
 
         tag.putInt(TIER_TAG, tier);
         tag.putInt(RARITY_TAG, rarity);
@@ -83,7 +83,7 @@ public class Quest implements ISerializable {
         return tag;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         tier = tag.getInt(TIER_TAG);
         rarity = Math.max(1, tag.getInt(RARITY_TAG));
         expiry = Math.max(0, tag.getInt(EXPIRY_TAG));
@@ -240,7 +240,7 @@ public class Quest implements ISerializable {
         boss.entityKilled(entity, attacker);
     }
 
-    public static Quest getFromTag(CompoundTag fromTag) {
+    public static Quest getFromTag(NbtCompound fromTag) {
         Quest quest = new Quest();
         quest.fromTag(fromTag);
         return quest;

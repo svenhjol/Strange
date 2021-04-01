@@ -19,7 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -195,7 +195,7 @@ public class Runestones extends CharmModule {
     public static void sendDestinationNamesPacket(ServerPlayerEntity player) {
         List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
 
-        CompoundTag outTag = new CompoundTag();
+        NbtCompound outTag = new NbtCompound();
 
         for (int rune : learnedRunes) {
             Destination destination = WORLD_DESTINATIONS.get(rune);
@@ -204,7 +204,7 @@ public class Runestones extends CharmModule {
         }
 
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompoundTag(outTag);
+        data.writeCompound(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
     }
 
@@ -423,13 +423,13 @@ public class Runestones extends CharmModule {
 
     private void handlePlayerSave(PlayerEntity player, File playerDataDir) {
         List<Integer> runes = RunestonesHelper.getLearnedRunes(player);
-        CompoundTag tag = new CompoundTag();
+        NbtCompound tag = new NbtCompound();
         tag.putIntArray(LEARNED_TAG, runes);
         PlayerSaveDataCallback.writeFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"), tag);
     }
 
     private void handlePlayerLoad(PlayerEntity player, File playerDataDir) {
-        CompoundTag tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"));
+        NbtCompound tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"));
         if (tag.contains(LEARNED_TAG)) {
             RunestonesHelper.resetLearnedRunes(player);
 

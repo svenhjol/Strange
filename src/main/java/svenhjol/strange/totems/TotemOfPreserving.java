@@ -17,7 +17,7 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -84,7 +84,7 @@ public class TotemOfPreserving extends CharmModule {
         ServerWorld world = (ServerWorld)player.world;
         Random random = world.getRandom();
         ItemStack totem = new ItemStack(TOTEM_OF_PRESERVING);
-        CompoundTag serialized = new CompoundTag();
+        NbtCompound serialized = new NbtCompound();
         List<ItemStack> holdable = new ArrayList<>();
         List<DefaultedList<ItemStack>> combined = ImmutableList.of(inventory.main, inventory.armor, inventory.offHand);
 
@@ -123,7 +123,7 @@ public class TotemOfPreserving extends CharmModule {
                 continue;
             }
 
-            serialized.put(Integer.toString(i), holdable.get(i).writeNbt(new CompoundTag()));
+            serialized.put(Integer.toString(i), holdable.get(i).writeNbt(new NbtCompound()));
         }
 
         TotemOfPreservingItem.setItems(totem, serialized);

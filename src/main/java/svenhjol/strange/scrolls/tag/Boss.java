@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -41,11 +41,11 @@ public class Boss implements ISerializable {
     }
 
     @Override
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag entitiesTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
-        CompoundTag killedTag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound outTag = new NbtCompound();
+        NbtCompound entitiesTag = new NbtCompound();
+        NbtCompound countTag = new NbtCompound();
+        NbtCompound killedTag = new NbtCompound();
 
         // write boss entity data
         if (!entities.isEmpty()) {
@@ -79,10 +79,10 @@ public class Boss implements ISerializable {
     }
 
     @Override
-    public void fromTag(CompoundTag fromTag) {
-        CompoundTag entitiesTag = (CompoundTag)fromTag.get(TARGET_ENTITIES);
-        CompoundTag countTag = (CompoundTag)fromTag.get(TARGET_COUNT);
-        CompoundTag killedTag = (CompoundTag)fromTag.get(TARGET_KILLED);
+    public void fromTag(NbtCompound fromTag) {
+        NbtCompound entitiesTag = (NbtCompound)fromTag.get(TARGET_ENTITIES);
+        NbtCompound countTag = (NbtCompound)fromTag.get(TARGET_COUNT);
+        NbtCompound killedTag = (NbtCompound)fromTag.get(TARGET_KILLED);
 
         entities = new HashMap<>();
 

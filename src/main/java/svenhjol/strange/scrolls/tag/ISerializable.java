@@ -1,8 +1,8 @@
 package svenhjol.strange.scrolls.tag;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public interface ISerializable {
-    CompoundTag toTag();
-    void fromTag(CompoundTag tag);
+    NbtCompound toTag();
+    void fromTag(NbtCompound tag);
 }

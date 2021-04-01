@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -32,11 +32,11 @@ public class Hunt implements ISerializable {
     }
 
     @Override
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag dataTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
-        CompoundTag killedTag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound outTag = new NbtCompound();
+        NbtCompound dataTag = new NbtCompound();
+        NbtCompound countTag = new NbtCompound();
+        NbtCompound killedTag = new NbtCompound();
 
         if (!entities.isEmpty()) {
             int index = 0;
@@ -62,10 +62,10 @@ public class Hunt implements ISerializable {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        CompoundTag dataTag = (CompoundTag)tag.get(ENTITY_DATA);
-        CompoundTag countTag = (CompoundTag)tag.get(ENTITY_COUNT);
-        CompoundTag killedTag = (CompoundTag)tag.get(ENTITY_KILLED);
+    public void fromTag(NbtCompound tag) {
+        NbtCompound dataTag = (NbtCompound)tag.get(ENTITY_DATA);
+        NbtCompound countTag = (NbtCompound)tag.get(ENTITY_COUNT);
+        NbtCompound killedTag = (NbtCompound)tag.get(ENTITY_KILLED);
 
         entities = new HashMap<>();
         killed = new HashMap<>();

@@ -4,9 +4,9 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.base.helper.PlayerHelper;
@@ -42,13 +42,13 @@ public class Explore implements ISerializable {
     }
 
     @Override
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound outTag = new NbtCompound();
 
         if (!items.isEmpty()) {
-            ListTag itemDataTag = new ListTag();
+            NbtList itemDataTag = new NbtList();
             for (ItemStack stack : items) {
-                CompoundTag itemTag = new CompoundTag();
+                NbtCompound itemTag = new NbtCompound();
                 stack.writeNbt(itemTag);
                 itemDataTag.add(itemTag);
             }
@@ -79,7 +79,7 @@ public class Explore implements ISerializable {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         chestRange = tag.getInt(CHEST_RANGE);
         chestStart = tag.getInt(CHEST_START);
         structure = tag.contains(STRUCTURE) ? BlockPos.fromLong(tag.getLong(STRUCTURE)) : null;
@@ -98,10 +98,10 @@ public class Explore implements ISerializable {
 
         items = new ArrayList<>();
 
-        ListTag itemDataTag = (ListTag)tag.get(ITEMS);
+        NbtList itemDataTag = (NbtList)tag.get(ITEMS);
         if (itemDataTag != null && itemDataTag.size() > 0) {
-            for (Tag itemTag : itemDataTag) {
-                ItemStack stack = ItemStack.fromNbt((CompoundTag)itemTag);
+            for (NbtElement itemTag : itemDataTag) {
+                ItemStack stack = ItemStack.fromNbt((NbtCompound)itemTag);
                 items.add(stack);
             }
         }

@@ -3,8 +3,8 @@ package svenhjol.strange.scrolls;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -56,13 +56,13 @@ public class QuestManager extends PersistentState {
             markDirty();
     }
 
-    public static QuestManager fromNbt(ServerWorld world, CompoundTag tag) {
+    public static QuestManager fromNbt(ServerWorld world, NbtCompound tag) {
         QuestManager questManager = new QuestManager(world);
         questManager.currentTime = tag.getInt(TICK_TAG);
-        ListTag listTag = tag.getList(QUESTS_TAG, 10);
+        NbtList listTag = tag.getList(QUESTS_TAG, 10);
 
         for (int i = 0; i < listTag.size(); i++) {
-            CompoundTag questTag = listTag.getCompound(i);
+            NbtCompound questTag = listTag.getCompound(i);
             Quest quest = Quest.getFromTag(questTag);
             questManager.addQuest(quest);
         }
@@ -71,11 +71,11 @@ public class QuestManager extends PersistentState {
     }
 
     @Override
-    public CompoundTag writeNbt(CompoundTag tag) {
-        ListTag listTag = new ListTag();
+    public NbtCompound writeNbt(NbtCompound tag) {
+        NbtList listTag = new NbtList();
 
         forEachQuest(quest -> {
-            CompoundTag questTag = quest.toTag();
+            NbtCompound questTag = quest.toTag();
             listTag.add(questTag);
         });
 
@@ -133,7 +133,7 @@ public class QuestManager extends PersistentState {
 
     public void sendToast(ServerPlayerEntity player, Quest quest, QuestToastType type, String title) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompoundTag(quest.toTag());
+        data.writeCompound(quest.toTag());
         data.writeEnumConstant(type);
         data.writeString(title);
         ServerPlayNetworking.send(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);

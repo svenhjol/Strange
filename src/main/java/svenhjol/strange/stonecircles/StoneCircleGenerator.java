@@ -7,7 +7,7 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePieceWithDimensions;
 import net.minecraft.util.Identifier;
@@ -39,10 +39,11 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
     public static int runeTries = 10; // if the runeChance passes, this is the number of attempts at rune placement from available runes
 
     public StoneCircleGenerator(Random random, int x, int y, int z) {
-        super(StoneCircles.STONE_CIRCLE_PIECE, random, x, y, z, 16, 8, 16);
+        // TODO: these parameters seem out of order in sources, might break in future snapshots
+        super(StoneCircles.STONE_CIRCLE_PIECE, x, y, z, 16, 8, 16, method_35457(random));
     }
 
-    public StoneCircleGenerator(ServerWorld world, CompoundTag tag) {
+    public StoneCircleGenerator(ServerWorld world, NbtCompound tag) {
         super(StoneCircles.STONE_CIRCLE_PIECE, tag);
     }
 
@@ -174,7 +175,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
 
                         if (blockEntity instanceof EntitySpawnerBlockEntity) {
                             EntitySpawnerBlockEntity spawnerEntity = (EntitySpawnerBlockEntity)blockEntity;
-                            CompoundTag tag = new CompoundTag();
+                            NbtCompound tag = new NbtCompound();
 
                             Identifier mobId;
                             int mobCount;

@@ -10,7 +10,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -104,7 +104,7 @@ public class ScrollKeepersClient extends CharmClientModule {
     }
 
     private void handleReceiveScrollQuest(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag compoundTag = data.readCompoundTag();
+        NbtCompound compoundTag = data.readCompound();
         if (compoundTag == null || compoundTag.isEmpty())
             return;
 

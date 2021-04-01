@@ -1,9 +1,9 @@
 package svenhjol.strange.traveljournals;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -92,7 +92,7 @@ public class TravelJournalManager extends PersistentState {
         return addJournalEntry(player, entry);
     }
 
-    public static TravelJournalManager fromTag(ServerWorld world, CompoundTag tag) {
+    public static TravelJournalManager fromTag(ServerWorld world, NbtCompound tag) {
         TravelJournalManager manager = new TravelJournalManager(world);
 
         // inflate into hashmap
@@ -101,7 +101,7 @@ public class TravelJournalManager extends PersistentState {
         Set<String> uuids = tag.getKeys();
         for (String uuid : uuids) {
             UUID player = UUID.fromString(uuid);
-            ListTag listTag = tag.getList(uuid, 10);
+            NbtList listTag = tag.getList(uuid, 10);
             List<JournalEntry> entries = manager.unserializePlayerEntries(listTag);
             manager.playerJournalEntries.put(player, entries);
         }
@@ -110,19 +110,19 @@ public class TravelJournalManager extends PersistentState {
     }
 
     @Override
-    public CompoundTag writeNbt(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         // serialize all player journal entries into the master tag
         for (UUID uuid : playerJournalEntries.keySet()) {
-            ListTag listTag = serializePlayerEntries(uuid);
+            NbtList listTag = serializePlayerEntries(uuid);
             tag.put(uuid.toString(), listTag);
         }
 
         return tag;
     }
 
-    public ListTag serializePlayerEntries(UUID uuid) {
+    public NbtList serializePlayerEntries(UUID uuid) {
         List<JournalEntry> entries = playerJournalEntries.getOrDefault(uuid, new ArrayList<>());
-        ListTag tag = new ListTag();
+        NbtList tag = new NbtList();
 
         for (JournalEntry entry : entries) {
             tag.add(entry.toTag());
@@ -131,10 +131,10 @@ public class TravelJournalManager extends PersistentState {
         return tag;
     }
 
-    public List<JournalEntry> unserializePlayerEntries(ListTag tag) {
+    public List<JournalEntry> unserializePlayerEntries(NbtList tag) {
         List<JournalEntry> entries = new ArrayList<>();
-        for (Tag t : tag) {
-            entries.add(new JournalEntry((CompoundTag)t));
+        for (NbtElement t : tag) {
+            entries.add(new JournalEntry((NbtCompound)t));
         }
 
         return entries;

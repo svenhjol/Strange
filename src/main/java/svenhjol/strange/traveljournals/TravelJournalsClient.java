@@ -16,9 +16,9 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvents;
 import org.lwjgl.glfw.GLFW;
@@ -139,7 +139,7 @@ public class TravelJournalsClient extends CharmClientModule {
     }
 
     private void handleClientReceiveEntries(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag tag = data.readCompoundTag();
+        NbtCompound tag = data.readCompound();
         if (tag == null)
             return;
 
@@ -149,17 +149,17 @@ public class TravelJournalsClient extends CharmClientModule {
                 return;
 
             String uuid = player.getUuidAsString();
-            Tag entriesTag = tag.get(uuid);
+            NbtElement entriesTag = tag.get(uuid);
             if (entriesTag == null)
                 return;
 
-            entries = TravelJournalsHelper.getEntriesFromListTag((ListTag)entriesTag);
+            entries = TravelJournalsHelper.getEntriesFromNbtList((NbtList)entriesTag);
             client.openScreen(new TravelJournalScreen());
         });
     }
 
     private void handleClientReceiveEntry(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag tag = data.readCompoundTag();
+        NbtCompound tag = data.readCompound();
         if (tag == null)
             return;
 

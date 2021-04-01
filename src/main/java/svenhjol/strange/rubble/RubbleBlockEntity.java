@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
@@ -35,22 +35,22 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         super.readNbt(tag);
 
         if (tag.contains(ITEMSTACK_TAG))
-            this.itemStack = ItemStack.fromNbt((CompoundTag) tag.get(ITEMSTACK_TAG));
+            this.itemStack = ItemStack.fromNbt((NbtCompound) tag.get(ITEMSTACK_TAG));
 
         if (tag.contains(LEVELTICKS_TAG))
             this.levelTicks = tag.getLong(LEVELTICKS_TAG);
     }
 
     @Override
-    public CompoundTag writeNbt(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
 
         if (this.itemStack != null) {
-            CompoundTag itemTag = new CompoundTag();
+            NbtCompound itemTag = new NbtCompound();
             this.itemStack.writeNbt(itemTag);
             tag.put(ITEMSTACK_TAG, itemTag);
         }
@@ -60,12 +60,12 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void fromClientTag(CompoundTag compoundTag) {
+    public void fromClientTag(NbtCompound compoundTag) {
         readNbt(compoundTag);
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag compoundTag) {
+    public NbtCompound toClientTag(NbtCompound compoundTag) {
         return writeNbt(compoundTag);
     }
 }

@@ -4,8 +4,8 @@ import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import svenhjol.charm.base.helper.PlayerHelper;
 
 import javax.annotation.Nullable;
@@ -46,17 +46,17 @@ public class Reward implements ISerializable {
         // TODO: handle merchant XP
     }
 
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag dataTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound outTag = new NbtCompound();
+        NbtCompound dataTag = new NbtCompound();
+        NbtCompound countTag = new NbtCompound();
 
         if (!items.isEmpty()) {
             int index = 0;
             for (ItemStack stack : items.keySet()) {
                 String stackIndex = Integer.toString(index);
 
-                CompoundTag itemTag = new CompoundTag();
+                NbtCompound itemTag = new NbtCompound();
                 stack.writeNbt(itemTag);
                 dataTag.put(stackIndex, itemTag);
                 countTag.putInt(stackIndex, items.get(stack));
@@ -71,23 +71,23 @@ public class Reward implements ISerializable {
         return outTag;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         this.playerXp = tag.getInt(PLAYER_XP_TAG);
         this.villagerXp = tag.getInt(VILLAGER_XP_TAG);
-        CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
-        CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
+        NbtCompound dataTag = (NbtCompound)tag.get(ITEM_DATA);
+        NbtCompound countTag = (NbtCompound)tag.get(ITEM_COUNT);
 
         this.items = new HashMap<>();
 
         if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
             for (int i = 0; i < dataTag.getSize(); i++) {
                 String stackIndex = String.valueOf(i);
-                Tag tagAtIndex = dataTag.get(stackIndex);
+                NbtElement tagAtIndex = dataTag.get(stackIndex);
 
                 if (tagAtIndex == null)
                     continue;
 
-                ItemStack stack = ItemStack.fromNbt((CompoundTag)tagAtIndex);
+                ItemStack stack = ItemStack.fromNbt((NbtCompound)tagAtIndex);
                 int count = Math.max(countTag.getInt(stackIndex), 1);
                 items.put(stack, count);
             }

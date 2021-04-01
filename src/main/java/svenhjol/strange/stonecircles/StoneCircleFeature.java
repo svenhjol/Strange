@@ -3,7 +3,6 @@ package svenhjol.strange.stonecircles;
 import com.mojang.serialization.Codec;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructureStart;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
@@ -24,8 +23,8 @@ public class StoneCircleFeature extends StructureFeature<DefaultFeatureConfig> {
     }
 
     public static class Start extends StructureStart<DefaultFeatureConfig> {
-        public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos chunkPos, BlockBox box, int references, long seed) {
-            super(feature, chunkPos, box, references, seed);
+        public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos chunkPos, int references, long seed) {
+            super(feature, chunkPos, references, seed);
         }
 
         @Override

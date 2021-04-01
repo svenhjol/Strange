@@ -6,9 +6,9 @@ import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAc
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
@@ -43,7 +43,7 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientOpenScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag questTag = data.readCompoundTag();
+        NbtCompound questTag = data.readCompound();
         client.execute(() -> {
             MinecraftClient mc = MinecraftClient.getInstance();
             Quest quest = Quest.getFromTag(questTag);
@@ -55,7 +55,7 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientShowQuestToast(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag questTag = data.readCompoundTag();
+        NbtCompound questTag = data.readCompound();
         QuestToastType type = data.readEnumConstant(QuestToastType.class);
         String title = data.readString();
 
@@ -82,18 +82,18 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientCacheCurrentQuests(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        CompoundTag inTag = data.readCompoundTag();
+        NbtCompound inTag = data.readCompound();
         if (inTag == null || !inTag.contains("quests"))
             return;
 
-        ListTag listTag = (ListTag)inTag.get("quests");
+        NbtList listTag = (NbtList)inTag.get("quests");
         if (listTag == null)
             return;
 
         CACHED_CURRENT_QUESTS.clear();
 
-        for (Tag tag : listTag) {
-            CACHED_CURRENT_QUESTS.add(Quest.getFromTag((CompoundTag)tag));
+        for (NbtElement tag : listTag) {
+            CACHED_CURRENT_QUESTS.add(Quest.getFromTag((NbtCompound)tag));
         }
     }
 }

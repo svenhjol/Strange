@@ -3,8 +3,8 @@ package svenhjol.strange.scrolls.tag;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import svenhjol.charm.base.helper.PlayerHelper;
 
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ public class Gather implements ISerializable {
     }
 
     @Override
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag dataTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
+    public NbtCompound toTag() {
+        NbtCompound outTag = new NbtCompound();
+        NbtCompound dataTag = new NbtCompound();
+        NbtCompound countTag = new NbtCompound();
 
         if (!items.isEmpty()) {
             int index = 0;
@@ -36,7 +36,7 @@ public class Gather implements ISerializable {
                 int itemCount = items.get(stack);
 
                 // write the data to the tags at the specified index
-                CompoundTag itemTag = new CompoundTag();
+                NbtCompound itemTag = new NbtCompound();
                 stack.writeNbt(itemTag);
                 dataTag.put(tagIndex, itemTag);
                 countTag.putInt(tagIndex, itemCount);
@@ -51,21 +51,21 @@ public class Gather implements ISerializable {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
-        CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
+    public void fromTag(NbtCompound tag) {
+        NbtCompound dataTag = (NbtCompound)tag.get(ITEM_DATA);
+        NbtCompound countTag = (NbtCompound)tag.get(ITEM_COUNT);
 
         items = new HashMap<>();
 
         if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
             for (int i = 0; i < dataTag.getSize(); i++) {
                 String tagIndex = String.valueOf(i);
-                Tag tagAtIndex = dataTag.get(tagIndex);
+                NbtElement tagAtIndex = dataTag.get(tagIndex);
 
                 if (tagAtIndex == null)
                     continue;
 
-                ItemStack stack = ItemStack.fromNbt((CompoundTag)tagAtIndex);
+                ItemStack stack = ItemStack.fromNbt((NbtCompound)tagAtIndex);
                 int count = Math.max(countTag.getInt(tagIndex), 1);
                 items.put(stack, count);
             }

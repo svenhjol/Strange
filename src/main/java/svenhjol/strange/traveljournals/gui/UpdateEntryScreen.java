@@ -184,7 +184,7 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
     }
 
     private void delete() {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_DELETE_ENTRY, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_DELETE_ENTRY, buffer -> buffer.writeCompound(entry.toTag()));
         this.backToMainScreen();
     }
 
@@ -209,18 +209,18 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
 
     private void makeMap() {
         this.saveProgress();
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeCompound(entry.toTag()));
         init();
     }
 
     private void useTotem() {
         this.saveProgress();
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeCompound(entry.toTag()));
         init();
     }
 
     private void saveProgress() {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_UPDATE_ENTRY, buffer -> buffer.writeCompoundTag(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_UPDATE_ENTRY, buffer -> buffer.writeCompound(entry.toTag()));
     }
 
     private void backToMainScreen() {

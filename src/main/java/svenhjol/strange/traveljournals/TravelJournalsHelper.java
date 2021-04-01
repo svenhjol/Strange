@@ -1,18 +1,18 @@
 package svenhjol.strange.traveljournals;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TravelJournalsHelper {
-    public static List<JournalEntry> getEntriesFromListTag(ListTag tag) {
+    public static List<JournalEntry> getEntriesFromNbtList(NbtList tag) {
         List<JournalEntry> entries = new ArrayList<>();
 
-        for (Tag entryTag : tag) {
-            JournalEntry entry = new JournalEntry((CompoundTag)entryTag);
+        for (NbtElement entryTag : tag) {
+            JournalEntry entry = new JournalEntry((NbtCompound)entryTag);
             entries.add(entry);
         }
 
