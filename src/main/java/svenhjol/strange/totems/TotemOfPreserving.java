@@ -52,6 +52,8 @@ public class TotemOfPreserving extends CharmModule {
         if (!preserveXp || !(entity instanceof PlayerEntity) || entity.world.isClient)
             return ActionResult.PASS;
 
+        // TODO: preserving XP isn't functional yet
+
         return ActionResult.SUCCESS;
     }
 
