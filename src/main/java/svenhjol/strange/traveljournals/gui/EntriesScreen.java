@@ -24,8 +24,7 @@ public class EntriesScreen extends TravelJournalBaseScreen {
     private int lastPage;
     private int buttonSpacing = 18;
     private int titleSpacing = 11;
-    private int titleTop = 15;
-    private int rowHeight = 20;
+    private int entryRowHeight = 20;
 
     protected boolean hasTotem = false;
     protected boolean hasRenderedEntries = false;
@@ -59,7 +58,16 @@ public class EntriesScreen extends TravelJournalBaseScreen {
         int size = entries.size();
 
         // draw title
-        centeredString(matrices, textRenderer, I18n.translate("gui.strange.travel_journal.title", size), mid, titleTop, TEXT_COLOR);
+        String title;
+        if (size == 0) {
+            title = "gui.strange.travel_journal.entries_none";
+        } else if (size == 1) {
+            title = "gui.strange.travel_journal.entries_single";
+        } else {
+            title = "gui.strange.travel_journal.entries_multiple";
+        }
+
+        centeredString(matrices, textRenderer, I18n.translate(title, size), mid, titleTop, TEXT_COLOR);
         top += titleSpacing;
 
         // handle pagination
@@ -93,7 +101,7 @@ public class EntriesScreen extends TravelJournalBaseScreen {
                 this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 160, 0, 19, BUTTONS, button -> useTotem(entry)));
             }
 
-            top += rowHeight;
+            top += entryRowHeight;
         }
 
         if (size > PER_PAGE) {

@@ -37,6 +37,9 @@ public abstract class TravelJournalBaseScreen extends Screen {
     protected int rightButtonXOffset = 112;
     protected int rightButtonYOffset = 18;
 
+    protected final int titleTop = 15;
+    protected final int textRowHeight = 11;
+
     protected boolean hasRenderedHomeButton = false;
     protected boolean hasRenderedEntriesButton = false;
     protected boolean hasRenderedRuneButton = false;
@@ -139,7 +142,7 @@ public abstract class TravelJournalBaseScreen extends Screen {
 
         // button to open scroll page
         if (!hasRenderedScrollButton) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollScreen()));
+            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollsScreen()));
             hasRenderedScrollButton = true;
             top += rightButtonYOffset;
         }
@@ -189,7 +192,7 @@ public abstract class TravelJournalBaseScreen extends Screen {
             -> client.openScreen(new RunesScreen()));
     }
 
-    protected void openScrollScreen() {
+    protected void openScrollsScreen() {
         getClient().ifPresent(client
             -> client.openScreen(new ScrollsScreen()));
     }

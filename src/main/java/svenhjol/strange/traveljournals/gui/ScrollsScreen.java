@@ -4,7 +4,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Pair;
@@ -21,10 +20,8 @@ import java.util.Map;
 @SuppressWarnings("ConstantConditions")
 public class ScrollsScreen extends TravelJournalBaseScreen {
     private List<Quest> currentQuests;
-    private int titleTop = 15;
-
-    private List<Integer> hasRenderedTrashButtons = new ArrayList<>();
-    private Map<Pair<Integer, Integer>, Runnable> scrollButtons = new HashMap<>();
+    private final List<Integer> hasRenderedTrashButtons = new ArrayList<>();
+    private final Map<Pair<Integer, Integer>, Runnable> scrollButtons = new HashMap<>();
 
     public ScrollsScreen() {
         super(I18n.translate("item.strange.travel_journal.active_scrolls"));
@@ -47,8 +44,6 @@ public class ScrollsScreen extends TravelJournalBaseScreen {
             return;
 
         super.render(matrices, mouseX, mouseY, delta);
-
-        PlayerEntity player = this.client.player;
         String title;
 
         if (currentQuests.size() == 0) {

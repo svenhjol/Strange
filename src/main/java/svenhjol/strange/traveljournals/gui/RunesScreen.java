@@ -22,7 +22,6 @@ public class RunesScreen extends TravelJournalBaseScreen {
     private static final Identifier SGA_TEXTURE = new Identifier("minecraft", "alt");
     private List<Integer> learnedRunes;
     private int maxRunes;
-    private int titleTop = 15;
 
     private final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
 
