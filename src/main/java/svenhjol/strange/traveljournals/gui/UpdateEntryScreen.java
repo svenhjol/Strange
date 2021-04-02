@@ -18,11 +18,9 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
-import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.StringHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
-import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -94,7 +92,8 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
 
         // reset state
         hasMap = PlayerHelper.getInventory(client.player).contains(new ItemStack(Items.MAP));
-        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+//        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING)); // TODO: phase2
+        hasTotem = false;
         atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
         hasScreenshot = hasScreenshot();
     }

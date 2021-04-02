@@ -11,7 +11,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTables;
@@ -29,7 +28,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.ItemHelper;
 import svenhjol.charm.base.iface.Config;
@@ -206,15 +204,7 @@ public class TotemOfPreserving extends CharmModule {
             World world = entity.getEntityWorld();
             BlockPos pos = entity.getBlockPos();
 
-            List<Item> totems = new ArrayList<>();
-            totems.add(TOTEM_OF_UNDYING);
-            totems.add(TOTEM_OF_PRESERVING);
-
-            if (ModuleHandler.enabled(TotemOfWandering.class))
-                totems.add(TotemOfWandering.TOTEM_OF_WANDERING);
-
-            ItemStack totem = new ItemStack(totems.get(world.random.nextInt(totems.size())));
-            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), totem));
+            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(TOTEM_OF_UNDYING)));
         }
 
         return ActionResult.PASS;

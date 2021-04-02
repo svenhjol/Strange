@@ -17,8 +17,6 @@
   "advancements.strange.learn_all_runes.description": "Learn every rune's destination",
   "advancements.strange.use_totem_of_preserving.title": "Safe Hands",
   "advancements.strange.use_totem_of_preserving.description": "Use a Totem of Preserving to hold all your items",
-  "advancements.strange.use_totem_of_wandering.title": "Wanderlust",
-  "advancements.strange.use_totem_of_wandering.description": "Use a Totem of Wandering to visit a journal location",
 
   "block.strange.ancient_rubble": "Ancient Rubble",
   "block.strange.runestone_0": "Runestone A",
@@ -106,7 +104,6 @@
   "item.strange.test_scroll": "Test Scroll",
   "item.strange.totem_of_flying": "Totem of Flying",
   "item.strange.totem_of_preserving": "Totem of Preserving",
-  "item.strange.totem_of_wandering": "Totem of Wandering",
   "item.strange.travel_journal": "Travel Journal",
   "item.strange.treasure.ambitious_crossbow": "Ambitious Crossbow",
   "item.strange.treasure.angery_potato": "Angery Potato",

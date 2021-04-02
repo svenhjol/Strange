@@ -5,13 +5,10 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import svenhjol.charm.base.helper.DimensionHelper;
-import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.base.helper.NetworkHelper;
-import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
@@ -44,7 +41,8 @@ public class EntriesScreen extends TravelJournalBaseScreen {
         super.init();
 
         hasRenderedEntries = false;
-        hasTotem = PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+//        hasTotem = PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING)); // TODO: phase2
+        hasTotem = false;
         previousPage = Page.ENTRIES;
     }
 

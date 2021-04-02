@@ -3,7 +3,6 @@ package svenhjol.strange.traveljournals;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapIcon;
@@ -34,7 +33,6 @@ import svenhjol.charm.module.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.scrolls.Scrolls;
-import svenhjol.strange.totems.TotemOfWandering;
 import svenhjol.strange.totems.TotemsHelper;
 
 import java.util.Optional;
@@ -187,7 +185,7 @@ public class TravelJournals extends CharmModule {
 
         processClientPacket(server, player, manager -> {
             // check the player has a totem
-            ItemStack requiredItem = new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING);
+            ItemStack requiredItem = new ItemStack(Items.NETHER_STAR); // TODO: placeholder item, phase2
             int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
             if (slotWithStack == -1)
                 return;
@@ -207,7 +205,7 @@ public class TravelJournals extends CharmModule {
             TotemsHelper.destroy(player, heldTotem);
 
             World world = player.world;
-            Criteria.USED_TOTEM.trigger(player, new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING));
+//            Criteria.USED_TOTEM.trigger(player, new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING)); // TODO: bring this advancement back in phase2
             PlayerHelper.teleport(world, entry.pos, player);
             player.world.playSound(null, entry.pos, SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8F, 1.0F);
         });
