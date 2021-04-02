@@ -25,6 +25,7 @@ import svenhjol.charm.blockentity.EntitySpawnerBlockEntity;
 import svenhjol.charm.module.EntitySpawners;
 import svenhjol.charm.module.VariantChests;
 import svenhjol.strange.base.StrangeLoot;
+import svenhjol.strange.mobs.Mobs;
 import svenhjol.strange.runestones.Runestones;
 
 import java.util.*;
@@ -188,7 +189,7 @@ public class StoneCircleGenerator extends StructurePieceWithDimensions {
                                 mobId = new Identifier("pillager");
                                 mobCount = random.nextInt(3) + 3;
                             } else {
-                                if (random.nextBoolean()) {
+                                if (random.nextBoolean() && ModuleHandler.enabled(Mobs.class) && Mobs.illusioners) {
                                     mobId = new Identifier("illusioner");
                                 } else {
                                     mobId = new Identifier("evoker");
