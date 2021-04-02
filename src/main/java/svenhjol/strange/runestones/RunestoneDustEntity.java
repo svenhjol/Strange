@@ -61,10 +61,10 @@ public class RunestoneDustEntity extends Entity {
 
         double posSpread = 0.5D;
         double scale = 0.2D;
-        double rise = 0.13D;
-        double speed = 0.42D;
+        double rise = 0.2D;
+        double speed = 0.5D;
 
-        int maxLiveTime = 75;
+        int maxLiveTime = 130;
         int particles = 15;
 
         int x = getBlockPos().getX();
@@ -75,7 +75,7 @@ public class RunestoneDustEntity extends Entity {
             .subtract(x, y, z).normalize().multiply(scale);
 
         double bpx = x + vec.x * ticks;
-        double bpy = y + vec.y * ticks + ticks * rise;
+        double bpy = y + vec.y * ticks + ticks * ((((float)(maxLiveTime - ticks) / maxLiveTime) * rise) + rise);
         double bpz = z + vec.z * ticks;
 
         if (!world.isClient) {
