@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "rune=0,facing=north": {"model": "strange:block/frame_0", "x": 90},
+    "rune=0,facing=east": {"model": "strange:block/frame_0", "y": 90, "x": 90},
+    "rune=0,facing=south": {"model": "strange:block/frame_0", "x": 270},
+    "rune=0,facing=west": {"model": "strange:block/frame_0", "y": 90, "x": 270}
+  }
+}
