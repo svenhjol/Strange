@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 
 public class RubbleBlockEntityRenderer<T extends RubbleBlockEntity> implements BlockEntityRenderer<T> {
     public RubbleBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
+        // allows client new
     }
 
     @Override

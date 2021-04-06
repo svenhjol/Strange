@@ -1,0 +1,6 @@
+{
+  "parent": "strange:block/frame_0",
+  "textures": {
+    "rune": "minecraft:block/end_portal_frame_eye"
+  }
+}

@@ -3,6 +3,11 @@
     "rune=0,facing=north": {"model": "strange:block/frame_0", "x": 90},
     "rune=0,facing=east": {"model": "strange:block/frame_0", "y": 90, "x": 90},
     "rune=0,facing=south": {"model": "strange:block/frame_0", "x": 270},
-    "rune=0,facing=west": {"model": "strange:block/frame_0", "y": 90, "x": 270}
+    "rune=0,facing=west": {"model": "strange:block/frame_0", "y": 90, "x": 270},
+
+    "rune=1,facing=north": {"model": "strange:block/frame_1", "x": 90},
+    "rune=1,facing=east": {"model": "strange:block/frame_1", "y": 90, "x": 90},
+    "rune=1,facing=south": {"model": "strange:block/frame_1", "x": 270},
+    "rune=1,facing=west": {"model": "strange:block/frame_1", "y": 90, "x": 270}
   }
 }

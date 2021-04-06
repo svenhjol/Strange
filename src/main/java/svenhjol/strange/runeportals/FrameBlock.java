@@ -1,6 +1,7 @@
 package svenhjol.strange.runeportals;
 
 import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
@@ -9,10 +10,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -67,11 +65,25 @@ public class FrameBlock extends BaseFrameBlock {
     }
 
     @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        RunePortals.breakSurroundingPortals(world, pos);
+        super.onBreak(world, pos, state, player);
+    }
+
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack held = player.getStackInHand(hand);
+        Integer runeValue = state.get(FrameBlock.RUNE);
 
         if (world.isClient)
             return ActionResult.PASS;
+
+        if (player.isSneaking()) {
+            PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+            world.setBlockState(pos, RunePortals.WOLF_BLOCK.getDefaultState(), 3);
+            RunePortals.breakSurroundingPortals(world, pos);
+            return ActionResult.CONSUME;
+        }
 
         if (held.getItem() instanceof FlintAndSteelItem) {
             boolean result = tryActivate((ServerWorld)world, pos, state);
@@ -79,7 +91,6 @@ public class FrameBlock extends BaseFrameBlock {
                 return ActionResult.CONSUME;
         }
         if (held.getItem() instanceof RunicFragmentItem) {
-            Integer runeValue = state.get(FrameBlock.RUNE);
             ActionResult result = super.onUse(state, world, pos, player, hand, hit);
 
             if (result == ActionResult.CONSUME) {
@@ -87,6 +98,8 @@ public class FrameBlock extends BaseFrameBlock {
                 if (!player.getAbilities().creativeMode)
                     PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
             }
+
+            RunePortals.breakSurroundingPortals(world, pos);
         }
 
         return ActionResult.PASS;
@@ -211,6 +224,22 @@ public class FrameBlock extends BaseFrameBlock {
 
             if (order.size() == 12) {
                 Charm.LOG.info("Order: " + order.toString());
+                int orientation = axis == Axis.X ? 0 : 1;
+
+                StringBuilder build = new StringBuilder();
+                for (int i = 0; i < order.size(); i++) {
+                    int r = order.get(i);
+                    build.append(r);
+                }
+                long hash = Long.parseLong(build.toString().substring(0, build.length() / 2));
+
+                for (int a = -1; a < 2; a++) {
+                    for (int b = 1; b < 4; b++) {
+                        BlockPos p = axis == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
+                        world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState().with(RunePortalBlock.AXIS, axis), 3);
+                        setPortal(world, p, order, orientation, hash);
+                    }
+                }
                 return true;
             }
         }
@@ -218,12 +247,28 @@ public class FrameBlock extends BaseFrameBlock {
         return false;
     }
 
+    private void setPortal(World world, BlockPos pos, List<Integer> order, int orientation, long hash) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity == null)
+            return;
+
+        RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
+        portal.orientation = orientation;
+        portal.runes = order;
+        portal.color = DyeColor.BLUE.getId();
+        portal.hash = hash;
+        portal.markDirty();
+
+        // TODO: handle linking in this method
+//        BlockState state = world.getBlockState(pos);
+        world.getBlockTickScheduler().schedule(pos, this, 2);
+    }
+
     private boolean addOrder(ServerWorld world, BlockPos pos, List<Integer> order) {
         final BlockState s = world.getBlockState(pos);
         if (!(s.getBlock() instanceof FrameBlock))
             return false;
 
-        FrameBlock b = (FrameBlock)s.getBlock();
         order.add(s.get(FrameBlock.RUNE));
         return true;
     }
