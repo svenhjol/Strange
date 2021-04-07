@@ -4,30 +4,30 @@
     "bottom": "strange:block/wolf",
     "top": "strange:block/wolf",
     "side": "strange:block/wolf",
-    "rune": "minecraft:block/end_portal_frame_eye"
+    "rune": "strange:block/runestone_0"
   },
   "elements": [
     {
       "from": [ 0, 0, 0 ],
-      "to": [ 16, 13, 16 ],
+      "to": [ 16, 15, 16 ],
       "faces": {
         "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom", "cullface": "down" },
         "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top" },
-        "north": { "uv": [ 0, 3, 16, 16 ], "texture": "#side", "cullface": "north" },
-        "south": { "uv": [ 0, 3, 16, 16 ], "texture": "#side", "cullface": "south" },
-        "west":  { "uv": [ 0, 3, 16, 16 ], "texture": "#side", "cullface": "west" },
-        "east":  { "uv": [ 0, 3, 16, 16 ], "texture": "#side", "cullface": "east" }
+        "north": { "uv": [ 0, 1, 16, 16 ], "texture": "#side", "cullface": "north" },
+        "south": { "uv": [ 0, 1, 16, 16 ], "texture": "#side", "cullface": "south" },
+        "west":  { "uv": [ 0, 1, 16, 16 ], "texture": "#side", "cullface": "west" },
+        "east":  { "uv": [ 0, 1, 16, 16 ], "texture": "#side", "cullface": "east" }
       }
     },
     {
-      "from": [ 4, 13, 4 ],
-      "to": [ 12, 16, 12 ],
+      "from": [ 2, 15, 2 ],
+      "to": [ 14, 16, 14 ],
       "faces": {
-        "up":    { "uv": [ 4, 4, 12, 12 ], "texture": "#rune", "cullface": "up" },
-        "north": { "uv": [ 4, 0, 12,  3 ], "texture": "#rune" },
-        "south": { "uv": [ 4, 0, 12,  3 ], "texture": "#rune" },
-        "west":  { "uv": [ 4, 0, 12,  3 ], "texture": "#rune" },
-        "east":  { "uv": [ 4, 0, 12,  3 ], "texture": "#rune" }
+        "up":    { "uv": [ 2, 2, 15, 14 ], "texture": "#rune", "cullface": "up" },
+        "north": { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
+        "south": { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
+        "west":  { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
+        "east":  { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" }
       }
     }
   ]
