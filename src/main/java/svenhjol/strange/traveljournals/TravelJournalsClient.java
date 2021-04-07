@@ -140,7 +140,7 @@ public class TravelJournalsClient extends CharmClientModule {
     }
 
     private void handleClientReceiveEntries(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound tag = data.readCompound();
+        NbtCompound tag = data.readNbt();
         if (tag == null)
             return;
 
@@ -160,7 +160,7 @@ public class TravelJournalsClient extends CharmClientModule {
     }
 
     private void handleClientReceiveEntry(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound tag = data.readCompound();
+        NbtCompound tag = data.readNbt();
         if (tag == null)
             return;
 

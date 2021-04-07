@@ -204,7 +204,7 @@ public class Runestones extends CharmModule {
         }
 
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompound(outTag);
+        data.writeNbt(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
     }
 

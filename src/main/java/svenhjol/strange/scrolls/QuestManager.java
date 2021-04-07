@@ -133,7 +133,7 @@ public class QuestManager extends PersistentState {
 
     public void sendToast(ServerPlayerEntity player, Quest quest, QuestToastType type, String title) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompound(quest.toTag());
+        data.writeNbt(quest.toTag());
         data.writeEnumConstant(type);
         data.writeString(title);
         ServerPlayNetworking.send(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);
