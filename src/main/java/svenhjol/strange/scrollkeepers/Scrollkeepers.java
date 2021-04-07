@@ -97,7 +97,7 @@ public class Scrollkeepers extends CharmModule {
 
     public static void sendScrollQuestPacket(ServerPlayerEntity player, Quest quest) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompound(quest.toTag());
+        buffer.writeNbt(quest.toTag());
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
     }
 

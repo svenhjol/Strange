@@ -43,7 +43,7 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientOpenScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound questTag = data.readCompound();
+        NbtCompound questTag = data.readNbt();
         client.execute(() -> {
             MinecraftClient mc = MinecraftClient.getInstance();
             Quest quest = Quest.getFromTag(questTag);
@@ -55,7 +55,7 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientShowQuestToast(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound questTag = data.readCompound();
+        NbtCompound questTag = data.readNbt();
         QuestToastType type = data.readEnumConstant(QuestToastType.class);
         String title = data.readString();
 
@@ -82,7 +82,7 @@ public class ScrollsClient extends CharmClientModule {
     }
 
     private void handleClientCacheCurrentQuests(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound inTag = data.readCompound();
+        NbtCompound inTag = data.readNbt();
         if (inTag == null || !inTag.contains("quests"))
             return;
 

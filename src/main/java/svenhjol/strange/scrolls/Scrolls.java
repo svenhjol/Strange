@@ -144,7 +144,7 @@ public class Scrolls extends CharmModule {
 
     public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeCompound(quest.toTag());
+        data.writeNbt(quest.toTag());
         ServerPlayNetworking.send(player, MSG_CLIENT_OPEN_SCROLL, data);
     }
 
@@ -158,7 +158,7 @@ public class Scrolls extends CharmModule {
         outTag.put("quests", listTag);
 
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompound(outTag);
+        buffer.writeNbt(outTag);
 
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
     }

@@ -96,13 +96,13 @@ public class TravelJournals extends CharmModule {
         outTag.put(uuid.toString(), entries);
 
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompound(outTag);
+        buffer.writeNbt(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRIES, buffer);
     }
 
     public static void sendJournalEntryPacket(ServerPlayerEntity player, NbtCompound entry) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeCompound(entry);
+        buffer.writeNbt(entry);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
 
@@ -141,7 +141,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerUpdateEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entry = data.readCompound();
+        NbtCompound entry = data.readNbt();
         if (entry == null || entry.isEmpty())
             return;
 
@@ -155,7 +155,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerDeleteEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entry = data.readCompound();
+        NbtCompound entry = data.readNbt();
         if (entry == null || entry.isEmpty())
             return;
 
@@ -179,7 +179,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerUseTotem(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entryTag = data.readCompound();
+        NbtCompound entryTag = data.readNbt();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
@@ -212,7 +212,7 @@ public class TravelJournals extends CharmModule {
     }
 
     private void handleServerMakeMap(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entryTag = data.readCompound();
+        NbtCompound entryTag = data.readNbt();
         if (entryTag == null || entryTag.isEmpty())
             return;
 

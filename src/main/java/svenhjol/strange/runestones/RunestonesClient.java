@@ -34,7 +34,7 @@ public class RunestonesClient extends CharmClientModule {
     }
 
     private void handleClientCacheDestinationNames(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound inTag = data.readCompound();
+        NbtCompound inTag = data.readNbt();
         if (inTag == null || inTag.isEmpty())
             return;
 

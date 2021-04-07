@@ -104,7 +104,7 @@ public class ScrollKeepersClient extends CharmClientModule {
     }
 
     private void handleReceiveScrollQuest(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound compoundTag = data.readCompound();
+        NbtCompound compoundTag = data.readNbt();
         if (compoundTag == null || compoundTag.isEmpty())
             return;
 
