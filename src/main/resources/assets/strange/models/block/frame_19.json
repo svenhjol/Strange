@@ -1,0 +1,6 @@
+{
+  "parent": "strange:block/frame_0",
+  "textures": {
+    "rune": "strange:block/runestone_19"
+  }
+}
