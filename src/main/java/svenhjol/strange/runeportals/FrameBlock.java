@@ -272,17 +272,17 @@ public class FrameBlock extends BaseFrameBlock {
     }
 
     static {
-        EAST_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 13.0D, 16.0D, 16.0D);
-        EAST_RUNE_SHAPE = Block.createCuboidShape(12.0D, 4.0D, 4.0D, 16.0D, 12.0D, 12.0D);
+        EAST_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D);
+        EAST_RUNE_SHAPE = Block.createCuboidShape(15.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
 
-        WEST_FRAME_SHAPE = Block.createCuboidShape(3.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        WEST_RUNE_SHAPE = Block.createCuboidShape(0.0D, 4.0D, 4.0D, 3.0D, 12.0D, 12.0D);
+        WEST_FRAME_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        WEST_RUNE_SHAPE = Block.createCuboidShape(0.0D, 2.0D, 2.0D, 1.0D, 14.0D, 14.0D);
 
-        NORTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 3.0D, 16.0D, 16.0D, 16.0D);
-        NORTH_RUNE_SHAPE = Block.createCuboidShape(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 3.0D);
+        NORTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 16.0D);
+        NORTH_RUNE_SHAPE = Block.createCuboidShape(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 1.0D);
 
-        SOUTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 13.0D);
-        SOUTH_RUNE_SHAPE = Block.createCuboidShape(4.0D, 4.0D, 13.0D, 12.0D, 12.0D, 16.0D);
+        SOUTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 15.0D);
+        SOUTH_RUNE_SHAPE = Block.createCuboidShape(2.0D, 2.0D, 15.0D, 14.0D, 14.0D, 16.0D);
 
         EAST_SHAPE = VoxelShapes.union(EAST_FRAME_SHAPE, EAST_RUNE_SHAPE);
         WEST_SHAPE = VoxelShapes.union(WEST_FRAME_SHAPE, WEST_RUNE_SHAPE);
