@@ -65,12 +65,6 @@ public class FrameBlock extends BaseFrameBlock {
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        RunePortals.breakSurroundingPortals(world, pos);
-        super.onBreak(world, pos, state, player);
-    }
-
-    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack held = player.getStackInHand(hand);
         Integer runeValue = state.get(FrameBlock.RUNE);
@@ -81,7 +75,7 @@ public class FrameBlock extends BaseFrameBlock {
         if (player.isSneaking()) {
             PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
             world.setBlockState(pos, RunePortals.WOLF_BLOCK.getDefaultState(), 3);
-            RunePortals.breakSurroundingPortals(world, pos);
+            // TODO: update world portal state here
             return ActionResult.CONSUME;
         }
 
@@ -99,7 +93,7 @@ public class FrameBlock extends BaseFrameBlock {
                     PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
             }
 
-            RunePortals.breakSurroundingPortals(world, pos);
+            // TODO: update world portal state here
         }
 
         return ActionResult.PASS;
@@ -224,20 +218,17 @@ public class FrameBlock extends BaseFrameBlock {
 
             if (order.size() == 12) {
                 Charm.LOG.info("Order: " + order.toString());
-                int orientation = axis == Axis.X ? 0 : 1;
 
-                StringBuilder build = new StringBuilder();
-                for (int i = 0; i < order.size(); i++) {
-                    int r = order.get(i);
-                    build.append(r);
-                }
-                long hash = Long.parseLong(build.toString().substring(0, build.length() / 2));
+                // TODO: update world portal state here
+
+                int orientation = axis == Axis.X ? 0 : 1;
 
                 for (int a = -1; a < 2; a++) {
                     for (int b = 1; b < 4; b++) {
                         BlockPos p = axis == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
-                        world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState().with(RunePortalBlock.AXIS, axis), 3);
-                        setPortal(world, p, order, orientation, hash);
+                        world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
+                            .with(RunePortalBlock.AXIS, axis), 18);
+                        setPortal(world, p, orientation);
                     }
                 }
                 return true;
@@ -247,7 +238,7 @@ public class FrameBlock extends BaseFrameBlock {
         return false;
     }
 
-    private void setPortal(World world, BlockPos pos, List<Integer> order, int orientation, long hash) {
+    private void setPortal(World world, BlockPos pos, int orientation) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
             return;
@@ -257,8 +248,6 @@ public class FrameBlock extends BaseFrameBlock {
         portal.color = DyeColor.BLUE.getId();
         portal.markDirty();
 
-        // TODO: handle linking in this method
-//        BlockState state = world.getBlockState(pos);
         world.getBlockTickScheduler().schedule(pos, this, 2);
     }
 
