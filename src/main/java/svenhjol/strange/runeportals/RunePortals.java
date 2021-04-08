@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -57,15 +56,6 @@ public class RunePortals extends CharmModule {
 
     public static Optional<RunePortalManager> getRunePortalManager(RegistryKey<World> registryKey) {
         return managers.get(registryKey) != null ? Optional.of(managers.get(registryKey)) : Optional.empty();
-    }
-
-    public static void breakSurroundingPortals(World world, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
-            BlockPos blockpos = pos.offset(direction);
-            BlockState s = world.getBlockState(blockpos);
-            if (s.getBlock() instanceof RunePortalBlock)
-                ((RunePortalBlock)s.getBlock()).remove(world, pos);
-        }
     }
 
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {

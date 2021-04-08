@@ -15,7 +15,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.block.CharmBlockWithEntity;
@@ -81,10 +80,5 @@ public class RunePortalBlock extends CharmBlockWithEntity {
         boolean bl = axis2 != axis && axis.isHorizontal();
         return !bl && (!neighborState.isOf(this) || !neighborState.isOf(RunePortals.FRAME_BLOCK))
             ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-    }
-
-    public void remove(World world, BlockPos pos) {
-        world.removeBlock(pos, false);
-        RunePortals.breakSurroundingPortals(world, pos);
     }
 }
