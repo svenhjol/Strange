@@ -4,11 +4,9 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.DyeColor;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
-
-import java.awt.*;
-import java.util.Random;
 
 public class RunePortalsClient extends CharmClientModule {
     public RunePortalsClient(CharmModule module) {
@@ -24,19 +22,26 @@ public class RunePortalsClient extends CharmClientModule {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof RunePortalBlockEntity) {
                     RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
-
-                    Random rand = new Random(portal.hash);
-                    float r = rand.nextFloat();
-                    float g = rand.nextFloat();
-                    float b = rand.nextFloat();
-
-                    return new Color(r, g, b).brighter().getRGB();
-//                    DyeColor dye = DyeColor.byId(((RunePortalBlockEntity)blockEntity).color);
-//                    return dye.getSignColor();
+                    return DyeColor.byId(portal.color).getSignColor();
                 }
             }
-            return 0xffffff;
+            return 0xFFFFFF;
         }, RunePortals.RUNE_PORTAL_BLOCK);
+
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
+            if (world != null) {
+                // the edge of the rune
+                if (tintIndex == 0) {
+                    return 0xFFFFFF;
+                }
+
+                // the face of the rune
+                if (tintIndex == 1) {
+                    return 0xFFFFFF;
+                }
+            }
+            return 0xFFFFFF;
+        }, RunePortals.FRAME_BLOCK);
 //        BlockEntityRendererRegistry.INSTANCE.register(RunePortals.RUNE_PORTAL_BLOCK_ENTITY, RunePortalBlockEntityRenderer::new);
     }
 }

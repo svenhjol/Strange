@@ -254,9 +254,7 @@ public class FrameBlock extends BaseFrameBlock {
 
         RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
         portal.orientation = orientation;
-        portal.runes = order;
         portal.color = DyeColor.BLUE.getId();
-        portal.hash = hash;
         portal.markDirty();
 
         // TODO: handle linking in this method
