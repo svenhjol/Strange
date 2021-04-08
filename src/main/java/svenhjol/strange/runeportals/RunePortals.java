@@ -7,17 +7,23 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
+import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.Runestones;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, client = RunePortalsClient.class)
 public class RunePortals extends CharmModule {
@@ -27,6 +33,8 @@ public class RunePortals extends CharmModule {
     public static final Identifier RUNE_PORTAL_BLOCK_ID = new Identifier(Strange.MOD_ID, "rune_portal");
     public static RunePortalBlock RUNE_PORTAL_BLOCK;
     public static BlockEntityType<RunePortalBlockEntity> RUNE_PORTAL_BLOCK_ENTITY;
+
+    private static RunePortalManager runePortalManager; // always access this via getRunePortalManager()
 
     @Override
     public void register() {
@@ -40,6 +48,13 @@ public class RunePortals extends CharmModule {
     public void init() {
         // listen for broken frames
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
+
+        // load rune portal manager when world starts
+        LoadWorldCallback.EVENT.register(this::loadRunePortalManager);
+    }
+
+    public static Optional<RunePortalManager> getRunePortalManager() {
+        return runePortalManager != null ? Optional.of(runePortalManager) : Optional.empty();
     }
 
     public static void breakSurroundingPortals(World world, BlockPos pos) {
@@ -60,5 +75,21 @@ public class RunePortals extends CharmModule {
         world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), drop));
 
         return true;
+    }
+
+    private void loadRunePortalManager(MinecraftServer server) {
+        ServerWorld overworld = server.getWorld(World.OVERWORLD);
+        if (overworld == null) {
+            Charm.LOG.warn("[RunePortals] Overworld is null, cannot load persistent state manager");
+            return;
+        }
+
+        PersistentStateManager stateManager = overworld.getPersistentStateManager();
+        runePortalManager = stateManager.getOrCreate(
+            (tag) -> RunePortalManager.fromNbt(overworld, tag),
+            () -> new RunePortalManager(overworld),
+            RunePortalManager.nameFor(overworld.getDimension()));
+
+        Charm.LOG.info("[RunePortals] Loaded rune portal state manager");
     }
 }
