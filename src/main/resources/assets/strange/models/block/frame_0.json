@@ -23,11 +23,11 @@
       "from": [ 2, 15, 2 ],
       "to": [ 14, 16, 14 ],
       "faces": {
-        "up":    { "uv": [ 2, 2, 15, 14 ], "texture": "#rune", "cullface": "up" },
-        "north": { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
-        "south": { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
-        "west":  { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" },
-        "east":  { "uv": [ 2, 0, 15,  2 ], "texture": "#rune" }
+        "up":    { "uv": [ 2, 2, 15, 14 ], "tintindex": 1, "texture": "#rune", "cullface": "up" },
+        "north": { "uv": [ 2, 0, 15,  2 ], "tintindex": 0, "texture": "#rune" },
+        "south": { "uv": [ 2, 0, 15,  2 ], "tintindex": 0, "texture": "#rune" },
+        "west":  { "uv": [ 2, 0, 15,  2 ], "tintindex": 0, "texture": "#rune" },
+        "east":  { "uv": [ 2, 0, 15,  2 ], "tintindex": 0, "texture": "#rune" }
       }
     }
   ]
