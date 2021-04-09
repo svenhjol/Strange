@@ -1,7 +1,6 @@
 package svenhjol.strange.runeportals;
 
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
@@ -16,6 +15,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -30,6 +30,7 @@ import svenhjol.strange.runestones.RunicFragmentItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FrameBlock extends CharmBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -149,26 +150,26 @@ public class FrameBlock extends CharmBlock {
         if (!(state.getBlock() instanceof FrameBlock))
             return false;
 
-        Direction.Axis axis = null;
+        Axis axis = null;
         List<Integer> order = new ArrayList<>();
 
         if (world.getBlockState(pos.east()).getBlock() instanceof FrameBlock
             || world.getBlockState(pos.west()).getBlock() instanceof FrameBlock) {
-            axis = Direction.Axis.X;
+            axis = Axis.X;
         } else if (world.getBlockState(pos.north()).getBlock() instanceof FrameBlock
             || world.getBlockState(pos.south()).getBlock() instanceof FrameBlock) {
-            axis = Direction.Axis.Z;
+            axis = Axis.Z;
         } else {
 
             // try and work out axis from row above/below
             for (int i = -3; i < 4; i++) {
                 if (world.getBlockState(pos.east().up(i)).getBlock() instanceof FrameBlock
                     || world.getBlockState(pos.west().up(i)).getBlock() instanceof FrameBlock) {
-                    axis = Direction.Axis.X;
+                    axis = Axis.X;
                     break;
                 } else if (world.getBlockState(pos.north().up(i)).getBlock() instanceof FrameBlock
                     || world.getBlockState(pos.south().up(i)).getBlock() instanceof FrameBlock) {
-                    axis = Direction.Axis.Z;
+                    axis = Axis.Z;
                     break;
                 }
             }
@@ -179,7 +180,7 @@ public class FrameBlock extends CharmBlock {
 
         // try and determine middle of bottom row
         BlockPos start = null;
-        if (axis == Direction.Axis.X) {
+        if (axis == Axis.X) {
             Direction[] directions = new Direction[]{Direction.EAST, Direction.WEST};
             for (Direction d : directions) {
                 for (int y = -3; y <= 3; y++) {
@@ -305,21 +306,14 @@ public class FrameBlock extends CharmBlock {
         }
 
         if (order.size() == 12) {
-            Charm.LOG.info("Order: " + order.toString());
+            Charm.LOG.info("Order: " + order);
 
-            // TODO: update world portal state here
-
-            int orientation = axis == Direction.Axis.X ? 0 : 1;
-
-            for (int a = -1; a < 2; a++) {
-                for (int b = 1; b < 4; b++) {
-                    BlockPos p = axis == Direction.Axis.X ? start.add(a, b, 0) : start.add(0, b, a);
-                    world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
-                        .with(RunePortalBlock.AXIS, axis), 18);
-                    setPortal(world, p, orientation);
-                }
+            Optional<RunePortalManager> optional = RunePortals.getManager(world);
+            if (optional.isPresent()) {
+                RunePortalManager manager = optional.get();
+                manager.createPortal(order, start, axis, DyeColor.CYAN);
+                return true;
             }
-            return true;
         }
 
         return false;
@@ -338,20 +332,6 @@ public class FrameBlock extends CharmBlock {
 
         order.add(s.get(FrameBlock.RUNE));
         return true;
-    }
-
-    private void setPortal(World world, BlockPos pos, int orientation) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity == null)
-            return;
-
-        RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
-        portal.orientation = orientation;
-        portal.color = DyeColor.BLUE.getId();
-        portal.markDirty();
-
-        world.playSound(null, pos, SoundEvents.ENTITY_MULE_ANGRY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        world.getBlockTickScheduler().schedule(pos, this, 2);
     }
 
     static {

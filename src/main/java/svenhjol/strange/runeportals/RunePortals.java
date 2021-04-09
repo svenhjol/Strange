@@ -52,7 +52,8 @@ public class RunePortals extends CharmModule {
         ServerWorldInitCallback.EVENT.register(this::loadRunePortalManager);
     }
 
-    public static Optional<RunePortalManager> getRunePortalManager(RegistryKey<World> registryKey) {
+    public static Optional<RunePortalManager> getManager(ServerWorld world) {
+        RegistryKey<World> registryKey = world.getRegistryKey();
         return managers.get(registryKey) != null ? Optional.of(managers.get(registryKey)) : Optional.empty();
     }
 
