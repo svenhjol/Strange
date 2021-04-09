@@ -1,6 +1,7 @@
 package svenhjol.strange.runeportals;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -17,15 +18,14 @@ import java.util.stream.Collectors;
 
 public class RunePortalManager extends PersistentState {
     private static final DyeColor DEFAULT_COLOR = DyeColor.CYAN;
+    private static final int TELEPORT_TICKS = 180;
 
     public static final String COLORS_NBT = "Colors";
     public static final String RUNES_NBT = "Runes";
-    public static final String ORIENTATIONS_NBT = "Orientations";
-    
+
     private final World world;
     private Map<BlockPos, DyeColor> colors = new HashMap<>();
-    private Map<BlockPos, Axis> orientations = new HashMap<>();
-    private Map<List<Integer>, List<BlockPos>> runes = new HashMap<>();
+    private Map<String, List<BlockPos>> runes = new HashMap<>();
 
     public RunePortalManager(ServerWorld world) {
         this.world = world;
@@ -36,11 +36,9 @@ public class RunePortalManager extends PersistentState {
         RunePortalManager manager = new RunePortalManager(world);
         NbtCompound colors = (NbtCompound)nbt.get(COLORS_NBT);
         NbtCompound runes = (NbtCompound)nbt.get(RUNES_NBT);
-        NbtCompound orientations = (NbtCompound)nbt.get(ORIENTATIONS_NBT);
 
         manager.colors = new HashMap<>();
         manager.runes = new HashMap<>();
-        manager.orientations = new HashMap<>();
 
         if (colors != null && !colors.isEmpty()) {
             colors.getKeys().forEach(s -> {
@@ -50,19 +48,10 @@ public class RunePortalManager extends PersistentState {
             });
         }
 
-        if (orientations != null && !orientations.isEmpty()) {
-            orientations.getKeys().forEach(s -> {
-                BlockPos source = BlockPos.fromLong(Long.parseLong(s));
-                Axis orientation = Axis.fromName(orientations.getString(s));
-                manager.orientations.put(source, orientation);
-            });
-        }
-
         if (runes != null && !runes.isEmpty()) {
             runes.getKeys().forEach(s -> {
-                List<Integer> key = Arrays.stream(s.split(",")).map(Integer::parseInt).collect(Collectors.toList());
                 List<BlockPos> value = Arrays.stream(runes.getLongArray(s)).mapToObj(BlockPos::fromLong).collect(Collectors.toList());
-                manager.runes.put(key, value);
+                manager.runes.put(s, new ArrayList<>(value));
             });
         }
 
@@ -73,22 +62,16 @@ public class RunePortalManager extends PersistentState {
     public NbtCompound writeNbt(NbtCompound nbt) {
         NbtCompound colorNbt = new NbtCompound();
         NbtCompound runesNbt = new NbtCompound();
-        NbtCompound orientationsNbt = new NbtCompound();
 
         colors.forEach((source, dye) ->
             colorNbt.putInt(String.valueOf(source.asLong()), dye.getId()));
 
-        orientations.forEach((source, orientation) ->
-            orientationsNbt.putString(String.valueOf(source.asLong()), orientation.asString()));
-
         runes.forEach((key, value) -> {
-            String runeKey = key.stream().map(String::valueOf).collect(Collectors.joining(","));
-            runesNbt.putLongArray(runeKey, value.stream().map(BlockPos::asLong).collect(Collectors.toList()));
+            runesNbt.putLongArray(key, value.stream().map(BlockPos::asLong).collect(Collectors.toList()));
         });
 
         nbt.put(COLORS_NBT, colorNbt);
         nbt.put(RUNES_NBT, runesNbt);
-        nbt.put(ORIENTATIONS_NBT, orientationsNbt);
         return nbt;
     }
 
@@ -97,14 +80,16 @@ public class RunePortalManager extends PersistentState {
     }
 
     public void createPortal(List<Integer> runes, BlockPos pos, Axis orientation, DyeColor color) {
-        if (!this.runes.containsKey(runes)) {
-            this.runes.put(runes, Arrays.asList(pos));
+        String runesString = runesToString(runes);
+
+        if (!this.runes.containsKey(runesString)) {
+            this.runes.put(runesString, new ArrayList<>(Arrays.asList(pos)));
         } else {
-            this.runes.get(runes).add(pos);
+            this.runes.get(runesString).add(pos);
         }
 
         this.colors.put(pos, color);
-        this.orientations.put(pos, orientation);
+        this.markDirty();
 
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
@@ -112,18 +97,42 @@ public class RunePortalManager extends PersistentState {
                 world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
                     .with(RunePortalBlock.AXIS, orientation), 18);
 
-                setPortal(world, p, runes, pos, orientation, color);
+                setPortal(world, p, runesString, pos, orientation, color);
             }
         }
     }
 
-    public void removePortal(List<Integer> runes, BlockPos pos) {
-        this.runes.remove(runes);
-        this.orientations.remove(pos);
+    public void removePortal(String runes, BlockPos pos) {
+        if (this.runes.containsKey(runes)) {
+            this.runes.get(runes).remove(pos);
+            if (this.runes.get(runes).isEmpty()) {
+                this.runes.remove(runes);
+            }
+        }
         this.colors.remove(pos);
+        this.markDirty();
     }
 
-    private void setPortal(World world, BlockPos pos, List<Integer> runes, BlockPos start, Axis orientation, DyeColor color) {
+    public boolean teleport(String runes, BlockPos pos, Entity entity) {
+        if (!this.runes.containsKey(runes))
+            return false;
+
+        if (this.runes.get(runes).size() < 2)
+            return false;
+
+        List<BlockPos> dests = this.runes.get(runes);
+        Collections.shuffle(dests);
+        Optional<BlockPos> optional = dests.stream().filter(b -> b != pos).findFirst();
+        if (optional.isPresent()) {
+            BlockPos dest = optional.get();
+            entity.requestTeleport(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setPortal(World world, BlockPos pos, String runes, BlockPos start, Axis orientation, DyeColor color) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
             return;
@@ -135,7 +144,11 @@ public class RunePortalManager extends PersistentState {
         portal.runes = runes;
         portal.markDirty();
 
-        world.playSound(null, pos, SoundEvents.ENTITY_MULE_ANGRY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.ENTITY_MULE_AMBIENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
         world.getBlockTickScheduler().schedule(pos, RunePortals.RUNE_PORTAL_BLOCK, 2);
+    }
+
+    private static String runesToString(List<Integer> runes) {
+        return runes.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 }
