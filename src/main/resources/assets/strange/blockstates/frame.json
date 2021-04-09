@@ -128,6 +128,11 @@
     "rune=25,facing=north": {"model": "strange:block/frame_25", "x": 270, "y": 180},
     "rune=25,facing=east": {"model": "strange:block/frame_25", "x": 270, "y": 270},
     "rune=25,facing=south": {"model": "strange:block/frame_25", "x": 270},
-    "rune=25,facing=west": {"model": "strange:block/frame_25", "x": 270, "y": 90}
+    "rune=25,facing=west": {"model": "strange:block/frame_25", "x": 270, "y": 90},
+
+    "rune=26,facing=north": {"model": "strange:block/frame_without_rune"},
+    "rune=26,facing=east": {"model": "strange:block/frame_without_rune"},
+    "rune=26,facing=south": {"model": "strange:block/frame_without_rune"},
+    "rune=26,facing=west": {"model": "strange:block/frame_without_rune"}
   }
 }

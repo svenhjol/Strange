@@ -29,7 +29,6 @@ import java.util.Optional;
 @Module(mod = Strange.MOD_ID, client = RunePortalsClient.class)
 public class RunePortals extends CharmModule {
     public static FrameBlock FRAME_BLOCK;
-    public static WolfBlock WOLF_BLOCK;
 
     public static final Identifier RUNE_PORTAL_BLOCK_ID = new Identifier(Strange.MOD_ID, "rune_portal");
     public static RunePortalBlock RUNE_PORTAL_BLOCK;
@@ -40,7 +39,6 @@ public class RunePortals extends CharmModule {
     @Override
     public void register() {
         FRAME_BLOCK = new FrameBlock(this);
-        WOLF_BLOCK = new WolfBlock(this);
         RUNE_PORTAL_BLOCK = new RunePortalBlock(this);
         RUNE_PORTAL_BLOCK_ENTITY = RegistryHandler.blockEntity(RUNE_PORTAL_BLOCK_ID, RunePortalBlockEntity::new, RUNE_PORTAL_BLOCK);
     }

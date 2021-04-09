@@ -1,5 +1,5 @@
 {
-  "parent": "strange:block/frame_0",
+  "parent": "strange:block/frame_with_rune",
   "textures": {
     "rune": "strange:block/runestone_5"
   }
