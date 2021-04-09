@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.DyeColor;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 
@@ -22,7 +21,9 @@ public class RunePortalsClient extends CharmClientModule {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof RunePortalBlockEntity) {
                     RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
-                    return DyeColor.byId(portal.color).getSignColor();
+                    if (portal.color != null) {
+                        return portal.color.getSignColor();
+                    }
                 }
             }
             return 0xFFFFFF;
