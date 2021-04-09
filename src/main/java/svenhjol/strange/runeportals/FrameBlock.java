@@ -22,6 +22,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.block.CharmBlock;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.runestones.RunestonesHelper;
@@ -30,7 +31,7 @@ import svenhjol.strange.runestones.RunicFragmentItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameBlock extends BaseFrameBlock {
+public class FrameBlock extends CharmBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty RUNE = IntProperty.of("rune", 0, RunestonesHelper.NUMBER_OF_RUNES);
 
@@ -145,7 +146,7 @@ public class FrameBlock extends BaseFrameBlock {
     }
 
     public boolean tryActivate(ServerWorld world, BlockPos pos, BlockState state) {
-        if (!(state.getBlock() instanceof BaseFrameBlock))
+        if (!(state.getBlock() instanceof FrameBlock))
             return false;
 
         Direction.Axis axis = null;
