@@ -12,6 +12,7 @@ import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.strange.base.StrangeSounds;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -125,6 +126,7 @@ public class RunePortalManager extends PersistentState {
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
             entity.requestTeleport(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
+            world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.BLOCKS, 0.85F, 1.05F);
             return true;
         }
 
