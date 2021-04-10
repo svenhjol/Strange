@@ -2,7 +2,6 @@ package svenhjol.strange.runeportals;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -11,7 +10,10 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -29,6 +31,7 @@ import svenhjol.strange.runestones.RunestonesHelper;
 import svenhjol.strange.runestones.RunicFragmentItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +39,7 @@ public class FrameBlock extends CharmBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty RUNE = IntProperty.of("rune", 0, RunestonesHelper.NUMBER_OF_RUNES);
 
-    private int NO_RUNE = RunestonesHelper.NUMBER_OF_RUNES;
+    public static final int NO_RUNE = RunestonesHelper.NUMBER_OF_RUNES;
 
     protected static final VoxelShape NO_RUNE_SHAPE;
     protected static final VoxelShape EAST_FRAME_SHAPE;
@@ -84,20 +87,14 @@ public class FrameBlock extends CharmBlock {
         ItemStack held = player.getStackInHand(hand);
         Integer runeValue = state.get(FrameBlock.RUNE);
 
-        if (player.isSneaking()) {
-            PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
-            world.setBlockState(pos, RunePortals.FRAME_BLOCK.getDefaultState(), 3);
-            // TODO: update world portal state here
-            return ActionResult.CONSUME;
-        }
+        if (hand == Hand.MAIN_HAND && held.isEmpty()) {
+            if (runeValue != NO_RUNE) {
+                if (!player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
 
-        // deprecated: no longer using flint and steel to activate
-        if (false) {
-            if (held.getItem() instanceof FlintAndSteelItem) {
-                boolean result = tryActivate((ServerWorld) world, pos, state);
-                if (result)
-                    return ActionResult.CONSUME;
+                world.setBlockState(pos, RunePortals.FRAME_BLOCK.getDefaultState(), 3);
             }
+            return ActionResult.CONSUME;
         }
 
         if (held.getItem() instanceof RunicFragmentItem) {
@@ -106,20 +103,22 @@ public class FrameBlock extends CharmBlock {
             if (side == Direction.UP || side == Direction.DOWN)
                 return ActionResult.PASS;
 
+            // if there's already a rune in the frame
+            if (runeValue != NO_RUNE) {
+                if (!player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+
+                world.setBlockState(pos, RunePortals.FRAME_BLOCK.getDefaultState(), 3);
+                return ActionResult.CONSUME;
+            }
+
             BlockPos hitPos = hit.getBlockPos();
             BlockState hitState = RunePortals.FRAME_BLOCK.getDefaultState()
                 .with(FrameBlock.FACING, side)
                 .with(FrameBlock.RUNE, fragment.getRuneValue());
 
-            // if there's already a rune in the frame
-            if (state.get(RUNE) != NO_RUNE) {
-                int existingRune = state.get(RUNE);
-                if (!player.getAbilities().creativeMode)
-                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(existingRune)));
-            }
-
             world.setBlockState(hitPos, hitState, 3);
-            world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
 
             if (!player.getAbilities().creativeMode)
                 held.decrement(1);
@@ -178,6 +177,13 @@ public class FrameBlock extends CharmBlock {
         if (axis == null)
             return false;
 
+        List<Block> validAir = Arrays.asList(
+            Blocks.AIR,
+            Blocks.CAVE_AIR,
+            Blocks.VOID_AIR,
+            RunePortals.RUNE_PORTAL_BLOCK
+        );
+
         // try and determine middle of bottom row
         BlockPos start = null;
         if (axis == Axis.X) {
@@ -187,11 +193,11 @@ public class FrameBlock extends CharmBlock {
                     for (int x = -3; x <= 3; x++) {
                         BlockPos p = pos.up(y).offset(d, x);
                         if (world.getBlockState(p.up(1)).getBlock() instanceof FrameBlock
-                            && world.getBlockState(p).isAir()
-                            && world.getBlockState(p.down(1)).isAir()
-                            && world.getBlockState(p.down(2)).isAir()
-                            && world.getBlockState(p.down(2).west()).isAir()
-                            && world.getBlockState(p.down(2).east()).isAir()
+                            && validAir.contains(world.getBlockState(p).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(1)).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2)).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2).west()).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2).east()).getBlock())
                             && world.getBlockState(p.down(3)).getBlock() instanceof FrameBlock
                         ) {
                             start = p.down(3);
@@ -207,11 +213,11 @@ public class FrameBlock extends CharmBlock {
                     for (int z = -3; z <= 3; z++) {
                         BlockPos p = pos.up(y).offset(d, z);
                         if (world.getBlockState(p.up(1)).getBlock() instanceof FrameBlock
-                            && world.getBlockState(p).isAir()
-                            && world.getBlockState(p.down(1)).isAir()
-                            && world.getBlockState(p.down(2)).isAir()
-                            && world.getBlockState(p.down(2).north()).isAir()
-                            && world.getBlockState(p.down(2).south()).isAir()
+                            && validAir.contains(world.getBlockState(p).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(1)).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2)).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2).north()).getBlock())
+                            && validAir.contains(world.getBlockState(p.down(2).south()).getBlock())
                             && world.getBlockState(p.down(3)).getBlock() instanceof FrameBlock
                         ) {
                             start = p.down(3);
@@ -306,12 +312,12 @@ public class FrameBlock extends CharmBlock {
         }
 
         if (order.size() == 12) {
-            Charm.LOG.info("Order: " + order);
+            Charm.LOG.debug("Rune order: " + order);
 
             Optional<RunePortalManager> optional = RunePortals.getManager(world);
             if (optional.isPresent()) {
                 RunePortalManager manager = optional.get();
-                manager.createPortal(order, start, axis, DyeColor.CYAN);
+                manager.createPortal(order, start, axis);
                 return true;
             }
         }
