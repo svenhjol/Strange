@@ -33,12 +33,12 @@ public class RunePortalsClient extends CharmClientModule {
             if (world != null) {
                 // the edge of the rune
                 if (tintIndex == 0) {
-                    return 0xFFFFFF;
+                    return 0x222222;
                 }
 
                 // the face of the rune
                 if (tintIndex == 1) {
-                    return 0xFFFFFF;
+                    return 0x4C2950;
                 }
             }
             return 0xFFFFFF;
