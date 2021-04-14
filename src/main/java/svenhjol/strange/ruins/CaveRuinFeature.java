@@ -6,6 +6,7 @@ import svenhjol.charm.base.structure.JigsawVariableHeightFeature;
 
 public class CaveRuinFeature extends JigsawVariableHeightFeature {
     public CaveRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, 24, 12, false);
+        // TODO: variation should be 12 when worldgen is restored
+        super(codec, 24, 4, false);
     }
 }
