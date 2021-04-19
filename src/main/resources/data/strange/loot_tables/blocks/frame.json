@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "strange:wolf"
+          "name": "strange:raw_frame"
         }
       ],
       "conditions": [

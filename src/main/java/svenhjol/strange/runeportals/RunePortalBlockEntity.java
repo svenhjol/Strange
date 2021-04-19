@@ -4,18 +4,15 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction.Axis;
 
 public class RunePortalBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     private static final String ORIENTATION_NBT = "orientation";
-    private static final String COLOR_NBT = "color";
     private static final String RUNES_NBT = "runes";
     private static final String POS_NBT = "pos";
 
     public Axis orientation;
-    public DyeColor color;
     public BlockPos pos;
     public String runes;
 
@@ -27,7 +24,6 @@ public class RunePortalBlockEntity extends BlockEntity implements BlockEntityCli
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.orientation = Axis.fromName(nbt.getString(ORIENTATION_NBT));
-        this.color = DyeColor.byId(nbt.getInt(COLOR_NBT));
         this.runes = nbt.getString(RUNES_NBT);
         this.pos = BlockPos.fromLong(nbt.getLong(POS_NBT));
     }
@@ -36,7 +32,6 @@ public class RunePortalBlockEntity extends BlockEntity implements BlockEntityCli
     public NbtCompound writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putString(ORIENTATION_NBT, this.orientation.asString());
-        nbt.putInt(COLOR_NBT, this.color.getId());
         nbt.putString(RUNES_NBT, this.runes);
         nbt.putLong(POS_NBT, this.pos.asLong());
         return nbt;

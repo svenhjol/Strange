@@ -1,10 +1,36 @@
 {
   "variants": {
-    "axis=z": {
-      "model": "strange:block/rune_portal_ew"
-    },
-    "axis=x": {
-      "model": "strange:block/rune_portal_ns"
-    }
+    "axis=x,color=0": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=1": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=2": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=3": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=4": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=5": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=6": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=7": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=8": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=9": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=10": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=11": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=12": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=13": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=14": {"model": "strange:block/rune_portal_ns"},
+    "axis=x,color=15": {"model": "strange:block/rune_portal_ns"},
+    "axis=z,color=0": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=1": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=2": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=3": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=4": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=5": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=6": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=7": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=8": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=9": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=10": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=11": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=12": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=13": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=14": {"model": "strange:block/rune_portal_ew"},
+    "axis=z,color=15": {"model": "strange:block/rune_portal_ew"}
   }
 }

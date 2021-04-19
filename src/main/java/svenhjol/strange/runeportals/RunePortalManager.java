@@ -1,5 +1,6 @@
 package svenhjol.strange.runeportals;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
@@ -21,7 +22,7 @@ public class RunePortalManager extends PersistentState {
     public static final String RUNES_NBT = "Runes";
 
     private final World world;
-    private Map<BlockPos, DyeColor> colors = new HashMap<>();
+    private final Map<BlockPos, DyeColor> colors = new HashMap<>();
     private Map<String, List<BlockPos>> runes = new HashMap<>();
 
     public RunePortalManager(ServerWorld world) {
@@ -76,7 +77,10 @@ public class RunePortalManager extends PersistentState {
         Random rand = new Random(seed);
         DyeColor color = DyeColor.byId(rand.nextInt(16));
 
-        removePortal(runesString, pos);
+        if (color == DyeColor.BLACK) {
+            color = DyeColor.GRAY; // TOOD: reserve black portals
+        }
+
         createPortal(runesString, pos, orientation, color);
     }
 
@@ -90,16 +94,28 @@ public class RunePortalManager extends PersistentState {
 
         this.markDirty();
 
+        // break the portal and unset all block entities first
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
                 BlockPos p = orientation == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
-                world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
-                    .with(RunePortalBlock.AXIS, orientation), 18);
-
-                setPortal(world, p, runes, pos, orientation, color);
+                world.setBlockState(p, Blocks.AIR.getDefaultState(), 3);
+                world.removeBlockEntity(p);
             }
         }
 
+        for (int a = -1; a < 2; a++) {
+            for (int b = 1; b < 4; b++) {
+                BlockPos p = orientation == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
+
+                world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
+                    .with(RunePortalBlock.AXIS, orientation)
+                    .with(RunePortalBlock.COLOR, color.getId()), 3);
+
+                setPortalBlockEntity(world, p, runes, pos, orientation, color);
+            }
+        }
+
+        // TODO: better portal create sound
         world.playSound(null, pos, SoundEvents.BLOCK_AMETHYST_BLOCK_BREAK, SoundCategory.BLOCKS, 1.05F, 0.75F);
     }
 
@@ -133,19 +149,17 @@ public class RunePortalManager extends PersistentState {
         return false;
     }
 
-    private void setPortal(World world, BlockPos pos, String runes, BlockPos start, Axis orientation, DyeColor color) {
+    private void setPortalBlockEntity(World world, BlockPos pos, String runes, BlockPos start, Axis orientation, DyeColor color) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
             return;
 
         RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
         portal.orientation = orientation;
-        portal.color = color;
         portal.pos = start;
         portal.runes = runes;
         portal.markDirty();
         portal.sync();
-//        world.getBlockTickScheduler().schedule(pos, RunePortals.RUNE_PORTAL_BLOCK, 2);
     }
 
     private static String runesToString(List<Integer> runes) {

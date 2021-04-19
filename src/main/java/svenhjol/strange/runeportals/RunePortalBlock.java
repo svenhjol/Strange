@@ -10,7 +10,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -30,6 +32,7 @@ import java.util.UUID;
 
 public class RunePortalBlock extends CharmBlockWithEntity {
     public static final EnumProperty<Axis> AXIS = Properties.HORIZONTAL_AXIS;
+    public static final IntProperty COLOR = IntProperty.of("color", 0, 15);
 
     protected static final VoxelShape FACING_X = Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
     protected static final VoxelShape FACING_Z = Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
@@ -44,7 +47,9 @@ public class RunePortalBlock extends CharmBlockWithEntity {
             .luminance(11)
             .dropsNothing());
 
-        this.setDefaultState(this.getDefaultState().with(AXIS, Axis.X));
+        this.setDefaultState(this.getDefaultState()
+            .with(AXIS, Axis.X)
+            .with(COLOR, DyeColor.WHITE.getId()));
     }
 
     @Override
@@ -61,7 +66,7 @@ public class RunePortalBlock extends CharmBlockWithEntity {
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(AXIS);
+        builder.add(AXIS, COLOR);
     }
 
     @Override

@@ -2,8 +2,8 @@ package svenhjol.strange.runeportals;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.DyeColor;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 
@@ -18,12 +18,10 @@ public class RunePortalsClient extends CharmClientModule {
 
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
             if (world != null) {
-                BlockEntity blockEntity = world.getBlockEntity(pos);
-                if (blockEntity instanceof RunePortalBlockEntity) {
-                    RunePortalBlockEntity portal = (RunePortalBlockEntity)blockEntity;
-                    if (portal.color != null) {
-                        return portal.color.getSignColor();
-                    }
+                if (state.contains(RunePortalBlock.COLOR)) {
+                    int colorId = state.get(RunePortalBlock.COLOR);
+                    DyeColor color = DyeColor.byId(colorId);
+                    return color.getSignColor();
                 }
             }
             return 0xFFFFFF;

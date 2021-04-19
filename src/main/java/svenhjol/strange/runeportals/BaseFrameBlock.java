@@ -1,5 +1,6 @@
 package svenhjol.strange.runeportals;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -25,23 +26,24 @@ public abstract class BaseFrameBlock extends CharmBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient)
-            return ActionResult.PASS;
-
         ItemStack held = player.getStackInHand(hand);
-        boolean isFrameBlock = state.getBlock() == RunePortals.FRAME_BLOCK;
+        BlockPos hitPos = hit.getBlockPos();
+        Block block = world.getBlockState(pos).getBlock();
+        boolean isFrameBlock = block.equals(RunePortals.FRAME_BLOCK);
 
         if (isFrameBlock && hand == Hand.MAIN_HAND && held.isEmpty()) {
             int runeValue = state.get(FrameBlock.RUNE);
-            if (!player.isCreative())
-                PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
 
-            world.setBlockState(pos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 3);
-            return ActionResult.CONSUME;
+            if (!world.isClient) {
+                if (!player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+            }
+
+            world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 3);
+            return ActionResult.success(world.isClient);
         }
 
         if (held.getItem() instanceof RunicFragmentItem) {
-            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
             Direction side = hit.getSide();
             if (side == Direction.UP || side == Direction.DOWN)
                 return ActionResult.PASS;
@@ -49,26 +51,28 @@ public abstract class BaseFrameBlock extends CharmBlock {
             // if there's already a rune in the frame
             if (isFrameBlock) {
                 int runeValue = state.get(FrameBlock.RUNE);
-                if (!player.isCreative())
-                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
 
-                world.setBlockState(pos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 3);
-                return ActionResult.CONSUME;
+                if (!world.isClient && !player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+//                world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 18);
             }
 
-            BlockPos hitPos = hit.getBlockPos();
-            BlockState hitState = RunePortals.FRAME_BLOCK.getDefaultState()
+            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
+            BlockState newState = RunePortals.FRAME_BLOCK.getDefaultState()
                 .with(FrameBlock.FACING, side)
                 .with(FrameBlock.RUNE, fragment.getRuneValue());
 
-            world.setBlockState(hitPos, hitState, 3);
-            world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
+            world.setBlockState(pos, newState, 3);
+            world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
 
-            if (!player.getAbilities().creativeMode)
-                held.decrement(1);
+            if (!world.isClient) {
+                if (!player.getAbilities().creativeMode)
+                    held.decrement(1);
 
-            RunePortals.tryActivate((ServerWorld)world, pos, hitState);
-            return ActionResult.CONSUME;
+                RunePortals.tryActivate((ServerWorld) world, pos, newState);
+            }
+
+            return ActionResult.success(world.isClient);
         }
 
         return ActionResult.PASS;

@@ -1,6 +1,8 @@
 package svenhjol.strange.runeportals;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -9,7 +11,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -23,6 +32,7 @@ import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.ServerWorldInitCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.Runestones;
+import svenhjol.strange.runestones.RunicFragmentItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -36,6 +46,7 @@ public class RunePortals extends CharmModule {
     public static RunePortalBlock RUNE_PORTAL_BLOCK;
     public static BlockEntityType<RunePortalBlockEntity> RUNE_PORTAL_BLOCK_ENTITY;
 
+    public static final Identifier MSG_SERVER_CREATE_PORTAL = new Identifier(Strange.MOD_ID, "server_create_portal");
     private static final Map<RegistryKey<World>, RunePortalManager> managers = new HashMap<>();
 
     @Override
@@ -44,6 +55,8 @@ public class RunePortals extends CharmModule {
         RAW_FRAME_BLOCK = new RawFrameBlock(this);
         RUNE_PORTAL_BLOCK = new RunePortalBlock(this);
         RUNE_PORTAL_BLOCK_ENTITY = RegistryHandler.blockEntity(RUNE_PORTAL_BLOCK_ID, RunePortalBlockEntity::new, RUNE_PORTAL_BLOCK);
+
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_CREATE_PORTAL, this::handleServerCreatePortal);
     }
 
     @Override
@@ -59,7 +72,6 @@ public class RunePortals extends CharmModule {
         RegistryKey<World> registryKey = world.getRegistryKey();
         return managers.get(registryKey) != null ? Optional.of(managers.get(registryKey)) : Optional.empty();
     }
-
 
     public static boolean tryActivate(ServerWorld world, BlockPos pos, BlockState state) {
         if (!(state.getBlock() instanceof FrameBlock))
@@ -251,6 +263,32 @@ public class RunePortals extends CharmModule {
 
         order.add(s.get(FrameBlock.RUNE));
         return true;
+    }
+
+    private void handleServerCreatePortal(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+        BlockPos pos = BlockPos.fromLong(data.readLong());
+        Hand hand = data.readEnumConstant(Hand.class);
+        Direction side = data.readEnumConstant(Direction.class);
+        server.execute(() -> {
+            World world = player.world;
+            ItemStack held = player.getStackInHand(hand);
+            if (!(held.getItem() instanceof RunicFragmentItem))
+                return;
+
+            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
+
+            BlockState state = RunePortals.FRAME_BLOCK.getDefaultState()
+                .with(FrameBlock.FACING, side)
+                .with(FrameBlock.RUNE, fragment.getRuneValue());
+
+            world.setBlockState(pos, state, 2);
+            world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
+
+            if (!player.getAbilities().creativeMode)
+                held.decrement(1);
+
+            RunePortals.tryActivate((ServerWorld)world, pos, state);
+        });
     }
 
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
