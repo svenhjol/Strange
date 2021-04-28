@@ -29,6 +29,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.helper.VillagerHelper;
+import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.StructureSetupCallback;
@@ -64,7 +65,7 @@ public class Scrollkeepers extends CharmModule {
     @Override
     public void register() {
         WRITING_DESK = new WritingDeskBlock(this);
-        POIT = VillagerHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
+        POIT = WorldHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
 
         VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));

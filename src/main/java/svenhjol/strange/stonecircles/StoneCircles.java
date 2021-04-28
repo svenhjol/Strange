@@ -72,7 +72,7 @@ public class StoneCircles extends CharmModule {
             .defaultConfig(spacing, 8, 515122)
             .register();
 
-        STONE_CIRCLE = RegistryHandler.configuredFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT));
+        STONE_CIRCLE = RegistryHandler.configuredStructureFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT));
     }
 
     @Override
