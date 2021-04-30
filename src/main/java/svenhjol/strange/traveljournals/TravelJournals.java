@@ -3,6 +3,7 @@ package svenhjol.strange.traveljournals;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapIcon;
@@ -123,7 +124,6 @@ public class TravelJournals extends CharmModule {
         Charm.LOG.info("[Travel Journal] Loaded travel journal state manager");
     }
 
-
     private void handleServerOpenJournal(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         processClientPacket(server, player, manager -> {
             NbtList listTag = manager.serializePlayerEntries(player.getUuid());
@@ -137,6 +137,9 @@ public class TravelJournals extends CharmModule {
             if (ModuleHandler.enabled(Scrolls.class)) {
                 Scrolls.sendPlayerQuestsPacket(player);
             }
+
+            // for the advancement
+            Criteria.CONSUME_ITEM.trigger(player, new ItemStack(TravelJournals.TRAVEL_JOURNAL));
         });
     }
 
