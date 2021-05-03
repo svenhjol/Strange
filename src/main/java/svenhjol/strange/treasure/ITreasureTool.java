@@ -65,7 +65,7 @@ public interface ITreasureTool {
         EnchantmentHelper.set(getEnchantments(), itemStack);
 
         // apply glint color
-        itemStack.getOrCreateTag().putString(ColoredGlintHandler.GLINT_TAG, getColor().getName());
+        itemStack.getOrCreateTag().putString(ColoredGlintHandler.GLINT_NBT, getColor().getName());
 
         return itemStack;
     }
