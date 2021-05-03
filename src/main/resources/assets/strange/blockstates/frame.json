@@ -1,0 +1,133 @@
+{
+  "variants": {
+    "rune=0,facing=north": {"model": "strange:block/frame_0", "x": 270, "y": 180},
+    "rune=0,facing=east": {"model": "strange:block/frame_0", "x": 270, "y": 270},
+    "rune=0,facing=south": {"model": "strange:block/frame_0", "x": 270},
+    "rune=0,facing=west": {"model": "strange:block/frame_0", "x": 270, "y": 90},
+
+    "rune=1,facing=north": {"model": "strange:block/frame_1", "x": 270, "y": 180},
+    "rune=1,facing=east": {"model": "strange:block/frame_1", "x": 270, "y": 270},
+    "rune=1,facing=south": {"model": "strange:block/frame_1", "x": 270},
+    "rune=1,facing=west": {"model": "strange:block/frame_1", "x": 270, "y": 90},
+
+    "rune=2,facing=north": {"model": "strange:block/frame_2", "x": 270, "y": 180},
+    "rune=2,facing=east": {"model": "strange:block/frame_2", "x": 270, "y": 270},
+    "rune=2,facing=south": {"model": "strange:block/frame_2", "x": 270},
+    "rune=2,facing=west": {"model": "strange:block/frame_2", "x": 270, "y": 90},
+
+    "rune=3,facing=north": {"model": "strange:block/frame_3", "x": 270, "y": 180},
+    "rune=3,facing=east": {"model": "strange:block/frame_3", "x": 270, "y": 270},
+    "rune=3,facing=south": {"model": "strange:block/frame_3", "x": 270},
+    "rune=3,facing=west": {"model": "strange:block/frame_3", "x": 270, "y": 90},
+
+    "rune=4,facing=north": {"model": "strange:block/frame_4", "x": 270, "y": 180},
+    "rune=4,facing=east": {"model": "strange:block/frame_4", "x": 270, "y": 270},
+    "rune=4,facing=south": {"model": "strange:block/frame_4", "x": 270},
+    "rune=4,facing=west": {"model": "strange:block/frame_4", "x": 270, "y": 90},
+
+    "rune=5,facing=north": {"model": "strange:block/frame_5", "x": 270, "y": 180},
+    "rune=5,facing=east": {"model": "strange:block/frame_5", "x": 270, "y": 270},
+    "rune=5,facing=south": {"model": "strange:block/frame_5", "x": 270},
+    "rune=5,facing=west": {"model": "strange:block/frame_5", "x": 270, "y": 90},
+
+    "rune=6,facing=north": {"model": "strange:block/frame_6", "x": 270, "y": 180},
+    "rune=6,facing=east": {"model": "strange:block/frame_6", "x": 270, "y": 270},
+    "rune=6,facing=south": {"model": "strange:block/frame_6", "x": 270},
+    "rune=6,facing=west": {"model": "strange:block/frame_6", "x": 270, "y": 90},
+
+    "rune=7,facing=north": {"model": "strange:block/frame_7", "x": 270, "y": 180},
+    "rune=7,facing=east": {"model": "strange:block/frame_7", "x": 270, "y": 270},
+    "rune=7,facing=south": {"model": "strange:block/frame_7", "x": 270},
+    "rune=7,facing=west": {"model": "strange:block/frame_7", "x": 270, "y": 90},
+
+    "rune=8,facing=north": {"model": "strange:block/frame_8", "x": 270, "y": 180},
+    "rune=8,facing=east": {"model": "strange:block/frame_8", "x": 270, "y": 270},
+    "rune=8,facing=south": {"model": "strange:block/frame_8", "x": 270},
+    "rune=8,facing=west": {"model": "strange:block/frame_8", "x": 270, "y": 90},
+
+    "rune=9,facing=north": {"model": "strange:block/frame_9", "x": 270, "y": 180},
+    "rune=9,facing=east": {"model": "strange:block/frame_9", "x": 270, "y": 270},
+    "rune=9,facing=south": {"model": "strange:block/frame_9", "x": 270},
+    "rune=9,facing=west": {"model": "strange:block/frame_9", "x": 270, "y": 90},
+
+    "rune=10,facing=north": {"model": "strange:block/frame_10", "x": 270, "y": 180},
+    "rune=10,facing=east": {"model": "strange:block/frame_10", "x": 270, "y": 270},
+    "rune=10,facing=south": {"model": "strange:block/frame_10", "x": 270},
+    "rune=10,facing=west": {"model": "strange:block/frame_10", "x": 270, "y": 90},
+
+    "rune=11,facing=north": {"model": "strange:block/frame_11", "x": 270, "y": 180},
+    "rune=11,facing=east": {"model": "strange:block/frame_11", "x": 270, "y": 270},
+    "rune=11,facing=south": {"model": "strange:block/frame_11", "x": 270},
+    "rune=11,facing=west": {"model": "strange:block/frame_11", "x": 270, "y": 90},
+
+    "rune=12,facing=north": {"model": "strange:block/frame_12", "x": 270, "y": 180},
+    "rune=12,facing=east": {"model": "strange:block/frame_12", "x": 270, "y": 270},
+    "rune=12,facing=south": {"model": "strange:block/frame_12", "x": 270},
+    "rune=12,facing=west": {"model": "strange:block/frame_12", "x": 270, "y": 90},
+
+    "rune=13,facing=north": {"model": "strange:block/frame_13", "x": 270, "y": 180},
+    "rune=13,facing=east": {"model": "strange:block/frame_13", "x": 270, "y": 270},
+    "rune=13,facing=south": {"model": "strange:block/frame_13", "x": 270},
+    "rune=13,facing=west": {"model": "strange:block/frame_13", "x": 270, "y": 90},
+
+    "rune=14,facing=north": {"model": "strange:block/frame_14", "x": 270, "y": 180},
+    "rune=14,facing=east": {"model": "strange:block/frame_14", "x": 270, "y": 270},
+    "rune=14,facing=south": {"model": "strange:block/frame_14", "x": 270},
+    "rune=14,facing=west": {"model": "strange:block/frame_14", "x": 270, "y": 90},
+
+    "rune=15,facing=north": {"model": "strange:block/frame_15", "x": 270, "y": 180},
+    "rune=15,facing=east": {"model": "strange:block/frame_15", "x": 270, "y": 270},
+    "rune=15,facing=south": {"model": "strange:block/frame_15", "x": 270},
+    "rune=15,facing=west": {"model": "strange:block/frame_15", "x": 270, "y": 90},
+
+    "rune=16,facing=north": {"model": "strange:block/frame_16", "x": 270, "y": 180},
+    "rune=16,facing=east": {"model": "strange:block/frame_16", "x": 270, "y": 270},
+    "rune=16,facing=south": {"model": "strange:block/frame_16", "x": 270},
+    "rune=16,facing=west": {"model": "strange:block/frame_16", "x": 270, "y": 90},
+
+    "rune=17,facing=north": {"model": "strange:block/frame_17", "x": 270, "y": 180},
+    "rune=17,facing=east": {"model": "strange:block/frame_17", "x": 270, "y": 270},
+    "rune=17,facing=south": {"model": "strange:block/frame_17", "x": 270},
+    "rune=17,facing=west": {"model": "strange:block/frame_17", "x": 270, "y": 90},
+
+    "rune=18,facing=north": {"model": "strange:block/frame_18", "x": 270, "y": 180},
+    "rune=18,facing=east": {"model": "strange:block/frame_18", "x": 270, "y": 270},
+    "rune=18,facing=south": {"model": "strange:block/frame_18", "x": 270},
+    "rune=18,facing=west": {"model": "strange:block/frame_18", "x": 270, "y": 90},
+
+    "rune=19,facing=north": {"model": "strange:block/frame_19", "x": 270, "y": 180},
+    "rune=19,facing=east": {"model": "strange:block/frame_19", "x": 270, "y": 270},
+    "rune=19,facing=south": {"model": "strange:block/frame_19", "x": 270},
+    "rune=19,facing=west": {"model": "strange:block/frame_19", "x": 270, "y": 90},
+
+    "rune=20,facing=north": {"model": "strange:block/frame_20", "x": 270, "y": 180},
+    "rune=20,facing=east": {"model": "strange:block/frame_20", "x": 270, "y": 270},
+    "rune=20,facing=south": {"model": "strange:block/frame_20", "x": 270},
+    "rune=20,facing=west": {"model": "strange:block/frame_20", "x": 270, "y": 90},
+
+    "rune=21,facing=north": {"model": "strange:block/frame_21", "x": 270, "y": 180},
+    "rune=21,facing=east": {"model": "strange:block/frame_21", "x": 270, "y": 270},
+    "rune=21,facing=south": {"model": "strange:block/frame_21", "x": 270},
+    "rune=21,facing=west": {"model": "strange:block/frame_21", "x": 270, "y": 90},
+
+    "rune=22,facing=north": {"model": "strange:block/frame_22", "x": 270, "y": 180},
+    "rune=22,facing=east": {"model": "strange:block/frame_22", "x": 270, "y": 270},
+    "rune=22,facing=south": {"model": "strange:block/frame_22", "x": 270},
+    "rune=22,facing=west": {"model": "strange:block/frame_22", "x": 270, "y": 90},
+
+    "rune=23,facing=north": {"model": "strange:block/frame_23", "x": 270, "y": 180},
+    "rune=23,facing=east": {"model": "strange:block/frame_23", "x": 270, "y": 270},
+    "rune=23,facing=south": {"model": "strange:block/frame_23", "x": 270},
+    "rune=23,facing=west": {"model": "strange:block/frame_23", "x": 270, "y": 90},
+
+    "rune=24,facing=north": {"model": "strange:block/frame_24", "x": 270, "y": 180},
+    "rune=24,facing=east": {"model": "strange:block/frame_24", "x": 270, "y": 270},
+    "rune=24,facing=south": {"model": "strange:block/frame_24", "x": 270},
+    "rune=24,facing=west": {"model": "strange:block/frame_24", "x": 270, "y": 90},
+
+    "rune=25,facing=north": {"model": "strange:block/frame_25", "x": 270, "y": 180},
+    "rune=25,facing=east": {"model": "strange:block/frame_25", "x": 270, "y": 270},
+    "rune=25,facing=south": {"model": "strange:block/frame_25", "x": 270},
+    "rune=25,facing=west": {"model": "strange:block/frame_25", "x": 270, "y": 90}
+  }
+}

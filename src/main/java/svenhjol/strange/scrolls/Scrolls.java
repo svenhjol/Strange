@@ -70,7 +70,7 @@ public class Scrolls extends CharmModule {
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    private static QuestManager questManager; // always access this via the optional: getQuestManager()
+    private static QuestManager questManager; // always access this via getQuestManager()
 
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;

@@ -75,6 +75,7 @@ public class Runestones extends CharmModule {
     public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
 
+    public static Map<Integer, RunicFragmentItem> RUNIC_FRAGMENTS = new HashMap<>();
     public static List<Destination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<Destination> WORLD_DESTINATIONS = new ArrayList<>(); // destinations shuffled according to world seed
 
@@ -106,9 +107,9 @@ public class Runestones extends CharmModule {
         "minecraft:swamp_hut",
         "minecraft:igloo",
         "minecraft:ruined_portal",
-        "strange:underground_ruin",
+        "strange:cave_ruin",
         "strange:surface_ruin",
-        "strange:foundation_ruin"
+        "strange:deep_ruin"
     ));
 
     @Config(name = "Available biomes", description = "Biomes that runestones may teleport you to. The list is weighted with more likely biomes at the top.")
@@ -122,6 +123,7 @@ public class Runestones extends CharmModule {
     public void register() {
         for (int i = 0; i < NUMBER_OF_RUNES; i++) {
             RUNESTONE_BLOCKS.add(new RunestoneBlock(this, i));
+            RUNIC_FRAGMENTS.put(i, new RunicFragmentItem(this, i));
         }
 
         BLOCK_ENTITY = RegistryHandler.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
@@ -460,6 +462,9 @@ public class Runestones extends CharmModule {
      * This is where we do drops for runestone dust and fragments.
      */
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+        if (!(state.getBlock() instanceof RunestoneBlock))
+            return true;
+
         int runeValue = getRuneValue((ServerWorld) world, pos);
         if (runeValue >= 0) {
             int drops = 1 + world.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);

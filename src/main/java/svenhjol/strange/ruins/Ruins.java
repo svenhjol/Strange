@@ -20,7 +20,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeLoot;
 
 import static net.minecraft.world.biome.Biome.Category;
-import static svenhjol.charm.base.handler.RegistryHandler.configuredFeature;
+import static svenhjol.charm.base.handler.RegistryHandler.configuredStructureFeature;
 import static svenhjol.charm.base.helper.BiomeHelper.addStructureToBiome;
 import static svenhjol.charm.base.helper.BiomeHelper.addStructureToBiomeCategories;
 
@@ -105,11 +105,11 @@ public class Ruins extends CharmModule {
         END_RUIN_CONFIGURED = END_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> EndRuinGenerator.POOL, endRuinSize));
 
         // register each configuredFeature with MC registry against the RUIN_STRUCTURE
-        configuredFeature(new Identifier(Strange.MOD_ID, "surface_ruin"), SURFACE_RUIN_CONFIGURED);
-        configuredFeature(new Identifier(Strange.MOD_ID, "cave_ruin"), CAVE_RUIN_CONFIGURED);
-        configuredFeature(new Identifier(Strange.MOD_ID, "deep_ruin"), DEEP_RUIN_CONFIGURED);
-        configuredFeature(new Identifier(Strange.MOD_ID, "nether_ruin"), NETHER_RUIN_CONFIGURED);
-        configuredFeature(new Identifier(Strange.MOD_ID, "end_ruin"), END_RUIN_CONFIGURED);
+        configuredStructureFeature(new Identifier(Strange.MOD_ID, "surface_ruin"), SURFACE_RUIN_CONFIGURED);
+        configuredStructureFeature(new Identifier(Strange.MOD_ID, "cave_ruin"), CAVE_RUIN_CONFIGURED);
+        configuredStructureFeature(new Identifier(Strange.MOD_ID, "deep_ruin"), DEEP_RUIN_CONFIGURED);
+        configuredStructureFeature(new Identifier(Strange.MOD_ID, "nether_ruin"), NETHER_RUIN_CONFIGURED);
+        configuredStructureFeature(new Identifier(Strange.MOD_ID, "end_ruin"), END_RUIN_CONFIGURED);
     }
 
     @Override
