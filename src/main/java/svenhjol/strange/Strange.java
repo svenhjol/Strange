@@ -3,6 +3,7 @@ package svenhjol.strange;
 import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmLoader;
+import svenhjol.strange.astrolabes.Astrolabes;
 import svenhjol.strange.base.StrangeCommands;
 import svenhjol.strange.base.StrangeLoot;
 import svenhjol.strange.base.StrangeSounds;
@@ -15,6 +16,7 @@ import svenhjol.strange.runestones.Runestones;
 import svenhjol.strange.scrollkeepers.Scrollkeepers;
 import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.stonecircles.StoneCircles;
+import svenhjol.strange.storagecrates.StorageCrates;
 import svenhjol.strange.totems.TotemOfFlying;
 import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.traveljournals.TravelJournals;
@@ -30,6 +32,7 @@ public class Strange implements ModInitializer {
         Charm.runFirst();
 
         new CharmLoader(MOD_ID, Arrays.asList(
+            Astrolabes.class,
             Mobs.class,
             Rubble.class,
             Ruins.class,
@@ -41,7 +44,8 @@ public class Strange implements ModInitializer {
             TravelJournals.class,
             TotemOfFlying.class,
             TotemOfPreserving.class,
-            Treasure.class
+            Treasure.class,
+            StorageCrates.class
         ));
 
         StrangeStructures.init();
