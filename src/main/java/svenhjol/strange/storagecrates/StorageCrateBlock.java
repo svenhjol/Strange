@@ -8,11 +8,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
@@ -21,8 +19,7 @@ import svenhjol.charm.base.block.CharmBlockWithEntity;
 import javax.annotation.Nullable;
 
 public class StorageCrateBlock extends CharmBlockWithEntity {
-    private static final VoxelShape RAY_TRACE_SHAPE = createCuboidShape(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-    private static final VoxelShape OUTLINE_SHAPE;
+    private static final VoxelShape SHAPE = createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 
     public StorageCrateBlock(CharmModule module) {
         super(module, "storage_crate", Settings.copy(Blocks.COMPOSTER));
@@ -30,12 +27,12 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return OUTLINE_SHAPE;
+        return SHAPE;
     }
 
     @Override
     public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
-        return RAY_TRACE_SHAPE;
+        return SHAPE;
     }
 
 
@@ -55,6 +52,12 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
 
                     didThing = true;
                 } else if (!held.isEmpty()) {
+                    // TODO test possible to get light level
+//                    if (held.getItem() instanceof BlockItem) {
+//                        BlockItem blockItem = (BlockItem) held.getItem();
+//                        blockItem.getBlock().getDefaultState().getLuminance();
+//                    }
+
                     if (crate.item == held.getItem()) {
                         ++crate.count;
                     } else {
@@ -89,9 +92,5 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new StorageCrateBlockEntity(pos, state);
-    }
-
-    static {
-        OUTLINE_SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.union(createCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), createCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), RAY_TRACE_SHAPE), BooleanBiFunction.ONLY_FIRST);
     }
 }
