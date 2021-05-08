@@ -62,7 +62,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
             seed = firstpass ? layer : layer + (int)Math.ceil(((double)(count - t) / itemsPerLayer));
             random.setSeed((long) entity.hashCode() * (seed + 1));
 
-            int layerLight = (256 >> (firstpass ? ((count - 1) / itemsPerLayer) / layer : maxLayers - layer)) - 1;
+            int layerLight = (light >> (firstpass ? ((count - 1) / itemsPerLayer) / layer : maxLayers - layer)) - 1;
 
             matrices.push();
             matrices.translate(0.05F, 0.1D + (layer * 0.13D), 0.05F);
