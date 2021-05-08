@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.init.CharmParticles;
-import svenhjol.charm.init.CharmSounds;
+import svenhjol.strange.base.StrangeSounds;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +74,7 @@ public class AstrolabesClient extends CharmClientModule {
             }
 
             if (playSound && isClose)
-                world.playSound(player, player.getBlockPos(), CharmSounds.ASTROLABE, SoundCategory.PLAYERS, 0.27F, 0.8F + (0.4F * random.nextFloat()));
+                world.playSound(player, player.getBlockPos(), StrangeSounds.ASTROLABE, SoundCategory.PLAYERS, 0.27F, 0.8F + (0.4F * random.nextFloat()));
         });
     }
 
