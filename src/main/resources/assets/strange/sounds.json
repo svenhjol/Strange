@@ -1,4 +1,13 @@
 {
+  "astrolabe": {
+    "category": "players",
+    "sounds": [
+      {
+        "name": "strange:astrolabe",
+        "volume": 0.2
+      }
+    ]
+  },
   "runestone_travel": {
     "category": "players",
     "sounds": [

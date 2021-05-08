@@ -10,24 +10,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.CharmModule;
-import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.helper.ItemHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.EntityDropsXpCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.strange.Strange;
-import svenhjol.strange.traveljournals.JournalEntry;
-import svenhjol.strange.traveljournals.TravelJournalManager;
-import svenhjol.strange.traveljournals.TravelJournals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Module(mod = Strange.MOD_ID, description = "With a Totem of Preserving in your inventory, your items will be held in the totem when you die.")
 public class TotemOfPreserving extends CharmModule {
@@ -123,18 +121,6 @@ public class TotemOfPreserving extends CharmModule {
 
         Criteria.USED_TOTEM.trigger((ServerPlayerEntity)player, totem);
         Charm.LOG.info("Totem of Preserving spawned at " + new BlockPos(x, y, z));
-
-        // add position to travel journal
-        Optional<TravelJournalManager> journalManager = TravelJournals.getTravelJournalManager();
-        journalManager.ifPresent(manager -> {
-            JournalEntry entry = new JournalEntry(
-                new TranslatableText("item.strange.totem_of_preserving").getString(),
-                playerPos,
-                DimensionHelper.getDimension(world),
-                1
-            );
-            manager.addJournalEntry(player, entry);
-        });
 
         // clear player's inventory
         for (DefaultedList<ItemStack> inv : combined) {

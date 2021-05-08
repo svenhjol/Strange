@@ -4,6 +4,8 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapIcon;
@@ -17,6 +19,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentStateManager;
@@ -30,6 +33,7 @@ import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.charm.event.LoadWorldCallback;
+import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.charm.module.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.runestones.Runestones;
@@ -78,6 +82,9 @@ public class TravelJournals extends CharmModule {
         // allow travel journals on Charm's bookcases
         if (ModuleHandler.enabled(Bookcases.class))
             Bookcases.validItems.add(TRAVEL_JOURNAL);
+
+        // record death positions in travel journal
+        PlayerDropInventoryCallback.EVENT.register(this::tryInterceptDropInventory);
 
         ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_OPEN_JOURNAL, this::handleServerOpenJournal);
         ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_ADD_ENTRY, this::handleServerAddEntry);
@@ -261,5 +268,24 @@ public class TravelJournals extends CharmModule {
             Optional<TravelJournalManager> travelJournalManager = TravelJournals.getTravelJournalManager();
             travelJournalManager.ifPresent(callback);
         });
+    }
+
+    private ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
+        if (player.world.isClient)
+            return ActionResult.PASS;
+
+        // add position to travel journal
+        Optional<TravelJournalManager> journalManager = TravelJournals.getTravelJournalManager();
+        journalManager.ifPresent(manager -> {
+            JournalEntry entry = new JournalEntry(
+                new TranslatableText("item.charm.totem_of_preserving").getString(),
+                player.getBlockPos(),
+                DimensionHelper.getDimension(player.world),
+                1
+            );
+            manager.addJournalEntry(player, entry);
+        });
+
+        return ActionResult.SUCCESS;
     }
 }
