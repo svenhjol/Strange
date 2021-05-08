@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "strange:block/storage_crate" }
+  }
+}
