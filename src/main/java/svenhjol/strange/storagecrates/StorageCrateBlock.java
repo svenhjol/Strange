@@ -22,7 +22,9 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
     private static final VoxelShape SHAPE = createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 
     public StorageCrateBlock(CharmModule module) {
-        super(module, "storage_crate", Settings.copy(Blocks.COMPOSTER));
+        super(module, "storage_crate",
+            Settings.copy(Blocks.COMPOSTER)
+        );
     }
 
     @Override
@@ -52,12 +54,6 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
 
                     didThing = true;
                 } else if (!held.isEmpty()) {
-                    // TODO test possible to get light level
-//                    if (held.getItem() instanceof BlockItem) {
-//                        BlockItem blockItem = (BlockItem) held.getItem();
-//                        blockItem.getBlock().getDefaultState().getLuminance();
-//                    }
-
                     if (crate.item == held.getItem()) {
                         ++crate.count;
                     } else {
