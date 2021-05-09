@@ -134,6 +134,54 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 
         entityTicks.put(entity, ticks + 0.05F);
 
+
+//        BakedModel model = itemRenderer.getHeldItemModel(stack, world, null, 1414);
+//
+//        if (mippedBlocks == null) {
+//            mippedBlocks = new AbstractTexture() {
+//
+//                @Override
+//                public void load(ResourceManager manager) throws IOException {
+//                    clearGlId();
+//                    SpriteAtlasTexture atlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(new Identifier("textures/atlas/blocks.png"));
+//                    GlStateManager._bindTexture(atlas.getGlId());
+//                    int maxLevel = GL11.glGetTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL);
+//                    if (maxLevel == 0 || !GL.getCapabilities().GL_ARB_copy_image) {
+//                        int w = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+//                        int h = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+//                        ByteBuffer dest = MemoryUtil.memAlloc(w*h*4);
+//                        try {
+//                            GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, NativeImage.Format.ABGR.getPixelDataFormat(), GL11.GL_UNSIGNED_BYTE, MemoryUtil.memAddress(dest));
+//                        } catch (Error | RuntimeException e) {
+//                            MemoryUtil.memFree(dest);
+//                            throw e;
+//                        }
+//                        NativeImage img = NativeImageAccessor.invokeConstructor(NativeImage.Format.ABGR, w, h, false, MemoryUtil.memAddress(dest));
+//                        try {
+//                            NativeImage mipped = MipmapHelper.getMipmapLevelsImages(img, 0)[0];
+//                            try {
+//                                TextureUtil.prepareImage(getGlId(), mipped.getWidth(), mipped.getHeight());
+//                                GlStateManager._bindTexture(getGlId());
+//                                mipped.upload(0, 0, 0, true);
+//                            } finally {
+//                                mipped.close();
+//                            }
+//                        } finally {
+//                            img.close();
+//                        }
+//                    } else {
+//                        int w = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 1, GL11.GL_TEXTURE_WIDTH);
+//                        int h = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 1, GL11.GL_TEXTURE_HEIGHT);
+//                        TextureUtil.prepareImage(getGlId(), w, h);
+//                        ARBCopyImage.glCopyImageSubData(
+//                            atlas.getGlId(), GL11.GL_TEXTURE_2D, 1, 0, 0, 0,
+//                            getGlId(), GL11.GL_TEXTURE_2D, 0, 0, 0, 0,
+//                            w, h, 1);
+//                    }
+//                }
+//            };
+//            MinecraftClient.getInstance().getTextureManager().registerTexture(new Identifier("fabrication", "textures/atlas/blocks-mip.png"), mippedBlocks);
+//        }
 //
 //
 //        matrices.push();
@@ -146,9 +194,6 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 //
 //        ((ItemRendererAccessor)itemRenderer).invokeRenderBakedItemModel(model, stack, light, overlay, matrices, vertices);
 //        matrices.pop();
-
-
-
 
 //
 //        boolean isBlockItem = item instanceof BlockItem && ((BlockItem)item).getBlock().getDefaultState().isSolidBlock(world, BlockPos.ORIGIN);
