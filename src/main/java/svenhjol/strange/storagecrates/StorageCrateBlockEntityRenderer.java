@@ -219,6 +219,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         matrices.pop();
     }
 
+    // TODO add this to some kind of helper
     private void renderLabel(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Camera camera, Direction facing, Text text) {
         float xo = 0.0F;
         float zo = 0.0F;
