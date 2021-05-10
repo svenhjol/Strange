@@ -51,10 +51,11 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         if (world == null)
             return;
 
-        int count = Math.max(1, entity.count / StorageCrates.maximumStacks);
         Item item = entity.item;
         if (item == null)
             return;
+
+        int count = Math.max(1, (int)Math.ceil((float)entity.count / (item.getMaxCount() * (PER_ROW/2.0F))));
 
         stack = new ItemStack(item);
         itemRenderer = MinecraftClient.getInstance().getItemRenderer();
