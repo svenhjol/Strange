@@ -61,7 +61,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         if (item == null)
             return;
 
-        int count = (int)Math.max(1, (crate.filledStacks() / (PER_ROW/2.0F)) + 1);
+        int count = Math.min(Math.max(1, crate.filledStacks()), PER_ROW * 3);
 
         stack = new ItemStack(item);
         itemRenderer = client.getItemRenderer();
