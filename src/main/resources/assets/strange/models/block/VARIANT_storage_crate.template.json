@@ -1,6 +1,7 @@
 {
 	"template": {
 		"parent": "block/block",
+		"ambientocclusion": false,
 		"textures": {
 			"side": "strange:block/storage_crate/VARIANT_crate_side",
 			"top": "strange:block/storage_crate/VARIANT_crate_top",
