@@ -1,5 +1,5 @@
 {
-  "parent": "strange:link_astrolabe",
+  "parent": "strange:astrolabes/link_astrolabe",
   "display": {
     "icon": {
       "item": "strange:astrolabe"
