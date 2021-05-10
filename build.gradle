@@ -1,3 +1,6 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
@@ -38,16 +41,52 @@ dependencies {
 	modImplementation "svenhjol.charm:charm:${project.charm_version}"
 }
 
+
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	exclude("META-INF/*.materials")
+
+	//expand resource templates
+	filesMatching("**/*.template.json") {
+		JsonBuilder json = new JsonBuilder(new JsonSlurper().parseText(it.file.text))
+		String template = new JsonBuilder(json.content.template).toPrettyString()
+		def v = json.content.variants
+		Iterable<String> variants
+		if (v instanceof String) variants = file("${sourceSets.main.resources.srcDirs[0]}/META-INF/${v}.variants").readLines().findAll { !it.isEmpty() }
+		else variants = v
+		File dir = it.relativePath.parent.getFile(file("$buildDir/resources/main"))
+		dir.mkdirs()
+		String name = it.name.replace(".template.json", ".json")
+
+		// F43nd1r send halp pls I just hacked it to work
+		String[] replacements
+		def first = variants.get(0)
+		if (first.contains(':')) {
+			replacements = first.split(':')
+			variants.remove(0)
+		}
+
+		for (variant in variants) {
+			if (replacements != null) {
+				Map<String, String> s = [replacements, variant.split(':', -1)].transpose().collectEntries()
+				def file = new File(dir, s.inject(name) { r, e -> r.replace(e.key, e.value) })
+				if (!file.exists()) {
+					file.createNewFile()
+					file.text = s.inject(template) { r, e -> r.replace(e.key, e.value) }
+				}
+			} else {
+				def file = new File(dir, name.replace("VARIANT", variant))
+				file.createNewFile()
+				file.text = template.replace("VARIANT", variant)
+			}
+		}
+
+		it.exclude()
 	}
 }
 

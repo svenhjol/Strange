@@ -2,6 +2,7 @@ package svenhjol.strange.storagecrates;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.OverlayTexture;
@@ -11,27 +12,29 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nullable;
 import java.util.Random;
-import java.util.WeakHashMap;
+
+import static net.minecraft.util.math.Direction.DOWN;
 
 @Environment(EnvType.CLIENT)
 public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> implements BlockEntityRenderer<T> {
+    private static final int PER_ROW = 6;
+
+    protected World world;
+    protected ItemStack stack;
+    protected ItemRenderer itemRenderer;
     protected BlockEntityRendererFactory.Context context;
-    private Map<T, Float> entityTicks = new HashMap<>();
-    private static AbstractTexture mippedBlocks;
-    private static Map<Item, NativeImageBackedTexture> cachedTextures = new WeakHashMap<>();
 
     public StorageCrateBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
         this.context = context;
@@ -44,7 +47,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 
     @Override
     public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        World world = entity.getWorld();
+        world = entity.getWorld();
         if (world == null)
             return;
 
@@ -53,29 +56,30 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         if (item == null)
             return;
 
-        ItemStack stack = new ItemStack(item);
-        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+        stack = new ItemStack(item);
+        itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
+        int distCutoffRender = 84;
+        int distFullRender = 32;
 
-        int distCutoffRender = 74;
-        int distFullRender = 16;
+        BlockPos pos = entity.getPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
 
-        int x = entity.getPos().getX();
-        int y = entity.getPos().getY();
-        int z = entity.getPos().getZ();
+        BlockState state = world.getBlockState(pos);
+        if (!(state.getBlock() instanceof StorageCrateBlock))
+            return;
+
+        boolean isSolidBlock = stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock().getDefaultState().isSolidBlock(world, BlockPos.ORIGIN);
+        Direction facing = state.get(StorageCrateBlock.FACING);
 
         BlockEntityRenderDispatcher dispatcher = this.context.getRenderDispatcher();
         Camera camera = dispatcher.camera;
         double d = camera.getPos().squaredDistanceTo(x, y, z);
 
-
-        if (!entityTicks.containsKey(entity))
-            entityTicks.put(entity, 0.0F);
-
-        float ticks = entityTicks.get(entity);
-
-        if (ticks > 360.0F)
-            ticks = 0.0F;
+        if (d > distCutoffRender)
+            return;
 
         Random random = new Random();
         random.setSeed((long) entity.hashCode() + count);
@@ -85,54 +89,124 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         int layers;
         int remainder;
 
-        if (count <= 6) {
+        if (count <= PER_ROW) {
             layers = 1;
             remainder = count;
-        } else if (count <= 12) {
+        } else if (count <= (PER_ROW * 2)) {
             layers = 2;
-            remainder = count - 6;
+            remainder = count - PER_ROW;
         } else {
             layers = 3;
-            remainder = count - 12;
+            remainder = count - (PER_ROW * 2);
         }
 
         for (int l = 0; l < layers; l++) {
             int layerLight = light >> l;
-            float t = l % 2 == 0 ? 360.0F - ticks : ticks;
 
+            // TODO dynamic generate item coords
             if (remainder == 1) {
-                coords = new double[]{0.45D, 0.45D};
+                coords = new double[]{0.25D, 0.25D};
             } else if (remainder == 2) {
-                coords = new double[]{0.3D, 0.3D, 0.6D, 0.6D};
+                coords = new double[]{0.25D, 0.25D, 0.50D, 0.25D};
             } else if (remainder == 3) {
-                coords = new double[]{0.5D, 0.3D, 0.3D, 0.6D, 0.6D, 0.6D};
+                coords = new double[]{0.25D, 0.25D, 0.50D, 0.25D, 0.75D, 0.25D};
             } else if (remainder == 4) {
-                coords = new double[]{0.3D, 0.3D, 0.6D, 0.3D, 0.3D, 0.6D, 0.6D, 0.6D};
+                coords = new double[]{0.25D, 0.25D, 0.50D, 0.25D, 0.75D, 0.25D, 0.25D, 0.75D};
             } else if (remainder == 5) {
-                coords = new double[]{0.5D, 0.5D, 0.25D, 0.25D, 0.75D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D};
+                coords = new double[]{0.25D, 0.25D, 0.50D, 0.25D, 0.75D, 0.25D, 0.25D, 0.75D, 0.50D, 0.75D};
             } else {
-                coords = new double[]{0.25D, 0.25D, 0.5D, 0.25D, 0.75D, 0.25D, 0.25D, 0.75D, 0.5D, 0.75D, 0.75D, 0.75D};
+                coords = new double[]{0.25D, 0.25D, 0.50D, 0.25D, 0.75D, 0.25D, 0.25D, 0.75D, 0.50D, 0.75D, 0.75D, 0.75D};
             }
 
             double xo = 0;
-            double yo = (layers - l) * 0.55F;
+            double yo = 0;
             double zo = 0;
-            double h = 0;
-            for (int i = 0; i < coords.length; i++) {
-                if (i % 2 == 0) {
-                    xo = coords[i];
-                } else {
-                    zo = coords[i];
+            double overlap = 0.001D;
 
-                    renderItemStack(world, itemRenderer, stack, xo, yo + (h * 0.01D), zo, 0.5F - (Math.min(6, remainder) * 0.01F), t, matrices, vertexConsumers, layerLight);
+            Quaternion rotation = null;
+
+            if (d < distFullRender || l == 0) {
+                for (int i = 0; i < coords.length; i++) {
+                    float scale = 0.5F - (Math.min(PER_ROW, remainder) * 0.008F);
+                    double scaleMultiplier = (1.7D + scale);
+                    double depth = (layers - l) * 0.55D;
+
+                    if (i % 2 == 0) {
+                        if (facing.getAxis().isVertical()) {
+                            xo = coords[i] * scaleMultiplier;
+                        } else {
+                            switch (facing) {
+                                case SOUTH:
+                                    xo = coords[i] * scaleMultiplier;
+                                    break;
+                                case NORTH:
+                                    xo = 2.2D - coords[i] * scaleMultiplier;
+                                    break;
+                                case EAST:
+                                    zo = 2.2D - coords[i] * scaleMultiplier;
+                                    break;
+                                case WEST:
+                                    zo = coords[i] * scaleMultiplier;
+                                    break;
+                            }
+                        }
+                    } else {
+                        if (facing.getAxis().isVertical()) {
+                            zo = coords[i] * scaleMultiplier;
+                            yo = (i * overlap) + depth;
+                            if (!isSolidBlock)
+                                rotation = Vec3f.POSITIVE_X.getDegreesQuaternion(90);
+
+                            if (facing == DOWN)
+                                yo = 2.2D - yo;
+
+                        } else {
+                            switch (facing) {
+                                case SOUTH:
+                                    yo = 0.01D + coords[i] * scaleMultiplier;
+                                    zo = (i * overlap) + depth;
+                                    break;
+                                case NORTH:
+                                    yo = 0.01D + coords[i] * scaleMultiplier;
+                                    zo = 2.2D - (i * overlap) - depth;
+                                    break;
+                                case EAST:
+                                    yo = 0.01D + coords[i] * scaleMultiplier;
+                                    xo = (i * overlap) + depth;
+                                    if (!isSolidBlock)
+                                        rotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90);
+                                    break;
+                                case WEST:
+                                    yo = 0.01D + coords[i] * scaleMultiplier;
+                                    xo = 2.2D - (i * overlap) - depth;
+                                    if (!isSolidBlock)
+                                        rotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90);
+                                    break;
+                            }
+                        }
+
+                        renderItemStack(matrices, vertexConsumers, rotation, xo, yo, zo, scale, layerLight);
+                    }
                 }
-                ++h;
             }
 
-            remainder = count - (l * 6);
+            remainder = count - (l * PER_ROW);
         }
+    }
 
-        entityTicks.put(entity, ticks + 0.05F);
+    private void renderItemStack(MatrixStack matrices, VertexConsumerProvider vertexConsumers, @Nullable Quaternion rotation, double x, double y, double z, float scale, int light) {
+        matrices.push();
+        matrices.scale(scale, scale, scale);
+
+        matrices.translate(x, y, z);
+
+        if (rotation != null)
+            matrices.multiply(rotation);
+
+        itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, stack.hashCode());
+        matrices.pop();
+    }
+}
 
 
 //        BakedModel model = itemRenderer.getHeldItemModel(stack, world, null, 1414);
@@ -257,25 +331,3 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 //                matrices.pop();
 //            }
 //        }
-    }
-
-    private void renderItemStack(World world, ItemRenderer itemRenderer, ItemStack stack, double x, double y, double z, float scale, float ticks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        matrices.push();
-        matrices.scale(scale, scale, scale);
-//            matrices.translate(0.82F, 0.68F, 0.82F);
-        matrices.translate(x * (1.7D + scale), y, z * (1.7D + scale));
-
-//        float l = MathHelper.sin(ticks / 3.1415927F) / (4.0F + ticks / 3.0F);
-//        matrices.translate(0,  (((ticks > 180 ? (360 - ticks) : ticks) / 180.0F) * 0.39F), 0);
-//        matrices.multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion((float) ticks));
-        if (stack.getItem() instanceof BlockItem && ((BlockItem)stack.getItem()).getBlock().getDefaultState().isSolidBlock(world, BlockPos.ORIGIN)) {
-//            matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(ticks));
-        } else {
-            matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-//            matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(ticks));
-        }
-
-        itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, stack.hashCode());
-        matrices.pop();
-    }
-}

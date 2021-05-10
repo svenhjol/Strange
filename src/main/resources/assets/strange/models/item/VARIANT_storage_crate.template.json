@@ -1,0 +1,6 @@
+{
+  "template": {
+    "parent": "strange:block/VARIANT_storage_crate"
+  },
+  "variants": "wood"
+}

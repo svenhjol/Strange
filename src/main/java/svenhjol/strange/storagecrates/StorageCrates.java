@@ -3,19 +3,35 @@ package svenhjol.strange.storagecrates;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import svenhjol.charm.base.CharmModule;
+import svenhjol.charm.base.enums.IVariantMaterial;
+import svenhjol.charm.base.enums.VanillaVariantMaterial;
 import svenhjol.charm.base.handler.RegistryHandler;
+import svenhjol.charm.base.helper.RegistryHelper;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 
-@Module(mod = Strange.MOD_ID, client = StorageCratesClient.class)
+import java.util.HashMap;
+import java.util.Map;
+
+@Module(mod = Strange.MOD_ID, priority = 10, client = StorageCratesClient.class)
 public class StorageCrates extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "storage_crate");
-    public static StorageCrateBlock STORAGE_CRATE;
+    public static Map<IVariantMaterial, StorageCrateBlock> STORAGE_CRATE_BLOCKS = new HashMap<>();
     public static BlockEntityType<StorageCrateBlockEntity> BLOCK_ENTITY;
 
     @Override
     public void register() {
-        STORAGE_CRATE = new StorageCrateBlock(this);
-        BLOCK_ENTITY = RegistryHandler.blockEntity(ID, StorageCrateBlockEntity::new, STORAGE_CRATE);
+        BLOCK_ENTITY = RegistryHandler.blockEntity(ID, StorageCrateBlockEntity::new);
+
+        VanillaVariantMaterial.getTypes().forEach(material -> {
+            registerStorageCrate(this, material);
+        });
+    }
+
+    public static StorageCrateBlock registerStorageCrate(CharmModule module, IVariantMaterial material) {
+        StorageCrateBlock crate = new StorageCrateBlock(module, material);
+        STORAGE_CRATE_BLOCKS.put(material, crate);
+        RegistryHelper.addBlocksToBlockEntity(BLOCK_ENTITY, crate);
+        return crate;
     }
 }

@@ -13,7 +13,9 @@ public class StorageCratesClient extends CharmClientModule {
 
     @Override
     public void register() {
-        BlockRenderLayerMap.INSTANCE.putBlock(StorageCrates.STORAGE_CRATE, RenderLayer.getCutout());
+        StorageCrates.STORAGE_CRATE_BLOCKS.forEach((material, block) -> {
+            BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
+        });
         BlockEntityRendererRegistry.INSTANCE.register(StorageCrates.BLOCK_ENTITY, StorageCrateBlockEntityRenderer::new);
     }
 }
