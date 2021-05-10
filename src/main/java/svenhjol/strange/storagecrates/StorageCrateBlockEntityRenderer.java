@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -13,13 +14,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
     protected World world;
     protected ItemStack stack;
     protected ItemRenderer itemRenderer;
+    protected TextRenderer textRenderer;
     protected BlockEntityRendererFactory.Context context;
 
     public StorageCrateBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
@@ -46,24 +48,29 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
     }
 
     @Override
-    public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        world = entity.getWorld();
+    public void render(T crate, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        world = crate.getWorld();
         if (world == null)
             return;
 
-        Item item = entity.item;
+        PlayerEntity player = client.player;
+
+        Item item = crate.getItemType();
         if (item == null)
             return;
 
-        int count = Math.max(1, (int)Math.ceil((float)entity.count / (item.getMaxCount() * (PER_ROW/2.0F))));
+        int count = (int)Math.max(1, (crate.filledStacks() / (PER_ROW/2.0F)) + 1);
 
         stack = new ItemStack(item);
-        itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+        itemRenderer = client.getItemRenderer();
+        textRenderer = client.textRenderer;
 
         int distCutoffRender = 84;
         int distFullRender = 32;
 
-        BlockPos pos = entity.getPos();
+        BlockPos pos = crate.getPos();
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -77,13 +84,14 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 
         BlockEntityRenderDispatcher dispatcher = this.context.getRenderDispatcher();
         Camera camera = dispatcher.camera;
+
         double d = camera.getPos().squaredDistanceTo(x, y, z);
 
         if (d > distCutoffRender)
             return;
 
         Random random = new Random();
-        random.setSeed((long) entity.hashCode() + count);
+        random.setSeed((long) crate.hashCode() + count);
 
 
         double[] coords;
@@ -193,6 +201,9 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
 
             remainder = count - (l * PER_ROW);
         }
+
+        if (player != null && player.isSneaking() && !crate.isEmpty())
+            renderLabel(matrices, vertexConsumers, camera, player.getHorizontalFacing(), new LiteralText(String.valueOf(crate.getTotalNumberOfItems())));
     }
 
     private void renderItemStack(MatrixStack matrices, VertexConsumerProvider vertexConsumers, @Nullable Quaternion rotation, double x, double y, double z, float scale, int light) {
@@ -205,6 +216,40 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
             matrices.multiply(rotation);
 
         itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, stack.hashCode());
+        matrices.pop();
+    }
+
+    private void renderLabel(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Camera camera, Direction facing, Text text) {
+        float xo = 0.0F;
+        float zo = 0.0F;
+
+        switch (facing) {
+            case EAST:
+                xo -= 0.65F;
+                break;
+
+            case WEST:
+                xo += 0.65F;
+                break;
+
+            case SOUTH:
+                zo -= 0.65F;
+                break;
+
+            case NORTH:
+                zo += 0.65F;
+                break;
+        }
+
+        matrices.push();
+        matrices.translate(0.5F + xo, 0.85F, 0.5F + zo);
+        matrices.multiply(camera.getRotation());
+        matrices.scale(-0.014F, -0.014F, 0.014F);
+        Matrix4f matrix4f = matrices.peek().getModel();
+        float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
+        int j = (int)(g * 255.0F) << 24;
+        float h = (float)(-textRenderer.getWidth(text) / 2);
+        textRenderer.draw(text, h, 0, 0xFFFFFF, false, matrix4f, vertexConsumers, false, j, 255);
         matrices.pop();
     }
 }

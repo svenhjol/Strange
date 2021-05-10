@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.RenderLayer;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.ClientHelper;
-import svenhjol.strange.storagecrates.StorageCrates.Interaction;
+import svenhjol.strange.storagecrates.StorageCrates.ActionType;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -36,49 +37,54 @@ public class StorageCratesClient extends CharmClientModule {
         });
 
         BlockEntityRendererRegistry.INSTANCE.register(StorageCrates.BLOCK_ENTITY, StorageCrateBlockEntityRenderer::new);
-        ClientPlayNetworking.registerGlobalReceiver(StorageCrates.MSG_CLIENT_INTERACTED_WITH_CRATE, this::handleInteractedWithCrate);
+        ClientPlayNetworking.registerGlobalReceiver(StorageCrates.MSG_CLIENT_UPDATED_CRATE, this::handleInteractedWithCrate);
     }
 
     private void handleInteractedWithCrate(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        Interaction interaction = data.readEnumConstant(Interaction.class);
-        Direction facing = data.readEnumConstant(Direction.class);
+        StorageCrates.ActionType actionType = data.readEnumConstant(ActionType.class);
         BlockPos pos = BlockPos.fromLong(data.readLong());
 
         client.execute(() -> {
             ClientHelper.getWorld().ifPresent(world -> {
-                switch (interaction) {
+                switch (actionType) {
                     case ADDED:
-                        createEffect(world, pos, facing, ParticleTypes.COMPOSTER, SoundEvents.BLOCK_COMPOSTER_FILL);
+                        createEffect(world, pos, ParticleTypes.COMPOSTER, SoundEvents.BLOCK_COMPOSTER_FILL);
                         break;
 
                     case REMOVED:
-                        createEffect(world, pos, facing, ParticleTypes.SMOKE, SoundEvents.ENTITY_ITEM_PICKUP);
+                        createEffect(world, pos, ParticleTypes.SMOKE, SoundEvents.ENTITY_ITEM_PICKUP);
                         break;
 
                     case FILLED:
-                        createEffect(world, pos, facing, ParticleTypes.ASH, null);
+                        createEffect(world, pos, ParticleTypes.ASH, null);
                         break;
                 }
             });
         });
     }
 
-    private void createEffect(World world, BlockPos pos, Direction facing, ParticleEffect effect, @Nullable SoundEvent sound) {
+    private void createEffect(World world, BlockPos pos, ParticleEffect effect, @Nullable SoundEvent sound) {
         if (sound != null)
             world.playSound(pos.getX(), pos.getY(), pos.getZ(), sound, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
 
-        Direction.Axis axis = facing.getAxis();
+        Direction.Axis axis;
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof StorageCrateBlock) {
+            axis = state.get(StorageCrateBlock.FACING).getAxis();
+        } else {
+            axis = Direction.Axis.Y;
+        }
 
-        double d = axis.isVertical() ? 0.05D : 0.5D;
-        double e = axis.isVertical() ? 0.13D : 0.5D;
-        double f = axis.isVertical() ? 0.74D : 0.5D;
+        double d = axis.isVertical() ? 0.05D : 0.0D;
+        double e = axis.isVertical() ? 0.13D : 0.32D;
+        double f = axis.isVertical() ? 0.74D : 0.45D;
         Random random = world.getRandom();
 
-        for(int i = 0; i < 10; ++i) {
+        for(int i = 0; i < 8; ++i) {
             double g = random.nextGaussian() * 0.02D;
             double h = random.nextGaussian() * 0.02D;
             double j = random.nextGaussian() * 0.02D;
-            world.addParticle(effect, (double)pos.getX() + e + f * (double)random.nextFloat(), (double)pos.getY() + d + (double)random.nextFloat() * (1.0D - d), (double)pos.getZ() + e + f * (double)random.nextFloat(), g, h, j);
+            world.addParticle(effect, (double)pos.getX() + e + f * (double)random.nextFloat(), (double)pos.getY() + d + (double)random.nextFloat() * (0.75D - d), (double)pos.getZ() + e + f * (double)random.nextFloat(), g, h, j);
         }
     }
 }

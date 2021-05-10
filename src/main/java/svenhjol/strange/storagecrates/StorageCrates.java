@@ -14,6 +14,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
@@ -32,7 +33,7 @@ import java.util.Map;
 @Module(mod = Strange.MOD_ID, priority = 10, client = StorageCratesClient.class)
 public class StorageCrates extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "storage_crate");
-    public static final Identifier MSG_CLIENT_INTERACTED_WITH_CRATE = new Identifier(Strange.MOD_ID, "client_interacted_with_crate");
+    public static final Identifier MSG_CLIENT_UPDATED_CRATE = new Identifier(Strange.MOD_ID, "client_interacted_with_crate");
     public static Map<IVariantMaterial, StorageCrateBlock> STORAGE_CRATE_BLOCKS = new HashMap<>();
     public static BlockEntityType<StorageCrateBlockEntity> BLOCK_ENTITY;
 
@@ -65,59 +66,38 @@ public class StorageCrates extends CharmModule {
         boolean isCreative = player.getAbilities().creativeMode;
         boolean isSneaking = player.isSneaking();
 
-        Direction facing = world.getBlockState(pos).get(StorageCrateBlock.FACING);
-
         BlockEntity blockEntity = world.getBlockEntity(hitResult.getBlockPos());
         if (blockEntity instanceof StorageCrateBlockEntity) {
             StorageCrateBlockEntity crate = (StorageCrateBlockEntity) blockEntity;
-            Interaction interacted = null;
 
             if (!world.isClient) {
-                if (crate.count > 0 && (isSneaking || held.isEmpty())) {
-                    int amountToRemove = Math.min(crate.item.getMaxCount(), crate.count);
 
-                    if (!isCreative) {
-                        PlayerHelper.addOrDropStack(player, new ItemStack(crate.item, amountToRemove));
-                    }
+                if (!crate.isEmpty() && (isSneaking || held.isEmpty())) {
+                    ItemStack stack = crate.takeStack();
 
-                    crate.count -= amountToRemove;
+                    if (!isCreative)
+                        PlayerHelper.addOrDropStack(player, stack);
 
-                    if (crate.count == 0)
-                        crate.item = null;
-
-                    interacted = Interaction.REMOVED;
+                } else if (crate.isEmpty() && isSneaking) {
+                    return ActionResult.PASS;
 
                 } else if (!held.isEmpty()) {
-                    if (crate.item == held.getItem() || crate.count == 0) {
-                        crate.item = held.getItem();
 
-                        int maxCount = maximumStacks * crate.item.getMaxCount();
+                    // slot doesn't matter here, we're just checking the item type
+                    if (crate.isEmpty() || crate.canInsert(0, held, Direction.UP)) {
+                        if (crate.isFull()) {
+                            sendClientEffects(world, pos, ActionType.FILLED);
 
-                        if (crate.count >= maxCount) {
-                            crate.count = maxCount;
-                            interacted = Interaction.FILLED;
                         } else {
-                            int amountToAdd = Math.min(maxCount - crate.count, held.getCount());
-                            crate.count += amountToAdd;
 
                             if (!isCreative)
-                                held.decrement(amountToAdd);
-
-                            interacted = Interaction.ADDED;
+                                player.setStackInHand(hand, crate.addStack(held));
+//                            crate.setStack(0, held);
                         }
                     }
                 }
 
-                if (interacted != null) {
-                    crate.markDirty();
-                    crate.sync();
-
-                    PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-                    data.writeEnumConstant(interacted);
-                    data.writeEnumConstant(facing);
-                    data.writeLong(pos.asLong());
-                    ServerPlayNetworking.send((ServerPlayerEntity) player, MSG_CLIENT_INTERACTED_WITH_CRATE, data);
-                }
+                crate.sync();
             }
 
             return ActionResult.success(world.isClient);
@@ -126,7 +106,16 @@ public class StorageCrates extends CharmModule {
         return ActionResult.PASS;
     }
 
-    public enum Interaction {
+    public static void sendClientEffects(World world, BlockPos pos, StorageCrates.ActionType actionType) {
+        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        data.writeEnumConstant(actionType);
+        data.writeLong(pos.asLong());
+
+        world.getNonSpectatingEntities(PlayerEntity.class, (new Box(pos)).expand(8.0D)).forEach(p
+            -> ServerPlayNetworking.send((ServerPlayerEntity) p, MSG_CLIENT_UPDATED_CRATE, data));
+    }
+
+    public enum ActionType {
         ADDED,
         REMOVED,
         FILLED

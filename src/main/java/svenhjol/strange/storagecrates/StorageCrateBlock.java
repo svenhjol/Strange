@@ -6,14 +6,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
@@ -48,18 +46,8 @@ public class StorageCrateBlock extends CharmBlockWithEntity {
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         StorageCrateBlockEntity crate = getBlockEntity(world, pos);
 
-        if (!world.isClient && crate != null && crate.item != null) {
-            DefaultedList<ItemStack> stacks = DefaultedList.of();
-            int numStacks = crate.count / StorageCrates.maximumStacks;
-            int remainder = crate.count % crate.item.getMaxCount();
-
-            if (numStacks > 0) {
-                for (int i = 0; i < numStacks; i++) {
-                    stacks.add(new ItemStack(crate.item, crate.item.getMaxCount()));
-                }
-            }
-            stacks.add(new ItemStack(crate.item, remainder));
-            ItemScatterer.spawn(world, pos, stacks);
+        if (!world.isClient && crate != null && !crate.isEmpty()) {
+            ItemScatterer.spawn(world, pos, crate.getInvStackList());
         }
 
         super.onStateReplaced(state, world, pos, newState, moved);
