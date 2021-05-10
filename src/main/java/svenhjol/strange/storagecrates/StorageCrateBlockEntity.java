@@ -144,28 +144,25 @@ public class StorageCrateBlockEntity extends LootableContainerBlockEntity implem
     }
 
     public ItemStack addStack(ItemStack stack) {
-        ItemStack out = ItemStack.EMPTY;
-
         for (int i = 0; i < getInvStackList().size(); i++) {
             ItemStack stackInSlot = super.getStack(i); // call super so we don't get particle effects
             if (stackInSlot.isEmpty()) {
                 super.setStack(i, stack); // call super so we don't get particle effects
+                stack = ItemStack.EMPTY;
                 break;
 
             } else if (canMergeItems(stack, stackInSlot)) {
                 int c = stack.getMaxCount() - stackInSlot.getCount();
                 int d = Math.min(stack.getCount(), c);
-                stack.decrement(d);
                 stackInSlot.increment(d);
-                out = stack;
-                break;
+                stack.decrement(d);
             }
         }
 
         this.sync();
 
         doClientAddEffect();
-        return out;
+        return stack;
     }
 
     public ItemStack takeStack() {
