@@ -27,6 +27,7 @@
     ]
   },
   "mixins": [
+    "strange.mixins.json"
   ],
 
   "depends": {
