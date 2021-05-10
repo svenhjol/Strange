@@ -51,7 +51,7 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
         if (world == null)
             return;
 
-        int count = entity.count;
+        int count = Math.max(1, entity.count / StorageCrates.maximumStacks);
         Item item = entity.item;
         if (item == null)
             return;

@@ -7,6 +7,7 @@ import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.enums.VanillaVariantMaterial;
 import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.RegistryHelper;
+import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
 import svenhjol.strange.Strange;
 
@@ -18,6 +19,9 @@ public class StorageCrates extends CharmModule {
     public static final Identifier ID = new Identifier(Strange.MOD_ID, "storage_crate");
     public static Map<IVariantMaterial, StorageCrateBlock> STORAGE_CRATE_BLOCKS = new HashMap<>();
     public static BlockEntityType<StorageCrateBlockEntity> BLOCK_ENTITY;
+
+    @Config(name = "Maximum stacks", description = "Number of stacks of a single item or block that a storage crate will hold.")
+    public static int maximumStacks = 54;
 
     @Override
     public void register() {
