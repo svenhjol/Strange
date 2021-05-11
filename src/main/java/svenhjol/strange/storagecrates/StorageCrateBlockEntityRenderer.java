@@ -19,9 +19,12 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
+import svenhjol.charm.client.StorageLabelsClient;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -202,8 +205,10 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
             remainder = count - (l * PER_ROW);
         }
 
-        if (player != null && player.isSneaking() && !crate.isEmpty())
-            renderLabel(matrices, vertexConsumers, camera, player.getHorizontalFacing(), new LiteralText(String.valueOf(crate.getTotalNumberOfItems())));
+        if (player != null && !crate.isEmpty()) {
+            LiteralText text = new LiteralText(String.valueOf(crate.getTotalNumberOfItems()));
+            StorageLabelsClient.renderLabel(matrices, vertexConsumers, player, camera, text);
+        }
     }
 
     private void renderItemStack(MatrixStack matrices, VertexConsumerProvider vertexConsumers, @Nullable Quaternion rotation, double x, double y, double z, float scale, int light) {
@@ -216,41 +221,6 @@ public class StorageCrateBlockEntityRenderer<T extends StorageCrateBlockEntity> 
             matrices.multiply(rotation);
 
         itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, stack.hashCode());
-        matrices.pop();
-    }
-
-    // TODO add this to some kind of helper
-    private void renderLabel(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Camera camera, Direction facing, Text text) {
-        float xo = 0.0F;
-        float zo = 0.0F;
-
-        switch (facing) {
-            case EAST:
-                xo -= 0.65F;
-                break;
-
-            case WEST:
-                xo += 0.65F;
-                break;
-
-            case SOUTH:
-                zo -= 0.65F;
-                break;
-
-            case NORTH:
-                zo += 0.65F;
-                break;
-        }
-
-        matrices.push();
-        matrices.translate(0.5F + xo, 0.85F, 0.5F + zo);
-        matrices.multiply(camera.getRotation());
-        matrices.scale(-0.014F, -0.014F, 0.014F);
-        Matrix4f matrix4f = matrices.peek().getModel();
-        float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
-        int j = (int)(g * 255.0F) << 24;
-        float h = (float)(-textRenderer.getWidth(text) / 2);
-        textRenderer.draw(text, h, 0, 0xFFFFFF, false, matrix4f, vertexConsumers, false, j, 255);
         matrices.pop();
     }
 }
