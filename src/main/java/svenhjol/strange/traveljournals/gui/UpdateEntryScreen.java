@@ -20,6 +20,7 @@ import net.minecraft.util.Identifier;
 import svenhjol.charm.Charm;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.StringHelper;
+import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.base.helper.NetworkHelper;
 import svenhjol.strange.traveljournals.JournalEntry;
 import svenhjol.strange.traveljournals.TravelJournals;
@@ -82,7 +83,7 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
         nameField.setEditable(true);
 
         client.keyboard.setRepeatEvents(true);
-        children.add(nameField);
+        ((ScreenAccessor)this).getChildren().add(nameField);
         setFocused(nameField);
 
         // reset cached rendered items
@@ -124,14 +125,14 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
         if (hasScreenshot) {
             tryRenderScreenshot(matrices);
         } else {
-            this.addButton(new ButtonWidget((width / 2) - 50, colorsTop + 51, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
+            this.addDrawableChild(new ButtonWidget((width / 2) - 50, colorsTop + 51, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
         }
 
         // render color selection buttons
         if (!hasRenderedColorButtons) {
             for (int i = 0; i < colors.size(); i++) {
                 final DyeColor col = colors.get(i);
-                this.addButton(new TexturedButtonWidget(colorsLeft + (i * 22), colorsTop, 20, 18, (i * 20), 0, 18, COLORS, r -> setColor(col)));
+                this.addDrawableChild(new TexturedButtonWidget(colorsLeft + (i * 22), colorsTop, 20, 18, (i * 20), 0, 18, COLORS, r -> setColor(col)));
             }
             hasRenderedColorButtons = true;
         }
@@ -166,11 +167,11 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
         int buttonDist = 120;
 
         if (atEntryPosition) {
-            this.addButton(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+            this.addDrawableChild(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
             buttonX += buttonDist;
         }
 
-        this.addButton(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.save"), (button) -> this.save()));
+        this.addDrawableChild(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.save"), (button) -> this.save()));
     }
 
     private void responder(String str) {
@@ -277,14 +278,14 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
 
         // button to make map
         if (!hasRenderedMapButton && hasMap) {
-            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
             top += rightButtonYOffset;
         }
 
         // button to use totem
         if (!hasRenderedTotemButton && hasTotem) {
-            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
             hasRenderedTotemButton = true;
             top += rightButtonYOffset;
         }
@@ -294,7 +295,7 @@ public class UpdateEntryScreen extends TravelJournalBaseScreen {
 
         // button to delete entry
         if (!hasRenderedTrashButton) {
-            this.addButton(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, r -> delete()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, r -> delete()));
             hasRenderedTrashButton = true;
             top += leftButtonYOffset;
         }

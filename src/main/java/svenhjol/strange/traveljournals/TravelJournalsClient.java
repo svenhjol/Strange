@@ -6,15 +6,15 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.client.util.Screenshooter;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -28,8 +28,9 @@ import svenhjol.charm.base.CharmClientModule;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.helper.ScreenHelper;
-import svenhjol.charm.event.GuiSetupCallback;
 import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.event.SetupGuiCallback;
+import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.base.StrangeResources;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.traveljournals.gui.TravelJournalScreen;
@@ -53,7 +54,7 @@ public class TravelJournalsClient extends CharmClientModule {
 
     @Override
     public void register() {
-        GuiSetupCallback.EVENT.register(this::handleGuiSetup);
+        SetupGuiCallback.EVENT.register(this::handleGuiSetup);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class TravelJournalsClient extends CharmClientModule {
         ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
     }
 
-    private void handleGuiSetup(MinecraftClient client, int width, int height, List<AbstractButtonWidget> buttons, Consumer<AbstractButtonWidget> addButton) {
+    private void handleGuiSetup(MinecraftClient client, int width, int height, List<Selectable> buttons) {
         if (client.player == null
             || !(client.currentScreen instanceof InventoryScreen)
             || client.player.isCreative())
@@ -104,7 +105,7 @@ public class TravelJournalsClient extends CharmClientModule {
         TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click
             -> triggerOpenTravelJournal());
 
-        addButton.accept(button);
+        ((ScreenAccessor)screen).invokeAddDrawableChild(button);
     }
 
     private void handlePlayerTick(PlayerEntity player) {
@@ -118,7 +119,7 @@ public class TravelJournalsClient extends CharmClientModule {
                 MinecraftClient client = MinecraftClient.getInstance();
                 Window win = client.getWindow();
 
-                ScreenshotUtils.saveScreenshot(
+                Screenshooter.saveScreenshot(
                     client.runDirectory,
                     entryHavingScreenshot.id + ".png",
                     win.getFramebufferWidth() / 8,

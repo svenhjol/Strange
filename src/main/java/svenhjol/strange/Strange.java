@@ -18,7 +18,6 @@ import svenhjol.strange.scrolls.Scrolls;
 import svenhjol.strange.stonecircles.StoneCircles;
 import svenhjol.strange.storagecrates.StorageCrates;
 import svenhjol.strange.totems.TotemOfFlying;
-import svenhjol.strange.totems.TotemOfPreserving;
 import svenhjol.strange.traveljournals.TravelJournals;
 import svenhjol.strange.treasure.Treasure;
 
@@ -43,7 +42,6 @@ public class Strange implements ModInitializer {
             StoneCircles.class,
             TravelJournals.class,
             TotemOfFlying.class,
-            TotemOfPreserving.class,
             Treasure.class,
             StorageCrates.class
         ));

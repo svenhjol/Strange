@@ -111,6 +111,6 @@ public class RunesScreen extends TravelJournalBaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
+        this.addDrawableChild(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
     }
 }

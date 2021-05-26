@@ -142,7 +142,7 @@ public class ScrollScreen extends Screen {
         int h = 20;
 
         String key = backToJournal ? "gui.strange.scrolls.back_to_journal" : "gui.strange.scrolls.close";
-        this.addButton(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText(key), this::close));
+        this.addDrawableChild(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText(key), this::close));
     }
 
     private void close(ButtonWidget button) {

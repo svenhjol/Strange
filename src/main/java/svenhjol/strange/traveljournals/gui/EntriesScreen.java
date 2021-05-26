@@ -93,12 +93,12 @@ public class EntriesScreen extends TravelJournalBaseScreen {
             this.textRenderer.draw(matrices, bold + name, left + 2, top + 10, DyeColor.byId(entry.color).getSignColor()); // TODO: how to get color not signColor
 
             // update button
-            this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 180, 0, 19, BUTTONS, button -> updateEntry(entry)));
+            this.addDrawableChild(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 180, 0, 19, BUTTONS, button -> updateEntry(entry)));
             buttonOffsetX -= buttonSpacing;
 
             // totem button
             if (hasTotem && DimensionHelper.isDimension(client.world, entry.dim)) {
-                this.addButton(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 160, 0, 19, BUTTONS, button -> useTotem(entry)));
+                this.addDrawableChild(new TexturedButtonWidget(buttonOffsetX, top + 4, 20, 18, 160, 0, 19, BUTTONS, button -> useTotem(entry)));
             }
 
             top += entryRowHeight;
@@ -107,13 +107,13 @@ public class EntriesScreen extends TravelJournalBaseScreen {
         if (size > PER_PAGE) {
             this.textRenderer.draw(matrices, I18n.translate("gui.strange.travel_journal.page", lastPage), left + 100, 157, SUB_COLOR);
             if (lastPage > 1) {
-                this.addButton(new TexturedButtonWidget(left + 140, 152, 20, 18, 140, 0, 19, BUTTONS, button -> {
+                this.addDrawableChild(new TexturedButtonWidget(left + 140, 152, 20, 18, 140, 0, 19, BUTTONS, button -> {
                     --lastPage;
                     init();
                 }));
             }
             if (lastPage * PER_PAGE < size) {
-                this.addButton(new TexturedButtonWidget(left + 160, 152, 20, 18, 120, 0, 19, BUTTONS, button -> {
+                this.addDrawableChild(new TexturedButtonWidget(left + 160, 152, 20, 18, 120, 0, 19, BUTTONS, button -> {
                     ++lastPage;
                     init();
                 }));
@@ -139,8 +139,8 @@ public class EntriesScreen extends TravelJournalBaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - 110, y, w, h, new TranslatableText("gui.strange.travel_journal.new_entry"), button -> this.addEntry()));
-        this.addButton(new ButtonWidget((width / 2) + 10, y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> this.onClose()));
+        this.addDrawableChild(new ButtonWidget((width / 2) - 110, y, w, h, new TranslatableText("gui.strange.travel_journal.new_entry"), button -> this.addEntry()));
+        this.addDrawableChild(new ButtonWidget((width / 2) + 10, y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> this.onClose()));
     }
 
     private void addEntry() {

@@ -15,8 +15,6 @@
   "advancements.strange.harvest_rubble.description": "Successfully extract an item from ancient rubble",
   "advancements.strange.learn_all_runes.title": "Runemaster",
   "advancements.strange.learn_all_runes.description": "Learn every rune's destination",
-  "advancements.strange.use_totem_of_preserving.title": "Safe Hands",
-  "advancements.strange.use_totem_of_preserving.description": "Use a Totem of Preserving to hold all your items",
   "advancements.strange.obtain_astrolabe.title": "Astrolabe",
   "advancements.strange.obtain_astrolabe.description": "Craft an astrolabe",
   "advancements.strange.link_astrolabe.title": "Pairing Request",
@@ -128,7 +126,6 @@
   "item.strange.runestone_dust": "Runestone Dust",
   "item.strange.test_scroll": "Test Scroll",
   "item.strange.totem_of_flying": "Totem of Flying",
-  "item.strange.totem_of_preserving": "Totem of Preserving",
   "item.strange.travel_journal": "Travel Journal",
   "item.strange.treasure.ambitious_crossbow": "Ambitious Crossbow",
   "item.strange.treasure.angery_potato": "Angery Potato",
@@ -194,9 +191,5 @@
   "scroll.strange.too_many_quests": "You cannot start a new scroll at the moment.",
 
   "structure.strange.foundation": "Foundations",
-  "structure.strange.ruin": "Ruins",
-
-  "totem.strange.preserving.item": "Preserving one item",
-  "totem.strange.preserving.items": "Preserving %s items",
-  "totem.strange.preserving.item_name": "%s (%s)"
+  "structure.strange.ruin": "Ruins"
 }

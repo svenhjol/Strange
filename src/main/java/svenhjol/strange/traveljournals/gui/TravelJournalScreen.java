@@ -59,13 +59,13 @@ public class TravelJournalScreen extends TravelJournalBaseScreen {
             int buttonHeight = 20;
 
             yOffset += rowHeight;
-            this.addButton(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_entries"), button -> this.openEntriesScreen()));
+            this.addDrawableChild(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_entries"), button -> this.openEntriesScreen()));
 
             yOffset += rowHeight;
-            this.addButton(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_runes"), button -> this.openRunesScreen()));
+            this.addDrawableChild(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_runes"), button -> this.openRunesScreen()));
 
             yOffset += rowHeight;
-            this.addButton(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_scrolls"), button -> this.openScrollsScreen()));
+            this.addDrawableChild(new ButtonWidget((width / 2) - (buttonWidth / 2), yOffset, buttonWidth, buttonHeight, new TranslatableText("gui.strange.travel_journal.open_scrolls"), button -> this.openScrollsScreen()));
         }
     }
 
@@ -75,6 +75,6 @@ public class TravelJournalScreen extends TravelJournalBaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
+        this.addDrawableChild(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
     }
 }

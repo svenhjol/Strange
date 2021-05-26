@@ -86,7 +86,7 @@ public class ScrollsScreen extends TravelJournalBaseScreen {
 
             // button to abandon quest
             if (!hasRenderedTrashButtons.contains(i)) {
-                this.addButton(new TexturedButtonWidget(mid + 75, qy - 1, 20, 18, 160, 0, 19, BUTTONS, r -> abandonQuest(quest)));
+                this.addDrawableChild(new TexturedButtonWidget(mid + 75, qy - 1, 20, 18, 160, 0, 19, BUTTONS, r -> abandonQuest(quest)));
                 hasRenderedTrashButtons.add(i);
             }
         }
@@ -110,7 +110,7 @@ public class ScrollsScreen extends TravelJournalBaseScreen {
         int w = 100;
         int h = 20;
 
-        this.addButton(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
+        this.addDrawableChild(new ButtonWidget((width / 2) - (w / 2), y, w, h, new TranslatableText("gui.strange.travel_journal.close"), button -> onClose()));
     }
 
     private void abandonQuest(Quest quest) {

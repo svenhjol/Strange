@@ -45,10 +45,7 @@ import svenhjol.charm.base.helper.PosHelper;
 import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
-import svenhjol.charm.event.PlayerLoadDataCallback;
-import svenhjol.charm.event.PlayerSaveDataCallback;
-import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.charm.event.ThrownEntityImpactCallback;
+import svenhjol.charm.event.*;
 import svenhjol.strange.Strange;
 import svenhjol.strange.base.StrangeSounds;
 import svenhjol.strange.runestones.destination.BiomeDestination;
@@ -154,14 +151,15 @@ public class Runestones extends CharmModule {
         // listen for broken runestones
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
 
+        LoadWorldCallback.EVENT.register(this::handleLoadWorld);
+
         initDestinations();
     }
 
     /**
      * Use the loadWorld event to shuffle the destinations according to the world seed.
      */
-    @Override
-    public void loadWorld(MinecraftServer server) {
+    private void handleLoadWorld(MinecraftServer server) {
         ServerWorld overworld = server.getWorld(World.OVERWORLD);
 
         if (overworld == null) {

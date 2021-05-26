@@ -12,6 +12,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.traveljournals.TravelJournalsClient;
 
@@ -121,36 +122,35 @@ public abstract class TravelJournalBaseScreen extends Screen {
 
         // button to open home page
         if (!hasRenderedHomeButton) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 0, 37, 19, BUTTONS, button -> openTravelJournalScreen()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 0, 37, 19, BUTTONS, button -> openTravelJournalScreen()));
             hasRenderedHomeButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open entries page
         if (!hasRenderedEntriesButton) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 60, 37, 19, BUTTONS, button -> openEntriesScreen()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 60, 37, 19, BUTTONS, button -> openEntriesScreen()));
             hasRenderedEntriesButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open rune page
         if (!hasRenderedRuneButton) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 37, 19, BUTTONS, button -> openRunesScreen()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 37, 19, BUTTONS, button -> openRunesScreen()));
             hasRenderedRuneButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open scroll page
         if (!hasRenderedScrollButton) {
-            this.addButton(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollsScreen()));
+            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollsScreen()));
             hasRenderedScrollButton = true;
             top += rightButtonYOffset;
         }
     }
 
     protected void redraw() {
-        this.buttons.clear();
-        this.children.clear();
+        this.clearChildren();
         this.renderButtons();
     }
 

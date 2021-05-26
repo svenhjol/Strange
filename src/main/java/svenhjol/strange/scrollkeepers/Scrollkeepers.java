@@ -32,7 +32,7 @@ import svenhjol.charm.base.helper.VillagerHelper;
 import svenhjol.charm.base.helper.WorldHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
-import svenhjol.charm.event.StructureSetupCallback;
+import svenhjol.charm.event.SetupStructureCallback;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.strange.Strange;
 import svenhjol.strange.scrolls.*;
@@ -41,7 +41,7 @@ import svenhjol.strange.scrolls.tag.Quest;
 import java.util.Optional;
 import java.util.UUID;
 
-import static svenhjol.charm.event.StructureSetupCallback.addVillageHouse;
+import static svenhjol.charm.event.SetupStructureCallback.addVillageHouse;
 
 @Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
@@ -86,11 +86,11 @@ public class Scrollkeepers extends CharmModule {
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
 
         // register scrollkeeper structures
-        addVillageHouse(StructureSetupCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);
-        addVillageHouse(StructureSetupCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
-        addVillageHouse(StructureSetupCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
-        addVillageHouse(StructureSetupCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
-        addVillageHouse(StructureSetupCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.SAVANNA, new Identifier("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.SNOWY, new Identifier("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.TAIGA, new Identifier("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.DESERT, new Identifier("strange:village/desert/houses/desert_scrollkeeper"), 5);
 
         // listen for quest satisfied request coming from the client
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);

@@ -38,7 +38,7 @@ import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.DimensionHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
-import svenhjol.charm.event.EntityDeathCallback;
+import svenhjol.charm.event.EntityKillCallback;
 import svenhjol.charm.event.LoadWorldCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
@@ -113,7 +113,7 @@ public class Scrolls extends CharmModule {
         });
 
         // handle entities being killed
-        EntityDeathCallback.EVENT.register(this::handleEntityDeath);
+        EntityKillCallback.EVENT.register(this::handleEntityDeath);
 
         // add scrolls to loot
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
