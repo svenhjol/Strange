@@ -20,11 +20,13 @@ import net.minecraft.world.World;
 import svenhjol.charm.base.CharmModule;
 import svenhjol.charm.base.enums.IVariantMaterial;
 import svenhjol.charm.base.enums.VanillaVariantMaterial;
+import svenhjol.charm.base.handler.ModuleHandler;
 import svenhjol.charm.base.handler.RegistryHandler;
 import svenhjol.charm.base.helper.PlayerHelper;
 import svenhjol.charm.base.helper.RegistryHelper;
 import svenhjol.charm.base.iface.Config;
 import svenhjol.charm.base.iface.Module;
+import svenhjol.charm.enums.CharmWoodMaterial;
 import svenhjol.strange.Strange;
 
 import java.util.HashMap;
@@ -48,6 +50,10 @@ public class StorageCrates extends CharmModule {
         VanillaVariantMaterial.getTypes().forEach(material -> {
             registerStorageCrate(this, material);
         });
+
+        for (CharmWoodMaterial material : CharmWoodMaterial.values()) {
+            registerStorageCrate(this, material);
+        }
     }
 
     public static StorageCrateBlock registerStorageCrate(CharmModule module, IVariantMaterial material) {

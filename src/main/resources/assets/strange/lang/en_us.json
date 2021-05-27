@@ -23,8 +23,10 @@
   "advancements.strange.locate_astrolabe_location.description": "Go to another dimension and stand at the linked spot",
 
   "block.strange.acacia_storage_crate": "Acacia Storage Crate",
+  "block.strange.azalea_storage_crate": "Azalea Storage Crate",
   "block.strange.birch_storage_crate": "Birch Storage Crate",
   "block.strange.dark_oak_storage_crate": "Dark Oak Storage Crate",
+  "block.strange.ebony_storage_crate": "Ebony Storage Crate",
   "block.strange.jungle_storage_crate": "Jungle Storage Crate",
   "block.strange.oak_storage_crate": "Oak Storage Crate",
   "block.strange.spruce_storage_crate": "Spruce Storage Crate",
