@@ -13,11 +13,10 @@
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false,
-    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+    "hidden": false
   },
   "criteria": {
-    "find_stone_circle": {
+    "found_stone_circle": {
       "trigger": "minecraft:location",
       "conditions": {
         "feature": "strange:stone_circle"
@@ -26,7 +25,7 @@
   },
   "requirements": [
     [
-      "find_stone_circle"
+      "found_stone_circle"
     ]
   ]
 }

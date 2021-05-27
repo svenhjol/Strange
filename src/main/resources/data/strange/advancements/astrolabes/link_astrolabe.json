@@ -19,7 +19,7 @@
     "linked_astrolabe": {
       "trigger": "charm:action_performed",
       "conditions": {
-        "action": "charm:linked_astrolabe"
+        "action": "strange:linked_astrolabe"
       }
     }
   },

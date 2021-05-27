@@ -2,7 +2,6 @@ package svenhjol.strange.module.rubble;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -209,7 +208,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
 
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
-        Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, new ItemStack(Rubble.RUBBLE));
+        Rubble.triggerHarvestedRubble((ServerPlayerEntity)player);
 
         world.removeBlockEntity(pos);
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);

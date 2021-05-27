@@ -1,5 +1,5 @@
 {
-  "parent": "strange:activate_runestone",
+  "parent": "strange:runestones/activate_runestone",
   "display": {
     "icon": {
       "item": "strange:runestone_16"
@@ -13,18 +13,17 @@
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false,
-    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+    "hidden": false
   },
   "criteria": {
-    "trigger_last_runestone": {
-      "trigger": "minecraft:consume_item",
-      "conditions": {"item": {"item": "strange:runestone_0"}}
+    "learned_all_runes": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:learned_all_runes"}
     }
   },
   "requirements": [
     [
-      "trigger_last_runestone"
+      "learned_all_runes"
     ]
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "parent": "strange:root",
+  "display": {
+    "icon": {
+      "item": "strange:apprentice_scroll"
+    },
+    "title": {
+      "translate": "advancements.strange.obtain_scroll.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtain_scroll.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "has_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": [
+        "strange:novice_scroll",
+        "strange:apprentice_scroll",
+        "strange:journeyman_scroll",
+        "strange:expert_scroll",
+        "strange:master_scroll",
+        "strange:legendary_scroll"
+      ]}]}
+    }
+  },
+  "requirements": [
+    [
+      "has_scroll"
+    ]
+  ]
+}

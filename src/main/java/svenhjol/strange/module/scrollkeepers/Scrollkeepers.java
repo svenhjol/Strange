@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -35,12 +34,8 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.mixin.accessor.VillagerEntityAccessor;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.scrolls.QuestToastType;
-import svenhjol.strange.module.scrolls.ScrollsHelper;
-import svenhjol.strange.module.scrolls.ScrollItem;
-import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.*;
 import svenhjol.strange.module.scrolls.tag.Quest;
-import svenhjol.strange.module.scrolls.QuestManager;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -119,7 +114,7 @@ public class Scrollkeepers extends CharmModule {
 
             if (!world.isClient) {
                 Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
-                if (!optionalQuestManager.isPresent())
+                if (optionalQuestManager.isEmpty())
                     return ActionResult.PASS;
 
                 QuestManager questManager = optionalQuestManager.get();
@@ -129,7 +124,7 @@ public class Scrollkeepers extends CharmModule {
                     return ActionResult.PASS;
 
                 Optional<Quest> optionalQuest = questManager.getQuest(questId);
-                if (!optionalQuest.isPresent()) {
+                if (optionalQuest.isEmpty()) {
                     ((VillagerEntityAccessor)villager).invokeSayNo();
                     return ActionResult.FAIL;
                 }
@@ -160,7 +155,7 @@ public class Scrollkeepers extends CharmModule {
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 quest.complete(player, villager);
                 questManager.sendToast((ServerPlayerEntity) player, quest, QuestToastType.Success, "event.strange.quests.completed");
-                Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)player, heldStack);
+                Scrolls.triggerCompletedScroll((ServerPlayerEntity) player);
                 heldStack.decrement(1);
 
                 // handle villager xp increase and level-up

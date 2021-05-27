@@ -19,7 +19,7 @@
     "located_astrolabe_location": {
       "trigger": "charm:action_performed",
       "conditions": {
-        "action": "charm:located_astrolabe_location"
+        "action": "strange:located_astrolabe_location"
       }
     }
   },

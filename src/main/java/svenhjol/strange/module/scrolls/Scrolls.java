@@ -40,6 +40,7 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.RegistryHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.charm.module.bookcases.Bookcases;
@@ -63,6 +64,7 @@ public class Scrolls extends CharmModule {
     public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests"); // instruct server to fetch a list of all player's quests
     public static final Identifier MSG_SERVER_ABANDON_QUEST = new Identifier(Strange.MOD_ID, "server_abandon_quest"); // instruct server to abandon a quest (by id)
 
+    public static final Identifier TRIGGER_COMPLETED_SCROLL = new Identifier(Strange.MOD_ID, "completed_scroll");
     public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
     public static LootFunctionType SCROLL_LOOT_FUNCTION;
 
@@ -379,5 +381,9 @@ public class Scrolls extends CharmModule {
             Optional<QuestManager> questManager = Scrolls.getQuestManager();
             questManager.ifPresent(callback);
         });
+    }
+
+    public static void triggerCompletedScroll(ServerPlayerEntity player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_COMPLETED_SCROLL);
     }
 }

@@ -1,5 +1,5 @@
 {
-  "parent": "strange:find_ruin",
+  "parent": "strange:ruins/find_ruin",
   "display": {
     "icon": {
       "item": "strange:rubble"
@@ -17,14 +17,12 @@
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "harvest_rubble": {
-      "trigger": "minecraft:consume_item",
-      "conditions": {"item": {"item": "strange:rubble"}}
+    "harvested_rubble": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:harvested_rubble"}
     }
   },
   "requirements": [
-    [
-      "harvest_rubble"
-    ]
+    ["harvested_rubble"]
   ]
 }

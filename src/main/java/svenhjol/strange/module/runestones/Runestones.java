@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -45,6 +44,7 @@ import svenhjol.charm.helper.EnchantmentsHelper;
 import svenhjol.charm.helper.PosHelper;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeSounds;
@@ -64,6 +64,8 @@ public class Runestones extends CharmModule {
     public static final Identifier RUNESTONE_DUST_ID = new Identifier(Strange.MOD_ID, "runestone_dust");
     public static final Identifier MSG_CLIENT_CACHE_LEARNED_RUNES = new Identifier(Strange.MOD_ID, "client_cache_learned_runes");
     public static final Identifier MSG_CLIENT_CACHE_DESTINATION_NAMES = new Identifier(Strange.MOD_ID, "client_cache_destination_names");
+    public static final Identifier TRIGGER_ACTIVATED_RUNESTONE = new Identifier(Strange.MOD_ID, "activated_runestone");
+    public static final Identifier TRIGGER_LEARNED_ALL_RUNES = new Identifier(Strange.MOD_ID, "learned_all_runes");
     public static final String LEARNED_TAG = "learned";
     public static final int TELEPORT_TICKS = 10;
 
@@ -398,12 +400,11 @@ public class Runestones extends CharmModule {
         teleportTo.put(uid, destPos);
         teleportTicks.put(uid, TELEPORT_TICKS);
 
-        Criteria.ENTER_BLOCK.trigger(player, world.getBlockState(runePos));
+        triggerActivatedRunestone(player);
         RunestonesHelper.addLearnedRune(player, runeValue);
 
-        if (RunestonesHelper.getLearnedRunes(player).size() == NUMBER_OF_RUNES) {
-            Criteria.CONSUME_ITEM.trigger(player, new ItemStack(RUNESTONE_BLOCKS.get(0))); // this is stupidland
-        }
+        if (RunestonesHelper.getLearnedRunes(player).size() >= NUMBER_OF_RUNES)
+            triggerLearnedAllRunes(player);
 
         return true;
     }
@@ -472,5 +473,13 @@ public class Runestones extends CharmModule {
         }
 
         return true; // always allow runestone to be broken
+    }
+
+    public static void triggerActivatedRunestone(ServerPlayerEntity player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_ACTIVATED_RUNESTONE);
+    }
+
+    public static void triggerLearnedAllRunes(ServerPlayerEntity player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LEARNED_ALL_RUNES);
     }
 }

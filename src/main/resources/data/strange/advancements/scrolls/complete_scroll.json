@@ -1,0 +1,29 @@
+{
+  "parent": "strange:scrolls/obtain_scroll",
+  "display": {
+    "icon": {
+      "item": "strange:expert_scroll"
+    },
+    "title": {
+      "translate": "advancements.strange.complete_scroll.title"
+    },
+    "description": {
+      "translate": "advancements.strange.complete_scroll.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "completed_scroll": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:completed_scroll"}
+    }
+  },
+  "requirements": [
+    [
+      "completed_scroll"
+    ]
+  ]
+}
