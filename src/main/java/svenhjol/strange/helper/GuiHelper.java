@@ -10,9 +10,9 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import svenhjol.strange.StrangeIcons;
+import svenhjol.strange.init.StrangeIcons;
 
-// TODO: move to Charm when complete
+// TODO: move to Charm
 public class GuiHelper extends DrawableHelper {
     public static ItemRenderer getItemRenderer() {
         return MinecraftClient.getInstance().getItemRenderer();

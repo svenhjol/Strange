@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
+// TODO: move to Charm
 public class NetworkHelper {
     public static void sendEmptyPacketToServer(Identifier id) {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());

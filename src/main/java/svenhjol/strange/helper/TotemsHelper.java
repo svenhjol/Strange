@@ -10,6 +10,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
+// TODO: move to Charm
 public class TotemsHelper {
     public static boolean destroy(PlayerEntity player, ItemStack totem) {
         if (player.isSpectator() || player.isCreative())
