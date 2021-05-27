@@ -1,6 +1,7 @@
 package svenhjol.strange.treasure;
 
-import svenhjol.strange.treasure.tools.*;
+import svenhjol.strange.module.Treasure;
+import svenhjol.strange.treasure.tool.*;
 
 public class TreasureTools {
     public static void init() {
