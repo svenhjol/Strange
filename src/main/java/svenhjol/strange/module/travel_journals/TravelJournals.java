@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@Module(mod = Strange.MOD_ID, client = TravelJournalsClient.class)
+@Module(mod = Strange.MOD_ID, client = TravelJournalsClient.class, description = "Helps keep track of interesting locations, current scrolls and learned runes.")
 public class TravelJournals extends CharmModule {
     public static final int MAX_ENTRIES = 50;
     public static final int MAX_NAME_LENGTH = 32;

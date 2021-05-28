@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
-import svenhjol.strange.module.scrolls.ScrollsHelper;
 import svenhjol.strange.module.scrolls.ScrollItem;
+import svenhjol.strange.module.scrolls.ScrollsHelper;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import java.util.List;
@@ -34,13 +34,16 @@ public class ScrollKeepersClient extends CharmClientModule {
 
     @Override
     public void register() {
-        PlayerTickCallback.EVENT.register(this::villagerInterested);
-
         // listen for quest tag being sent from the server to this player
         ClientPlayNetworking.registerGlobalReceiver(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
 
         // cut-out for 3D writing desk
         BlockRenderLayerMap.INSTANCE.putBlock(Scrollkeepers.WRITING_DESK, RenderLayer.getCutout());
+    }
+
+    @Override
+    public void init() {
+        PlayerTickCallback.EVENT.register(this::villagerInterested);
     }
 
     public void villagerInterested(PlayerEntity player) {

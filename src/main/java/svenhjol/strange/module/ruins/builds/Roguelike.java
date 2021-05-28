@@ -1,4 +1,4 @@
-package svenhjol.strange.module.ruins.build;
+package svenhjol.strange.module.ruins.builds;
 
 import svenhjol.charm.world.CharmStructure;
 import svenhjol.strange.Strange;

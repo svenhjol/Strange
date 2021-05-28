@@ -20,14 +20,13 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
 import svenhjol.strange.module.ruins.feature.*;
 import svenhjol.strange.module.ruins.generator.*;
-import svenhjol.strange.module.ruins.build.*;
 
 import static net.minecraft.world.biome.Biome.Category;
 import static svenhjol.charm.helper.BiomeHelper.addStructureToBiome;
 import static svenhjol.charm.helper.BiomeHelper.addStructureToBiomeCategories;
 import static svenhjol.charm.helper.RegistryHelper.configuredStructureFeature;
 
-@Module(mod = Strange.MOD_ID, description = "Ruined structures.")
+@Module(mod = Strange.MOD_ID, description = "Ruined structures found on the surface, in caves, and at the deepest levels of the overworld.")
 public class Ruins extends CharmModule {
     public static final Identifier SURFACE_RUIN_ID = new Identifier(Strange.MOD_ID, "surface_ruin");
     public static final Identifier CAVE_RUIN_ID = new Identifier(Strange.MOD_ID, "cave_ruin");
@@ -113,6 +112,15 @@ public class Ruins extends CharmModule {
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "deep_ruin"), DEEP_RUIN_CONFIGURED);
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "nether_ruin"), NETHER_RUIN_CONFIGURED);
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "end_ruin"), END_RUIN_CONFIGURED);
+
+        RuinBuilds.init();
+
+        // builds and registers all custom ruins into pools
+        SurfaceRuinGenerator.init();
+        CaveRuinGenerator.init();
+        DeepRuinGenerator.init();
+        NetherRuinGenerator.init();
+        EndRuinGenerator.init();
     }
 
     @Override
@@ -127,15 +135,6 @@ public class Ruins extends CharmModule {
 
         DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.OVERWORLD_RUINS_RARE);
         DecorationHelper.RARE_CHEST_LOOT_TABLES.add(StrangeLoot.OVERWORLD_RUINS_EPIC);
-
-        addRuins();
-
-        // builds and registers all custom ruins into pools
-        SurfaceRuinGenerator.init();
-        CaveRuinGenerator.init();
-        DeepRuinGenerator.init();
-        NetherRuinGenerator.init();
-        EndRuinGenerator.init();
 
         // add registered ruin pools to biomes
         if (!SurfaceRuinGenerator.RUINS.isEmpty()) addStructureToBiomeCategories(SURFACE_RUIN_CONFIGURED, Category.PLAINS);
@@ -158,32 +157,5 @@ public class Ruins extends CharmModule {
                 tag.putBoolean("ruin", isInRuin);
             }
         });
-    }
-
-    public static void addRuins() {
-        // --- SURFACE ---
-        StoneFort stoneFort = new StoneFort();
-        SurfaceRuinGenerator.RUINS.add(stoneFort);
-
-        // --- CAVE ---
-        Castle castle = new Castle();
-        CaveRuinGenerator.RUINS.add(castle);
-        CaveRuinGenerator.RUINS.add(castle);
-        CaveRuinGenerator.RUINS.add(castle);
-
-        Roguelike roguelike = new Roguelike();
-        CaveRuinGenerator.RUINS.add(roguelike);
-        CaveRuinGenerator.RUINS.add(roguelike);
-        CaveRuinGenerator.RUINS.add(roguelike);
-
-        Vaults vaults = new Vaults();
-        CaveRuinGenerator.RUINS.add(vaults);
-        CaveRuinGenerator.RUINS.add(vaults);
-        CaveRuinGenerator.RUINS.add(vaults);
-
-        // --- DEEP ---
-        StoneRoom stoneRoom = new StoneRoom();
-        DeepRuinGenerator.RUINS.add(stoneRoom);
-        DeepRuinGenerator.RUINS.add(stoneRoom);
     }
 }

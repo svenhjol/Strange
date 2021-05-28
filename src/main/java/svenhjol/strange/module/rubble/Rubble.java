@@ -11,7 +11,7 @@ import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
 
-@Module(mod = Strange.MOD_ID, client = RubbleClient.class)
+@Module(mod = Strange.MOD_ID, client = RubbleClient.class, description = "Rubble contains a valuable item. Hold down a shovel to start extracting it.")
 public class Rubble extends CharmModule {
     public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "rubble");
     public static final Identifier TRIGGER_HARVESTED_RUBBLE = new Identifier(Strange.MOD_ID, "harvested_rubble");

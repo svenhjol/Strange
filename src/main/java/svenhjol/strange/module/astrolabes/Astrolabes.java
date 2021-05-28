@@ -44,7 +44,10 @@ public class Astrolabes extends CharmModule {
         ASTROLABE = new AstrolabeBlock(this);
         BLOCK_ENTITY = RegistryHelper.blockEntity(ID, AstrolabeBlockEntity::new, ASTROLABE);
         POIT = WorldHelper.addPointOfInterestType(ID, ASTROLABE, 0);
+    }
 
+    @Override
+    public void init() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
     }
 

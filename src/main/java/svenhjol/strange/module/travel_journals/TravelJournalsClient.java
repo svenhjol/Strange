@@ -52,12 +52,8 @@ public class TravelJournalsClient extends CharmClientModule {
     }
 
     @Override
-    public void register() {
-        SetupGuiCallback.EVENT.register(this::handleGuiSetup);
-    }
-
-    @Override
     public void init() {
+        SetupGuiCallback.EVENT.register(this::handleGuiSetup);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
         if (TravelJournals.enableKeybind) {

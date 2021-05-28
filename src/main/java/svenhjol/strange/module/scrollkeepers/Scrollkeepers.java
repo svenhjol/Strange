@@ -66,12 +66,6 @@ public class Scrollkeepers extends CharmModule {
         WRITING_DESK = new WritingDeskBlock(this);
         POIT = WorldHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN);
-
-        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));
-        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollkeeperTradeOffers.ScrollForEmeralds(2));
-        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollkeeperTradeOffers.ScrollForEmeralds(3));
-        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollkeeperTradeOffers.ScrollForEmeralds(4));
-        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
     }
 
     @Override
@@ -83,6 +77,13 @@ public class Scrollkeepers extends CharmModule {
     public void init() {
         // listen for entity interaction events
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
+
+        // register scrollkeeper trades
+        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));
+        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollkeeperTradeOffers.ScrollForEmeralds(2));
+        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollkeeperTradeOffers.ScrollForEmeralds(3));
+        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollkeeperTradeOffers.ScrollForEmeralds(4));
+        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
 
         // register scrollkeeper structures
         addVillageHouse(SetupStructureCallback.VillageType.PLAINS, new Identifier("strange:village/plains/houses/plains_scrollkeeper"), 5);

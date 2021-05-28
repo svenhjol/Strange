@@ -1,4 +1,4 @@
-package svenhjol.strange.module.ruins.build;
+package svenhjol.strange.module.ruins.builds;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;
