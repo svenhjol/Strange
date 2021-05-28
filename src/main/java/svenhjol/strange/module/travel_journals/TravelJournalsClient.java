@@ -28,7 +28,6 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.event.SetupGuiCallback;
 import svenhjol.charm.helper.PosHelper;
 import svenhjol.charm.helper.ScreenHelper;
-import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.init.StrangeResources;
@@ -100,7 +99,7 @@ public class TravelJournalsClient extends CharmClientModule {
         TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click
             -> triggerOpenTravelJournal());
 
-        ((ScreenAccessor)screen).invokeAddDrawableChild(button);
+        screen.addDrawableChild(button);
     }
 
     private void handlePlayerTick(PlayerEntity player) {
