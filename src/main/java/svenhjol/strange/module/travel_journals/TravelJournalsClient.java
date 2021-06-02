@@ -14,7 +14,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.Screenshooter;
+import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -113,7 +113,7 @@ public class TravelJournalsClient extends CharmClientModule {
                 MinecraftClient client = MinecraftClient.getInstance();
                 Window win = client.getWindow();
 
-                Screenshooter.saveScreenshot(
+                ScreenshotRecorder.saveScreenshot(
                     client.runDirectory,
                     entryHavingScreenshot.id + ".png",
                     win.getFramebufferWidth() / 8,
