@@ -32,7 +32,7 @@ public class FrameBlock extends BaseFrameBlock {
     protected static final VoxelShape SOUTH_SHAPE;
 
     public FrameBlock(CharmModule module) {
-        super(module, "frame", AbstractBlock.Settings.copy(Blocks.STONE));
+        super(module, "frame", Settings.copy(Blocks.CRYING_OBSIDIAN));
         this.setDefaultState(this.getDefaultState()
             .with(FACING, Direction.NORTH)
             .with(RUNE, 0));

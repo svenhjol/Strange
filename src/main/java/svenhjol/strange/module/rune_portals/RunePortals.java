@@ -1,6 +1,7 @@
 package svenhjol.strange.module.rune_portals;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
@@ -18,8 +19,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
@@ -28,6 +31,7 @@ import net.minecraft.world.World;
 import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.ServerWorldInitCallback;
+import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
@@ -63,6 +67,9 @@ public class RunePortals extends CharmModule {
     public void init() {
         // listen for broken frames
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
+
+        // listen for when player tries to add a rune to a crying obsidian block
+        UseBlockCallback.EVENT.register(this::handleUseBlock);
 
         // load rune portal manager when world starts
         ServerWorldInitCallback.EVENT.register(this::loadRunePortalManager);
@@ -300,6 +307,61 @@ public class RunePortals extends CharmModule {
         world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), drop));
 
         return true;
+    }
+
+    private ActionResult handleUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
+        BlockPos hitPos = hit.getBlockPos();
+        ItemStack held = player.getStackInHand(hand);
+        BlockState state = world.getBlockState(hitPos);
+        Block block = state.getBlock();
+
+        boolean isFrameBlock = block.equals(RunePortals.FRAME_BLOCK);
+
+        if (isFrameBlock && hand == Hand.MAIN_HAND && held.isEmpty()) {
+            int runeValue = state.get(FrameBlock.RUNE);
+
+            if (!world.isClient) {
+                if (!player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+            }
+
+            world.setBlockState(hitPos, Blocks.CRYING_OBSIDIAN.getDefaultState(), 3);
+            return ActionResult.success(world.isClient);
+        }
+
+        if (held.getItem() instanceof RunicFragmentItem) {
+            Direction side = hit.getSide();
+            if (side == Direction.UP || side == Direction.DOWN)
+                return ActionResult.PASS;
+
+            // if there's already a rune in the frame
+            if (isFrameBlock) {
+                int runeValue = state.get(FrameBlock.RUNE);
+
+                if (!world.isClient && !player.isCreative())
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+//                world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 18);
+            }
+
+            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
+            BlockState newState = RunePortals.FRAME_BLOCK.getDefaultState()
+                .with(FrameBlock.FACING, side)
+                .with(FrameBlock.RUNE, fragment.getRuneValue());
+
+            world.setBlockState(hitPos, newState, 3);
+            world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
+
+            if (!world.isClient) {
+                if (!player.getAbilities().creativeMode)
+                    held.decrement(1);
+
+                RunePortals.tryActivate((ServerWorld) world, hitPos, newState);
+            }
+
+            return ActionResult.success(world.isClient);
+        }
+
+        return ActionResult.PASS;
     }
 
     private void loadRunePortalManager(ServerWorld serverWorld) {

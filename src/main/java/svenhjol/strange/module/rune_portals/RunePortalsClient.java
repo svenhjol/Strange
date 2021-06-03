@@ -36,7 +36,7 @@ public class RunePortalsClient extends CharmClientModule {
 
                 // the face of the rune
                 if (tintIndex == 1) {
-                    return 0x6C4F70;
+                    return 0x9C70B0;
                 }
             }
             return 0xFFFFFF;
