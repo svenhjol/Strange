@@ -1,9 +1,9 @@
 {
   "textures": {
-    "particle": "strange:block/wolf",
-    "bottom": "strange:block/wolf",
-    "top": "strange:block/wolf",
-    "side": "strange:block/wolf",
+    "particle": "minecraft:block/crying_obsidian",
+    "bottom": "minecraft:block/crying_obsidian",
+    "top": "minecraft:block/crying_obsidian",
+    "side": "minecraft:block/crying_obsidian",
     "rune": "strange:block/runestone_0"
   },
   "elements": [
