@@ -28,7 +28,6 @@ public class TreasureLootFunction extends ConditionalLootFunction {
     }
 
     private ItemStack tryCreateTreasureItem(ItemStack stack, LootContext context) {
-
         Map<ITreasureTool, Integer> tools = Treasure.TOOLS;
         Map<ITreasurePotion, Integer> potions = Treasure.POTIONS;
         ItemStack itemStack;

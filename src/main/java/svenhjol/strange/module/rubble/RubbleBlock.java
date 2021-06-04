@@ -158,7 +158,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
             return false;
 
         ItemStack stack;
-        if (list.size() == 1 || random.nextFloat() < 0.5F) {
+        if (list.size() == 1 || random.nextFloat() < 0.44F) {
             // fetch from the default loot table
             stack = list.get(0);
         } else {

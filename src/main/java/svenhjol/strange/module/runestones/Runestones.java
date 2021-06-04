@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -73,6 +74,9 @@ public class Runestones extends CharmModule {
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
     public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
+
+    public static final Identifier RUNIC_FRAGMENT_LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
+    public static LootFunctionType RUNIC_FRAGMENT_LOOT_FUNCTION;
 
     public static Map<Integer, RunicFragmentItem> RUNIC_FRAGMENTS = new HashMap<>();
     public static List<BaseDestination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
@@ -134,6 +138,9 @@ public class Runestones extends CharmModule {
             .trackRangeBlocks(80)
             .trackedUpdateRate(10)
             .dimensions(EntityDimensions.fixed(2.0F, 2.0F)));
+
+        // TODO: phase2 loot table
+        RUNIC_FRAGMENT_LOOT_FUNCTION = RegistryHelper.lootFunctionType(RUNIC_FRAGMENT_LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
     }
 
     @Override
@@ -153,6 +160,7 @@ public class Runestones extends CharmModule {
         // listen for broken runestones
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
 
+        // use loadworld event to shuffle the runestones according to world seed
         LoadWorldCallback.EVENT.register(this::handleLoadWorld);
 
         initDestinations();
@@ -469,6 +477,12 @@ public class Runestones extends CharmModule {
             int drops = 1 + world.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);
             for (int i = 0; i < drops; i++) {
                 world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
+            }
+
+            boolean shouldDropFragment = EnchantmentsHelper.getFortune(player) + world.random.nextInt(3) > 3;
+            if (shouldDropFragment) {
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNIC_FRAGMENTS.get(runeValue))));
+                RunestonesHelper.explode(world, pos, null, false);
             }
         }
 
