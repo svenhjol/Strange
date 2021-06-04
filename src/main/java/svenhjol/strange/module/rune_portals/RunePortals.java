@@ -43,8 +43,7 @@ import java.util.*;
 
 @Module(mod = Strange.MOD_ID, client = RunePortalsClient.class)
 public class RunePortals extends CharmModule {
-    public static RawFrameBlock RAW_FRAME_BLOCK;
-    public static FrameBlock FRAME_BLOCK;
+    public static PortalFrameBlock PORTAL_FRAME_BLOCK;
 
     public static final Identifier RUNE_PORTAL_BLOCK_ID = new Identifier(Strange.MOD_ID, "rune_portal");
     public static RunePortalBlock RUNE_PORTAL_BLOCK;
@@ -55,8 +54,7 @@ public class RunePortals extends CharmModule {
 
     @Override
     public void register() {
-        FRAME_BLOCK = new FrameBlock(this);
-        RAW_FRAME_BLOCK = new RawFrameBlock(this);
+        PORTAL_FRAME_BLOCK = new PortalFrameBlock(this);
         RUNE_PORTAL_BLOCK = new RunePortalBlock(this);
         RUNE_PORTAL_BLOCK_ENTITY = RegistryHelper.blockEntity(RUNE_PORTAL_BLOCK_ID, RunePortalBlockEntity::new, RUNE_PORTAL_BLOCK);
 
@@ -81,28 +79,28 @@ public class RunePortals extends CharmModule {
     }
 
     public static boolean tryActivate(ServerWorld world, BlockPos pos, BlockState state) {
-        if (!(state.getBlock() instanceof FrameBlock))
+        if (!(state.getBlock() instanceof PortalFrameBlock))
             return false;
 
         Direction.Axis axis = null;
         List<Integer> order = new ArrayList<>();
 
-        if (world.getBlockState(pos.east()).getBlock() instanceof FrameBlock
-            || world.getBlockState(pos.west()).getBlock() instanceof FrameBlock) {
+        if (world.getBlockState(pos.east()).getBlock() instanceof PortalFrameBlock
+            || world.getBlockState(pos.west()).getBlock() instanceof PortalFrameBlock) {
             axis = Direction.Axis.X;
-        } else if (world.getBlockState(pos.north()).getBlock() instanceof FrameBlock
-            || world.getBlockState(pos.south()).getBlock() instanceof FrameBlock) {
+        } else if (world.getBlockState(pos.north()).getBlock() instanceof PortalFrameBlock
+            || world.getBlockState(pos.south()).getBlock() instanceof PortalFrameBlock) {
             axis = Direction.Axis.Z;
         } else {
 
             // try and work out axis from row above/below
             for (int i = -3; i < 4; i++) {
-                if (world.getBlockState(pos.east().up(i)).getBlock() instanceof FrameBlock
-                    || world.getBlockState(pos.west().up(i)).getBlock() instanceof FrameBlock) {
+                if (world.getBlockState(pos.east().up(i)).getBlock() instanceof PortalFrameBlock
+                    || world.getBlockState(pos.west().up(i)).getBlock() instanceof PortalFrameBlock) {
                     axis = Direction.Axis.X;
                     break;
-                } else if (world.getBlockState(pos.north().up(i)).getBlock() instanceof FrameBlock
-                    || world.getBlockState(pos.south().up(i)).getBlock() instanceof FrameBlock) {
+                } else if (world.getBlockState(pos.north().up(i)).getBlock() instanceof PortalFrameBlock
+                    || world.getBlockState(pos.south().up(i)).getBlock() instanceof PortalFrameBlock) {
                     axis = Direction.Axis.Z;
                     break;
                 }
@@ -127,13 +125,13 @@ public class RunePortals extends CharmModule {
                 for (int y = -3; y <= 3; y++) {
                     for (int x = -3; x <= 3; x++) {
                         BlockPos p = pos.up(y).offset(d, x);
-                        if (world.getBlockState(p.up(1)).getBlock() instanceof FrameBlock
+                        if (world.getBlockState(p.up(1)).getBlock() instanceof PortalFrameBlock
                             && validAir.contains(world.getBlockState(p).getBlock())
                             && validAir.contains(world.getBlockState(p.down(1)).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2)).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2).west()).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2).east()).getBlock())
-                            && world.getBlockState(p.down(3)).getBlock() instanceof FrameBlock
+                            && world.getBlockState(p.down(3)).getBlock() instanceof PortalFrameBlock
                         ) {
                             start = p.down(3);
                             break;
@@ -147,13 +145,13 @@ public class RunePortals extends CharmModule {
                 for (int y = -3; y <= 3; y++) {
                     for (int z = -3; z <= 3; z++) {
                         BlockPos p = pos.up(y).offset(d, z);
-                        if (world.getBlockState(p.up(1)).getBlock() instanceof FrameBlock
+                        if (world.getBlockState(p.up(1)).getBlock() instanceof PortalFrameBlock
                             && validAir.contains(world.getBlockState(p).getBlock())
                             && validAir.contains(world.getBlockState(p.down(1)).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2)).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2).north()).getBlock())
                             && validAir.contains(world.getBlockState(p.down(2).south()).getBlock())
-                            && world.getBlockState(p.down(3)).getBlock() instanceof FrameBlock
+                            && world.getBlockState(p.down(3)).getBlock() instanceof PortalFrameBlock
                         ) {
                             start = p.down(3);
                             break;
@@ -172,10 +170,10 @@ public class RunePortals extends CharmModule {
                 final BlockState eastState = world.getBlockState(start.east(2).up(1));
                 final BlockState westState = world.getBlockState(start.west(2).up(1));
 
-                if (!(eastState.getBlock() instanceof FrameBlock) || !(westState.getBlock() instanceof FrameBlock))
+                if (!(eastState.getBlock() instanceof PortalFrameBlock) || !(westState.getBlock() instanceof PortalFrameBlock))
                     return false;
 
-                if (eastState.get(FrameBlock.FACING) == Direction.NORTH) {
+                if (eastState.get(PortalFrameBlock.FACING) == Direction.NORTH) {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.east(2).up(i + 1), order, Direction.NORTH)) return false;
                     }
@@ -188,7 +186,7 @@ public class RunePortals extends CharmModule {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.west(1 - i), order, Direction.NORTH)) return false;
                     }
-                } else if (westState.get(FrameBlock.FACING) == Direction.SOUTH) {
+                } else if (westState.get(PortalFrameBlock.FACING) == Direction.SOUTH) {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.west(2).up(i + 1), order, Direction.SOUTH)) return false;
                     }
@@ -209,10 +207,10 @@ public class RunePortals extends CharmModule {
                 final BlockState northState = world.getBlockState(start.north(2).up(1));
                 final BlockState southState = world.getBlockState(start.south(2).up(1));
 
-                if (!(northState.getBlock() instanceof FrameBlock) || !(southState.getBlock() instanceof FrameBlock))
+                if (!(northState.getBlock() instanceof PortalFrameBlock) || !(southState.getBlock() instanceof PortalFrameBlock))
                     return false;
 
-                if (northState.get(FrameBlock.FACING) == Direction.WEST) {
+                if (northState.get(PortalFrameBlock.FACING) == Direction.WEST) {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.north(2).up(i + 1), order, Direction.WEST)) return false;
                     }
@@ -225,7 +223,7 @@ public class RunePortals extends CharmModule {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.south(1 - i), order, Direction.WEST)) return false;
                     }
-                } else if (southState.get(FrameBlock.FACING) == Direction.EAST) {
+                } else if (southState.get(PortalFrameBlock.FACING) == Direction.EAST) {
                     for (int i = 0; i < 3; i++) {
                         if (!addOrder(world, start.south(2).up(i + 1), order, Direction.EAST)) return false;
                     }
@@ -262,13 +260,13 @@ public class RunePortals extends CharmModule {
 
     private static boolean addOrder(ServerWorld world, BlockPos pos, List<Integer> order, Direction expectedFacing) {
         final BlockState s = world.getBlockState(pos);
-        if (!(s.getBlock() instanceof FrameBlock))
+        if (!(s.getBlock() instanceof PortalFrameBlock))
             return false;
 
-        if (s.get(FrameBlock.FACING) != expectedFacing)
+        if (s.get(PortalFrameBlock.FACING) != expectedFacing)
             return false;
 
-        order.add(s.get(FrameBlock.RUNE));
+        order.add(s.get(PortalFrameBlock.RUNE));
         return true;
     }
 
@@ -284,9 +282,9 @@ public class RunePortals extends CharmModule {
 
             RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
 
-            BlockState state = RunePortals.FRAME_BLOCK.getDefaultState()
-                .with(FrameBlock.FACING, side)
-                .with(FrameBlock.RUNE, fragment.getRuneValue());
+            BlockState state = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
+                .with(PortalFrameBlock.FACING, side)
+                .with(PortalFrameBlock.RUNE, fragment.getRuneValue());
 
             world.setBlockState(pos, state, 2);
             world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
@@ -299,10 +297,10 @@ public class RunePortals extends CharmModule {
     }
 
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-        if (!(state.getBlock() instanceof FrameBlock))
+        if (!(state.getBlock() instanceof PortalFrameBlock))
             return true;
 
-        int runeValue = state.get(FrameBlock.RUNE);
+        int runeValue = state.get(PortalFrameBlock.RUNE);
         ItemStack drop = new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue));
         world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), drop));
 
@@ -315,10 +313,10 @@ public class RunePortals extends CharmModule {
         BlockState state = world.getBlockState(hitPos);
         Block block = state.getBlock();
 
-        boolean isFrameBlock = block.equals(RunePortals.FRAME_BLOCK);
+        boolean isFrameBlock = block.equals(RunePortals.PORTAL_FRAME_BLOCK);
 
         if (isFrameBlock && hand == Hand.MAIN_HAND && held.isEmpty()) {
-            int runeValue = state.get(FrameBlock.RUNE);
+            int runeValue = state.get(PortalFrameBlock.RUNE);
 
             if (!world.isClient) {
                 if (!player.isCreative())
@@ -336,7 +334,7 @@ public class RunePortals extends CharmModule {
 
             // if there's already a rune in the frame
             if (isFrameBlock) {
-                int runeValue = state.get(FrameBlock.RUNE);
+                int runeValue = state.get(PortalFrameBlock.RUNE);
 
                 if (!world.isClient && !player.isCreative())
                     PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
@@ -344,9 +342,9 @@ public class RunePortals extends CharmModule {
             }
 
             RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
-            BlockState newState = RunePortals.FRAME_BLOCK.getDefaultState()
-                .with(FrameBlock.FACING, side)
-                .with(FrameBlock.RUNE, fragment.getRuneValue());
+            BlockState newState = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
+                .with(PortalFrameBlock.FACING, side)
+                .with(PortalFrameBlock.RUNE, fragment.getRuneValue());
 
             world.setBlockState(hitPos, newState, 3);
             world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);

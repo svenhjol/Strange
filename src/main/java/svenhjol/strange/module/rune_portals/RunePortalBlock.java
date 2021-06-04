@@ -135,7 +135,7 @@ public class RunePortalBlock extends CharmBlockWithEntity {
         Direction.Axis axis = direction.getAxis();
         Direction.Axis axis2 = state.get(AXIS);
         boolean bl = axis2 != axis && axis.isHorizontal();
-        boolean isValidBlock = neighborState.isOf(this) || (neighborState.isOf(RunePortals.FRAME_BLOCK));
+        boolean isValidBlock = neighborState.isOf(this) || (neighborState.isOf(RunePortals.PORTAL_FRAME_BLOCK));
 
         if (!bl && !isValidBlock) {
             if (world instanceof ServerWorld) {

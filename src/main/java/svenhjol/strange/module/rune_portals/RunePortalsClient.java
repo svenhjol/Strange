@@ -40,7 +40,7 @@ public class RunePortalsClient extends CharmClientModule {
                 }
             }
             return 0xFFFFFF;
-        }, RunePortals.FRAME_BLOCK);
+        }, RunePortals.PORTAL_FRAME_BLOCK);
 //        BlockEntityRendererRegistry.INSTANCE.register(RunePortals.RUNE_PORTAL_BLOCK_ENTITY, RunePortalBlockEntityRenderer::new);
     }
 }

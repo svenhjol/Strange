@@ -14,7 +14,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import svenhjol.charm.module.CharmModule;
 
-public class FrameBlock extends BaseFrameBlock {
+public class PortalFrameBlock extends BaseFrameBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty RUNE = IntProperty.of("rune", 0, 25);
 
@@ -31,8 +31,8 @@ public class FrameBlock extends BaseFrameBlock {
     protected static final VoxelShape NORTH_SHAPE;
     protected static final VoxelShape SOUTH_SHAPE;
 
-    public FrameBlock(CharmModule module) {
-        super(module, "frame", Settings.copy(Blocks.CRYING_OBSIDIAN));
+    public PortalFrameBlock(CharmModule module) {
+        super(module, "portal_frame", Settings.copy(Blocks.CRYING_OBSIDIAN));
         this.setDefaultState(this.getDefaultState()
             .with(FACING, Direction.NORTH)
             .with(RUNE, 0));
