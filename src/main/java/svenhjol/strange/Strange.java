@@ -2,7 +2,6 @@ package svenhjol.strange;
 
 import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.Charm;
-import svenhjol.charm.init.CharmLoader;
 import svenhjol.strange.init.StrangeCommands;
 import svenhjol.strange.init.StrangeLoot;
 import svenhjol.strange.init.StrangeSounds;
@@ -13,9 +12,7 @@ public class Strange implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Charm.runFirst();
-
-        new CharmLoader(MOD_ID);
+        Charm.init(MOD_ID);
 
         StrangeStructures.init();
         StrangeLoot.init();
