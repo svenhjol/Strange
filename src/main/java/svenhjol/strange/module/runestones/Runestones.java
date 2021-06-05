@@ -479,9 +479,15 @@ public class Runestones extends CharmModule {
                 world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
             }
 
-            boolean shouldDropPlate = EnchantmentsHelper.getFortune(player) + world.random.nextInt(3) > 3;
+            float luck = player.getLuck();
+            int fortune = EnchantmentsHelper.getFortune(player);
+            boolean shouldDropPlate = (luck * 3) + fortune + world.random.nextInt(3) > 3;
+            int maxPlateDrops = Math.max(1, Math.min(3, world.random.nextInt(Math.max(1, (int)luck + fortune))));
+
             if (shouldDropPlate) {
-                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNE_PLATES.get(runeValue))));
+                for (int i = 0; i < maxPlateDrops; i++) {
+                    world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNE_PLATES.get(runeValue))));
+                }
                 RunestonesHelper.explode(world, pos, null, false);
             }
         }
