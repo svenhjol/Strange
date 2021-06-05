@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "strange:apprentice_scroll",
+    "strange:expert_scroll",
+    "strange:journeyman_scroll",
+    "strange:legendary_scroll",
+    "strange:master_scroll",
+    "strange:novice_scroll",
+    "strange:test_scroll"
+  ]
+}

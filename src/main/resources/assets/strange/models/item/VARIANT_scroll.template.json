@@ -1,0 +1,23 @@
+{
+  "template": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "strange:item/VARIANT_scroll_closed"
+    },
+    "overrides": [
+      {
+        "predicate": {
+          "scroll_state": 0
+        },
+        "model": "strange:item/VARIANT_scroll_closed"
+      },
+      {
+        "predicate": {
+          "scroll_state": 0.1
+        },
+        "model": "strange:item/VARIANT_scroll_opened"
+      }
+    ]
+  },
+  "variants": "scrolls"
+}
