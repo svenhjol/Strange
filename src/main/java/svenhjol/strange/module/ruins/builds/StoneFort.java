@@ -36,6 +36,7 @@ public class StoneFort extends CharmStructure {
         )));
 
         addStart("start1", 1, StructureProcessorLists.STREET_PLAINS);
+        addStart("start2", 1, StructureProcessorLists.STREET_PLAINS);
 
         CORRIDORS.put("corridor1", 1);
         CORRIDORS.put("corridor2", 1);
