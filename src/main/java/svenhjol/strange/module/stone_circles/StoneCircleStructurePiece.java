@@ -41,7 +41,7 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
 
     public StoneCircleStructurePiece(Random random, int x, int y, int z) {
         // TODO: these parameters seem out of order in sources, might break in future snapshots
-        super(StoneCircles.STONE_CIRCLE_PIECE, x, y, z, 16, 8, 16, method_35457(random));
+        super(StoneCircles.STONE_CIRCLE_PIECE, x, y, z, 16, 8, 16, getRandomHorizontalDirection(random));
     }
 
     public StoneCircleStructurePiece(ServerWorld world, NbtCompound tag) {
