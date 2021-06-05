@@ -5,11 +5,11 @@ import net.minecraft.item.ItemGroup;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.module.CharmModule;
 
-public class RunicFragmentItem extends CharmItem {
+public class RunePlateItem extends CharmItem {
     private final int runeValue;
 
-    public RunicFragmentItem(CharmModule module, int runeValue) {
-        super(module, "runic_fragment_" + runeValue, new FabricItemSettings()
+    public RunePlateItem(CharmModule module, int runeValue) {
+        super(module, "rune_plate_" + runeValue, new FabricItemSettings()
             .group(ItemGroup.MISC)
             .maxCount(64));
 

@@ -36,7 +36,7 @@ import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.Runestones;
-import svenhjol.strange.module.runestones.RunicFragmentItem;
+import svenhjol.strange.module.runestones.RunePlateItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -277,14 +277,12 @@ public class RunePortals extends CharmModule {
         server.execute(() -> {
             World world = player.world;
             ItemStack held = player.getStackInHand(hand);
-            if (!(held.getItem() instanceof RunicFragmentItem))
+            if (!(held.getItem() instanceof RunePlateItem plate))
                 return;
-
-            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
 
             BlockState state = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
                 .with(PortalFrameBlock.FACING, side)
-                .with(PortalFrameBlock.RUNE, fragment.getRuneValue());
+                .with(PortalFrameBlock.RUNE, plate.getRuneValue());
 
             world.setBlockState(pos, state, 2);
             world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
@@ -301,7 +299,7 @@ public class RunePortals extends CharmModule {
             return true;
 
         int runeValue = state.get(PortalFrameBlock.RUNE);
-        ItemStack drop = new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue));
+        ItemStack drop = new ItemStack(Runestones.RUNE_PLATES.get(runeValue));
         world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), drop));
 
         return true;
@@ -320,14 +318,14 @@ public class RunePortals extends CharmModule {
 
             if (!world.isClient) {
                 if (!player.isCreative())
-                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNE_PLATES.get(runeValue)));
             }
 
             world.setBlockState(hitPos, Blocks.CRYING_OBSIDIAN.getDefaultState(), 3);
             return ActionResult.success(world.isClient);
         }
 
-        if (held.getItem() instanceof RunicFragmentItem) {
+        if (held.getItem() instanceof RunePlateItem plate) {
             Direction side = hit.getSide();
             if (side == Direction.UP || side == Direction.DOWN)
                 return ActionResult.PASS;
@@ -337,14 +335,13 @@ public class RunePortals extends CharmModule {
                 int runeValue = state.get(PortalFrameBlock.RUNE);
 
                 if (!world.isClient && !player.isCreative())
-                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNIC_FRAGMENTS.get(runeValue)));
+                    PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNE_PLATES.get(runeValue)));
 //                world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 18);
             }
 
-            RunicFragmentItem fragment = (RunicFragmentItem)held.getItem();
             BlockState newState = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
                 .with(PortalFrameBlock.FACING, side)
-                .with(PortalFrameBlock.RUNE, fragment.getRuneValue());
+                .with(PortalFrameBlock.RUNE, plate.getRuneValue());
 
             world.setBlockState(hitPos, newState, 3);
             world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);

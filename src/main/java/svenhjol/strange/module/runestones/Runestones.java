@@ -75,10 +75,10 @@ public class Runestones extends CharmModule {
     public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
 
-    public static final Identifier RUNIC_FRAGMENT_LOOT_ID = new Identifier(Strange.MOD_ID, "runic_fragment_loot");
-    public static LootFunctionType RUNIC_FRAGMENT_LOOT_FUNCTION;
+    public static final Identifier RUNE_PLATE_LOOT_ID = new Identifier(Strange.MOD_ID, "rune_plate_loot");
+    public static LootFunctionType RUNE_PLATE_LOOT_FUNCTION;
 
-    public static Map<Integer, RunicFragmentItem> RUNIC_FRAGMENTS = new HashMap<>();
+    public static Map<Integer, RunePlateItem> RUNE_PLATES = new HashMap<>();
     public static List<BaseDestination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
     public static List<BaseDestination> WORLD_DESTINATIONS = new ArrayList<>(); // destinations shuffled according to world seed
 
@@ -126,7 +126,7 @@ public class Runestones extends CharmModule {
     public void register() {
         for (int i = 0; i < NUMBER_OF_RUNES; i++) {
             RUNESTONE_BLOCKS.add(new RunestoneBlock(this, i));
-            RUNIC_FRAGMENTS.put(i, new RunicFragmentItem(this, i));
+            RUNE_PLATES.put(i, new RunePlateItem(this, i));
         }
 
         BLOCK_ENTITY = RegistryHelper.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
@@ -140,7 +140,7 @@ public class Runestones extends CharmModule {
             .dimensions(EntityDimensions.fixed(2.0F, 2.0F)));
 
         // TODO: phase2 loot table
-        RUNIC_FRAGMENT_LOOT_FUNCTION = RegistryHelper.lootFunctionType(RUNIC_FRAGMENT_LOOT_ID, new LootFunctionType(new RunicFragmentLootFunction.Serializer()));
+        RUNE_PLATE_LOOT_FUNCTION = RegistryHelper.lootFunctionType(RUNE_PLATE_LOOT_ID, new LootFunctionType(new RunePlateLootFunction.Serializer()));
     }
 
     @Override
@@ -466,7 +466,7 @@ public class Runestones extends CharmModule {
 
     /**
      * Called just before a runestone block is broken.
-     * This is where we do drops for runestone dust and fragments.
+     * This is where we do drops for runestone dust and plates.
      */
     private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
         if (!(state.getBlock() instanceof RunestoneBlock))
@@ -479,9 +479,9 @@ public class Runestones extends CharmModule {
                 world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
             }
 
-            boolean shouldDropFragment = EnchantmentsHelper.getFortune(player) + world.random.nextInt(3) > 3;
-            if (shouldDropFragment) {
-                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNIC_FRAGMENTS.get(runeValue))));
+            boolean shouldDropPlate = EnchantmentsHelper.getFortune(player) + world.random.nextInt(3) > 3;
+            if (shouldDropPlate) {
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNE_PLATES.get(runeValue))));
                 RunestonesHelper.explode(world, pos, null, false);
             }
         }
