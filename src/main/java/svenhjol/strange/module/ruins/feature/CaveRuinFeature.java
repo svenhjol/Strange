@@ -6,7 +6,6 @@ import svenhjol.charm.world.CharmJigsawStructureFeature;
 
 public class CaveRuinFeature extends CharmJigsawStructureFeature {
     public CaveRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        // TODO: variation should be 12 when worldgen is restored
-        super(codec, 24, 4, false);
+        super(codec, 32, 12, false);
     }
 }

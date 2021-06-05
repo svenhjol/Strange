@@ -106,7 +106,7 @@ public class Ruins extends CharmModule {
         NETHER_RUIN_CONFIGURED = NETHER_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> NetherRuinGenerator.POOL, netherRuinSize));
         END_RUIN_CONFIGURED = END_RUIN_FEATURE.configure(new StructurePoolFeatureConfig(() -> EndRuinGenerator.POOL, endRuinSize));
 
-        // register each configuredFeature with MC registry against the RUIN_STRUCTURE
+        // register each configuredFeature with MC registry
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "surface_ruin"), SURFACE_RUIN_CONFIGURED);
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "cave_ruin"), CAVE_RUIN_CONFIGURED);
         configuredStructureFeature(new Identifier(Strange.MOD_ID, "deep_ruin"), DEEP_RUIN_CONFIGURED);

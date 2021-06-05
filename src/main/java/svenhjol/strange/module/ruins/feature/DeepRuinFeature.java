@@ -1,12 +1,11 @@
 package svenhjol.strange.module.ruins.feature;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+import svenhjol.charm.world.CharmJigsawStructureFeature;
 
-public class DeepRuinFeature extends JigsawFeature {
+public class DeepRuinFeature extends CharmJigsawStructureFeature {
     public DeepRuinFeature(Codec<StructurePoolFeatureConfig> codec) {
-        // TODO: structureStartY should be -61 when worldgen is restored
-        super(codec, 3, false, false);
+        super(codec, 3, 0, true);
     }
 }
