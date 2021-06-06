@@ -1,16 +1,16 @@
 package svenhjol.strange.module.treasure.tool;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DyeColor;
 import svenhjol.strange.module.treasure.ITreasureTool;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 public class EldritchBow implements ITreasureTool {
     @Override
@@ -21,7 +21,7 @@ public class EldritchBow implements ITreasureTool {
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
         HashMap<Enchantment, Integer> map = new HashMap<>();
-        map.put(Enchantments.INFINITY, 1);
+        map.put(Enchantments.INFINITY_ARROWS, 1);
         map.put(Enchantments.MENDING, 1);
         return map;
     }
@@ -32,8 +32,8 @@ public class EldritchBow implements ITreasureTool {
     }
 
     @Override
-    public TranslatableText getName(ItemStack itemStack) {
-        return new TranslatableText("item.strange.treasure.eldritch_bow");
+    public TranslatableComponent getName(ItemStack itemStack) {
+        return new TranslatableComponent("item.strange.treasure.eldritch_bow");
     }
 
     @Override

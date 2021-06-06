@@ -1,13 +1,12 @@
 package svenhjol.strange.module.runestones;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RunestoneBlockEntity extends BlockEntity {
     public static final String POSITION_TAG = "position";
@@ -15,7 +14,7 @@ public class RunestoneBlockEntity extends BlockEntity {
     public static final String PLAYER_TAG = "player";
 
     public BlockPos position;
-    public Identifier location;
+    public ResourceLocation location;
     public String player;
 
     public RunestoneBlockEntity(BlockPos pos, BlockState state) {
@@ -23,18 +22,18 @@ public class RunestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
-        this.position = BlockPos.fromLong(tag.getLong(POSITION_TAG));
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.position = BlockPos.of(tag.getLong(POSITION_TAG));
         this.player = tag.getString(PLAYER_TAG);
 
         String location = tag.getString(LOCATION_TAG);
-        this.location = !location.isEmpty() ? new Identifier(location) : null;
+        this.location = !location.isEmpty() ? new ResourceLocation(location) : null;
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
+    public CompoundTag save(CompoundTag tag) {
+        super.save(tag);
         if (this.position != null) {
             tag.putLong(POSITION_TAG, this.position.asLong());
 
@@ -49,7 +48,7 @@ public class RunestoneBlockEntity extends BlockEntity {
 
     @Nullable
     @Override
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(this.pos, 3, this.toInitialChunkDataNbt());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 3, this.getUpdateTag());
     }
 }

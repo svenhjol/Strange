@@ -1,20 +1,5 @@
 package svenhjol.strange.module.scrolls;
 
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.module.CharmModule;
@@ -22,6 +7,21 @@ import svenhjol.strange.helper.NetworkHelper;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,44 +34,44 @@ public class ScrollItem extends CharmItem {
     private final int tier;
 
     public ScrollItem(CharmModule module, int tier, String name) {
-        super(module, name, new Item.Settings()
-            .group(ItemGroup.MISC)
+        super(module, name, new Item.Properties()
+            .tab(CreativeModeTab.TAB_MISC)
             .rarity(Rarity.UNCOMMON)
-            .maxCount(1)
+            .stacksTo(1)
         );
 
         this.tier = tier;
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack held = player.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        ItemStack held = player.getItemInHand(hand);
 
-        if (world.isClient)
-            return new TypedActionResult<>(ActionResult.PASS, held);
+        if (world.isClientSide)
+            return new InteractionResultHolder<>(InteractionResult.PASS, held);
 
         Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
         if (!optionalQuestManager.isPresent())
-            return new TypedActionResult<>(ActionResult.FAIL, held);
+            return new InteractionResultHolder<>(InteractionResult.FAIL, held);
 
         QuestManager questManager = optionalQuestManager.get();
 
-        player.getItemCooldownManager().set(this, 10);
+        player.getCooldowns().addCooldown(this, 10);
         boolean hasBeenOpened = hasBeenOpened(held);
 
         // if the quest hasn't been populated yet, create it in the quest manager
         if (!hasBeenOpened) {
             ScrollDefinition definition = Scrolls.getRandomDefinition(tier, world, world.random);
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+            ServerPlayer serverPlayer = (ServerPlayer)player;
 
             if (definition == null)
                 return destroyScroll(world, player, held);
 
-            if (player.isSneaking())
-                return new TypedActionResult<>(ActionResult.FAIL, held);
+            if (player.isShiftKeyDown())
+                return new InteractionResultHolder<>(InteractionResult.FAIL, held);
 
             if (!questManager.checkPlayerCanStartQuest(serverPlayer))
-                return new TypedActionResult<>(ActionResult.FAIL, held);
+                return new InteractionResultHolder<>(InteractionResult.FAIL, held);
 
             UUID seller = getScrollMerchant(held);
             int rarity = Math.min(1, getScrollRarity(held));
@@ -87,14 +87,14 @@ public class ScrollItem extends CharmItem {
                 return destroyScroll(world, player, held);
             }
 
-            questManager.sendToast((ServerPlayerEntity) player, quest, QuestToastType.General, "event.strange.quests.accepted");
+            questManager.sendToast((ServerPlayer) player, quest, QuestToastType.General, "event.strange.quests.accepted");
             setScrollQuest(held, quest);
             setScrollOwner(held, player);
 
 
             // tell the client to open the scroll
             Scrolls.sendPlayerOpenScrollPacket(serverPlayer, quest);
-            return new TypedActionResult<>(ActionResult.SUCCESS, held);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);
 
         } else {
 
@@ -104,9 +104,9 @@ public class ScrollItem extends CharmItem {
 
             // check if it belongs to current player
             UUID owner = getScrollOwner(held);
-            if (owner != null && !player.getUuid().equals(owner) && !player.isCreative()) {
-                player.sendMessage(new TranslatableText("gui.strange.scrolls.wrong_owner"), true);
-                return TypedActionResult.fail(held);
+            if (owner != null && !player.getUUID().equals(owner) && !player.isCreative()) {
+                player.displayClientMessage(new TranslatableComponent("gui.strange.scrolls.wrong_owner"), true);
+                return InteractionResultHolder.fail(held);
             }
 
             // try and open the quest, or destroy it if it's no longer valid
@@ -118,7 +118,7 @@ public class ScrollItem extends CharmItem {
                 if (owner == null)
                     claimOwnership(held, player);
 
-                Scrolls.sendPlayerOpenScrollPacket((ServerPlayerEntity)player, optionalQuest.get());
+                Scrolls.sendPlayerOpenScrollPacket((ServerPlayer)player, optionalQuest.get());
             } else {
                 // scroll has expired, remove it
                 return destroyScroll(world, player, held);
@@ -132,24 +132,24 @@ public class ScrollItem extends CharmItem {
         return scroll.getOrCreateTag().contains(QUEST_TAG);
     }
 
-    public static void claimOwnership(ItemStack scroll, PlayerEntity player) {
-        player.sendMessage(new TranslatableText("gui.strange.scrolls.claim_ownership"), true);
+    public static void claimOwnership(ItemStack scroll, Player player) {
+        player.displayClientMessage(new TranslatableComponent("gui.strange.scrolls.claim_ownership"), true);
         String questId = ScrollItem.getScrollQuest(scroll);
 
         Scrolls.getQuestManager().flatMap(manager
             -> manager.getQuest(questId)).ifPresent(quest
-                -> quest.setOwner(player.getUuid()));
+                -> quest.setOwner(player.getUUID()));
 
         ScrollItem.setScrollOwner(scroll, player);
     }
 
-    public static void giveScrollToPlayer(Quest quest, PlayerEntity player) {
+    public static void giveScrollToPlayer(Quest quest, Player player) {
         // allows quest objectives to update themselves
         quest.update(player);
 
         // create a new scroll for this quest and give it to the player
         ItemStack scroll = new ItemStack(Scrolls.SCROLL_TIERS.get(quest.getTier()));
-        quest.setOwner(player.getUuid());
+        quest.setOwner(player.getUUID());
         ScrollItem.setScrollQuest(scroll, quest);
         PlayerHelper.addOrDropStack(player, scroll);
     }
@@ -179,8 +179,8 @@ public class ScrollItem extends CharmItem {
         return scroll.getOrCreateTag().getInt(RARITY_TAG);
     }
 
-    public static void setScrollMerchant(ItemStack scroll, MerchantEntity merchant) {
-        scroll.getOrCreateTag().putString(MERCHANT_TAG, merchant.getUuidAsString());
+    public static void setScrollMerchant(ItemStack scroll, AbstractVillager merchant) {
+        scroll.getOrCreateTag().putString(MERCHANT_TAG, merchant.getStringUUID());
     }
 
     public static void setScrollQuest(ItemStack scroll, Quest quest) {
@@ -189,22 +189,22 @@ public class ScrollItem extends CharmItem {
     }
 
     public static void setScrollName(ItemStack scroll, Quest quest) {
-        scroll.setCustomName(new TranslatableText(quest.getTitle()));
+        scroll.setHoverName(new TranslatableComponent(quest.getTitle()));
     }
 
-    public static void setScrollOwner(ItemStack scroll, PlayerEntity player) {
-        scroll.getOrCreateTag().putString(OWNER_TAG, player.getUuidAsString());
+    public static void setScrollOwner(ItemStack scroll, Player player) {
+        scroll.getOrCreateTag().putString(OWNER_TAG, player.getStringUUID());
     }
 
     public static void setScrollRarity(ItemStack scroll, int rarity) {
         scroll.getOrCreateTag().putInt(RARITY_TAG, rarity);
     }
 
-    public TypedActionResult<ItemStack> destroyScroll(World world, PlayerEntity player, ItemStack scroll) {
-        world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-        scroll.decrement(1);
+    public InteractionResultHolder<ItemStack> destroyScroll(Level world, Player player, ItemStack scroll) {
+        world.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        scroll.shrink(1);
 
-        NetworkHelper.sendEmptyPacketToClient((ServerPlayerEntity)player, Scrolls.MSG_CLIENT_DESTROY_SCROLL);
-        return new TypedActionResult<>(ActionResult.FAIL, scroll);
+        NetworkHelper.sendEmptyPacketToClient((ServerPlayer)player, Scrolls.MSG_CLIENT_DESTROY_SCROLL);
+        return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
     }
 }

@@ -3,15 +3,15 @@ package svenhjol.strange.module.scrolls;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.module.travel_journals.screen.TravelJournalScrollsScreen;
@@ -38,62 +38,62 @@ public class ScrollsClient extends CharmClientModule {
         ClientPlayNetworking.registerGlobalReceiver(MSG_CLIENT_DESTROY_SCROLL, this::handleClientDestroyScroll);
 
         // set up scroll item model predicate
-        ModelPredicateProviderRegistryAccessor.callRegister(new Identifier("scroll_state"), (stack, world, entity, i)
+        ModelPredicateProviderRegistryAccessor.callRegister(new ResourceLocation("scroll_state"), (stack, world, entity, i)
             -> ScrollItem.hasBeenOpened(stack) ? 0.1F : 0.0F);
     }
 
-    private void handleClientOpenScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound questTag = data.readNbt();
+    private void handleClientOpenScroll(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag questTag = data.readNbt();
         client.execute(() -> {
-            MinecraftClient mc = MinecraftClient.getInstance();
+            Minecraft mc = Minecraft.getInstance();
             Quest quest = Quest.getFromTag(questTag);
             quest.update(client.player);
 
-            boolean backToJournal = mc.currentScreen instanceof TravelJournalScrollsScreen;
-            mc.openScreen(new ScrollScreen(quest, backToJournal));
+            boolean backToJournal = mc.screen instanceof TravelJournalScrollsScreen;
+            mc.setScreen(new ScrollScreen(quest, backToJournal));
         });
     }
 
-    private void handleClientShowQuestToast(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound questTag = data.readNbt();
-        QuestToastType type = data.readEnumConstant(QuestToastType.class);
-        String title = data.readString();
+    private void handleClientShowQuestToast(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag questTag = data.readNbt();
+        QuestToastType type = data.readEnum(QuestToastType.class);
+        String title = data.readUtf();
 
         client.execute(() -> {
             Quest quest = Quest.getFromTag(questTag);
-            MinecraftClient.getInstance().getToastManager().add(new QuestToast(quest, type, quest.getTitle(), title));
+            Minecraft.getInstance().getToasts().addToast(new QuestToast(quest, type, quest.getTitle(), title));
         });
     }
 
-    private void handleClientDestroyScroll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+    private void handleClientDestroyScroll(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
         client.execute(() -> {
-            PlayerEntity player = client.player;
+            Player player = client.player;
             if (player == null) return;
 
             double spread = 1.1D;
-            Random random = player.world.random;
+            Random random = player.level.random;
             for (int i = 0; i < 40; i++) {
-                double px = player.getBlockPos().getX() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                double py = player.getBlockPos().getY() + 0.5D;
-                double pz = player.getBlockPos().getZ() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                player.world.addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.0D, 0.0D);
+                double px = player.blockPosition().getX() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
+                double py = player.blockPosition().getY() + 0.5D;
+                double pz = player.blockPosition().getZ() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
+                player.level.addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.0D, 0.0D);
             }
         });
     }
 
-    private void handleClientCacheCurrentQuests(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound inTag = data.readNbt();
+    private void handleClientCacheCurrentQuests(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag inTag = data.readNbt();
         if (inTag == null || !inTag.contains("quests"))
             return;
 
-        NbtList listTag = (NbtList)inTag.get("quests");
+        ListTag listTag = (ListTag)inTag.get("quests");
         if (listTag == null)
             return;
 
         CACHED_CURRENT_QUESTS.clear();
 
-        for (NbtElement tag : listTag) {
-            CACHED_CURRENT_QUESTS.add(Quest.getFromTag((NbtCompound)tag));
+        for (Tag tag : listTag) {
+            CACHED_CURRENT_QUESTS.add(Quest.getFromTag((CompoundTag)tag));
         }
     }
 }

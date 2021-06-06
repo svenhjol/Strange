@@ -1,19 +1,19 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import net.minecraft.server.network.ServerPlayerEntity;
 import svenhjol.strange.module.scrolls.Scrolls;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.server.level.ServerPlayer;
 
 public class LangPopulator extends BasePopulator {
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
     public static final String HINT = "hint";
 
-    public LangPopulator(ServerPlayerEntity player, Quest quest) {
+    public LangPopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
     }
 

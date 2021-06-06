@@ -1,12 +1,5 @@
 package svenhjol.strange.module.totem_of_flying;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
 import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.ApplyBeaconEffectsCallback;
 import svenhjol.charm.event.EntityJumpCallback;
@@ -18,6 +11,13 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 @Module(mod = Strange.MOD_ID, client = TotemOfFlyingClient.class, description = "A Totem of Flying lets you fly within range of an active beacon.")
 public class TotemOfFlying extends CharmModule {
@@ -39,22 +39,22 @@ public class TotemOfFlying extends CharmModule {
         ApplyBeaconEffectsCallback.EVENT.register(this::handleBeaconEffects);
     }
 
-    private void handleBeaconEffects(World world, BlockPos pos, int levels, StatusEffect primaryEffect, StatusEffect secondaryEffect) {
-        if (!world.isClient && world.getTime() % 5 == 0) {
+    private void handleBeaconEffects(Level world, BlockPos pos, int levels, MobEffect primaryEffect, MobEffect secondaryEffect) {
+        if (!world.isClientSide && world.getGameTime() % 5 == 0) {
             double d0 = levels * 10 + 10;
-            Box bb = (new Box(pos)).expand(d0).expand(0.0D, world.getTopY(), 0.0D);
+            AABB bb = (new AABB(pos)).inflate(d0).inflate(0.0D, world.getMaxBuildHeight(), 0.0D);
 
-            List<PlayerEntity> list = world.getNonSpectatingEntities(PlayerEntity.class, bb);
+            List<Player> list = world.getEntitiesOfClass(Player.class, bb);
             playersInRange.clear();
-            list.forEach(player -> playersInRange.add(player.getUuid()));
+            list.forEach(player -> playersInRange.add(player.getUUID()));
         }
     }
 
     private void handleEntityJump(LivingEntity entity) {
-        if (!(entity instanceof PlayerEntity))
+        if (!(entity instanceof Player))
             return;
 
-        PlayerEntity player = (PlayerEntity)entity;
+        Player player = (Player)entity;
         boolean hasTotem = PlayerHelper.getInventory(player).contains(cachedTotemItemStack);
         if (!hasTotem)
             return;
@@ -62,11 +62,11 @@ public class TotemOfFlying extends CharmModule {
         enableFlight(player);
     }
 
-    private void handlePlayerTick(PlayerEntity player) {
-        if (player.world.getTime() % 4 != 0)
+    private void handlePlayerTick(Player player) {
+        if (player.level.getGameTime() % 4 != 0)
             return;
 
-        UUID uuid = player.getUuid();
+        UUID uuid = player.getUUID();
         boolean isFlying = flyingPlayers.contains(uuid);
         boolean hasTotem = PlayerHelper.getInventory(player).contains(cachedTotemItemStack);
 
@@ -78,31 +78,31 @@ public class TotemOfFlying extends CharmModule {
         }
 
         if (playersInRange.contains(uuid)) {
-            player.getAbilities().allowFlying = true;
+            player.getAbilities().mayfly = true;
         } else {
             disableFlight(player);
         }
     }
 
-    private void disableFlight(PlayerEntity player) {
+    private void disableFlight(Player player) {
         if (player.isCreative() || player.isSpectator()) {
-            player.getAbilities().allowFlying = true;
+            player.getAbilities().mayfly = true;
         } else {
             player.getAbilities().flying = false;
-            player.getAbilities().allowFlying = false;
-            flyingPlayers.remove(player.getUuid());
+            player.getAbilities().mayfly = false;
+            flyingPlayers.remove(player.getUUID());
         }
-        player.sendAbilitiesUpdate();
+        player.onUpdateAbilities();
     }
 
-    private void enableFlight(PlayerEntity player) {
+    private void enableFlight(Player player) {
         if (player.isCreative() || player.isSpectator()) {
-            player.getAbilities().allowFlying = true;
+            player.getAbilities().mayfly = true;
         } else {
             player.getAbilities().flying = true;
-            player.getAbilities().allowFlying = true;
-            flyingPlayers.add(player.getUuid());
+            player.getAbilities().mayfly = true;
+            flyingPlayers.add(player.getUUID());
         }
-        player.sendAbilitiesUpdate();
+        player.onUpdateAbilities();
     }
 }

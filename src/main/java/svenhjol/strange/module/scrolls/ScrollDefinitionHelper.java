@@ -1,8 +1,7 @@
 package svenhjol.strange.module.scrolls;
 
-import net.minecraft.util.Identifier;
-
 import javax.annotation.Nullable;
+import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,9 +9,9 @@ import java.util.Random;
 
 public class ScrollDefinitionHelper {
     @Nullable
-    public static Identifier getEntityIdFromKey(String key, Random random) {
+    public static ResourceLocation getEntityIdFromKey(String key, Random random) {
         key = splitOptionalRandomly(key, random);
-        return Identifier.tryParse(key);
+        return ResourceLocation.tryParse(key);
     }
 
     public static int getCountFromValue(String value, int fallback, int rarity, Random random, boolean scale) {

@@ -1,25 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.map.MapIcon;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.enums.IVariantMaterial;
 import svenhjol.charm.handler.ModuleHandler;
@@ -32,6 +12,26 @@ import svenhjol.strange.module.scrolls.tag.Quest;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 
 public class ExplorePopulator extends BasePopulator {
     public static final String ITEMS = "items";
@@ -40,11 +40,11 @@ public class ExplorePopulator extends BasePopulator {
 
     public static final int MAP_COLOR = 0x007700;
 
-    private static final BlockState OVERWORLD_PLATFORM_BASE = Blocks.STONE.getDefaultState();
-    private static final BlockState NETHER_PLATFORM_BASE = Blocks.BLACKSTONE.getDefaultState();
-    private static final BlockState END_PLATFORM_BASE = Blocks.END_STONE_BRICKS.getDefaultState();
+    private static final BlockState OVERWORLD_PLATFORM_BASE = Blocks.STONE.defaultBlockState();
+    private static final BlockState NETHER_PLATFORM_BASE = Blocks.BLACKSTONE.defaultBlockState();
+    private static final BlockState END_PLATFORM_BASE = Blocks.END_STONE_BRICKS.defaultBlockState();
 
-    public ExplorePopulator(ServerPlayerEntity player, Quest quest) {
+    public ExplorePopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
     }
 
@@ -84,13 +84,13 @@ public class ExplorePopulator extends BasePopulator {
         BlockPos structurePos = PosHelper.addRandomOffset(pos, world.random, minDistance, maxDistance);
 
         // resolve the structure type from the registry
-        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(new Identifier(type));
+        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(new ResourceLocation(type));
         if (structureFeature == null)
             fail("Could not find specified structure type");
 
 
         // locate structure in the world
-        BlockPos foundPos = world.locateStructure(structureFeature, structurePos, 500, skipExistingChunks);
+        BlockPos foundPos = world.findNearestMapFeature(structureFeature, structurePos, 500, skipExistingChunks);
 
         if (foundPos == null)
             fail("Could not locate structure");
@@ -114,11 +114,11 @@ public class ExplorePopulator extends BasePopulator {
             return ItemStack.EMPTY;
 
         Charm.LOG.info("[ExplorePopulator] Map created for explore quest at pos: " + pos);
-        return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_X, MAP_COLOR);
+        return MapHelper.getMap(world, pos, new TranslatableComponent(quest.getTitle()), MapDecoration.Type.TARGET_X, MAP_COLOR);
     }
 
-    public static List<BlockPos> addScrollItemsToChests(PlayerEntity player, Explore explore) {
-        World world = player.world;
+    public static List<BlockPos> addScrollItemsToChests(Player player, Explore explore) {
+        Level world = player.level;
         BlockPos pos = explore.getStructure();
         List<ItemStack> items = explore.getItems();
         Random random = player.getRandom();
@@ -131,10 +131,10 @@ public class ExplorePopulator extends BasePopulator {
         int chestRange = explore.getChestRange();
         int chestStart = explore.getChestStart();
 
-        BlockPos pos1 = pos.add(-chestRange, chestStart - chestRange, -chestRange);
-        BlockPos pos2 = pos.add(chestRange, chestStart + chestRange, chestRange);
+        BlockPos pos1 = pos.offset(-chestRange, chestStart - chestRange, -chestRange);
+        BlockPos pos2 = pos.offset(chestRange, chestStart + chestRange, chestRange);
 
-        List<BlockPos> chests = BlockPos.stream(pos1, pos2).map(BlockPos::toImmutable).filter(p -> {
+        List<BlockPos> chests = BlockPos.betweenClosedStream(pos1, pos2).map(BlockPos::immutable).filter(p -> {
             BlockState state = world.getBlockState(p);
             return state.getBlock() instanceof ChestBlock;
         }).collect(Collectors.toList());
@@ -147,9 +147,9 @@ public class ExplorePopulator extends BasePopulator {
             boolean useVariantChests = ModuleHandler.enabled("charm:variant_chests");
             if (useVariantChests) {
                 IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
-                chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();
+                chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
             } else {
-                chest = Blocks.CHEST.getDefaultState();
+                chest = Blocks.CHEST.defaultBlockState();
             }
 
             // get a location near the start position
@@ -159,7 +159,7 @@ public class ExplorePopulator extends BasePopulator {
             for (int sy = chestStart; sy < chestStart + 4; sy++) {
                 for (int sx = -fallbackRange; sx <= fallbackRange; sx++) {
                     for (int sz = -fallbackRange; sz <= fallbackRange; sz++) {
-                        BlockPos checkPos = new BlockPos(pos.add(sx, sy, sz));
+                        BlockPos checkPos = new BlockPos(pos.offset(sx, sy, sz));
                         if (world.getBlockState(checkPos).isAir()) {
                             place = checkPos;
                             break findloop;
@@ -171,32 +171,32 @@ public class ExplorePopulator extends BasePopulator {
             if (place == null) {
                 int x = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
                 int z = -(fallbackRange / 2) + random.nextInt(fallbackRange / 2);
-                place = new BlockPos(pos.add(x, chestStart, z));
+                place = new BlockPos(pos.offset(x, chestStart, z));
             }
 
             // build a little 3x3x3 cube of air/water to house the chest
             BlockState platformBaseState;
-            if (DimensionHelper.isDimension(world, ServerWorld.NETHER)) {
+            if (DimensionHelper.isDimension(world, ServerLevel.NETHER)) {
                 platformBaseState = NETHER_PLATFORM_BASE;
-            } else if (DimensionHelper.isDimension(world, ServerWorld.END)) {
+            } else if (DimensionHelper.isDimension(world, ServerLevel.END)) {
                 platformBaseState = END_PLATFORM_BASE;
             } else {
                 platformBaseState = OVERWORLD_PLATFORM_BASE;
             }
 
             for (int py = -1; py <= 1; py++) {
-                BlockState state = py == -1 ? platformBaseState : Blocks.AIR.getDefaultState();
+                BlockState state = py == -1 ? platformBaseState : Blocks.AIR.defaultBlockState();
                 for (int px = -1; px <= 1; px++) {
                     for (int pz = -1; pz <= 1; pz++) {
-                        BlockPos buildPos = place.add(px, py, pz);
+                        BlockPos buildPos = place.offset(px, py, pz);
                         if (state.isAir() && world.getBlockState(buildPos).getMaterial() == Material.WATER)
-                            state = Blocks.WATER.getDefaultState();
+                            state = Blocks.WATER.defaultBlockState();
 
-                        world.setBlockState(buildPos, state, 2);
+                        world.setBlock(buildPos, state, 2);
                     }
                 }
             }
-            world.setBlockState(place, chest, 2);
+            world.setBlock(place, chest, 2);
             chests.add(place);
         }
 
@@ -215,19 +215,19 @@ public class ExplorePopulator extends BasePopulator {
                 // iterate over all chest slots to find an empty slot for the item
                 if (blockEntity instanceof ChestBlockEntity) {
                     ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
-                    for (int s = 0; s < chestBlockEntity.size(); s++) {
-                        ItemStack stackInSlot = chestBlockEntity.getStack(s);
+                    for (int s = 0; s < chestBlockEntity.getContainerSize(); s++) {
+                        ItemStack stackInSlot = chestBlockEntity.getItem(s);
                         if (stackInSlot.isEmpty()) {
-                            chestBlockEntity.setStack(s, stack);
+                            chestBlockEntity.setItem(s, stack);
 
                             // if in debug mode then place glowstone beneath the chest for easier identification
                             if (Core.debug) {
-                                BlockPos downPos = place.down();
+                                BlockPos downPos = place.below();
                                 BlockEntity downBlockEntity = world.getBlockEntity(downPos);
                                 if (downBlockEntity != null)
                                     continue; // don't set the block underneath if it's a blockentity/tile
 
-                                world.setBlockState(place.down(), Blocks.GLOWSTONE.getDefaultState(), 2);
+                                world.setBlock(place.below(), Blocks.GLOWSTONE.defaultBlockState(), 2);
                             }
 
                             placements.add(place);
@@ -243,22 +243,22 @@ public class ExplorePopulator extends BasePopulator {
             if (!didPlaceItem) {
                 BlockPos chestPos = chests.get(random.nextInt(chests.size()));
                 BlockState chestState = world.getBlockState(chestPos);
-                Direction facing = chestState.get(ChestBlock.FACING);
+                Direction facing = chestState.getValue(ChestBlock.FACING);
                 List<BlockPos> tryPositions = new ArrayList<>();
 
                 if (facing == Direction.NORTH || facing == Direction.SOUTH) {
-                    tryPositions.addAll(Arrays.asList(chestPos.offset(Direction.EAST), chestPos.offset(Direction.WEST)));
+                    tryPositions.addAll(Arrays.asList(chestPos.relative(Direction.EAST), chestPos.relative(Direction.WEST)));
                 } else {
-                    tryPositions.addAll(Arrays.asList(chestPos.offset(Direction.NORTH), chestPos.offset(Direction.SOUTH)));
+                    tryPositions.addAll(Arrays.asList(chestPos.relative(Direction.NORTH), chestPos.relative(Direction.SOUTH)));
                 }
 
                 for (BlockPos tryPos : tryPositions) {
                     BlockState state = world.getBlockState(tryPos);
                     if (state.isAir() || state.getMaterial() == Material.WATER) {
-                        world.setBlockState(pos, Blocks.TRAPPED_CHEST.getDefaultState().with(ChestBlock.FACING, facing));
+                        world.setBlockAndUpdate(pos, Blocks.TRAPPED_CHEST.defaultBlockState().setValue(ChestBlock.FACING, facing));
                         ChestBlockEntity chestBlockEntity = (ChestBlockEntity)world.getBlockEntity(pos);
                         if (chestBlockEntity != null) {
-                            chestBlockEntity.setStack(0, stack);
+                            chestBlockEntity.setItem(0, stack);
                             placements.add(tryPos);
                             break;
                         }
@@ -269,8 +269,8 @@ public class ExplorePopulator extends BasePopulator {
 
         if (!placements.isEmpty()) {
             if (Scrolls.exploreHint) {
-                player.sendMessage(new TranslatableText("gui.strange.scrolls.explore_placed"), true);
-                player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.6F, 1.2F);
+                player.displayClientMessage(new TranslatableComponent("gui.strange.scrolls.explore_placed"), true);
+                player.level.playSound(null, player.blockPosition(), SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.6F, 1.2F);
             }
 
             placements.forEach(p -> Charm.LOG.info("[ExplorePopulator] Added quest loot to chest at: " + p.toString()));

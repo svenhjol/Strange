@@ -1,17 +1,17 @@
 package svenhjol.strange.module.runestones;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.item.CharmItem;
@@ -21,49 +21,49 @@ import svenhjol.strange.module.stone_circles.StoneCircles;
 public class RunestoneDustItem extends CharmItem {
     public RunestoneDustItem(CharmModule module) {
         super(module, "runestone_dust", new FabricItemSettings()
-            .group(ItemGroup.MISC)
-            .maxCount(64));
+            .tab(CreativeModeTab.TAB_MISC)
+            .stacksTo(64));
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
 
         if (!DimensionHelper.isOverworld(world))
-            return TypedActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
         if (!ModuleHandler.enabled("strange:stone_circles"))
-            return TypedActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
         if (!player.isCreative())
-            stack.decrement(1);
+            stack.shrink(1);
 
-        int x = player.getBlockPos().getX();
-        int y = player.getBlockPos().getY();
-        int z = player.getBlockPos().getZ();
+        int x = player.blockPosition().getX();
+        int y = player.blockPosition().getY();
+        int z = player.blockPosition().getZ();
 
-        player.getItemCooldownManager().set(this, 40);
+        player.getCooldowns().addCooldown(this, 40);
 
         // client
-        if (world.isClient) {
-            player.swingHand(hand);
-            world.playSound(player, x, y, z, SoundEvents.ENTITY_ENDER_EYE_LAUNCH, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        if (world.isClientSide) {
+            player.swing(hand);
+            world.playSound(player, x, y, z, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS, 1.0F, 1.0F);
         }
 
         // server
-        if (!world.isClient) {
-            ServerWorld serverWorld = (ServerWorld)world;
-            BlockPos pos = serverWorld.locateStructure(StoneCircles.STONE_CIRCLE_STRUCTURE, player.getBlockPos(), 1500, false);
+        if (!world.isClientSide) {
+            ServerLevel serverWorld = (ServerLevel)world;
+            BlockPos pos = serverWorld.findNearestMapFeature(StoneCircles.STONE_CIRCLE_STRUCTURE, player.blockPosition(), 1500, false);
             if (pos != null) {
                 RunestoneDustEntity entity = new RunestoneDustEntity(world, pos.getX(), pos.getZ());
-                Vec3d look = player.getRotationVector();
+                Vec3 look = player.getLookAngle();
 
-                entity.setPos(x + look.x * 2, y + 0.5, z + look.z * 2);
-                world.spawnEntity(entity);
-                return TypedActionResult.pass(stack);
+                entity.setPosRaw(x + look.x * 2, y + 0.5, z + look.z * 2);
+                world.addFreshEntity(entity);
+                return InteractionResultHolder.pass(stack);
             }
         }
 
-        return TypedActionResult.success(stack);
+        return InteractionResultHolder.success(stack);
     }
 }

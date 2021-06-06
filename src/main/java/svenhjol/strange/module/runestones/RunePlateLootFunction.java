@@ -2,32 +2,32 @@ package svenhjol.strange.module.runestones;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.function.ConditionalLootFunction;
-import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class RunePlateLootFunction extends ConditionalLootFunction {
+public class RunePlateLootFunction extends LootItemConditionalFunction {
 
-    public RunePlateLootFunction(LootCondition[] conditions) {
+    public RunePlateLootFunction(LootItemCondition[] conditions) {
         super(conditions);
     }
 
     @Override
-    protected ItemStack process(ItemStack stack, LootContext context) {
+    protected ItemStack run(ItemStack stack, LootContext context) {
         int rune = context.getRandom().nextInt(RunestonesHelper.NUMBER_OF_RUNES);
         return new ItemStack(Runestones.RUNE_PLATES.get(rune));
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Runestones.RUNE_PLATE_LOOT_FUNCTION;
     }
 
-    public static class Serializer extends ConditionalLootFunction.Serializer<RunePlateLootFunction> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RunePlateLootFunction> {
         @Override
-        public RunePlateLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+        public RunePlateLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
             return new RunePlateLootFunction(conditions);
         }
     }

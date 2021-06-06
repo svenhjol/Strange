@@ -1,22 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTables;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import svenhjol.charm.helper.LootHelper;
 import svenhjol.charm.module.inventory_tidying.InventoryTidyingHandler;
 import svenhjol.strange.module.scrolls.ScrollDefinitionHelper;
@@ -25,6 +8,23 @@ import svenhjol.strange.module.scrolls.ScrollDefinition;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,20 +47,20 @@ public abstract class BasePopulator {
         Enchantments.KNOCKBACK,
         Enchantments.UNBREAKING,
         Enchantments.SHARPNESS,
-        Enchantments.LOOTING,
-        Enchantments.FORTUNE
+        Enchantments.MOB_LOOTING,
+        Enchantments.BLOCK_FORTUNE
     ));
 
-    protected final ServerPlayerEntity player;
-    protected final ServerWorld world;
+    protected final ServerPlayer player;
+    protected final ServerLevel world;
     protected final BlockPos pos;
     protected final Quest quest;
     protected final ScrollDefinition definition;
 
-    public BasePopulator(ServerPlayerEntity player, Quest quest) {
+    public BasePopulator(ServerPlayer player, Quest quest) {
         this.player = player;
-        this.world = (ServerWorld)player.world;
-        this.pos = player.getBlockPos();
+        this.world = (ServerLevel)player.level;
+        this.pos = player.blockPosition();
         this.quest = quest;
         this.definition = Scrolls.getDefinition(quest.getDefinition());
     }
@@ -104,14 +104,14 @@ public abstract class BasePopulator {
                     continue;
 
                 // get the loot table ID and then load the lootmanager to generate a list of loot items
-                Identifier tableId = LootHelper.getLootTable(props.get(TABLE), LootTables.SIMPLE_DUNGEON_CHEST);
+                ResourceLocation tableId = LootHelper.getLootTable(props.get(TABLE), BuiltInLootTables.SIMPLE_DUNGEON);
 
-                LootTable table = world.getServer().getLootManager().getTable(tableId);
-                List<ItemStack> list = table.generateLoot((new LootContext.Builder(world)
-                    .parameter(LootContextParameters.THIS_ENTITY, player)
-                    .parameter(LootContextParameters.ORIGIN, player.getPos())
-                    .random(world.random)
-                    .build(LootContextTypes.CHEST)));
+                LootTable table = world.getServer().getLootTables().get(tableId);
+                List<ItemStack> list = table.getRandomItems((new LootContext.Builder(world)
+                    .withParameter(LootContextParams.THIS_ENTITY, player)
+                    .withParameter(LootContextParams.ORIGIN, player.position())
+                    .withRandom(world.random)
+                    .create(LootContextParamSets.CHEST)));
 
                 if (list.isEmpty())
                     continue;
@@ -149,7 +149,7 @@ public abstract class BasePopulator {
                 String parseableItemId = splitOptionalRandomly(s);
 
                 // try and parse a minecraft/modded item
-                Optional<Item> optionalItem = Registry.ITEM.getOrEmpty(new Identifier(parseableItemId));
+                Optional<Item> optionalItem = Registry.ITEM.getOptional(new ResourceLocation(parseableItemId));
                 if (!optionalItem.isPresent())
                     continue;
 
@@ -160,13 +160,13 @@ public abstract class BasePopulator {
                 if (!name.isEmpty()) {
                     if (name.contains(".")) {
                         // shitty test for lang key
-                        stack.setCustomName(new TranslatableText(name));
+                        stack.setHoverName(new TranslatableComponent(name));
                     } else {
-                        stack.setCustomName(new LiteralText(name));
+                        stack.setHoverName(new TextComponent(name));
                     }
                 }
 
-                if (stack.getMaxCount() < count) {
+                if (stack.getMaxStackSize() < count) {
                     // separate stacks up to the count level
                     for (int i = 0; i < count; i++) {
                         stack = new ItemStack(item);
@@ -203,7 +203,7 @@ public abstract class BasePopulator {
     }
 
     @Nullable
-    public Identifier getEntityIdFromKey(String key) {
+    public ResourceLocation getEntityIdFromKey(String key) {
         return ScrollDefinitionHelper.getEntityIdFromKey(key, world.random);
     }
 
@@ -230,7 +230,7 @@ public abstract class BasePopulator {
         if (!enchantments.isEmpty())
             specificEnchantments = splitByComma(splitOptionalRandomly(enchantments));
 
-        if (!stack.hasEnchantments()) {
+        if (!stack.isEnchanted()) {
             if (!specificEnchantments.isEmpty()) {
 
                 // if a set of enchantments has been defined, apply them with a random level (using enchantmentLevel)
@@ -245,7 +245,7 @@ public abstract class BasePopulator {
                         level = Integer.parseInt(split[1]);
                     }
 
-                    Optional<Enchantment> optionalEnchantment = Registry.ENCHANTMENT.getOrEmpty(new Identifier(e));
+                    Optional<Enchantment> optionalEnchantment = Registry.ENCHANTMENT.getOptional(new ResourceLocation(e));
                     if (!optionalEnchantment.isPresent())
                         continue;
 
@@ -257,12 +257,12 @@ public abstract class BasePopulator {
                     toApply.put(enchantment, level);
                 }
 
-                EnchantmentHelper.set(toApply, stack);
+                EnchantmentHelper.setEnchantments(toApply, stack);
 
             } else if (stack.isEnchantable()) {
 
                 // if the stack can be enchanted, just enchant randomly
-                EnchantmentHelper.enchant(random, stack, enchantmentLevel, treasure);
+                EnchantmentHelper.enchantItem(random, stack, enchantmentLevel, treasure);
 
             } else if (enchantmentLevel > 0) {
 
@@ -272,7 +272,7 @@ public abstract class BasePopulator {
 
                 for (Enchantment enchantment : forcedEnchants) {
                     int level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
-                    stack.addEnchantment(enchantment, level);
+                    stack.enchant(enchantment, level);
                     if (random.nextFloat() < 0.75F)
                         break;
                 }

@@ -3,10 +3,10 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
 
@@ -28,13 +28,13 @@ public class RunestonesClient extends CharmClientModule {
         EntityRendererRegistry.INSTANCE.register(Runestones.RUNESTONE_DUST_ENTITY, RunestoneDustEntityRenderer::new);
     }
 
-    private void handleClientCacheLearnedRunes(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        int[] discoveries = data.readIntArray();
+    private void handleClientCacheLearnedRunes(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        int[] discoveries = data.readVarIntArray();
         client.execute(() -> RunestonesHelper.populateLearnedRunes(client.player, discoveries));
     }
 
-    private void handleClientCacheDestinationNames(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound inTag = data.readNbt();
+    private void handleClientCacheDestinationNames(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag inTag = data.readNbt();
         if (inTag == null || inTag.isEmpty())
             return;
 

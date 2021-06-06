@@ -5,14 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.command.arg.QuestDefinitionArgType;
@@ -28,99 +20,107 @@ import svenhjol.strange.module.scrolls.QuestManager;
 
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class StrangeCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal(Strange.MOD_ID)
-            .then(CommandManager
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal(Strange.MOD_ID)
+            .then(Commands
                 .literal("abandon_quest")
-                .then(CommandManager.argument("id", QuestIdArgType.id())
+                .then(Commands.argument("id", QuestIdArgType.id())
                     .executes(StrangeCommand::abandonQuest)))
-            .then(CommandManager
+            .then(Commands
                 .literal("abandon_my_quests")
                 .executes(StrangeCommand::abandonMyQuests))
-            .then(CommandManager
+            .then(Commands
                 .literal("abandon_all_quests")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .executes(StrangeCommand::abandonAllQuests))
-            .then(CommandManager
+            .then(Commands
                 .literal("claim_scroll")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .executes(StrangeCommand::claimQuest))
-            .then(CommandManager
+            .then(Commands
                 .literal("give_map")
-                .then(CommandManager.argument("id", QuestIdArgType.id())
+                .then(Commands.argument("id", QuestIdArgType.id())
                     .executes(StrangeCommand::giveMap)))
-            .then(CommandManager
+            .then(Commands
                 .literal("give_scroll")
-                .then(CommandManager.argument("id", QuestIdArgType.id())
+                .then(Commands.argument("id", QuestIdArgType.id())
                     .executes(StrangeCommand::giveScroll)))
-            .then(CommandManager
+            .then(Commands
                 .literal("learn_rune")
-                .requires(source -> source.hasPermissionLevel(2))
-                .then(CommandManager.argument("letter", RuneArgType.letter())
+                .requires(source -> source.hasPermission(2))
+                .then(Commands.argument("letter", RuneArgType.letter())
                     .executes(StrangeCommand::learnRune)))
-            .then(CommandManager
+            .then(Commands
                 .literal("learn_all_runes")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .executes(StrangeCommand::learnAllRunes))
-            .then(CommandManager
+            .then(Commands
                 .literal("list_my_quests")
                 .executes(StrangeCommand::listMyQuests))
-            .then(CommandManager
+            .then(Commands
                 .literal("list_all_quests")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .executes(StrangeCommand::listAllQuests))
-            .then(CommandManager
+            .then(Commands
                 .literal("start_quest")
-                .requires(source -> source.hasPermissionLevel(2))
-                .then(CommandManager.argument("definition", QuestDefinitionArgType.definition())
+                .requires(source -> source.hasPermission(2))
+                .then(Commands.argument("definition", QuestDefinitionArgType.definition())
                     .executes(StrangeCommand::startQuest)))
         );
     }
 
-    private static int abandonQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int abandonQuest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         QuestManager questManager = getQuestManager();
 
         String id = QuestIdArgType.getId(context, "id");
         boolean result = questManager.abandonQuest(player, id);
-        context.getSource().sendFeedback(new TranslatableText(result ? "scroll.strange.abandoned_quest" : "scroll.strange.no_quest_found", id), false);
+        context.getSource().sendSuccess(new TranslatableComponent(result ? "scroll.strange.abandoned_quest" : "scroll.strange.no_quest_found", id), false);
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int abandonMyQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int abandonMyQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         QuestManager questManager = getQuestManager();
         questManager.abandonQuests(player);
 
-        context.getSource().sendFeedback(new TranslatableText("scroll.strange.abandoned_quests"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.abandoned_quests"), false);
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int abandonAllQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int abandonAllQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         QuestManager questManager = getQuestManager();
         questManager.abandonAllQuests();
 
-        context.getSource().sendFeedback(new TranslatableText("scroll.strange.abandoned_all_quests"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.abandoned_all_quests"), false);
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int claimQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
-        ItemStack held = player.getMainHandStack();
+    private static int claimQuest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        ItemStack held = player.getMainHandItem();
         if (!(held.getItem() instanceof ScrollItem))
-            throw makeException("Invalid scroll", new TranslatableText("scroll.strange.claim_main_hand").getString());
+            throw makeException("Invalid scroll", new TranslatableComponent("scroll.strange.claim_main_hand").getString());
 
         ScrollItem.claimOwnership(held, player);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int giveMap(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int giveMap(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         QuestManager questManager = getQuestManager();
         String questId = QuestIdArgType.getId(context, "id");
         Quest quest = getQuestById(questId);
@@ -139,12 +139,12 @@ public class StrangeCommand {
                 PlayerHelper.addOrDropStack(player, map);
         });
 
-        context.getSource().sendFeedback(new TranslatableText("scroll.strange.map_given", questId), false);
+        context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.map_given", questId), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int giveScroll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int giveScroll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         String questId = QuestIdArgType.getId(context, "id");
         Quest quest = getQuestById(questId);
 
@@ -156,109 +156,109 @@ public class StrangeCommand {
         ScrollItem.setScrollOwner(scroll, player);
         PlayerHelper.addOrDropStack(player, scroll);
 
-        context.getSource().sendFeedback(new TranslatableText("scroll.strange.scroll_given", questId), false);
+        context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.scroll_given", questId), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int learnRune(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int learnRune(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Character rune = RuneArgType.getLetter(context, "letter");
 
         int runeVal = (int)rune - 97;
         if (runeVal < 0 || runeVal > RunestonesHelper.NUMBER_OF_RUNES - 1)
             throw makeException("Invalid rune value", "Must be lowercase letter from a to " + (char) (RunestonesHelper.NUMBER_OF_RUNES-1) + 97);
 
-        ServerPlayerEntity player = context.getSource().getPlayer();
+        ServerPlayer player = context.getSource().getPlayerOrException();
         RunestonesHelper.addLearnedRune(player, runeVal);
 
-        context.getSource().sendFeedback(new TranslatableText("runestone.strange.learned_rune", rune), false);
+        context.getSource().sendSuccess(new TranslatableComponent("runestone.strange.learned_rune", rune), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int learnAllRunes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int learnAllRunes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
 
         for (int i = 0; i < RunestonesHelper.NUMBER_OF_RUNES; i++) {
             RunestonesHelper.addLearnedRune(player, i);
         }
 
-        context.getSource().sendFeedback(new TranslatableText("runestone.strange.learned_all_runes"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("runestone.strange.learned_all_runes"), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int listAllQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int listAllQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         QuestManager questManager = getQuestManager();
 
         List<Quest> quests = questManager.getQuests();
 
         if (!quests.isEmpty()) {
             quests.forEach(quest
-                -> context.getSource().sendFeedback(new LiteralText(quest.getTitle() + " > ").append(new LiteralText(quest.getId()).formatted(Formatting.AQUA)), false));
+                -> context.getSource().sendSuccess(new TextComponent(quest.getTitle() + " > ").append(new TextComponent(quest.getId()).withStyle(ChatFormatting.AQUA)), false));
         } else {
-            context.getSource().sendFeedback(new TranslatableText("scroll.strange.no_quests"), false);
+            context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.no_quests"), false);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int listMyQuests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int listMyQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         QuestManager questManager = getQuestManager();
 
         List<Quest> quests = questManager.getQuests(player);
 
         if (!quests.isEmpty()) {
             quests.forEach(quest
-                -> context.getSource().sendFeedback(new LiteralText(quest.getTitle() + " > ").append(new LiteralText(quest.getId()).formatted(Formatting.AQUA)), false));
+                -> context.getSource().sendSuccess(new TextComponent(quest.getTitle() + " > ").append(new TextComponent(quest.getId()).withStyle(ChatFormatting.AQUA)), false));
         } else {
-            context.getSource().sendFeedback(new TranslatableText("scroll.strange.no_quests"), false);
+            context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.no_quests"), false);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int startQuest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayer();
+    private static int startQuest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
         QuestManager questManager = getQuestManager();
 
         int rarity = 1;
         ScrollDefinition definition = Scrolls.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
         if (definition == null)
-            throw makeException("Invalid definition", new TranslatableText("scroll.strange.no_scroll_definition").getString());
+            throw makeException("Invalid definition", new TranslatableComponent("scroll.strange.no_scroll_definition").getString());
 
         Quest quest = questManager.createQuest(player, definition, rarity, null);
         if (quest != null) {
             ScrollItem.giveScrollToPlayer(quest, player);
         } else {
-            throw makeException("Quest failure", new TranslatableText("scroll.strange.create_quest_failed").getString());
+            throw makeException("Quest failure", new TranslatableComponent("scroll.strange.create_quest_failed").getString());
         }
 
-        context.getSource().sendFeedback(new TranslatableText("scroll.strange.started_quest", quest.getId()), false);
+        context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.started_quest", quest.getId()), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static Quest getQuestById(String questId) throws CommandSyntaxException {
         Optional<Quest> optionalQuest = getQuestManager().getQuest(questId);
         if (!optionalQuest.isPresent())
-            throw makeException("Invalid quest", new TranslatableText("scroll.strange.no_quest_found").getString());
+            throw makeException("Invalid quest", new TranslatableComponent("scroll.strange.no_quest_found").getString());
 
         return optionalQuest.get();
     }
 
-    private static void consumeRequiredItem(ServerPlayerEntity player, ItemStack requiredStack, String key) throws CommandSyntaxException {
-        int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredStack);
-        if (!PlayerHelper.getAbilities(player).creativeMode) {
+    private static void consumeRequiredItem(ServerPlayer player, ItemStack requiredStack, String key) throws CommandSyntaxException {
+        int slotWithStack = PlayerHelper.getInventory(player).findSlotMatchingItem(requiredStack);
+        if (!PlayerHelper.getAbilities(player).instabuild) {
             if (slotWithStack < 0){
-                throw makeException("Invalid item", new TranslatableText(key).getString());
+                throw makeException("Invalid item", new TranslatableComponent(key).getString());
             } else {
-                PlayerHelper.getInventory(player).getStack(slotWithStack).decrement(1);
+                PlayerHelper.getInventory(player).getItem(slotWithStack).shrink(1);
             }
         }
     }
 
     public static CommandSyntaxException makeException(String type, String message, Object... args) {
         return new CommandSyntaxException(
-            new SimpleCommandExceptionType(new LiteralText(type)),
-            new LiteralText(String.format(message, args))
+            new SimpleCommandExceptionType(new TextComponent(type)),
+            new TextComponent(String.format(message, args))
         );
     }
 
@@ -271,7 +271,7 @@ public class StrangeCommand {
         Optional<QuestManager> questManager = Scrolls.getQuestManager();
 
         if (!questManager.isPresent())
-            throw makeException("Internal error", new TranslatableText("scroll.strange.quest_manager_not_loaded").getString());
+            throw makeException("Internal error", new TranslatableComponent("scroll.strange.quest_manager_not_loaded").getString());
 
         return questManager.get();
     }

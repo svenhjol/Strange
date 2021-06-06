@@ -1,24 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.map.MapIcon;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.helper.*;
 import svenhjol.strange.module.scrolls.Scrolls;
@@ -28,6 +9,25 @@ import svenhjol.strange.module.scrolls.tag.Boss;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 
 public class BossPopulator extends BasePopulator {
     public static final String TARGETS = "targets";
@@ -39,7 +39,7 @@ public class BossPopulator extends BasePopulator {
 
     public static final int MAP_COLOR = 0x770000;
 
-    public BossPopulator(ServerPlayerEntity player, Quest quest) {
+    public BossPopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
     }
 
@@ -57,17 +57,17 @@ public class BossPopulator extends BasePopulator {
             fail("Could not find stone circle");
 
         // populate target entities
-        BlockPos foundPos = world.locateStructure(structureFeature, bossPos, 500, false);
+        BlockPos foundPos = world.findNearestMapFeature(structureFeature, bossPos, 500, false);
         if (foundPos == null)
             fail("Could not locate structure");
 
-        Map<Identifier, Integer> entities = new HashMap<>();
+        Map<ResourceLocation, Integer> entities = new HashMap<>();
 
         if (boss.containsKey(TARGETS)) {
             Map<String, Map<String, String>> targets = boss.get(TARGETS);
 
             for (String id : targets.keySet()) {
-                Identifier entityId = getEntityIdFromKey(id);
+                ResourceLocation entityId = getEntityIdFromKey(id);
                 if (entityId == null)
                     continue;
 
@@ -99,12 +99,12 @@ public class BossPopulator extends BasePopulator {
             return ItemStack.EMPTY;
 
         Charm.LOG.info("[BossPopulator] Map created for boss quest at pos: " + pos);
-        return MapHelper.getMap(world, pos, new TranslatableText(quest.getTitle()), MapIcon.Type.TARGET_POINT, MAP_COLOR);
+        return MapHelper.getMap(world, pos, new TranslatableComponent(quest.getTitle()), MapDecoration.Type.TARGET_POINT, MAP_COLOR);
     }
 
-    public static boolean startEncounter(PlayerEntity player, Boss tag) {
+    public static boolean startEncounter(Player player, Boss tag) {
         Quest quest = tag.getQuest();
-        ServerWorld world = (ServerWorld)player.world;
+        ServerLevel world = (ServerLevel)player.level;
         BlockPos pos = tag.getStructure();
 
         if (pos == null)
@@ -126,18 +126,18 @@ public class BossPopulator extends BasePopulator {
         if (boss.containsKey(SUPPORT))
             trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
 
-        world.playSound(null, pos, SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 1.0F, 1.0F);
         return true;
     }
 
-    public static void checkEncounter(PlayerEntity player, Boss tag) {
+    public static void checkEncounter(Player player, Boss tag) {
     }
 
     private void fail(String message) {
         throw new IllegalStateException("Could not start boss quest: " + message);
     }
 
-    private static boolean trySpawnEntities(ServerWorld world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
+    private static boolean trySpawnEntities(ServerLevel world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
         int effectDuration = 999999; // something that doesn't run out very quickly
         int effectAmplifier = Math.max(1, quest.getTier() - 3);
         boolean didAnySpawn = false;
@@ -146,7 +146,7 @@ public class BossPopulator extends BasePopulator {
             Map<String, String> props = entityDefinitions.get(id);
 
             // try and get the type from the ID
-            Optional<EntityType<?>> optionalType = EntityType.get(id);
+            Optional<EntityType<?>> optionalType = EntityType.byString(id);
             if (!optionalType.isPresent())
                 return false;
 
@@ -157,10 +157,10 @@ public class BossPopulator extends BasePopulator {
 
                 // try and create the entity from the type
                 Entity entity = optionalType.get().create(world);
-                if (!(entity instanceof MobEntity))
+                if (!(entity instanceof Mob))
                     return false;
 
-                MobEntity mobEntity = (MobEntity) entity;
+                Mob mobEntity = (Mob) entity;
 
                 // get the health property, default to 20 hearts if not set
                 int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
@@ -183,14 +183,14 @@ public class BossPopulator extends BasePopulator {
                 // try and add mob to the world, if fail then record the mob as killed
                 boolean didSpawn = MobHelper.spawnMobNearPos(world, pos, mobEntity, (mob, mobPos) -> {
                     // set properties on the entity
-                    mob.setPersistent();
+                    mob.setPersistenceRequired();
 
                     // if this entity should be a boss, set the quest ID tag on it
                     if (isBoss)
-                        mob.addScoreboardTag(quest.getId());
+                        mob.addTag(quest.getId());
 
                     // need to override this attribute on the entity to allow health values greater than maxhealth
-                    EntityAttributeInstance healthAttribute = mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+                    AttributeInstance healthAttribute = mob.getAttribute(Attributes.MAX_HEALTH);
                     if (healthAttribute != null)
                         healthAttribute.setBaseValue(health);
 
@@ -199,11 +199,11 @@ public class BossPopulator extends BasePopulator {
                     // apply status effects to the mob
                     if (effects.size() > 0) {
                         effects.forEach(effectName -> {
-                            StatusEffect effect = Registry.STATUS_EFFECT.get(new Identifier(effectName));
+                            MobEffect effect = Registry.MOB_EFFECT.get(new ResourceLocation(effectName));
                             if (effect == null)
                                 return;
 
-                            mob.addStatusEffect(new StatusEffectInstance(effect, effectDuration, effectAmplifier));
+                            mob.addEffect(new MobEffectInstance(effect, effectDuration, effectAmplifier));
                         });
                     }
 

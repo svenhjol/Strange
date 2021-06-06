@@ -1,20 +1,20 @@
 package svenhjol.strange.module.runestones;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.module.CharmModule;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RunestoneBlock extends CharmBlockWithEntity {
     private final int runeValue;
 
     public RunestoneBlock(CharmModule module, int runeValue) {
-        super(module, "runestone_" + runeValue, AbstractBlock.Settings.copy(Blocks.STONE));
+        super(module, "runestone_" + runeValue, BlockBehaviour.Properties.copy(Blocks.STONE));
         this.runeValue = runeValue;
     }
 
@@ -24,7 +24,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RunestoneBlockEntity(pos, state);
     }
 }

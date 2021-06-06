@@ -1,27 +1,27 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import svenhjol.strange.module.scrolls.tag.Quest;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 public class HuntPopulator extends BasePopulator {
-    public HuntPopulator(ServerPlayerEntity player, Quest quest) {
+    public HuntPopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
     }
 
     @Override
     public void populate() {
         Map<String, String> hunt = definition.getHunt();
-        Map<Identifier, Integer> entities = new HashMap<>();
+        Map<ResourceLocation, Integer> entities = new HashMap<>();
 
         if (hunt.isEmpty())
             return;
 
         for (String id : hunt.keySet()) {
-            Identifier entityId = getEntityIdFromKey(id);
+            ResourceLocation entityId = getEntityIdFromKey(id);
             if (entityId == null)
                 continue;
 

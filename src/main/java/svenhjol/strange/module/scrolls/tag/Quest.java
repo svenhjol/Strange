@@ -1,15 +1,15 @@
 package svenhjol.strange.module.scrolls.tag;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.module.scrolls.ScrollDefinition;
 import svenhjol.strange.module.scrolls.ScrollsHelper;
 
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 
 public class Quest implements ISerializable {
     private static final String ID_TAG = "id";
@@ -60,8 +60,8 @@ public class Quest implements ISerializable {
         this.owner = owner;
     }
 
-    public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
 
         tag.putInt(TIER_TAG, tier);
         tag.putInt(RARITY_TAG, rarity);
@@ -83,7 +83,7 @@ public class Quest implements ISerializable {
         return tag;
     }
 
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         tier = tag.getInt(TIER_TAG);
         rarity = Math.max(1, tag.getInt(RARITY_TAG));
         expiry = Math.max(0, tag.getInt(EXPIRY_TAG));
@@ -198,12 +198,12 @@ public class Quest implements ISerializable {
         this.time = currentTime;
     }
 
-    public void playerTick(PlayerEntity player) {
+    public void playerTick(Player player) {
         explore.playerTick(player);
         boss.playerTick(player);
     }
 
-    public void complete(PlayerEntity player, MerchantEntity merchant) {
+    public void complete(Player player, AbstractVillager merchant) {
         gather.complete(player, merchant);
         explore.complete(player, merchant);
         reward.complete(player, merchant);
@@ -213,14 +213,14 @@ public class Quest implements ISerializable {
         this.setDirty(true);
     }
 
-    public void abandon(PlayerEntity player) {
+    public void abandon(Player player) {
         boss.abandon(player);
 
         this.expiry = 0; // isActive() will no longer be true
         this.setDirty(true);
     }
 
-    public boolean isSatisfied(PlayerEntity player) {
+    public boolean isSatisfied(Player player) {
         update(player);
         return gather.isSatisfied()
             && hunt.isSatisfied()
@@ -228,7 +228,7 @@ public class Quest implements ISerializable {
             && boss.isSatisfied();
     }
 
-    public void update(PlayerEntity player) {
+    public void update(Player player) {
         gather.update(player);
         hunt.update(player);
         explore.update(player);
@@ -240,7 +240,7 @@ public class Quest implements ISerializable {
         boss.entityKilled(entity, attacker);
     }
 
-    public static Quest getFromTag(NbtCompound fromTag) {
+    public static Quest getFromTag(CompoundTag fromTag) {
         Quest quest = new Quest();
         quest.fromTag(fromTag);
         return quest;

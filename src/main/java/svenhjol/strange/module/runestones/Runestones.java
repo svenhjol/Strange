@@ -4,39 +4,39 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.entity.projectile.thrown.ThrownEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.function.LootFunctionType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.annotation.Module;
@@ -61,12 +61,12 @@ import static svenhjol.strange.module.runestones.RunestonesHelper.NUMBER_OF_RUNE
 
 @Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an Ender Pearl.")
 public class Runestones extends CharmModule {
-    public static final Identifier BLOCK_ID = new Identifier(Strange.MOD_ID, "runestone");
-    public static final Identifier RUNESTONE_DUST_ID = new Identifier(Strange.MOD_ID, "runestone_dust");
-    public static final Identifier MSG_CLIENT_CACHE_LEARNED_RUNES = new Identifier(Strange.MOD_ID, "client_cache_learned_runes");
-    public static final Identifier MSG_CLIENT_CACHE_DESTINATION_NAMES = new Identifier(Strange.MOD_ID, "client_cache_destination_names");
-    public static final Identifier TRIGGER_ACTIVATED_RUNESTONE = new Identifier(Strange.MOD_ID, "activated_runestone");
-    public static final Identifier TRIGGER_LEARNED_ALL_RUNES = new Identifier(Strange.MOD_ID, "learned_all_runes");
+    public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
+    public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
+    public static final ResourceLocation MSG_CLIENT_CACHE_LEARNED_RUNES = new ResourceLocation(Strange.MOD_ID, "client_cache_learned_runes");
+    public static final ResourceLocation MSG_CLIENT_CACHE_DESTINATION_NAMES = new ResourceLocation(Strange.MOD_ID, "client_cache_destination_names");
+    public static final ResourceLocation TRIGGER_ACTIVATED_RUNESTONE = new ResourceLocation(Strange.MOD_ID, "activated_runestone");
+    public static final ResourceLocation TRIGGER_LEARNED_ALL_RUNES = new ResourceLocation(Strange.MOD_ID, "learned_all_runes");
     public static final String LEARNED_TAG = "learned";
     public static final int TELEPORT_TICKS = 10;
 
@@ -75,8 +75,8 @@ public class Runestones extends CharmModule {
     public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
 
-    public static final Identifier RUNE_PLATE_LOOT_ID = new Identifier(Strange.MOD_ID, "rune_plate_loot");
-    public static LootFunctionType RUNE_PLATE_LOOT_FUNCTION;
+    public static final ResourceLocation RUNE_PLATE_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "rune_plate_loot");
+    public static LootItemFunctionType RUNE_PLATE_LOOT_FUNCTION;
 
     public static Map<Integer, RunePlateItem> RUNE_PLATES = new HashMap<>();
     public static List<BaseDestination> AVAILABLE_DESTINATIONS = new ArrayList<>(); // pool of possible destinations, may populate before loadWorldEvent
@@ -134,13 +134,13 @@ public class Runestones extends CharmModule {
         // setup runestone dust item and entity
         RUNESTONE_DUST = new RunestoneDustItem(this);
         RUNESTONE_DUST_ENTITY = RegistryHelper.entity(RUNESTONE_DUST_ID, FabricEntityTypeBuilder
-            .<RunestoneDustEntity>create(SpawnGroup.MISC, RunestoneDustEntity::new)
+            .<RunestoneDustEntity>create(MobCategory.MISC, RunestoneDustEntity::new)
             .trackRangeBlocks(80)
             .trackedUpdateRate(10)
             .dimensions(EntityDimensions.fixed(2.0F, 2.0F)));
 
         // TODO: phase2 loot table
-        RUNE_PLATE_LOOT_FUNCTION = RegistryHelper.lootFunctionType(RUNE_PLATE_LOOT_ID, new LootFunctionType(new RunePlateLootFunction.Serializer()));
+        RUNE_PLATE_LOOT_FUNCTION = RegistryHelper.lootFunctionType(RUNE_PLATE_LOOT_ID, new LootItemFunctionType(new RunePlateLootFunction.Serializer()));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class Runestones extends CharmModule {
      * Use the loadWorld event to shuffle the destinations according to the world seed.
      */
     private void handleLoadWorld(MinecraftServer server) {
-        ServerWorld overworld = server.getWorld(World.OVERWORLD);
+        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         if (overworld == null) {
             Charm.LOG.warn("Cannot access overworld, unable to get seed.");
@@ -193,19 +193,19 @@ public class Runestones extends CharmModule {
         }
     }
 
-    public static void sendLearnedRunesPacket(ServerPlayerEntity player) {
+    public static void sendLearnedRunesPacket(ServerPlayer player) {
         List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
         int[] learned = learnedRunes.stream().mapToInt(i -> i).toArray();
 
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeIntArray(learned);
+        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        data.writeVarIntArray(learned);
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_LEARNED_RUNES, data);
     }
 
-    public static void sendDestinationNamesPacket(ServerPlayerEntity player) {
+    public static void sendDestinationNamesPacket(ServerPlayer player) {
         List<Integer> learnedRunes = RunestonesHelper.getLearnedRunes(player);
 
-        NbtCompound outTag = new NbtCompound();
+        CompoundTag outTag = new CompoundTag();
 
         for (int rune : learnedRunes) {
             BaseDestination destination = WORLD_DESTINATIONS.get(rune);
@@ -213,7 +213,7 @@ public class Runestones extends CharmModule {
             outTag.putString(String.valueOf(rune), name);
         }
 
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeNbt(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_DESTINATION_NAMES, data);
     }
@@ -224,7 +224,7 @@ public class Runestones extends CharmModule {
             for (int j = 0; j < configStructures.size(); j++) {
                 if (r >= NUMBER_OF_RUNES) break;
                 String configStructure = configStructures.get(j);
-                Identifier locationId = new Identifier(configStructure);
+                ResourceLocation locationId = new ResourceLocation(configStructure);
 
                 float weight = 1.0F - (j / (float)NUMBER_OF_RUNES);
                 boolean isSpawnRune = locationId.equals(RunestonesHelper.SPAWN);
@@ -243,7 +243,7 @@ public class Runestones extends CharmModule {
             for (int j = 0; j < configBiomes.size(); j++) {
                 if (r >= NUMBER_OF_RUNES) break;
                 String configBiome = configBiomes.get(j);
-                Identifier locationId = new Identifier(configBiome);
+                ResourceLocation locationId = new ResourceLocation(configBiome);
 
                 float weight = 1.0F - (j / (float)NUMBER_OF_RUNES);
                 boolean addBiome = BuiltinRegistries.BIOME.get(locationId) != null;
@@ -259,29 +259,29 @@ public class Runestones extends CharmModule {
         }
     }
 
-    private void tryLookingAtRunestone(ServerPlayerEntity player) {
+    private void tryLookingAtRunestone(ServerPlayer player) {
         // don't check this every single tick
-        if (player.world.getTime() % 10 > 0)
+        if (player.level.getGameTime() % 10 > 0)
             return;
 
-        Vec3d cameraPosVec = player.getCameraPosVec(1.0F);
-        Vec3d rotationVec = player.getRotationVec(1.0F);
-        Vec3d vec3d = cameraPosVec.add(rotationVec.x * 6, rotationVec.y * 6, rotationVec.z * 6);
+        Vec3 cameraPosVec = player.getEyePosition(1.0F);
+        Vec3 rotationVec = player.getViewVector(1.0F);
+        Vec3 vec3d = cameraPosVec.add(rotationVec.x * 6, rotationVec.y * 6, rotationVec.z * 6);
 
-        World world = player.world;
-        BlockHitResult raycast = world.raycast(new RaycastContext(cameraPosVec, vec3d, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player));
+        Level world = player.level;
+        BlockHitResult raycast = world.clip(new ClipContext(cameraPosVec, vec3d, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         BlockPos runePos = raycast.getBlockPos();
         BlockState lookedAt = world.getBlockState(runePos);
 
         if (lookedAt.getBlock() instanceof RunestoneBlock) {
             RunestoneBlock block = (RunestoneBlock)lookedAt.getBlock();
             if (RUNESTONE_BLOCKS.contains(block)) {
-                TranslatableText message = new TranslatableText("runestone.strange.unknown");
-                int runeValue = getRuneValue((ServerWorld) world, runePos);
+                TranslatableComponent message = new TranslatableComponent("runestone.strange.unknown");
+                int runeValue = getRuneValue((ServerLevel) world, runePos);
 
                 if (RunestonesHelper.hasLearnedRune(player, runeValue)) {
                     BaseDestination destination = WORLD_DESTINATIONS.get(runeValue);
-                    message = new TranslatableText("runestone.strange.known", RunestonesHelper.getFormattedLocationName(destination.getLocation()));
+                    message = new TranslatableComponent("runestone.strange.known", RunestonesHelper.getFormattedLocationName(destination.getLocation()));
                 }
 
                 BlockEntity blockEntity = world.getBlockEntity(runePos);
@@ -291,28 +291,28 @@ public class Runestones extends CharmModule {
                     if (runestone.location != null) {
                         String formattedLocationName = RunestonesHelper.getFormattedLocationName(runestone.location);
                         if (runestone.player != null && !runestone.player.isEmpty()) {
-                            message = new TranslatableText("runestone.strange.discovered_by", formattedLocationName, runestone.player);
+                            message = new TranslatableComponent("runestone.strange.discovered_by", formattedLocationName, runestone.player);
                         } else {
-                            message = new TranslatableText("runestone.strange.discovered", formattedLocationName);
+                            message = new TranslatableComponent("runestone.strange.discovered", formattedLocationName);
                         }
 
                         if (learnFromOtherPlayers && !RunestonesHelper.hasLearnedRune(player, runeValue)) {
-                            world.playSound(null, runePos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            world.playSound(null, runePos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 1.0F, 1.0F);
                             RunestonesHelper.addLearnedRune(player, runeValue);
                         }
                     }
                 }
 
-                player.sendMessage(message, true);
+                player.displayClientMessage(message, true);
             }
         }
     }
 
-    private void tryTeleport(ServerPlayerEntity player) {
+    private void tryTeleport(ServerPlayer player) {
         if (teleportTo.isEmpty())
             return;
 
-        UUID uid = player.getUuid();
+        UUID uid = player.getUUID();
         player.stopRiding();
 
         if (teleportTicks.containsKey(uid)) {
@@ -322,9 +322,9 @@ public class Runestones extends CharmModule {
 
             // force load the remote chunk for smoother teleport
             if (ticks == TELEPORT_TICKS) {
-                if (!WorldHelper.addForcedChunk((ServerWorld)player.world, dest)) {
+                if (!WorldHelper.addForcedChunk((ServerLevel)player.level, dest)) {
                     Charm.LOG.warn("Could not load destination chunk, giving up");
-                    RunestonesHelper.explode(player.world, src, player, true);
+                    RunestonesHelper.explode(player.level, src, player, true);
                     clearTeleport(player);
                     return;
                 }
@@ -339,36 +339,36 @@ public class Runestones extends CharmModule {
                 return;
 
             BlockPos destPos = teleportTo.get(uid);
-            World world = player.world;
+            Level world = player.level;
             BlockPos surfacePos = PosHelper.getSurfacePos(world, destPos);
 
             // don't need the player's teleport info any more
             clearTeleport(player);
 
             int duration = protectionDuration * 20;
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, duration, 2));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, duration, 2));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, duration, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, duration, 2));
 
             if (surfacePos != null) // should never be null but check anyway
-                player.teleport(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
+                player.teleportToWithTicket(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
 
             // must unload the chunk once finished
-            WorldHelper.removeForcedChunk((ServerWorld)player.world, destPos);
+            WorldHelper.removeForcedChunk((ServerLevel)player.level, destPos);
         }
     }
 
-    private ActionResult tryEnderPearlImpact(ThrownEntity entity, HitResult hitResult) {
-        if (!entity.world.isClient
-            && entity instanceof EnderPearlEntity
+    private InteractionResult tryEnderPearlImpact(ThrowableProjectile entity, HitResult hitResult) {
+        if (!entity.level.isClientSide
+            && entity instanceof ThrownEnderpearl
             && hitResult.getType() == HitResult.Type.BLOCK
-            && entity.getOwner() instanceof PlayerEntity
+            && entity.getOwner() instanceof Player
         ) {
-            PlayerEntity player = (PlayerEntity)entity.getOwner();
+            Player player = (Player)entity.getOwner();
             if (player == null)
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
 
-            World world = entity.world;
+            Level world = entity.level;
             BlockPos pos = ((BlockHitResult)hitResult).getBlockPos();
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
@@ -376,18 +376,18 @@ public class Runestones extends CharmModule {
             if (block instanceof RunestoneBlock) {
                 entity.discard();
 
-                boolean result = onPlayerActivateRunestone((ServerWorld)world, pos, (ServerPlayerEntity)player);
+                boolean result = onPlayerActivateRunestone((ServerLevel)world, pos, (ServerPlayer)player);
                 if (result) {
-                    world.playSound(null, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    return ActionResult.SUCCESS;
+                    world.playSound(null, pos, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
-    private boolean onPlayerActivateRunestone(ServerWorld world, BlockPos runePos, ServerPlayerEntity player) {
+    private boolean onPlayerActivateRunestone(ServerLevel world, BlockPos runePos, ServerPlayer player) {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
             Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toString());
@@ -395,13 +395,13 @@ public class Runestones extends CharmModule {
         }
 
         Random random = new Random();
-        random.setSeed(runePos.toImmutable().asLong());
+        random.setSeed(runePos.immutable().asLong());
         BlockPos destPos = WORLD_DESTINATIONS.get(runeValue).getDestination(world, runePos, maxDistance, random, player);
 
         if (destPos == null)
             return RunestonesHelper.explode(world, runePos, player, true);
 
-        UUID uid = player.getUuid();
+        UUID uid = player.getUUID();
 
         // prep for teleport
         teleportFrom.put(uid, runePos);
@@ -417,28 +417,28 @@ public class Runestones extends CharmModule {
         return true;
     }
 
-    private int getRuneValue(ServerWorld world, BlockPos pos) {
+    private int getRuneValue(ServerLevel world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof RunestoneBlock)) return -1;
         return ((RunestoneBlock)state.getBlock()).getRuneValue();
     }
 
-    private void clearTeleport(PlayerEntity player) {
-        UUID uid = player.getUuid();
+    private void clearTeleport(Player player) {
+        UUID uid = player.getUUID();
         teleportTicks.remove(uid);
         teleportTo.remove(uid);
         teleportFrom.remove(uid);
     }
 
-    private void handlePlayerSave(PlayerEntity player, File playerDataDir) {
+    private void handlePlayerSave(Player player, File playerDataDir) {
         List<Integer> runes = RunestonesHelper.getLearnedRunes(player);
-        NbtCompound tag = new NbtCompound();
+        CompoundTag tag = new CompoundTag();
         tag.putIntArray(LEARNED_TAG, runes);
-        PlayerSaveDataCallback.writeFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"), tag);
+        PlayerSaveDataCallback.writeFile(new File(playerDataDir, player.getStringUUID() + "_runestones.dat"), tag);
     }
 
-    private void handlePlayerLoad(PlayerEntity player, File playerDataDir) {
-        NbtCompound tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getUuidAsString() + "_runestones.dat"));
+    private void handlePlayerLoad(Player player, File playerDataDir) {
+        CompoundTag tag = PlayerLoadDataCallback.readFile(new File(playerDataDir, player.getStringUUID() + "_runestones.dat"));
         if (tag.contains(LEARNED_TAG)) {
             RunestonesHelper.resetLearnedRunes(player);
 
@@ -455,11 +455,11 @@ public class Runestones extends CharmModule {
      * - if the player is looking at a runestone
      * - if the player is scheduled to be teleported
      */
-    private void handlePlayerTick(PlayerEntity player) {
-        if (player.world.isClient || AVAILABLE_DESTINATIONS.isEmpty())
+    private void handlePlayerTick(Player player) {
+        if (player.level.isClientSide || AVAILABLE_DESTINATIONS.isEmpty())
             return;
 
-        ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+        ServerPlayer serverPlayer = (ServerPlayer)player;
         tryLookingAtRunestone(serverPlayer);
         tryTeleport(serverPlayer);
     }
@@ -468,15 +468,15 @@ public class Runestones extends CharmModule {
      * Called just before a runestone block is broken.
      * This is where we do drops for runestone dust and plates.
      */
-    private boolean handleBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+    private boolean handleBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
         if (!(state.getBlock() instanceof RunestoneBlock))
             return true;
 
-        int runeValue = getRuneValue((ServerWorld) world, pos);
+        int runeValue = getRuneValue((ServerLevel) world, pos);
         if (runeValue >= 0) {
             int drops = 1 + world.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);
             for (int i = 0; i < drops; i++) {
-                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
+                world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNESTONE_DUST)));
             }
 
             float luck = player.getLuck();
@@ -486,7 +486,7 @@ public class Runestones extends CharmModule {
 
             if (shouldDropPlate) {
                 for (int i = 0; i < maxPlateDrops; i++) {
-                    world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNE_PLATES.get(runeValue))));
+                    world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RUNE_PLATES.get(runeValue))));
                 }
                 RunestonesHelper.explode(world, pos, null, false);
             }
@@ -495,11 +495,11 @@ public class Runestones extends CharmModule {
         return true; // always allow runestone to be broken
     }
 
-    public static void triggerActivatedRunestone(ServerPlayerEntity player) {
+    public static void triggerActivatedRunestone(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_ACTIVATED_RUNESTONE);
     }
 
-    public static void triggerLearnedAllRunes(ServerPlayerEntity player) {
+    public static void triggerLearnedAllRunes(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LEARNED_ALL_RUNES);
     }
 }

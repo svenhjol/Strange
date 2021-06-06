@@ -1,42 +1,42 @@
 package svenhjol.strange.module.travel_journals;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import svenhjol.charm.Charm;
 import svenhjol.charm.helper.DimensionHelper;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.saveddata.SavedData;
 import java.util.*;
 
-public class TravelJournalManager extends PersistentState {
+public class TravelJournalManager extends SavedData {
     private Map<UUID, List<TravelJournalEntry>> playerJournalEntries = new HashMap<>();
-    private final World world;
+    private final Level world;
 
-    public TravelJournalManager(ServerWorld world) {
+    public TravelJournalManager(ServerLevel world) {
         this.world = world;
-        markDirty();
+        setDirty();
     }
 
-    public Optional<TravelJournalEntry> getJournalEntry(PlayerEntity player, @Nullable TravelJournalEntry entry) {
+    public Optional<TravelJournalEntry> getJournalEntry(Player player, @Nullable TravelJournalEntry entry) {
         if (entry == null)
             return Optional.empty();
 
-        UUID uuid = player.getUuid();
+        UUID uuid = player.getUUID();
         List<TravelJournalEntry> entries = playerJournalEntries.getOrDefault(uuid, new ArrayList<>());
         return entries.stream().filter(e -> e.id.equals(entry.id)).findFirst();
     }
 
     @Nullable
-    public TravelJournalEntry updateJournalEntry(PlayerEntity player, TravelJournalEntry entry) {
+    public TravelJournalEntry updateJournalEntry(Player player, TravelJournalEntry entry) {
         Optional<TravelJournalEntry> optionalEntry = getJournalEntry(player, entry);
         if (!optionalEntry.isPresent())
             return null;
@@ -47,25 +47,25 @@ public class TravelJournalManager extends PersistentState {
         updated.dim = entry.dim;
         updated.color = entry.color;
 
-        markDirty();
+        setDirty();
         return updated;
     }
 
-    public void deleteJournalEntry(PlayerEntity player, TravelJournalEntry entry) {
+    public void deleteJournalEntry(Player player, TravelJournalEntry entry) {
         Optional<TravelJournalEntry> optionalEntry = getJournalEntry(player, entry);
         if (!optionalEntry.isPresent())
             return;
 
         TravelJournalEntry deleted = optionalEntry.get();
-        List<TravelJournalEntry> entries = playerJournalEntries.get(player.getUuid());
+        List<TravelJournalEntry> entries = playerJournalEntries.get(player.getUUID());
         entries.remove(deleted);
 
-        markDirty();
+        setDirty();
     }
 
     @Nullable
-    public TravelJournalEntry addJournalEntry(PlayerEntity player, TravelJournalEntry entry) {
-        UUID uuid = player.getUuid();
+    public TravelJournalEntry addJournalEntry(Player player, TravelJournalEntry entry) {
+        UUID uuid = player.getUUID();
         if (!playerJournalEntries.containsKey(uuid))
             playerJournalEntries.put(uuid, new ArrayList<>());
 
@@ -77,31 +77,31 @@ public class TravelJournalManager extends PersistentState {
         }
 
         entries.add(entry);
-        markDirty();
+        setDirty();
         return entry;
     }
 
     @Nullable
-    public TravelJournalEntry initJournalEntry(PlayerEntity player) {
-        String name = new TranslatableText("gui.strange.travel_journal.new_entry").getString();
+    public TravelJournalEntry initJournalEntry(Player player) {
+        String name = new TranslatableComponent("gui.strange.travel_journal.new_entry").getString();
 
-        BlockPos pos = player.getBlockPos();
-        Identifier dim = DimensionHelper.getDimension(player.world);
+        BlockPos pos = player.blockPosition();
+        ResourceLocation dim = DimensionHelper.getDimension(player.level);
         TravelJournalEntry entry = new TravelJournalEntry(name, pos, dim, 15);
 
         return addJournalEntry(player, entry);
     }
 
-    public static TravelJournalManager fromTag(ServerWorld world, NbtCompound tag) {
+    public static TravelJournalManager fromTag(ServerLevel world, CompoundTag tag) {
         TravelJournalManager manager = new TravelJournalManager(world);
 
         // inflate into hashmap
         manager.playerJournalEntries = new HashMap<>();
 
-        Set<String> uuids = tag.getKeys();
+        Set<String> uuids = tag.getAllKeys();
         for (String uuid : uuids) {
             UUID player = UUID.fromString(uuid);
-            NbtList listTag = tag.getList(uuid, 10);
+            ListTag listTag = tag.getList(uuid, 10);
             List<TravelJournalEntry> entries = manager.unserializePlayerEntries(listTag);
             manager.playerJournalEntries.put(player, entries);
         }
@@ -110,19 +110,19 @@ public class TravelJournalManager extends PersistentState {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public CompoundTag save(CompoundTag tag) {
         // serialize all player journal entries into the master tag
         for (UUID uuid : playerJournalEntries.keySet()) {
-            NbtList listTag = serializePlayerEntries(uuid);
+            ListTag listTag = serializePlayerEntries(uuid);
             tag.put(uuid.toString(), listTag);
         }
 
         return tag;
     }
 
-    public NbtList serializePlayerEntries(UUID uuid) {
+    public ListTag serializePlayerEntries(UUID uuid) {
         List<TravelJournalEntry> entries = playerJournalEntries.getOrDefault(uuid, new ArrayList<>());
-        NbtList tag = new NbtList();
+        ListTag tag = new ListTag();
 
         for (TravelJournalEntry entry : entries) {
             tag.add(entry.toTag());
@@ -131,16 +131,16 @@ public class TravelJournalManager extends PersistentState {
         return tag;
     }
 
-    public List<TravelJournalEntry> unserializePlayerEntries(NbtList tag) {
+    public List<TravelJournalEntry> unserializePlayerEntries(ListTag tag) {
         List<TravelJournalEntry> entries = new ArrayList<>();
-        for (NbtElement t : tag) {
-            entries.add(new TravelJournalEntry((NbtCompound)t));
+        for (Tag t : tag) {
+            entries.add(new TravelJournalEntry((CompoundTag)t));
         }
 
         return entries;
     }
 
     public static String nameFor(DimensionType dimensionType) {
-        return "traveljournal" + dimensionType.getSuffix();
+        return "traveljournal" + dimensionType.getFileSuffix();
     }
 }

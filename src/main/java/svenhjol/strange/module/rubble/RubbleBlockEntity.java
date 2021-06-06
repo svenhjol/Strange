@@ -1,11 +1,11 @@
 package svenhjol.strange.module.rubble;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public static final String ITEMSTACK_TAG = "itemstack";
@@ -35,23 +35,23 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
 
         if (tag.contains(ITEMSTACK_TAG))
-            this.itemStack = ItemStack.fromNbt((NbtCompound) tag.get(ITEMSTACK_TAG));
+            this.itemStack = ItemStack.of((CompoundTag) tag.get(ITEMSTACK_TAG));
 
         if (tag.contains(LEVELTICKS_TAG))
             this.levelTicks = tag.getLong(LEVELTICKS_TAG);
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
+    public CompoundTag save(CompoundTag tag) {
+        super.save(tag);
 
         if (this.itemStack != null) {
-            NbtCompound itemTag = new NbtCompound();
-            this.itemStack.writeNbt(itemTag);
+            CompoundTag itemTag = new CompoundTag();
+            this.itemStack.save(itemTag);
             tag.put(ITEMSTACK_TAG, itemTag);
         }
 
@@ -60,12 +60,12 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void fromClientTag(NbtCompound compoundTag) {
-        readNbt(compoundTag);
+    public void fromClientTag(CompoundTag compoundTag) {
+        load(compoundTag);
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound compoundTag) {
-        return writeNbt(compoundTag);
+    public CompoundTag toClientTag(CompoundTag compoundTag) {
+        return save(compoundTag);
     }
 }

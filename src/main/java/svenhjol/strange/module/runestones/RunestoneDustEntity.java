@@ -1,58 +1,58 @@
 package svenhjol.strange.module.runestones;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("EntityConstructor")
 public class RunestoneDustEntity extends Entity {
     public int ticks = 0;
 
-    private static final TrackedData<Integer> TARGET_X = DataTracker.registerData(RunestoneDustEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Integer> TARGET_Z = DataTracker.registerData(RunestoneDustEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final EntityDataAccessor<Integer> TARGET_X = SynchedEntityData.defineId(RunestoneDustEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TARGET_Z = SynchedEntityData.defineId(RunestoneDustEntity.class, EntityDataSerializers.INT);
     private static final String TAG_TARGET_X = "targetX";
     private static final String TAG_TARGET_Z = "targetZ";
 
-    public RunestoneDustEntity(EntityType<? extends RunestoneDustEntity> type, World world) {
+    public RunestoneDustEntity(EntityType<? extends RunestoneDustEntity> type, Level world) {
         super(type, world);
     }
 
-    public RunestoneDustEntity(World world, int x, int z) {
+    public RunestoneDustEntity(Level world, int x, int z) {
         this(Runestones.RUNESTONE_DUST_ENTITY, world);
-        dataTracker.set(TARGET_X, x);
-        dataTracker.set(TARGET_Z, z);
+        entityData.set(TARGET_X, x);
+        entityData.set(TARGET_Z, z);
     }
 
     @Override
-    protected void initDataTracker() {
-        dataTracker.startTracking(TARGET_X, 0);
-        dataTracker.startTracking(TARGET_Z, 0);
+    protected void defineSynchedData() {
+        entityData.define(TARGET_X, 0);
+        entityData.define(TARGET_Z, 0);
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound tag) {
-        dataTracker.set(TARGET_X, tag.getInt(TAG_TARGET_X));
-        dataTracker.set(TARGET_Z, tag.getInt(TAG_TARGET_Z));
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        entityData.set(TARGET_X, tag.getInt(TAG_TARGET_X));
+        entityData.set(TARGET_Z, tag.getInt(TAG_TARGET_Z));
     }
 
     @Override
-    protected void writeCustomDataToNbt(NbtCompound tag) {
-        tag.putInt(TAG_TARGET_X, dataTracker.get(TARGET_X));
-        tag.putInt(TAG_TARGET_Z, dataTracker.get(TARGET_Z));
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        tag.putInt(TAG_TARGET_X, entityData.get(TARGET_X));
+        tag.putInt(TAG_TARGET_Z, entityData.get(TARGET_Z));
     }
 
     @Override
-    public Packet<?> createSpawnPacket() {
-        return new EntitySpawnS2CPacket(this);
+    public Packet<?> getAddEntityPacket() {
+        return new ClientboundAddEntityPacket(this);
     }
 
     @Override
@@ -67,23 +67,23 @@ public class RunestoneDustEntity extends Entity {
         int maxLiveTime = 130;
         int particles = 15;
 
-        int x = getBlockPos().getX();
-        int y = getBlockPos().getY();
-        int z = getBlockPos().getZ();
+        int x = blockPosition().getX();
+        int y = blockPosition().getY();
+        int z = blockPosition().getZ();
 
-        Vec3d vec = new Vec3d((double) dataTracker.get(TARGET_X), y, (double) dataTracker.get(TARGET_Z))
-            .subtract(x, y, z).normalize().multiply(scale);
+        Vec3 vec = new Vec3((double) entityData.get(TARGET_X), y, (double) entityData.get(TARGET_Z))
+            .subtract(x, y, z).normalize().scale(scale);
 
         double bpx = x + vec.x * ticks;
         double bpy = y + vec.y * ticks + ticks * ((((float)(maxLiveTime - ticks) / maxLiveTime) * rise) + rise);
         double bpz = z + vec.z * ticks;
 
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             for (int i = 0; i < particles; i++) {
                 double px = bpx + (Math.random() - 0.5) * posSpread;
                 double py = bpy + (Math.random() - 0.5) * posSpread;
                 double pz = bpz + (Math.random() - 0.5) * posSpread;
-                ((ServerWorld) world).spawnParticles(ParticleTypes.ASH, px, py, pz, 1, 0.2D, 0.12D, 0.1D, speed);
+                ((ServerLevel) level).sendParticles(ParticleTypes.ASH, px, py, pz, 1, 0.2D, 0.12D, 0.1D, speed);
             }
         }
 

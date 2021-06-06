@@ -1,14 +1,13 @@
 package svenhjol.strange.module.scrolls;
 
 import com.google.gson.Gson;
-import net.minecraft.resource.Resource;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.server.packs.resources.Resource;
 
 public class ScrollDefinition {
     private String id;

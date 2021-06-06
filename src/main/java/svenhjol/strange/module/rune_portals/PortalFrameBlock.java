@@ -1,25 +1,28 @@
 package svenhjol.strange.module.rune_portals;
 
-import net.minecraft.block.*;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import svenhjol.charm.module.CharmModule;
 
 public class PortalFrameBlock extends BaseFrameBlock {
-    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    public static final IntProperty RUNE = IntProperty.of("rune", 0, 25);
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final IntegerProperty RUNE = IntegerProperty.create("rune", 0, 25);
 
     protected static final VoxelShape EAST_FRAME_SHAPE;
     protected static final VoxelShape EAST_RUNE_SHAPE;
@@ -35,19 +38,19 @@ public class PortalFrameBlock extends BaseFrameBlock {
     protected static final VoxelShape SOUTH_SHAPE;
 
     public PortalFrameBlock(CharmModule module) {
-        super(module, "portal_frame", Settings.copy(Blocks.CRYING_OBSIDIAN));
-        this.setDefaultState(this.getDefaultState()
-            .with(FACING, Direction.NORTH)
-            .with(RUNE, 0));
+        super(module, "portal_frame", Properties.copy(Blocks.CRYING_OBSIDIAN));
+        this.registerDefaultState(this.defaultBlockState()
+            .setValue(FACING, Direction.NORTH)
+            .setValue(RUNE, 0));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (state.get(FACING) == Direction.WEST) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        if (state.getValue(FACING) == Direction.WEST) {
             return WEST_SHAPE;
-        } else if (state.get(FACING) == Direction.SOUTH) {
+        } else if (state.getValue(FACING) == Direction.SOUTH) {
             return SOUTH_SHAPE;
-        } else if (state.get(FACING) == Direction.EAST) {
+        } else if (state.getValue(FACING) == Direction.EAST) {
             return EAST_SHAPE;
         } else {
             return NORTH_SHAPE;
@@ -55,41 +58,41 @@ public class PortalFrameBlock extends BaseFrameBlock {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(FACING, RUNE);
     }
 
     @Override
-    public void addStacksForDisplay(ItemGroup group, DefaultedList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         // ekki
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state
-            .with(FACING, rotation.rotate(state.get(FACING)));
+            .setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation(state.get(FACING)));
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     static {
-        EAST_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D);
-        EAST_RUNE_SHAPE = Block.createCuboidShape(15.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
+        EAST_FRAME_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D);
+        EAST_RUNE_SHAPE = Block.box(15.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
 
-        WEST_FRAME_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        WEST_RUNE_SHAPE = Block.createCuboidShape(0.0D, 2.0D, 2.0D, 1.0D, 14.0D, 14.0D);
+        WEST_FRAME_SHAPE = Block.box(1.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        WEST_RUNE_SHAPE = Block.box(0.0D, 2.0D, 2.0D, 1.0D, 14.0D, 14.0D);
 
-        NORTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 16.0D);
-        NORTH_RUNE_SHAPE = Block.createCuboidShape(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 1.0D);
+        NORTH_FRAME_SHAPE = Block.box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 16.0D);
+        NORTH_RUNE_SHAPE = Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 1.0D);
 
-        SOUTH_FRAME_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 15.0D);
-        SOUTH_RUNE_SHAPE = Block.createCuboidShape(2.0D, 2.0D, 15.0D, 14.0D, 14.0D, 16.0D);
+        SOUTH_FRAME_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 15.0D);
+        SOUTH_RUNE_SHAPE = Block.box(2.0D, 2.0D, 15.0D, 14.0D, 14.0D, 16.0D);
 
-        EAST_SHAPE = VoxelShapes.union(EAST_FRAME_SHAPE, EAST_RUNE_SHAPE);
-        WEST_SHAPE = VoxelShapes.union(WEST_FRAME_SHAPE, WEST_RUNE_SHAPE);
-        NORTH_SHAPE = VoxelShapes.union(NORTH_FRAME_SHAPE, NORTH_RUNE_SHAPE);
-        SOUTH_SHAPE = VoxelShapes.union(SOUTH_FRAME_SHAPE, SOUTH_RUNE_SHAPE);
+        EAST_SHAPE = Shapes.or(EAST_FRAME_SHAPE, EAST_RUNE_SHAPE);
+        WEST_SHAPE = Shapes.or(WEST_FRAME_SHAPE, WEST_RUNE_SHAPE);
+        NORTH_SHAPE = Shapes.or(NORTH_FRAME_SHAPE, NORTH_RUNE_SHAPE);
+        SOUTH_SHAPE = Shapes.or(SOUTH_FRAME_SHAPE, SOUTH_RUNE_SHAPE);
     }
 }

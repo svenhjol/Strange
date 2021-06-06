@@ -1,25 +1,25 @@
 package svenhjol.strange.module.runestones.destination;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 import svenhjol.charm.Charm;
 import svenhjol.charm.helper.PosHelper;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.biome.Biome;
 import java.util.Optional;
 import java.util.Random;
 
 public class BiomeDestination extends BaseDestination {
-    public BiomeDestination(Identifier location, float weight) {
+    public BiomeDestination(ResourceLocation location, float weight) {
         super(location, weight);
     }
 
     @Nullable
-    public BlockPos getDestination(ServerWorld world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayerEntity player) {
+    public BlockPos getDestination(ServerLevel world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayer player) {
 
         BlockPos loadedPos = tryLoad(world, startPos);
         if (loadedPos != null)
@@ -27,16 +27,16 @@ public class BiomeDestination extends BaseDestination {
 
         int xdist = -maxDistance + random.nextInt(maxDistance *2);
         int zdist = -maxDistance + random.nextInt(maxDistance *2);
-        BlockPos destPos = checkBounds(world, startPos.add(xdist, 0, zdist));
+        BlockPos destPos = checkBounds(world, startPos.offset(xdist, 0, zdist));
 
         BlockPos foundPos;
 
         if (isSpawnPoint()) {
-            foundPos = world.getSpawnPos();
+            foundPos = world.getSharedSpawnPos();
         } else {
 
             // TODO check this works with modded biomes
-            Optional<Biome> biome = world.getRegistryManager().get(Registry.BIOME_KEY).getOrEmpty(location);
+            Optional<Biome> biome = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(location);
 
             if (!biome.isPresent()) {
                 Charm.LOG.warn("Could not find biome in registry of type: " + location);
@@ -44,7 +44,7 @@ public class BiomeDestination extends BaseDestination {
             }
 
             Charm.LOG.debug("Trying to locate biome in the world: " + location);
-            foundPos = world.locateBiome(biome.get(), destPos, 6400, 8); // ints stolen from LocateBiomeCommand
+            foundPos = world.findNearestBiome(biome.get(), destPos, 6400, 8); // ints stolen from LocateBiomeCommand
         }
 
         if (foundPos == null) {

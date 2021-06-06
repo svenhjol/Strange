@@ -1,18 +1,18 @@
 package svenhjol.strange.module.scrolls.tag;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import svenhjol.strange.module.scrolls.ScrollsHelper;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class Hunt implements ISerializable {
     public static final String ENTITY_DATA = "entity_data";
@@ -20,27 +20,27 @@ public class Hunt implements ISerializable {
     public static final String ENTITY_KILLED = "entity_killed";
 
     private Quest quest;
-    private Map<Identifier, Integer> entities = new HashMap<>();
-    private Map<Identifier, Integer> killed = new HashMap<>();
+    private Map<ResourceLocation, Integer> entities = new HashMap<>();
+    private Map<ResourceLocation, Integer> killed = new HashMap<>();
 
     // these are dynamically generated, not stored in nbt
-    private Map<Identifier, Boolean> satisfied = new HashMap<>();
-    private Map<Identifier, String> names = new HashMap<>();
+    private Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
+    private Map<ResourceLocation, String> names = new HashMap<>();
 
     public Hunt(Quest quest) {
         this.quest = quest;
     }
 
     @Override
-    public NbtCompound toTag() {
-        NbtCompound outTag = new NbtCompound();
-        NbtCompound dataTag = new NbtCompound();
-        NbtCompound countTag = new NbtCompound();
-        NbtCompound killedTag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag outTag = new CompoundTag();
+        CompoundTag dataTag = new CompoundTag();
+        CompoundTag countTag = new CompoundTag();
+        CompoundTag killedTag = new CompoundTag();
 
         if (!entities.isEmpty()) {
             int index = 0;
-            for (Identifier entityId : entities.keySet()) {
+            for (ResourceLocation entityId : entities.keySet()) {
                 String entityIndex = Integer.toString(index);
                 int entityCount = entities.get(entityId);
                 int entityKilled = killed.getOrDefault(entityId, 0);
@@ -62,19 +62,19 @@ public class Hunt implements ISerializable {
     }
 
     @Override
-    public void fromTag(NbtCompound tag) {
-        NbtCompound dataTag = (NbtCompound)tag.get(ENTITY_DATA);
-        NbtCompound countTag = (NbtCompound)tag.get(ENTITY_COUNT);
-        NbtCompound killedTag = (NbtCompound)tag.get(ENTITY_KILLED);
+    public void fromTag(CompoundTag tag) {
+        CompoundTag dataTag = (CompoundTag)tag.get(ENTITY_DATA);
+        CompoundTag countTag = (CompoundTag)tag.get(ENTITY_COUNT);
+        CompoundTag killedTag = (CompoundTag)tag.get(ENTITY_KILLED);
 
         entities = new HashMap<>();
         killed = new HashMap<>();
 
-        if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
-            for (int i = 0; i < dataTag.getSize(); i++) {
+        if (dataTag != null && dataTag.size() > 0 && countTag != null) {
+            for (int i = 0; i < dataTag.size(); i++) {
                 // read the data from the tags at the specified index
                 String tagIndex = String.valueOf(i);
-                Identifier entityId = Identifier.tryParse(dataTag.getString(tagIndex));
+                ResourceLocation entityId = ResourceLocation.tryParse(dataTag.getString(tagIndex));
                 if (entityId == null)
                     continue;
 
@@ -87,23 +87,23 @@ public class Hunt implements ISerializable {
         }
     }
 
-    public void addEntity(Identifier entity, int count) {
+    public void addEntity(ResourceLocation entity, int count) {
         entities.put(entity, count);
     }
 
-    public Map<Identifier, Integer> getEntities() {
+    public Map<ResourceLocation, Integer> getEntities() {
         return entities;
     }
 
-    public Map<Identifier, Integer> getKilled() {
+    public Map<ResourceLocation, Integer> getKilled() {
         return killed;
     }
 
-    public Map<Identifier, Boolean> getSatisfied() {
+    public Map<ResourceLocation, Boolean> getSatisfied() {
         return satisfied;
     }
 
-    public Map<Identifier, String> getNames() {
+    public Map<ResourceLocation, String> getNames() {
         return names;
     }
 
@@ -114,27 +114,27 @@ public class Hunt implements ISerializable {
         return satisfied.size() == entities.size() && getSatisfied().values().stream().allMatch(r -> r);
     }
 
-    public void update(PlayerEntity player) {
+    public void update(Player player) {
         satisfied.clear();
 
         entities.forEach((id, count) -> {
             int countKilled = killed.getOrDefault(id, 0);
             satisfied.put(id, countKilled >= count);
 
-            Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(id);
-            optionalEntityType.ifPresent(entityType -> names.put(id, entityType.getName().getString()));
+            Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOptional(id);
+            optionalEntityType.ifPresent(entityType -> names.put(id, entityType.getDescription().getString()));
         });
     }
 
     public void entityKilled(LivingEntity entity, Entity attacker) {
-        if (!(attacker instanceof ServerPlayerEntity))
+        if (!(attacker instanceof ServerPlayer))
             return;
 
-        ServerPlayerEntity player = (ServerPlayerEntity) attacker;
+        ServerPlayer player = (ServerPlayer) attacker;
 
         // must be the player who owns the quest
-        if (quest.getOwner().equals(player.getUuid()) || quest.getOwner().equals(ScrollsHelper.ANY_UUID)) {
-            Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+        if (quest.getOwner().equals(player.getUUID()) || quest.getOwner().equals(ScrollsHelper.ANY_UUID)) {
+            ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
 
             if (entities.containsKey(id)) {
                 Integer count = killed.getOrDefault(id, 0);

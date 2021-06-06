@@ -1,36 +1,36 @@
 package svenhjol.strange.module.runestones.destination;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.feature.StructureFeature;
 import svenhjol.charm.Charm;
 import svenhjol.charm.helper.PosHelper;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import java.util.Random;
 
 public class StructureDestination extends BaseDestination {
-    public StructureDestination(Identifier location, float weight) {
+    public StructureDestination(ResourceLocation location, float weight) {
         super(location, weight);
     }
 
     @Nullable
-    public BlockPos getDestination(ServerWorld world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayerEntity player) {
+    public BlockPos getDestination(ServerLevel world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayer player) {
         BlockPos loadedPos = tryLoad(world, startPos);
         if (loadedPos != null)
             return loadedPos;
 
         int xdist = -maxDistance + random.nextInt(maxDistance * 2);
         int zdist = -maxDistance + random.nextInt(maxDistance * 2);
-        BlockPos destPos = checkBounds(world, startPos.add(xdist, 0, zdist));
+        BlockPos destPos = checkBounds(world, startPos.offset(xdist, 0, zdist));
 
         BlockPos foundPos;
 
         if (isSpawnPoint()) {
-            foundPos = world.getSpawnPos();
+            foundPos = world.getSharedSpawnPos();
         } else {
             StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(location);
 
@@ -40,7 +40,7 @@ public class StructureDestination extends BaseDestination {
             }
 
             Charm.LOG.debug("Trying to locate structure in the world: " + location);
-            foundPos = world.locateStructure(structureFeature, destPos, 1000, false);
+            foundPos = world.findNearestMapFeature(structureFeature, destPos, 1000, false);
         }
 
         if (foundPos == null) {

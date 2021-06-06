@@ -3,27 +3,27 @@ package svenhjol.strange.module.travel_journals;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.map.MapIcon;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.annotation.Module;
@@ -50,14 +50,14 @@ public class TravelJournals extends CharmModule {
     public static final int MAX_NAME_LENGTH = 32;
     public static final int SCREENSHOT_DISTANCE = 10;
 
-    public static final Identifier MSG_SERVER_OPEN_JOURNAL = new Identifier(Strange.MOD_ID, "server_open_journal");
-    public static final Identifier MSG_SERVER_ADD_ENTRY = new Identifier(Strange.MOD_ID, "server_add_entry");
-    public static final Identifier MSG_SERVER_UPDATE_ENTRY = new Identifier(Strange.MOD_ID, "server_update_entry");
-    public static final Identifier MSG_SERVER_DELETE_ENTRY = new Identifier(Strange.MOD_ID, "server_delete_entry");
-    public static final Identifier MSG_SERVER_MAKE_MAP = new Identifier(Strange.MOD_ID, "server_make_map");
-    public static final Identifier MSG_SERVER_USE_TOTEM = new Identifier(Strange.MOD_ID, "server_use_totem");
-    public static final Identifier MSG_CLIENT_RECEIVE_ENTRY = new Identifier(Strange.MOD_ID, "client_receive_entry");
-    public static final Identifier MSG_CLIENT_RECEIVE_ENTRIES = new Identifier(Strange.MOD_ID, "client_receive_entries");
+    public static final ResourceLocation MSG_SERVER_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_open_journal");
+    public static final ResourceLocation MSG_SERVER_ADD_ENTRY = new ResourceLocation(Strange.MOD_ID, "server_add_entry");
+    public static final ResourceLocation MSG_SERVER_UPDATE_ENTRY = new ResourceLocation(Strange.MOD_ID, "server_update_entry");
+    public static final ResourceLocation MSG_SERVER_DELETE_ENTRY = new ResourceLocation(Strange.MOD_ID, "server_delete_entry");
+    public static final ResourceLocation MSG_SERVER_MAKE_MAP = new ResourceLocation(Strange.MOD_ID, "server_make_map");
+    public static final ResourceLocation MSG_SERVER_USE_TOTEM = new ResourceLocation(Strange.MOD_ID, "server_use_totem");
+    public static final ResourceLocation MSG_CLIENT_RECEIVE_ENTRY = new ResourceLocation(Strange.MOD_ID, "client_receive_entry");
+    public static final ResourceLocation MSG_CLIENT_RECEIVE_ENTRIES = new ResourceLocation(Strange.MOD_ID, "client_receive_entries");
 
     public static TravelJournalItem TRAVEL_JOURNAL;
 
@@ -98,42 +98,42 @@ public class TravelJournals extends CharmModule {
         return travelJournalManager != null ? Optional.of(travelJournalManager) : Optional.empty();
     }
 
-    public static void sendJournalEntriesPacket(ServerPlayerEntity player, NbtList entries) {
-        UUID uuid = player.getUuid();
-        NbtCompound outTag = new NbtCompound();
+    public static void sendJournalEntriesPacket(ServerPlayer player, ListTag entries) {
+        UUID uuid = player.getUUID();
+        CompoundTag outTag = new CompoundTag();
         outTag.put(uuid.toString(), entries);
 
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeNbt(outTag);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRIES, buffer);
     }
 
-    public static void sendJournalEntryPacket(ServerPlayerEntity player, NbtCompound entry) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+    public static void sendJournalEntryPacket(ServerPlayer player, CompoundTag entry) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeNbt(entry);
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
 
     private void loadTravelJournalManager(MinecraftServer server) {
-        ServerWorld overworld = server.getWorld(World.OVERWORLD);
+        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         if (overworld == null) {
             Charm.LOG.warn("[Travel Journal] Overworld is null, cannot load persistent state manager");
             return;
         }
 
-        PersistentStateManager stateManager = overworld.getPersistentStateManager();
-        travelJournalManager = stateManager.getOrCreate(
+        DimensionDataStorage stateManager = overworld.getDataStorage();
+        travelJournalManager = stateManager.computeIfAbsent(
             (tag) -> TravelJournalManager.fromTag(overworld, tag),
             () -> new TravelJournalManager(overworld),
-            TravelJournalManager.nameFor(overworld.getDimension()));
+            TravelJournalManager.nameFor(overworld.dimensionType()));
 
         Charm.LOG.info("[Travel Journal] Loaded travel journal state manager");
     }
 
-    private void handleServerOpenJournal(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+    private void handleServerOpenJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
         processClientPacket(server, player, manager -> {
-            NbtList listTag = manager.serializePlayerEntries(player.getUuid());
+            ListTag listTag = manager.serializePlayerEntries(player.getUUID());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
 
             if (ModuleHandler.enabled(Runestones.class)) {
@@ -146,12 +146,12 @@ public class TravelJournals extends CharmModule {
             }
 
             // for the advancement
-            Criteria.CONSUME_ITEM.trigger(player, new ItemStack(TravelJournals.TRAVEL_JOURNAL));
+            CriteriaTriggers.CONSUME_ITEM.trigger(player, new ItemStack(TravelJournals.TRAVEL_JOURNAL));
         });
     }
 
-    private void handleServerUpdateEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entry = data.readNbt();
+    private void handleServerUpdateEntry(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag entry = data.readNbt();
         if (entry == null || entry.isEmpty())
             return;
 
@@ -164,19 +164,19 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerDeleteEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entry = data.readNbt();
+    private void handleServerDeleteEntry(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag entry = data.readNbt();
         if (entry == null || entry.isEmpty())
             return;
 
         processClientPacket(server, player, manager -> {
             manager.deleteJournalEntry(player, new TravelJournalEntry(entry));
-            NbtList listTag = manager.serializePlayerEntries(player.getUuid());
+            ListTag listTag = manager.serializePlayerEntries(player.getUUID());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
         });
     }
 
-    private void handleServerAddEntry(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+    private void handleServerAddEntry(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
         processClientPacket(server, player, manager -> {
             TravelJournalEntry entry = manager.initJournalEntry(player);
             if (entry == null) {
@@ -188,15 +188,15 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private void handleServerUseTotem(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entryTag = data.readNbt();
+    private void handleServerUseTotem(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag entryTag = data.readNbt();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
         processClientPacket(server, player, manager -> {
             // check the player has a totem
             ItemStack requiredItem = new ItemStack(Items.NETHER_STAR); // TODO: placeholder item, phase2
-            int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
+            int slotWithStack = PlayerHelper.getInventory(player).findSlotMatchingItem(requiredItem);
             if (slotWithStack == -1)
                 return;
 
@@ -207,29 +207,29 @@ public class TravelJournals extends CharmModule {
 
             // check the player is in the right dimension for this entry
             TravelJournalEntry entry = optionalEntry.get();
-            if (!DimensionHelper.isDimension(player.world, entry.dim))
+            if (!DimensionHelper.isDimension(player.level, entry.dim))
                 return;
 
             // destroy totem
-            ItemStack heldTotem = PlayerHelper.getInventory(player).getStack(slotWithStack);
+            ItemStack heldTotem = PlayerHelper.getInventory(player).getItem(slotWithStack);
             TotemsHelper.destroy(player, heldTotem);
 
-            World world = player.world;
+            Level world = player.level;
 //            Criteria.USED_TOTEM.trigger(player, new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING)); // TODO: bring this advancement back in phase2
             PlayerHelper.teleport(world, entry.pos, player);
-            player.world.playSound(null, entry.pos, SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+            player.level.playSound(null, entry.pos, SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 0.8F, 1.0F);
         });
     }
 
-    private void handleServerMakeMap(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound entryTag = data.readNbt();
+    private void handleServerMakeMap(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag entryTag = data.readNbt();
         if (entryTag == null || entryTag.isEmpty())
             return;
 
         processClientPacket(server, player, manager -> {
             // check the player has a map
             ItemStack requiredItem = new ItemStack(Items.MAP);
-            int slotWithStack = PlayerHelper.getInventory(player).getSlotWithStack(requiredItem);
+            int slotWithStack = PlayerHelper.getInventory(player).findSlotMatchingItem(requiredItem);
             if (slotWithStack == -1)
                 return;
 
@@ -240,27 +240,27 @@ public class TravelJournals extends CharmModule {
 
             // get the entry and reduce the map stack by 1
             TravelJournalEntry entry = optionalEntry.get();
-            ItemStack heldMap = PlayerHelper.getInventory(player).getStack(slotWithStack);
-            heldMap.decrement(1);
+            ItemStack heldMap = PlayerHelper.getInventory(player).getItem(slotWithStack);
+            heldMap.shrink(1);
 
             DyeColor col = DyeColor.byId(entry.color);
-            MapIcon.Type decoration = MapIcon.Type.TARGET_X;
-            if (col == DyeColor.BLACK) decoration = MapIcon.Type.BANNER_BLACK;
-            if (col == DyeColor.BLUE) decoration = MapIcon.Type.BANNER_BLUE;
-            if (col == DyeColor.PURPLE) decoration = MapIcon.Type.BANNER_PURPLE;
-            if (col == DyeColor.RED) decoration = MapIcon.Type.BANNER_RED;
-            if (col == DyeColor.BROWN) decoration = MapIcon.Type.BANNER_BROWN;
-            if (col == DyeColor.GREEN) decoration = MapIcon.Type.BANNER_GREEN;
-            if (col == DyeColor.GRAY) decoration = MapIcon.Type.BANNER_GRAY;
+            MapDecoration.Type decoration = MapDecoration.Type.TARGET_X;
+            if (col == DyeColor.BLACK) decoration = MapDecoration.Type.BANNER_BLACK;
+            if (col == DyeColor.BLUE) decoration = MapDecoration.Type.BANNER_BLUE;
+            if (col == DyeColor.PURPLE) decoration = MapDecoration.Type.BANNER_PURPLE;
+            if (col == DyeColor.RED) decoration = MapDecoration.Type.BANNER_RED;
+            if (col == DyeColor.BROWN) decoration = MapDecoration.Type.BANNER_BROWN;
+            if (col == DyeColor.GREEN) decoration = MapDecoration.Type.BANNER_GREEN;
+            if (col == DyeColor.GRAY) decoration = MapDecoration.Type.BANNER_GRAY;
 
-            ItemStack outMap = MapHelper.getMap((ServerWorld) player.world, entry.pos, new TranslatableText(entry.name), decoration, col.getFireworkColor());
+            ItemStack outMap = MapHelper.getMap((ServerLevel) player.level, entry.pos, new TranslatableComponent(entry.name), decoration, col.getFireworkColor());
             PlayerHelper.addOrDropStack(player, outMap);
 
             TravelJournals.sendJournalEntryPacket(player, entry.toTag());
         });
     }
 
-    private void processClientPacket(MinecraftServer server, ServerPlayerEntity player, Consumer<TravelJournalManager> callback) {
+    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<TravelJournalManager> callback) {
         server.execute(() -> {
             if (player == null)
                 return;
@@ -270,22 +270,22 @@ public class TravelJournals extends CharmModule {
         });
     }
 
-    private ActionResult tryInterceptDropInventory(PlayerEntity player, PlayerInventory inventory) {
-        if (player.world.isClient)
-            return ActionResult.PASS;
+    private InteractionResult tryInterceptDropInventory(Player player, Inventory inventory) {
+        if (player.level.isClientSide)
+            return InteractionResult.PASS;
 
         // add position to travel journal
         Optional<TravelJournalManager> journalManager = TravelJournals.getTravelJournalManager();
         journalManager.ifPresent(manager -> {
             TravelJournalEntry entry = new TravelJournalEntry(
-                new TranslatableText("item.charm.totem_of_preserving").getString(),
-                player.getBlockPos(),
-                DimensionHelper.getDimension(player.world),
+                new TranslatableComponent("item.charm.totem_of_preserving").getString(),
+                player.blockPosition(),
+                DimensionHelper.getDimension(player.level),
                 1
             );
             manager.addJournalEntry(player, entry);
         });
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }
