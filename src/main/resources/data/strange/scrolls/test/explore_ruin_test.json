@@ -14,7 +14,7 @@
     },
     "settings": {
       "structure": {
-        "type": "strange:ruin",
+        "type": "strange:cave_ruin",
         "min_distance": 500,
         "max_distance": 1000,
         "chest_range": 8

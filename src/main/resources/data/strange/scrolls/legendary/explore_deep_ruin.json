@@ -3,7 +3,7 @@
   "valid_dimensions": ["overworld"],
   "time_limit": 60,
   "modules": [
-    "strange:foundations"
+    "strange:ruins"
   ],
   "lang": {
     "en": {
@@ -37,7 +37,7 @@
     },
     "settings": {
       "structure": {
-        "type": "strange:foundation",
+        "type": "strange:deep_ruin",
         "min_distance": 6000,
         "max_distance": 8000,
         "chest_range": 5,
