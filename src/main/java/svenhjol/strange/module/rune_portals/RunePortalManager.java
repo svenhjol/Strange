@@ -4,6 +4,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import svenhjol.charm.mixin.accessor.ServerPlayerEntityAccessor;
 import svenhjol.strange.init.StrangeSounds;
 
 import java.util.*;
@@ -141,8 +143,16 @@ public class RunePortalManager extends PersistentState {
         Optional<BlockPos> optional = dests.stream().filter(b -> b != pos).findFirst();
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
-            entity.requestTeleport(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
+
+            if (entity instanceof ServerPlayerEntity)
+                ((ServerPlayerEntityAccessor)entity).setInTeleportationState(true);
+
+            entity.teleport(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
             world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.BLOCKS, 0.85F, 1.05F);
+
+//            if (entity instanceof ServerPlayerEntity)
+//                ((ServerPlayerEntity)entity).onTeleportationDone();
+
             return true;
         }
 
