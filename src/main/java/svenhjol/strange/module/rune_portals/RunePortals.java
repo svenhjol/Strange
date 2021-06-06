@@ -337,6 +337,10 @@ public class RunePortals extends CharmModule {
                 if (!world.isClient && !player.isCreative())
                     PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNE_PLATES.get(runeValue)));
 //                world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 18);
+            } else if (!block.equals(Blocks.CRYING_OBSIDIAN)) {
+
+                // the block is not a valid frameblock or crying obsidian, skip
+                return ActionResult.PASS;
             }
 
             BlockState newState = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
