@@ -244,14 +244,17 @@ public class RunePortals extends CharmModule {
                 return false;
         }
 
-        if (order.size() == 12) {
-            Charm.LOG.debug("Rune order: " + order);
+        Optional<RunePortalManager> optional = RunePortals.getManager(world);
 
-            Optional<RunePortalManager> optional = RunePortals.getManager(world);
-            if (optional.isPresent()) {
-                RunePortalManager manager = optional.get();
+        if (optional.isPresent()) {
+            RunePortalManager manager = optional.get();
+
+            if (order.size() == 12) {
+                Charm.LOG.debug("Rune order: " + order);
                 manager.createPortal(order, start, axis);
                 return true;
+            } else {
+                Charm.LOG.debug("Could not determine portal runes");
             }
         }
 
@@ -326,26 +329,30 @@ public class RunePortals extends CharmModule {
         }
 
         if (held.getItem() instanceof RunePlateItem plate) {
-            Direction side = hit.getSide();
-            if (side == Direction.UP || side == Direction.DOWN)
+            Direction hitFacing = hit.getSide();
+            Direction wasFacing = null;
+
+            if (hitFacing == Direction.UP || hitFacing == Direction.DOWN)
                 return ActionResult.PASS;
 
-            // if there's already a rune in the frame
             if (isFrameBlock) {
+                // if there's already a rune in the frame, drop it for the player
+                // and note the direction that it is facing so we can reuse this side
                 int runeValue = state.get(PortalFrameBlock.RUNE);
+                wasFacing = state.get(PortalFrameBlock.FACING);
 
                 if (!world.isClient && !player.isCreative())
                     PlayerHelper.addOrDropStack(player, new ItemStack(Runestones.RUNE_PLATES.get(runeValue)));
-//                world.setBlockState(hitPos, RunePortals.RAW_FRAME_BLOCK.getDefaultState(), 18);
-            } else if (!block.equals(Blocks.CRYING_OBSIDIAN)) {
 
+            } else if (!block.equals(Blocks.CRYING_OBSIDIAN)) {
                 // the block is not a valid frameblock or crying obsidian, skip
                 return ActionResult.PASS;
             }
 
+            int runeValue = plate.getRuneValue();
             BlockState newState = RunePortals.PORTAL_FRAME_BLOCK.getDefaultState()
-                .with(PortalFrameBlock.FACING, side)
-                .with(PortalFrameBlock.RUNE, plate.getRuneValue());
+                .with(PortalFrameBlock.FACING, wasFacing == null ? hitFacing : wasFacing)
+                .with(PortalFrameBlock.RUNE, runeValue);
 
             world.setBlockState(hitPos, newState, 3);
             world.playSound(null, hitPos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 0.8F, 1.0F);
