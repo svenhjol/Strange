@@ -1,11 +1,11 @@
 package svenhjol.strange.module.rune_portals;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction.Axis;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RunePortalBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     private static final String ORIENTATION_NBT = "orientation";
@@ -21,29 +21,29 @@ public class RunePortalBlockEntity extends BlockEntity implements BlockEntityCli
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        this.orientation = Axis.fromName(nbt.getString(ORIENTATION_NBT));
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        this.orientation = Axis.byName(nbt.getString(ORIENTATION_NBT));
         this.runes = nbt.getString(RUNES_NBT);
-        this.pos = BlockPos.fromLong(nbt.getLong(POS_NBT));
+        this.pos = BlockPos.of(nbt.getLong(POS_NBT));
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        nbt.putString(ORIENTATION_NBT, this.orientation.asString());
+    public CompoundTag save(CompoundTag nbt) {
+        super.save(nbt);
+        nbt.putString(ORIENTATION_NBT, this.orientation.getSerializedName());
         nbt.putString(RUNES_NBT, this.runes);
-        nbt.putLong(POS_NBT, this.pos.asLong());
+        nbt.putLong(POS_NBT, this.worldPosition.asLong());
         return nbt;
     }
 
     @Override
-    public void fromClientTag(NbtCompound nbt) {
-        readNbt(nbt);
+    public void fromClientTag(CompoundTag nbt) {
+        load(nbt);
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound nbtCompound) {
-        return writeNbt(nbtCompound);
+    public CompoundTag toClientTag(CompoundTag nbtCompound) {
+        return save(nbtCompound);
     }
 }

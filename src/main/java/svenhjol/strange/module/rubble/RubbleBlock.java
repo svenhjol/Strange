@@ -2,33 +2,38 @@ package svenhjol.strange.module.rubble;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.init.StrangeLoot;
@@ -39,55 +44,55 @@ import java.util.List;
 import java.util.Random;
 
 public class RubbleBlock extends CharmBlockWithEntity {
-    public static IntProperty LEVEL;
+    public static IntegerProperty LEVEL;
     public static final List<VoxelShape> SHAPES = new ArrayList<>();
 
     public RubbleBlock(CharmModule module) {
-        super(module, "rubble", FabricBlockSettings.of(Material.AGGREGATE, MapColor.GRAY)
+        super(module, "rubble", FabricBlockSettings.of(Material.SAND, MaterialColor.COLOR_GRAY)
             .strength(8.0F)
             .requiresTool()
             .breakByTool(FabricToolTags.SHOVELS)
-            .sounds(BlockSoundGroup.GRAVEL));
+            .sound(SoundType.GRAVEL));
 
-        setDefaultState(getDefaultState().with(LEVEL, 0));
+        registerDefaultState(defaultBlockState().setValue(LEVEL, 0));
     }
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RubbleBlockEntity(pos, state);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(LEVEL);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        int level = state.get(LEVEL);
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        int level = state.getValue(LEVEL);
         return SHAPES.get(level);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        int level = state.get(LEVEL);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        int level = state.getValue(LEVEL);
         return SHAPES.get(level);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        int level = state.get(LEVEL);
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        int level = state.getValue(LEVEL);
         Random random = world.random;
-        ItemStack held = player.getStackInHand(hand);
+        ItemStack held = player.getItemInHand(hand);
 
         if (level <= 8) {
             levelEffect(world, pos, level);
-            world.playSound(player, pos, SoundEvents.BLOCK_COMPOSTER_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(player, pos, SoundEvents.COMPOSTER_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-            if (!world.isClient) {
-                ServerWorld serverWorld = (ServerWorld) world;
+            if (!world.isClientSide) {
+                ServerLevel serverWorld = (ServerLevel) world;
 
                 // get the block entity
                 RubbleBlockEntity rubble = getBlockEntity(serverWorld, pos);
@@ -95,7 +100,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
                     return fail(serverWorld, pos);
 
                 // populate for first time
-                if (level == 0 && !populate((ServerWorld) world, pos, player))
+                if (level == 0 && !populate((ServerLevel) world, pos, player))
                     return fail(serverWorld, pos);
 
                 if (level == 8)
@@ -104,35 +109,35 @@ public class RubbleBlock extends CharmBlockWithEntity {
                 // test to see if it can be levelled
                 long levelTicks = rubble.getLevelTicks();
                 boolean shovel = held.getItem() instanceof ShovelItem;
-                boolean waited = levelTicks > 0 && serverWorld.getTime() - levelTicks > 10;
+                boolean waited = levelTicks > 0 && serverWorld.getGameTime() - levelTicks > 10;
 
                 if (waited || !shovel)
                     return fail(serverWorld, pos);
 
-                rubble.setLevelTicks(world.getTime());
+                rubble.setLevelTicks(world.getGameTime());
 
                 if (random.nextFloat() < 0.9F)
-                    return ActionResult.PASS;
+                    return InteractionResult.PASS;
 
                 return level(serverWorld, pos, state, level);
             }
 
-            return ActionResult.success(true);
+            return InteractionResult.sidedSuccess(true);
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (world.isClient)
+    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        if (world.isClientSide)
             return;
 
-        fail((ServerWorld)world, pos);
+        fail((ServerLevel)world, pos);
     }
 
     @Nullable
-    public RubbleBlockEntity getBlockEntity(World world, BlockPos pos) {
+    public RubbleBlockEntity getBlockEntity(Level world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (!(blockEntity instanceof RubbleBlockEntity))
             return null;
@@ -140,19 +145,19 @@ public class RubbleBlock extends CharmBlockWithEntity {
         return (RubbleBlockEntity) blockEntity;
     }
 
-    private boolean populate(ServerWorld world, BlockPos pos, LivingEntity entity) {
+    private boolean populate(ServerLevel world, BlockPos pos, LivingEntity entity) {
         Random random = world.random;
 
         RubbleBlockEntity rubble = getBlockEntity(world, pos);
         if (rubble == null)
             return false;
 
-        LootTable lootTable = world.getServer().getLootManager().getTable(StrangeLoot.RUBBLE);
-        List<ItemStack> list = lootTable.generateLoot((new LootContext.Builder(world)
-            .parameter(LootContextParameters.THIS_ENTITY, entity)
-            .parameter(LootContextParameters.ORIGIN, entity.getPos())
-            .random(random)
-            .build(LootContextTypes.CHEST)));
+        LootTable lootTable = world.getServer().getLootTables().get(StrangeLoot.RUBBLE);
+        List<ItemStack> list = lootTable.getRandomItems((new LootContext.Builder(world)
+            .withParameter(LootContextParams.THIS_ENTITY, entity)
+            .withParameter(LootContextParams.ORIGIN, entity.position())
+            .withRandom(random)
+            .create(LootContextParamSets.CHEST)));
 
         if (list.isEmpty())
             return false;
@@ -167,57 +172,57 @@ public class RubbleBlock extends CharmBlockWithEntity {
         }
 
         rubble.setItemStack(stack);
-        rubble.markDirty();
+        rubble.setChanged();
         rubble.sync();
 
         return true;
     }
 
-    private ActionResult level(ServerWorld world, BlockPos pos, BlockState state, int level) {
-        world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        world.setBlockState(pos, state.with(LEVEL, level + 1), 2);
+    private InteractionResult level(ServerLevel world, BlockPos pos, BlockState state, int level) {
+        world.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+        world.setBlock(pos, state.setValue(LEVEL, level + 1), 2);
 
         RubbleBlockEntity rubble = getBlockEntity(world, pos);
         if (rubble == null)
-            return ActionResult.FAIL;
+            return InteractionResult.FAIL;
 
-        rubble.markDirty();
+        rubble.setChanged();
         rubble.sync();
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
-    private ActionResult fail(ServerWorld world, BlockPos pos) {
-        world.playSound(null, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 0.9F, 0.9F);
-        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 0.65F, 1.17F);
+    private InteractionResult fail(ServerLevel world, BlockPos pos) {
+        world.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 0.9F, 0.9F);
+        world.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.65F, 1.17F);
 
         dropItem(world, pos, new ItemStack(Blocks.GRAVEL));
         world.removeBlockEntity(pos);
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+        world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
-    private ActionResult success(ServerWorld world, BlockPos pos, PlayerEntity player) {
+    private InteractionResult success(ServerLevel world, BlockPos pos, Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
-            return ActionResult.FAIL;
+            return InteractionResult.FAIL;
 
         RubbleBlockEntity rubble = (RubbleBlockEntity)blockEntity;
         ItemStack itemStack = rubble.getItemStack();
 
-        world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.9F);
+        world.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 1.0F, 0.9F);
         dropItem(world, pos, itemStack);
-        Rubble.triggerHarvestedRubble((ServerPlayerEntity)player);
+        Rubble.triggerHarvestedRubble((ServerPlayer)player);
 
         world.removeBlockEntity(pos);
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+        world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 
-        return ActionResult.success(true);
+        return InteractionResult.sidedSuccess(true);
     }
 
-    private void levelEffect(World world, BlockPos pos, int level) {
-        if (!world.isClient)
+    private void levelEffect(Level world, BlockPos pos, int level) {
+        if (!world.isClientSide)
             return;
 
         double y = 1.29D - ((double)level / 8);
@@ -231,22 +236,22 @@ public class RubbleBlock extends CharmBlockWithEntity {
         }
     }
 
-    private void dropItem(ServerWorld world, BlockPos pos, ItemStack stack) {
-        world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, 0.8F);
+    private void dropItem(ServerLevel world, BlockPos pos, ItemStack stack) {
+        world.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, 0.8F);
         ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, stack);
-        world.spawnEntity(entity);
+        world.addFreshEntity(entity);
     }
 
     static {
-        LEVEL = Properties.LEVEL_8;
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 16, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 14, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 12, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 10, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 8, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 7, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 6, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 5, 16));
-        SHAPES.add(Block.createCuboidShape(0, 0, 0, 16, 4, 16));
+        LEVEL = BlockStateProperties.LEVEL_COMPOSTER;
+        SHAPES.add(Block.box(0, 0, 0, 16, 16, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 14, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 12, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 10, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 8, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 7, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 6, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 5, 16));
+        SHAPES.add(Block.box(0, 0, 0, 16, 4, 16));
     }
 }

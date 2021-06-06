@@ -8,29 +8,29 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback.LootTableSetter;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootManager;
-import net.minecraft.loot.LootTables;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.function.LootFunctionType;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.loot.provider.number.UniformLootNumberProvider;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.annotation.Module;
@@ -56,17 +56,17 @@ import java.util.function.Consumer;
 public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
 
-    public static final Identifier MSG_CLIENT_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "client_open_scroll"); // open the scroll screen with a populated quest
-    public static final Identifier MSG_CLIENT_SHOW_QUEST_TOAST = new Identifier(Strange.MOD_ID, "client_show_quest_toast"); // trigger a toast on the client
-    public static final Identifier MSG_CLIENT_CACHE_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "client_cache_current_quests"); // cache a list of all the player's quests
-    public static final Identifier MSG_CLIENT_DESTROY_SCROLL = new Identifier(Strange.MOD_ID, "client_destroy_scroll"); // used for displaying particle effects
-    public static final Identifier MSG_SERVER_OPEN_SCROLL = new Identifier(Strange.MOD_ID, "server_open_scroll"); // instruct server to fetch a quest (by id) and callback the client
-    public static final Identifier MSG_SERVER_FETCH_CURRENT_QUESTS = new Identifier(Strange.MOD_ID, "server_fetch_current_quests"); // instruct server to fetch a list of all player's quests
-    public static final Identifier MSG_SERVER_ABANDON_QUEST = new Identifier(Strange.MOD_ID, "server_abandon_quest"); // instruct server to abandon a quest (by id)
+    public static final ResourceLocation MSG_CLIENT_OPEN_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_open_scroll"); // open the scroll screen with a populated quest
+    public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast"); // trigger a toast on the client
+    public static final ResourceLocation MSG_CLIENT_CACHE_CURRENT_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_cache_current_quests"); // cache a list of all the player's quests
+    public static final ResourceLocation MSG_CLIENT_DESTROY_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_destroy_scroll"); // used for displaying particle effects
+    public static final ResourceLocation MSG_SERVER_OPEN_SCROLL = new ResourceLocation(Strange.MOD_ID, "server_open_scroll"); // instruct server to fetch a quest (by id) and callback the client
+    public static final ResourceLocation MSG_SERVER_FETCH_CURRENT_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_fetch_current_quests"); // instruct server to fetch a list of all player's quests
+    public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest"); // instruct server to abandon a quest (by id)
 
-    public static final Identifier TRIGGER_COMPLETED_SCROLL = new Identifier(Strange.MOD_ID, "completed_scroll");
-    public static final Identifier SCROLL_LOOT_ID = new Identifier(Strange.MOD_ID, "scroll_loot");
-    public static LootFunctionType SCROLL_LOOT_FUNCTION;
+    public static final ResourceLocation TRIGGER_COMPLETED_SCROLL = new ResourceLocation(Strange.MOD_ID, "completed_scroll");
+    public static final ResourceLocation SCROLL_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "scroll_loot");
+    public static LootItemFunctionType SCROLL_LOOT_FUNCTION;
 
     public static Map<Integer, Map<String, ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
@@ -103,7 +103,7 @@ public class Scrolls extends CharmModule {
         }
 
         // handle adding normal scrolls to loot
-        SCROLL_LOOT_FUNCTION = RegistryHelper.lootFunctionType(SCROLL_LOOT_ID, new LootFunctionType(new ScrollLootFunction.Serializer()));
+        SCROLL_LOOT_FUNCTION = RegistryHelper.lootFunctionType(SCROLL_LOOT_ID, new LootItemFunctionType(new ScrollLootFunction.Serializer()));
     }
 
     @Override
@@ -137,29 +137,29 @@ public class Scrolls extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(Scrolls.MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
     }
 
-    public static void sendPlayerQuestsPacket(ServerPlayerEntity player) {
+    public static void sendPlayerQuestsPacket(ServerPlayer player) {
         Optional<QuestManager> questManager = getQuestManager();
         questManager.ifPresent(manager -> {
             sendQuestsPacket(player, manager.getQuests(player));
         });
     }
 
-    public static void sendPlayerOpenScrollPacket(ServerPlayerEntity player, Quest quest) {
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+    public static void sendPlayerOpenScrollPacket(ServerPlayer player, Quest quest) {
+        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeNbt(quest.toTag());
         ServerPlayNetworking.send(player, MSG_CLIENT_OPEN_SCROLL, data);
     }
 
-    public static void sendQuestsPacket(ServerPlayerEntity player, List<Quest> quests) {
+    public static void sendQuestsPacket(ServerPlayer player, List<Quest> quests) {
         // convert to nbt and write to packet buffer
-        NbtList listTag = new NbtList();
+        ListTag listTag = new ListTag();
         for (Quest quest : quests) {
             listTag.add(quest.toTag());
         }
-        NbtCompound outTag = new NbtCompound();
+        CompoundTag outTag = new CompoundTag();
         outTag.put("quests", listTag);
 
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeNbt(outTag);
 
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
@@ -170,7 +170,7 @@ public class Scrolls extends CharmModule {
     }
 
     @Nullable
-    public static ScrollDefinition getRandomDefinition(int tier, World world, Random random) {
+    public static ScrollDefinition getRandomDefinition(int tier, Level world, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
             Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
             return null;
@@ -193,7 +193,7 @@ public class Scrolls extends CharmModule {
                 return definition;
 
             for (String validDimension : validDimensions) {
-                if (DimensionHelper.isDimension(world, new Identifier(validDimension)))
+                if (DimensionHelper.isDimension(world, new ResourceLocation(validDimension)))
                     return definition;
             }
         }
@@ -234,29 +234,29 @@ public class Scrolls extends CharmModule {
     }
 
     private void loadQuestManager(MinecraftServer server) {
-        ServerWorld overworld = server.getWorld(World.OVERWORLD);
+        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         if (overworld == null) {
             Charm.LOG.warn("[Scrolls] Overworld is null, cannot load persistent state manager");
             return;
         }
 
-        PersistentStateManager stateManager = overworld.getPersistentStateManager();
-        questManager = stateManager.getOrCreate(
+        DimensionDataStorage stateManager = overworld.getDataStorage();
+        questManager = stateManager.computeIfAbsent(
             (tag) -> QuestManager.fromNbt(overworld, tag),
             () -> new QuestManager(overworld),
-            QuestManager.nameFor(overworld.getDimension()));
+            QuestManager.nameFor(overworld.dimensionType()));
 
         Charm.LOG.info("[Scrolls] Loaded quest state manager");
     }
 
     private void tryLoadScrolls(MinecraftServer server) {
-        ResourceManager resources = ((MinecraftServerAccessor)server).getServerResourceManager().getResourceManager();
+        ResourceManager resources = ((MinecraftServerAccessor)server).getResources().getResourceManager();
 
         for (int tier = 0; tier <= TIERS; tier++) {
             AVAILABLE_SCROLLS.put(tier, new HashMap<>());
-            Collection<Identifier> scrolls = resources.findResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
+            Collection<ResourceLocation> scrolls = resources.listResources("scrolls/" + SCROLL_TIER_IDS.get(tier), file -> file.endsWith(".json"));
 
-            for (Identifier scroll : scrolls) {
+            for (ResourceLocation scroll : scrolls) {
                 try {
                     ScrollDefinition definition = ScrollDefinition.deserialize(resources.getResource(scroll));
 
@@ -292,7 +292,7 @@ public class Scrolls extends CharmModule {
     }
 
     private void handleEntityDeath(LivingEntity entity, DamageSource source) {
-        Entity attacker = source.getAttacker();
+        Entity attacker = source.getEntity();
         if (!Scrolls.getQuestManager().isPresent())
             return;
 
@@ -300,46 +300,46 @@ public class Scrolls extends CharmModule {
             .forEachQuest(quest -> quest.entityKilled(entity, attacker));
     }
 
-    private void handlePlayerTick(PlayerEntity player) {
-        if (player.world.getTime() % 20 != 0)
+    private void handlePlayerTick(Player player) {
+        if (player.level.getGameTime() % 20 != 0)
             return; // poll once every second
 
-        if (!(player instanceof ServerPlayerEntity))
+        if (!(player instanceof ServerPlayer))
             return; // must be server-side
 
         if (!Scrolls.getQuestManager().isPresent())
             return; // must have an instantiated quest manager
 
-        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        ServerPlayer serverPlayer = (ServerPlayer) player;
         Scrolls.getQuestManager().get()
             .forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
     }
 
-    private void handleLootTables(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter) {
+    private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableSetter setter) {
         if (!addScrollsToLoot)
             return;
 
-        if (id.equals(LootTables.PILLAGER_OUTPOST_CHEST) || id.equals(LootTables.WOODLAND_MANSION_CHEST)) {
+        if (id.equals(BuiltInLootTables.PILLAGER_OUTPOST) || id.equals(BuiltInLootTables.WOODLAND_MANSION)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootNumberProvider.create(1))
-                .with(ItemEntry.builder(Items.AIR)
-                    .weight(1)
-                    .apply(() -> new ScrollLootFunction(new LootCondition[0])));
+                .rolls(ConstantValue.exactly(1))
+                .with(LootItem.lootTableItem(Items.AIR)
+                    .setWeight(1)
+                    .apply(() -> new ScrollLootFunction(new LootItemCondition[0])));
 
-            supplier.pool(builder);
+            supplier.withPool(builder);
         }
 
         if (id.equals(StrangeLoot.RUBBLE)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformLootNumberProvider.create(0.0F, 1.0F))
-                .with(ItemEntry.builder(SCROLL_TIERS.get(TIERS)));
+                .rolls(UniformGenerator.between(0.0F, 1.0F))
+                .with(LootItem.lootTableItem(SCROLL_TIERS.get(TIERS)));
 
-            supplier.pool(builder);
+            supplier.withPool(builder);
         }
     }
 
-    private void handleServerOpenScroll(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        String questId = data.readString(16);
+    private void handleServerOpenScroll(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        String questId = data.readUtf(16);
         if (questId == null || questId.isEmpty())
             return;
 
@@ -352,12 +352,12 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    private void handleServerFetchCurrentQuests(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+    private void handleServerFetchCurrentQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
         processClientPacket(server, player, manager -> Scrolls.sendPlayerQuestsPacket(player));
     }
 
-    private void handleServerAbandonQuest(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        String questId = data.readString(16);
+    private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
+        String questId = data.readUtf(16);
         if (questId == null || questId.isEmpty())
             return;
 
@@ -373,7 +373,7 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    private void processClientPacket(MinecraftServer server, ServerPlayerEntity player, Consumer<QuestManager> callback) {
+    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<QuestManager> callback) {
         server.execute(() -> {
             if (player == null)
                 return;
@@ -383,7 +383,7 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    public static void triggerCompletedScroll(ServerPlayerEntity player) {
+    public static void triggerCompletedScroll(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_COMPLETED_SCROLL);
     }
 }
