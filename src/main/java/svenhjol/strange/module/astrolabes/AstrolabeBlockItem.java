@@ -1,18 +1,18 @@
 package svenhjol.strange.module.astrolabes;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.block.CharmBlockItem;
 import svenhjol.charm.block.ICharmBlock;
 import svenhjol.charm.helper.DimensionHelper;
@@ -25,43 +25,43 @@ public class AstrolabeBlockItem extends CharmBlockItem {
 
     public AstrolabeBlockItem(ICharmBlock block) {
         super(block, new FabricItemSettings()
-            .group(ItemGroup.MISC)
-            .maxCount(1));
+            .tab(CreativeModeTab.TAB_MISC)
+            .stacksTo(1));
     }
 
     @Override
-    public boolean hasGlint(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return stack.hasTag();
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        ItemStack stack = context.getStack();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        ItemStack stack = context.getItemInHand();
         BlockState state = world.getBlockState(pos);
 
         if (state.getBlock() == Astrolabes.ASTROLABE) {
             // trying to link to another astrolabe
             AstrolabeBlockItem.setPosition(stack, pos);
-            AstrolabeBlockItem.setDimension(stack, world.getRegistryKey());
+            AstrolabeBlockItem.setDimension(stack, world.dimension());
 
-            if (!world.isClient) {
-                world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                Astrolabes.triggerLinkedAstrolabe((ServerPlayerEntity) context.getPlayer());
+            if (!world.isClientSide) {
+                world.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                Astrolabes.triggerLinkedAstrolabe((ServerPlayer) context.getPlayer());
             }
 
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        return super.useOnBlock(context);
+        return super.useOn(context);
     }
 
-    public static Optional<RegistryKey<World>> getDimension(ItemStack astrolabe) {
+    public static Optional<ResourceKey<Level>> getDimension(ItemStack astrolabe) {
         if (!astrolabe.getOrCreateTag().contains(DIMENSION_NBT))
             return Optional.empty();
 
-        NbtElement dimension = astrolabe.getOrCreateTag().get(DIMENSION_NBT);
+        Tag dimension = astrolabe.getOrCreateTag().get(DIMENSION_NBT);
         return DimensionHelper.decodeDimension(dimension);
     }
 
@@ -70,10 +70,10 @@ public class AstrolabeBlockItem extends CharmBlockItem {
             return Optional.empty();
 
         long position = astrolabe.getOrCreateTag().getLong(POSITION_NBT);
-        return Optional.of(BlockPos.fromLong(position));
+        return Optional.of(BlockPos.of(position));
     }
 
-    public static void setDimension(ItemStack astrolabe, RegistryKey<World> worldKey) {
+    public static void setDimension(ItemStack astrolabe, ResourceKey<Level> worldKey) {
         DimensionHelper.encodeDimension(worldKey, el
             -> astrolabe.getOrCreateTag().put(DIMENSION_NBT, el));
     }

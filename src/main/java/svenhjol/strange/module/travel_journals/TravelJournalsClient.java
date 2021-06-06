@@ -1,27 +1,27 @@
 package svenhjol.strange.module.travel_journals;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.client.util.Window;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.Charm;
 import svenhjol.charm.event.PlayerTickCallback;
@@ -40,7 +40,7 @@ import java.util.List;
 
 public class TravelJournalsClient extends CharmClientModule {
     public static List<TravelJournalEntry> entries = new ArrayList<>();
-    public static KeyBinding keyBinding;
+    public static KeyMapping keyBinding;
 
     public static TravelJournalEntry entryHavingScreenshot;
     public static int screenshotTicks;
@@ -56,9 +56,9 @@ public class TravelJournalsClient extends CharmClientModule {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
         if (TravelJournals.enableKeybind) {
-            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.charm.openTravelJournal",
-                InputUtil.Type.KEYSYM,
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_B,
                 "key.categories.inventory"
             ));
@@ -67,7 +67,7 @@ public class TravelJournalsClient extends CharmClientModule {
                 if (keyBinding == null || world == null)
                     return;
 
-                while (keyBinding.wasPressed()) {
+                while (keyBinding.consumeClick()) {
                     triggerOpenTravelJournal();
                 }
             });
@@ -77,53 +77,53 @@ public class TravelJournalsClient extends CharmClientModule {
         ClientPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_CLIENT_RECEIVE_ENTRY, this::handleClientReceiveEntry);
     }
 
-    public static boolean isPlayerAtEntryPosition(PlayerEntity player, TravelJournalEntry entry) {
-        return entry.pos != null && PosHelper.getDistanceSquared(player.getBlockPos(), entry.pos) < TravelJournals.SCREENSHOT_DISTANCE;
+    public static boolean isPlayerAtEntryPosition(Player player, TravelJournalEntry entry) {
+        return entry.pos != null && PosHelper.getDistanceSquared(player.blockPosition(), entry.pos) < TravelJournals.SCREENSHOT_DISTANCE;
     }
 
     public static void triggerOpenTravelJournal() {
-        ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new PacketByteBuf(Unpooled.buffer()));
+        ClientPlayNetworking.send(TravelJournals.MSG_SERVER_OPEN_JOURNAL, new FriendlyByteBuf(Unpooled.buffer()));
     }
 
-    private void handleGuiSetup(MinecraftClient client, int width, int height, List<Selectable> buttons) {
+    private void handleGuiSetup(Minecraft client, int width, int height, List<NarratableEntry> buttons) {
         if (client.player == null
-            || !(client.currentScreen instanceof InventoryScreen)
+            || !(client.screen instanceof InventoryScreen)
             || client.player.isCreative())
             return;
 
-        HandledScreen<?> screen = (HandledScreen<?>)client.currentScreen;
+        AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>)client.screen;
 
         int x = ScreenHelper.getX(screen) + 158;
         int y = ScreenHelper.getY(screen) + 5;
 
-        TexturedButtonWidget button = new TexturedButtonWidget(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click
+        ImageButton button = new ImageButton(x, y, 12, 12, 20, 0, 12, StrangeResources.INVENTORY_BUTTONS, click
             -> triggerOpenTravelJournal());
 
-        screen.addDrawableChild(button);
+        screen.addRenderableWidget(button);
     }
 
-    private void handlePlayerTick(PlayerEntity player) {
-        if (!player.world.isClient)
+    private void handlePlayerTick(Player player) {
+        if (!player.level.isClientSide)
             return;
 
         if (screenshotTicks > 0) {
             if (entryHavingScreenshot == null) {
                 screenshotTicks = 0;
             } else if (++screenshotTicks > 30) {
-                MinecraftClient client = MinecraftClient.getInstance();
+                Minecraft client = Minecraft.getInstance();
                 Window win = client.getWindow();
 
-                ScreenshotRecorder.saveScreenshot(
-                    client.runDirectory,
+                Screenshot.grab(
+                    client.gameDirectory,
                     entryHavingScreenshot.id + ".png",
-                    win.getFramebufferWidth() / 8,
-                    win.getFramebufferHeight() / 8,
-                    client.getFramebuffer(),
+                    win.getWidth() / 8,
+                    win.getHeight() / 8,
+                    client.getMainRenderTarget(),
                     i -> {
                         client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
-                        client.options.hudHidden = false;
+                        client.options.hideGui = false;
                         client.execute(() -> {
-                            client.openScreen(new TravelJournalUpdateEntryScreen(entryHavingScreenshot));
+                            client.setScreen(new TravelJournalUpdateEntryScreen(entryHavingScreenshot));
                             entryHavingScreenshot = null;
                         });
                         Charm.LOG.debug("Screenshot taken");
@@ -134,28 +134,28 @@ public class TravelJournalsClient extends CharmClientModule {
         }
     }
 
-    private void handleClientReceiveEntries(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound tag = data.readNbt();
+    private void handleClientReceiveEntries(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag tag = data.readNbt();
         if (tag == null)
             return;
 
         client.execute(() -> {
-            ClientPlayerEntity player = client.player;
+            LocalPlayer player = client.player;
             if (player == null)
                 return;
 
-            String uuid = player.getUuidAsString();
-            NbtElement entriesTag = tag.get(uuid);
+            String uuid = player.getStringUUID();
+            Tag entriesTag = tag.get(uuid);
             if (entriesTag == null)
                 return;
 
-            entries = TravelJournalsHelper.getEntriesFromNbtList((NbtList)entriesTag);
-            client.openScreen(new TravelJournalHomeScreen());
+            entries = TravelJournalsHelper.getEntriesFromNbtList((ListTag)entriesTag);
+            client.setScreen(new TravelJournalHomeScreen());
         });
     }
 
-    private void handleClientReceiveEntry(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
-        NbtCompound tag = data.readNbt();
+    private void handleClientReceiveEntry(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+        CompoundTag tag = data.readNbt();
         if (tag == null)
             return;
 
@@ -163,10 +163,10 @@ public class TravelJournalsClient extends CharmClientModule {
             TravelJournalEntry entry = new TravelJournalEntry(tag);
 
             if (client.player != null)
-                client.player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN, 1.0F, 1.0F);
+                client.player.playSound(SoundEvents.VILLAGER_WORK_LIBRARIAN, 1.0F, 1.0F);
 
-            if (!(client.currentScreen instanceof TravelJournalUpdateEntryScreen))
-                client.openScreen(new TravelJournalUpdateEntryScreen(entry));
+            if (!(client.screen instanceof TravelJournalUpdateEntryScreen))
+                client.setScreen(new TravelJournalUpdateEntryScreen(entry));
         });
     }
 }

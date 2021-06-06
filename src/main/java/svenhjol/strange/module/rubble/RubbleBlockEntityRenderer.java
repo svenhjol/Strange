@@ -1,29 +1,29 @@
 package svenhjol.strange.module.rubble;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.world.World;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class RubbleBlockEntityRenderer<T extends RubbleBlockEntity> implements BlockEntityRenderer<T> {
-    public RubbleBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
+    public RubbleBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         // allows client new
     }
 
     @Override
-    public boolean rendersOutsideBoundingBox(T blockEntity) {
+    public boolean shouldRenderOffScreen(T blockEntity) {
         return true;
     }
 
     @Override
-    public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        World world = entity.getWorld();
+    public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+        Level world = entity.getLevel();
         if (world == null)
             return;
 
@@ -31,15 +31,15 @@ public class RubbleBlockEntityRenderer<T extends RubbleBlockEntity> implements B
         if (stack == null || stack.isEmpty())
             return;
 
-        matrices.push();
+        matrices.pushPose();
         matrices.scale(0.62F, 0.62F, 0.62F);
         matrices.translate(0.75F, 0.75F, 0.75F);
 
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion((float)entity.hashCode() % 45.0F));
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((float)entity.hashCode() % 360.0F));
-        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float)entity.hashCode() % 45.0F));
+        matrices.mulPose(Vector3f.XP.rotationDegrees((float)entity.hashCode() % 45.0F));
+        matrices.mulPose(Vector3f.YP.rotationDegrees((float)entity.hashCode() % 360.0F));
+        matrices.mulPose(Vector3f.ZP.rotationDegrees((float)entity.hashCode() % 45.0F));
 
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.hashCode());
-        matrices.pop();
+        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, entity.hashCode());
+        matrices.popPose();
     }
 }

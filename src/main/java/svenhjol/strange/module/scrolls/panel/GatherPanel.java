@@ -1,21 +1,20 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.TranslatableText;
 import svenhjol.strange.init.StrangeIcons;
 import svenhjol.strange.module.scrolls.tag.Gather;
 import svenhjol.strange.module.scrolls.tag.Quest;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Map;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class GatherPanel extends BasePanel {
     public static GatherPanel INSTANCE = new GatherPanel();
 
     @Override
-    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+    public void render(Screen screen, PoseStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
         Gather gather = quest.getGather();
         Map<ItemStack, Integer> items = gather.getItems();
         Map<ItemStack, Boolean> satisfied = gather.getSatisfied();
@@ -23,8 +22,8 @@ public class GatherPanel extends BasePanel {
             return;
 
         // panel title and icon
-        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.gather");
-        drawTextWithShadow(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
+        TranslatableComponent titleText = new TranslatableComponent("gui.strange.scrolls.gather");
+        drawString(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
         renderIcon(matrices, StrangeIcons.ICON_WHEAT, mid - 60, top - 1);
 
         top += rowHeight;
@@ -36,13 +35,13 @@ public class GatherPanel extends BasePanel {
         int baseTop = top;
         for (ItemStack stack : stacks) {
             int count = items.get(stack);
-            TranslatableText text = new TranslatableText("gui.strange.scrolls.gather_item", stack.getName(), count);
+            TranslatableComponent text = new TranslatableComponent("gui.strange.scrolls.gather_item", stack.getHoverName(), count);
             renderItemStack(stack, mid - 60, baseTop - 5);
-            drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
+            drawString(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
 
             // show task satisfaction status
             if (satisfied.containsKey(stack) && satisfied.get(stack))
-                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 30 + getTextRenderer().getWidth(text), baseTop - 1);
+                renderIcon(matrices, StrangeIcons.ICON_TICK, mid - 30 + getTextRenderer().width(text), baseTop - 1);
 
             baseTop += rowHeight;
         }
@@ -51,7 +50,7 @@ public class GatherPanel extends BasePanel {
         baseTop = top;
         for (ItemStack stack : stacks) {
             if (mouseX > mid - 60 && mouseX < mid - 44 && mouseY > baseTop - 5 && mouseY < baseTop + 11)
-                screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
+                screen.renderComponentTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
 
             baseTop += rowHeight;
         }

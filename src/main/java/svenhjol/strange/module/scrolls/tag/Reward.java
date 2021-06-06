@@ -1,14 +1,14 @@
 package svenhjol.strange.module.scrolls.tag;
 
-import net.minecraft.entity.ai.brain.task.LookTargetUtil;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import svenhjol.charm.helper.PlayerHelper;
 
 import javax.annotation.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,37 +27,37 @@ public class Reward implements ISerializable {
         this.quest = quest;
     }
 
-    public void complete(PlayerEntity player, @Nullable MerchantEntity merchant) {
+    public void complete(Player player, @Nullable AbstractVillager merchant) {
         for (ItemStack stack : items.keySet()) {
             int count = items.get(stack);
             ItemStack stackToDrop = stack.copy();
             stackToDrop.setCount(count);
 
             if (merchant != null) {
-                LookTargetUtil.give(merchant, stackToDrop, player.getPos());
+                BehaviorUtils.throwItem(merchant, stackToDrop, player.position());
             } else {
                 PlayerHelper.addOrDropStack(player, stackToDrop);
             }
         }
 
         if (playerXp > 0)
-            player.addExperienceLevels(playerXp);
+            player.giveExperienceLevels(playerXp);
 
         // TODO: handle merchant XP
     }
 
-    public NbtCompound toTag() {
-        NbtCompound outTag = new NbtCompound();
-        NbtCompound dataTag = new NbtCompound();
-        NbtCompound countTag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag outTag = new CompoundTag();
+        CompoundTag dataTag = new CompoundTag();
+        CompoundTag countTag = new CompoundTag();
 
         if (!items.isEmpty()) {
             int index = 0;
             for (ItemStack stack : items.keySet()) {
                 String stackIndex = Integer.toString(index);
 
-                NbtCompound itemTag = new NbtCompound();
-                stack.writeNbt(itemTag);
+                CompoundTag itemTag = new CompoundTag();
+                stack.save(itemTag);
                 dataTag.put(stackIndex, itemTag);
                 countTag.putInt(stackIndex, items.get(stack));
                 index++;
@@ -71,23 +71,23 @@ public class Reward implements ISerializable {
         return outTag;
     }
 
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         this.playerXp = tag.getInt(PLAYER_XP_TAG);
         this.villagerXp = tag.getInt(VILLAGER_XP_TAG);
-        NbtCompound dataTag = (NbtCompound)tag.get(ITEM_DATA);
-        NbtCompound countTag = (NbtCompound)tag.get(ITEM_COUNT);
+        CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
+        CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
 
         this.items = new HashMap<>();
 
-        if (dataTag != null && dataTag.getSize() > 0 && countTag != null) {
-            for (int i = 0; i < dataTag.getSize(); i++) {
+        if (dataTag != null && dataTag.size() > 0 && countTag != null) {
+            for (int i = 0; i < dataTag.size(); i++) {
                 String stackIndex = String.valueOf(i);
-                NbtElement tagAtIndex = dataTag.get(stackIndex);
+                Tag tagAtIndex = dataTag.get(stackIndex);
 
                 if (tagAtIndex == null)
                     continue;
 
-                ItemStack stack = ItemStack.fromNbt((NbtCompound)tagAtIndex);
+                ItemStack stack = ItemStack.of((CompoundTag)tagAtIndex);
                 int count = Math.max(countTag.getInt(stackIndex), 1);
                 items.put(stack, count);
             }

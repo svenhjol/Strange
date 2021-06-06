@@ -1,19 +1,19 @@
 package svenhjol.strange.module.treasure;
 
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import svenhjol.charm.helper.PotionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
 
 public interface ITreasurePotion {
-    List<StatusEffect> getValidStatusEffects();
+    List<MobEffect> getValidStatusEffects();
 
     // in seconds
     int getMinDuration();
@@ -25,15 +25,15 @@ public interface ITreasurePotion {
 
     int getMaxAmplifier();
 
-    default TranslatableText getName() {
+    default TranslatableComponent getName() {
         int i = new Random().nextInt(16) + 1;
-        Text word = new TranslatableText("item.strange.treasure.potion.adjective" + i);
-        return new TranslatableText("item.strange.treasure.potion", word);
+        Component word = new TranslatableComponent("item.strange.treasure.potion.adjective" + i);
+        return new TranslatableComponent("item.strange.treasure.potion", word);
     }
 
-    default List<StatusEffectInstance> getEffects() {
-        List<StatusEffectInstance> instances = new ArrayList<>();
-        List<StatusEffect> statusEffects = getValidStatusEffects();
+    default List<MobEffectInstance> getEffects() {
+        List<MobEffectInstance> instances = new ArrayList<>();
+        List<MobEffect> statusEffects = getValidStatusEffects();
         Random random = new Random();
 
         int minDuration = getMinDuration();
@@ -45,7 +45,7 @@ public interface ITreasurePotion {
         statusEffects.forEach(effect -> {
             int duration = (random.nextInt(maxDuration - minDuration) + minDuration) * 20; // in ticks
             int amplifier = random.nextInt(maxAmplifier - minAmplifier) + minAmplifier;
-            instances.add(new StatusEffectInstance(effect, duration, amplifier));
+            instances.add(new MobEffectInstance(effect, duration, amplifier));
         });
 
         return instances;
@@ -55,10 +55,10 @@ public interface ITreasurePotion {
         ItemStack bottle = PotionHelper.getFilledWaterBottle();
 
         // apply effects
-        PotionUtil.setCustomPotionEffects(bottle, getEffects());
+        PotionUtils.setCustomEffects(bottle, getEffects());
 
         // apply custom name
-        bottle.setCustomName(getName());
+        bottle.setHoverName(getName());
 
         return bottle;
     }

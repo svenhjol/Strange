@@ -1,20 +1,20 @@
 package svenhjol.strange.module.scrolls.tag;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import svenhjol.charm.helper.PosHelper;
 import svenhjol.strange.module.scrolls.populator.BossPopulator;
 
 import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 
 public class Boss implements ISerializable {
     public static final String TARGET_ENTITIES = "target_entities";
@@ -26,32 +26,32 @@ public class Boss implements ISerializable {
 
     private Quest quest;
     private BlockPos structure;
-    private Identifier dimension;
+    private ResourceLocation dimension;
     private boolean spawned;
 
-    private Map<Identifier, Integer> entities = new HashMap<>();
-    private Map<Identifier, Integer> killed = new HashMap<>();
+    private Map<ResourceLocation, Integer> entities = new HashMap<>();
+    private Map<ResourceLocation, Integer> killed = new HashMap<>();
 
     // these are dynamically generated, not stored in nbt
-    private Map<Identifier, Boolean> satisfied = new HashMap<>();
-    private Map<Identifier, String> names = new HashMap<>();
+    private Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
+    private Map<ResourceLocation, String> names = new HashMap<>();
 
     public Boss(Quest quest) {
         this.quest = quest;
     }
 
     @Override
-    public NbtCompound toTag() {
-        NbtCompound outTag = new NbtCompound();
-        NbtCompound entitiesTag = new NbtCompound();
-        NbtCompound countTag = new NbtCompound();
-        NbtCompound killedTag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag outTag = new CompoundTag();
+        CompoundTag entitiesTag = new CompoundTag();
+        CompoundTag countTag = new CompoundTag();
+        CompoundTag killedTag = new CompoundTag();
 
         // write boss entity data
         if (!entities.isEmpty()) {
             int index = 0;
 
-            for (Identifier id : entities.keySet()) {
+            for (ResourceLocation id : entities.keySet()) {
                 String tagIndex = Integer.toString(index);
                 int entityCount = entities.get(id);
                 int entityKilled = killed.getOrDefault(id, 0);
@@ -79,25 +79,25 @@ public class Boss implements ISerializable {
     }
 
     @Override
-    public void fromTag(NbtCompound fromTag) {
-        NbtCompound entitiesTag = (NbtCompound)fromTag.get(TARGET_ENTITIES);
-        NbtCompound countTag = (NbtCompound)fromTag.get(TARGET_COUNT);
-        NbtCompound killedTag = (NbtCompound)fromTag.get(TARGET_KILLED);
+    public void fromTag(CompoundTag fromTag) {
+        CompoundTag entitiesTag = (CompoundTag)fromTag.get(TARGET_ENTITIES);
+        CompoundTag countTag = (CompoundTag)fromTag.get(TARGET_COUNT);
+        CompoundTag killedTag = (CompoundTag)fromTag.get(TARGET_KILLED);
 
         entities = new HashMap<>();
 
-        structure = fromTag.contains(STRUCTURE) ? BlockPos.fromLong(fromTag.getLong(STRUCTURE)) : null;
-        dimension = Identifier.tryParse(fromTag.getString(DIMENSION));
+        structure = fromTag.contains(STRUCTURE) ? BlockPos.of(fromTag.getLong(STRUCTURE)) : null;
+        dimension = ResourceLocation.tryParse(fromTag.getString(DIMENSION));
         spawned = fromTag.contains(SPAWNED) && fromTag.getBoolean(SPAWNED);
 
         if (dimension == null)
-            dimension = new Identifier("minecraft", "overworld");
+            dimension = new ResourceLocation("minecraft", "overworld");
 
-        if (entitiesTag != null && entitiesTag.getSize() > 0 && countTag != null) {
-            for (int i = 0; i < entitiesTag.getSize(); i++) {
+        if (entitiesTag != null && entitiesTag.size() > 0 && countTag != null) {
+            for (int i = 0; i < entitiesTag.size(); i++) {
                 // read data from the tags at specified index
                 String tagIndex = String.valueOf(i);
-                Identifier id = Identifier.tryParse(entitiesTag.getString(tagIndex));
+                ResourceLocation id = ResourceLocation.tryParse(entitiesTag.getString(tagIndex));
                 if (id == null)
                     continue;
 
@@ -109,11 +109,11 @@ public class Boss implements ISerializable {
         }
     }
 
-    public void addTarget(Identifier entity, int count) {
+    public void addTarget(ResourceLocation entity, int count) {
         entities.put(entity, count);
     }
 
-    public void setDimension(Identifier dimension) {
+    public void setDimension(ResourceLocation dimension) {
         this.dimension = dimension;
     }
 
@@ -125,19 +125,19 @@ public class Boss implements ISerializable {
         return quest;
     }
 
-    public Map<Identifier, Integer> getEntities() {
+    public Map<ResourceLocation, Integer> getEntities() {
         return entities;
     }
 
-    public Map<Identifier, Integer> getKilled() {
+    public Map<ResourceLocation, Integer> getKilled() {
         return killed;
     }
 
-    public Map<Identifier, String> getNames() {
+    public Map<ResourceLocation, String> getNames() {
         return names;
     }
 
-    public Map<Identifier, Boolean> getSatisfied() {
+    public Map<ResourceLocation, Boolean> getSatisfied() {
         return satisfied;
     }
 
@@ -152,18 +152,18 @@ public class Boss implements ISerializable {
         return entities.size() == satisfied.size() && getSatisfied().values().stream().allMatch(r -> r);
     }
 
-    public void forceKill(MobEntity entity) {
-        Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+    public void forceKill(Mob entity) {
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
         Integer count = killed.getOrDefault(id, 0);
         killed.put(id, count + 1);
         quest.setDirty(true);
     }
 
-    public void playerTick(PlayerEntity player) {
-        if (player.world.isClient || spawned || structure == null)
+    public void playerTick(Player player) {
+        if (player.level.isClientSide || spawned || structure == null)
             return;
 
-        double dist = PosHelper.getDistanceSquared(player.getBlockPos(), structure);
+        double dist = PosHelper.getDistanceSquared(player.blockPosition(), structure);
         if (dist < 260) {
             boolean result = BossPopulator.startEncounter(player, this);
 
@@ -177,30 +177,30 @@ public class Boss implements ISerializable {
         }
     }
 
-    public void complete(PlayerEntity player, MerchantEntity merchant) {
+    public void complete(Player player, AbstractVillager merchant) {
         BossPopulator.checkEncounter(player, this);
     }
 
-    public void abandon(PlayerEntity player) {
+    public void abandon(Player player) {
         entities.clear();
         BossPopulator.checkEncounter(player, this);
     }
 
-    public void update(PlayerEntity player) {
+    public void update(Player player) {
         satisfied.clear();
 
         entities.forEach((id, count) -> {
             int countKilled = killed.getOrDefault(id, 0);
             satisfied.put(id, countKilled >= count);
 
-            Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(id);
-            optionalEntityType.ifPresent(entityType -> names.put(id, entityType.getName().getString()));
+            Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOptional(id);
+            optionalEntityType.ifPresent(entityType -> names.put(id, entityType.getDescription().getString()));
         });
     }
 
     public void entityKilled(LivingEntity entity, Entity attacker) {
-        List<String> tags = new ArrayList<>(entity.getScoreboardTags());
-        Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+        List<String> tags = new ArrayList<>(entity.getTags());
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
 
         if (tags.contains(quest.getId())) {
             Integer count = killed.getOrDefault(id, 0);
@@ -208,10 +208,10 @@ public class Boss implements ISerializable {
 
             quest.setDirty(true);
 
-            if (!(attacker instanceof ServerPlayerEntity))
+            if (!(attacker instanceof ServerPlayer))
                 return;
 
-            ServerPlayerEntity player = (ServerPlayerEntity) attacker;
+            ServerPlayer player = (ServerPlayer) attacker;
             quest.update(player);
             BossPopulator.checkEncounter(player, this);
         }

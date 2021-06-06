@@ -1,8 +1,8 @@
 package svenhjol.strange.module.travel_journals;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.strange.Strange;
 
@@ -10,7 +10,7 @@ public class TravelJournalEntry {
     public String id = "";
     public String name = "";
     public BlockPos pos;
-    public Identifier dim;
+    public ResourceLocation dim;
     public int color;
 
     public static final String ID = "id";
@@ -19,17 +19,17 @@ public class TravelJournalEntry {
     public static final String NAME = "name";
     public static final String COLOR = "color";
 
-    public TravelJournalEntry(String id, BlockPos pos, Identifier dim) {
+    public TravelJournalEntry(String id, BlockPos pos, ResourceLocation dim) {
         this.id = id;
         this.pos = pos;
         this.dim = dim;
     }
 
-    public TravelJournalEntry(String name, BlockPos pos, Identifier dim, int color) {
+    public TravelJournalEntry(String name, BlockPos pos, ResourceLocation dim, int color) {
         this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4), name, pos, dim, color);
     }
 
-    public TravelJournalEntry(String id, String name, BlockPos pos, Identifier dim, int color) {
+    public TravelJournalEntry(String id, String name, BlockPos pos, ResourceLocation dim, int color) {
         this.id = id;
         this.name = name;
         this.pos = pos;
@@ -37,7 +37,7 @@ public class TravelJournalEntry {
         this.color = color;
     }
 
-    public TravelJournalEntry(NbtCompound tag) {
+    public TravelJournalEntry(CompoundTag tag) {
         fromTag(tag);
     }
 
@@ -45,8 +45,8 @@ public class TravelJournalEntry {
         fromEntry(entry);
     }
 
-    public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
         tag.putString(ID, id);
         tag.putString(NAME, name.substring(0, Math.min(name.length(), TravelJournals.MAX_NAME_LENGTH)));
         tag.putInt(COLOR, color);
@@ -60,16 +60,16 @@ public class TravelJournalEntry {
         return tag;
     }
 
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         id = tag.getString(ID);
         name = tag.getString(NAME);
         color = tag.getInt(COLOR);
 
         if (tag.contains(POS))
-            pos = BlockPos.fromLong(tag.getLong(POS));
+            pos = BlockPos.of(tag.getLong(POS));
 
         if (tag.contains(DIM))
-            dim = new Identifier(tag.getString(DIM));
+            dim = new ResourceLocation(tag.getString(DIM));
     }
 
     public void fromEntry(TravelJournalEntry entry) {

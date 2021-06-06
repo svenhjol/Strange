@@ -1,54 +1,54 @@
 package svenhjol.strange.helper;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.init.StrangeIcons;
 
 // TODO: move to Charm
-public class GuiHelper extends DrawableHelper {
+public class GuiHelper extends GuiComponent {
     public static ItemRenderer getItemRenderer() {
-        return MinecraftClient.getInstance().getItemRenderer();
+        return Minecraft.getInstance().getItemRenderer();
     }
 
-    public static TextRenderer getTextRenderer() {
-        return MinecraftClient.getInstance().textRenderer;
+    public static Font getTextRenderer() {
+        return Minecraft.getInstance().font;
     }
 
     public static TextureManager getTextureManager() {
-        return MinecraftClient.getInstance().getTextureManager();
+        return Minecraft.getInstance().getTextureManager();
     }
 
-    public static void drawCenteredTitle(MatrixStack matrices, Text title, int left, int top, int color) {
-        DrawableHelper.drawCenteredText(matrices, getTextRenderer(), title, left, top, color);
+    public static void drawCenteredTitle(PoseStack matrices, Component title, int left, int top, int color) {
+        GuiComponent.drawCenteredString(matrices, getTextRenderer(), title, left, top, color);
     }
 
     public static void renderItemStack(ItemStack stack, int x, int y) {
-        getItemRenderer().renderGuiItemIcon(stack, x, y);
+        getItemRenderer().renderGuiItem(stack, x, y);
     }
 
-    public void renderIcon(MatrixStack matrices, int[] icon, int x, int y) {
+    public void renderIcon(PoseStack matrices, int[] icon, int x, int y) {
         int w = StrangeIcons.ICON_WIDTH;
         int h = StrangeIcons.ICON_HEIGHT;
 
         RenderSystem.setShaderTexture(0, StrangeIcons.ICONS);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
+        blit(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 
-    public static void renderIcon(Screen screen, MatrixStack matrices, int[] icon, int x, int y) {
+    public static void renderIcon(Screen screen, PoseStack matrices, int[] icon, int x, int y) {
         int w = StrangeIcons.ICON_WIDTH;
         int h = StrangeIcons.ICON_HEIGHT;
 
         RenderSystem.setShaderTexture(0, StrangeIcons.ICONS);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        screen.drawTexture(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
+        screen.blit(matrices, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 }

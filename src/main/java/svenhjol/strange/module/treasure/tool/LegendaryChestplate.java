@@ -1,13 +1,13 @@
 package svenhjol.strange.module.treasure.tool;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import svenhjol.strange.module.treasure.ITreasureTool;
 import svenhjol.strange.module.treasure.Treasure;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class LegendaryChestplate implements ITreasureTool {
 

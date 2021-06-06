@@ -2,26 +2,26 @@ package svenhjol.strange.helper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 // TODO: move to Charm
 public class TotemsHelper {
-    public static boolean destroy(PlayerEntity player, ItemStack totem) {
+    public static boolean destroy(Player player, ItemStack totem) {
         if (player.isSpectator() || player.isCreative())
             return false;
 
-        totem.decrement(1);
+        totem.shrink(1);
 
-        if (player.world.isClient) {
-            effectDestroyTotem(player.getBlockPos());
+        if (player.level.isClientSide) {
+            effectDestroyTotem(player.blockPosition());
         } else {
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 0.8F, 1.0F);
         }
 
         return true;
@@ -29,8 +29,8 @@ public class TotemsHelper {
 
     @Environment(EnvType.CLIENT)
     public static void effectDestroyTotem(BlockPos pos) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.world == null || mc.player == null)
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null)
             return;
 
         double spread = 1.5D;
@@ -38,7 +38,7 @@ public class TotemsHelper {
             double px = pos.getX() + 0.5D + (Math.random() - 0.5D) * spread;
             double py = pos.getY() + 0.5D + (Math.random() - 0.5D) * spread;
             double pz = pos.getZ() + 0.5D + (Math.random() - 0.5D) * spread;
-            mc.world.addParticle(ParticleTypes.LARGE_SMOKE, px, py, pz, 0.0D, 0.1D, 0.0D);
+            mc.level.addParticle(ParticleTypes.LARGE_SMOKE, px, py, pz, 0.0D, 0.1D, 0.0D);
         }
     }
 }

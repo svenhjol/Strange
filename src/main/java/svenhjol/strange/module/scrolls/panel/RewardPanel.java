@@ -1,21 +1,20 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
 import svenhjol.strange.init.StrangeIcons;
 import svenhjol.strange.module.scrolls.tag.Quest;
 import svenhjol.strange.module.scrolls.tag.Reward;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Map;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class RewardPanel extends BasePanel {
     public static RewardPanel INSTANCE = new RewardPanel();
 
-    public void render(Screen screen, MatrixStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
+    public void render(Screen screen, PoseStack matrices, Quest quest, int mid, int width, int top, int mouseX, int mouseY) {
         Reward reward = quest.getReward();
         Map<ItemStack, Integer> items = reward.getItems();
         int levels = reward.getPlayerXp();
@@ -24,17 +23,17 @@ public class RewardPanel extends BasePanel {
             return; // no reward for you, goodbye :(
 
         // panel title and icon
-        TranslatableText titleText = new TranslatableText("gui.strange.scrolls.reward");
-        drawTextWithShadow(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
+        TranslatableComponent titleText = new TranslatableComponent("gui.strange.scrolls.reward");
+        drawString(matrices, getTextRenderer(), titleText, mid - 44, top, titleColor);
         renderIcon(matrices, StrangeIcons.ICON_STAR, mid - 60, top - 1);
 
         top += rowHeight;
 
         // if the reward provides XP levels then show it here
         if (levels > 0) {
-            TranslatableText text = new TranslatableText("gui.strange.scrolls.reward_levels", levels);
+            TranslatableComponent text = new TranslatableComponent("gui.strange.scrolls.reward_levels", levels);
             renderItemStack(new ItemStack(Items.EXPERIENCE_BOTTLE), mid - 60, top - 5);
-            drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, top, textColor);
+            drawString(matrices, getTextRenderer(), text, mid - 36, top, textColor);
             top += rowHeight;
         }
 
@@ -46,9 +45,9 @@ public class RewardPanel extends BasePanel {
             int baseTop = top;
             for (ItemStack stack : stacks) {
                 int count = items.get(stack);
-                TranslatableText text = new TranslatableText("gui.strange.scrolls.reward_item", stack.getName(), count);
+                TranslatableComponent text = new TranslatableComponent("gui.strange.scrolls.reward_item", stack.getHoverName(), count);
                 renderItemStack(stack, mid - 60, baseTop - 5);
-                drawTextWithShadow(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
+                drawString(matrices, getTextRenderer(), text, mid - 36, baseTop, textColor);
                 baseTop += rowHeight;
             }
 
@@ -58,7 +57,7 @@ public class RewardPanel extends BasePanel {
                 if (mouseX > mid - 60 && mouseX < mid - 44
                     && mouseY > baseTop - 5 && mouseY < baseTop + 11
                 ) {
-                    screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
+                    screen.renderComponentTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
                 }
                 baseTop += rowHeight;
             }

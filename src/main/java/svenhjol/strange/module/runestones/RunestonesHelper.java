@@ -1,40 +1,40 @@
 package svenhjol.strange.module.runestones;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.CompassItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CompassItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import java.util.*;
 
 public class RunestonesHelper {
     public static final int NUMBER_OF_RUNES = 26;
-    public static final Identifier SPAWN = new Identifier(Strange.MOD_ID, "spawn_point");
+    public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
     public static Map<UUID, List<Integer>> PLAYER_LEARNED_RUNES = new HashMap<>();
 
-    public static boolean explode(World world, BlockPos pos, @Nullable PlayerEntity player, boolean destroyBlock) {
+    public static boolean explode(Level world, BlockPos pos, @Nullable Player player, boolean destroyBlock) {
         if (player != null)
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 5 * 20));
+            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 5 * 20));
 
-        world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, 1.25F, Explosion.DestructionType.DESTROY);
+        world.explode(null, pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, 1.25F, Explosion.BlockInteraction.DESTROY);
 
         if (destroyBlock)
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 
         return false;
     }
@@ -56,12 +56,12 @@ public class RunestonesHelper {
         return runes;
     }
 
-    public static boolean playerKnowsBlockPosRunes(PlayerEntity player, BlockPos pos, int limit) {
+    public static boolean playerKnowsBlockPosRunes(Player player, BlockPos pos, int limit) {
         List<Integer> required = getRunesFromBlockPos(pos, limit);
         if (required.size() < limit)
             return false;
 
-        if (PlayerHelper.getAbilities(player).creativeMode)
+        if (PlayerHelper.getAbilities(player).instabuild)
             return true;
 
         List<Integer> learned = getLearnedRunes(player);
@@ -76,18 +76,18 @@ public class RunestonesHelper {
         return true;
     }
 
-    public static List<Integer> getLearnedRunes(PlayerEntity player) {
-        return PLAYER_LEARNED_RUNES.getOrDefault(player.getUuid(), ImmutableList.of());
+    public static List<Integer> getLearnedRunes(Player player) {
+        return PLAYER_LEARNED_RUNES.getOrDefault(player.getUUID(), ImmutableList.of());
     }
 
-    public static void resetLearnedRunes(PlayerEntity player) {
-        UUID uuid = player.getUuid();
+    public static void resetLearnedRunes(Player player) {
+        UUID uuid = player.getUUID();
         PLAYER_LEARNED_RUNES.remove(uuid);
         PLAYER_LEARNED_RUNES.put(uuid, new ArrayList<>());
     }
 
-    public static void addLearnedRune(PlayerEntity player, int rune) {
-        UUID uuid = player.getUuid();
+    public static void addLearnedRune(Player player, int rune) {
+        UUID uuid = player.getUUID();
         if (!PLAYER_LEARNED_RUNES.containsKey(uuid))
             PLAYER_LEARNED_RUNES.put(uuid, new ArrayList<>());
 
@@ -95,30 +95,30 @@ public class RunestonesHelper {
             PLAYER_LEARNED_RUNES.get(uuid).add(rune);
     }
 
-    public static boolean hasLearnedRune(PlayerEntity player, int rune) {
+    public static boolean hasLearnedRune(Player player, int rune) {
         return getLearnedRunes(player).contains(rune);
     }
 
-    public static void populateLearnedRunes(PlayerEntity player, int[] learned) {
+    public static void populateLearnedRunes(Player player, int[] learned) {
         for (int rune : learned) {
             addLearnedRune(player, rune);
         }
     }
 
     @Nullable
-    public static BlockPos getBlockPosFromItemStack(World world, ItemStack stack) {
+    public static BlockPos getBlockPosFromItemStack(Level world, ItemStack stack) {
         if (stack.getItem() == Items.COMPASS) {
 
-            if (!CompassItem.hasLodestone(stack) || !stack.hasTag() || stack.getTag() == null)
+            if (!CompassItem.isLodestoneCompass(stack) || !stack.hasTag() || stack.getTag() == null)
                 return null;
 
             // must be the correct dimension as the lodestone
-            Optional<RegistryKey<World>> dimension = CompassItem.getLodestoneDimension(stack.getTag());
+            Optional<ResourceKey<Level>> dimension = CompassItem.getLodestoneDimension(stack.getTag());
             if (!dimension.isPresent() || !DimensionHelper.isDimension(world, dimension.get()))
                 return null;
 
-            BlockPos pos = NbtHelper.toBlockPos(stack.getTag().getCompound("LodestonePos"));
-            pos = pos.add(0, 1, 0); // the block above the lodestone
+            BlockPos pos = NbtUtils.readBlockPos(stack.getTag().getCompound("LodestonePos"));
+            pos = pos.offset(0, 1, 0); // the block above the lodestone
             return pos;
 
         }
@@ -126,7 +126,7 @@ public class RunestonesHelper {
         return null;
     }
 
-    public static String getFormattedLocationName(Identifier locationId) {
+    public static String getFormattedLocationName(ResourceLocation locationId) {
         return StringHelper.capitalize(locationId.getPath().replaceAll("_", " "));
     }
 

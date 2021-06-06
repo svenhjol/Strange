@@ -1,22 +1,8 @@
 package svenhjol.strange.module.travel_journals.screen;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
 import svenhjol.charm.Charm;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.StringHelper;
@@ -32,11 +18,25 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 @SuppressWarnings("ConstantConditions")
 public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     private TravelJournalEntry entry;
-    private TextFieldWidget nameField;
+    private EditBox nameField;
     private String name;
 
     private boolean atEntryPosition;
@@ -52,8 +52,8 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     private final List<DyeColor> colors = Arrays.asList(
         DyeColor.BLACK, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.RED, DyeColor.BROWN, DyeColor.GREEN, DyeColor.GRAY
     );
-    private NativeImageBackedTexture screenshotTexture = null;
-    private Identifier registeredScreenshotTexture = null;
+    private DynamicTexture screenshotTexture = null;
+    private ResourceLocation registeredScreenshotTexture = null;
     private int screenshotFailureRetries = 0;
 
     public TravelJournalUpdateEntryScreen(TravelJournalEntry entry) {
@@ -67,22 +67,22 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     protected void init() {
         super.init();
 
-        if (client == null || client.world == null || client.player == null || !client.world.isClient)
+        if (minecraft == null || minecraft.level == null || minecraft.player == null || !minecraft.level.isClientSide)
             return;
 
         // set up the input field for editing the entry name
-        nameField = new TextFieldWidget(textRenderer, (width / 2) - 72, 34, 149, 12, new LiteralText("NameField"));
+        nameField = new EditBox(font, (width / 2) - 72, 34, 149, 12, new TextComponent("NameField"));
         nameField.changeFocus(true);
-        nameField.setFocusUnlocked(false);
-        nameField.setEditableColor(-1);
-        nameField.setUneditableColor(-1);
-        nameField.setDrawsBackground(true);
+        nameField.setCanLoseFocus(false);
+        nameField.setTextColor(-1);
+        nameField.setTextColorUneditable(-1);
+        nameField.setBordered(true);
         nameField.setMaxLength(TravelJournals.MAX_NAME_LENGTH);
-        nameField.setChangedListener(this::responder);
-        nameField.setText(this.name);
+        nameField.setResponder(this::responder);
+        nameField.setValue(this.name);
         nameField.setEditable(true);
 
-        client.keyboard.setRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
         ((ScreenAccessor)this).getChildren().add(nameField);
         setFocused(nameField);
 
@@ -92,15 +92,15 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
         hasRenderedMapButton = false;
 
         // reset state
-        hasMap = PlayerHelper.getInventory(client.player).contains(new ItemStack(Items.MAP));
+        hasMap = PlayerHelper.getInventory(minecraft.player).contains(new ItemStack(Items.MAP));
 //        hasTotem = DimensionHelper.isDimension(client.world, entry.dim) && PlayerHelper.getInventory(client.player).contains(new ItemStack(TotemOfWandering.TOTEM_OF_WANDERING)); // TODO: phase2
         hasTotem = false;
-        atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
+        atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(minecraft.player, entry);
         hasScreenshot = hasScreenshot();
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
 
         int mid = width / 2;
@@ -125,32 +125,32 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
         if (hasScreenshot) {
             tryRenderScreenshot(matrices);
         } else {
-            this.addDrawableChild(new ButtonWidget((width / 2) - 50, colorsTop + 51, 100, 20, new TranslatableText("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
+            this.addRenderableWidget(new Button((width / 2) - 50, colorsTop + 51, 100, 20, new TranslatableComponent("gui.strange.travel_journal.new_screenshot"), button -> this.prepareScreenshot()));
         }
 
         // render color selection buttons
         if (!hasRenderedColorButtons) {
             for (int i = 0; i < colors.size(); i++) {
                 final DyeColor col = colors.get(i);
-                this.addDrawableChild(new TexturedButtonWidget(colorsLeft + (i * 22), colorsTop, 20, 18, (i * 20), 0, 18, COLORS, r -> setColor(col)));
+                this.addRenderableWidget(new ImageButton(colorsLeft + (i * 22), colorsTop, 20, 18, (i * 20), 0, 18, COLORS, r -> setColor(col)));
             }
             hasRenderedColorButtons = true;
         }
 
         // render coordinates if in creative mode or config allows it
         if (entry.pos != null) {
-            if (client.player.isCreative() || TravelJournals.showCoordinates) {
-                Text coords = (new LiteralText("X:").append(String.valueOf(entry.pos.getX()))).setStyle(Style.EMPTY.withColor(Formatting.DARK_RED))
-                    .append((new LiteralText(" Z:").append(String.valueOf(entry.pos.getZ()))).setStyle(Style.EMPTY.withColor(Formatting.DARK_BLUE)))
-                    .append((new LiteralText(" ").append(StringHelper.capitalize(String.valueOf(entry.dim.getPath())))).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+            if (minecraft.player.isCreative() || TravelJournals.showCoordinates) {
+                Component coords = (new TextComponent("X:").append(String.valueOf(entry.pos.getX()))).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED))
+                    .append((new TextComponent(" Z:").append(String.valueOf(entry.pos.getZ()))).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_BLUE)))
+                    .append((new TextComponent(" ").append(StringHelper.capitalize(String.valueOf(entry.dim.getPath())))).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
 
-                centeredText(matrices, textRenderer, coords, (width / 2), coordsTop, TEXT_COLOR);
+                centeredText(matrices, font, coords, (width / 2), coordsTop, TEXT_COLOR);
             }
         }
 
         // render title and input field
-        String title = I18n.translate("gui.strange.travel_journal.update", this.name);
-        centeredString(matrices, textRenderer, title.substring(0, Math.min(title.length(), NAME_CUTOFF)), width / 2, top, DyeColor.byId(entry.color).getSignColor());
+        String title = I18n.get("gui.strange.travel_journal.update", this.name);
+        centeredString(matrices, font, title.substring(0, Math.min(title.length(), NAME_CUTOFF)), width / 2, top, DyeColor.byId(entry.color).getTextColor());
         nameField.render(matrices, mouseX, mouseY, delta);
 
         this.renderNavigation(matrices, mouseX, mouseY, delta);
@@ -161,17 +161,17 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
         int y = (height / 4) + 140;
         int w = 100;
         int h = 20;
-        final boolean atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(client.player, entry);
+        final boolean atEntryPosition = TravelJournalsClient.isPlayerAtEntryPosition(minecraft.player, entry);
 
         int buttonX = atEntryPosition ? -110 : -50;
         int buttonDist = 120;
 
         if (atEntryPosition) {
-            this.addDrawableChild(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
+            this.addRenderableWidget(new Button((width / 2) + buttonX, y, w, h, new TranslatableComponent("gui.strange.travel_journal.new_screenshot"), (button) -> this.prepareScreenshot()));
             buttonX += buttonDist;
         }
 
-        this.addDrawableChild(new ButtonWidget((width / 2) + buttonX, y, w, h, new TranslatableText("gui.strange.travel_journal.save"), (button) -> this.save()));
+        this.addRenderableWidget(new Button((width / 2) + buttonX, y, w, h, new TranslatableComponent("gui.strange.travel_journal.save"), (button) -> this.save()));
     }
 
     private void responder(String str) {
@@ -189,9 +189,9 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     }
 
     private void prepareScreenshot() {
-        if (client != null && client.player != null) {
-            client.openScreen(null);
-            client.options.hudHidden = true;
+        if (minecraft != null && minecraft.player != null) {
+            minecraft.setScreen(null);
+            minecraft.options.hideGui = true;
             TravelJournalsClient.entryHavingScreenshot = this.entry;
             TravelJournalsClient.screenshotTicks = 1;
         }
@@ -203,7 +203,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     }
 
     private File getScreenshot() {
-        File screenshotsDirectory = new File(client.runDirectory, "screenshots");
+        File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
         return new File(screenshotsDirectory, this.entry.id + ".png");
     }
 
@@ -224,7 +224,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     }
 
     private void backToMainScreen() {
-        if (client != null)
+        if (minecraft != null)
             NetworkHelper.sendEmptyPacketToServer(TravelJournals.MSG_SERVER_OPEN_JOURNAL);
     }
 
@@ -233,7 +233,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
         this.backToMainScreen();
     }
 
-    private void tryRenderScreenshot(MatrixStack matrices) {
+    private void tryRenderScreenshot(PoseStack matrices) {
         if (screenshotTexture == null) {
             try {
                 File screenshotFile = getScreenshot();
@@ -243,8 +243,8 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
 
                 InputStream stream = new FileInputStream(screenshotFile);
                 NativeImage screenshot = NativeImage.read(stream);
-                screenshotTexture = new NativeImageBackedTexture(screenshot);
-                registeredScreenshotTexture = client.getTextureManager().registerDynamicTexture("screenshot", screenshotTexture);
+                screenshotTexture = new DynamicTexture(screenshot);
+                registeredScreenshotTexture = minecraft.getTextureManager().register("screenshot", screenshotTexture);
                 stream.close();
 
                 if (screenshotTexture == null || registeredScreenshotTexture == null)
@@ -265,27 +265,27 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
 
         if (registeredScreenshotTexture != null) {
             RenderSystem.setShaderTexture(0, registeredScreenshotTexture);
-            matrices.push();
+            matrices.pushPose();
             matrices.scale(0.66F, 0.4F, 0.66F);
-            this.drawTexture(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
-            matrices.pop();
+            this.blit(matrices, (int)(( this.width / 2 ) / 0.66F) - 110, 130, 0, 0, 228, 200);
+            matrices.popPose();
         }
     }
 
-    private void renderNavigation(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    private void renderNavigation(PoseStack matrices, int mouseX, int mouseY, float delta) {
         int mid = width / 2;
         int top = leftButtonYOffset;
 
         // button to make map
         if (!hasRenderedMapButton && hasMap) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
+            this.addRenderableWidget(new ImageButton(mid + leftButtonXOffset, top, 20, 18, 40, 0, 19, BUTTONS, button -> makeMap()));
             hasRenderedMapButton = true;
             top += rightButtonYOffset;
         }
 
         // button to use totem
         if (!hasRenderedTotemButton && hasTotem) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
+            this.addRenderableWidget(new ImageButton(mid + leftButtonXOffset, top, 20, 18, 60, 0, 19, BUTTONS, button -> useTotem()));
             hasRenderedTotemButton = true;
             top += rightButtonYOffset;
         }
@@ -295,7 +295,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
 
         // button to delete entry
         if (!hasRenderedTrashButton) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + leftButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, r -> delete()));
+            this.addRenderableWidget(new ImageButton(mid + leftButtonXOffset, top, 20, 18, 20, 0, 19, BUTTONS, r -> delete()));
             hasRenderedTrashButton = true;
             top += leftButtonYOffset;
         }

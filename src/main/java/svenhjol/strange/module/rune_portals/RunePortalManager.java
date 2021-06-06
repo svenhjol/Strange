@@ -1,46 +1,46 @@
 package svenhjol.strange.module.rune_portals;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import svenhjol.charm.mixin.accessor.ServerPlayerEntityAccessor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.saveddata.SavedData;
+import svenhjol.charm.mixin.accessor.ServerPlayerAccessor;
 import svenhjol.strange.init.StrangeSounds;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RunePortalManager extends PersistentState {
+public class RunePortalManager extends SavedData {
     public static final String RUNES_NBT = "Runes";
 
-    private final World world;
+    private final Level world;
     private final Map<BlockPos, DyeColor> colors = new HashMap<>();
     private Map<String, List<BlockPos>> runes = new HashMap<>();
 
-    public RunePortalManager(ServerWorld world) {
+    public RunePortalManager(ServerLevel world) {
         this.world = world;
-        markDirty();
+        setDirty();
     }
     
-    public static RunePortalManager fromNbt(ServerWorld world, NbtCompound nbt) {
+    public static RunePortalManager fromNbt(ServerLevel world, CompoundTag nbt) {
         RunePortalManager manager = new RunePortalManager(world);
-        NbtCompound runes = (NbtCompound)nbt.get(RUNES_NBT);
+        CompoundTag runes = (CompoundTag)nbt.get(RUNES_NBT);
 
         manager.runes = new HashMap<>();
 
         if (runes != null && !runes.isEmpty()) {
-            runes.getKeys().forEach(s -> {
-                List<BlockPos> value = Arrays.stream(runes.getLongArray(s)).mapToObj(BlockPos::fromLong).collect(Collectors.toList());
+            runes.getAllKeys().forEach(s -> {
+                List<BlockPos> value = Arrays.stream(runes.getLongArray(s)).mapToObj(BlockPos::of).collect(Collectors.toList());
                 manager.runes.put(s, new ArrayList<>(value));
             });
         }
@@ -49,9 +49,9 @@ public class RunePortalManager extends PersistentState {
     }
     
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        NbtCompound colorNbt = new NbtCompound();
-        NbtCompound runesNbt = new NbtCompound();
+    public CompoundTag save(CompoundTag nbt) {
+        CompoundTag colorNbt = new CompoundTag();
+        CompoundTag runesNbt = new CompoundTag();
 
         colors.forEach((source, dye) ->
             colorNbt.putInt(String.valueOf(source.asLong()), dye.getId()));
@@ -65,7 +65,7 @@ public class RunePortalManager extends PersistentState {
     }
 
     public static String nameFor(DimensionType dimensionType) {
-        return "rune_portals" + dimensionType.getSuffix();
+        return "rune_portals" + dimensionType.getFileSuffix();
     }
 
     public void createPortal(List<Integer> runes, BlockPos pos, Axis orientation) {
@@ -94,31 +94,31 @@ public class RunePortalManager extends PersistentState {
                 this.runes.get(runes).add(pos);
         }
 
-        this.markDirty();
+        this.setDirty();
 
         // break the portal and unset all block entities first
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
-                BlockPos p = orientation == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
-                world.setBlockState(p, Blocks.AIR.getDefaultState(), 3);
+                BlockPos p = orientation == Axis.X ? pos.offset(a, b, 0) : pos.offset(0, b, a);
+                world.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
                 world.removeBlockEntity(p);
             }
         }
 
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
-                BlockPos p = orientation == Axis.X ? pos.add(a, b, 0) : pos.add(0, b, a);
+                BlockPos p = orientation == Axis.X ? pos.offset(a, b, 0) : pos.offset(0, b, a);
 
-                world.setBlockState(p, RunePortals.RUNE_PORTAL_BLOCK.getDefaultState()
-                    .with(RunePortalBlock.AXIS, orientation)
-                    .with(RunePortalBlock.COLOR, color.getId()), 3);
+                world.setBlock(p, RunePortals.RUNE_PORTAL_BLOCK.defaultBlockState()
+                    .setValue(RunePortalBlock.AXIS, orientation)
+                    .setValue(RunePortalBlock.COLOR, color.getId()), 3);
 
                 setPortalBlockEntity(world, p, runes, pos, orientation, color);
             }
         }
 
         // TODO: better portal create sound
-        world.playSound(null, pos, SoundEvents.BLOCK_AMETHYST_BLOCK_BREAK, SoundCategory.BLOCKS, 1.05F, 0.75F);
+        world.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.05F, 0.75F);
     }
 
     public void removePortal(String runes, BlockPos pos) {
@@ -128,7 +128,7 @@ public class RunePortalManager extends PersistentState {
                 this.runes.remove(runes);
         }
         this.colors.remove(pos);
-        this.markDirty();
+        this.setDirty();
     }
 
     public boolean teleport(String runes, BlockPos pos, Entity entity) {
@@ -144,11 +144,11 @@ public class RunePortalManager extends PersistentState {
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
 
-            if (entity instanceof ServerPlayerEntity)
-                ((ServerPlayerEntityAccessor)entity).setInTeleportationState(true);
+            if (entity instanceof ServerPlayer)
+                ((ServerPlayerAccessor)entity).setIsChangingDimension(true);
 
-            entity.teleport(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
-            world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundCategory.BLOCKS, 0.85F, 1.05F);
+            entity.teleportToWithTicket(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
+            world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 0.85F, 1.05F);
 
 //            if (entity instanceof ServerPlayerEntity)
 //                ((ServerPlayerEntity)entity).onTeleportationDone();
@@ -159,7 +159,7 @@ public class RunePortalManager extends PersistentState {
         return false;
     }
 
-    private void setPortalBlockEntity(World world, BlockPos pos, String runes, BlockPos start, Axis orientation, DyeColor color) {
+    private void setPortalBlockEntity(Level world, BlockPos pos, String runes, BlockPos start, Axis orientation, DyeColor color) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity == null)
             return;
@@ -168,7 +168,7 @@ public class RunePortalManager extends PersistentState {
         portal.orientation = orientation;
         portal.pos = start;
         portal.runes = runes;
-        portal.markDirty();
+        portal.setChanged();
         portal.sync();
     }
 

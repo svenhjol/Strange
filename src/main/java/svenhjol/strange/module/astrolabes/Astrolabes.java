@@ -2,20 +2,20 @@ package svenhjol.strange.module.astrolabes;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.Vibration;
-import net.minecraft.world.World;
-import net.minecraft.world.event.BlockPositionSource;
-import net.minecraft.world.poi.PointOfInterestType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.level.gameevent.vibrations.VibrationPath;
 import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.helper.RegistryHelper;
@@ -30,14 +30,14 @@ import java.util.Optional;
 
 @Module(mod = Strange.MOD_ID, client = AstrolabesClient.class, description = "Place an astrolabe and link another to it to help align builds.")
 public class Astrolabes extends CharmModule {
-    public static final Identifier ID = new Identifier(Strange.MOD_ID, "astrolabe");
-    public static final Identifier MSG_CLIENT_SHOW_AXIS_PARTICLES = new Identifier(Strange.MOD_ID, "client_show_axis_particles");
-    public static final Identifier TRIGGER_LINKED_ASTROLABE = new Identifier(Strange.MOD_ID, "linked_astrolabe");
-    public static final Identifier TRIGGER_LOCATED_ASTROLABE_LOCATION = new Identifier(Strange.MOD_ID, "located_astrolabe_location");
+    public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "astrolabe");
+    public static final ResourceLocation MSG_CLIENT_SHOW_AXIS_PARTICLES = new ResourceLocation(Strange.MOD_ID, "client_show_axis_particles");
+    public static final ResourceLocation TRIGGER_LINKED_ASTROLABE = new ResourceLocation(Strange.MOD_ID, "linked_astrolabe");
+    public static final ResourceLocation TRIGGER_LOCATED_ASTROLABE_LOCATION = new ResourceLocation(Strange.MOD_ID, "located_astrolabe_location");
 
     public static AstrolabeBlock ASTROLABE;
     public static BlockEntityType<AstrolabeBlockEntity> BLOCK_ENTITY;
-    public static PointOfInterestType POIT;
+    public static PoiType POIT;
 
     @Override
     public void register() {
@@ -51,59 +51,59 @@ public class Astrolabes extends CharmModule {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
     }
 
-    private void handlePlayerTick(PlayerEntity player) {
-        if (player.world.isClient || player.world.getTime() % 100 != 0)
+    private void handlePlayerTick(Player player) {
+        if (player.level.isClientSide || player.level.getGameTime() % 100 != 0)
             return;
 
-        ServerWorld serverWorld = (ServerWorld)player.world;
+        ServerLevel serverWorld = (ServerLevel)player.level;
         List<BlockPos> positions = new ArrayList<>();
 
-        for (Hand hand : Hand.values()) {
-            ItemStack held = player.getStackInHand(hand);
+        for (InteractionHand hand : InteractionHand.values()) {
+            ItemStack held = player.getItemInHand(hand);
             if (!(held.getItem() instanceof AstrolabeBlockItem))
                 continue;
 
-            Optional<RegistryKey<World>> dimension = AstrolabeBlockItem.getDimension(held);
+            Optional<ResourceKey<Level>> dimension = AstrolabeBlockItem.getDimension(held);
             Optional<BlockPos> position = AstrolabeBlockItem.getPosition(held);
 
             if (!dimension.isPresent() || !position.isPresent())
                 continue;
 
-            RegistryKey<World> dim = dimension.get();
+            ResourceKey<Level> dim = dimension.get();
             BlockPos pos = position.get();
-            ServerWorld dimWorld = serverWorld.getServer().getWorld(dim);
+            ServerLevel dimWorld = serverWorld.getServer().getLevel(dim);
 
-            if (dimWorld == null || !dimWorld.getPointOfInterestStorage().hasTypeAt(Astrolabes.POIT, pos)) {
+            if (dimWorld == null || !dimWorld.getPoiManager().existsAtPosition(Astrolabes.POIT, pos)) {
                 held.getOrCreateTag().remove(AstrolabeBlockItem.POSITION_NBT);
                 held.getOrCreateTag().remove(AstrolabeBlockItem.DIMENSION_NBT);
                 continue;
             }
 
-            BlockPos.Mutable dimensionPos = getDimensionPosition(player.world, pos, dim);
+            BlockPos.MutableBlockPos dimensionPos = getDimensionPosition(player.level, pos, dim);
             positions.add(dimensionPos);
 
             // do the dimensional anchor advancement
-            if (player.getBlockPos().equals(dimensionPos) && !player.world.getRegistryKey().equals(dim))
-                triggerLocatedAstrolabeLocation((ServerPlayerEntity) player);
+            if (player.blockPosition().equals(dimensionPos) && !player.level.dimension().equals(dim))
+                triggerLocatedAstrolabeLocation((ServerPlayer) player);
         }
 
         if (!positions.isEmpty()) {
-            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+            FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
             data.writeBoolean(true); // play sound
             data.writeLongArray(positions.stream().distinct().map(BlockPos::asLong).mapToLong(Long::longValue).toArray());
-            ServerPlayNetworking.send((ServerPlayerEntity) player, MSG_CLIENT_SHOW_AXIS_PARTICLES, data);
+            ServerPlayNetworking.send((ServerPlayer) player, MSG_CLIENT_SHOW_AXIS_PARTICLES, data);
 
             // TODO: move to shared method
-            serverWorld.sendVibrationPacket(new Vibration(player.getBlockPos(), new BlockPositionSource(positions.get(0)), 20));
+            serverWorld.sendVibrationParticle(new VibrationPath(player.blockPosition(), new BlockPositionSource(positions.get(0)), 20));
         }
     }
 
-    public static BlockPos.Mutable getDimensionPosition(World currentWorld, BlockPos astrolabePos, RegistryKey<World> astrolabeDimension) {
-        BlockPos.Mutable position = astrolabePos.mutableCopy();
+    public static BlockPos.MutableBlockPos getDimensionPosition(Level currentWorld, BlockPos astrolabePos, ResourceKey<Level> astrolabeDimension) {
+        BlockPos.MutableBlockPos position = astrolabePos.mutable();
 
         if (astrolabeDimension != null) {
             // if the astrolabe was set in the nether and the user is not in the nether, multiply X and Z
-            if (astrolabeDimension.equals(World.NETHER) && currentWorld.getRegistryKey() != World.NETHER) {
+            if (astrolabeDimension.equals(Level.NETHER) && currentWorld.dimension() != Level.NETHER) {
                 int x = position.getX();
                 int y = position.getY();
                 int z = position.getZ();
@@ -112,7 +112,7 @@ public class Astrolabes extends CharmModule {
             }
 
             // if the astrolabe was set outside the nether and the user is in the nether, divide X and Z
-            if (!astrolabeDimension.equals(World.NETHER) && currentWorld.getRegistryKey() == World.NETHER) {
+            if (!astrolabeDimension.equals(Level.NETHER) && currentWorld.dimension() == Level.NETHER) {
                 int x = position.getX();
                 int y = position.getY();
                 int z = position.getZ();
@@ -124,11 +124,11 @@ public class Astrolabes extends CharmModule {
         return position;
     }
 
-    public static void triggerLinkedAstrolabe(ServerPlayerEntity player) {
+    public static void triggerLinkedAstrolabe(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LINKED_ASTROLABE);
     }
 
-    public static void triggerLocatedAstrolabeLocation(ServerPlayerEntity player) {
+    public static void triggerLocatedAstrolabeLocation(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LOCATED_ASTROLABE_LOCATION);
     }
 }

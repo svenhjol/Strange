@@ -1,26 +1,26 @@
 package svenhjol.strange.module.travel_journals.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.travel_journals.TravelJournalsClient;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class TravelJournalBaseScreen extends Screen {
     protected ItemStack stack;
-    protected MinecraftClient mc;
+    protected Minecraft mc;
     protected ItemRenderer items;
 
     public static final int TEXT_COLOR = 0x000000;
@@ -45,12 +45,12 @@ public abstract class TravelJournalBaseScreen extends Screen {
     protected boolean hasRenderedRuneButton = false;
     protected boolean hasRenderedScrollButton = false;
 
-    public static final Identifier BACKGROUND = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_background.png");
-    public static final Identifier BUTTONS = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_buttons.png");
-    public static final Identifier COLORS = new Identifier(Strange.MOD_ID, "textures/gui/travel_journal_colors.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/travel_journal_background.png");
+    public static final ResourceLocation BUTTONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/travel_journal_buttons.png");
+    public static final ResourceLocation COLORS = new ResourceLocation(Strange.MOD_ID, "textures/gui/travel_journal_colors.png");
 
     public TravelJournalBaseScreen(String title) {
-        super(new LiteralText(title));
+        super(new TextComponent(title));
 
         getClient().ifPresent(client -> this.items = client.getItemRenderer());
 
@@ -76,7 +76,7 @@ public abstract class TravelJournalBaseScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
         this.renderTravelJournalBackground(matrices, mouseX, mouseY, delta);
         this.renderTravelJournalNavigation(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
@@ -84,11 +84,11 @@ public abstract class TravelJournalBaseScreen extends Screen {
 
     @Override
     public void onClose() {
-        getClient().ifPresent(client -> client.openScreen(null));
+        getClient().ifPresent(client -> client.setScreen(null));
     }
 
-    public void onClose(Consumer<MinecraftClient> callback) {
-        Optional<MinecraftClient> client = getClient();
+    public void onClose(Consumer<Minecraft> callback) {
+        Optional<Minecraft> client = getClient();
 
         if (client.isPresent()) {
             this.onClose();
@@ -96,70 +96,70 @@ public abstract class TravelJournalBaseScreen extends Screen {
         }
     }
 
-    public Optional<MinecraftClient> getClient() {
-        if (this.client == null)
+    public Optional<Minecraft> getClient() {
+        if (this.minecraft == null)
             return Optional.empty();
 
-        return Optional.of(this.client);
+        return Optional.of(this.minecraft);
     }
 
-    protected void renderTravelJournalBackground(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    protected void renderTravelJournalBackground(PoseStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
 
-        Optional<MinecraftClient> client = getClient();
+        Optional<Minecraft> client = getClient();
         if (client.isPresent()) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, BACKGROUND);
             int mid = (this.width - BGWIDTH) / 2;
-            this.drawTexture(matrices, mid, 2, 0, 0, BGWIDTH, BGHEIGHT);
+            this.blit(matrices, mid, 2, 0, 0, BGWIDTH, BGHEIGHT);
         }
     }
 
-    protected void renderTravelJournalNavigation(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    protected void renderTravelJournalNavigation(PoseStack matrices, int mouseX, int mouseY, float delta) {
         int mid = this.width / 2;
         int top = rightButtonYOffset;
 
         // button to open home page
         if (!hasRenderedHomeButton) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 0, 37, 19, BUTTONS, button -> openTravelJournalScreen()));
+            this.addRenderableWidget(new ImageButton(mid + rightButtonXOffset, top, 20, 18, 0, 37, 19, BUTTONS, button -> openTravelJournalScreen()));
             hasRenderedHomeButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open entries page
         if (!hasRenderedEntriesButton) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 60, 37, 19, BUTTONS, button -> openEntriesScreen()));
+            this.addRenderableWidget(new ImageButton(mid + rightButtonXOffset, top, 20, 18, 60, 37, 19, BUTTONS, button -> openEntriesScreen()));
             hasRenderedEntriesButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open rune page
         if (!hasRenderedRuneButton) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 40, 37, 19, BUTTONS, button -> openRunesScreen()));
+            this.addRenderableWidget(new ImageButton(mid + rightButtonXOffset, top, 20, 18, 40, 37, 19, BUTTONS, button -> openRunesScreen()));
             hasRenderedRuneButton = true;
             top += rightButtonYOffset;
         }
 
         // button to open scroll page
         if (!hasRenderedScrollButton) {
-            this.addDrawableChild(new TexturedButtonWidget(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollsScreen()));
+            this.addRenderableWidget(new ImageButton(mid + rightButtonXOffset, top, 20, 18, 20, 37, 19, BUTTONS, button -> openScrollsScreen()));
             hasRenderedScrollButton = true;
             top += rightButtonYOffset;
         }
     }
 
     protected void redraw() {
-        this.clearChildren();
+        this.clearWidgets();
         this.renderButtons();
     }
 
-    protected void centeredString(MatrixStack matrices, TextRenderer textRenderer, String string, int x, int y, int color) {
-        textRenderer.draw(matrices, string, x - (float)(textRenderer.getWidth(string) / 2), y, color);
+    protected void centeredString(PoseStack matrices, Font textRenderer, String string, int x, int y, int color) {
+        textRenderer.draw(matrices, string, x - (float)(textRenderer.width(string) / 2), y, color);
     }
 
-    public static void centeredText(MatrixStack matrices, TextRenderer textRenderer, Text text, int x, int y, int color) {
-        OrderedText orderedText = text.asOrderedText();
-        textRenderer.draw(matrices, orderedText, (float)(x - textRenderer.getWidth(orderedText) / 2), (float)y, color);
+    public static void centeredText(PoseStack matrices, Font textRenderer, Component text, int x, int y, int color) {
+        FormattedCharSequence orderedText = text.getVisualOrderText();
+        textRenderer.draw(matrices, orderedText, (float)(x - textRenderer.width(orderedText) / 2), (float)y, color);
     }
 
     /**
@@ -183,17 +183,17 @@ public abstract class TravelJournalBaseScreen extends Screen {
 
     protected void openEntriesScreen() {
         getClient().ifPresent(client
-            -> client.openScreen(new TravelJournalEntriesScreen()));
+            -> client.setScreen(new TravelJournalEntriesScreen()));
     }
 
     protected void openRunesScreen() {
         getClient().ifPresent(client
-            -> client.openScreen(new TravelJournalRunesScreen()));
+            -> client.setScreen(new TravelJournalRunesScreen()));
     }
 
     protected void openScrollsScreen() {
         getClient().ifPresent(client
-            -> client.openScreen(new TravelJournalScrollsScreen()));
+            -> client.setScreen(new TravelJournalScrollsScreen()));
     }
 
     public enum Page {

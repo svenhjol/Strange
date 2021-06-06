@@ -1,16 +1,18 @@
 package svenhjol.strange.module.scrolls;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.init.StrangeIcons;
 import svenhjol.strange.module.travel_journals.screen.TravelJournalScrollsScreen;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.scrolls.panel.*;
 import svenhjol.strange.module.scrolls.tag.Quest;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ScrollScreen extends Screen {
     private boolean backToJournal;
 
     public ScrollScreen(Quest quest, boolean backToJournal) {
-        super(new TranslatableText(quest.getTitle()));
+        super(new TranslatableComponent(quest.getTitle()));
         this.quest = quest;
         this.passEvents = true;
         this.backToJournal = backToJournal;
@@ -32,8 +34,8 @@ public class ScrollScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (client == null || client.world == null)
+    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        if (minecraft == null || minecraft.level == null)
             return;
 
         renderBackground(matrices);
@@ -53,34 +55,34 @@ public class ScrollScreen extends Screen {
 
         // render title (and optional hint)
         if (!title.isEmpty()) {
-            Text titleText = (new LiteralText(title).setStyle(Style.EMPTY.withBold(true)));
+            Component titleText = (new TextComponent(title).setStyle(Style.EMPTY.withBold(true)));
             GuiHelper.drawCenteredTitle(matrices, titleText, mid, textTop, 0xFFFFAA);
             textTop += 12;
         }
 
         // render optional description
         if (!description.isEmpty()) {
-            LiteralText descriptionText = new LiteralText(description);
+            TextComponent descriptionText = new TextComponent(description);
             GuiHelper.drawCenteredTitle(matrices, descriptionText, mid, textTop, 0xAAAAAA);
 
             // add the hint as a tooltip hoverover
             if (!hint.isEmpty()) {
-                GuiHelper.renderIcon(this, matrices, StrangeIcons.ICON_HELP, mid + 4 + (textRenderer.getWidth(descriptionText) / 2), textTop - 1);
+                GuiHelper.renderIcon(this, matrices, StrangeIcons.ICON_HELP, mid + 4 + (font.width(descriptionText) / 2), textTop - 1);
 
-                List<Text> hintText = new ArrayList<>();
-                hintText.add((new TranslatableText("gui.strange.scrolls.hint").setStyle(Style.EMPTY.withItalic(true).withFormatting(Formatting.YELLOW))));
+                List<Component> hintText = new ArrayList<>();
+                hintText.add((new TranslatableComponent("gui.strange.scrolls.hint").setStyle(Style.EMPTY.withItalic(true).applyFormat(ChatFormatting.YELLOW))));
 
                 if (hint.contains("\n")) {
                     String[] split = hint.split("\n");
                     for (String s : split)
-                        hintText.add(new LiteralText(s));
+                        hintText.add(new TextComponent(s));
                 } else {
-                    hintText.add(new LiteralText(hint));
+                    hintText.add(new TextComponent(hint));
                 }
 
-                int titleWidth = textRenderer.getWidth(descriptionText);
+                int titleWidth = font.width(descriptionText);
                 if (mouseX > mid + 4 + (titleWidth / 2) && mouseX < mid + 15 + (titleWidth / 2) && mouseY > textTop && mouseY < textTop + 11)
-                    renderTooltip(matrices, hintText, mouseX, mouseY);
+                    renderComponentTooltip(matrices, hintText, mouseX, mouseY);
             }
 
             textTop += 12;
@@ -98,10 +100,10 @@ public class ScrollScreen extends Screen {
             // String hours = minutesLeft > 59 ? String.valueOf((int) Math.floor(minutesLeft / 60.0D)) : "0"; // We aren't showing hours anymore
             String minutes = minutesPerHour < 10 ? "0" + (minutesPerHour == 0 ? "0" : minutesPerHour) : String.valueOf(minutesPerHour);
             String seconds = secondsLeft < 10 ? "0" + secondsLeft : String.valueOf(secondsLeft); // padded with zero for display
-            TranslatableText timeText = new TranslatableText("gui.strange.scrolls.time_remaining", minutes, seconds);
+            TranslatableComponent timeText = new TranslatableComponent("gui.strange.scrolls.time_remaining", minutes, seconds);
 
             GuiHelper.drawCenteredTitle(matrices, timeText, mid, textTop, timeColor);
-            GuiHelper.renderIcon(this, matrices, StrangeIcons.ICON_CLOCK, mid - 14 - (textRenderer.getWidth(timeText) / 2), textTop - 1);
+            GuiHelper.renderIcon(this, matrices, StrangeIcons.ICON_CLOCK, mid - 14 - (font.width(timeText) / 2), textTop - 1);
         }
 
         // render scroll reward panel first to avoid title icon showing over tooltips of panels above
@@ -142,15 +144,15 @@ public class ScrollScreen extends Screen {
         int h = 20;
 
         String key = backToJournal ? "gui.strange.scrolls.back_to_journal" : "gui.strange.scrolls.close";
-        this.addDrawableChild(new ButtonWidget((width/2) - (w/2), y, w, h, new TranslatableText(key), this::close));
+        this.addRenderableWidget(new Button((width/2) - (w/2), y, w, h, new TranslatableComponent(key), this::close));
     }
 
-    private void close(ButtonWidget button) {
-        if (client != null) {
+    private void close(Button button) {
+        if (minecraft != null) {
             if (backToJournal) {
-                client.openScreen(new TravelJournalScrollsScreen());
+                minecraft.setScreen(new TravelJournalScrollsScreen());
             } else {
-                client.openScreen(null);
+                minecraft.setScreen(null);
             }
         }
     }

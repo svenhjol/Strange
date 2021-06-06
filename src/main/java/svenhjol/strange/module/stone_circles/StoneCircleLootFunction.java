@@ -2,24 +2,24 @@ package svenhjol.strange.module.stone_circles;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.function.ConditionalLootFunction;
-import net.minecraft.loot.function.LootFunctionType;
 import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.strange.module.runestones.Runestones;
 
 import java.util.Random;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class StoneCircleLootFunction extends ConditionalLootFunction {
+public class StoneCircleLootFunction extends LootItemConditionalFunction {
 
-    public StoneCircleLootFunction(LootCondition[] conditions) {
+    public StoneCircleLootFunction(LootItemCondition[] conditions) {
         super(conditions);
     }
 
     @Override
-    protected ItemStack process(ItemStack stack, LootContext context) {
+    protected ItemStack run(ItemStack stack, LootContext context) {
         if (!ModuleHandler.enabled("strange:runestones"))
             return stack;
 
@@ -32,13 +32,13 @@ public class StoneCircleLootFunction extends ConditionalLootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return StoneCircles.LOOT_FUNCTION;
     }
 
-    public static class Serializer extends ConditionalLootFunction.Serializer<StoneCircleLootFunction> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<StoneCircleLootFunction> {
         @Override
-        public StoneCircleLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+        public StoneCircleLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
             return new StoneCircleLootFunction(conditions);
         }
     }

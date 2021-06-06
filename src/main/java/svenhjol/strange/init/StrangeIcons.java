@@ -1,10 +1,10 @@
 package svenhjol.strange.init;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.Strange;
 
 public class StrangeIcons {
-    public final static Identifier ICONS = new Identifier(Strange.MOD_ID, "textures/gui/icons.png");
+    public final static ResourceLocation ICONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/icons.png");
     public final static int ICON_WIDTH = 9;
     public final static int ICON_HEIGHT = 9;
     public final static int[] ICON_STAR = {2, 0};

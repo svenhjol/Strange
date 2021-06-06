@@ -1,25 +1,25 @@
 package svenhjol.strange.module.runestones.destination;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.border.WorldBorder;
 import svenhjol.charm.Charm;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
 import svenhjol.strange.module.runestones.RunestonesHelper;
 
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.border.WorldBorder;
 import java.util.Random;
 
 public abstract class BaseDestination {
-    protected final Identifier location;
+    protected final ResourceLocation location;
     protected float weight;
 
-    public BaseDestination(Identifier location, float weight) {
+    public BaseDestination(ResourceLocation location, float weight) {
         this.location = location;
         this.weight = weight;
     }
@@ -28,7 +28,7 @@ public abstract class BaseDestination {
         return this.location.equals(RunestonesHelper.SPAWN);
     }
 
-    public Identifier getLocation() {
+    public ResourceLocation getLocation() {
         return location;
     }
 
@@ -36,33 +36,33 @@ public abstract class BaseDestination {
         return weight;
     }
 
-    public abstract BlockPos getDestination(ServerWorld world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayerEntity player);
+    public abstract BlockPos getDestination(ServerLevel world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayer player);
 
-    protected BlockPos checkBounds(World world, BlockPos pos) {
+    protected BlockPos checkBounds(Level world, BlockPos pos) {
         WorldBorder border = world.getWorldBorder();
 
-        if (pos.getX() > border.getBoundEast())
-            pos = new BlockPos(border.getBoundEast(), pos.getY(), pos.getZ());
+        if (pos.getX() > border.getMaxX())
+            pos = new BlockPos(border.getMaxX(), pos.getY(), pos.getZ());
 
-        if (pos.getX() < border.getBoundWest())
-            pos = new BlockPos(border.getBoundWest(), pos.getY(), pos.getZ());
+        if (pos.getX() < border.getMinX())
+            pos = new BlockPos(border.getMinX(), pos.getY(), pos.getZ());
 
-        if (pos.getZ() > border.getBoundSouth())
-            pos = new BlockPos(pos.getX(), pos.getY(), border.getBoundSouth());
+        if (pos.getZ() > border.getMaxZ())
+            pos = new BlockPos(pos.getX(), pos.getY(), border.getMaxZ());
 
-        if (pos.getZ() < border.getBoundNorth())
-            pos = new BlockPos(pos.getX(), pos.getY(), border.getBoundNorth());
+        if (pos.getZ() < border.getMinZ())
+            pos = new BlockPos(pos.getX(), pos.getY(), border.getMinZ());
 
         return pos;
     }
 
     @Nullable
-    protected BlockPos tryLoad(World world, BlockPos runePos) {
+    protected BlockPos tryLoad(Level world, BlockPos runePos) {
         BlockEntity blockEntity = world.getBlockEntity(runePos);
         if (blockEntity instanceof RunestoneBlockEntity) {
             RunestoneBlockEntity runeBlockEntity = (RunestoneBlockEntity)blockEntity;
             BlockPos position = runeBlockEntity.position;
-            Identifier location = runeBlockEntity.location;
+            ResourceLocation location = runeBlockEntity.location;
 
             if (location != null && position != null) {
                 Charm.LOG.debug("Found destination in runestone: " + location.toString());
@@ -73,14 +73,14 @@ public abstract class BaseDestination {
         return null;
     }
 
-    protected void store(World world, BlockPos runePos, BlockPos storePos, @Nullable PlayerEntity player) {
+    protected void store(Level world, BlockPos runePos, BlockPos storePos, @Nullable Player player) {
         BlockEntity blockEntity = world.getBlockEntity(runePos);
         if (blockEntity instanceof RunestoneBlockEntity) {
             RunestoneBlockEntity runeBlockEntity = (RunestoneBlockEntity)blockEntity;
             runeBlockEntity.position = storePos;
             runeBlockEntity.location = this.location;
-            runeBlockEntity.player = player != null ? player.getName().asString() : "";
-            runeBlockEntity.markDirty();
+            runeBlockEntity.player = player != null ? player.getName().getContents() : "";
+            runeBlockEntity.setChanged();
 
             Charm.LOG.debug("Stored location in runestone for next use");
         }

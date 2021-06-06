@@ -1,22 +1,5 @@
 package svenhjol.strange.module.stone_circles;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructurePieceWithDimensions;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import svenhjol.charm.Charm;
 import svenhjol.charm.enums.IVariantMaterial;
 import svenhjol.charm.handler.ModuleHandler;
@@ -29,8 +12,25 @@ import svenhjol.strange.module.mobs.Mobs;
 import svenhjol.strange.module.runestones.Runestones;
 
 import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 
-public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
+public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
     public static int maxCheckSurface = 5;
     public static int minCheckSurface = -15;
     public static int maxRadius = 13;
@@ -44,19 +44,19 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
         super(StoneCircles.STONE_CIRCLE_PIECE, x, y, z, 16, 8, 16, getRandomHorizontalDirection(random));
     }
 
-    public StoneCircleStructurePiece(ServerWorld world, NbtCompound tag) {
+    public StoneCircleStructurePiece(ServerLevel world, CompoundTag tag) {
         super(StoneCircles.STONE_CIRCLE_PIECE, tag);
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator gen, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
+    public boolean postProcess(WorldGenLevel world, StructureFeatureManager structureAccessor, ChunkGenerator gen, Random random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
-        Identifier lootTable = StrangeLoot.STONE_CIRCLE;
+        ResourceLocation lootTable = StrangeLoot.STONE_CIRCLE;
 
         List<BlockState> blocks = new ArrayList<>(Arrays.asList(
-            Blocks.STONE.getDefaultState(),
-            Blocks.COBBLESTONE.getDefaultState(),
-            Blocks.MOSSY_COBBLESTONE.getDefaultState()
+            Blocks.STONE.defaultBlockState(),
+            Blocks.COBBLESTONE.defaultBlockState(),
+            Blocks.MOSSY_COBBLESTONE.defaultBlockState()
         ));
 
         // generate the circle
@@ -79,20 +79,20 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
             double z = radius * Math.sin(i * Math.PI / 180);
 
             for (int s = maxCheckSurface; s > minCheckSurface; s--) {
-                BlockPos checkPos = blockPos.add(x, s, z);
-                BlockPos checkUpPos = checkPos.up();
+                BlockPos checkPos = blockPos.offset(x, s, z);
+                BlockPos checkUpPos = checkPos.above();
                 BlockState checkState = world.getBlockState(checkPos);
                 BlockState checkUpState = world.getBlockState(checkUpPos);
 
-                boolean validSurfacePos = ((checkState.isOpaque() || checkState.getBlock() == Blocks.LAVA)
-                    && (checkUpState.isAir() || !checkUpState.isOpaque() || world.isWater(checkUpPos)));
+                boolean validSurfacePos = ((checkState.canOcclude() || checkState.getBlock() == Blocks.LAVA)
+                    && (checkUpState.isAir() || !checkUpState.canOcclude() || world.isWaterAt(checkUpPos)));
 
                 if (!validSurfacePos)
                     continue;
 
                 boolean generatedColumn = false;
                 int height = random.nextInt(maxHeight - minHeight) + minHeight;
-                world.setBlockState(checkPos, blocks.get(0), 2);
+                world.setBlock(checkPos, blocks.get(0), 2);
 
                 for (int y = 1; y < height; y++) {
                     BlockState state = blocks.get(random.nextInt(blocks.size()));
@@ -101,7 +101,7 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
                     if (isTop) {
                         if (!generatedSpawnRune && Runestones.SPAWN_RUNE >= 0) {
                             // generate a spawn destination rune
-                            state = Runestones.RUNESTONE_BLOCKS.get(Runestones.SPAWN_RUNE).getDefaultState();
+                            state = Runestones.RUNESTONE_BLOCKS.get(Runestones.SPAWN_RUNE).defaultBlockState();
                             generatedSpawnRune = true;
                         } else if (numberOfRunesGenerated < 4 && random.nextFloat() < 0.5F - (numberOfRunesGenerated * 0.15F)) {
 
@@ -117,14 +117,14 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
                                     continue;
 
                                 availableRunes.remove(rune);
-                                state = Runestones.RUNESTONE_BLOCKS.get(rune).getDefaultState();
+                                state = Runestones.RUNESTONE_BLOCKS.get(rune).defaultBlockState();
                                 ++numberOfRunesGenerated;
                                 break;
                             }
                         }
                     }
 
-                    world.setBlockState(checkPos.up(y), state, 2);
+                    world.setBlock(checkPos.above(y), state, 2);
                     generatedColumn = true;
                 }
 
@@ -138,12 +138,12 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
         // generate chest or campfire at center
         if (random.nextFloat() < 0.75F) {
             for (int s = maxCheckSurface; s > minCheckSurface; s--) {
-                BlockPos checkPos = blockPos.add(0, s, 0);
-                BlockPos checkUpPos = checkPos.up();
+                BlockPos checkPos = blockPos.offset(0, s, 0);
+                BlockPos checkUpPos = checkPos.above();
                 BlockState checkState = world.getBlockState(checkPos);
                 BlockState checkUpState = world.getBlockState(checkUpPos);
 
-                if (checkState.isOpaque() && !checkUpState.isOpaque() && !checkUpState.getMaterial().isLiquid() && lootTable != null) {
+                if (checkState.canOcclude() && !checkUpState.canOcclude() && !checkUpState.getMaterial().isLiquid() && lootTable != null) {
                     boolean generateChest = random.nextBoolean();
                     boolean generateMob = random.nextBoolean();
 
@@ -151,48 +151,48 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
                         BlockState chest;
                         if (ModuleHandler.enabled("charm:variant_chests")) {
                             IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
-                            chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).getDefaultState();
+                            chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
                         } else {
-                            chest = Blocks.CHEST.getDefaultState();
+                            chest = Blocks.CHEST.defaultBlockState();
                         }
-                        world.setBlockState(checkUpPos, chest, 2);
-                        LootableContainerBlockEntity.setLootTable(world, random, checkUpPos, lootTable);
+                        world.setBlock(checkUpPos, chest, 2);
+                        RandomizableContainerBlockEntity.setLootTable(world, random, checkUpPos, lootTable);
                     } else {
-                        BlockState hay = Blocks.HAY_BLOCK.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y);
-                        BlockState fire = Blocks.CAMPFIRE.getDefaultState()
-                            .with(CampfireBlock.LIT, true)
-                            .with(CampfireBlock.SIGNAL_FIRE, true);
+                        BlockState hay = Blocks.HAY_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+                        BlockState fire = Blocks.CAMPFIRE.defaultBlockState()
+                            .setValue(CampfireBlock.LIT, true)
+                            .setValue(CampfireBlock.SIGNAL_FIRE, true);
 
-                        world.setBlockState(checkPos, hay, 2);
-                        world.setBlockState(checkUpPos, fire, 2);
+                        world.setBlock(checkPos, hay, 2);
+                        world.setBlock(checkUpPos, fire, 2);
                     }
 
                     if (generateMob) {
-                        BlockPos spawnerPos = checkUpPos.up();
-                        BlockState spawner = EntitySpawners.ENTITY_SPAWNER.getDefaultState();
-                        world.setBlockState(spawnerPos, spawner, 2);
+                        BlockPos spawnerPos = checkUpPos.above();
+                        BlockState spawner = EntitySpawners.ENTITY_SPAWNER.defaultBlockState();
+                        world.setBlock(spawnerPos, spawner, 2);
 
                         BlockEntity blockEntity = world.getBlockEntity(spawnerPos);
 
                         if (blockEntity instanceof EntitySpawnerBlockEntity) {
                             EntitySpawnerBlockEntity spawnerEntity = (EntitySpawnerBlockEntity)blockEntity;
-                            NbtCompound tag = new NbtCompound();
+                            CompoundTag tag = new CompoundTag();
 
-                            Identifier mobId;
+                            ResourceLocation mobId;
                             int mobCount;
 
                             float chance = random.nextFloat();
                             if (chance < 0.4F) {
-                                mobId = new Identifier("witch");
+                                mobId = new ResourceLocation("witch");
                                 mobCount = random.nextInt(2) + 2;
                             } else if (chance < 0.8F) {
-                                mobId = new Identifier("pillager");
+                                mobId = new ResourceLocation("pillager");
                                 mobCount = random.nextInt(3) + 3;
                             } else {
                                 if (random.nextBoolean() && ModuleHandler.enabled(Mobs.class) && Mobs.illusioners) {
-                                    mobId = new Identifier("illusioner");
+                                    mobId = new ResourceLocation("illusioner");
                                 } else {
-                                    mobId = new Identifier("evoker");
+                                    mobId = new ResourceLocation("evoker");
                                 }
                                 mobCount = 1;
                             }
@@ -200,7 +200,7 @@ public class StoneCircleStructurePiece extends StructurePieceWithDimensions {
                             spawnerEntity.entity = mobId;
                             spawnerEntity.count = mobCount;
                             spawnerEntity.persist = true;
-                            spawnerEntity.writeNbt(tag);
+                            spawnerEntity.save(tag);
                         }
                     }
                     break;

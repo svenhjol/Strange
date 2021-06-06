@@ -2,25 +2,25 @@ package svenhjol.strange.module.treasure;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.function.ConditionalLootFunction;
-import net.minecraft.loot.function.LootFunctionType;
 import svenhjol.charm.handler.ModuleHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class TreasureLootFunction extends ConditionalLootFunction {
+public class TreasureLootFunction extends LootItemConditionalFunction {
 
-    public TreasureLootFunction(LootCondition[] conditions) {
+    public TreasureLootFunction(LootItemCondition[] conditions) {
         super(conditions);
     }
 
     @Override
-    protected ItemStack process(ItemStack stack, LootContext context) {
+    protected ItemStack run(ItemStack stack, LootContext context) {
         if (!ModuleHandler.enabled("strange:treasure"))
             return stack;
 
@@ -68,13 +68,13 @@ public class TreasureLootFunction extends ConditionalLootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.TREASURE_LOOT_FUNCTION;
     }
 
-    public static class Serializer extends ConditionalLootFunction.Serializer<TreasureLootFunction> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<TreasureLootFunction> {
         @Override
-        public TreasureLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+        public TreasureLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
             return new TreasureLootFunction(conditions);
         }
     }

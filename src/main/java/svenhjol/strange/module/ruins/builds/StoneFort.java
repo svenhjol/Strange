@@ -1,16 +1,11 @@
 package svenhjol.strange.module.ruins.builds;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Blocks;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.processor.RuleStructureProcessor;
-import net.minecraft.structure.processor.StructureProcessorList;
-import net.minecraft.structure.processor.StructureProcessorLists;
-import net.minecraft.structure.processor.StructureProcessorRule;
-import net.minecraft.structure.rule.AlwaysTrueRuleTest;
-import net.minecraft.structure.rule.BlockMatchRuleTest;
-import net.minecraft.structure.rule.RandomBlockMatchRuleTest;
-import svenhjol.charm.mixin.accessor.StructureProcessorListsAccessor;
+import net.minecraft.data.worldgen.ProcessorLists;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.*;
+import svenhjol.charm.mixin.accessor.ProcessorListsAccessor;
 import svenhjol.charm.world.CharmStructure;
 import svenhjol.strange.Strange;
 
@@ -27,16 +22,16 @@ public class StoneFort extends CharmStructure {
     public StoneFort() {
         super(Strange.MOD_ID, "ruins", "stone_fort");
 
-        GRASS_PROCESSOR = StructureProcessorListsAccessor.invokeRegister("strange:stone_fort_grass_processor", ImmutableList.of(new RuleStructureProcessor(ImmutableList.of(
-            new StructureProcessorRule(new BlockMatchRuleTest(Blocks.GRASS_BLOCK), new BlockMatchRuleTest(Blocks.WATER), Blocks.COARSE_DIRT.getDefaultState()),
-            new StructureProcessorRule(new RandomBlockMatchRuleTest(Blocks.GRASS_BLOCK, 0.1F), AlwaysTrueRuleTest.INSTANCE, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
-            new StructureProcessorRule(new BlockMatchRuleTest(Blocks.GRASS_BLOCK), new BlockMatchRuleTest(Blocks.WATER), Blocks.DIRT.getDefaultState()),
-            new StructureProcessorRule(new BlockMatchRuleTest(Blocks.GRASS_BLOCK), new BlockMatchRuleTest(Blocks.AIR), Blocks.COBBLESTONE.getDefaultState()),
-            new StructureProcessorRule(new BlockMatchRuleTest(Blocks.GRASS_BLOCK), new BlockMatchRuleTest(Blocks.AIR), Blocks.MOSSY_COBBLESTONE.getDefaultState()))
+        GRASS_PROCESSOR = ProcessorListsAccessor.invokeRegister("strange:stone_fort_grass_processor", ImmutableList.of(new RuleProcessor(ImmutableList.of(
+            new ProcessorRule(new BlockMatchTest(Blocks.GRASS_BLOCK), new BlockMatchTest(Blocks.WATER), Blocks.COARSE_DIRT.defaultBlockState()),
+            new ProcessorRule(new RandomBlockMatchTest(Blocks.GRASS_BLOCK, 0.1F), AlwaysTrueTest.INSTANCE, Blocks.MOSSY_COBBLESTONE.defaultBlockState()),
+            new ProcessorRule(new BlockMatchTest(Blocks.GRASS_BLOCK), new BlockMatchTest(Blocks.WATER), Blocks.DIRT.defaultBlockState()),
+            new ProcessorRule(new BlockMatchTest(Blocks.GRASS_BLOCK), new BlockMatchTest(Blocks.AIR), Blocks.COBBLESTONE.defaultBlockState()),
+            new ProcessorRule(new BlockMatchTest(Blocks.GRASS_BLOCK), new BlockMatchTest(Blocks.AIR), Blocks.MOSSY_COBBLESTONE.defaultBlockState()))
         )));
 
-        addStart("start1", 1, StructureProcessorLists.STREET_PLAINS);
-        addStart("start2", 1, StructureProcessorLists.STREET_PLAINS);
+        addStart("start1", 1, ProcessorLists.STREET_PLAINS);
+        addStart("start2", 1, ProcessorLists.STREET_PLAINS);
 
         CORRIDORS.put("corridor1", 1);
         CORRIDORS.put("corridor2", 1);
@@ -50,8 +45,8 @@ public class StoneFort extends CharmStructure {
 
         ENDS.put("end1", 1);
 
-        registerPool("corridors", CORRIDORS, StructurePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
-        registerPool("rooms", ROOMS, StructurePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
-        registerPool("ends", ENDS, StructurePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
+        registerPool("corridors", CORRIDORS, StructureTemplatePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
+        registerPool("rooms", ROOMS, StructureTemplatePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
+        registerPool("ends", ENDS, StructureTemplatePool.Projection.TERRAIN_MATCHING, GRASS_PROCESSOR);
     }
 }

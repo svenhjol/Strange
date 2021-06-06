@@ -2,15 +2,15 @@ package svenhjol.strange.module.astrolabes;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.DyeColor;
 import svenhjol.charm.init.CharmParticles;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
@@ -31,12 +31,12 @@ public class AstrolabesClient extends CharmClientModule {
         ClientPlayNetworking.registerGlobalReceiver(Astrolabes.MSG_CLIENT_SHOW_AXIS_PARTICLES, this::handleClientShowAxisParticles);
     }
 
-    private void handleClientShowAxisParticles(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
+    private void handleClientShowAxisParticles(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
         boolean playSound = data.readBoolean();
-        List<BlockPos> positions = Arrays.stream(data.readLongArray()).boxed().map(BlockPos::fromLong).collect(Collectors.toList());
+        List<BlockPos> positions = Arrays.stream(data.readLongArray()).boxed().map(BlockPos::of).collect(Collectors.toList());
         client.execute(() -> {
-            ClientWorld world = client.world;
-            ClientPlayerEntity player = client.player;
+            ClientLevel world = client.level;
+            LocalPlayer player = client.player;
             if (world == null || player == null)
                 return;
 
@@ -74,18 +74,18 @@ public class AstrolabesClient extends CharmClientModule {
             }
 
             if (playSound && isClose)
-                world.playSound(player, player.getBlockPos(), StrangeSounds.ASTROLABE, SoundCategory.PLAYERS, 0.27F, 0.8F + (0.4F * random.nextFloat()));
+                world.playSound(player, player.blockPosition(), StrangeSounds.ASTROLABE, SoundSource.PLAYERS, 0.27F, 0.8F + (0.4F * random.nextFloat()));
         });
     }
 
-    private void createAxisParticle(ClientWorld world, BlockPos pos, DyeColor color) {
-        DefaultParticleType particleType = CharmParticles.AXIS_PARTICLE;
+    private void createAxisParticle(ClientLevel world, BlockPos pos, DyeColor color) {
+        SimpleParticleType particleType = CharmParticles.AXIS_PARTICLE;
 
-        float[] col = color.getColorComponents();
+        float[] col = color.getTextureDiffuseColors();
         double x = (double) pos.getX() + 0.5D;
         double y = (double) pos.getY() + 0.5D;
         double z = (double) pos.getZ() + 0.5D;
 
-        world.addImportantParticle(particleType, x, y, z, col[0], col[1], col[2]);
+        world.addAlwaysVisibleParticle(particleType, x, y, z, col[0], col[1], col[2]);
     }
 }
