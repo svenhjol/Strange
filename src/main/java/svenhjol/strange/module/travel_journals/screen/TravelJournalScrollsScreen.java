@@ -1,20 +1,21 @@
 package svenhjol.strange.module.travel_journals.screen;
 
-import svenhjol.strange.helper.NetworkHelper;
-import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.scrolls.ScrollsClient;
-import svenhjol.strange.module.scrolls.tag.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
+import svenhjol.strange.helper.NetworkHelper;
+import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.ScrollsClient;
+import svenhjol.strange.module.scrolls.tag.Quest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("ConstantConditions")
 public class TravelJournalScrollsScreen extends TravelJournalBaseScreen {
@@ -85,7 +86,7 @@ public class TravelJournalScrollsScreen extends TravelJournalBaseScreen {
 
             // button to abandon quest
             if (!hasRenderedTrashButtons.contains(i)) {
-                this.addRenderableWidget(new ImageButton(mid + 75, qy - 1, 20, 18, 160, 0, 19, BUTTONS, r -> abandonQuest(quest)));
+                this.addRenderableWidget(new ImageButton(mid + 75, qy - 1, 20, 18, 20, 0, 19, BUTTONS, r -> abandonQuest(quest)));
                 hasRenderedTrashButtons.add(i);
             }
         }
