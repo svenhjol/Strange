@@ -250,7 +250,7 @@ public class RunePortals extends CharmModule {
             RunePortalManager manager = optional.get();
 
             if (order.size() == 12) {
-                Charm.LOG.debug("Rune order: " + order);
+                Charm.LOG.debug("Rune order: " + order + ", start: " + start.toShortString());
                 manager.createPortal(order, start, axis);
                 return true;
             } else {

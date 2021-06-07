@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
+import svenhjol.charm.Charm;
 import svenhjol.charm.mixin.accessor.ServerPlayerAccessor;
 import svenhjol.strange.init.StrangeSounds;
 
@@ -86,12 +87,12 @@ public class RunePortalManager extends SavedData {
         createPortal(runesString, pos, orientation, color);
     }
 
-    public void createPortal(String runes, BlockPos pos, Axis orientation, DyeColor color) {
+    public void createPortal(String runes, BlockPos start, Axis orientation, DyeColor color) {
         if (!this.runes.containsKey(runes)) {
-            this.runes.put(runes, new ArrayList<>(Arrays.asList(pos)));
+            this.runes.put(runes, new ArrayList<>(Arrays.asList(start)));
         } else {
-            if (!this.runes.get(runes).contains(pos))
-                this.runes.get(runes).add(pos);
+            if (!this.runes.get(runes).contains(start))
+                this.runes.get(runes).add(start);
         }
 
         this.setDirty();
@@ -99,7 +100,7 @@ public class RunePortalManager extends SavedData {
         // break the portal and unset all block entities first
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
-                BlockPos p = orientation == Axis.X ? pos.offset(a, b, 0) : pos.offset(0, b, a);
+                BlockPos p = orientation == Axis.X ? start.offset(a, b, 0) : start.offset(0, b, a);
                 world.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
                 world.removeBlockEntity(p);
             }
@@ -107,18 +108,18 @@ public class RunePortalManager extends SavedData {
 
         for (int a = -1; a < 2; a++) {
             for (int b = 1; b < 4; b++) {
-                BlockPos p = orientation == Axis.X ? pos.offset(a, b, 0) : pos.offset(0, b, a);
+                BlockPos p = orientation == Axis.X ? start.offset(a, b, 0) : start.offset(0, b, a);
 
                 world.setBlock(p, RunePortals.RUNE_PORTAL_BLOCK.defaultBlockState()
                     .setValue(RunePortalBlock.AXIS, orientation)
                     .setValue(RunePortalBlock.COLOR, color.getId()), 3);
 
-                setPortalBlockEntity(world, p, runes, pos, orientation, color);
+                setPortalBlockEntity(world, p, runes, start, orientation, color);
             }
         }
 
         // TODO: better portal create sound
-        world.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.05F, 0.75F);
+        world.playSound(null, start, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.05F, 0.75F);
     }
 
     public void removePortal(String runes, BlockPos pos) {
@@ -141,6 +142,12 @@ public class RunePortalManager extends SavedData {
         List<BlockPos> dests = this.runes.get(runes);
         Collections.shuffle(dests);
         Optional<BlockPos> optional = dests.stream().filter(b -> b != pos).findFirst();
+
+        dests.forEach(dest -> {
+            Charm.LOG.info(dest.toShortString());
+        });
+        Charm.LOG.warn(pos.toShortString());
+
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
 

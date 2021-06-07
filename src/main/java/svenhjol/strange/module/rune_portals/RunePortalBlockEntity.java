@@ -33,7 +33,7 @@ public class RunePortalBlockEntity extends BlockEntity implements BlockEntityCli
         super.save(nbt);
         nbt.putString(ORIENTATION_NBT, this.orientation.getSerializedName());
         nbt.putString(RUNES_NBT, this.runes);
-        nbt.putLong(POS_NBT, this.worldPosition.asLong());
+        nbt.putLong(POS_NBT, this.pos.asLong());
         return nbt;
     }
 
