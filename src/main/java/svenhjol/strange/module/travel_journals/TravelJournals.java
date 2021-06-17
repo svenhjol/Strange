@@ -27,7 +27,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.annotation.Module;
-import svenhjol.charm.event.LoadWorldCallback;
+import svenhjol.charm.event.LoadServerFinishCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
 import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
@@ -77,7 +77,7 @@ public class TravelJournals extends CharmModule {
     @Override
     public void init() {
         // load travel journal manager when world starts
-        LoadWorldCallback.EVENT.register(this::loadTravelJournalManager);
+        LoadServerFinishCallback.EVENT.register(this::loadTravelJournalManager);
 
         // allow travel journals on Charm's bookcases
         if (ModuleHandler.enabled(Bookcases.class))

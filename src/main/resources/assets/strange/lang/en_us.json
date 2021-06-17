@@ -53,8 +53,8 @@
 
   "block.strange.writing_desk": "Writing Desk",
 
-  "entity.minecraft.villager.scrollkeeper": "Scrollkeeper",
-  "entity.strange.villager.scrollkeeper": "Scrollkeeper",
+  "entity.minecraft.villager.strange_scrollkeeper": "Scrollkeeper",
+  "entity.strange.villager.strange_scrollkeeper": "Scrollkeeper",
 
   "event.strange.quests.accepted": "Quest accepted",
   "event.strange.quests.completed": "Quest completed",

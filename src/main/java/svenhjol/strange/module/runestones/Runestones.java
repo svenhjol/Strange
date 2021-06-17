@@ -161,7 +161,7 @@ public class Runestones extends CharmModule {
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
 
         // use loadworld event to shuffle the runestones according to world seed
-        LoadWorldCallback.EVENT.register(this::handleLoadWorld);
+        LoadServerFinishCallback.EVENT.register(this::handleLoadWorld);
 
         initDestinations();
     }

@@ -35,7 +35,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.EntityKillCallback;
-import svenhjol.charm.event.LoadWorldCallback;
+import svenhjol.charm.event.LoadServerFinishCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
@@ -109,7 +109,7 @@ public class Scrolls extends CharmModule {
     @Override
     public void init() {
         // load quest manager and scrolls when world starts
-        LoadWorldCallback.EVENT.register(server -> {
+        LoadServerFinishCallback.EVENT.register(server -> {
             loadQuestManager(server);
             tryLoadScrolls(server);
         });

@@ -44,7 +44,7 @@ import static svenhjol.charm.event.SetupStructureCallback.addVillageHouse;
 
 @Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
-    public static ResourceLocation VILLAGER_ID = new ResourceLocation(Strange.MOD_ID, "scrollkeeper");
+    public static String VILLAGER_ID = "strange_scrollkeeper";
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
     public static ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "writing_desk");
     public static WritingDeskBlock WRITING_DESK;

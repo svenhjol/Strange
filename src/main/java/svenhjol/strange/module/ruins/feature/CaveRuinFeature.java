@@ -6,6 +6,6 @@ import svenhjol.charm.world.CharmJigsawStructureFeature;
 
 public class CaveRuinFeature extends CharmJigsawStructureFeature {
     public CaveRuinFeature(Codec<JigsawConfiguration> codec) {
-        super(codec, 32, 12, false);
+        super(codec, 32, 8, false);
     }
 }
