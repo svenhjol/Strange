@@ -1,17 +1,5 @@
 package svenhjol.strange.module.stone_circles;
 
-import svenhjol.charm.Charm;
-import svenhjol.charm.enums.IVariantMaterial;
-import svenhjol.charm.handler.ModuleHandler;
-import svenhjol.charm.helper.DecorationHelper;
-import svenhjol.charm.module.entity_spawners.EntitySpawnerBlockEntity;
-import svenhjol.charm.module.entity_spawners.EntitySpawners;
-import svenhjol.charm.module.variant_chests.VariantChests;
-import svenhjol.strange.init.StrangeLoot;
-import svenhjol.strange.module.mobs.Mobs;
-import svenhjol.strange.module.runestones.Runestones;
-
-import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +17,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
+import svenhjol.charm.Charm;
+import svenhjol.charm.enums.IVariantMaterial;
+import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.helper.DecorationHelper;
+import svenhjol.charm.module.entity_spawners.EntitySpawnerBlockEntity;
+import svenhjol.charm.module.entity_spawners.EntitySpawners;
+import svenhjol.charm.module.variant_chests.VariantChests;
+import svenhjol.strange.init.StrangeLoot;
+import svenhjol.strange.module.mobs.Mobs;
+import svenhjol.strange.module.runestones.Runestones;
+
+import java.util.*;
 
 public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
     public static int maxCheckSurface = 5;
@@ -37,6 +37,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
     public static int minRadius = 5;
     public static int maxHeight = 8;
     public static int minHeight = 4;
+    public static int maxRunes = 5;
     public static int runeTries = 10; // if the runeChance passes, this is the number of attempts at rune placement from available runes
 
     public StoneCircleStructurePiece(Random random, int x, int y, int z) {
@@ -103,7 +104,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
                             // generate a spawn destination rune
                             state = Runestones.RUNESTONE_BLOCKS.get(Runestones.SPAWN_RUNE).defaultBlockState();
                             generatedSpawnRune = true;
-                        } else if (numberOfRunesGenerated < 4 && random.nextFloat() < 0.5F - (numberOfRunesGenerated * 0.15F)) {
+                        } else if (numberOfRunesGenerated < maxRunes && random.nextFloat() < 0.3F) {
 
                             // Try and generate a rune. Replace the state with the runestone if successful
                             for (int tries = 0; tries < runeTries; tries++) {
