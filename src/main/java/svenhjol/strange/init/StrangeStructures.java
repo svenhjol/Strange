@@ -21,7 +21,7 @@ public class StrangeStructures {
             if (ModuleHandler.enabled("strange:runestones") && processor.withChance(0.7F)) {
                 processor.state = Runestones.RUNESTONE_BLOCKS.get(processor.random.nextInt(RunestonesHelper.NUMBER_OF_RUNES)).defaultBlockState();
             } else {
-                processor.state = Blocks.STONE.defaultBlockState();
+                processor.state = Blocks.AIR.defaultBlockState();
             }
         });
     }
