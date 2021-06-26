@@ -3,9 +3,11 @@ package svenhjol.strange.module.rune_portals;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
@@ -18,9 +20,12 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import svenhjol.charm.block.CharmBlock;
 import svenhjol.charm.module.CharmModule;
 
-public class PortalFrameBlock extends BaseFrameBlock {
+import java.util.Random;
+
+public class PortalFrameBlock extends CharmBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty RUNE = IntegerProperty.create("rune", 0, 25);
 
@@ -75,6 +80,25 @@ public class PortalFrameBlock extends BaseFrameBlock {
 
     public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    /**
+     * Copypasta from CryingObdisianBlock
+     */
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, Random random) {
+        if (random.nextInt(10) == 0) {
+            Direction direction = Direction.getRandom(random);
+            if (direction != Direction.UP) {
+                BlockPos blockPos2 = blockPos.relative(direction);
+                BlockState blockState2 = level.getBlockState(blockPos2);
+                if (!blockState.canOcclude() || !blockState2.isFaceSturdy(level, blockPos2, direction.getOpposite())) {
+                    double d = direction.getStepX() == 0 ? random.nextDouble() : 0.5D + (double)direction.getStepX() * 0.6D;
+                    double e = direction.getStepY() == 0 ? random.nextDouble() : 0.5D + (double)direction.getStepY() * 0.6D;
+                    double f = direction.getStepZ() == 0 ? random.nextDouble() : 0.5D + (double)direction.getStepZ() * 0.6D;
+                    level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, (double)blockPos.getX() + d, (double)blockPos.getY() + e, (double)blockPos.getZ() + f, 0.0D, 0.0D, 0.0D);
+                }
+            }
+        }
     }
 
     static {
