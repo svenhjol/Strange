@@ -157,7 +157,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
                     if (generateChest) {
                         BlockState chest;
                         if (ModuleHandler.enabled("charm:variant_chests")) {
-                            IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
+                            IVariantMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
                             chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
                         } else {
                             chest = Blocks.CHEST.defaultBlockState();
