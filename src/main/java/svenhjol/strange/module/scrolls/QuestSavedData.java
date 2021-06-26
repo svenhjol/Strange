@@ -14,7 +14,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import svenhjol.charm.Charm;
 import svenhjol.strange.module.scrolls.populator.*;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -22,19 +22,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class QuestManager extends SavedData {
-    public static final String TICK_NBT = "Tick";
-    public static final String QUESTS_NBT = "Quests";
-    public static final int DEFAULT_EXPIRY = 300000; // in minutes. roughly a month
-    public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable?
+public class QuestSavedData extends SavedData {
+    public static final String TICK_NBT = "tick";
+    public static final String QUESTS_NBT = "quests";
+    public static final int TICK_TIME = 200; // number of ticks between marking all stored data as dirty
 
     private int currentTime;
     private final Level world;
     private final Map<String, Quest> quests = new ConcurrentHashMap<>();
     private final Map<UUID, List<Quest>> playerQuests = new ConcurrentHashMap<>();
 
-    public QuestManager(ServerLevel world) {
-        this.world = world;
+    public QuestSavedData(ServerLevel level) {
+        this.world = level;
         setDirty();
     }
 
@@ -52,22 +51,22 @@ public class QuestManager extends SavedData {
         });
 
         // required at interval so that the current time gets written into tags properly
-        if (++currentTime % 200 == 0)
+        if (++currentTime % TICK_TIME == 0)
             setDirty();
     }
 
-    public static QuestManager fromNbt(ServerLevel world, CompoundTag nbt) {
-        QuestManager questManager = new QuestManager(world);
-        questManager.currentTime = nbt.getInt(TICK_NBT);
+    public static QuestSavedData fromNbt(ServerLevel world, CompoundTag nbt) {
+        QuestSavedData savedData = new QuestSavedData(world);
+        savedData.currentTime = nbt.getInt(TICK_NBT);
         ListTag listTag = nbt.getList(QUESTS_NBT, 10);
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
-            Quest quest = Quest.getFromTag(questTag);
-            questManager.addQuest(quest);
+            Quest quest = Quest.getFromNbt(questTag);
+            savedData.addQuest(quest);
         }
 
-        return questManager;
+        return savedData;
     }
 
     @Override
@@ -75,10 +74,9 @@ public class QuestManager extends SavedData {
         ListTag listTag = new ListTag();
 
         forEachQuest(quest -> {
-            CompoundTag questTag = quest.toTag();
+            CompoundTag questTag = quest.toNbt();
             listTag.add(questTag);
         });
-
 
         tag.putInt(TICK_NBT, currentTime);
         tag.put(QUESTS_NBT, listTag);
@@ -133,7 +131,7 @@ public class QuestManager extends SavedData {
 
     public void sendToast(ServerPlayer player, Quest quest, QuestToastType type, String title) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
-        data.writeNbt(quest.toTag());
+        data.writeNbt(quest.toNbt());
         data.writeEnum(type);
         data.writeUtf(title);
         ServerPlayNetworking.send(player, Scrolls.MSG_CLIENT_SHOW_QUEST_TOAST, data);
@@ -163,7 +161,7 @@ public class QuestManager extends SavedData {
     }
 
     public boolean checkPlayerCanStartQuest(ServerPlayer player) {
-        if (playerQuests.getOrDefault(player.getUUID(), new ArrayList<>()).size() >= MAX_PLAYER_QUESTS) {
+        if (playerQuests.getOrDefault(player.getUUID(), new ArrayList<>()).size() >= ScrollHelper.MAX_PLAYER_QUESTS) {
             player.displayClientMessage(new TranslatableComponent("scroll.strange.too_many_quests"), true);
             return false;
         }
@@ -176,7 +174,7 @@ public class QuestManager extends SavedData {
         UUID owner = player.getUUID();
 
         if (seller == null)
-            seller = ScrollsHelper.ANY_UUID;
+            seller = ScrollHelper.ANY_UUID;
 
         Quest quest = new Quest(definition, owner, seller, rarity, currentTime);
         List<BasePopulator> populators = getPopulatorsForQuest(player, quest);
@@ -196,7 +194,7 @@ public class QuestManager extends SavedData {
     }
 
     public List<BasePopulator> getPopulatorsForQuest(ServerPlayer player, Quest quest) {
-        List<BasePopulator> populators = new ArrayList<>(Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
             new LangPopulator(player, quest),
             new RewardPopulator(player, quest),
             new GatherPopulator(player, quest),
@@ -204,8 +202,6 @@ public class QuestManager extends SavedData {
             new ExplorePopulator(player, quest),
             new BossPopulator(player, quest)
         ));
-
-        return populators;
     }
 
     public static String nameFor(DimensionType dimensionType) {

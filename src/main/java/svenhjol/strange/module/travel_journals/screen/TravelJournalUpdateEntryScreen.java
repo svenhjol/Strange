@@ -3,21 +3,6 @@ package svenhjol.strange.module.travel_journals.screen;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import svenhjol.charm.Charm;
-import svenhjol.charm.helper.PlayerHelper;
-import svenhjol.charm.helper.StringHelper;
-import svenhjol.charm.mixin.accessor.ScreenAccessor;
-import svenhjol.strange.module.travel_journals.TravelJournalsClient;
-import svenhjol.strange.helper.NetworkHelper;
-import svenhjol.strange.module.travel_journals.TravelJournals;
-import svenhjol.strange.module.travel_journals.TravelJournalEntry;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -32,6 +17,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.charm.Charm;
+import svenhjol.charm.helper.PlayerHelper;
+import svenhjol.charm.helper.StringHelper;
+import svenhjol.charm.mixin.accessor.ScreenAccessor;
+import svenhjol.strange.helper.NetworkHelper;
+import svenhjol.strange.module.travel_journals.TravelJournalEntry;
+import svenhjol.strange.module.travel_journals.TravelJournals;
+import svenhjol.strange.module.travel_journals.TravelJournalsClient;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
@@ -139,7 +139,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
 
         // render coordinates if in creative mode or config allows it
         if (entry.pos != null) {
-            if (minecraft.player.isCreative() || TravelJournals.showCoordinates) {
+            if (minecraft.player.getAbilities().instabuild || TravelJournals.showCoordinates) {
                 Component coords = (new TextComponent("X:").append(String.valueOf(entry.pos.getX()))).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED))
                     .append((new TextComponent(" Z:").append(String.valueOf(entry.pos.getZ()))).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_BLUE)))
                     .append((new TextComponent(" ").append(StringHelper.capitalize(String.valueOf(entry.dim.getPath())))).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
@@ -184,7 +184,7 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
     }
 
     private void delete() {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_DELETE_ENTRY, buffer -> buffer.writeNbt(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_DELETE_ENTRY, buffer -> buffer.writeNbt(entry.toNbt()));
         this.backToMainScreen();
     }
 
@@ -209,18 +209,18 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
 
     private void makeMap() {
         this.saveProgress();
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeNbt(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_MAKE_MAP, buffer -> buffer.writeNbt(entry.toNbt()));
         init();
     }
 
     private void useTotem() {
         this.saveProgress();
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeNbt(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeNbt(entry.toNbt()));
         init();
     }
 
     private void saveProgress() {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_UPDATE_ENTRY, buffer -> buffer.writeNbt(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_UPDATE_ENTRY, buffer -> buffer.writeNbt(entry.toNbt()));
     }
 
     private void backToMainScreen() {
@@ -248,14 +248,14 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
                 stream.close();
 
                 if (screenshotTexture == null || registeredScreenshotTexture == null)
-                    Charm.LOG.debug("Null problems with screenshot texture / registered texture");
+                    throw new Exception("Null problems with screenshot texture / registered texture");
 
             } catch (Exception e) {
-                Charm.LOG.debug("Error loading screenshot: " + e);
+                Charm.LOG.warn("Error loading screenshot: " + e);
                 screenshotFailureRetries++;
 
-                if (screenshotFailureRetries > 4) {
-                    Charm.LOG.warn("Failure loading screenshot, aborting retries");
+                if (screenshotFailureRetries > 2) {
+                    Charm.LOG.error("Failure loading screenshot, aborting retries");
                     hasScreenshot = false;
                     registeredScreenshotTexture = null;
                     screenshotTexture = null;

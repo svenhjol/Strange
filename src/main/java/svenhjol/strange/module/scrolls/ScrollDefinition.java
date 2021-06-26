@@ -1,14 +1,19 @@
 package svenhjol.strange.module.scrolls;
 
 import com.google.gson.Gson;
+import net.minecraft.server.packs.resources.Resource;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.server.packs.resources.Resource;
 
+/**
+ * Template for deserialization from JSON.
+ * Camelcase properties are intentional.
+ */
 public class ScrollDefinition {
     private String id;
     private int tier;
@@ -36,7 +41,7 @@ public class ScrollDefinition {
 
     public int getTimeLimit() {
         if (time_limit == 0)
-            time_limit = QuestManager.DEFAULT_EXPIRY;
+            time_limit = ScrollHelper.DEFAULT_QUEST_EXPIRY;
 
         return time_limit * 60 * 20; // in ticks
     }

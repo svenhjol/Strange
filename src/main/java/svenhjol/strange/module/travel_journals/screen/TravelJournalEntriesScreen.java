@@ -1,18 +1,19 @@
 package svenhjol.strange.module.travel_journals.screen;
 
-import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.strange.module.travel_journals.TravelJournalsClient;
-import svenhjol.strange.helper.NetworkHelper;
-import svenhjol.strange.module.travel_journals.TravelJournals;
-import svenhjol.strange.module.travel_journals.TravelJournalEntry;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.strange.helper.NetworkHelper;
+import svenhjol.strange.module.travel_journals.TravelJournalEntry;
+import svenhjol.strange.module.travel_journals.TravelJournals;
+import svenhjol.strange.module.travel_journals.TravelJournalsClient;
+
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class TravelJournalEntriesScreen extends TravelJournalBaseScreen {
@@ -21,9 +22,9 @@ public class TravelJournalEntriesScreen extends TravelJournalBaseScreen {
     private List<TravelJournalEntry> entries = TravelJournalsClient.entries;
     private String message = "";
     private int lastPage;
-    private int buttonSpacing = 18;
-    private int titleSpacing = 11;
-    private int entryRowHeight = 20;
+    private final int buttonSpacing = 18;
+    private final int titleSpacing = 11;
+    private final int entryRowHeight = 20;
 
     protected boolean hasTotem = false;
     protected boolean hasRenderedEntries = false;
@@ -155,7 +156,7 @@ public class TravelJournalEntriesScreen extends TravelJournalBaseScreen {
     }
 
     private void useTotem(TravelJournalEntry entry) {
-        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeNbt(entry.toTag()));
+        NetworkHelper.sendPacketToServer(TravelJournals.MSG_SERVER_USE_TOTEM, buffer -> buffer.writeNbt(entry.toNbt()));
         minecraft.setScreen(null);
     }
 }

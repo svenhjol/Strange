@@ -1,15 +1,16 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import svenhjol.strange.init.StrangeIcons;
-import svenhjol.strange.module.scrolls.tag.Quest;
-import svenhjol.strange.module.scrolls.tag.Reward;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.strange.init.StrangeIcons;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.scrolls.nbt.Reward;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class RewardPanel extends BasePanel {
     public static RewardPanel INSTANCE = new RewardPanel();
@@ -55,8 +56,7 @@ public class RewardPanel extends BasePanel {
             baseTop = top;
             for (ItemStack stack : stacks) {
                 if (mouseX > mid - 60 && mouseX < mid - 44
-                    && mouseY > baseTop - 5 && mouseY < baseTop + 11
-                ) {
+                    && mouseY > baseTop - 5 && mouseY < baseTop + 11) {
                     screen.renderComponentTooltip(matrices, screen.getTooltipFromItem(stack), mouseX, mouseY);
                 }
                 baseTop += rowHeight;

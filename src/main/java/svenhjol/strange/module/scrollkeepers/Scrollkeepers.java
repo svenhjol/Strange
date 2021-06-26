@@ -35,7 +35,7 @@ import svenhjol.charm.mixin.accessor.VillagerAccessor;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.scrolls.*;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -86,11 +86,11 @@ public class Scrollkeepers extends CharmModule {
         VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
 
         // register scrollkeeper structures
-        addVillageHouse(SetupStructureCallback.VillageType.PLAINS, new ResourceLocation("strange:village/plains/houses/plains_scrollkeeper"), 5);
-        addVillageHouse(SetupStructureCallback.VillageType.SAVANNA, new ResourceLocation("strange:village/savanna/houses/savanna_scrollkeeper"), 5);
-        addVillageHouse(SetupStructureCallback.VillageType.SNOWY, new ResourceLocation("strange:village/snowy/houses/snowy_scrollkeeper"), 5);
-        addVillageHouse(SetupStructureCallback.VillageType.TAIGA, new ResourceLocation("strange:village/taiga/houses/taiga_scrollkeeper"), 5);
-        addVillageHouse(SetupStructureCallback.VillageType.DESERT, new ResourceLocation("strange:village/desert/houses/desert_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.PLAINS, new ResourceLocation(Strange.MOD_ID, "village/plains/houses/plains_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.SAVANNA, new ResourceLocation(Strange.MOD_ID, "village/savanna/houses/savanna_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.SNOWY, new ResourceLocation(Strange.MOD_ID, "village/snowy/houses/snowy_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.TAIGA, new ResourceLocation(Strange.MOD_ID, "village/taiga/houses/taiga_scrollkeeper"), 5);
+        addVillageHouse(SetupStructureCallback.VillageType.DESERT, new ResourceLocation(Strange.MOD_ID, "village/desert/houses/desert_scrollkeeper"), 5);
 
         // listen for quest satisfied request coming from the client
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_GET_SCROLL_QUEST, this::handleGetScrollQuest);
@@ -98,14 +98,13 @@ public class Scrollkeepers extends CharmModule {
 
     public static void sendScrollQuestPacket(ServerPlayer player, Quest quest) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        buffer.writeNbt(quest.toTag());
+        buffer.writeNbt(quest.toNbt());
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_SCROLL_QUEST, buffer);
     }
 
     private InteractionResult tryHandInScroll(Player player, Level world, InteractionHand hand, Entity entity, EntityHitResult hitResult) {
-        if (entity instanceof Villager) {
+        if (entity instanceof Villager villager) {
             ItemStack heldStack = player.getItemInHand(hand);
-            Villager villager = (Villager)entity;
 
             if (villager.getVillagerData().getProfession() != SCROLLKEEPER)
                 return InteractionResult.PASS;
@@ -114,17 +113,17 @@ public class Scrollkeepers extends CharmModule {
                 return InteractionResult.PASS;
 
             if (!world.isClientSide) {
-                Optional<QuestManager> optionalQuestManager = Scrolls.getQuestManager();
-                if (optionalQuestManager.isEmpty())
+                Optional<QuestSavedData> opt = Scrolls.getSavedData();
+                if (opt.isEmpty())
                     return InteractionResult.PASS;
 
-                QuestManager questManager = optionalQuestManager.get();
+                QuestSavedData savedData = opt.get();
 
                 String questId = ScrollItem.getScrollQuest(heldStack);
                 if (questId == null)
                     return InteractionResult.PASS;
 
-                Optional<Quest> optionalQuest = questManager.getQuest(questId);
+                Optional<Quest> optionalQuest = savedData.getQuest(questId);
                 if (optionalQuest.isEmpty()) {
                     ((VillagerAccessor)villager).invokeSetUnhappy();
                     return InteractionResult.FAIL;
@@ -147,7 +146,7 @@ public class Scrollkeepers extends CharmModule {
 
                 // must be the merchant you bought the scroll from, or a scroll you found
                 if (!villager.getUUID().equals(quest.getMerchant())
-                    && !quest.getMerchant().equals(ScrollsHelper.ANY_UUID)) {
+                    && !quest.getMerchant().equals(ScrollHelper.ANY_UUID)) {
                     ((VillagerAccessor)villager).invokeSetUnhappy();
                     return InteractionResult.FAIL;
                 }
@@ -155,7 +154,7 @@ public class Scrollkeepers extends CharmModule {
                 // success, tidy up the quest, give rewards etc.
                 world.playSound(null, player.blockPosition(), SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0F, 1.0F);
                 quest.complete(player, villager);
-                questManager.sendToast((ServerPlayer) player, quest, QuestToastType.Success, "event.strange.quests.completed");
+                savedData.sendToast((ServerPlayer) player, quest, QuestToastType.Success, "event.strange.quests.completed");
                 Scrolls.triggerCompletedScroll((ServerPlayer) player);
                 heldStack.shrink(1);
 
@@ -202,14 +201,14 @@ public class Scrollkeepers extends CharmModule {
             if (player == null)
                 return;
 
-            if (!Scrolls.getQuestManager().isPresent())
+            if (Scrolls.getSavedData().isEmpty())
                 return;
 
-            QuestManager questManager = Scrolls.getQuestManager().get();
-            if (!questManager.getQuest(questId).isPresent())
+            QuestSavedData savedData = Scrolls.getSavedData().get();
+            if (savedData.getQuest(questId).isEmpty())
                 return;
 
-            Quest quest = questManager.getQuest(questId).get();
+            Quest quest = savedData.getQuest(questId).get();
             Scrollkeepers.sendScrollQuestPacket(player, quest);
         });
     }

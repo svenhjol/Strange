@@ -1,22 +1,22 @@
-package svenhjol.strange.module.scrolls.tag;
+package svenhjol.strange.module.scrolls.nbt;
 
-import svenhjol.charm.helper.PlayerHelper;
-
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import svenhjol.charm.helper.PlayerHelper;
+
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reward implements ISerializable {
-    public static final String ITEM_DATA = "item_data";
-    public static final String ITEM_COUNT = "item_count";
-    public static final String PLAYER_XP_TAG = "player_xp";
-    public static final String VILLAGER_XP_TAG = "villager_xp";
+public class Reward implements IQuestSerializable {
+    public static final String ITEM_DATA_NBT = "item_data";
+    public static final String ITEM_COUNT_NBT = "item_count";
+    public static final String PLAYER_XP_NBT = "player_xp";
+    public static final String VILLAGER_XP_NBT = "villager_xp";
 
     private int playerXp;
     private int villagerXp;
@@ -43,13 +43,13 @@ public class Reward implements ISerializable {
         if (playerXp > 0)
             player.giveExperienceLevels(playerXp);
 
-        // TODO: handle merchant XP
+        // TODO: phase2 handle merchant XP
     }
 
-    public CompoundTag toTag() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag dataTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
+    public CompoundTag toNbt() {
+        CompoundTag outNbt = new CompoundTag();
+        CompoundTag dataNbt = new CompoundTag();
+        CompoundTag countNbt = new CompoundTag();
 
         if (!items.isEmpty()) {
             int index = 0;
@@ -58,24 +58,24 @@ public class Reward implements ISerializable {
 
                 CompoundTag itemTag = new CompoundTag();
                 stack.save(itemTag);
-                dataTag.put(stackIndex, itemTag);
-                countTag.putInt(stackIndex, items.get(stack));
+                dataNbt.put(stackIndex, itemTag);
+                countNbt.putInt(stackIndex, items.get(stack));
                 index++;
             }
         }
 
-        outTag.put(ITEM_DATA, dataTag);
-        outTag.put(ITEM_COUNT, countTag);
-        outTag.putInt(PLAYER_XP_TAG, playerXp);
-        outTag.putInt(VILLAGER_XP_TAG, villagerXp);
-        return outTag;
+        outNbt.put(ITEM_DATA_NBT, dataNbt);
+        outNbt.put(ITEM_COUNT_NBT, countNbt);
+        outNbt.putInt(PLAYER_XP_NBT, playerXp);
+        outNbt.putInt(VILLAGER_XP_NBT, villagerXp);
+        return outNbt;
     }
 
-    public void fromTag(CompoundTag tag) {
-        this.playerXp = tag.getInt(PLAYER_XP_TAG);
-        this.villagerXp = tag.getInt(VILLAGER_XP_TAG);
-        CompoundTag dataTag = (CompoundTag)tag.get(ITEM_DATA);
-        CompoundTag countTag = (CompoundTag)tag.get(ITEM_COUNT);
+    public void fromNbt(CompoundTag nbt) {
+        this.playerXp = nbt.getInt(PLAYER_XP_NBT);
+        this.villagerXp = nbt.getInt(VILLAGER_XP_NBT);
+        CompoundTag dataTag = (CompoundTag) nbt.get(ITEM_DATA_NBT);
+        CompoundTag countTag = (CompoundTag) nbt.get(ITEM_COUNT_NBT);
 
         this.items = new HashMap<>();
 

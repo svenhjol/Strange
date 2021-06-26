@@ -1,9 +1,5 @@
-package svenhjol.strange.module.scrolls.tag;
+package svenhjol.strange.module.scrolls.nbt;
 
-import svenhjol.charm.helper.PosHelper;
-import svenhjol.strange.module.scrolls.populator.BossPopulator;
-
-import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -15,16 +11,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import svenhjol.charm.helper.PosHelper;
+import svenhjol.strange.module.scrolls.ScrollHelper;
+import svenhjol.strange.module.scrolls.populator.BossPopulator;
 
-public class Boss implements ISerializable {
-    public static final String TARGET_ENTITIES = "target_entities";
-    public static final String TARGET_COUNT = "target_count";
-    public static final String TARGET_KILLED = "target_killed";
-    public static final String SPAWNED = "spawned";
-    public static final String STRUCTURE = "structure";
-    public static final String DIMENSION = "dimension";
+import java.util.*;
 
-    private Quest quest;
+public class Boss implements IQuestSerializable {
+    public static final String TARGET_ENTITIES_NBT = "target_entities";
+    public static final String TARGET_COUNT_NBT = "target_count";
+    public static final String TARGET_KILLED_NBT = "target_killed";
+    public static final String SPAWNED_NBT = "spawned";
+    public static final String STRUCTURE_NBT = "structure";
+    public static final String DIMENSION_NBT = "dimension";
+
+    private final Quest quest;
     private BlockPos structure;
     private ResourceLocation dimension;
     private boolean spawned;
@@ -33,15 +34,15 @@ public class Boss implements ISerializable {
     private Map<ResourceLocation, Integer> killed = new HashMap<>();
 
     // these are dynamically generated, not stored in nbt
-    private Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
-    private Map<ResourceLocation, String> names = new HashMap<>();
+    private final Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
+    private final Map<ResourceLocation, String> names = new HashMap<>();
 
     public Boss(Quest quest) {
         this.quest = quest;
     }
 
     @Override
-    public CompoundTag toTag() {
+    public CompoundTag toNbt() {
         CompoundTag outTag = new CompoundTag();
         CompoundTag entitiesTag = new CompoundTag();
         CompoundTag countTag = new CompoundTag();
@@ -62,36 +63,36 @@ public class Boss implements ISerializable {
 
                 index++;
             }
-            outTag.put(TARGET_ENTITIES, entitiesTag);
-            outTag.put(TARGET_COUNT, countTag);
-            outTag.put(TARGET_KILLED, killedTag);
+            outTag.put(TARGET_ENTITIES_NBT, entitiesTag);
+            outTag.put(TARGET_COUNT_NBT, countTag);
+            outTag.put(TARGET_KILLED_NBT, killedTag);
         }
 
-        outTag.putBoolean(SPAWNED, spawned);
+        outTag.putBoolean(SPAWNED_NBT, spawned);
 
         if (dimension != null)
-            outTag.putString(DIMENSION, dimension.toString());
+            outTag.putString(DIMENSION_NBT, dimension.toString());
 
         if (structure != null)
-            outTag.putLong(STRUCTURE, structure.asLong());
+            outTag.putLong(STRUCTURE_NBT, structure.asLong());
 
         return outTag;
     }
 
     @Override
-    public void fromTag(CompoundTag fromTag) {
-        CompoundTag entitiesTag = (CompoundTag)fromTag.get(TARGET_ENTITIES);
-        CompoundTag countTag = (CompoundTag)fromTag.get(TARGET_COUNT);
-        CompoundTag killedTag = (CompoundTag)fromTag.get(TARGET_KILLED);
+    public void fromNbt(CompoundTag nbt) {
+        CompoundTag entitiesTag = (CompoundTag) nbt.get(TARGET_ENTITIES_NBT);
+        CompoundTag countTag = (CompoundTag) nbt.get(TARGET_COUNT_NBT);
+        CompoundTag killedTag = (CompoundTag) nbt.get(TARGET_KILLED_NBT);
 
         entities = new HashMap<>();
 
-        structure = fromTag.contains(STRUCTURE) ? BlockPos.of(fromTag.getLong(STRUCTURE)) : null;
-        dimension = ResourceLocation.tryParse(fromTag.getString(DIMENSION));
-        spawned = fromTag.contains(SPAWNED) && fromTag.getBoolean(SPAWNED);
+        structure = nbt.contains(STRUCTURE_NBT) ? BlockPos.of(nbt.getLong(STRUCTURE_NBT)) : null;
+        dimension = ResourceLocation.tryParse(nbt.getString(DIMENSION_NBT));
+        spawned = nbt.contains(SPAWNED_NBT) && nbt.getBoolean(SPAWNED_NBT);
 
         if (dimension == null)
-            dimension = new ResourceLocation("minecraft", "overworld");
+            dimension = ScrollHelper.FALLBACK_DIMENSION;
 
         if (entitiesTag != null && entitiesTag.size() > 0 && countTag != null) {
             for (int i = 0; i < entitiesTag.size(); i++) {
@@ -164,7 +165,7 @@ public class Boss implements ISerializable {
             return;
 
         double dist = PosHelper.getDistanceSquared(player.blockPosition(), structure);
-        if (dist < 260) {
+        if (dist < BossPopulator.POPULATE_DISTANCE) {
             boolean result = BossPopulator.startEncounter(player, this);
 
             if (!result) {
@@ -208,13 +209,11 @@ public class Boss implements ISerializable {
 
             quest.setDirty(true);
 
-            if (!(attacker instanceof ServerPlayer))
+            if (!(attacker instanceof ServerPlayer player))
                 return;
 
-            ServerPlayer player = (ServerPlayer) attacker;
             quest.update(player);
             BossPopulator.checkEncounter(player, this);
         }
-
     }
 }

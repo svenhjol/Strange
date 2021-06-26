@@ -1,15 +1,16 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import svenhjol.strange.init.StrangeIcons;
-import svenhjol.strange.module.scrolls.tag.Explore;
-import svenhjol.strange.module.scrolls.tag.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import svenhjol.strange.init.StrangeIcons;
+import svenhjol.strange.module.scrolls.nbt.Explore;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+
+import java.util.List;
+import java.util.Map;
 
 public class ExplorePanel extends BasePanel {
     public static ExplorePanel INSTANCE = new ExplorePanel();

@@ -61,7 +61,7 @@ public class TravelJournals extends CharmModule {
 
     public static TravelJournalItem TRAVEL_JOURNAL;
 
-    private static TravelJournalManager travelJournalManager;
+    private static TravelJournalSavedData savedData;
 
     @Config(name = "Show coordinates", description = "If true, the coordinates and dimension are shown on the update entry screen.")
     public static boolean showCoordinates = true;
@@ -76,8 +76,8 @@ public class TravelJournals extends CharmModule {
 
     @Override
     public void init() {
-        // load travel journal manager when world starts
-        LoadServerFinishCallback.EVENT.register(this::loadTravelJournalManager);
+        // load travel journal saved data when world starts
+        LoadServerFinishCallback.EVENT.register(this::loadSavedData);
 
         // allow travel journals on Charm's bookcases
         if (ModuleHandler.enabled(Bookcases.class))
@@ -94,8 +94,8 @@ public class TravelJournals extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(TravelJournals.MSG_SERVER_USE_TOTEM, this::handleServerUseTotem);
     }
 
-    public static Optional<TravelJournalManager> getTravelJournalManager() {
-        return travelJournalManager != null ? Optional.of(travelJournalManager) : Optional.empty();
+    public static Optional<TravelJournalSavedData> getSavedData() {
+        return Optional.ofNullable(savedData);
     }
 
     public static void sendJournalEntriesPacket(ServerPlayer player, ListTag entries) {
@@ -114,26 +114,26 @@ public class TravelJournals extends CharmModule {
         ServerPlayNetworking.send(player, MSG_CLIENT_RECEIVE_ENTRY, buffer);
     }
 
-    private void loadTravelJournalManager(MinecraftServer server) {
+    private void loadSavedData(MinecraftServer server) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         if (overworld == null) {
-            Charm.LOG.warn("[Travel Journal] Overworld is null, cannot load persistent state manager");
+            Charm.LOG.warn("[Travel Journal] Overworld is null, cannot load saved data");
             return;
         }
 
-        DimensionDataStorage stateManager = overworld.getDataStorage();
-        travelJournalManager = stateManager.computeIfAbsent(
-            (tag) -> TravelJournalManager.fromTag(overworld, tag),
-            () -> new TravelJournalManager(overworld),
-            TravelJournalManager.nameFor(overworld.dimensionType()));
+        DimensionDataStorage storage = overworld.getDataStorage();
+        savedData = storage.computeIfAbsent(
+            (tag) -> TravelJournalSavedData.fromNbt(overworld, tag),
+            () -> new TravelJournalSavedData(overworld),
+            TravelJournalSavedData.nameFor(overworld.dimensionType()));
 
-        Charm.LOG.info("[Travel Journal] Loaded travel journal state manager");
+        Charm.LOG.info("[Travel Journal] Loaded travel journal saved data");
     }
 
     private void handleServerOpenJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
-        processClientPacket(server, player, manager -> {
-            ListTag listTag = manager.serializePlayerEntries(player.getUUID());
+        processClientPacket(server, player, savedData -> {
+            ListTag listTag = savedData.serializePlayerEntries(player.getUUID());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
 
             if (ModuleHandler.enabled(Runestones.class)) {
@@ -155,12 +155,12 @@ public class TravelJournals extends CharmModule {
         if (entry == null || entry.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
-            TravelJournalEntry updated = manager.updateJournalEntry(player, new TravelJournalEntry(entry));
+        processClientPacket(server, player, savedData -> {
+            TravelJournalEntry updated = savedData.updateJournalEntry(player, new TravelJournalEntry(entry));
             if (updated == null)
                 return;
 
-            TravelJournals.sendJournalEntryPacket(player, updated.toTag());
+            TravelJournals.sendJournalEntryPacket(player, updated.toNbt());
         });
     }
 
@@ -169,22 +169,22 @@ public class TravelJournals extends CharmModule {
         if (entry == null || entry.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
-            manager.deleteJournalEntry(player, new TravelJournalEntry(entry));
-            ListTag listTag = manager.serializePlayerEntries(player.getUUID());
+        processClientPacket(server, player, savedData -> {
+            savedData.deleteJournalEntry(player, new TravelJournalEntry(entry));
+            ListTag listTag = savedData.serializePlayerEntries(player.getUUID());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
         });
     }
 
     private void handleServerAddEntry(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
-        processClientPacket(server, player, manager -> {
-            TravelJournalEntry entry = manager.initJournalEntry(player);
+        processClientPacket(server, player, savedData -> {
+            TravelJournalEntry entry = savedData.initJournalEntry(player);
             if (entry == null) {
                 Charm.LOG.warn("Failed to create a new journal entry, doing nothing");
                 return;
             }
 
-            TravelJournals.sendJournalEntryPacket(player, entry.toTag());
+            TravelJournals.sendJournalEntryPacket(player, entry.toNbt());
         });
     }
 
@@ -193,7 +193,7 @@ public class TravelJournals extends CharmModule {
         if (entryTag == null || entryTag.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
+        processClientPacket(server, player, savedData -> {
             // check the player has a totem
             ItemStack requiredItem = new ItemStack(Items.NETHER_STAR); // TODO: placeholder item, phase2
             int slotWithStack = PlayerHelper.getInventory(player).findSlotMatchingItem(requiredItem);
@@ -201,8 +201,8 @@ public class TravelJournals extends CharmModule {
                 return;
 
             // check the journal entry exists
-            Optional<TravelJournalEntry> optionalEntry = manager.getJournalEntry(player, new TravelJournalEntry(entryTag));
-            if (!optionalEntry.isPresent())
+            Optional<TravelJournalEntry> optionalEntry = savedData.getJournalEntry(player, new TravelJournalEntry(entryTag));
+            if (optionalEntry.isEmpty())
                 return;
 
             // check the player is in the right dimension for this entry
@@ -226,7 +226,7 @@ public class TravelJournals extends CharmModule {
         if (entryTag == null || entryTag.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
+        processClientPacket(server, player, savedData -> {
             // check the player has a map
             ItemStack requiredItem = new ItemStack(Items.MAP);
             int slotWithStack = PlayerHelper.getInventory(player).findSlotMatchingItem(requiredItem);
@@ -234,8 +234,8 @@ public class TravelJournals extends CharmModule {
                 return;
 
             // check the journal entry exists
-            Optional<TravelJournalEntry> optionalEntry = manager.getJournalEntry(player, new TravelJournalEntry(entryTag));
-            if (!optionalEntry.isPresent())
+            Optional<TravelJournalEntry> optionalEntry = savedData.getJournalEntry(player, new TravelJournalEntry(entryTag));
+            if (optionalEntry.isEmpty())
                 return;
 
             // get the entry and reduce the map stack by 1
@@ -256,17 +256,17 @@ public class TravelJournals extends CharmModule {
             ItemStack outMap = MapHelper.getMap((ServerLevel) player.level, entry.pos, new TranslatableComponent(entry.name), decoration, col.getFireworkColor());
             PlayerHelper.addOrDropStack(player, outMap);
 
-            TravelJournals.sendJournalEntryPacket(player, entry.toTag());
+            TravelJournals.sendJournalEntryPacket(player, entry.toNbt());
         });
     }
 
-    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<TravelJournalManager> callback) {
+    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<TravelJournalSavedData> callback) {
         server.execute(() -> {
             if (player == null)
                 return;
 
-            Optional<TravelJournalManager> travelJournalManager = TravelJournals.getTravelJournalManager();
-            travelJournalManager.ifPresent(callback);
+            Optional<TravelJournalSavedData> opt = TravelJournals.getSavedData();
+            opt.ifPresent(callback);
         });
     }
 
@@ -275,15 +275,15 @@ public class TravelJournals extends CharmModule {
             return InteractionResult.PASS;
 
         // add position to travel journal
-        Optional<TravelJournalManager> journalManager = TravelJournals.getTravelJournalManager();
-        journalManager.ifPresent(manager -> {
+        Optional<TravelJournalSavedData> opt = TravelJournals.getSavedData();
+        opt.ifPresent(savedData -> {
             TravelJournalEntry entry = new TravelJournalEntry(
                 new TranslatableComponent("item.charm.totem_of_preserving").getString(),
                 player.blockPosition(),
                 DimensionHelper.getDimension(player.level),
                 1
             );
-            manager.addJournalEntry(player, entry);
+            savedData.addJournalEntry(player, entry);
         });
 
         return InteractionResult.SUCCESS;

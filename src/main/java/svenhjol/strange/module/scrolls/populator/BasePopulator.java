@@ -1,13 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import svenhjol.charm.helper.LootHelper;
-import svenhjol.charm.module.inventory_tidying.InventoryTidyingHandler;
-import svenhjol.strange.module.scrolls.ScrollDefinitionHelper;
-import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.scrolls.ScrollDefinition;
-import svenhjol.strange.module.scrolls.tag.Quest;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
@@ -25,31 +17,32 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import svenhjol.charm.helper.LootHelper;
+import svenhjol.charm.module.inventory_tidying.InventoryTidyingHandler;
+import svenhjol.strange.module.scrolls.ScrollDefinition;
+import svenhjol.strange.module.scrolls.ScrollDefinitionHelper;
+import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class BasePopulator {
-    public static final String COUNT = "count";
-    public static final String LIMIT = "limit";
-    public static final String NAME = "name";
-    public static final String CHANCE = "chance";
-    public static final String ENCHANTED = "enchanted";
-    public static final String ENCHANTMENT_LEVEL = "enchantment_level";
-    public static final String ENCHANTMENT_TREASURE = "enchantment_treasure";
-    public static final String ENCHANTMENTS = "enchantments";
-    public static final String ITEMS = "items";
-    public static final String LOOT = "loot";
-    public static final String POOL = "pool";
-    public static final String TABLE = "table";
+    public static final String CHANCE_NBT = "chance";
+    public static final String COUNT_NBT = "count";
+    public static final String ENCHANTED_NBT = "enchanted";
+    public static final String ENCHANTMENTS_NBT = "enchantments";
+    public static final String ENCHANTMENT_LEVEL_NBT = "enchantment_level";
+    public static final String ENCHANTMENT_TREASURE_NBT = "enchantment_treasure";
+    public static final String ITEMS_NBT = "items";
+    public static final String LIMIT_NBT = "limit";
+    public static final String LOOT_NBT = "loot";
+    public static final String NAME_NBT = "name";
+    public static final String POOL_NBT = "pool";
+    public static final String TABLE_NBT = "table";
 
-    private static final List<Enchantment> FORCED_ENCHANTS = new ArrayList<>(Arrays.asList(
-        Enchantments.FIRE_ASPECT,
-        Enchantments.KNOCKBACK,
-        Enchantments.UNBREAKING,
-        Enchantments.SHARPNESS,
-        Enchantments.MOB_LOOTING,
-        Enchantments.BLOCK_FORTUNE
-    ));
+    public static final List<Enchantment> FIXED_ENCHANTS = new ArrayList<>();
 
     protected final ServerPlayer player;
     protected final ServerLevel world;
@@ -63,6 +56,15 @@ public abstract class BasePopulator {
         this.pos = player.blockPosition();
         this.quest = quest;
         this.definition = Scrolls.getDefinition(quest.getDefinition());
+
+        FIXED_ENCHANTS.addAll(Arrays.asList(
+            Enchantments.FIRE_ASPECT,
+            Enchantments.KNOCKBACK,
+            Enchantments.UNBREAKING,
+            Enchantments.SHARPNESS,
+            Enchantments.MOB_LOOTING,
+            Enchantments.BLOCK_FORTUNE
+        ));
     }
 
     public abstract void populate();
@@ -80,15 +82,15 @@ public abstract class BasePopulator {
             List<String> itemIds = new ArrayList<>();
 
             // get all values from item props
-            int count = getCountFromValue(props.get(COUNT), 1, scale);
-            int limit = Integer.parseInt(props.getOrDefault(LIMIT, "1"));
-            float chance = getChanceFromValue(props.get(CHANCE), 1.0F, scale);
-            int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL), 5, scale);
-            boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE, "false"));
-            boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED, "false"));
-            String items = props.getOrDefault(ITEMS, "");
-            String enchantments = props.getOrDefault(ENCHANTMENTS, "");
-            String name = props.getOrDefault(NAME, "");
+            int count = getCountFromValue(props.get(COUNT_NBT), 1, scale);
+            int limit = Integer.parseInt(props.getOrDefault(LIMIT_NBT, "1"));
+            float chance = getChanceFromValue(props.get(CHANCE_NBT), 1.0F, scale);
+            int enchantmentLevel = getCountFromValue(props.get(ENCHANTMENT_LEVEL_NBT), 5, scale);
+            boolean enchantmentTreasure = Boolean.parseBoolean(props.getOrDefault(ENCHANTMENT_TREASURE_NBT, "false"));
+            boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED_NBT, "false"));
+            String items = props.getOrDefault(ITEMS_NBT, "");
+            String enchantments = props.getOrDefault(ENCHANTMENTS_NBT, "");
+            String name = props.getOrDefault(NAME_NBT, "");
 
             // if no chance for this item to generate, skip
             if (world.random.nextFloat() > chance)
@@ -98,13 +100,13 @@ public abstract class BasePopulator {
             if (count <= 0)
                 continue;
 
-            if (itemId.startsWith(LOOT)) {
+            if (itemId.startsWith(LOOT_NBT)) {
                 // parse multiple items from a specified loot table (up to count)
-                if (!props.containsKey(TABLE))
+                if (!props.containsKey(TABLE_NBT))
                     continue;
 
                 // get the loot table ID and then load the lootmanager to generate a list of loot items
-                ResourceLocation tableId = LootHelper.getLootTable(props.get(TABLE), BuiltInLootTables.SIMPLE_DUNGEON);
+                ResourceLocation tableId = LootHelper.getLootTable(props.get(TABLE_NBT), BuiltInLootTables.SIMPLE_DUNGEON);
 
                 LootTable table = world.getServer().getLootTables().get(tableId);
                 List<ItemStack> list = table.getRandomItems((new LootContext.Builder(world)
@@ -126,7 +128,7 @@ public abstract class BasePopulator {
                 }
                 continue;
 
-            } else if (itemId.startsWith(POOL)) {
+            } else if (itemId.startsWith(POOL_NBT)) {
                 // parse multiple items from a specified pool list (up to limit)
                 if (items.isEmpty())
                     continue;
@@ -150,7 +152,7 @@ public abstract class BasePopulator {
 
                 // try and parse a minecraft/modded item
                 Optional<Item> optionalItem = Registry.ITEM.getOptional(new ResourceLocation(parseableItemId));
-                if (!optionalItem.isPresent())
+                if (optionalItem.isEmpty())
                     continue;
 
                 Item item = optionalItem.get();
@@ -223,7 +225,7 @@ public abstract class BasePopulator {
         return ScrollDefinitionHelper.splitByComma(key);
     }
 
-    private void tryEnchant(ItemStack stack, String enchantments, int enchantmentLevel, boolean treasure) {
+    private void tryEnchant(ItemStack stack, String enchantments, int enchantmentLevel, boolean isTreasure) {
         Random random = world.random;
         List<String> specificEnchantments = new ArrayList<>();
 
@@ -246,7 +248,7 @@ public abstract class BasePopulator {
                     }
 
                     Optional<Enchantment> optionalEnchantment = Registry.ENCHANTMENT.getOptional(new ResourceLocation(e));
-                    if (!optionalEnchantment.isPresent())
+                    if (optionalEnchantment.isEmpty())
                         continue;
 
                     Enchantment enchantment = optionalEnchantment.get();
@@ -262,15 +264,15 @@ public abstract class BasePopulator {
             } else if (stack.isEnchantable()) {
 
                 // if the stack can be enchanted, just enchant randomly
-                EnchantmentHelper.enchantItem(random, stack, enchantmentLevel, treasure);
+                EnchantmentHelper.enchantItem(random, stack, enchantmentLevel, isTreasure);
 
             } else if (enchantmentLevel > 0) {
 
-                // if the stack isn't naturally enchantable, force from the FORCED_ENCHANTS map
-                List<Enchantment> forcedEnchants = new ArrayList<>(FORCED_ENCHANTS);
-                Collections.shuffle(forcedEnchants);
+                // if the stack isn't naturally enchantable, select from the FIXED_ENCHANTS map
+                List<Enchantment> fixedEnchants = new ArrayList<>(FIXED_ENCHANTS);
+                Collections.shuffle(fixedEnchants);
 
-                for (Enchantment enchantment : forcedEnchants) {
+                for (Enchantment enchantment : fixedEnchants) {
                     int level = Math.min(enchantment.getMaxLevel(), random.nextInt(enchantmentLevel) + 1);
                     stack.enchant(enchantment, level);
                     if (random.nextFloat() < 0.75F)

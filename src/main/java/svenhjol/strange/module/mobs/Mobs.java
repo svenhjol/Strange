@@ -29,8 +29,7 @@ public class Mobs extends CharmModule {
         if (illusioners && !entity.level.isClientSide && entity instanceof Illusioner) {
             Level world = entity.getCommandSenderWorld();
             BlockPos pos = entity.blockPosition();
-
-            world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.TOTEM_OF_UNDYING)));
+            world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 0.1D, pos.getZ() + 0.5D, new ItemStack(Items.TOTEM_OF_UNDYING)));
         }
 
         return InteractionResult.PASS;

@@ -1,5 +1,12 @@
 package svenhjol.strange.module.totem_of_flying;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.ApplyBeaconEffectsCallback;
 import svenhjol.charm.event.EntityJumpCallback;
@@ -11,15 +18,8 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 
-@Module(mod = Strange.MOD_ID, client = TotemOfFlyingClient.class, description = "A Totem of Flying lets you fly within range of an active beacon.")
+@Module(mod = Strange.MOD_ID, description = "A Totem of Flying lets you fly within range of an active beacon.")
 public class TotemOfFlying extends CharmModule {
     public static ItemStack cachedTotemItemStack;
     public static TotemOfFlyingItem TOTEM_OF_FLYING;
@@ -51,10 +51,9 @@ public class TotemOfFlying extends CharmModule {
     }
 
     private void handleEntityJump(LivingEntity entity) {
-        if (!(entity instanceof Player))
+        if (!(entity instanceof Player player))
             return;
 
-        Player player = (Player)entity;
         boolean hasTotem = PlayerHelper.getInventory(player).contains(cachedTotemItemStack);
         if (!hasTotem)
             return;

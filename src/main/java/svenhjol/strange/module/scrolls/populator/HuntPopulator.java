@@ -1,11 +1,11 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import svenhjol.strange.module.scrolls.tag.Quest;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 
 public class HuntPopulator extends BasePopulator {
     public HuntPopulator(ServerPlayer player, Quest quest) {

@@ -6,6 +6,6 @@ import svenhjol.charm.world.CharmJigsawStructureFeature;
 
 public class EndRuinFeature extends CharmJigsawStructureFeature {
     public EndRuinFeature(Codec<JigsawConfiguration> codec) {
-        super(codec, 100, 20, false);
+        super(codec, 120, 20, false);
     }
 }

@@ -120,7 +120,9 @@ public class TravelJournalsClient extends CharmClientModule {
                     win.getHeight() / 8,
                     client.getMainRenderTarget(),
                     i -> {
-                        client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+                        if (client.player != null)
+                            client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+
                         client.options.hideGui = false;
                         client.execute(() -> {
                             client.setScreen(new TravelJournalUpdateEntryScreen(entryHavingScreenshot));
@@ -149,7 +151,7 @@ public class TravelJournalsClient extends CharmClientModule {
             if (entriesTag == null)
                 return;
 
-            entries = TravelJournalsHelper.getEntriesFromNbtList((ListTag)entriesTag);
+            entries = TravelJournalHelper.getEntriesFromNbtList((ListTag)entriesTag);
             client.setScreen(new TravelJournalHomeScreen());
         });
     }

@@ -1,16 +1,17 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import svenhjol.strange.init.StrangeIcons;
-import svenhjol.strange.module.scrolls.tag.Boss;
-import svenhjol.strange.module.scrolls.tag.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.strange.init.StrangeIcons;
+import svenhjol.strange.module.scrolls.nbt.Boss;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class BossPanel extends BasePanel {
     public static BossPanel INSTANCE = new BossPanel();

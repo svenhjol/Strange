@@ -2,12 +2,13 @@ package svenhjol.strange.module.scrolls;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import java.util.Random;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+
+import java.util.Random;
 
 public class ScrollLootFunction extends LootItemConditionalFunction {
 
@@ -36,7 +37,7 @@ public class ScrollLootFunction extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Scrolls.SCROLL_LOOT_FUNCTION;
+        return Scrolls.LOOT_FUNCTION;
     }
 
     public static class Serializer extends LootItemConditionalFunction.Serializer<ScrollLootFunction> {

@@ -41,6 +41,7 @@ import svenhjol.strange.module.runestones.Runestones;
 import javax.annotation.Nullable;
 import java.util.*;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 @Module(mod = Strange.MOD_ID, client = RunePortalsClient.class)
 public class RunePortals extends CharmModule {
     public static PortalFrameBlock PORTAL_FRAME_BLOCK;
@@ -50,7 +51,9 @@ public class RunePortals extends CharmModule {
     public static BlockEntityType<RunePortalBlockEntity> RUNE_PORTAL_BLOCK_ENTITY;
 
     public static final ResourceLocation MSG_SERVER_CREATE_PORTAL = new ResourceLocation(Strange.MOD_ID, "server_create_portal");
-    private static final Map<ResourceKey<Level>, RunePortalManager> managers = new HashMap<>();
+
+    public static final List<Block> VALID_INNER_BLOCKS = new ArrayList<>();
+    private static final Map<ResourceKey<Level>, RunePortalSavedData> savedData = new HashMap<>();
 
     @Override
     public void register() {
@@ -59,6 +62,13 @@ public class RunePortals extends CharmModule {
         RUNE_PORTAL_BLOCK_ENTITY = RegistryHelper.blockEntity(RUNE_PORTAL_BLOCK_ID, RunePortalBlockEntity::new, RUNE_PORTAL_BLOCK);
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_CREATE_PORTAL, this::handleServerCreatePortal);
+
+        VALID_INNER_BLOCKS.addAll(Arrays.asList(
+            Blocks.AIR,
+            Blocks.CAVE_AIR,
+            Blocks.VOID_AIR,
+            RunePortals.RUNE_PORTAL_BLOCK
+        ));
     }
 
     @Override
@@ -69,13 +79,13 @@ public class RunePortals extends CharmModule {
         // listen for when player tries to add a rune to a crying obsidian block
         UseBlockCallback.EVENT.register(this::handleUseBlock);
 
-        // load rune portal manager when world starts
-        ServerWorldInitCallback.EVENT.register(this::loadRunePortalManager);
+        // load rune portal saved data when world starts
+        ServerWorldInitCallback.EVENT.register(this::loadSavedData);
     }
 
-    public static Optional<RunePortalManager> getManager(ServerLevel world) {
+    public static Optional<RunePortalSavedData> getSavedData(ServerLevel world) {
         ResourceKey<Level> registryKey = world.dimension();
-        return managers.get(registryKey) != null ? Optional.of(managers.get(registryKey)) : Optional.empty();
+        return Optional.ofNullable(savedData.get(registryKey));
     }
 
     public static boolean tryActivate(ServerLevel world, BlockPos pos, BlockState state) {
@@ -110,13 +120,6 @@ public class RunePortals extends CharmModule {
         if (axis == null)
             return false;
 
-        List<Block> validAir = Arrays.asList(
-            Blocks.AIR,
-            Blocks.CAVE_AIR,
-            Blocks.VOID_AIR,
-            RunePortals.RUNE_PORTAL_BLOCK
-        );
-
         // try and determine middle of bottom row
         BlockPos start = null;
         if (axis == Direction.Axis.X) {
@@ -126,11 +129,11 @@ public class RunePortals extends CharmModule {
                     for (int x = -3; x <= 3; x++) {
                         BlockPos p = pos.above(y).relative(d, x);
                         if (world.getBlockState(p.above(1)).getBlock() instanceof PortalFrameBlock
-                            && validAir.contains(world.getBlockState(p).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(1)).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2)).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2).west()).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2).east()).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(1)).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2)).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2).west()).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2).east()).getBlock())
                             && world.getBlockState(p.below(3)).getBlock() instanceof PortalFrameBlock
                         ) {
                             start = p.below(3);
@@ -146,11 +149,11 @@ public class RunePortals extends CharmModule {
                     for (int z = -3; z <= 3; z++) {
                         BlockPos p = pos.above(y).relative(d, z);
                         if (world.getBlockState(p.above(1)).getBlock() instanceof PortalFrameBlock
-                            && validAir.contains(world.getBlockState(p).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(1)).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2)).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2).north()).getBlock())
-                            && validAir.contains(world.getBlockState(p.below(2).south()).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(1)).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2)).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2).north()).getBlock())
+                            && VALID_INNER_BLOCKS.contains(world.getBlockState(p.below(2).south()).getBlock())
                             && world.getBlockState(p.below(3)).getBlock() instanceof PortalFrameBlock
                         ) {
                             start = p.below(3);
@@ -244,14 +247,14 @@ public class RunePortals extends CharmModule {
                 return false;
         }
 
-        Optional<RunePortalManager> optional = RunePortals.getManager(world);
+        Optional<RunePortalSavedData> optional = RunePortals.getSavedData(world);
 
         if (optional.isPresent()) {
-            RunePortalManager manager = optional.get();
+            RunePortalSavedData data = optional.get();
 
             if (order.size() == 12) {
                 Charm.LOG.debug("Rune order: " + order + ", start: " + start.toShortString());
-                manager.createPortal(order, start, axis);
+                data.createPortal(order, start, axis);
                 return true;
             } else {
                 Charm.LOG.debug("Could not determine portal runes");
@@ -336,8 +339,7 @@ public class RunePortals extends CharmModule {
                 return InteractionResult.PASS;
 
             if (isFrameBlock) {
-                // if there's already a rune in the frame, drop it for the player
-                // and note the direction that it is facing so we can reuse this side
+                // if there's already a rune in the frame, drop it for the player and note the direction that it is facing so we can reuse this side
                 int runeValue = state.getValue(PortalFrameBlock.RUNE);
                 wasFacing = state.getValue(PortalFrameBlock.FACING);
 
@@ -361,7 +363,9 @@ public class RunePortals extends CharmModule {
                 if (!player.getAbilities().instabuild)
                     held.shrink(1);
 
-                RunePortals.tryActivate((ServerLevel) world, hitPos, newState);
+                boolean result = RunePortals.tryActivate((ServerLevel) world, hitPos, newState);
+                if (!result)
+                    return InteractionResult.PASS;
             }
 
             return InteractionResult.sidedSuccess(world.isClientSide);
@@ -370,14 +374,14 @@ public class RunePortals extends CharmModule {
         return InteractionResult.PASS;
     }
 
-    private void loadRunePortalManager(ServerLevel serverWorld) {
-        DimensionDataStorage stateManager = serverWorld.getDataStorage();
-        RunePortalManager manager = stateManager.computeIfAbsent(
-            (nbt) -> RunePortalManager.fromNbt(serverWorld, nbt),
-            () -> new RunePortalManager(serverWorld),
-            RunePortalManager.nameFor(serverWorld.dimensionType()));
+    private void loadSavedData(ServerLevel serverWorld) {
+        DimensionDataStorage storage = serverWorld.getDataStorage();
+        RunePortalSavedData data = storage.computeIfAbsent(
+            (nbt) -> RunePortalSavedData.fromNbt(serverWorld, nbt),
+            () -> new RunePortalSavedData(serverWorld),
+            RunePortalSavedData.nameFor(serverWorld.dimensionType()));
 
-        managers.put(serverWorld.dimension(), manager);
-        Charm.LOG.info("[RunePortals] Loaded rune portal state manager for world " + serverWorld.dimension().location());
+        savedData.put(serverWorld.dimension(), data);
+        Charm.LOG.info("[RunePortals] Loaded rune portal saved data for world " + serverWorld.dimension().location());
     }
 }

@@ -1,14 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import svenhjol.charm.Charm;
-import svenhjol.charm.helper.*;
-import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.stone_circles.StoneCircles;
-import svenhjol.strange.module.scrolls.ScrollDefinition;
-import svenhjol.strange.module.scrolls.tag.Boss;
-import svenhjol.strange.module.scrolls.tag.Quest;
-
-import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -28,19 +19,38 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import svenhjol.charm.Charm;
+import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.helper.*;
+import svenhjol.strange.module.scrolls.ScrollDefinition;
+import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.nbt.Boss;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.stone_circles.StoneCircles;
+
+import java.util.*;
 
 public class BossPopulator extends BasePopulator {
-    public static final String TARGETS = "targets";
-    public static final String SETTINGS = "settings";
-    public static final String SUPPORT = "support";
-    public static final String COUNT = "count";
-    public static final String HEALTH = "health";
-    public static final String EFFECTS = "effects";
+    public static final String TARGETS_NBT = "targets";
+    public static final String SETTINGS_NBT = "settings";
+    public static final String SUPPORT_NBT = "support";
+    public static final String HEALTH_NBT = "health";
+    public static final String EFFECTS_NBT = "effects";
 
     public static final int MAP_COLOR = 0x770000;
+    public static final int POPULATE_DISTANCE = 260;
+    public static final int BOSS_EFFECT_DURATION = 99999;
+
+    public static final List<String> BOSS_EFFECTS = new ArrayList<>(); // all bosses have these effects. List of lowercase effect IDs.
+    public static final ResourceLocation FALLBACK_STRUCTURE = new ResourceLocation("minecraft", "pillager_outpost");
 
     public BossPopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
+
+        BOSS_EFFECTS.addAll(Arrays.asList(
+            "fire_resistance",
+            "water_breathing"
+        ));
     }
 
     @Override
@@ -52,9 +62,12 @@ public class BossPopulator extends BasePopulator {
 
         BlockPos bossPos = PosHelper.addRandomOffset(pos, world.random, 250, 750);
 
-        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(StoneCircles.STRUCTURE_ID);
+        ResourceLocation spawnStructure = ModuleHandler.enabled("strange:stone_circles")
+            ? StoneCircles.STRUCTURE_ID
+            : FALLBACK_STRUCTURE;
+        StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(spawnStructure);
         if (structureFeature == null)
-            fail("Could not find stone circle");
+            fail("Could not find spawn structure");
 
         // populate target entities
         BlockPos foundPos = world.findNearestMapFeature(structureFeature, bossPos, 500, false);
@@ -63,8 +76,8 @@ public class BossPopulator extends BasePopulator {
 
         Map<ResourceLocation, Integer> entities = new HashMap<>();
 
-        if (boss.containsKey(TARGETS)) {
-            Map<String, Map<String, String>> targets = boss.get(TARGETS);
+        if (boss.containsKey(TARGETS_NBT)) {
+            Map<String, Map<String, String>> targets = boss.get(TARGETS_NBT);
 
             for (String id : targets.keySet()) {
                 ResourceLocation entityId = getEntityIdFromKey(id);
@@ -73,14 +86,14 @@ public class BossPopulator extends BasePopulator {
 
                 int count = 0;
                 Map<String, String> targetProps = targets.get(id);
-                if (targetProps.containsKey(COUNT))
-                    count = Integer.parseInt(targetProps.getOrDefault(COUNT, "1"));
+                if (targetProps.containsKey(COUNT_NBT))
+                    count = Integer.parseInt(targetProps.getOrDefault(COUNT_NBT, "1"));
 
                 entities.put(entityId, Math.max(1, count));
             }
         }
 
-        if (boss.containsKey(SETTINGS)) {
+        if (boss.containsKey(SETTINGS_NBT)) {
             // TODO: settings for boss encounters
         }
 
@@ -117,14 +130,14 @@ public class BossPopulator extends BasePopulator {
         Map<String, Map<String, Map<String, String>>> boss = definition.getBoss();
 
         // try and spawn the boss target entities
-        if (boss.containsKey(TARGETS)) {
-            if (!trySpawnEntities(world, pos, quest, boss.get(TARGETS), true))
+        if (boss.containsKey(TARGETS_NBT)) {
+            if (!trySpawnEntities(world, pos, quest, boss.get(TARGETS_NBT), true))
                 return false;
         }
 
         // try and spawn supporting entities
-        if (boss.containsKey(SUPPORT))
-            trySpawnEntities(world, pos, quest, boss.get(SUPPORT), false);
+        if (boss.containsKey(SUPPORT_NBT))
+            trySpawnEntities(world, pos, quest, boss.get(SUPPORT_NBT), false);
 
         world.playSound(null, pos, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 1.0F, 1.0F);
         return true;
@@ -138,7 +151,6 @@ public class BossPopulator extends BasePopulator {
     }
 
     private static boolean trySpawnEntities(ServerLevel world, BlockPos pos, Quest quest, Map<String, Map<String, String>> entityDefinitions, boolean isBoss) {
-        int effectDuration = 999999; // something that doesn't run out very quickly
         int effectAmplifier = Math.max(1, quest.getTier() - 3);
         boolean didAnySpawn = false;
 
@@ -147,26 +159,24 @@ public class BossPopulator extends BasePopulator {
 
             // try and get the type from the ID
             Optional<EntityType<?>> optionalType = EntityType.byString(id);
-            if (!optionalType.isPresent())
+            if (optionalType.isEmpty())
                 return false;
 
             // get the count property and spawn this many mobs, default to 1 if not set
-            int count = Integer.parseInt(props.getOrDefault(COUNT, "1"));
+            int count = Integer.parseInt(props.getOrDefault(COUNT_NBT, "1"));
 
             for (int n = 0; n < count; n++) {
 
                 // try and create the entity from the type
                 Entity entity = optionalType.get().create(world);
-                if (!(entity instanceof Mob))
+                if (!(entity instanceof Mob mobEntity))
                     return false;
 
-                Mob mobEntity = (Mob) entity;
-
                 // get the health property, default to 20 hearts if not set
-                int health = Integer.parseInt(props.getOrDefault(HEALTH, "20"));
+                int health = Integer.parseInt(props.getOrDefault(HEALTH_NBT, "20"));
 
                 // parse effectsString into list of effects
-                String effectsDef = props.getOrDefault(EFFECTS, "");
+                String effectsDef = props.getOrDefault(EFFECTS_NBT, "");
                 final List<String> effects = new ArrayList<>();
                 if (effectsDef.length() > 0) {
                     if (effectsDef.contains(",")) {
@@ -176,9 +186,7 @@ public class BossPopulator extends BasePopulator {
                     }
                 }
 
-                // all entities start with fire resist and water breathing by default
-                effects.add("fire_resistance");
-                effects.add("water_breathing");
+                effects.addAll(BOSS_EFFECTS);
 
                 // try and add mob to the world, if fail then record the mob as killed
                 boolean didSpawn = MobHelper.spawnMobNearPos(world, pos, mobEntity, (mob, mobPos) -> {
@@ -203,7 +211,7 @@ public class BossPopulator extends BasePopulator {
                             if (effect == null)
                                 return;
 
-                            mob.addEffect(new MobEffectInstance(effect, effectDuration, effectAmplifier));
+                            mob.addEffect(new MobEffectInstance(effect, BOSS_EFFECT_DURATION, effectAmplifier));
                         });
                     }
 

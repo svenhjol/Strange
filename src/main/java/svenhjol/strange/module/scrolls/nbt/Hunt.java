@@ -1,10 +1,5 @@
-package svenhjol.strange.module.scrolls.tag;
+package svenhjol.strange.module.scrolls.nbt;
 
-import svenhjol.strange.module.scrolls.ScrollsHelper;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -13,26 +8,31 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import svenhjol.strange.module.scrolls.ScrollHelper;
 
-public class Hunt implements ISerializable {
-    public static final String ENTITY_DATA = "entity_data";
-    public static final String ENTITY_COUNT = "entity_count";
-    public static final String ENTITY_KILLED = "entity_killed";
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-    private Quest quest;
+public class Hunt implements IQuestSerializable {
+    public static final String ENTITY_DATA_NBT = "entity_data";
+    public static final String ENTITY_COUNT_NBT = "entity_count";
+    public static final String ENTITY_KILLED_NBT = "entity_killed";
+
+    private final Quest quest;
     private Map<ResourceLocation, Integer> entities = new HashMap<>();
     private Map<ResourceLocation, Integer> killed = new HashMap<>();
 
     // these are dynamically generated, not stored in nbt
-    private Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
-    private Map<ResourceLocation, String> names = new HashMap<>();
+    private final Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
+    private final Map<ResourceLocation, String> names = new HashMap<>();
 
     public Hunt(Quest quest) {
         this.quest = quest;
     }
 
     @Override
-    public CompoundTag toTag() {
+    public CompoundTag toNbt() {
         CompoundTag outTag = new CompoundTag();
         CompoundTag dataTag = new CompoundTag();
         CompoundTag countTag = new CompoundTag();
@@ -54,18 +54,18 @@ public class Hunt implements ISerializable {
             }
         }
 
-        outTag.put(ENTITY_DATA, dataTag);
-        outTag.put(ENTITY_COUNT, countTag);
-        outTag.put(ENTITY_KILLED, killedTag);
+        outTag.put(ENTITY_DATA_NBT, dataTag);
+        outTag.put(ENTITY_COUNT_NBT, countTag);
+        outTag.put(ENTITY_KILLED_NBT, killedTag);
 
         return outTag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        CompoundTag dataTag = (CompoundTag)tag.get(ENTITY_DATA);
-        CompoundTag countTag = (CompoundTag)tag.get(ENTITY_COUNT);
-        CompoundTag killedTag = (CompoundTag)tag.get(ENTITY_KILLED);
+    public void fromNbt(CompoundTag nbt) {
+        CompoundTag dataTag = (CompoundTag) nbt.get(ENTITY_DATA_NBT);
+        CompoundTag countTag = (CompoundTag) nbt.get(ENTITY_COUNT_NBT);
+        CompoundTag killedTag = (CompoundTag) nbt.get(ENTITY_KILLED_NBT);
 
         entities = new HashMap<>();
         killed = new HashMap<>();
@@ -127,13 +127,11 @@ public class Hunt implements ISerializable {
     }
 
     public void entityKilled(LivingEntity entity, Entity attacker) {
-        if (!(attacker instanceof ServerPlayer))
+        if (!(attacker instanceof ServerPlayer player))
             return;
 
-        ServerPlayer player = (ServerPlayer) attacker;
-
         // must be the player who owns the quest
-        if (quest.getOwner().equals(player.getUUID()) || quest.getOwner().equals(ScrollsHelper.ANY_UUID)) {
+        if (quest.getOwner().equals(player.getUUID()) || quest.getOwner().equals(ScrollHelper.ANY_UUID)) {
             ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
 
             if (entities.containsKey(id)) {

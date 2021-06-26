@@ -1,14 +1,15 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import svenhjol.strange.init.StrangeIcons;
-import svenhjol.strange.module.scrolls.tag.Gather;
-import svenhjol.strange.module.scrolls.tag.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
+import svenhjol.strange.init.StrangeIcons;
+import svenhjol.strange.module.scrolls.nbt.Gather;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class GatherPanel extends BasePanel {
     public static GatherPanel INSTANCE = new GatherPanel();

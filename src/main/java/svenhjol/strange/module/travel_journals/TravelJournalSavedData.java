@@ -8,7 +8,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import svenhjol.charm.Charm;
@@ -17,12 +16,11 @@ import svenhjol.charm.helper.DimensionHelper;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class TravelJournalManager extends SavedData {
+@SuppressWarnings({"unused", "deprecation"})
+public class TravelJournalSavedData extends SavedData {
     private Map<UUID, List<TravelJournalEntry>> playerJournalEntries = new HashMap<>();
-    private final Level world;
 
-    public TravelJournalManager(ServerLevel world) {
-        this.world = world;
+    public TravelJournalSavedData(ServerLevel world) {
         setDirty();
     }
 
@@ -38,7 +36,7 @@ public class TravelJournalManager extends SavedData {
     @Nullable
     public TravelJournalEntry updateJournalEntry(Player player, TravelJournalEntry entry) {
         Optional<TravelJournalEntry> optionalEntry = getJournalEntry(player, entry);
-        if (!optionalEntry.isPresent())
+        if (optionalEntry.isEmpty())
             return null;
 
         TravelJournalEntry updated = optionalEntry.get();
@@ -53,7 +51,7 @@ public class TravelJournalManager extends SavedData {
 
     public void deleteJournalEntry(Player player, TravelJournalEntry entry) {
         Optional<TravelJournalEntry> optionalEntry = getJournalEntry(player, entry);
-        if (!optionalEntry.isPresent())
+        if (optionalEntry.isEmpty())
             return;
 
         TravelJournalEntry deleted = optionalEntry.get();
@@ -92,32 +90,32 @@ public class TravelJournalManager extends SavedData {
         return addJournalEntry(player, entry);
     }
 
-    public static TravelJournalManager fromTag(ServerLevel world, CompoundTag tag) {
-        TravelJournalManager manager = new TravelJournalManager(world);
+    public static TravelJournalSavedData fromNbt(ServerLevel world, CompoundTag nbt) {
+        TravelJournalSavedData savedData = new TravelJournalSavedData(world);
 
         // inflate into hashmap
-        manager.playerJournalEntries = new HashMap<>();
+        savedData.playerJournalEntries = new HashMap<>();
 
-        Set<String> uuids = tag.getAllKeys();
+        Set<String> uuids = nbt.getAllKeys();
         for (String uuid : uuids) {
             UUID player = UUID.fromString(uuid);
-            ListTag listTag = tag.getList(uuid, 10);
-            List<TravelJournalEntry> entries = manager.unserializePlayerEntries(listTag);
-            manager.playerJournalEntries.put(player, entries);
+            ListTag listTag = nbt.getList(uuid, 10);
+            List<TravelJournalEntry> entries = savedData.unserializePlayerEntries(listTag);
+            savedData.playerJournalEntries.put(player, entries);
         }
 
-        return manager;
+        return savedData;
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag nbt) {
         // serialize all player journal entries into the master tag
         for (UUID uuid : playerJournalEntries.keySet()) {
             ListTag listTag = serializePlayerEntries(uuid);
-            tag.put(uuid.toString(), listTag);
+            nbt.put(uuid.toString(), listTag);
         }
 
-        return tag;
+        return nbt;
     }
 
     public ListTag serializePlayerEntries(UUID uuid) {
@@ -125,7 +123,7 @@ public class TravelJournalManager extends SavedData {
         ListTag tag = new ListTag();
 
         for (TravelJournalEntry entry : entries) {
-            tag.add(entry.toTag());
+            tag.add(entry.toNbt());
         }
 
         return tag;

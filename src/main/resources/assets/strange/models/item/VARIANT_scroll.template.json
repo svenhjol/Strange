@@ -7,13 +7,13 @@
     "overrides": [
       {
         "predicate": {
-          "scroll_state": 0
+          "scroll_state": 0.0
         },
         "model": "strange:item/VARIANT_scroll_closed"
       },
       {
         "predicate": {
-          "scroll_state": 0.1
+          "scroll_state": 1.0
         },
         "model": "strange:item/VARIANT_scroll_opened"
       }

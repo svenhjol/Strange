@@ -1,51 +1,52 @@
-package svenhjol.strange.module.scrolls.tag;
+package svenhjol.strange.module.scrolls.nbt;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.module.scrolls.ScrollDefinition;
-import svenhjol.strange.module.scrolls.ScrollsHelper;
-
-import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import org.apache.commons.lang3.RandomStringUtils;
+import svenhjol.strange.module.scrolls.ScrollDefinition;
+import svenhjol.strange.module.scrolls.ScrollHelper;
 
-public class Quest implements ISerializable {
-    private static final String ID_TAG = "id";
-    private static final String DEFINITION_TAG = "definition";
-    private static final String TITLE_TAG = "title";
-    private static final String DESCRIPTION_TAG = "description";
-    private static final String HINT_TAG = "hint";
-    private static final String MERCHANT_TAG = "merchant";
-    private static final String OWNER_TAG = "owner";
-    private static final String REWARD_TAG = "reward";
-    private static final String TIER_TAG = "tier";
-    private static final String RARITY_TAG = "rarity";
-    private static final String TIME_TAG = "time";
-    private static final String EXPIRY_TAG = "expiry";
-    private static final String GATHER_TAG = "gather";
-    private static final String HUNT_TAG = "hunt";
-    private static final String EXPLORE_TAG = "explore";
-    private static final String BOSS_TAG = "boss";
+import java.util.UUID;
+
+public class Quest implements IQuestSerializable {
+    private static final String ID_NBT = "id";
+    private static final String DEFINITION_NBT = "definition";
+    private static final String TITLE_NBT = "title";
+    private static final String DESCRIPTION_NBT = "description";
+    private static final String HINT_NBT = "hint";
+    private static final String MERCHANT_NBT = "merchant";
+    private static final String OWNER_NBT = "owner";
+    private static final String REWARD_NBT = "reward";
+    private static final String TIER_NBT = "tier";
+    private static final String RARITY_NBT = "rarity";
+    private static final String TIME_NBT = "time";
+    private static final String EXPIRY_NBT = "expiry";
+    private static final String GATHER_NBT = "gather";
+    private static final String HUNT_NBT = "hunt";
+    private static final String EXPLORE_NBT = "explore";
+    private static final String BOSS_NBT = "boss";
 
     private String id = "";
     private String definition = "";
     private String title = "";
     private String description = "";
     private String hint = "";
-    private UUID owner = ScrollsHelper.ANY_UUID;
-    private UUID merchant = ScrollsHelper.ANY_UUID;
+    private UUID owner = ScrollHelper.ANY_UUID;
+    private UUID merchant = ScrollHelper.ANY_UUID;
     private int tier = 1;
     private int rarity = 1;
     private int expiry = 0;
     private int time = 0;
     private boolean dirty = false;
-    private Reward reward = new Reward(this);
-    private Gather gather = new Gather(this);
-    private Hunt hunt = new Hunt(this);
-    private Explore explore = new Explore(this);
-    private Boss boss = new Boss(this);
+
+    private final Reward reward = new Reward(this);
+    private final Gather gather = new Gather(this);
+    private final Hunt hunt = new Hunt(this);
+    private final Explore explore = new Explore(this);
+    private final Boss boss = new Boss(this);
 
     private Quest() { }
 
@@ -60,46 +61,46 @@ public class Quest implements ISerializable {
         this.owner = owner;
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
 
-        tag.putInt(TIER_TAG, tier);
-        tag.putInt(RARITY_TAG, rarity);
-        tag.putInt(EXPIRY_TAG, expiry);
-        tag.putInt(TIME_TAG, time);
-        tag.putString(MERCHANT_TAG, merchant.toString());
-        tag.putString(OWNER_TAG, owner.toString());
-        tag.putString(ID_TAG, id);
-        tag.putString(DEFINITION_TAG, definition);
-        tag.putString(TITLE_TAG, title);
-        tag.putString(DESCRIPTION_TAG, description);
-        tag.putString(HINT_TAG, hint);
-        tag.put(REWARD_TAG, reward.toTag());
-        tag.put(GATHER_TAG, gather.toTag());
-        tag.put(HUNT_TAG, hunt.toTag());
-        tag.put(EXPLORE_TAG, explore.toTag());
-        tag.put(BOSS_TAG, boss.toTag());
+        nbt.putInt(TIER_NBT, tier);
+        nbt.putInt(RARITY_NBT, rarity);
+        nbt.putInt(EXPIRY_NBT, expiry);
+        nbt.putInt(TIME_NBT, time);
+        nbt.putString(MERCHANT_NBT, merchant.toString());
+        nbt.putString(OWNER_NBT, owner.toString());
+        nbt.putString(ID_NBT, id);
+        nbt.putString(DEFINITION_NBT, definition);
+        nbt.putString(TITLE_NBT, title);
+        nbt.putString(DESCRIPTION_NBT, description);
+        nbt.putString(HINT_NBT, hint);
+        nbt.put(REWARD_NBT, reward.toNbt());
+        nbt.put(GATHER_NBT, gather.toNbt());
+        nbt.put(HUNT_NBT, hunt.toNbt());
+        nbt.put(EXPLORE_NBT, explore.toNbt());
+        nbt.put(BOSS_NBT, boss.toNbt());
 
-        return tag;
+        return nbt;
     }
 
-    public void fromTag(CompoundTag tag) {
-        tier = tag.getInt(TIER_TAG);
-        rarity = Math.max(1, tag.getInt(RARITY_TAG));
-        expiry = Math.max(0, tag.getInt(EXPIRY_TAG));
-        time = Math.max(0, tag.getInt(TIME_TAG));
-        merchant = UUID.fromString(tag.getString(MERCHANT_TAG));
-        owner = UUID.fromString(tag.getString(OWNER_TAG));
-        id = tag.getString(ID_TAG);
-        definition = tag.getString(DEFINITION_TAG);
-        title = tag.getString(TITLE_TAG);
-        description = tag.getString(DESCRIPTION_TAG);
-        hint = tag.getString(HINT_TAG);
-        reward.fromTag(tag.getCompound(REWARD_TAG));
-        gather.fromTag(tag.getCompound(GATHER_TAG));
-        hunt.fromTag(tag.getCompound(HUNT_TAG));
-        explore.fromTag(tag.getCompound(EXPLORE_TAG));
-        boss.fromTag(tag.getCompound(BOSS_TAG));
+    public void fromNbt(CompoundTag nbt) {
+        tier = nbt.getInt(TIER_NBT);
+        rarity = Math.max(1, nbt.getInt(RARITY_NBT));
+        expiry = Math.max(0, nbt.getInt(EXPIRY_NBT));
+        time = Math.max(0, nbt.getInt(TIME_NBT));
+        merchant = UUID.fromString(nbt.getString(MERCHANT_NBT));
+        owner = UUID.fromString(nbt.getString(OWNER_NBT));
+        id = nbt.getString(ID_NBT);
+        definition = nbt.getString(DEFINITION_NBT);
+        title = nbt.getString(TITLE_NBT);
+        description = nbt.getString(DESCRIPTION_NBT);
+        hint = nbt.getString(HINT_NBT);
+        reward.fromNbt(nbt.getCompound(REWARD_NBT));
+        gather.fromNbt(nbt.getCompound(GATHER_NBT));
+        hunt.fromNbt(nbt.getCompound(HUNT_NBT));
+        explore.fromNbt(nbt.getCompound(EXPLORE_NBT));
+        boss.fromNbt(nbt.getCompound(BOSS_NBT));
     }
 
     public void setDirty(boolean flag) {
@@ -240,9 +241,9 @@ public class Quest implements ISerializable {
         boss.entityKilled(entity, attacker);
     }
 
-    public static Quest getFromTag(CompoundTag fromTag) {
+    public static Quest getFromNbt(CompoundTag nbt) {
         Quest quest = new Quest();
-        quest.fromTag(fromTag);
+        quest.fromNbt(nbt);
         return quest;
     }
 }

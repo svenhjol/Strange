@@ -5,21 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import svenhjol.charm.helper.PlayerHelper;
-import svenhjol.strange.Strange;
-import svenhjol.strange.command.arg.QuestDefinitionArgType;
-import svenhjol.strange.command.arg.QuestIdArgType;
-import svenhjol.strange.command.arg.RuneArgType;
-import svenhjol.strange.module.runestones.RunestonesHelper;
-import svenhjol.strange.module.scrolls.ScrollItem;
-import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.scrolls.ScrollDefinition;
-import svenhjol.strange.module.scrolls.populator.BasePopulator;
-import svenhjol.strange.module.scrolls.tag.Quest;
-import svenhjol.strange.module.scrolls.QuestManager;
-
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,6 +13,21 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.charm.helper.PlayerHelper;
+import svenhjol.strange.Strange;
+import svenhjol.strange.command.arg.QuestDefinitionArgType;
+import svenhjol.strange.command.arg.QuestIdArgType;
+import svenhjol.strange.command.arg.RuneArgType;
+import svenhjol.strange.module.runestones.RunestonesHelper;
+import svenhjol.strange.module.scrolls.QuestSavedData;
+import svenhjol.strange.module.scrolls.ScrollDefinition;
+import svenhjol.strange.module.scrolls.ScrollItem;
+import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.scrolls.populator.BasePopulator;
+
+import java.util.List;
+import java.util.Optional;
 
 public class StrangeCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -81,10 +81,10 @@ public class StrangeCommand {
 
     private static int abandonQuest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        QuestManager questManager = getQuestManager();
+        QuestSavedData savedData = getSavedData();
 
         String id = QuestIdArgType.getId(context, "id");
-        boolean result = questManager.abandonQuest(player, id);
+        boolean result = savedData.abandonQuest(player, id);
         context.getSource().sendSuccess(new TranslatableComponent(result ? "scroll.strange.abandoned_quest" : "scroll.strange.no_quest_found", id), false);
 
         return Command.SINGLE_SUCCESS;
@@ -92,8 +92,8 @@ public class StrangeCommand {
 
     private static int abandonMyQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        QuestManager questManager = getQuestManager();
-        questManager.abandonQuests(player);
+        QuestSavedData savedData = getSavedData();
+        savedData.abandonQuests(player);
 
         context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.abandoned_quests"), false);
 
@@ -101,8 +101,8 @@ public class StrangeCommand {
     }
 
     private static int abandonAllQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        QuestManager questManager = getQuestManager();
-        questManager.abandonAllQuests();
+        QuestSavedData savedData = getSavedData();
+        savedData.abandonAllQuests();
 
         context.getSource().sendSuccess(new TranslatableComponent("scroll.strange.abandoned_all_quests"), false);
 
@@ -121,17 +121,15 @@ public class StrangeCommand {
 
     private static int giveMap(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        QuestManager questManager = getQuestManager();
+        QuestSavedData savedData = getSavedData();
         String questId = QuestIdArgType.getId(context, "id");
         Quest quest = getQuestById(questId);
-
 
         // check the player has an empty map and reduce by 1 when found
         consumeRequiredItem(player, new ItemStack(Items.MAP), "scroll.strange.map_required");
 
-
         // setup the quest populators and iterate through for maps
-        List<BasePopulator> populators = questManager.getPopulatorsForQuest(player, quest);
+        List<BasePopulator> populators = savedData.getPopulatorsForQuest(player, quest);
 
         populators.forEach(populator -> {
             ItemStack map = populator.getMap();
@@ -186,9 +184,9 @@ public class StrangeCommand {
     }
 
     private static int listAllQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        QuestManager questManager = getQuestManager();
+        QuestSavedData savedData = getSavedData();
 
-        List<Quest> quests = questManager.getQuests();
+        List<Quest> quests = savedData.getQuests();
 
         if (!quests.isEmpty()) {
             quests.forEach(quest
@@ -202,9 +200,9 @@ public class StrangeCommand {
 
     private static int listMyQuests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        QuestManager questManager = getQuestManager();
+        QuestSavedData savedData = getSavedData();
 
-        List<Quest> quests = questManager.getQuests(player);
+        List<Quest> quests = savedData.getQuests(player);
 
         if (!quests.isEmpty()) {
             quests.forEach(quest
@@ -218,14 +216,14 @@ public class StrangeCommand {
 
     private static int startQuest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        QuestManager questManager = getQuestManager();
+        QuestSavedData savedData = getSavedData();
 
         int rarity = 1;
         ScrollDefinition definition = Scrolls.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
         if (definition == null)
             throw makeException("Invalid definition", new TranslatableComponent("scroll.strange.no_scroll_definition").getString());
 
-        Quest quest = questManager.createQuest(player, definition, rarity, null);
+        Quest quest = savedData.createQuest(player, definition, rarity, null);
         if (quest != null) {
             ScrollItem.giveScrollToPlayer(quest, player);
         } else {
@@ -237,8 +235,8 @@ public class StrangeCommand {
     }
 
     private static Quest getQuestById(String questId) throws CommandSyntaxException {
-        Optional<Quest> optionalQuest = getQuestManager().getQuest(questId);
-        if (!optionalQuest.isPresent())
+        Optional<Quest> optionalQuest = getSavedData().getQuest(questId);
+        if (optionalQuest.isEmpty())
             throw makeException("Invalid quest", new TranslatableComponent("scroll.strange.no_quest_found").getString());
 
         return optionalQuest.get();
@@ -263,16 +261,14 @@ public class StrangeCommand {
     }
 
     /**
-     * Unwraps the optional, throws an exception if QM is not available.
-     * @return QuestManager
-     * @throws CommandSyntaxException
+     * Unwraps the optional, throws an exception if savedData is not available.
      */
-    public static QuestManager getQuestManager() throws CommandSyntaxException {
-        Optional<QuestManager> questManager = Scrolls.getQuestManager();
+    public static QuestSavedData getSavedData() throws CommandSyntaxException {
+        Optional<QuestSavedData> questSavedData = Scrolls.getSavedData();
 
-        if (!questManager.isPresent())
-            throw makeException("Internal error", new TranslatableComponent("scroll.strange.quest_manager_not_loaded").getString());
+        if (questSavedData.isEmpty())
+            throw makeException("Internal error", new TranslatableComponent("scroll.strange.saved_data_not_loaded").getString());
 
-        return questManager.get();
+        return questSavedData.get();
     }
 }

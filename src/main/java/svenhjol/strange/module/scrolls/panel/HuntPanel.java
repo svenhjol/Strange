@@ -1,16 +1,17 @@
 package svenhjol.strange.module.scrolls.panel;
 
-import svenhjol.strange.init.StrangeIcons;
-import svenhjol.strange.module.scrolls.tag.Hunt;
-import svenhjol.strange.module.scrolls.tag.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.strange.init.StrangeIcons;
+import svenhjol.strange.module.scrolls.nbt.Hunt;
+import svenhjol.strange.module.scrolls.nbt.Quest;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class HuntPanel extends BasePanel {
     public static HuntPanel INSTANCE = new HuntPanel();

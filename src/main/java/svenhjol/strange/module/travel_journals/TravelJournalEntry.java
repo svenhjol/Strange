@@ -13,11 +13,11 @@ public class TravelJournalEntry {
     public ResourceLocation dim;
     public int color;
 
-    public static final String ID = "id";
-    public static final String POS = "pos";
-    public static final String DIM = "dim";
-    public static final String NAME = "name";
-    public static final String COLOR = "color";
+    public static final String ID_NBT = "id";
+    public static final String POS_NBT = "pos";
+    public static final String DIM_NBT = "dim";
+    public static final String NAME_NBT = "name";
+    public static final String COLOR_NBT = "color";
 
     public TravelJournalEntry(String id, BlockPos pos, ResourceLocation dim) {
         this.id = id;
@@ -38,38 +38,38 @@ public class TravelJournalEntry {
     }
 
     public TravelJournalEntry(CompoundTag tag) {
-        fromTag(tag);
+        fromNbt(tag);
     }
 
     public TravelJournalEntry(TravelJournalEntry entry) {
         fromEntry(entry);
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString(ID, id);
-        tag.putString(NAME, name.substring(0, Math.min(name.length(), TravelJournals.MAX_NAME_LENGTH)));
-        tag.putInt(COLOR, color);
+    public CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString(ID_NBT, id);
+        nbt.putString(NAME_NBT, name.substring(0, Math.min(name.length(), TravelJournals.MAX_NAME_LENGTH)));
+        nbt.putInt(COLOR_NBT, color);
 
         if (dim != null)
-            tag.putString(DIM, dim.toString());
+            nbt.putString(DIM_NBT, dim.toString());
 
         if (pos != null)
-            tag.putLong(POS, pos.asLong());
+            nbt.putLong(POS_NBT, pos.asLong());
 
-        return tag;
+        return nbt;
     }
 
-    public void fromTag(CompoundTag tag) {
-        id = tag.getString(ID);
-        name = tag.getString(NAME);
-        color = tag.getInt(COLOR);
+    public void fromNbt(CompoundTag nbt) {
+        id = nbt.getString(ID_NBT);
+        name = nbt.getString(NAME_NBT);
+        color = nbt.getInt(COLOR_NBT);
 
-        if (tag.contains(POS))
-            pos = BlockPos.of(tag.getLong(POS));
+        if (nbt.contains(POS_NBT))
+            pos = BlockPos.of(nbt.getLong(POS_NBT));
 
-        if (tag.contains(DIM))
-            dim = new ResourceLocation(tag.getString(DIM));
+        if (nbt.contains(DIM_NBT))
+            dim = new ResourceLocation(nbt.getString(DIM_NBT));
     }
 
     public void fromEntry(TravelJournalEntry entry) {

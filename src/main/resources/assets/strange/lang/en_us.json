@@ -202,7 +202,7 @@
   "scroll.strange.create_quest_failed": "Failed to create quest.",
   "scroll.strange.map_given": "Map(s) provided for quest %s.",
   "scroll.strange.map_required": "You must have an empty map in your inventory.",
-  "scroll.strange.quest_manager_not_loaded": "Quest manager is not loaded",
+  "scroll.strange.saved_data_not_loaded": "Saved data is not loaded",
   "scroll.strange.no_quests": "There are no quests.",
   "scroll.strange.no_quest_found": "No quest found with this ID.",
   "scroll.strange.no_scroll_definition": "No scroll definition found.",

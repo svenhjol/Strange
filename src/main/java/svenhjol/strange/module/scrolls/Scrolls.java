@@ -46,7 +46,7 @@ import svenhjol.charm.module.CharmModule;
 import svenhjol.charm.module.bookcases.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -65,14 +65,19 @@ public class Scrolls extends CharmModule {
     public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest"); // instruct server to abandon a quest (by id)
 
     public static final ResourceLocation TRIGGER_COMPLETED_SCROLL = new ResourceLocation(Strange.MOD_ID, "completed_scroll");
-    public static final ResourceLocation SCROLL_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "scroll_loot");
-    public static LootItemFunctionType SCROLL_LOOT_FUNCTION;
+    public static final String QUESTS_NBT = "quests";
+
+    public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "scroll_loot");
+    public static LootItemFunctionType LOOT_FUNCTION;
 
     public static Map<Integer, Map<String, ScrollDefinition>> AVAILABLE_SCROLLS = new HashMap<>();
     public static Map<Integer, ScrollItem> SCROLL_TIERS = new HashMap<>();
     public static Map<Integer, String> SCROLL_TIER_IDS = new HashMap<>();
 
-    private static QuestManager questManager; // always access this via getQuestManager()
+    public static List<ResourceLocation> LOOT_TABLES_FOR_NORMAL_SCROLLS = new ArrayList<>();
+    public static List<ResourceLocation> LOOT_TABLES_FOR_LEGENDARY_SCROLLS = new ArrayList<>();
+
+    private static QuestSavedData savedData; // always access this via getSavedData()
 
     @Config(name = "Use built-in scroll quests", description = "If true, scroll quests will use the built-in definitions. Use false to limit quests to datapacks.")
     public static boolean useBuiltInScrolls = true;
@@ -97,6 +102,12 @@ public class Scrolls extends CharmModule {
         SCROLL_TIER_IDS.put(4, "expert");
         SCROLL_TIER_IDS.put(5, "master");
         SCROLL_TIER_IDS.put(6, "legendary");
+
+        LOOT_TABLES_FOR_NORMAL_SCROLLS.add(BuiltInLootTables.PILLAGER_OUTPOST);
+        LOOT_TABLES_FOR_NORMAL_SCROLLS.add(BuiltInLootTables.WOODLAND_MANSION);
+        LOOT_TABLES_FOR_NORMAL_SCROLLS.add(StrangeLoot.STONE_CIRCLE);
+
+        LOOT_TABLES_FOR_LEGENDARY_SCROLLS.add(StrangeLoot.RUBBLE);
     }
 
     @Override
@@ -106,14 +117,14 @@ public class Scrolls extends CharmModule {
         }
 
         // handle adding normal scrolls to loot
-        SCROLL_LOOT_FUNCTION = RegistryHelper.lootFunctionType(SCROLL_LOOT_ID, new LootItemFunctionType(new ScrollLootFunction.Serializer()));
+        LOOT_FUNCTION = RegistryHelper.lootFunctionType(LOOT_ID, new LootItemFunctionType(new ScrollLootFunction.Serializer()));
     }
 
     @Override
     public void init() {
-        // load quest manager and scrolls when world starts
+        // load saved dataa and scrolls when world starts
         LoadServerFinishCallback.EVENT.register(server -> {
-            loadQuestManager(server);
+            loadSavedData(server);
             tryLoadScrolls(server);
         });
 
@@ -126,8 +137,8 @@ public class Scrolls extends CharmModule {
         // tick the quests belonging to the player
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
-        // tick the questmanager
-        ServerTickEvents.END_SERVER_TICK.register(server -> questManager.tick());
+        // tick the saved data
+        ServerTickEvents.END_SERVER_TICK.register(server -> savedData.tick());
 
         // allow scrolls on Charm's bookcases
         if (ModuleHandler.enabled(Bookcases.class)) {
@@ -141,15 +152,13 @@ public class Scrolls extends CharmModule {
     }
 
     public static void sendPlayerQuestsPacket(ServerPlayer player) {
-        Optional<QuestManager> questManager = getQuestManager();
-        questManager.ifPresent(manager -> {
-            sendQuestsPacket(player, manager.getQuests(player));
-        });
+        Optional<QuestSavedData> savedData = getSavedData();
+        savedData.ifPresent(data -> sendQuestsPacket(player, data.getQuests(player)));
     }
 
     public static void sendPlayerOpenScrollPacket(ServerPlayer player, Quest quest) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
-        data.writeNbt(quest.toTag());
+        data.writeNbt(quest.toNbt());
         ServerPlayNetworking.send(player, MSG_CLIENT_OPEN_SCROLL, data);
     }
 
@@ -157,10 +166,10 @@ public class Scrolls extends CharmModule {
         // convert to nbt and write to packet buffer
         ListTag listTag = new ListTag();
         for (Quest quest : quests) {
-            listTag.add(quest.toTag());
+            listTag.add(quest.toNbt());
         }
         CompoundTag outTag = new CompoundTag();
-        outTag.put("quests", listTag);
+        outTag.put(QUESTS_NBT, listTag);
 
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeNbt(outTag);
@@ -168,8 +177,8 @@ public class Scrolls extends CharmModule {
         ServerPlayNetworking.send(player, MSG_CLIENT_CACHE_CURRENT_QUESTS, buffer);
     }
 
-    public static Optional<QuestManager> getQuestManager() {
-        return questManager != null ? Optional.of(questManager) : Optional.empty();
+    public static Optional<QuestSavedData> getSavedData() {
+        return Optional.ofNullable(savedData);
     }
 
     @Nullable
@@ -236,20 +245,20 @@ public class Scrolls extends CharmModule {
         return null;
     }
 
-    private void loadQuestManager(MinecraftServer server) {
+    private void loadSavedData(MinecraftServer server) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         if (overworld == null) {
-            Charm.LOG.warn("[Scrolls] Overworld is null, cannot load persistent state manager");
+            Charm.LOG.warn("[Scrolls] Overworld is null, cannot load saved data");
             return;
         }
 
-        DimensionDataStorage stateManager = overworld.getDataStorage();
-        questManager = stateManager.computeIfAbsent(
-            (tag) -> QuestManager.fromNbt(overworld, tag),
-            () -> new QuestManager(overworld),
-            QuestManager.nameFor(overworld.dimensionType()));
+        DimensionDataStorage storage = overworld.getDataStorage();
+        savedData = storage.computeIfAbsent(
+            (tag) -> QuestSavedData.fromNbt(overworld, tag),
+            () -> new QuestSavedData(overworld),
+            QuestSavedData.nameFor(overworld.dimensionType()));
 
-        Charm.LOG.info("[Scrolls] Loaded quest state manager");
+        Charm.LOG.info("[Scrolls] Loaded saved data");
     }
 
     private void tryLoadScrolls(MinecraftServer server) {
@@ -275,7 +284,7 @@ public class Scrolls extends CharmModule {
                             valid = valid && ModuleHandler.enabled(requiredModule);
                         }
                         if (!valid) {
-                            Charm.LOG.info("Scroll definition " + scroll.toString() + " is missing required modules, disabling.");
+                            Charm.LOG.info("Scroll definition " + scroll + " is missing required modules, disabling.");
                             continue;
                         }
                     }
@@ -285,7 +294,7 @@ public class Scrolls extends CharmModule {
                     definition.setTitle(id);
                     definition.setTier(tier);
                     AVAILABLE_SCROLLS.get(tier).put(id, definition);
-                    Charm.LOG.info("Loaded scroll definition " + scroll.toString() + " for tier " + tier);
+                    Charm.LOG.info("Loaded scroll definition " + scroll + " for tier " + tier);
 
                 } catch (Exception e) {
                     Charm.LOG.warn("Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
@@ -296,10 +305,10 @@ public class Scrolls extends CharmModule {
 
     private void handleEntityDeath(LivingEntity entity, DamageSource source) {
         Entity attacker = source.getEntity();
-        if (!Scrolls.getQuestManager().isPresent())
+        if (Scrolls.getSavedData().isEmpty())
             return;
 
-        Scrolls.getQuestManager().get()
+        Scrolls.getSavedData().get()
             .forEachQuest(quest -> quest.entityKilled(entity, attacker));
     }
 
@@ -307,14 +316,13 @@ public class Scrolls extends CharmModule {
         if (player.level.getGameTime() % 20 != 0)
             return; // poll once every second
 
-        if (!(player instanceof ServerPlayer))
+        if (!(player instanceof ServerPlayer serverPlayer))
             return; // must be server-side
 
-        if (!Scrolls.getQuestManager().isPresent())
-            return; // must have an instantiated quest manager
+        if (Scrolls.getSavedData().isEmpty())
+            return; // must have instantiated saved data
 
-        ServerPlayer serverPlayer = (ServerPlayer) player;
-        Scrolls.getQuestManager().get()
+        Scrolls.getSavedData().get()
             .forEachPlayerQuest(serverPlayer, quest -> quest.playerTick(serverPlayer));
     }
 
@@ -322,7 +330,7 @@ public class Scrolls extends CharmModule {
         if (!addScrollsToLoot)
             return;
 
-        if (id.equals(BuiltInLootTables.PILLAGER_OUTPOST) || id.equals(BuiltInLootTables.WOODLAND_MANSION)) {
+        if (LOOT_TABLES_FOR_NORMAL_SCROLLS.contains(id)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantValue.exactly(1))
                 .with(LootItem.lootTableItem(Items.AIR)
@@ -332,7 +340,7 @@ public class Scrolls extends CharmModule {
             supplier.withPool(builder);
         }
 
-        if (id.equals(StrangeLoot.RUBBLE)) {
+        if (LOOT_TABLES_FOR_LEGENDARY_SCROLLS.contains(id)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(UniformGenerator.between(0.0F, 1.0F))
                 .with(LootItem.lootTableItem(SCROLL_TIERS.get(TIERS)));
@@ -346,9 +354,9 @@ public class Scrolls extends CharmModule {
         if (questId == null || questId.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
-            Optional<Quest> optionalQuest = manager.getQuest(questId);
-            if (!optionalQuest.isPresent())
+        processClientPacket(server, player, savedData -> {
+            Optional<Quest> optionalQuest = savedData.getQuest(questId);
+            if (optionalQuest.isEmpty())
                 return;
 
             Scrolls.sendPlayerOpenScrollPacket(player, optionalQuest.get());
@@ -356,7 +364,7 @@ public class Scrolls extends CharmModule {
     }
 
     private void handleServerFetchCurrentQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
-        processClientPacket(server, player, manager -> Scrolls.sendPlayerQuestsPacket(player));
+        processClientPacket(server, player, savedData -> Scrolls.sendPlayerQuestsPacket(player));
     }
 
     private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
@@ -364,9 +372,9 @@ public class Scrolls extends CharmModule {
         if (questId == null || questId.isEmpty())
             return;
 
-        processClientPacket(server, player, manager -> {
-            Optional<Quest> optionalQuest = manager.getQuest(questId);
-            if (!optionalQuest.isPresent())
+        processClientPacket(server, player, savedData -> {
+            Optional<Quest> optionalQuest = savedData.getQuest(questId);
+            if (optionalQuest.isEmpty())
                 return;
 
             Quest quest = optionalQuest.get();
@@ -376,13 +384,13 @@ public class Scrolls extends CharmModule {
         });
     }
 
-    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<QuestManager> callback) {
+    private void processClientPacket(MinecraftServer server, ServerPlayer player, Consumer<QuestSavedData> callback) {
         server.execute(() -> {
             if (player == null)
                 return;
 
-            Optional<QuestManager> questManager = Scrolls.getQuestManager();
-            questManager.ifPresent(callback);
+            Optional<QuestSavedData> questSavedData = Scrolls.getSavedData();
+            questSavedData.ifPresent(callback);
         });
     }
 

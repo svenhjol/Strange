@@ -1,6 +1,5 @@
 package svenhjol.strange.module.runestones;
 
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -8,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
+
 public class RunestoneBlockEntity extends BlockEntity {
-    public static final String POSITION_TAG = "position";
-    public static final String LOCATION_TAG = "location";
-    public static final String PLAYER_TAG = "player";
+    public static final String POSITION_NBT = "Position";
+    public static final String LOCATION_NBT = "Location";
+    public static final String PLAYER_NBT = "Player";
 
     public BlockPos position;
     public ResourceLocation location;
@@ -24,10 +25,10 @@ public class RunestoneBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.position = BlockPos.of(tag.getLong(POSITION_TAG));
-        this.player = tag.getString(PLAYER_TAG);
+        this.position = BlockPos.of(tag.getLong(POSITION_NBT));
+        this.player = tag.getString(PLAYER_NBT);
 
-        String location = tag.getString(LOCATION_TAG);
+        String location = tag.getString(LOCATION_NBT);
         this.location = !location.isEmpty() ? new ResourceLocation(location) : null;
     }
 
@@ -35,13 +36,13 @@ public class RunestoneBlockEntity extends BlockEntity {
     public CompoundTag save(CompoundTag tag) {
         super.save(tag);
         if (this.position != null) {
-            tag.putLong(POSITION_TAG, this.position.asLong());
+            tag.putLong(POSITION_NBT, this.position.asLong());
 
             if (location != null)
-                tag.putString(LOCATION_TAG, this.location.toString());
+                tag.putString(LOCATION_NBT, this.location.toString());
 
             if (player != null)
-                tag.putString(PLAYER_TAG, this.player);
+                tag.putString(PLAYER_NBT, this.player);
         }
         return tag;
     }

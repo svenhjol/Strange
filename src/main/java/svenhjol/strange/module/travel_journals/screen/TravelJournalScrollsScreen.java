@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.helper.NetworkHelper;
 import svenhjol.strange.module.scrolls.Scrolls;
 import svenhjol.strange.module.scrolls.ScrollsClient;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class TravelJournalScrollsScreen extends TravelJournalBaseScreen {
 
     @Override
     public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
-        if (!getClient().isPresent())
+        if (getClient().isEmpty())
             return;
 
         super.render(matrices, mouseX, mouseY, delta);

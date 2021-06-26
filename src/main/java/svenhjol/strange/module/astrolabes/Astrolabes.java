@@ -66,7 +66,7 @@ public class Astrolabes extends CharmModule {
             Optional<ResourceKey<Level>> dimension = AstrolabeBlockItem.getDimension(held);
             Optional<BlockPos> position = AstrolabeBlockItem.getPosition(held);
 
-            if (!dimension.isPresent() || !position.isPresent())
+            if (dimension.isEmpty() || position.isEmpty())
                 continue;
 
             ResourceKey<Level> dim = dimension.get();

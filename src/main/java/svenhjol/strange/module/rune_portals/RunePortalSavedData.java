@@ -21,32 +21,31 @@ import svenhjol.strange.init.StrangeSounds;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RunePortalManager extends SavedData {
+public class RunePortalSavedData extends SavedData {
     public static final String RUNES_NBT = "Runes";
 
     private final Level world;
     private final Map<BlockPos, DyeColor> colors = new HashMap<>();
     private Map<String, List<BlockPos>> runes = new HashMap<>();
 
-    public RunePortalManager(ServerLevel world) {
+    public RunePortalSavedData(ServerLevel world) {
         this.world = world;
         setDirty();
     }
     
-    public static RunePortalManager fromNbt(ServerLevel world, CompoundTag nbt) {
-        RunePortalManager manager = new RunePortalManager(world);
+    public static RunePortalSavedData fromNbt(ServerLevel world, CompoundTag nbt) {
+        RunePortalSavedData runePortalSavedData = new RunePortalSavedData(world);
         CompoundTag runes = (CompoundTag)nbt.get(RUNES_NBT);
-
-        manager.runes = new HashMap<>();
+        runePortalSavedData.runes = new HashMap<>();
 
         if (runes != null && !runes.isEmpty()) {
             runes.getAllKeys().forEach(s -> {
                 List<BlockPos> value = Arrays.stream(runes.getLongArray(s)).mapToObj(BlockPos::of).collect(Collectors.toList());
-                manager.runes.put(s, new ArrayList<>(value));
+                runePortalSavedData.runes.put(s, new ArrayList<>(value));
             });
         }
 
-        return manager;
+        return runePortalSavedData;
     }
     
     @Override

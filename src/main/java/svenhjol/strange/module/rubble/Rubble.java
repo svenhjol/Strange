@@ -11,7 +11,7 @@ import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
 
-@Module(mod = Strange.MOD_ID, client = RubbleClient.class, description = "Rubble contains a valuable item. Hold down a shovel to start extracting it.")
+@Module(mod = Strange.MOD_ID, client = RubbleClient.class, description = "Rubble contains a valuable item.  Use a shovel as if you were drawing a bow to start extracting it.")
 public class Rubble extends CharmModule {
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "rubble");
     public static final ResourceLocation TRIGGER_HARVESTED_RUBBLE = new ResourceLocation(Strange.MOD_ID, "harvested_rubble");

@@ -1,15 +1,15 @@
 package svenhjol.strange.module.runestones.destination;
 
-import svenhjol.charm.Charm;
-import svenhjol.charm.helper.PosHelper;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
+import svenhjol.charm.Charm;
+import svenhjol.charm.helper.PosHelper;
+
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public class BiomeDestination extends BaseDestination {
             // TODO check this works with modded biomes
             Optional<Biome> biome = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(location);
 
-            if (!biome.isPresent()) {
+            if (biome.isEmpty()) {
                 Charm.LOG.warn("Could not find biome in registry of type: " + location);
                 return null;
             }

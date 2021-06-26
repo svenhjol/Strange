@@ -19,8 +19,8 @@ public class RunestoneDustEntity extends Entity {
 
     private static final EntityDataAccessor<Integer> TARGET_X = SynchedEntityData.defineId(RunestoneDustEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TARGET_Z = SynchedEntityData.defineId(RunestoneDustEntity.class, EntityDataSerializers.INT);
-    private static final String TAG_TARGET_X = "targetX";
-    private static final String TAG_TARGET_Z = "targetZ";
+    private static final String TARGET_X_NBT = "targetX";
+    private static final String TARGET_Z_NBT = "targetZ";
 
     public RunestoneDustEntity(EntityType<? extends RunestoneDustEntity> type, Level world) {
         super(type, world);
@@ -40,14 +40,14 @@ public class RunestoneDustEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        entityData.set(TARGET_X, tag.getInt(TAG_TARGET_X));
-        entityData.set(TARGET_Z, tag.getInt(TAG_TARGET_Z));
+        entityData.set(TARGET_X, tag.getInt(TARGET_X_NBT));
+        entityData.set(TARGET_Z, tag.getInt(TARGET_Z_NBT));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putInt(TAG_TARGET_X, entityData.get(TARGET_X));
-        tag.putInt(TAG_TARGET_Z, entityData.get(TARGET_Z));
+        tag.putInt(TARGET_X_NBT, entityData.get(TARGET_X));
+        tag.putInt(TARGET_Z_NBT, entityData.get(TARGET_Z));
     }
 
     @Override

@@ -11,14 +11,14 @@ import svenhjol.strange.init.StrangeIcons;
 import svenhjol.strange.module.travel_journals.screen.TravelJournalScrollsScreen;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.scrolls.panel.*;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollScreen extends Screen {
     private final Quest quest;
-    private boolean backToJournal;
+    private final boolean backToJournal;
 
     public ScrollScreen(Quest quest, boolean backToJournal) {
         super(new TranslatableComponent(quest.getTitle()));

@@ -26,22 +26,28 @@ import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.*;
 import svenhjol.charm.module.variant_chests.VariantChests;
 import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.scrolls.tag.Explore;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.nbt.Explore;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExplorePopulator extends BasePopulator {
-    public static final String ITEMS = "items";
-    public static final String SETTINGS = "settings";
-    public static final String STRUCTURE = "structure";
+    public static final String SETTINGS_NBT = "settings";
+    public static final String STRUCTURE_NBT = "structure";
 
     public static final int MAP_COLOR = 0x007700;
+    public static final int POPULATE_DISTANCE = 1200;
 
     private static final BlockState OVERWORLD_PLATFORM_BASE = Blocks.STONE.defaultBlockState();
     private static final BlockState NETHER_PLATFORM_BASE = Blocks.BLACKSTONE.defaultBlockState();
     private static final BlockState END_PLATFORM_BASE = Blocks.END_STONE_BRICKS.defaultBlockState();
+
+    public static final ResourceLocation FALLBACK_STRUCTURE = new ResourceLocation("minecraft", "mineshaft");
+    public static final int DEFAULT_MIN_DISTANCE = 750;
+    public static final int DEFAULT_MAX_DISTANCE = 1500;
+    public static final int DEFAULT_CHEST_START = 32;
+    public static final int DEFAULT_CHEST_RANGE = 24;
 
     public ExplorePopulator(ServerPlayer player, Quest quest) {
         super(player, quest);
@@ -55,28 +61,27 @@ public class ExplorePopulator extends BasePopulator {
         if (explore.isEmpty())
             return;
 
-
         // populate the items for the quest
-        if (explore.containsKey(ITEMS))
-            items = parseItems(explore.get(ITEMS), 4, false);
+        if (explore.containsKey(ITEMS_NBT))
+            items = parseItems(explore.get(ITEMS_NBT), 4, false);
 
         if (items.isEmpty())
             fail("No items found for quest");
 
 
         // set the quest tag of each item stack to the quest ID so we can match it later
-        items.forEach(item -> item.getOrCreateTag().putString(Explore.QUEST, quest.getId()));
+        items.forEach(item -> item.getOrCreateTag().putString(Explore.QUEST_NBT, quest.getId()));
 
 
         // parse settings
-        Map<String, Map<String, String>> exploreMap = explore.getOrDefault(SETTINGS, new HashMap<>());
-        Map<String, String> structureSettings = exploreMap.getOrDefault(STRUCTURE, new HashMap<>());
+        Map<String, Map<String, String>> exploreMap = explore.getOrDefault(SETTINGS_NBT, new HashMap<>());
+        Map<String, String> structureSettings = exploreMap.getOrDefault(STRUCTURE_NBT, new HashMap<>());
 
-        String type = structureSettings.getOrDefault("type", "minecraft:mineshaft");
-        int minDistance = Integer.parseInt(structureSettings.getOrDefault("min_distance", "750"));
-        int maxDistance = Integer.parseInt(structureSettings.getOrDefault("max_distance", "1500"));
-        int chestStart = Integer.parseInt(structureSettings.getOrDefault("chest_start", "32"));
-        int chestRange = Integer.parseInt(structureSettings.getOrDefault("chest_range", "24"));
+        String type = structureSettings.getOrDefault("type", FALLBACK_STRUCTURE.toString());
+        int minDistance = Integer.parseInt(structureSettings.getOrDefault("min_distance", String.valueOf(DEFAULT_MIN_DISTANCE)));
+        int maxDistance = Integer.parseInt(structureSettings.getOrDefault("max_distance", String.valueOf(DEFAULT_MAX_DISTANCE)));
+        int chestStart = Integer.parseInt(structureSettings.getOrDefault("chest_start", String.valueOf(DEFAULT_CHEST_START)));
+        int chestRange = Integer.parseInt(structureSettings.getOrDefault("chest_range", String.valueOf(DEFAULT_CHEST_RANGE)));
         boolean skipExistingChunks = Boolean.parseBoolean(structureSettings.getOrDefault("skip_existing_chunks", "false"));
 
         // get a random distance based on min and max
@@ -87,13 +92,11 @@ public class ExplorePopulator extends BasePopulator {
         if (structureFeature == null)
             fail("Could not find specified structure type");
 
-
         // locate structure in the world
         BlockPos foundPos = world.findNearestMapFeature(structureFeature, structurePos, 500, skipExistingChunks);
 
         if (foundPos == null)
             fail("Could not locate structure");
-
 
         // set the quest details like items and structure to find
         quest.getExplore().setItems(items);
@@ -211,12 +214,11 @@ public class ExplorePopulator extends BasePopulator {
                 BlockEntity blockEntity = world.getBlockEntity(place);
 
                 // iterate over all chest slots to find an empty slot for the item
-                if (blockEntity instanceof ChestBlockEntity) {
-                    ChestBlockEntity chestBlockEntity = (ChestBlockEntity) blockEntity;
-                    for (int s = 0; s < chestBlockEntity.getContainerSize(); s++) {
-                        ItemStack stackInSlot = chestBlockEntity.getItem(s);
+                if (blockEntity instanceof ChestBlockEntity chest) {
+                    for (int s = 0; s < chest.getContainerSize(); s++) {
+                        ItemStack stackInSlot = chest.getItem(s);
                         if (stackInSlot.isEmpty()) {
-                            chestBlockEntity.setItem(s, stack);
+                            chest.setItem(s, stack);
 
                             // if config option set, place glowstone beneath the chest for easier identification
                             if (Scrolls.locateChestHint) {

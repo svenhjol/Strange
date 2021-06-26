@@ -1,25 +1,20 @@
 package svenhjol.strange.module.runestones;
 
 import com.google.common.collect.ImmutableList;
-import svenhjol.charm.helper.DimensionHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CompassItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import java.util.*;
 
 public class RunestonesHelper {
@@ -93,6 +88,9 @@ public class RunestonesHelper {
 
         if (!hasLearnedRune(player, rune))
             PLAYER_LEARNED_RUNES.get(uuid).add(rune);
+
+        if (player instanceof ServerPlayer && RunestonesHelper.getLearnedRunes(player).size() >= NUMBER_OF_RUNES)
+            Runestones.triggerLearnedAllRunes((ServerPlayer)player);
     }
 
     public static boolean hasLearnedRune(Player player, int rune) {
@@ -103,27 +101,6 @@ public class RunestonesHelper {
         for (int rune : learned) {
             addLearnedRune(player, rune);
         }
-    }
-
-    @Nullable
-    public static BlockPos getBlockPosFromItemStack(Level world, ItemStack stack) {
-        if (stack.getItem() == Items.COMPASS) {
-
-            if (!CompassItem.isLodestoneCompass(stack) || !stack.hasTag() || stack.getTag() == null)
-                return null;
-
-            // must be the correct dimension as the lodestone
-            Optional<ResourceKey<Level>> dimension = CompassItem.getLodestoneDimension(stack.getTag());
-            if (!dimension.isPresent() || !DimensionHelper.isDimension(world, dimension.get()))
-                return null;
-
-            BlockPos pos = NbtUtils.readBlockPos(stack.getTag().getCompound("LodestonePos"));
-            pos = pos.offset(0, 1, 0); // the block above the lodestone
-            return pos;
-
-        }
-
-        return null;
     }
 
     public static String getFormattedLocationName(ResourceLocation locationId) {

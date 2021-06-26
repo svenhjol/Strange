@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
-    public static final String ITEMSTACK_TAG = "itemstack";
-    public static final String LEVELTICKS_TAG = "levelticks";
+    public static final String ITEMSTACK_NBT = "ItemStack";
+    public static final String LEVELTICKS_NBT = "LevelTicks";
 
     public long levelTicks;
     public ItemStack itemStack;
@@ -35,28 +35,28 @@ public class RubbleBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
 
-        if (tag.contains(ITEMSTACK_TAG))
-            this.itemStack = ItemStack.of((CompoundTag) tag.get(ITEMSTACK_TAG));
+        if (nbt.contains(ITEMSTACK_NBT))
+            this.itemStack = ItemStack.of((CompoundTag) nbt.get(ITEMSTACK_NBT));
 
-        if (tag.contains(LEVELTICKS_TAG))
-            this.levelTicks = tag.getLong(LEVELTICKS_TAG);
+        if (nbt.contains(LEVELTICKS_NBT))
+            this.levelTicks = nbt.getLong(LEVELTICKS_NBT);
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        super.save(tag);
+    public CompoundTag save(CompoundTag nbt) {
+        super.save(nbt);
 
         if (this.itemStack != null) {
             CompoundTag itemTag = new CompoundTag();
             this.itemStack.save(itemTag);
-            tag.put(ITEMSTACK_TAG, itemTag);
+            nbt.put(ITEMSTACK_NBT, itemTag);
         }
 
-        tag.putLong(LEVELTICKS_TAG, levelTicks);
-        return tag;
+        nbt.putLong(LEVELTICKS_NBT, levelTicks);
+        return nbt;
     }
 
     @Override

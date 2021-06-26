@@ -1,14 +1,5 @@
-package svenhjol.strange.module.scrolls.tag;
+package svenhjol.strange.module.scrolls.nbt;
 
-import svenhjol.charm.helper.PlayerHelper;
-import svenhjol.charm.helper.PosHelper;
-import svenhjol.strange.module.scrolls.populator.ExplorePopulator;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,31 +9,43 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import svenhjol.charm.helper.PlayerHelper;
+import svenhjol.charm.helper.PosHelper;
+import svenhjol.strange.module.scrolls.ScrollHelper;
+import svenhjol.strange.module.scrolls.populator.ExplorePopulator;
 
-public class Explore implements ISerializable {
-    public static final String STRUCTURE = "structure";
-    public static final String DIMENSION = "dimension";
-    public static final String CHEST_START = "chest_start";
-    public static final String CHEST_RANGE = "chest_range";
-    public static final String CHESTS = "chests";
-    public static final String ITEMS = "items";
-    public static final String QUEST = "quest";
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    private Quest quest;
+public class Explore implements IQuestSerializable {
+    public static final String STRUCTURE_NBT = "structure";
+    public static final String DIMENSION_NBT = "dimension";
+    public static final String CHEST_START_NBT = "chest_start";
+    public static final String CHEST_RANGE_NBT = "chest_range";
+    public static final String CHESTS_NBT = "chests";
+    public static final String ITEMS_NBT = "items";
+    public static final String QUEST_NBT = "quest";
+
+    private final Quest quest;
     private BlockPos structure;
     private List<BlockPos> chests;
     private ResourceLocation dimension;
     private int chestStart;
     private int chestRange;
     private List<ItemStack> items = new ArrayList<>();
-    private final Map<Item, Boolean> satisfied = new HashMap<>(); // this is dynamically generated, not stored in nbt
+
+    // dynamically generated, not stored in nbt
+    private final Map<Item, Boolean> satisfied = new HashMap<>();
 
     public Explore(Quest quest) {
         this.quest = quest;
     }
 
     @Override
-    public CompoundTag toTag() {
+    public CompoundTag toNbt() {
         CompoundTag outTag = new CompoundTag();
 
         if (!items.isEmpty()) {
@@ -53,12 +56,11 @@ public class Explore implements ISerializable {
                 itemDataTag.add(itemTag);
             }
 
-            outTag.put(ITEMS, itemDataTag);
+            outTag.put(ITEMS_NBT, itemDataTag);
         }
 
-
         if (structure != null)
-            outTag.putLong(STRUCTURE, structure.asLong());
+            outTag.putLong(STRUCTURE_NBT, structure.asLong());
 
         if (chests != null && !chests.isEmpty()) {
             List<Long> chestPositions = chests.stream()
@@ -66,31 +68,31 @@ public class Explore implements ISerializable {
                 .map(BlockPos::asLong)
                 .collect(Collectors.toList());
 
-            outTag.putLongArray(CHESTS, chestPositions);
+            outTag.putLongArray(CHESTS_NBT, chestPositions);
         }
 
         if (dimension != null)
-            outTag.putString(DIMENSION, dimension.toString());
+            outTag.putString(DIMENSION_NBT, dimension.toString());
 
-        outTag.putInt(CHEST_START, chestStart);
-        outTag.putInt(CHEST_RANGE, chestRange);
+        outTag.putInt(CHEST_START_NBT, chestStart);
+        outTag.putInt(CHEST_RANGE_NBT, chestRange);
 
         return outTag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        chestRange = tag.getInt(CHEST_RANGE);
-        chestStart = tag.getInt(CHEST_START);
-        structure = tag.contains(STRUCTURE) ? BlockPos.of(tag.getLong(STRUCTURE)) : null;
-        dimension = ResourceLocation.tryParse(tag.getString(DIMENSION));
+    public void fromNbt(CompoundTag nbt) {
+        chestRange = nbt.getInt(CHEST_RANGE_NBT);
+        chestStart = nbt.getInt(CHEST_START_NBT);
+        structure = nbt.contains(STRUCTURE_NBT) ? BlockPos.of(nbt.getLong(STRUCTURE_NBT)) : null;
+        dimension = ResourceLocation.tryParse(nbt.getString(DIMENSION_NBT));
 
         if (dimension == null)
-            dimension = new ResourceLocation("minecraft", "overworld"); // probably not good
+            dimension = ScrollHelper.FALLBACK_DIMENSION;
 
-        if (tag.contains(CHESTS)) {
+        if (nbt.contains(CHESTS_NBT)) {
             chests = new ArrayList<>();
-            long[] chestPositions = tag.getLongArray(CHESTS);
+            long[] chestPositions = nbt.getLongArray(CHESTS_NBT);
             for (long pos : chestPositions) {
                 chests.add(BlockPos.of(pos));
             }
@@ -98,7 +100,7 @@ public class Explore implements ISerializable {
 
         items = new ArrayList<>();
 
-        ListTag itemDataTag = (ListTag)tag.get(ITEMS);
+        ListTag itemDataTag = (ListTag) nbt.get(ITEMS_NBT);
         if (itemDataTag != null && itemDataTag.size() > 0) {
             for (Tag itemTag : itemDataTag) {
                 ItemStack stack = ItemStack.of((CompoundTag)itemTag);
@@ -159,7 +161,7 @@ public class Explore implements ISerializable {
             return;
 
         double dist = PosHelper.getDistanceSquared(player.blockPosition(), structure);
-        if (dist < 1200) {
+        if (dist < ExplorePopulator.POPULATE_DISTANCE) {
             List<BlockPos> chestPositions = ExplorePopulator.addScrollItemsToChests(player, this);
 
             if (chestPositions.isEmpty()) {
@@ -179,7 +181,7 @@ public class Explore implements ISerializable {
         items.forEach(stack -> {
             for (ItemStack invStack : PlayerHelper.getInventory(player).items) {
                 if (ItemStack.matches(stack, invStack)
-                    && stack.getOrCreateTag().getString(QUEST).equals(quest.getId())
+                    && stack.getOrCreateTag().getString(QUEST_NBT).equals(quest.getId())
                 ) {
                     invStack.shrink(1);
                 }
@@ -203,7 +205,7 @@ public class Explore implements ISerializable {
                 // compare stacks and add the item if found
                 if (!stack.isEmpty()
                     && stack.sameItem(invStack)
-                    && invStack.getOrCreateTag().getString(QUEST).equals(quest.getId())
+                    && invStack.getOrCreateTag().getString(QUEST_NBT).equals(quest.getId())
                 ) {
                     satisfied.put(item, true);
                 }

@@ -20,8 +20,8 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.module.CharmClientModule;
 import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.module.scrolls.ScrollItem;
-import svenhjol.strange.module.scrolls.ScrollsHelper;
-import svenhjol.strange.module.scrolls.tag.Quest;
+import svenhjol.strange.module.scrolls.ScrollHelper;
+import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class ScrollKeepersClient extends CharmClientModule {
 
             villagers.forEach(villager -> {
                 if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
-                    if (heldScrollQuest.getMerchant().equals(ScrollsHelper.ANY_UUID) || heldScrollQuest.getMerchant().equals(villager.getUUID()))
+                    if (heldScrollQuest.getMerchant().equals(ScrollHelper.ANY_UUID) || heldScrollQuest.getMerchant().equals(villager.getUUID()))
                         effectShowInterest(villager);
                 }
             });
@@ -111,7 +111,7 @@ public class ScrollKeepersClient extends CharmClientModule {
         if (compoundTag == null || compoundTag.isEmpty())
             return;
 
-        Quest quest = Quest.getFromTag(compoundTag);
+        Quest quest = Quest.getFromNbt(compoundTag);
         client.execute(() -> heldScrollQuest = quest);
     }
 }

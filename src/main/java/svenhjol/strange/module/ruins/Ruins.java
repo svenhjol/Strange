@@ -22,7 +22,6 @@ import svenhjol.strange.init.StrangeLoot;
 import svenhjol.strange.module.ruins.feature.*;
 import svenhjol.strange.module.ruins.generator.*;
 
-import static net.minecraft.world.level.biome.Biome.BiomeCategory;
 import static svenhjol.charm.helper.BiomeHelper.addStructureToBiome;
 import static svenhjol.charm.helper.BiomeHelper.addStructureToBiomeCategories;
 import static svenhjol.charm.helper.RegistryHelper.configuredStructureFeature;
@@ -92,7 +91,7 @@ public class Ruins extends CharmModule {
 
         FabricStructureBuilder.create(END_RUIN_ID, END_RUIN_FEATURE)
             .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(24, 6, 78156511)
+            .defaultConfig(32, 6, 78156511)
             .register();
 
         int surfaceRuinSize = Math.max(0, Math.min(7, configSurfaceRuinSize));

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@SuppressWarnings("deprecation")
 public class RunePortalBlock extends CharmBlockWithEntity {
     public static final EnumProperty<Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final IntegerProperty COLOR = IntegerProperty.create("color", 0, 15);
@@ -58,12 +59,10 @@ public class RunePortalBlock extends CharmBlockWithEntity {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        switch(state.getValue(AXIS)) {
-            case Z:
-                return FACING_Z;
-            case X:
-            default:
-                return FACING_X;
+        if (state.getValue(AXIS) == Axis.Z) {
+            return FACING_Z;
+        } else {
+            return FACING_X;
         }
     }
 
@@ -107,12 +106,12 @@ public class RunePortalBlock extends CharmBlockWithEntity {
             if (portal == null)
                 return;
 
-            Optional<RunePortalManager> optional = RunePortals.getManager((ServerLevel) world);
-            if (!optional.isPresent())
+            Optional<RunePortalSavedData> optional = RunePortals.getSavedData((ServerLevel) world);
+            if (optional.isEmpty())
                 return;
 
-            RunePortalManager manager = optional.get();
-            if (manager.teleport(portal.runes, portal.pos, entity)) {
+            RunePortalSavedData runePortalSavedData = optional.get();
+            if (runePortalSavedData.teleport(portal.runes, portal.pos, entity)) {
                 ticksInPortal.put(uuid, worldTime);
                 return;
             }
@@ -142,11 +141,10 @@ public class RunePortalBlock extends CharmBlockWithEntity {
         boolean isValidBlock = neighborState.is(this) || (neighborState.is(RunePortals.PORTAL_FRAME_BLOCK));
 
         if (!bl && !isValidBlock) {
-            if (world instanceof ServerLevel) {
-                ServerLevel serverWorld = (ServerLevel) world;
+            if (world instanceof ServerLevel serverWorld) {
                 RunePortalBlockEntity portal = getBlockEntity(serverWorld, pos);
                 if (portal != null)
-                    RunePortals.getManager(serverWorld).ifPresent(manager -> manager.removePortal(portal.runes, portal.pos));
+                    RunePortals.getSavedData(serverWorld).ifPresent(data -> data.removePortal(portal.runes, portal.pos));
             }
             return Blocks.AIR.defaultBlockState();
         }
