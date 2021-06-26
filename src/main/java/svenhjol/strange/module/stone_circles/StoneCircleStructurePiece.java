@@ -31,17 +31,23 @@ import svenhjol.strange.module.runestones.Runestones;
 import java.util.*;
 
 public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
-    public static int maxCheckSurface = 5;
-    public static int minCheckSurface = -15;
-    public static int maxRadius = 13;
-    public static int minRadius = 5;
-    public static int maxHeight = 8;
-    public static int minHeight = 4;
-    public static int maxRunes = 5;
-    public static int runeTries = 10; // if the runeChance passes, this is the number of attempts at rune placement from available runes
+    public static int maxCheckSurface = 5; // if the surface Y value is this many blocks higher than starting Y, don't generate
+    public static int minCheckSurface = -15; // if the surface Y value is this many blocks lower than starting Y, don't generate
+    public static int maxRadius = 14; // max radius of the circle of stone pillars
+    public static int minRadius = 5; // min radius of the circle of stone pillars
+    public static int maxHeight = 8; // max possible height of a stone pillar
+    public static int minHeight = 4; // min height of a stone pillar
+    public static int maxRunes = 5; // max number of runestones that will generate per circle
+    public static int runeTries = 10; // number of attempts at rune placement from available runes
+
+    public static final List<String> HOSTILE_MOBS = new ArrayList<>(Arrays.asList(
+        "witch", "pillager", "vindicator"
+    ));
+    public static final List<String> NEUTRAL_MOBS = new ArrayList<>(Arrays.asList(
+        "cat", "wolf", "sheep", "villager"
+    ));
 
     public StoneCircleStructurePiece(Random random, int x, int y, int z) {
-        // TODO: these parameters seem out of order in sources, might break in future snapshots
         super(StoneCircles.STONE_CIRCLE_PIECE, x, y, z, 16, 8, 16, getRandomHorizontalDirection(random));
     }
 
@@ -70,7 +76,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
         }
 
         if (availableRunes.size() == 0) {
-            Charm.LOG.warn("No available runes to generate");
+            Charm.LOG.warn("[StoneCircleStructurePiece] No available runes to generate");
             return false;
         }
 
@@ -172,22 +178,28 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
                         BlockPos spawnerPos = checkUpPos.above();
                         BlockState spawner = EntitySpawners.ENTITY_SPAWNER.defaultBlockState();
                         world.setBlock(spawnerPos, spawner, 2);
-
                         BlockEntity blockEntity = world.getBlockEntity(spawnerPos);
 
-                        if (blockEntity instanceof EntitySpawnerBlockEntity) {
-                            EntitySpawnerBlockEntity spawnerEntity = (EntitySpawnerBlockEntity)blockEntity;
+                        if (blockEntity instanceof EntitySpawnerBlockEntity spawnerEntity) {
                             CompoundTag tag = new CompoundTag();
 
                             ResourceLocation mobId;
                             int mobCount;
 
                             float chance = random.nextFloat();
-                            if (chance < 0.4F) {
-                                mobId = new ResourceLocation("witch");
-                                mobCount = random.nextInt(2) + 2;
-                            } else if (chance < 0.8F) {
-                                mobId = new ResourceLocation("pillager");
+                            if (chance < 0.45F) {
+                                if (NEUTRAL_MOBS.size() > 0) {
+                                    mobId = new ResourceLocation(NEUTRAL_MOBS.get(random.nextInt(NEUTRAL_MOBS.size())));
+                                } else {
+                                    mobId = new ResourceLocation("sheep");
+                                }
+                                mobCount = random.nextInt(3) + 3;
+                            } else if (chance < 0.9F) {
+                                if (HOSTILE_MOBS.size() > 0) {
+                                    mobId = new ResourceLocation(HOSTILE_MOBS.get(random.nextInt(HOSTILE_MOBS.size())));
+                                } else {
+                                    mobId = new ResourceLocation("witch");
+                                }
                                 mobCount = random.nextInt(3) + 3;
                             } else {
                                 if (random.nextBoolean() && ModuleHandler.enabled(Mobs.class) && Mobs.illusioners) {
