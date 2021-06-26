@@ -117,8 +117,8 @@ public class RunePortalSavedData extends SavedData {
             }
         }
 
-        // TODO: better portal create sound
-        world.playSound(null, start, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.05F, 0.75F);
+        // TODO: custom portal create sound
+        world.playSound(null, start, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.05F, 0.75F);
     }
 
     public void removePortal(String runes, BlockPos pos) {
@@ -155,10 +155,6 @@ public class RunePortalSavedData extends SavedData {
 
             entity.teleportToWithTicket(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
             world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 0.85F, 1.05F);
-
-//            if (entity instanceof ServerPlayerEntity)
-//                ((ServerPlayerEntity)entity).onTeleportationDone();
-
             return true;
         }
 
