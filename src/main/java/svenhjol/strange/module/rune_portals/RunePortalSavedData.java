@@ -144,12 +144,15 @@ public class RunePortalSavedData extends SavedData {
 
         Charm.LOG.debug("Current location: " + pos.toShortString());
         dests.forEach(dest -> Charm.LOG.debug("Possible destination: " + dest.toShortString()));
+        optional.ifPresent(b -> Charm.LOG.debug("Selected destination: " + b));
 
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
 
             if (entity instanceof ServerPlayer)
                 ((ServerPlayerAccessor)entity).setIsChangingDimension(true);
+
+            // TODO: known issue, entities don't disappear on the portal enter side
 
             entity.teleportToWithTicket(dest.getX() + 0.5, dest.getY() + 1.0, dest.getZ() + 0.5);
             world.playSound(null, dest, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 0.85F, 1.05F);
