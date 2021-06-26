@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RunePortalBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
-    private static final String ORIENTATION_NBT = "orientation";
-    private static final String RUNES_NBT = "runes";
-    private static final String POS_NBT = "pos";
+    private static final String ORIENTATION_NBT = "Orientation";
+    private static final String RUNES_NBT = "Runes";
+    private static final String POS_NBT = "Pos";
 
     public Axis orientation;
     public BlockPos pos;

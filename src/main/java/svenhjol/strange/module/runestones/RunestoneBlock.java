@@ -1,14 +1,14 @@
 package svenhjol.strange.module.runestones;
 
-import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.module.CharmModule;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import svenhjol.charm.block.CharmBlockWithEntity;
+import svenhjol.charm.module.CharmModule;
+
+import javax.annotation.Nullable;
 
 public class RunestoneBlock extends CharmBlockWithEntity {
     private final int runeValue;
