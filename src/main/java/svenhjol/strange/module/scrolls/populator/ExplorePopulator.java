@@ -1,17 +1,5 @@
 package svenhjol.strange.module.scrolls.populator;
 
-import svenhjol.charm.Charm;
-import svenhjol.charm.enums.IVariantMaterial;
-import svenhjol.charm.handler.ModuleHandler;
-import svenhjol.charm.helper.*;
-import svenhjol.charm.module.core.Core;
-import svenhjol.charm.module.variant_chests.VariantChests;
-import svenhjol.strange.module.scrolls.Scrolls;
-import svenhjol.strange.module.scrolls.tag.Explore;
-import svenhjol.strange.module.scrolls.tag.Quest;
-
-import java.util.*;
-import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -32,6 +20,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import svenhjol.charm.Charm;
+import svenhjol.charm.enums.IVariantMaterial;
+import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.helper.*;
+import svenhjol.charm.module.variant_chests.VariantChests;
+import svenhjol.strange.module.scrolls.Scrolls;
+import svenhjol.strange.module.scrolls.tag.Explore;
+import svenhjol.strange.module.scrolls.tag.Quest;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExplorePopulator extends BasePopulator {
     public static final String ITEMS = "items";
@@ -143,10 +142,9 @@ public class ExplorePopulator extends BasePopulator {
         if (chests.isEmpty()) {
             BlockState chest;
 
-            // TODO: make this some kind of helper method
             boolean useVariantChests = ModuleHandler.enabled("charm:variant_chests");
             if (useVariantChests) {
-                IVariantMaterial material = DecorationHelper.getRandomVariantMaterial(random);
+                IVariantMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
                 chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
             } else {
                 chest = Blocks.CHEST.defaultBlockState();
@@ -220,8 +218,8 @@ public class ExplorePopulator extends BasePopulator {
                         if (stackInSlot.isEmpty()) {
                             chestBlockEntity.setItem(s, stack);
 
-                            // if in debug mode then place glowstone beneath the chest for easier identification
-                            if (Core.debug) {
+                            // if config option set, place glowstone beneath the chest for easier identification
+                            if (Scrolls.locateChestHint) {
                                 BlockPos downPos = place.below();
                                 BlockEntity downBlockEntity = world.getBlockEntity(downPos);
                                 if (downBlockEntity != null)

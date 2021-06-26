@@ -86,6 +86,9 @@ public class Scrolls extends CharmModule {
     @Config(name = "Exploration hint", description = "If true, the player who has an exploration quest will receive a visual and audible hint when reaching the location to start exploring.")
     public static boolean exploreHint = true;
 
+    @Config(name = "Locate chest hint", description = "If true, the chest that contains the items to find in an explodation quest will have a glowstone block underneath it.")
+    public static boolean locateChestHint = false;
+
     public Scrolls() {
         SCROLL_TIER_IDS.put(0, "test");
         SCROLL_TIER_IDS.put(1, "novice");
