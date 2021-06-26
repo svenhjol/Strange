@@ -140,12 +140,10 @@ public class RunePortalSavedData extends SavedData {
 
         List<BlockPos> dests = this.runes.get(runes);
         Collections.shuffle(dests);
-        Optional<BlockPos> optional = dests.stream().filter(b -> b != pos).findFirst();
+        Optional<BlockPos> optional = dests.stream().filter(b -> !b.equals(pos)).findFirst();
 
-        dests.forEach(dest -> {
-            Charm.LOG.info(dest.toShortString());
-        });
-        Charm.LOG.warn(pos.toShortString());
+        Charm.LOG.debug("Current location: " + pos.toShortString());
+        dests.forEach(dest -> Charm.LOG.debug("Possible destination: " + dest.toShortString()));
 
         if (optional.isPresent()) {
             BlockPos dest = optional.get();
