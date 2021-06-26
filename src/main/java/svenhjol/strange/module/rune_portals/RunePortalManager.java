@@ -66,7 +66,7 @@ public class RunePortalManager extends SavedData {
     }
 
     public static String nameFor(DimensionType dimensionType) {
-        return "rune_portals" + dimensionType.getFileSuffix();
+        return "strange_rune_portals" + dimensionType.getFileSuffix();
     }
 
     public void createPortal(List<Integer> runes, BlockPos pos, Axis orientation) {

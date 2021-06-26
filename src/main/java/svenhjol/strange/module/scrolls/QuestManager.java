@@ -23,8 +23,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class QuestManager extends SavedData {
-    public static final String TICK_TAG = "Tick";
-    public static final String QUESTS_TAG = "Quests";
+    public static final String TICK_NBT = "Tick";
+    public static final String QUESTS_NBT = "Quests";
     public static final int DEFAULT_EXPIRY = 300000; // in minutes. roughly a month
     public static final int MAX_PLAYER_QUESTS = 5; // maybe this could be configurable?
 
@@ -56,10 +56,10 @@ public class QuestManager extends SavedData {
             setDirty();
     }
 
-    public static QuestManager fromNbt(ServerLevel world, CompoundTag tag) {
+    public static QuestManager fromNbt(ServerLevel world, CompoundTag nbt) {
         QuestManager questManager = new QuestManager(world);
-        questManager.currentTime = tag.getInt(TICK_TAG);
-        ListTag listTag = tag.getList(QUESTS_TAG, 10);
+        questManager.currentTime = nbt.getInt(TICK_NBT);
+        ListTag listTag = nbt.getList(QUESTS_NBT, 10);
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
@@ -80,8 +80,8 @@ public class QuestManager extends SavedData {
         });
 
 
-        tag.putInt(TICK_TAG, currentTime);
-        tag.put(QUESTS_TAG, listTag);
+        tag.putInt(TICK_NBT, currentTime);
+        tag.put(QUESTS_NBT, listTag);
         return tag;
     }
 
@@ -209,7 +209,7 @@ public class QuestManager extends SavedData {
     }
 
     public static String nameFor(DimensionType dimensionType) {
-        return "quests" + dimensionType.getFileSuffix();
+        return "strange_quests" + dimensionType.getFileSuffix();
     }
 
     private void addQuest(Quest quest) {

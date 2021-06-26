@@ -1,9 +1,5 @@
 package svenhjol.strange.module.travel_journals;
 
-import svenhjol.charm.Charm;
-import svenhjol.charm.helper.DimensionHelper;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -15,6 +11,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
+import svenhjol.charm.Charm;
+import svenhjol.charm.helper.DimensionHelper;
+
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class TravelJournalManager extends SavedData {
@@ -141,6 +141,6 @@ public class TravelJournalManager extends SavedData {
     }
 
     public static String nameFor(DimensionType dimensionType) {
-        return "traveljournal" + dimensionType.getFileSuffix();
+        return "strange_traveljournals" + dimensionType.getFileSuffix();
     }
 }
