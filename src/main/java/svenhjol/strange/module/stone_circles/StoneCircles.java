@@ -66,13 +66,14 @@ public class StoneCircles extends CharmModule {
         LOOT_FUNCTION = RegistryHelper.lootFunctionType(LOOT_ID, new LootItemFunctionType(new StoneCircleLootFunction.Serializer()));
         STONE_CIRCLE_STRUCTURE = new StoneCircleFeature(NoneFeatureConfiguration.CODEC);
         STONE_CIRCLE_PIECE = RegistryHelper.structurePiece(PIECE_ID, StoneCircleStructurePiece::new);
+        STONE_CIRCLE = RegistryHelper.configuredStructureFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configured(NoneFeatureConfiguration.NONE));
+        ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> EMPTY = STONE_CIRCLE_STRUCTURE.configured(NoneFeatureConfiguration.NONE);
 
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE)
             .step(GenerationStep.Decoration.SURFACE_STRUCTURES)
+            .superflatFeature(EMPTY)
             .defaultConfig(spacing, 8, 515122)
             .register();
-
-        STONE_CIRCLE = RegistryHelper.configuredStructureFeature(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE.configured(NoneFeatureConfiguration.NONE));
     }
 
     @Override

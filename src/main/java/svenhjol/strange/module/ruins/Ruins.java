@@ -40,11 +40,12 @@ public class Ruins extends CharmModule {
     public static StructureFeature<JigsawConfiguration> NETHER_RUIN_FEATURE;
     public static StructureFeature<JigsawConfiguration> END_RUIN_FEATURE;
 
-    public static ConfiguredStructureFeature<?, ?> SURFACE_RUIN_CONFIGURED;
-    public static ConfiguredStructureFeature<?, ?> CAVE_RUIN_CONFIGURED;
-    public static ConfiguredStructureFeature<?, ?> DEEP_RUIN_CONFIGURED;
-    public static ConfiguredStructureFeature<?, ?> NETHER_RUIN_CONFIGURED;
-    public static ConfiguredStructureFeature<?, ?> END_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> SURFACE_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CAVE_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> DEEP_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> NETHER_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> END_RUIN_CONFIGURED;
+    public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> EMPTY_CONFIGURED;
 
     @Config(name = "Surface ruin size", description = "Size of the surface ruins.")
     public static int configSurfaceRuinSize = 4;
@@ -69,31 +70,6 @@ public class Ruins extends CharmModule {
         NETHER_RUIN_FEATURE = new NetherRuinFeature(JigsawConfiguration.CODEC);
         END_RUIN_FEATURE = new EndRuinFeature(JigsawConfiguration.CODEC);
 
-        FabricStructureBuilder.create(SURFACE_RUIN_ID, SURFACE_RUIN_FEATURE)
-            .step(GenerationStep.Decoration.SURFACE_STRUCTURES)
-            .defaultConfig(18, 8, 1634572)
-            .register();
-
-        FabricStructureBuilder.create(CAVE_RUIN_ID, CAVE_RUIN_FEATURE)
-            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(18, 12, 72319234)
-            .register();
-
-        FabricStructureBuilder.create(DEEP_RUIN_ID, DEEP_RUIN_FEATURE)
-            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(28, 6, 5587267)
-            .register();
-
-        FabricStructureBuilder.create(NETHER_RUIN_ID, NETHER_RUIN_FEATURE)
-            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(18, 8, 78156511)
-            .register();
-
-        FabricStructureBuilder.create(END_RUIN_ID, END_RUIN_FEATURE)
-            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(32, 6, 78156511)
-            .register();
-
         int surfaceRuinSize = Math.max(0, Math.min(7, configSurfaceRuinSize));
         int caveRuinSize = Math.max(0, Math.min(7, configCaveRuinSize));
         int deepRuinSize = Math.max(0, Math.min(7, configDeepRuinSize));
@@ -105,6 +81,37 @@ public class Ruins extends CharmModule {
         DEEP_RUIN_CONFIGURED = DEEP_RUIN_FEATURE.configured(new JigsawConfiguration(() -> DeepRuinGenerator.POOL, deepRuinSize));
         NETHER_RUIN_CONFIGURED = NETHER_RUIN_FEATURE.configured(new JigsawConfiguration(() -> NetherRuinGenerator.POOL, netherRuinSize));
         END_RUIN_CONFIGURED = END_RUIN_FEATURE.configured(new JigsawConfiguration(() -> EndRuinGenerator.POOL, endRuinSize));
+        EMPTY_CONFIGURED = CAVE_RUIN_FEATURE.configured(new JigsawConfiguration(() -> CaveRuinGenerator.EMPTY_POOL, 0));
+
+        FabricStructureBuilder.create(SURFACE_RUIN_ID, SURFACE_RUIN_FEATURE)
+            .step(GenerationStep.Decoration.SURFACE_STRUCTURES)
+            .superflatFeature(EMPTY_CONFIGURED)
+            .defaultConfig(18, 8, 1634572)
+            .register();
+
+        FabricStructureBuilder.create(CAVE_RUIN_ID, CAVE_RUIN_FEATURE)
+            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
+            .superflatFeature(EMPTY_CONFIGURED)
+            .defaultConfig(18, 12, 72319234)
+            .register();
+
+        FabricStructureBuilder.create(DEEP_RUIN_ID, DEEP_RUIN_FEATURE)
+            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
+            .superflatFeature(EMPTY_CONFIGURED)
+            .defaultConfig(28, 6, 5587267)
+            .register();
+
+        FabricStructureBuilder.create(NETHER_RUIN_ID, NETHER_RUIN_FEATURE)
+            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
+            .superflatFeature(EMPTY_CONFIGURED)
+            .defaultConfig(18, 8, 78156511)
+            .register();
+
+        FabricStructureBuilder.create(END_RUIN_ID, END_RUIN_FEATURE)
+            .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
+            .superflatFeature(EMPTY_CONFIGURED)
+            .defaultConfig(32, 6, 78156511)
+            .register();
 
         // register each configuredFeature with MC registry
         configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "surface_ruin"), SURFACE_RUIN_CONFIGURED);
