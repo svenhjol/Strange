@@ -150,7 +150,7 @@ public class Ruins extends CharmModule {
         if (!NetherRuinGenerator.RUINS.isEmpty()) addStructureToBiomeCategories(NETHER_RUIN_CONFIGURED, BiomeCategory.NETHER);
         if (!EndRuinGenerator.RUINS.isEmpty()) addStructureToBiome(END_RUIN_CONFIGURED, Biomes.END_HIGHLANDS);
 
-        // add player location callback
+        // TODO: this will all break with Charm 3.3.0
         PlayerState.listeners.add((player, tag) -> {
             if (player != null && player.level != null && !player.level.isClientSide) {
                 ServerLevel serverWorld = (ServerLevel) player.level;
