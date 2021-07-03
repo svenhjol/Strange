@@ -1,0 +1,9 @@
+{
+  "template": {
+    "parent": "strange:block/portal_frame_with_rune",
+    "textures": {
+      "rune": "strange:block/runestone_VARIANT"
+    }
+  },
+  "variants": "numbered_runestones"
+}

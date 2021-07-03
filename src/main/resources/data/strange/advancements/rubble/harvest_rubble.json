@@ -1,0 +1,28 @@
+{
+  "parent": "strange:ruins/find_ruin",
+  "display": {
+    "icon": {
+      "item": "strange:rubble"
+    },
+    "title": {
+      "translate": "advancements.strange.harvest_rubble.title"
+    },
+    "description": {
+      "translate": "advancements.strange.harvest_rubble.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "harvested_rubble": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:harvested_rubble"}
+    }
+  },
+  "requirements": [
+    ["harvested_rubble"]
+  ]
+}

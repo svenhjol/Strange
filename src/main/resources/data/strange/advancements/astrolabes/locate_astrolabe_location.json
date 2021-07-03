@@ -1,0 +1,31 @@
+{
+  "parent": "strange:astrolabes/link_astrolabe",
+  "display": {
+    "icon": {
+      "item": "strange:astrolabe"
+    },
+    "title": {
+      "translate": "advancements.strange.locate_astrolabe_location.title"
+    },
+    "description": {
+      "translate": "advancements.strange.locate_astrolabe_location.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "located_astrolabe_location": {
+      "trigger": "charm:action_performed",
+      "conditions": {
+        "action": "strange:located_astrolabe_location"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "located_astrolabe_location"
+    ]
+  ]
+}

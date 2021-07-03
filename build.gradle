@@ -1,10 +1,13 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -14,10 +17,14 @@ minecraft {
 	accessWidener = file("src/main/resources/strange.accesswidener")
 }
 
+runServer {
+	standardInput = System.in
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings minecraft.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -27,6 +34,10 @@ dependencies {
 	// You may need to force-disable transitiveness on them.
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
+	// REI. Disable the modRuntime line if REI is broken.
+	modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+	modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
 	implementation "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
 	implementation "com.electronwill.night-config:core:${project.tomlnc_version}"
 	implementation "com.electronwill.night-config:toml:${project.tomlnc_version}"
@@ -35,39 +46,66 @@ dependencies {
 	include "com.electronwill.night-config:core:${project.tomlnc_version}"
 	include "com.electronwill.night-config:toml:${project.tomlnc_version}"
 
-	modImplementation "svenhjol.charm:charm:fabric-${project.minecraft_version}-${project.charm_version}"
+	modImplementation "svenhjol.charm:charm:${project.charm_version}"
+	modRuntime "svenhjol.charmonium:charmonium:${project.charmonium_version}"
 }
+
 
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	exclude("META-INF/*.materials")
+
+	//expand resource templates
+	filesMatching("**/*.template.json") {
+		JsonBuilder json = new JsonBuilder(new JsonSlurper().parseText(it.file.text))
+		String template = new JsonBuilder(json.content.template).toPrettyString()
+		def v = json.content.variants
+		Iterable<String> variants
+		if (v instanceof String) variants = file("${sourceSets.main.resources.srcDirs[0]}/META-INF/${v}.variants").readLines().findAll { !it.isEmpty() }
+		else variants = v
+		File dir = it.relativePath.parent.getFile(file("$buildDir/resources/main"))
+		dir.mkdirs()
+		String name = it.name.replace(".template.json", ".json")
+		String[] replacements = v instanceof String ? variants.remove(0).split(':') : ["VARIANT"]
+		for (variant in variants) {
+			Map<String, String> s = [replacements, variant.split(':', -1)].transpose().collectEntries()
+			def file = new File(dir, s.inject(name) { r, e -> r.replace(e.key, e.value) })
+			if (!file.exists()) {
+				file.createNewFile()
+				file.text = s.inject(template) { r, e -> r.replace(e.key, e.value) }
+			}
+		}
+		it.exclude()
 	}
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+	// ensure that the encoding is set to UTF-8, no matter what the system default is
+	// this fixes some edge cases with special characters not displaying correctly
+	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+	// If Javadoc is generated, this must be specified in that task too.
+	it.options.encoding = "UTF-8"
+
+	// Minecraft 1.17 (21w19a) upwards uses Java 16.
+	it.options.release = 16
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
 }
 
 jar {
-	from "LICENSE"
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
 }
 
 // configure the maven publication
@@ -92,7 +130,6 @@ publishing {
 }
 
 repositories {
-	flatDir {
-		dirs "libs"
-	}
+	flatDir { dirs "libs" }
+	maven { url "https://maven.shedaniel.me" }
 }

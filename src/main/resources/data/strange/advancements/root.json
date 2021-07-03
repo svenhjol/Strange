@@ -12,18 +12,16 @@
     "frame": "task",
     "show_toast": false,
     "announce_to_chat": false,
-    "hidden": false,
+    "hidden": true,
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
   },
   "criteria": {
-    "travel_journal": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {"items": [{"item": "strange:travel_journal"}]}
+    "player_joined": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "charm:player_joined"}
     }
   },
   "requirements": [
-    [
-      "travel_journal"
-    ]
+    ["player_joined"]
   ]
 }

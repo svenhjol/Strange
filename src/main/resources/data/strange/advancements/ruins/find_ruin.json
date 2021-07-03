@@ -1,0 +1,46 @@
+{
+  "parent": "strange:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:mossy_cobblestone"
+    },
+    "title": {
+      "translate": "advancements.strange.find_ruin.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_ruin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+  },
+  "criteria": {
+    "find_surface_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:surface_ruin"
+      }
+    },
+    "find_cave_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:cave_ruin"
+      }
+    },
+    "find_deep_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:deep_ruin"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "find_surface_ruin",
+      "find_cave_ruin",
+      "find_deep_ruin"
+    ]
+  ]
+}

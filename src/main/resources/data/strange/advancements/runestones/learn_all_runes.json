@@ -1,0 +1,29 @@
+{
+  "parent": "strange:runestones/activate_runestone",
+  "display": {
+    "icon": {
+      "item": "strange:runestone_16"
+    },
+    "title": {
+      "translate": "advancements.strange.learn_all_runes.title"
+    },
+    "description": {
+      "translate": "advancements.strange.learn_all_runes.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "learned_all_runes": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:learned_all_runes"}
+    }
+  },
+  "requirements": [
+    [
+      "learned_all_runes"
+    ]
+  ]
+}

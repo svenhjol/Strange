@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "###"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "B": {
+      "item": "minecraft:copper_block"
+    },
+    "#": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "item": "strange:astrolabe",
+    "count": 2
+  }
+}

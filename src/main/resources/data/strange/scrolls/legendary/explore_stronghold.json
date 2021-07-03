@@ -47,9 +47,6 @@
       "lodestone | netherite_ingot": {
         "count": 1
       },
-      "strange:runic_fragment | strange:ancient_rubble": {
-        "count": 2
-      },
       "loot": {
         "items": "end_city_treasure",
         "limit": 1

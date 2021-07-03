@@ -9,7 +9,7 @@
     "svenhjol"
   ],
   "contact": {
-    "homepage": "https://svenhjol.github.io/Strange/",
+    "homepage": "https://svenhjol.github.io/Charm/Strange",
     "sources": "https://github.com/svenhjol/Strange"
   },
   "accessWidener": "strange.accesswidener",
@@ -26,16 +26,15 @@
       "svenhjol.strange.StrangeClient"
     ]
   },
-  "mixins": [
-  ],
 
   "depends": {
-    "fabricloader": ">=0.7.4",
+    "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.16.x",
-    "charm": ">=2.3.1"
+    "minecraft": "1.17.x",
+    "charm": ">=3.2.0"
   },
   "suggests": {
+    "charmonium": ">=3.1.0",
     "flamingo": "*"
   }
 }
