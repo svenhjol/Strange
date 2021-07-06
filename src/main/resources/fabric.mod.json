@@ -6,11 +6,13 @@
   "name": "Strange",
   "description": "Stranger things.",
   "authors": [
-    "svenhjol"
+    "svenhjol",
+    "Coranthes"
   ],
   "contact": {
     "homepage": "https://svenhjol.github.io/Charm/Strange",
-    "sources": "https://github.com/svenhjol/Strange"
+    "sources": "https://github.com/svenhjol/Strange",
+    "issues": "https://github.com/svenhjol/Strange/issues"
   },
   "accessWidener": "strange.accesswidener",
 
