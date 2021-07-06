@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
-import svenhjol.charm.Charm;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.PosHelper;
 
 import javax.annotation.Nullable;
@@ -39,16 +39,16 @@ public class BiomeDestination extends BaseDestination {
             Optional<Biome> biome = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(location);
 
             if (biome.isEmpty()) {
-                Charm.LOG.warn("Could not find biome in registry of type: " + location);
+                LogHelper.warn(this.getClass(), "Could not find biome in registry of type: " + location);
                 return null;
             }
 
-            Charm.LOG.debug("Trying to locate biome in the world: " + location);
+            LogHelper.debug(this.getClass(), "Trying to locate biome in the world: " + location);
             foundPos = world.findNearestBiome(biome.get(), destPos, 6400, 8); // ints stolen from LocateBiomeCommand
         }
 
         if (foundPos == null) {
-            Charm.LOG.warn("Could not locate biome: " + location);
+            LogHelper.warn(this.getClass(), "Could not locate biome: " + location);
             return null;
         }
 

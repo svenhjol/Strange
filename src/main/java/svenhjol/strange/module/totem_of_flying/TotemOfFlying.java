@@ -7,19 +7,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import svenhjol.charm.annotation.Module;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.event.ApplyBeaconEffectsCallback;
 import svenhjol.charm.event.EntityJumpCallback;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.helper.PlayerHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Module(mod = Strange.MOD_ID, description = "A Totem of Flying lets you fly within range of an active beacon.")
+@CommonModule(mod = Strange.MOD_ID, description = "A Totem of Flying lets you fly within range of an active beacon.")
 public class TotemOfFlying extends CharmModule {
     public static ItemStack cachedTotemItemStack;
     public static TotemOfFlyingItem TOTEM_OF_FLYING;
@@ -32,7 +32,7 @@ public class TotemOfFlying extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         cachedTotemItemStack = new ItemStack(TOTEM_OF_FLYING);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         EntityJumpCallback.EVENT.register(this::handleEntityJump);

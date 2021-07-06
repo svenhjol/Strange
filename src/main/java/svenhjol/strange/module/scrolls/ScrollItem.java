@@ -13,7 +13,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.item.CharmItem;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.helper.NetworkHelper;
 import svenhjol.strange.module.scrolls.nbt.Quest;
 

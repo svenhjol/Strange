@@ -24,25 +24,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.SetupStructureCallback;
-import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.VillagerHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.mixin.accessor.VillagerAccessor;
-import svenhjol.charm.module.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.scrolls.*;
 import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.stone_circles.StoneCircles;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static svenhjol.charm.event.SetupStructureCallback.addVillageHouse;
 
-@Module(mod = Strange.MOD_ID, client = ScrollKeepersClient.class, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
+@CommonModule(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
     public static String VILLAGER_ID = "strange_scrollkeeper";
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
@@ -66,15 +66,12 @@ public class Scrollkeepers extends CharmModule {
         WRITING_DESK = new WritingDeskBlock(this);
         POIT = WorldHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.VILLAGER_WORK_LIBRARIAN);
+
+        this.addDependencyCheck(mod -> Strange.LOADER.isEnabled(StoneCircles.class));
     }
 
     @Override
-    public boolean depends() {
-        return ModuleHandler.enabled("strange:scrolls");
-    }
-
-    @Override
-    public void init() {
+    public void runWhenEnabled() {
         // listen for entity interaction events
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
 
@@ -184,7 +181,7 @@ public class Scrollkeepers extends CharmModule {
                     int amplifier = Math.max(0, villagerLevel - 2);
                     MobEffectInstance badOmen = new MobEffectInstance(MobEffects.BAD_OMEN, 120000, amplifier, false, false, true);
                     player.addEffect(badOmen);
-                    Charm.LOG.debug("Applying bad omen of amplifier: " + amplifier);
+                    LogHelper.debug(this.getClass(), "Applying bad omen of amplifier: " + amplifier);
                 }
             }
 

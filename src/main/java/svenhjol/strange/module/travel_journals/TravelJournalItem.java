@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.item.CharmItem;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 
 public class TravelJournalItem extends CharmItem {
     public TravelJournalItem(CharmModule module) {

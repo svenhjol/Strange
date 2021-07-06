@@ -12,21 +12,22 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
-import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
+import svenhjol.strange.module.rubble.Rubble;
+import svenhjol.strange.module.ruins.Ruins;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Module(mod = Strange.MOD_ID, description = "Rare tools and armor with higher enchantment levels and rare potions with longer duration and potency.")
+@CommonModule(mod = Strange.MOD_ID, description = "Rare tools and armor with higher enchantment levels and rare potions with longer duration and potency.")
 public class Treasure extends CharmModule {
     public static final ResourceLocation TREASURE_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "treasure_loot");
     public static LootItemFunctionType TREASURE_LOOT_FUNCTION;
@@ -48,22 +49,22 @@ public class Treasure extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         TreasureTools.init();
         TreasurePotions.init();
 
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
-        if (!ModuleHandler.enabled("strange:rubble")) {
-            Charm.LOG.info("Adding treasure to simple_dungeon loot");
+        if (!Strange.LOADER.isEnabled(Rubble.class)) {
+            LogHelper.info(this.getClass(), "Adding treasure to simple_dungeon loot");
             lootTables.add(BuiltInLootTables.SIMPLE_DUNGEON);
         } else {
-            Charm.LOG.info("Adding treasure to rubble loot");
+            LogHelper.info(this.getClass(), "Adding treasure to rubble loot");
             lootTables.add(StrangeLoot.RUBBLE);
         }
 
-        if (addToRuinLoot && ModuleHandler.enabled("strange:ruins")) {
-            Charm.LOG.info("Adding treasure to epic ruin loot");
+        if (addToRuinLoot && Strange.LOADER.isEnabled(Ruins.class)) {
+            LogHelper.info(this.getClass(), "Adding treasure to epic ruin loot");
             lootTables.add(StrangeLoot.OVERWORLD_RUINS_EPIC);
         }
     }

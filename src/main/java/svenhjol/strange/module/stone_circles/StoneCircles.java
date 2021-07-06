@@ -18,21 +18,21 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
-import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.BiomeHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
+import svenhjol.strange.module.runestones.Runestones;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module(mod = Strange.MOD_ID, description = "Circles of stone columns. Runestones may appear at the top of a column.")
+@CommonModule(mod = Strange.MOD_ID, description = "Circles of stone columns. Runestones may appear at the top of a column.")
 public class StoneCircles extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
     public static final ResourceLocation PIECE_ID = new ResourceLocation(Strange.MOD_ID, "stone_circle_piece");
@@ -76,21 +76,18 @@ public class StoneCircles extends CharmModule {
             .superflatFeature(EMPTY)
             .defaultConfig(spacing, 8, 515122)
             .register();
+
+        this.addDependencyCheck(m -> Strange.LOADER.isEnabled(Runestones.class));
     }
 
     @Override
-    public boolean depends() {
-        return ModuleHandler.enabled("strange:runestones");
-    }
-
-    @Override
-    public void init() {
+    public void runWhenEnabled() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
         configBiomes.forEach(biomeId -> BuiltinRegistries.BIOME.getOptional(new ResourceLocation(biomeId))
             .flatMap(BuiltinRegistries.BIOME::getResourceKey) // flatmap is shorthand for ifPresent(thing) -> return do(thing)
             .ifPresent(biomeKey -> {
-                Charm.LOG.debug("[StoneCircles] Added stone circle to biome: " + biomeId);
+                LogHelper.debug(this.getClass(), "Added stone circle to biome: " + biomeId);
                 BiomeHelper.addStructureToBiome(STONE_CIRCLE, biomeKey);
             }));
     }

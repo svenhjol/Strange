@@ -9,19 +9,19 @@ import net.minecraft.world.entity.monster.Illusioner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.EntityDropItemsCallback;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
-@Module(mod = Strange.MOD_ID, description = "Additional configuration options for mobs that spawn in Strange.")
+@CommonModule(mod = Strange.MOD_ID, description = "Additional configuration options for mobs that spawn in Strange.")
 public class Mobs extends CharmModule {
     @Config(name = "Allow Illusioners", description = "If true, Illusioners will be allowed to spawn at stone circles.  Like Evokers, they drop a Totem of Undying when killed.")
     public static boolean illusioners = true;
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         EntityDropItemsCallback.AFTER.register(this::tryDropTotemFromIllusioner);
     }
 

@@ -1,8 +1,5 @@
 package svenhjol.strange.module.treasure;
 
-import svenhjol.charm.module.colored_glints.ColoredGlintHandler;
-
-import java.util.*;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -11,6 +8,9 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import svenhjol.charm.module.colored_glints.ColoredGlintsClient;
+
+import java.util.*;
 
 public interface ITreasureTool {
     List<String> getValidEnchantments();
@@ -65,7 +65,7 @@ public interface ITreasureTool {
         EnchantmentHelper.setEnchantments(getEnchantments(), itemStack);
 
         // apply glint color
-        itemStack.getOrCreateTag().putString(ColoredGlintHandler.GLINT_NBT, getColor().getName());
+        itemStack.getOrCreateTag().putString(ColoredGlintsClient.GLINT_NBT, getColor().getName());
 
         return itemStack;
     }

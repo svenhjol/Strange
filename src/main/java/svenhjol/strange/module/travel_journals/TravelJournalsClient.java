@@ -23,13 +23,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
-import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.event.SetupGuiCallback;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.PosHelper;
 import svenhjol.charm.helper.ScreenHelper;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeResources;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.travel_journals.screen.TravelJournalHomeScreen;
@@ -38,7 +38,8 @@ import svenhjol.strange.module.travel_journals.screen.TravelJournalUpdateEntrySc
 import java.util.ArrayList;
 import java.util.List;
 
-public class TravelJournalsClient extends CharmClientModule {
+@ClientModule(module = TravelJournals.class)
+public class TravelJournalsClient extends CharmModule {
     public static List<TravelJournalEntry> entries = new ArrayList<>();
     public static KeyMapping keyBinding;
 
@@ -46,12 +47,8 @@ public class TravelJournalsClient extends CharmClientModule {
     public static int screenshotTicks;
     public static int lastEntryPage;
 
-    public TravelJournalsClient(CharmModule module) {
-        super(module);
-    }
-
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         SetupGuiCallback.EVENT.register(this::handleGuiSetup);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
 
@@ -116,10 +113,8 @@ public class TravelJournalsClient extends CharmClientModule {
                 Screenshot.grab(
                     client.gameDirectory,
                     entryHavingScreenshot.id + ".png",
-                    win.getWidth() / 8,
-                    win.getHeight() / 8,
                     client.getMainRenderTarget(),
-                    i -> {
+                    component -> {
                         if (client.player != null)
                             client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
 
@@ -128,7 +123,7 @@ public class TravelJournalsClient extends CharmClientModule {
                             client.setScreen(new TravelJournalUpdateEntryScreen(entryHavingScreenshot));
                             entryHavingScreenshot = null;
                         });
-                        Charm.LOG.debug("Screenshot taken");
+                        LogHelper.debug(this.getClass(), "Screenshot taken");
                     }
                 );
                 screenshotTicks = 0;

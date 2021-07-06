@@ -4,14 +4,11 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.DyeColor;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.loader.CharmModule;
 
-public class RunePortalsClient extends CharmClientModule {
-    public RunePortalsClient(CharmModule module) {
-        super(module);
-    }
-
+@ClientModule(module = RunePortals.class)
+public class RunePortalsClient extends CharmModule {
     @Override
     public void register() {
         BlockRenderLayerMap.INSTANCE.putBlock(RunePortals.RUNE_PORTAL_BLOCK, RenderType.translucent());

@@ -18,12 +18,13 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import svenhjol.charm.Charm;
-import svenhjol.charm.enums.IVariantMaterial;
-import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.enums.IWoodMaterial;
 import svenhjol.charm.helper.DecorationHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.module.entity_spawners.EntitySpawnerBlockEntity;
 import svenhjol.charm.module.entity_spawners.EntitySpawners;
 import svenhjol.charm.module.variant_chests.VariantChests;
+import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
 import svenhjol.strange.module.mobs.Mobs;
 import svenhjol.strange.module.runestones.Runestones;
@@ -76,7 +77,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
         }
 
         if (availableRunes.size() == 0) {
-            Charm.LOG.warn("[StoneCircleStructurePiece] No available runes to generate");
+            LogHelper.warn(this.getClass(), "No available runes to generate");
             return false;
         }
 
@@ -156,8 +157,8 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
 
                     if (generateChest) {
                         BlockState chest;
-                        if (ModuleHandler.enabled("charm:variant_chests")) {
-                            IVariantMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
+                        if (Charm.LOADER.isEnabled(VariantChests.class)) {
+                            IWoodMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
                             chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
                         } else {
                             chest = Blocks.CHEST.defaultBlockState();
@@ -202,7 +203,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
                                 }
                                 mobCount = random.nextInt(3) + 3;
                             } else {
-                                if (random.nextBoolean() && ModuleHandler.enabled(Mobs.class) && Mobs.illusioners) {
+                                if (random.nextBoolean() && Strange.LOADER.isEnabled(Mobs.class) && Mobs.illusioners) {
                                     mobId = new ResourceLocation("illusioner");
                                 } else {
                                     mobId = new ResourceLocation("evoker");
@@ -222,7 +223,7 @@ public class StoneCircleStructurePiece extends ScatteredFeaturePiece {
         }
 
         if (!generatedSomething)
-            Charm.LOG.debug("Did not generate a stone circle at: " + blockPos);
+            LogHelper.debug(this.getClass(), "Did not generate a stone circle at: " + blockPos);
 
         return generatedSomething;
     }

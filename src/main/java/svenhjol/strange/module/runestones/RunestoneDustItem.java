@@ -12,10 +12,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.item.CharmItem;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.stone_circles.StoneCircles;
 
 public class RunestoneDustItem extends CharmItem {
@@ -32,7 +32,7 @@ public class RunestoneDustItem extends CharmItem {
         if (!DimensionHelper.isOverworld(world))
             return InteractionResultHolder.fail(stack);
 
-        if (!ModuleHandler.enabled("strange:stone_circles"))
+        if (!Strange.LOADER.isEnabled(StoneCircles.class))
             return InteractionResultHolder.fail(stack);
 
         if (!player.isCreative())

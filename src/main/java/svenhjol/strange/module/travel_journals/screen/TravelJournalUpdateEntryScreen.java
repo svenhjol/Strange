@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import svenhjol.charm.Charm;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.mixin.accessor.ScreenAccessor;
@@ -251,11 +251,11 @@ public class TravelJournalUpdateEntryScreen extends TravelJournalBaseScreen {
                     throw new Exception("Null problems with screenshot texture / registered texture");
 
             } catch (Exception e) {
-                Charm.LOG.warn("Error loading screenshot: " + e);
+                LogHelper.warn(this.getClass(), "Error loading screenshot: " + e);
                 screenshotFailureRetries++;
 
                 if (screenshotFailureRetries > 2) {
-                    Charm.LOG.error("Failure loading screenshot, aborting retries");
+                    LogHelper.error(this.getClass(), "Failure loading screenshot, aborting retries");
                     hasScreenshot = false;
                     registeredScreenshotTexture = null;
                     screenshotTexture = null;

@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ public class RunePortalBlock extends CharmBlockWithEntity {
 
     @Override
     public boolean enabled() {
-        return module.enabled;
+        return module.isEnabled();
     }
 
     @Override

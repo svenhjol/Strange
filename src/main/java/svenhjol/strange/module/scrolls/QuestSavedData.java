@@ -12,9 +12,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import svenhjol.charm.Charm;
-import svenhjol.strange.module.scrolls.populator.*;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.scrolls.populator.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -182,7 +182,7 @@ public class QuestSavedData extends SavedData {
         try {
             populators.forEach(BasePopulator::populate);
         } catch (Exception e) {
-            Charm.LOG.warn(e.getMessage());
+            LogHelper.warn(this.getClass(), e.getMessage());
             return null;
         }
 

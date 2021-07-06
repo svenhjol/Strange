@@ -19,9 +19,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import svenhjol.charm.Charm;
-import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.*;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.scrolls.ScrollDefinition;
 import svenhjol.strange.module.scrolls.Scrolls;
 import svenhjol.strange.module.scrolls.nbt.Boss;
@@ -62,7 +61,7 @@ public class BossPopulator extends BasePopulator {
 
         BlockPos bossPos = PosHelper.addRandomOffset(pos, world.random, 250, 750);
 
-        ResourceLocation spawnStructure = ModuleHandler.enabled("strange:stone_circles")
+        ResourceLocation spawnStructure = Strange.LOADER.isEnabled(StoneCircles.class)
             ? StoneCircles.STRUCTURE_ID
             : FALLBACK_STRUCTURE;
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(spawnStructure);
@@ -111,7 +110,7 @@ public class BossPopulator extends BasePopulator {
         if (pos == null)
             return ItemStack.EMPTY;
 
-        Charm.LOG.info("[BossPopulator] Map created for boss quest at pos: " + pos);
+        LogHelper.info(this.getClass(), "Map created for boss quest at pos: " + pos);
         return MapHelper.getMap(world, pos, new TranslatableComponent(quest.getTitle()), MapDecoration.Type.TARGET_POINT, MAP_COLOR);
     }
 
@@ -215,13 +214,13 @@ public class BossPopulator extends BasePopulator {
                         });
                     }
 
-                    Charm.LOG.info("[BossPopulator] Spawned " + id + " at " + mobPos.toString());
+                    LogHelper.info(BossPopulator.class, "Spawned " + id + " at " + mobPos.toString());
                 });
 
                 if (didSpawn) {
                     didAnySpawn = true;
                 } else {
-                    Charm.LOG.info("[BossPopulator] Failed to spawn " + id);
+                    LogHelper.info(BossPopulator.class, "Failed to spawn " + id);
 
                     // if a boss entity couldn't spawn, flag it as a kill
                     if (isBoss)

@@ -1,9 +1,5 @@
 package svenhjol.strange.module.scrollkeepers;
 
-import svenhjol.charm.block.CharmBlock;
-import svenhjol.charm.module.CharmModule;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,6 +18,10 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import svenhjol.charm.block.CharmBlock;
+import svenhjol.charm.loader.CharmModule;
+
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class WritingDeskBlock extends CharmBlock {

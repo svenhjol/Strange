@@ -16,19 +16,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.vibrations.VibrationPath;
-import svenhjol.charm.annotation.Module;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.init.CharmAdvancements;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Module(mod = Strange.MOD_ID, client = AstrolabesClient.class, description = "Place an astrolabe and link another to it to help align builds.")
+@CommonModule(mod = Strange.MOD_ID, description = "Place an astrolabe and link another to it to help align builds.")
 public class Astrolabes extends CharmModule {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "astrolabe");
     public static final ResourceLocation MSG_CLIENT_SHOW_AXIS_PARTICLES = new ResourceLocation(Strange.MOD_ID, "client_show_axis_particles");
@@ -47,7 +47,7 @@ public class Astrolabes extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
     }
 

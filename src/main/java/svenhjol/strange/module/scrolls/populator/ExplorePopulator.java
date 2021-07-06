@@ -21,8 +21,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import svenhjol.charm.Charm;
-import svenhjol.charm.enums.IVariantMaterial;
-import svenhjol.charm.handler.ModuleHandler;
+import svenhjol.charm.enums.IWoodMaterial;
 import svenhjol.charm.helper.*;
 import svenhjol.charm.module.variant_chests.VariantChests;
 import svenhjol.strange.module.scrolls.Scrolls;
@@ -115,7 +114,7 @@ public class ExplorePopulator extends BasePopulator {
         if (pos == null)
             return ItemStack.EMPTY;
 
-        Charm.LOG.info("[ExplorePopulator] Map created for explore quest at pos: " + pos);
+        LogHelper.info(this.getClass(), "Map created for explore quest at pos: " + pos);
         return MapHelper.getMap(world, pos, new TranslatableComponent(quest.getTitle()), MapDecoration.Type.TARGET_X, MAP_COLOR);
     }
 
@@ -145,9 +144,9 @@ public class ExplorePopulator extends BasePopulator {
         if (chests.isEmpty()) {
             BlockState chest;
 
-            boolean useVariantChests = ModuleHandler.enabled("charm:variant_chests");
+            boolean useVariantChests = Charm.LOADER.isEnabled(VariantChests.class);
             if (useVariantChests) {
-                IVariantMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
+                IWoodMaterial material = DecorationHelper.getRandomOverworldVariantMaterial(random);
                 chest = VariantChests.NORMAL_CHEST_BLOCKS.get(material).defaultBlockState();
             } else {
                 chest = Blocks.CHEST.defaultBlockState();
@@ -273,7 +272,7 @@ public class ExplorePopulator extends BasePopulator {
                 player.level.playSound(null, player.blockPosition(), SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.6F, 1.2F);
             }
 
-            placements.forEach(p -> Charm.LOG.info("[ExplorePopulator] Added quest loot to chest at: " + p.toString()));
+            placements.forEach(p -> LogHelper.info(ExplorePopulator.class, "Added quest loot to chest at: " + p.toString()));
         }
 
         return placements;

@@ -53,6 +53,10 @@
 
   "block.strange.writing_desk": "Writing Desk",
 
+  "cloth.title": "Strange configuration",
+  "cloth.category.title": "Strange",
+  "cloth.category.module_enabled": "Module Enabled",
+
   "entity.minecraft.villager.strange_scrollkeeper": "Scrollkeeper",
   "entity.strange.villager.strange_scrollkeeper": "Scrollkeeper",
 

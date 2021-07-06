@@ -11,9 +11,9 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.DyeColor;
+import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.init.CharmParticles;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeSounds;
 
 import java.util.Arrays;
@@ -21,11 +21,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class AstrolabesClient extends CharmClientModule {
-    public AstrolabesClient(CharmModule module) {
-        super(module);
-    }
-
+@ClientModule(module = Astrolabes.class)
+public class AstrolabesClient extends CharmModule {
     @Override
     public void register() {
         ClientPlayNetworking.registerGlobalReceiver(Astrolabes.MSG_CLIENT_SHOW_AXIS_PARTICLES, this::handleClientShowAxisParticles);

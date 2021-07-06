@@ -7,18 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.loader.CharmModule;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunestonesClient extends CharmClientModule {
+@ClientModule(module = Runestones.class)
+public class RunestonesClient extends CharmModule {
     public static Map<Integer, String> CACHED_DESTINATION_NAMES = new HashMap<>();
-
-    public RunestonesClient(CharmModule module) {
-        super(module);
-    }
 
     @Override
     public void register() {

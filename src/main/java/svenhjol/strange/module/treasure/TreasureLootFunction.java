@@ -2,16 +2,16 @@ package svenhjol.strange.module.treasure;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import svenhjol.charm.handler.ModuleHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import svenhjol.strange.Strange;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TreasureLootFunction extends LootItemConditionalFunction {
 
@@ -21,7 +21,7 @@ public class TreasureLootFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        if (!ModuleHandler.enabled("strange:treasure"))
+        if (!Strange.LOADER.isEnabled(Treasure.class))
             return stack;
 
         return tryCreateTreasureItem(stack, context);

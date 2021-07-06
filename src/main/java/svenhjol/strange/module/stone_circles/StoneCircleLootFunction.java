@@ -2,15 +2,15 @@ package svenhjol.strange.module.stone_circles;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import svenhjol.charm.handler.ModuleHandler;
-import svenhjol.strange.module.runestones.Runestones;
-
-import java.util.Random;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import svenhjol.strange.Strange;
+import svenhjol.strange.module.runestones.Runestones;
+
+import java.util.Random;
 
 public class StoneCircleLootFunction extends LootItemConditionalFunction {
 
@@ -20,7 +20,7 @@ public class StoneCircleLootFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        if (!ModuleHandler.enabled("strange:runestones"))
+        if (!Strange.LOADER.isEnabled(Runestones.class))
             return stack;
 
         return tryCreateItem(stack, context);

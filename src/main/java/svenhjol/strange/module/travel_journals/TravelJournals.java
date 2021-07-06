@@ -25,15 +25,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.LoadServerFinishCallback;
 import svenhjol.charm.event.PlayerDropInventoryCallback;
-import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.helper.PlayerHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.bookcases.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.TotemsHelper;
@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@Module(mod = Strange.MOD_ID, client = TravelJournalsClient.class, description = "Helps keep track of interesting locations, current scrolls and learned runes.")
+@CommonModule(mod = Strange.MOD_ID, description = "Helps keep track of interesting locations, current scrolls and learned runes.")
 public class TravelJournals extends CharmModule {
     public static final int MAX_ENTRIES = 50;
     public static final int MAX_NAME_LENGTH = 32;
@@ -75,12 +75,12 @@ public class TravelJournals extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         // load travel journal saved data when world starts
         LoadServerFinishCallback.EVENT.register(this::loadSavedData);
 
         // allow travel journals on Charm's bookcases
-        if (ModuleHandler.enabled(Bookcases.class))
+        if (Charm.LOADER.isEnabled(Bookcases.class))
             Bookcases.validItems.add(TRAVEL_JOURNAL);
 
         // record death positions in travel journal
@@ -118,7 +118,7 @@ public class TravelJournals extends CharmModule {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         if (overworld == null) {
-            Charm.LOG.warn("[Travel Journal] Overworld is null, cannot load saved data");
+            LogHelper.warn(this.getClass(), "Overworld is null, cannot load saved data");
             return;
         }
 
@@ -128,7 +128,7 @@ public class TravelJournals extends CharmModule {
             () -> new TravelJournalSavedData(overworld),
             TravelJournalSavedData.nameFor(overworld.dimensionType()));
 
-        Charm.LOG.info("[Travel Journal] Loaded travel journal saved data");
+        LogHelper.info(this.getClass(), "Loaded travel journal saved data");
     }
 
     private void handleServerOpenJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf data, PacketSender sender) {
@@ -136,12 +136,12 @@ public class TravelJournals extends CharmModule {
             ListTag listTag = savedData.serializePlayerEntries(player.getUUID());
             TravelJournals.sendJournalEntriesPacket(player, listTag);
 
-            if (ModuleHandler.enabled(Runestones.class)) {
+            if (Strange.LOADER.isEnabled(Runestones.class)) {
                 Runestones.sendLearnedRunesPacket(player);
                 Runestones.sendDestinationNamesPacket(player);
             }
 
-            if (ModuleHandler.enabled(Scrolls.class)) {
+            if (Strange.LOADER.isEnabled(Scrolls.class)) {
                 Scrolls.sendPlayerQuestsPacket(player);
             }
 
@@ -180,7 +180,7 @@ public class TravelJournals extends CharmModule {
         processClientPacket(server, player, savedData -> {
             TravelJournalEntry entry = savedData.initJournalEntry(player);
             if (entry == null) {
-                Charm.LOG.warn("Failed to create a new journal entry, doing nothing");
+                LogHelper.warn(this.getClass(), "Failed to create a new journal entry, doing nothing");
                 return;
             }
 

@@ -10,12 +10,13 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
+import svenhjol.charm.api.CharmPlayerStateKeys;
 import svenhjol.charm.helper.DecorationHelper;
 import svenhjol.charm.helper.LootHelper;
 import svenhjol.charm.helper.PosHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.player_state.PlayerState;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
@@ -26,7 +27,7 @@ import static svenhjol.charm.helper.BiomeHelper.addStructureToBiome;
 import static svenhjol.charm.helper.BiomeHelper.addStructureToBiomeCategories;
 import static svenhjol.charm.helper.RegistryHelper.configuredStructureFeature;
 
-@Module(mod = Strange.MOD_ID, description = "Ruined structures found on the surface, in caves, and at the deepest levels of the overworld.")
+@CommonModule(mod = Strange.MOD_ID, description = "Ruined structures found on the surface, in caves, and at the deepest levels of the overworld.")
 public class Ruins extends CharmModule {
     public static final ResourceLocation SURFACE_RUIN_ID = new ResourceLocation(Strange.MOD_ID, "surface_ruin");
     public static final ResourceLocation CAVE_RUIN_ID = new ResourceLocation(Strange.MOD_ID, "cave_ruin");
@@ -131,7 +132,7 @@ public class Ruins extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         // register ruin loot tables
         LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.OVERWORLD_RUINS_COMMON);
         LootHelper.CUSTOM_LOOT_TABLES.add(StrangeLoot.OVERWORLD_RUINS_UNCOMMON);
@@ -150,8 +151,7 @@ public class Ruins extends CharmModule {
         if (!NetherRuinGenerator.RUINS.isEmpty()) addStructureToBiomeCategories(NETHER_RUIN_CONFIGURED, BiomeCategory.NETHER);
         if (!EndRuinGenerator.RUINS.isEmpty()) addStructureToBiome(END_RUIN_CONFIGURED, Biomes.END_HIGHLANDS);
 
-        // TODO: this will all break with Charm 3.3.0
-        PlayerState.listeners.add((player, tag) -> {
+        PlayerState.addCallback((player, nbt) -> {
             if (player != null && player.level != null && !player.level.isClientSide) {
                 ServerLevel serverWorld = (ServerLevel) player.level;
                 BlockPos playerPos = player.blockPosition();
@@ -161,7 +161,8 @@ public class Ruins extends CharmModule {
                     || PosHelper.isInsideStructure(serverWorld, playerPos, NETHER_RUIN_FEATURE)
                     || PosHelper.isInsideStructure(serverWorld, playerPos, END_RUIN_FEATURE);
 
-                tag.putBoolean("ruin", isInRuin);
+                // TODO: this is dumb, we need a ruin key
+                nbt.putBoolean(CharmPlayerStateKeys.InsideStronghold.toString(), isInRuin);
             }
         });
     }

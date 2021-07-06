@@ -16,20 +16,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.scrolls.ScrollItem;
 import svenhjol.strange.module.scrolls.ScrollHelper;
 import svenhjol.strange.module.scrolls.nbt.Quest;
 
 import java.util.List;
 
-public class ScrollKeepersClient extends CharmClientModule {
-    public ScrollKeepersClient(CharmModule module) {
-        super(module);
-    }
-
+@ClientModule(module = Scrollkeepers.class)
+public class ScrollKeepersClient extends CharmModule {
     private static Quest heldScrollQuest;
 
     @Override
@@ -42,7 +39,7 @@ public class ScrollKeepersClient extends CharmClientModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::villagerInterested);
     }
 

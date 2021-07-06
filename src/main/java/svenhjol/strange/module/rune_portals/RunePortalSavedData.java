@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import svenhjol.charm.Charm;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.mixin.accessor.ServerPlayerAccessor;
 import svenhjol.strange.init.StrangeSounds;
 
@@ -142,9 +142,9 @@ public class RunePortalSavedData extends SavedData {
         Collections.shuffle(dests);
         Optional<BlockPos> optional = dests.stream().filter(b -> !b.equals(pos)).findFirst();
 
-        Charm.LOG.debug("Current location: " + pos.toShortString());
-        dests.forEach(dest -> Charm.LOG.debug("Possible destination: " + dest.toShortString()));
-        optional.ifPresent(b -> Charm.LOG.debug("Selected destination: " + b));
+        LogHelper.debug(this.getClass(), "Current location: " + pos.toShortString());
+        dests.forEach(dest -> LogHelper.debug(this.getClass(), "Possible destination: " + dest.toShortString()));
+        optional.ifPresent(b -> LogHelper.debug(this.getClass(), "Selected destination: " + b));
 
         if (optional.isPresent()) {
             BlockPos dest = optional.get();

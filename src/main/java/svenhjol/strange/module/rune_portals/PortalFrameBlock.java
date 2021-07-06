@@ -21,7 +21,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import svenhjol.charm.block.CharmBlock;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 
 import java.util.Random;
 

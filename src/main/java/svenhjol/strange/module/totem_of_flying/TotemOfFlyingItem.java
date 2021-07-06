@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import svenhjol.charm.item.CharmItem;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 
 public class TotemOfFlyingItem extends CharmItem {
     public TotemOfFlyingItem(CharmModule module) {

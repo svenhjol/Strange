@@ -10,9 +10,7 @@ import svenhjol.strange.command.arg.RuneArgType;
 
 public class StrangeCommands {
     public static void init() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            StrangeCommand.register(dispatcher);
-        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> StrangeCommand.register(dispatcher));
 
         ArgumentTypes.register("quest_definition", QuestDefinitionArgType.class, new EmptyArgumentSerializer<>(QuestDefinitionArgType::new));
         ArgumentTypes.register("quest_id", QuestIdArgType.class, new EmptyArgumentSerializer<>(QuestIdArgType::new));

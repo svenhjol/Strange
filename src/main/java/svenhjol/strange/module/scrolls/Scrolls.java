@@ -32,17 +32,18 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.EntityKillCallback;
 import svenhjol.charm.event.LoadServerFinishCallback;
 import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.charm.handler.ModuleHandler;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.init.CharmAdvancements;
+import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.loader.CommonLoader;
 import svenhjol.charm.mixin.accessor.MinecraftServerAccessor;
-import svenhjol.charm.module.CharmModule;
 import svenhjol.charm.module.bookcases.Bookcases;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
@@ -52,7 +53,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-@Module(mod = Strange.MOD_ID, client = ScrollsClient.class, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
+@CommonModule(mod = Strange.MOD_ID, description = "Scrolls provide quest instructions and scrollkeeper villagers give rewards for completed scrolls.")
 public class Scrolls extends CharmModule {
     public static final int TIERS = 6;
 
@@ -121,7 +122,7 @@ public class Scrolls extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         // load saved dataa and scrolls when world starts
         LoadServerFinishCallback.EVENT.register(server -> {
             loadSavedData(server);
@@ -141,7 +142,7 @@ public class Scrolls extends CharmModule {
         ServerTickEvents.END_SERVER_TICK.register(server -> savedData.tick());
 
         // allow scrolls on Charm's bookcases
-        if (ModuleHandler.enabled(Bookcases.class)) {
+        if (Charm.LOADER.isEnabled(Bookcases.class)) {
             Bookcases.validItems.addAll(Scrolls.SCROLL_TIERS.values());
         }
 
@@ -184,13 +185,13 @@ public class Scrolls extends CharmModule {
     @Nullable
     public static ScrollDefinition getRandomDefinition(int tier, Level world, Random random) {
         if (!Scrolls.AVAILABLE_SCROLLS.containsKey(tier)) {
-            Charm.LOG.warn("No scroll definitions available for this tier: " + tier);
+            LogHelper.warn(Scrolls.class, "No scroll definitions available for this tier: " + tier);
             return null;
         }
 
         Map<String, ScrollDefinition> definitions = AVAILABLE_SCROLLS.get(tier);
         if (definitions.isEmpty()) {
-            Charm.LOG.warn("No scroll definitions found in this tier: " + tier);
+            LogHelper.warn(Scrolls.class, "No scroll definitions found in this tier: " + tier);
             return null;
         }
 
@@ -248,7 +249,7 @@ public class Scrolls extends CharmModule {
     private void loadSavedData(MinecraftServer server) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         if (overworld == null) {
-            Charm.LOG.warn("[Scrolls] Overworld is null, cannot load saved data");
+            LogHelper.warn(this.getClass(), "Overworld is null, cannot load saved data");
             return;
         }
 
@@ -258,11 +259,12 @@ public class Scrolls extends CharmModule {
             () -> new QuestSavedData(overworld),
             QuestSavedData.nameFor(overworld.dimensionType()));
 
-        Charm.LOG.info("[Scrolls] Loaded saved data");
+        LogHelper.info(this.getClass(), "Loaded saved data");
     }
 
     private void tryLoadScrolls(MinecraftServer server) {
         ResourceManager resources = ((MinecraftServerAccessor)server).getResources().getResourceManager();
+        Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
 
         for (int tier = 0; tier <= TIERS; tier++) {
             AVAILABLE_SCROLLS.put(tier, new HashMap<>());
@@ -281,10 +283,11 @@ public class Scrolls extends CharmModule {
                     if (!requiredModules.isEmpty()) {
                         boolean valid = true;
                         for (String requiredModule : requiredModules) {
-                            valid = valid && ModuleHandler.enabled(requiredModule);
+                            ResourceLocation res = new ResourceLocation(requiredModule);
+                            valid = valid && allModules.containsKey(res) && allModules.get(res).isEnabled();
                         }
                         if (!valid) {
-                            Charm.LOG.info("Scroll definition " + scroll + " is missing required modules, disabling.");
+                            LogHelper.info(this.getClass(), "Scroll definition " + scroll + " is missing required modules, disabling.");
                             continue;
                         }
                     }
@@ -294,10 +297,10 @@ public class Scrolls extends CharmModule {
                     definition.setTitle(id);
                     definition.setTier(tier);
                     AVAILABLE_SCROLLS.get(tier).put(id, definition);
-                    Charm.LOG.info("Loaded scroll definition " + scroll + " for tier " + tier);
+                    LogHelper.info(this.getClass(), "Loaded scroll definition " + scroll + " for tier " + tier);
 
                 } catch (Exception e) {
-                    Charm.LOG.warn("Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
+                    LogHelper.warn(this.getClass(), "Could not load scroll definition for " + scroll.toString() + " because " + e.getMessage());
                 }
             }
         }

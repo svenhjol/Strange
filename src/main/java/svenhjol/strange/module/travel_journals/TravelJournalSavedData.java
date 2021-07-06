@@ -10,8 +10,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import svenhjol.charm.Charm;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -70,7 +70,7 @@ public class TravelJournalSavedData extends SavedData {
         List<TravelJournalEntry> entries = playerJournalEntries.get(uuid);
 
         if (entries.size() >= TravelJournals.MAX_ENTRIES) {
-            Charm.LOG.warn("Too many journal entries for player " + uuid.toString());
+            LogHelper.warn(this.getClass(), "Too many journal entries for player " + uuid.toString());
             return null;
         }
 

@@ -28,12 +28,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.BlockHitResult;
-import svenhjol.charm.Charm;
-import svenhjol.charm.annotation.Module;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.event.ServerWorldInitCallback;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.RunePlateItem;
 import svenhjol.strange.module.runestones.Runestones;
@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-@Module(mod = Strange.MOD_ID, client = RunePortalsClient.class)
+@CommonModule(mod = Strange.MOD_ID)
 public class RunePortals extends CharmModule {
     public static PortalFrameBlock PORTAL_FRAME_BLOCK;
 
@@ -72,7 +72,7 @@ public class RunePortals extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         // listen for broken frames
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
 
@@ -253,11 +253,11 @@ public class RunePortals extends CharmModule {
             RunePortalSavedData data = optional.get();
 
             if (order.size() == 12) {
-                Charm.LOG.debug("Rune order: " + order + ", start: " + start.toShortString());
+                LogHelper.debug(RunePortals.class, "Rune order: " + order + ", start: " + start.toShortString());
                 data.createPortal(order, start, axis);
                 return true;
             } else {
-                Charm.LOG.debug("Could not determine portal runes");
+                LogHelper.debug(RunePortals.class, "Could not determine portal runes");
             }
         }
 
@@ -382,6 +382,6 @@ public class RunePortals extends CharmModule {
             RunePortalSavedData.nameFor(serverWorld.dimensionType()));
 
         savedData.put(serverWorld.dimension(), data);
-        Charm.LOG.info("[RunePortals] Loaded rune portal saved data for world " + serverWorld.dimension().location());
+        LogHelper.info(this.getClass(), "Loaded rune portal saved data for world " + serverWorld.dimension().location());
     }
 }

@@ -37,16 +37,12 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import svenhjol.charm.Charm;
+import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.annotation.Module;
 import svenhjol.charm.event.*;
-import svenhjol.charm.helper.EnchantmentsHelper;
-import svenhjol.charm.helper.PosHelper;
-import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.helper.*;
 import svenhjol.charm.init.CharmAdvancements;
-import svenhjol.charm.module.CharmModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.runestones.destination.BaseDestination;
@@ -59,7 +55,7 @@ import java.util.*;
 
 import static svenhjol.strange.module.runestones.RunestonesHelper.NUMBER_OF_RUNES;
 
-@Module(mod = Strange.MOD_ID, client = RunestonesClient.class, description = "Fast travel to points of interest in your world by using an ender pearl.")
+@CommonModule(mod = Strange.MOD_ID, description = "Fast travel to points of interest in your world by using an ender pearl.")
 public class Runestones extends CharmModule {
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
@@ -145,7 +141,7 @@ public class Runestones extends CharmModule {
     }
 
     @Override
-    public void init() {
+    public void runWhenEnabled() {
         // write player learned runes to disk
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSave);
 
@@ -174,7 +170,7 @@ public class Runestones extends CharmModule {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         if (overworld == null) {
-            Charm.LOG.warn("Cannot access overworld, unable to get seed.");
+            LogHelper.warn(this.getClass(), "Cannot access overworld, unable to get seed.");
             return;
         }
 
@@ -234,7 +230,7 @@ public class Runestones extends CharmModule {
                 if (addStructure) {
                     AVAILABLE_DESTINATIONS.add(new StructureDestination(locationId, weight));
                 } else {
-                    Charm.LOG.warn("Could not find registered structure " + configStructure + ", ignoring as runestone destination");
+                    LogHelper.warn(this.getClass(), "Could not find registered structure " + configStructure + ", ignoring as runestone destination");
                     AVAILABLE_DESTINATIONS.add(new StructureDestination(RunestonesHelper.SPAWN, weight));
                 }
 
@@ -252,7 +248,7 @@ public class Runestones extends CharmModule {
                 if (addBiome) {
                     AVAILABLE_DESTINATIONS.add(new BiomeDestination(locationId, weight));
                 } else {
-                    Charm.LOG.warn("Could not find registered biome " + configBiome + ", ignoring as runestone destination");
+                    LogHelper.warn(this.getClass(), "Could not find registered biome " + configBiome + ", ignoring as runestone destination");
                     AVAILABLE_DESTINATIONS.add(new BiomeDestination(RunestonesHelper.SPAWN, weight));
                 }
                 r++;
@@ -321,7 +317,7 @@ public class Runestones extends CharmModule {
             // force load the remote chunk for smoother teleport
             if (ticks == TELEPORT_TICKS) {
                 if (!WorldHelper.addForcedChunk((ServerLevel)player.level, dest)) {
-                    Charm.LOG.warn("Could not load destination chunk, giving up");
+                    LogHelper.warn(this.getClass(), "Could not load destination chunk, giving up");
                     RunestonesHelper.explode(player.level, src, player, true);
                     clearTeleport(player);
                     return;
@@ -384,7 +380,7 @@ public class Runestones extends CharmModule {
     private boolean onPlayerActivateRunestone(ServerLevel world, BlockPos runePos, ServerPlayer player) {
         int runeValue = getRuneValue(world, runePos);
         if (runeValue == -1) {
-            Charm.LOG.warn("Failed to get the value of the rune at " + runePos.toString());
+            LogHelper.warn(this.getClass(), "Failed to get the value of the rune at " + runePos.toString());
             return RunestonesHelper.explode(world, runePos, player, true);
         }
 
@@ -436,7 +432,7 @@ public class Runestones extends CharmModule {
             for (int rune : intArray) {
                 RunestonesHelper.addLearnedRune(player, rune);
             }
-            Charm.LOG.debug("Loaded player rune learned data");
+            LogHelper.debug(this.getClass(), "Loaded player rune learned data");
         }
     }
 

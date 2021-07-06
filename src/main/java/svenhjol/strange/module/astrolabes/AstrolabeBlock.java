@@ -1,10 +1,5 @@
 package svenhjol.strange.module.astrolabes;
 
-import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.module.CharmModule;
-
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +18,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import svenhjol.charm.block.CharmBlockWithEntity;
+import svenhjol.charm.helper.RegistryHelper;
+import svenhjol.charm.loader.CharmModule;
+
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class AstrolabeBlock extends CharmBlockWithEntity {

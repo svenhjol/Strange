@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.border.WorldBorder;
-import svenhjol.charm.Charm;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
 import svenhjol.strange.module.runestones.RunestonesHelper;
 
@@ -64,7 +64,7 @@ public abstract class BaseDestination {
             ResourceLocation location = runeBlockEntity.location;
 
             if (location != null && position != null) {
-                Charm.LOG.debug("Found destination in runestone: " + location);
+                LogHelper.debug(this.getClass(), "Found destination in runestone: " + location);
                 return position;
             }
         }
@@ -80,7 +80,7 @@ public abstract class BaseDestination {
             runeBlockEntity.player = player != null ? player.getName().getContents() : "";
             runeBlockEntity.setChanged();
 
-            Charm.LOG.debug("Stored location in runestone for next use");
+            LogHelper.debug(this.getClass(), "Stored location in runestone for next use");
         }
     }
 }

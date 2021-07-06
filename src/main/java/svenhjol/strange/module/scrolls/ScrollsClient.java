@@ -12,10 +12,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import svenhjol.charm.module.CharmClientModule;
-import svenhjol.charm.module.CharmModule;
-import svenhjol.strange.module.travel_journals.screen.TravelJournalScrollsScreen;
+import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.scrolls.nbt.Quest;
+import svenhjol.strange.module.travel_journals.screen.TravelJournalScrollsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,9 @@ import java.util.Random;
 
 import static svenhjol.strange.module.scrolls.Scrolls.*;
 
-public class ScrollsClient extends CharmClientModule {
+@ClientModule(module = Scrolls.class)
+public class ScrollsClient extends CharmModule {
     public static List<Quest> CACHED_CURRENT_QUESTS = new ArrayList<>();
-
-    public ScrollsClient(CharmModule module) {
-        super(module);
-    }
 
     @Override
     public void register() {
