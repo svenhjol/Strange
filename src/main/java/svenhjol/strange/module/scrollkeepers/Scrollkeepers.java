@@ -33,21 +33,21 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.mixin.accessor.VillagerAccessor;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.runic_tomes.RunicTomes;
 import svenhjol.strange.module.scrolls.*;
 import svenhjol.strange.module.scrolls.nbt.Quest;
-import svenhjol.strange.module.stone_circles.StoneCircles;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static svenhjol.charm.event.SetupStructureCallback.addVillageHouse;
+import static svenhjol.strange.module.scrollkeepers.ScrollkeeperTradeOffers.*;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Scrollkeepers are villagers that sell scrolls and accept completed quests. [Requires Scrolls]", alwaysEnabled = true)
 public class Scrollkeepers extends CharmModule {
     public static String VILLAGER_ID = "strange_scrollkeeper";
     public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
     public static ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "writing_desk");
-    public static WritingDeskBlock WRITING_DESK;
 
     public static final ResourceLocation MSG_SERVER_GET_SCROLL_QUEST = new ResourceLocation(Strange.MOD_ID, "server_quest_satisfied");
     public static final ResourceLocation MSG_CLIENT_RECEIVE_SCROLL_QUEST = new ResourceLocation(Strange.MOD_ID, "client_quest_satisfied");
@@ -63,11 +63,12 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public void register() {
-        WRITING_DESK = new WritingDeskBlock(this);
-        POIT = WorldHelper.addPointOfInterestType(BLOCK_ID, WRITING_DESK, 1);
+        // TODO if RunicTomes is disabled then there needs to be another block for this
+        POIT = WorldHelper.addPointOfInterestType(BLOCK_ID, RunicTomes.WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.VILLAGER_WORK_LIBRARIAN);
 
-        this.addDependencyCheck(mod -> Strange.LOADER.isEnabled(StoneCircles.class));
+        // Scrolls must be enabled for scrollkeepers to function properly
+        this.addDependencyCheck(mod -> Strange.LOADER.isEnabled(Scrolls.class));
     }
 
     @Override
@@ -76,11 +77,11 @@ public class Scrollkeepers extends CharmModule {
         UseEntityCallback.EVENT.register(this::tryHandInScroll);
 
         // register scrollkeeper trades
-        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollkeeperTradeOffers.ScrollForEmeralds(1));
-        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollkeeperTradeOffers.ScrollForEmeralds(2));
-        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollkeeperTradeOffers.ScrollForEmeralds(3));
-        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollkeeperTradeOffers.ScrollForEmeralds(4));
-        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollkeeperTradeOffers.ScrollForEmeralds(5));
+        VillagerHelper.addTrade(SCROLLKEEPER, 1, new ScrollForEmeralds(1));
+        VillagerHelper.addTrade(SCROLLKEEPER, 2, new ScrollForEmeralds(2));
+        VillagerHelper.addTrade(SCROLLKEEPER, 3, new ScrollForEmeralds(3));
+        VillagerHelper.addTrade(SCROLLKEEPER, 4, new ScrollForEmeralds(4));
+        VillagerHelper.addTrade(SCROLLKEEPER, 5, new ScrollForEmeralds(5));
 
         // register scrollkeeper structures
         addVillageHouse(SetupStructureCallback.VillageType.PLAINS, new ResourceLocation(Strange.MOD_ID, "village/plains/houses/plains_scrollkeeper"), 5);

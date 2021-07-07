@@ -19,6 +19,7 @@ import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.runic_tomes.RunicTomes;
 import svenhjol.strange.module.scrolls.ScrollItem;
 import svenhjol.strange.module.scrolls.ScrollHelper;
 import svenhjol.strange.module.scrolls.nbt.Quest;
@@ -35,7 +36,7 @@ public class ScrollKeepersClient extends CharmModule {
         ClientPlayNetworking.registerGlobalReceiver(Scrollkeepers.MSG_CLIENT_RECEIVE_SCROLL_QUEST, this::handleReceiveScrollQuest);
 
         // cut-out for 3D writing desk
-        BlockRenderLayerMap.INSTANCE.putBlock(Scrollkeepers.WRITING_DESK, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(RunicTomes.WRITING_DESK, RenderType.cutout());
     }
 
     @Override

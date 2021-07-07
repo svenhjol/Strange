@@ -1,7 +1,11 @@
-package svenhjol.strange.module.scrollkeepers;
+package svenhjol.strange.module.runic_tomes;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -10,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -18,13 +23,17 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import svenhjol.charm.block.CharmBlock;
+import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.scrollkeepers.Scrollkeepers;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
-public class WritingDeskBlock extends CharmBlock {
+/**
+ * @todo The hitbox is too simple. Make it include each individual leg.
+ */
+public class WritingDeskBlock extends CharmBlockWithEntity {
     public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 3);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape TOP;
@@ -69,6 +78,25 @@ public class WritingDeskBlock extends CharmBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, VARIANT);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new WritingDeskBlockEntity(blockPos, blockState);
+    }
+
+    @Nullable
+    @Override
+    public MenuProvider getMenuProvider(BlockState blockState, Level level, BlockPos blockPos) {
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity instanceof WritingDeskBlockEntity writingDesk) {
+            Component component = writingDesk.getDisplayName();
+            return new SimpleMenuProvider((i, inventory, player)
+                -> new WritingDeskMenu(i, inventory, ContainerLevelAccess.create(level, blockPos)), component);
+        }
+
+        return null;
     }
 
     static {
