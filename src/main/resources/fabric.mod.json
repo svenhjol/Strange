@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "strange",
+  "version": "${version}",
+
+  "name": "Strange",
+  "description": "Stranger things.",
+  "authors": [
+    "svenhjol",
+    "Coranthes"
+  ],
+  "contact": {
+    "homepage": "https://svenhjol.github.io/Charm/Strange",
+    "sources": "https://github.com/svenhjol/Strange",
+    "issues": "https://github.com/svenhjol/Strange/issues"
+  },
+
+  "mixins": [
+    "strange.mixins.json"
+  ],
+  "accessWidener": "strange.accesswidener",
+
+  "license": "MIT",
+  "icon": "assets/strange/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "svenhjol.strange.Strange"
+    ],
+    "client": [
+      "svenhjol.strange.StrangeClient"
+    ],
+    "modmenu": [
+      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "fabric-key-binding-api-v1": "*",
+    "minecraft": "1.17.x",
+    "charm": ">=3.3.0"
+  },
+  "suggests": {
+    "charmonium": ">=3.3.0",
+    "flamingo": "*"
+  }
+}
