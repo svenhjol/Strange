@@ -8,11 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.event.PlayerLoadDataEvent;
-import svenhjol.charm.event.PlayerSaveDataEvent;
+import svenhjol.charm.event.PlayerDieCallback;
+import svenhjol.charm.event.PlayerLoadDataCallback;
+import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
@@ -43,15 +45,16 @@ public class Journals extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        PlayerLoadDataEvent.EVENT.register(this::handlePlayerLoadData);
-        PlayerSaveDataEvent.EVENT.register(this::handlePlayerSaveData);
+        PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
+        PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
+        PlayerDieCallback.EVENT.register(this::handlePlayerDeath);
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_OPEN_JOURNAL, this::handleOpenJournal);
     }
 
     private void handlePlayerLoadData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
-        CompoundTag nbt = PlayerLoadDataEvent.readFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"));
+        CompoundTag nbt = PlayerLoadDataCallback.readFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"));
         playerData.put(uuid, JournalsData.fromNbt(player, nbt));
     }
 
@@ -60,7 +63,7 @@ public class Journals extends CharmModule {
         if (playerData.containsKey(uuid)) {
             CompoundTag nbt = new CompoundTag();
             playerData.get(uuid).toNbt(nbt);
-            PlayerSaveDataEvent.writeFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"), nbt);
+            PlayerSaveDataCallback.writeFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"), nbt);
         }
     }
 
@@ -72,6 +75,11 @@ public class Journals extends CharmModule {
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
         processPacketFromClient(server, player,
             data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(data.toNbt())));
+    }
+
+    private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
+        getPlayerData(player).ifPresent(data ->
+            data.addDeathLocation(player.level, player.blockPosition()));
     }
 
     private void processPacketFromClient(MinecraftServer server, ServerPlayer player, Consumer<JournalsData> callback) {

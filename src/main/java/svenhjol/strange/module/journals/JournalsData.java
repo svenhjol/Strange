@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,6 +21,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class JournalsData {
+    public static final int MAX_LOCATIONS = 100;
+
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_INSCRIPTIONS = "Inscriptions";
     private static final String TAG_LOCATIONS = "Locations";
@@ -29,8 +32,8 @@ public class JournalsData {
     private static final String TAG_NOTES = "Notes";
 
     private final UUID uuid;
-
     private List<Integer> runes = new ArrayList<>();
+
     private final List<JournalLocation> locations = new ArrayList<>();
     private final List<JournalInscription> inscriptions = new ArrayList<>();
     private final List<JournalNote> notes = new ArrayList<>();
@@ -113,7 +116,25 @@ public class JournalsData {
 
     public JournalLocation addLocation(Level level, BlockPos pos) {
         JournalLocation location = new JournalLocation(pos, DimensionHelper.getDimension(level));
-        locations.add(location);
+
+        if (locations.size() < MAX_LOCATIONS)
+            locations.add(location);
+
+        return location;
+    }
+
+    public JournalLocation addDeathLocation(Level level, BlockPos pos) {
+        JournalLocation location = new JournalLocation(
+            new TranslatableComponent("gui.strange.journal.death_location").getString(),
+            pos,
+            DimensionHelper.getDimension(level),
+            JournalLocation.DEFAULT_DEATH_ICON,
+            null
+        );
+
+        if (locations.size() < MAX_LOCATIONS)
+            locations.add(location);
+
         return location;
     }
 

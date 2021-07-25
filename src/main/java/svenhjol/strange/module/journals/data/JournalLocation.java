@@ -9,13 +9,14 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.Strange;
 
 public class JournalLocation {
-    private static final int DEFAULT_COLOR = 15;
+    public static final ResourceLocation DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
+    public static final ResourceLocation DEFAULT_DEATH_ICON = new ResourceLocation("minecraft", "skeleton_skull");
 
     private static final String TAG_ID = "Id";
     private static final String TAG_POS = "Pos";
     private static final String TAG_DIM = "Dim";
     private static final String TAG_NAME = "Name";
-    private static final String TAG_COLOR = "Color";
+    private static final String TAG_ICON = "Icon";
     private static final String TAG_NOTE_ID = "Note";
 
     private String id = "";
@@ -23,23 +24,23 @@ public class JournalLocation {
     private String noteId = "";
     private BlockPos pos;
     private ResourceLocation dim;
-    private int color;
+    private ResourceLocation icon;
 
     public JournalLocation(BlockPos pos, ResourceLocation dim) {
-        this(new TranslatableComponent("gui.strange.journal.new_location").getString(), pos, dim, DEFAULT_COLOR, null);
+        this(new TranslatableComponent("gui.strange.journal.new_location").getString(), pos, dim, DEFAULT_ICON, null);
     }
 
-    public JournalLocation(String name, BlockPos pos, ResourceLocation dim, int color, @Nullable String noteId) {
-        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4), name, pos, dim, color, noteId);
+    public JournalLocation(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
+        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4), name, pos, dim, icon, noteId);
     }
 
-    public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, int color, @Nullable String noteId) {
+    public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
         this.id = id;
         this.name = name;
-        this.noteId = noteId;
+        this.noteId = noteId != null ? noteId : "";
         this.pos = pos;
         this.dim = dim;
-        this.color = color;
+        this.icon = icon;
     }
 
     public static JournalLocation fromNbt(CompoundTag nbt) {
@@ -48,12 +49,19 @@ public class JournalLocation {
         String noteId = nbt.getString(TAG_NOTE_ID);
         BlockPos pos = BlockPos.of(nbt.getLong(TAG_POS));
         ResourceLocation dim = new ResourceLocation(nbt.getString(TAG_DIM));
-        int color = nbt.getInt(TAG_COLOR);
+        ResourceLocation icon = new ResourceLocation(nbt.getString(TAG_ICON));
 
-        return new JournalLocation(id, name, pos, dim, color, noteId);
+        return new JournalLocation(id, name, pos, dim, icon, noteId);
     }
 
     public CompoundTag toNbt(CompoundTag nbt) {
+        nbt.putString(TAG_ID, id);
+        nbt.putString(TAG_NAME, name);
+        nbt.putString(TAG_NOTE_ID, noteId != null ? noteId : "");
+        nbt.putString(TAG_DIM, dim.toString());
+        nbt.putString(TAG_ICON, icon.toString());
+        nbt.putLong(TAG_POS, pos.asLong());
+
         return nbt;
     }
 
