@@ -15,9 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -71,8 +71,7 @@ public class JournalsClient extends CharmModule {
     private void handleOpenJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         updatePlayerData(buffer.readNbt());
         processPacketFromServer(client, buffer, minecraft -> {
-            // TODO open screen here
-            LogHelper.info(this.getClass(), "Here");
+            client.setScreen(new JournalHomeScreen());
         });
     }
 

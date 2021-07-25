@@ -7,6 +7,9 @@
   "commands.strange.learned_biome": "Learned biome %s",
   "commands.strange.learned_rune": "Learned rune %s",
   "commands.strange.learned_structure": "Learned structure %s",
+  "gui.strange.journal.close": "Close",
+  "gui.strange.journal.death_location": "Death Location",
   "gui.strange.journal.new_location": "New Location",
-  "gui.strange.journal.death_location": "Death Location"
+  "gui.strange.journal.saved_locations": "Saved locations",
+  "gui.strange.journal.title": "Journal"
 }
