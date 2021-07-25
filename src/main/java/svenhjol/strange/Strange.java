@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.Charm;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
+import svenhjol.strange.init.StrangeCommands;
 
 public class Strange implements ModInitializer {
     public static final String MOD_ID = "strange";
@@ -14,7 +15,8 @@ public class Strange implements ModInitializer {
         // always start Charm first
         Charm.init();
 
-        // run Strange's loader after
+        // setup Strange afterwards
+        StrangeCommands.init();
         LOADER.init();
     }
 }

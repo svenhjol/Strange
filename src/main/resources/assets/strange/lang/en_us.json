@@ -1,0 +1,11 @@
+{
+  "commands.strange.invalid_biome": "Invalid biome",
+  "commands.strange.invalid_structure": "Invalid structure",
+  "commands.strange.learned_all_biomes": "Learned all biomes",
+  "commands.strange.learned_all_runes": "Learned all runes",
+  "commands.strange.learned_all_structures": "Learned all structures",
+  "commands.strange.learned_biome": "Learned biome %s",
+  "commands.strange.learned_rune": "Learned rune %s",
+  "commands.strange.learned_structure": "Learned structure %s",
+  "gui.strange.journal.new_location": "New Location"
+}

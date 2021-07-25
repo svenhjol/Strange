@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8.2",
+  "package": "svenhjol.strange.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
+  "mixins": [
+    "dimensions.BiomeMixin",
+    "dimensions.MultiNoiseBiomeSourceMixin",
+    "dimensions.NoiseBasedChunkGeneratorMixin",
+    "dimensions.OverworldBiomeSourceMixin",
+    "dimensions.WorldGenSettingsMixin"
+  ],
+  "client": [
+    "dimensions.ClientLevelMixin",
+    "dimensions.FogRendererMixin",
+    "helper.DisableExperimentalDialogMixin"
+  ]
+}
