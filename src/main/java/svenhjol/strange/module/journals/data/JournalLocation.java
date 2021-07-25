@@ -8,6 +8,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.Strange;
 
+import java.util.Locale;
+
 public class JournalLocation {
     public static final ResourceLocation DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
     public static final ResourceLocation DEFAULT_DEATH_ICON = new ResourceLocation("minecraft", "skeleton_skull");
@@ -31,7 +33,7 @@ public class JournalLocation {
     }
 
     public JournalLocation(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
-        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(4), name, pos, dim, icon, noteId);
+        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(6).toLowerCase(Locale.ROOT), name, pos, dim, icon, noteId);
     }
 
     public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {

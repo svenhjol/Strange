@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class JournalsData {
-    public static final int MAX_LOCATIONS = 100;
+    public static final int MAX_LOCATIONS = 200;
 
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_INSCRIPTIONS = "Inscriptions";
@@ -114,16 +114,12 @@ public class JournalsData {
         return nbt;
     }
 
-    public JournalLocation addLocation(Level level, BlockPos pos) {
+    public void addLocation(Level level, BlockPos pos) {
         JournalLocation location = new JournalLocation(pos, DimensionHelper.getDimension(level));
-
-        if (locations.size() < MAX_LOCATIONS)
-            locations.add(location);
-
-        return location;
+        addLocation(location);
     }
 
-    public JournalLocation addDeathLocation(Level level, BlockPos pos) {
+    public void addDeathLocation(Level level, BlockPos pos) {
         JournalLocation location = new JournalLocation(
             new TranslatableComponent("gui.strange.journal.death_location").getString(),
             pos,
@@ -131,11 +127,7 @@ public class JournalsData {
             JournalLocation.DEFAULT_DEATH_ICON,
             null
         );
-
-        if (locations.size() < MAX_LOCATIONS)
-            locations.add(location);
-
-        return location;
+        addLocation(location);
     }
 
     public List<Integer> getLearnedRunes() {
@@ -155,5 +147,10 @@ public class JournalsData {
     public void learnStructure(ResourceLocation structure) {
         if (!structures.contains(structure))
             structures.add(structure);
+    }
+
+    private void addLocation(JournalLocation location) {
+        if (locations.size() < MAX_LOCATIONS)
+            locations.add(0, location);
     }
 }
