@@ -1,21 +1,36 @@
 package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class JournalHomeScreen extends BaseJournalScreen {
-    public boolean hasRenderedButtons = false;
+    protected boolean hasRenderedHomeButtons = false;
+    protected List<ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
         super(new TranslatableComponent("gui.strange.journal.title"));
+
+        homeButtons.addAll(Arrays.asList(
+            new ButtonDefinition(b -> locations(),
+                new TranslatableComponent("gui.strange.journal.locations")),
+
+            new ButtonDefinition(b -> quests(),
+                new TranslatableComponent("gui.strange.journal.quests")),
+
+            new ButtonDefinition(b -> knowledge(),
+                new TranslatableComponent("gui.strange.journal.knowledge"))
+        ));
     }
 
     @Override
     protected void init() {
         super.init();
-        hasRenderedButtons = false;
+        hasRenderedHomeButtons = false;
     }
 
     @Override
@@ -41,32 +56,15 @@ public class JournalHomeScreen extends BaseJournalScreen {
     }
 
     public void renderButtons(PoseStack poseStack) {
-        int buttonWidth = 100;
-        int buttonHeight = 20;
-        int x = (width / 2) - (buttonWidth / 2);
-        int y = 48;
-        int yOffset = 24;
+        if (!hasRenderedHomeButtons) {
+            int buttonWidth = 100;
+            int buttonHeight = 20;
+            int x = (width / 2) - (buttonWidth / 2);
+            int y = 48;
+            int yOffset = 24;
 
-        if (!hasRenderedButtons) {
-            // render the buttons on the journal itself
-            y += yOffset;
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.journal.locations"), button
-                -> locations()));
-
-            y += yOffset;
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.journal.quests"), button
-                -> quests()));
-
-            y += yOffset;
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.journal.knowledge"), button
-                -> knowledge()));
-
-            // render the buttons below the journal
-            y = (height / 4) + 140;
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.journal.close"), button
-                -> onClose()));
-
-            hasRenderedButtons = true;
+            renderButtons(homeButtons, x, y, 0, yOffset, buttonWidth, buttonHeight);
+            hasRenderedHomeButtons = true;
         }
     }
 }
