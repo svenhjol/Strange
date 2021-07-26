@@ -10,6 +10,8 @@
   "gui.strange.journal.close": "Close",
   "gui.strange.journal.death_location": "Death Location",
   "gui.strange.journal.new_location": "New Location",
-  "gui.strange.journal.saved_locations": "Saved locations",
+  "gui.strange.journal.knowledge": "Knowledge",
+  "gui.strange.journal.locations": "Locations",
+  "gui.strange.journal.quests": "Quests",
   "gui.strange.journal.title": "Journal"
 }
