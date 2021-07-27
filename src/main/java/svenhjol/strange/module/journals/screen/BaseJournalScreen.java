@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,9 @@ public abstract class BaseJournalScreen extends Screen {
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
     public static final ResourceLocation NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
+    public static final ResourceLocation SGA_TEXTURE = new ResourceLocation("minecraft", "alt");
+
+    protected final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
 
     protected boolean hasRenderedBottomButtons = false;
     protected boolean hasRenderedNavigation = false;
@@ -36,7 +40,13 @@ public abstract class BaseJournalScreen extends Screen {
 
     protected int titleX = -53;
     protected int titleY = 25;
+
+    protected int textColor = 0x000000;
     protected int titleColor = 0x000000;
+    protected int errorColor = 0x770000;
+
+    protected int page1TitleX = -53;
+    protected int page2TitleX = 53;
 
     protected List<ButtonDefinition> bottomButtons = new ArrayList<>();
     protected List<ImageButtonDefinition> navigationButtons = new ArrayList<>();
