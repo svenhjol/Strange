@@ -114,9 +114,10 @@ public class JournalsData {
         return nbt;
     }
 
-    public void addLocation(Level level, BlockPos pos) {
+    public JournalLocation addLocation(Level level, BlockPos pos) {
         JournalLocation location = new JournalLocation(pos, DimensionHelper.getDimension(level));
         addLocation(location);
+        return location;
     }
 
     public void addDeathLocation(Level level, BlockPos pos) {
@@ -132,6 +133,10 @@ public class JournalsData {
 
     public List<Integer> getLearnedRunes() {
         return runes;
+    }
+
+    public List<JournalLocation> getLocations() {
+        return locations;
     }
 
     public void learnRune(int val) {

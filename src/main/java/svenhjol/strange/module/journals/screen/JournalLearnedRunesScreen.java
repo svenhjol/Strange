@@ -29,7 +29,8 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
         super.render(poseStack, mouseX, mouseY, delta);
 
         if (data == null) {
-            centeredString(poseStack, font, new TranslatableComponent("gui.strange.journal.runes_load_error"), (width / 2) + page2TitleX, titleY, errorColor);
+            // show an error if the runes can't be loaded
+            centeredText(poseStack, font, new TranslatableComponent("gui.strange.journal.runes_load_error"), (width / 2), titleY + 14, errorColor);
             return;
         }
 

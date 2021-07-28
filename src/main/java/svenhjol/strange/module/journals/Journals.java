@@ -18,6 +18,7 @@ import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.journals.data.JournalLocation;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,8 +31,10 @@ import java.util.function.Consumer;
 public class Journals extends CharmModule {
     public static final ResourceLocation MSG_SERVER_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_open_journal");
     public static final ResourceLocation MSG_SERVER_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_sync_journal");
+    public static final ResourceLocation MSG_SERVER_ADD_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_add_location");
     public static final ResourceLocation MSG_CLIENT_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_open_journal");
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
+    public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
 
     private static final Map<UUID, JournalsData> playerData = new HashMap<>();
 
@@ -50,6 +53,7 @@ public class Journals extends CharmModule {
         PlayerDieCallback.EVENT.register(this::handlePlayerDeath);
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_OPEN_JOURNAL, this::handleOpenJournal);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ADD_LOCATION, this::handleAddLocation);
     }
 
     private void handlePlayerLoadData(Player player, File playerDataDir) {
@@ -68,13 +72,25 @@ public class Journals extends CharmModule {
     }
 
     private void handleOpenJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+        Page page = buffer.readEnum(Page.class);
+
         processPacketFromClient(server, player,
-            data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_JOURNAL, buf -> buf.writeNbt(data.toNbt())));
+            data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_JOURNAL, buf -> {
+                buf.writeNbt(data.toNbt());
+                buf.writeEnum(page);
+            }));
     }
 
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
         processPacketFromClient(server, player,
             data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(data.toNbt())));
+    }
+
+    private void handleAddLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+        processPacketFromClient(server, player, data -> {
+            JournalLocation newLocation = data.addLocation(player.level, player.blockPosition());
+            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_LOCATION, buf -> buf.writeNbt(newLocation.toNbt(new CompoundTag())));
+        });
     }
 
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
@@ -93,4 +109,9 @@ public class Journals extends CharmModule {
         return Optional.ofNullable(playerData.get(player.getUUID()));
     }
 
+    public enum Page {
+        HOME,
+        LOCATIONS,
+        KNOWLEDGE
+    }
 }

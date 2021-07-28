@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 
@@ -22,7 +21,7 @@ import java.util.List;
 
 public abstract class BaseJournalScreen extends Screen {
     public static final int BGWIDTH = 256;
-    public static final int BGHEIGHT = 192;
+    public static final int BGHEIGHT = 208;
 
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
@@ -34,24 +33,27 @@ public abstract class BaseJournalScreen extends Screen {
     protected boolean hasRenderedBottomButtons = false;
     protected boolean hasRenderedNavigation = false;
 
-    protected int navigationX = -130;
-    protected int navigationY = 18;
+    protected int navigationX = -141; // navigation left relative to center
+    protected int navigationY = 18; // navigation top
     protected int navigationYOffset = 18;
 
-    protected int titleX = -53;
-    protected int titleY = 25;
+    protected int bottomButtonsY = 158;
+
+    protected int titleX = 0;
+    protected int titleY = 22;
+    protected int page1Center = -56;
+    protected int page2Center = 56;
 
     protected int textColor = 0x000000;
+    protected int secondaryColor = 0x908080;
     protected int titleColor = 0x000000;
     protected int errorColor = 0x770000;
 
-    protected int page1TitleX = -53;
-    protected int page2TitleX = 53;
 
     protected List<ButtonDefinition> bottomButtons = new ArrayList<>();
     protected List<ImageButtonDefinition> navigationButtons = new ArrayList<>();
 
-    protected BaseJournalScreen(Component component) {
+    public BaseJournalScreen(Component component) {
         super(component);
         passEvents = true;
 
@@ -111,7 +113,7 @@ public abstract class BaseJournalScreen extends Screen {
      * Override this to change title color and position in subclasses.
      */
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        centeredString(poseStack, font, getTitle(), (width / 2) + titleX, titleY, titleColor);
+        centeredText(poseStack, font, getTitle(), (width / 2) + titleX, titleY, titleColor);
     }
 
     public void renderNavigation(PoseStack poseStack) {
@@ -135,7 +137,7 @@ public abstract class BaseJournalScreen extends Screen {
             int numberOfButtons = bottomButtons.size();
 
             int x = (width / 2) - ((numberOfButtons * xOffset) / 2);
-            int y = (height / 4) + 140;
+            int y = (height / 4) + bottomButtonsY;
 
             renderButtons(bottomButtons, x, y, xOffset, 0, buttonWidth, buttonHeight);
             hasRenderedBottomButtons = true;
@@ -182,14 +184,9 @@ public abstract class BaseJournalScreen extends Screen {
             -> client.setScreen(new JournalQuestsScreen()));
     }
 
-    protected void centeredString(PoseStack poseStack, Font renderer, Component component, int x, int y, int color) {
+    protected void centeredText(PoseStack poseStack, Font renderer, Component component, int x, int y, int color) {
         String string = component.getString();
         renderer.draw(poseStack, string, x - (float)(renderer.width(string) / 2), y, color);
-    }
-
-    protected static void centeredText(PoseStack poseStack, Font renderer, Component text, int x, int y, int color) {
-        FormattedCharSequence orderedText = text.getVisualOrderText();
-        renderer.draw(poseStack, orderedText, (float)(x - renderer.width(orderedText) / 2), (float)y, color);
     }
 
     protected static class ButtonDefinition {

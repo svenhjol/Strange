@@ -1,14 +1,18 @@
 package svenhjol.strange.module.journals.data;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.Strange;
 
 import java.util.Locale;
+import java.util.Optional;
 
 public class JournalLocation {
     public static final ResourceLocation DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
@@ -69,5 +73,25 @@ public class JournalLocation {
 
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BlockPos getBlockPos() {
+        return pos;
+    }
+
+    public ResourceLocation getDimension() {
+        return dim;
+    }
+
+    public ItemStack getIcon() {
+        Optional<Item> opt = DefaultedRegistry.ITEM.getOptional(icon);
+        if (opt.isEmpty())
+            return ItemStack.EMPTY;
+
+        return new ItemStack(opt.get());
     }
 }

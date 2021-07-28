@@ -17,7 +17,12 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.journals.Journals.Page;
+import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
+import svenhjol.strange.module.journals.screen.JournalKnowledgeScreen;
+import svenhjol.strange.module.journals.screen.JournalLocationScreen;
+import svenhjol.strange.module.journals.screen.JournalLocationsScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -49,6 +54,7 @@ public class JournalsClient extends CharmModule {
 
         ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_JOURNAL, this::handleOpenJournal);
         ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
+        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_LOCATION, this::handleOpenLocation);
     }
 
     /**
@@ -60,27 +66,45 @@ public class JournalsClient extends CharmModule {
     }
 
     private void handleKeyPressed() {
-        sendOpenJournal();
+        sendOpenJournal(Page.HOME);
     }
 
     private void handleSyncJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         updatePlayerData(buffer.readNbt());
-        processPacketFromServer(client, buffer, minecraft -> {});
     }
 
     private void handleOpenJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         updatePlayerData(buffer.readNbt());
-        processPacketFromServer(client, buffer, minecraft -> {
-            client.setScreen(new JournalHomeScreen());
+        Page page = buffer.readEnum(Page.class);
+
+        processPacketFromServer(client, mc -> {
+            switch (page) {
+                case LOCATIONS -> mc.setScreen(new JournalLocationsScreen());
+                case KNOWLEDGE -> mc.setScreen(new JournalKnowledgeScreen());
+                default -> mc.setScreen(new JournalHomeScreen());
+            }
         });
     }
 
-    private void sendSyncJournal() {
+    private void handleOpenLocation(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
+        CompoundTag locationNbt = buffer.readNbt();
+        if (locationNbt == null)
+            return;
+
+        JournalLocation newLocation = JournalLocation.fromNbt(locationNbt);
+        processPacketFromServer(client, mc -> mc.setScreen(new JournalLocationScreen(newLocation)));
+    }
+
+    public static void sendSyncJournal() {
         NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_SYNC_JOURNAL);
     }
 
-    private void sendOpenJournal() {
-        NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_OPEN_JOURNAL);
+    public static void sendOpenJournal(Page page) {
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_OPEN_JOURNAL, data -> data.writeEnum(page));
+    }
+
+    public static void sendAddLocation() {
+        NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_ADD_LOCATION);
     }
 
     private void updatePlayerData(@Nullable CompoundTag nbt) {
@@ -88,11 +112,12 @@ public class JournalsClient extends CharmModule {
             ClientHelper.getPlayer().ifPresent(player -> playerData = JournalsData.fromNbt(player, nbt));
     }
 
-    private void processPacketFromServer(Minecraft client, FriendlyByteBuf buffer, Consumer<Minecraft> callback) {
+    private void processPacketFromServer(Minecraft client, Consumer<Minecraft> clientCallback) {
         client.execute(() -> {
             LocalPlayer player = client.player;
             if (player == null) return;
-            callback.accept(client);
+            clientCallback.accept(client);
         });
     }
+
 }

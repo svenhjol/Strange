@@ -41,7 +41,7 @@ public class JournalHomeScreen extends BaseJournalScreen {
     @Override
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
         // center the title for the home screen
-        super.renderTitle(poseStack, 0, titleY, titleColor);
+        super.renderTitle(poseStack, titleX, 25, titleColor);
     }
 
     @Override

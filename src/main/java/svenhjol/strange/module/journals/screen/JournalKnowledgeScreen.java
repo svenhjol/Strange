@@ -12,7 +12,7 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
     protected boolean hasRenderedKnowledgeButtons = false;
     protected List<ButtonDefinition> knowledgeButtons;
 
-    protected JournalKnowledgeScreen() {
+    public JournalKnowledgeScreen() {
         this(new TranslatableComponent("gui.strange.journal.knowledge"));
     }
 
