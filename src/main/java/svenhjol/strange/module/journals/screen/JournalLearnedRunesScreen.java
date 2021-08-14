@@ -36,9 +36,9 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
 
         int mid = this.width / 2;
         int left = mid + 22;
-        int top = 40;
-        int xOffset = 18;
-        int yOffset = 16;
+        int top = 46;
+        int xOffset = 22;
+        int yOffset = 18;
         int index = 0;
 
         List<Integer> learnedRunes = data.getLearnedRunes();
@@ -64,5 +64,10 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
                 index++;
             }
         }
+    }
+
+    @Override
+    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
+        super.renderTitle(poseStack, page1Center, titleY, titleColor);
     }
 }

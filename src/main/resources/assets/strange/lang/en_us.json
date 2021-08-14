@@ -8,6 +8,7 @@
   "commands.strange.learned_rune": "Learned rune %s",
   "commands.strange.learned_structure": "Learned structure %s",
   "gui.strange.journal.add_location": "Add location",
+  "gui.strange.journal.choose_icon": "Choose icon",
   "gui.strange.journal.close": "Close",
   "gui.strange.journal.death_location": "Death Location",
   "gui.strange.journal.go_back": "Go back",
@@ -22,11 +23,14 @@
   "gui.strange.journal.learned_structures": "Structures",
   "gui.strange.journal.locations": "Locations",
   "gui.strange.journal.locations_tooltip": "Locations",
+  "gui.strange.journal.make_map": "Make map",
   "gui.strange.journal.new_location": "New Location",
   "gui.strange.journal.no_locations": "No locations",
   "gui.strange.journal.page": "Page %s",
   "gui.strange.journal.quests": "Quests",
   "gui.strange.journal.quests_tooltip": "Quests",
   "gui.strange.journal.runes_load_error": "Could not load runes",
+  "gui.strange.journal.save": "Save",
+  "gui.strange.journal.take_photo": "Take photo",
   "gui.strange.journal.title": "Journal"
 }

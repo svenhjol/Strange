@@ -94,4 +94,16 @@ public class JournalLocation {
 
         return new ItemStack(opt.get());
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIcon(ItemStack icon) {
+        this.icon = DefaultedRegistry.ITEM.getKey(icon.getItem());
+    }
+
+    public JournalLocation copy() {
+        return new JournalLocation(id, name, pos, dim, icon, noteId);
+    }
 }
