@@ -107,6 +107,10 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_ADD_LOCATION);
     }
 
+    public static void sendUpdateLocation(JournalLocation location) {
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
+    }
+
     private void updatePlayerData(@Nullable CompoundTag nbt) {
         if (nbt != null)
             ClientHelper.getPlayer().ifPresent(player -> playerData = JournalsData.fromNbt(player, nbt));

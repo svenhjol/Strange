@@ -114,16 +114,19 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
         for (int cy = 0; cy < maxRows; cy++) {
             for (int cx = 0; cx < perRow; cx++) {
                 if (index >= icons.size()) continue;
-                if (x >= (mid + left + cx) && x < (mid + left + cx + xOffset)
-                    && y >= (top + cy) && y < (top + cy + yOffset)) {
+                if (x >= (mid + left + (cx * xOffset)) && x < (mid + left + (cx * xOffset) + 16)
+                    && y >= (top + (cy * yOffset)) && y < (top + (cy * yOffset) + 16)) {
                     selected = new ItemStack(icons.get(index));
                     break;
                 }
+                index++;
             }
         }
 
-        if (selected != null)
+        if (selected != null) {
             saveAndGoBack();
+            return true;
+        }
 
         return super.mouseClicked(x, y, button);
     }

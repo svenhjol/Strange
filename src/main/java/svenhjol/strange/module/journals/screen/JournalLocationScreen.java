@@ -6,7 +6,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.module.journals.Journals;
@@ -23,8 +22,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected EditBox nameField;
     protected JournalLocation location;
 
+    protected boolean hasInitializedUpdateButtons = false;
     protected boolean hasRenderedUpdateButtons = false;
-    protected List<ItemLike> icons = new ArrayList<>();
     protected List<ButtonDefinition> updateButtons = new ArrayList<>();
 
     public JournalLocationScreen(JournalLocation location) {
@@ -32,10 +31,6 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         this.name = location.getName();
         this.location = location.copy();
-
-        // add a back button at the bottom
-        bottomButtons.add(0, new ButtonDefinition(b -> saveAndGoBack(),
-            new TranslatableComponent("gui.strange.journal.go_back")));
     }
 
     @Override
@@ -61,33 +56,41 @@ public class JournalLocationScreen extends BaseJournalScreen {
         ((ScreenAccessor)this).getChildren().add(nameField);
         setFocused(nameField);
 
-        // if player has empty map, add button to make a map of this location
-        if (playerHasEmptyMap()) {
+        if (!hasInitializedUpdateButtons) {
+            // add a back button at the bottom
+            bottomButtons.add(0, new ButtonDefinition(b -> saveAndGoBack(),
+                new TranslatableComponent("gui.strange.journal.go_back")));
+
+            // if player has empty map, add button to make a map of this location
+            if (playerHasEmptyMap()) {
+                updateButtons.add(
+                    new ButtonDefinition(b -> makeMap(),
+                        new TranslatableComponent("gui.strange.journal.make_map"))
+                );
+            }
+
+            // if player is near the location, add button to take a photo
+            if (playerIsNearLocation()) {
+                updateButtons.add(
+                    new ButtonDefinition(b -> takePhoto(),
+                        new TranslatableComponent("gui.strange.journal.take_photo"))
+                );
+            }
+
+            // always add an icon button
             updateButtons.add(
-                new ButtonDefinition(b -> makeMap(),
-                    new TranslatableComponent("gui.strange.journal.make_map"))
+                new ButtonDefinition(b -> chooseIcon(),
+                    new TranslatableComponent("gui.strange.journal.choose_icon"))
             );
-        }
 
-        // if player is near the location, add button to take a photo
-        if (playerIsNearLocation()) {
+            // always add a save button
             updateButtons.add(
-                new ButtonDefinition(b -> takePhoto(),
-                    new TranslatableComponent("gui.strange.journal.take_photo"))
+                new ButtonDefinition(b -> saveAndGoBack(),
+                    new TranslatableComponent("gui.strange.journal.save"))
             );
+
+            hasInitializedUpdateButtons = true;
         }
-
-        // always add an icon button
-        updateButtons.add(
-            new ButtonDefinition(b -> chooseIcon(),
-                new TranslatableComponent("gui.strange.journal.choose_icon"))
-        );
-
-        // always add a save button
-        updateButtons.add(
-            new ButtonDefinition(b -> saveAndGoBack(),
-                new TranslatableComponent("gui.strange.journal.save"))
-        );
 
         hasRenderedUpdateButtons = false;
     }
@@ -99,8 +102,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         // render icon next to title
         ItemStack icon = location.getIcon();
-        int iconX = width / 2 - 8 - ((this.title.getString().length() * 8) / 2);
-        itemRenderer.renderGuiItem(icon, iconX, titleY - 4);
+        int iconX = width / 2 - 17 - ((this.title.getString().length() * 6) / 2);
+        itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
 
 
         // render left-side page
@@ -129,7 +132,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
     }
 
     protected void save() {
-
+        JournalsClient.sendUpdateLocation(location);
     }
 
     protected void chooseIcon() {
