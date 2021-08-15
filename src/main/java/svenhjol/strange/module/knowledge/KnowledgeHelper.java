@@ -86,9 +86,8 @@ public class KnowledgeHelper {
                             chr = 96 + (x - 122);
 
                         x += random.nextInt(13);
-                        if (x > 122) {
+                        if (x > 122)
                             chr = Math.min(122, 96 + (x - 122));
-                        }
 
                         out.append((char)chr);
                     }
