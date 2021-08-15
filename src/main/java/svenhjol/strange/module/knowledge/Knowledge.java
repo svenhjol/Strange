@@ -27,7 +27,7 @@ public class Knowledge extends CharmModule {
     public static KnowledgeData savedData;
 
     @Config(name = "Seed", description = "Seed used to generate rune sets for each knowledge type.")
-    public static String configSeed = "strange123";
+    public static String configSeed = "Ostrich";
 
     @Override
     public void register() {

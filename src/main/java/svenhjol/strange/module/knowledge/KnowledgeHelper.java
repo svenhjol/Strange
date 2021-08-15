@@ -76,6 +76,7 @@ public class KnowledgeHelper {
         do {
             if (in.length() >= length) {
                 char[] chars = in.toString().toLowerCase(Locale.ROOT).toCharArray();
+                random.nextInt();
 
                 for(int i = Math.min(chars.length, length) - 1; i >= 0; --i) {
                     int chr = chars[i];
@@ -86,7 +87,7 @@ public class KnowledgeHelper {
 
                         x += random.nextInt(13);
                         if (x > 122) {
-                            chr = 96 + (x - 122);
+                            chr = Math.min(122, 96 + (x - 122));
                         }
 
                         out.append((char)chr);
