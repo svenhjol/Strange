@@ -1,0 +1,14 @@
+{
+  "runestone_travel": {
+    "category": "players",
+    "sounds": [
+      "strange:runestone_travel"
+    ]
+  },
+  "screenshot": {
+    "category": "players",
+    "sounds": [
+      "strange:screenshot"
+    ]
+  }
+}

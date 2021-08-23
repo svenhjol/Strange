@@ -5,6 +5,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.init.StrangeCommands;
+import svenhjol.strange.init.StrangeSounds;
 
 public class Strange implements ModInitializer {
     public static final String MOD_ID = "strange";
@@ -17,6 +18,8 @@ public class Strange implements ModInitializer {
 
         // setup Strange afterwards
         StrangeCommands.init();
+        StrangeSounds.init();
+
         LOADER.init();
     }
 }
