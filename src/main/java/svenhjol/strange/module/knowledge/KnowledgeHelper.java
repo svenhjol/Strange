@@ -67,7 +67,7 @@ public class KnowledgeHelper {
     }
 
     public static String generateFromString(String string, int length) {
-        String filtered = string.replaceAll("[^a-zA-Z]", "");
+        String filtered = string.replaceAll("[^a-zA-Z0-9]", "");
         StringBuilder in = new StringBuilder(filtered);
         StringBuilder out = new StringBuilder();
         int loops = 0;
@@ -76,19 +76,25 @@ public class KnowledgeHelper {
         do {
             if (in.length() >= length) {
                 char[] chars = in.toString().toLowerCase(Locale.ROOT).toCharArray();
+                random.nextInt();
 
                 for(int i = Math.min(chars.length, length) - 1; i >= 0; --i) {
                     int chr = chars[i];
                     if (chr >= 'a' && chr <= 'z') {
                         int x = chr + random.nextInt(Knowledge.NUM_RUNES);
                         if (x > 122)
-                            chr = 96 + (x - 122);
+                            chr = Mth.clamp(96 + (x - 122), 97, 122);
 
-                        x += random.nextInt(13);
-                        if (x > 122) {
-                            chr = 96 + (x - 122);
-                        }
+                        x += random.nextInt(Knowledge.NUM_RUNES / 2);
+                        if (x > 122)
+                            chr = Mth.clamp(96 + (x - 122), 97, 122);
 
+                        out.append((char)chr);
+                    }
+
+                    if (chr >= '0' && chr <= '9') {
+                        int x = random.nextInt(Knowledge.NUM_RUNES);
+                        chr = Mth.clamp(96 + x, 97, 122);
                         out.append((char)chr);
                     }
                 }

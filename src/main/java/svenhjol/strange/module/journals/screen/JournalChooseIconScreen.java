@@ -123,8 +123,10 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
             }
         }
 
-        if (selected != null)
+        if (selected != null) {
             saveAndGoBack();
+            return true;
+        }
 
         return super.mouseClicked(x, y, button);
     }

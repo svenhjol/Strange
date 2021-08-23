@@ -103,7 +103,22 @@ public class JournalLocation {
         this.icon = DefaultedRegistry.ITEM.getKey(icon.getItem());
     }
 
+    public void setBlockPos(BlockPos pos) {
+        this.pos = pos;
+    }
+
+    public void setDimension(ResourceLocation dim) {
+        this.dim = dim;
+    }
+
     public JournalLocation copy() {
         return new JournalLocation(id, name, pos, dim, icon, noteId);
+    }
+
+    public void populate(JournalLocation location) {
+        setName(location.getName());
+        setIcon(location.getIcon());
+        setBlockPos(location.getBlockPos());
+        setDimension(location.getDimension());
     }
 }

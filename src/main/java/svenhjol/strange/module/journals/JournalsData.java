@@ -14,10 +14,7 @@ import svenhjol.strange.module.journals.data.JournalInscription;
 import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.journals.data.JournalNote;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JournalsData {
@@ -118,6 +115,11 @@ public class JournalsData {
         JournalLocation location = new JournalLocation(pos, DimensionHelper.getDimension(level));
         addLocation(location);
         return location;
+    }
+
+    public void updateLocation(JournalLocation location) {
+        Optional<JournalLocation> opt = locations.stream().filter(l -> l.getId().equals(location.getId())).findFirst();
+        opt.ifPresent(l -> l.populate(location));
     }
 
     public void addDeathLocation(Level level, BlockPos pos) {

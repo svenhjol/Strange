@@ -56,10 +56,10 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
 
     public void renderKnowledgeButtons(PoseStack poseStack) {
         if (!hasRenderedKnowledgeButtons) {
-            int buttonWidth = 100;
+            int buttonWidth = 105;
             int buttonHeight = 20;
             int x = (width / 2) + 5;
-            int y = 24;
+            int y = 40;
             int yOffset = 24;
 
             renderButtons(knowledgeButtons, x, y, 0, yOffset, buttonWidth, buttonHeight);

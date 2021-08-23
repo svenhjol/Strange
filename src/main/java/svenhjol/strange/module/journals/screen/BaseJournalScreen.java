@@ -55,7 +55,7 @@ public abstract class BaseJournalScreen extends Screen {
 
     public BaseJournalScreen(Component component) {
         super(component);
-        passEvents = true;
+        passEvents = false;
 
         bottomButtons.add(
             new ButtonDefinition(b -> onClose(),

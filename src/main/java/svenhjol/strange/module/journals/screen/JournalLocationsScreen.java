@@ -53,7 +53,7 @@ public class JournalLocationsScreen extends BaseJournalScreen {
         int mid = width / 2;
         int buttonWidth = 140;
         int buttonHeight = 20;
-        int paginationY = 178;
+        int paginationY = 180;
         int yOffset = 21;
 
         if (data == null || locations == null || locations.size() == 0) {
@@ -66,7 +66,7 @@ public class JournalLocationsScreen extends BaseJournalScreen {
         }
 
         int numberOfLocations = locations.size();
-        int y = titleY + 12; // start rendering below the title
+        int y = titleY + 10; // start rendering below the title
         int currentPage = lastPage - 1;
         List<JournalLocation> sublist;
 
