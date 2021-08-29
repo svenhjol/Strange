@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 
@@ -114,6 +115,12 @@ public abstract class BaseJournalScreen extends Screen {
      */
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
         centeredText(poseStack, font, getTitle(), (width / 2) + titleX, titleY, titleColor);
+    }
+
+    public void renderTitleIcon(ItemStack icon) {
+        // render icon next to title
+        int iconX = width / 2 - 17 - ((this.title.getString().length() * 6) / 2);
+        itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
     }
 
     public void renderNavigation(PoseStack poseStack) {

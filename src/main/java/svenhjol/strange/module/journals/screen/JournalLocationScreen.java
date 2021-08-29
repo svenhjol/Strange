@@ -119,9 +119,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         int mid = width / 2;
 
         // render icon next to title
-        ItemStack icon = location.getIcon();
-        int iconX = width / 2 - 17 - ((this.title.getString().length() * 6) / 2);
-        itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
+        renderTitleIcon(location.getIcon());
 
 
         // render left-side page
@@ -190,6 +188,24 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
             poseStack.popPose();
         }
+    }
+
+    /**
+     * Add an area of the page that allows photo to be clicked.
+     */
+    @Override
+    public boolean mouseClicked(double x, double y, int button) {
+        int mid = width / 2;
+
+        if (hasPhoto && registeredPhotoTexture != null) {
+            if (x > (mid - 112) && x < mid - 3
+                && y > 39 && y < 106) {
+                minecraft.setScreen(new JournalPhotoScreen(location));
+                return true;
+            }
+        }
+
+        return super.mouseClicked(x, y, button);
     }
 
     /**

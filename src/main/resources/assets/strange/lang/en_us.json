@@ -27,6 +27,7 @@
   "gui.strange.journal.new_location": "New Location",
   "gui.strange.journal.no_locations": "No locations",
   "gui.strange.journal.page": "Page %s",
+  "gui.strange.journal.photo": "Photo",
   "gui.strange.journal.quests": "Quests",
   "gui.strange.journal.quests_tooltip": "Quests",
   "gui.strange.journal.runes_load_error": "Could not load runes",
