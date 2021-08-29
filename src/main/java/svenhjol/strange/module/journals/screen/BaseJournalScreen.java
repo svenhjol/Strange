@@ -23,6 +23,8 @@ import java.util.List;
 public abstract class BaseJournalScreen extends Screen {
     public static final int BGWIDTH = 256;
     public static final int BGHEIGHT = 208;
+    public static final int KNOWN_COLOR = 0x707070;
+    public static final int UNKNOWN_COLOR = 0xd0c0c0;
 
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");

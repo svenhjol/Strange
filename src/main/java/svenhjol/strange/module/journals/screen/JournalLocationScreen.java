@@ -5,18 +5,22 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
+import svenhjol.charm.helper.ClientHelper;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.JournalsData;
 import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -35,16 +39,21 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected JournalLocation location;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
-
+    protected JournalsData playerData = null;
     protected int photoFailureRetries = 0;
     protected boolean hasInitializedUpdateButtons = false;
+    protected boolean hasInitializedPhotoButtons = false;
     protected boolean hasRenderedUpdateButtons = false;
+    protected boolean hasRenderedPhotoButtons = false;
     protected boolean hasPhoto = false;
-    protected List<ItemLike> icons = new ArrayList<>();
     protected List<ButtonDefinition> updateButtons = new ArrayList<>();
+    protected List<ButtonDefinition> photoButtons = new ArrayList<>();
 
     public JournalLocationScreen(JournalLocation location) {
         super(new TextComponent(location.getName()));
+
+        // get reference to cached player data
+        JournalsClient.getPlayerData().ifPresent(data -> this.playerData = data);
 
         this.name = location.getName();
         this.location = location.copy();
@@ -58,7 +67,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
             return;
 
         // set up the input field for editing the entry name
-        nameField = new EditBox(font, (width / 2) + 5, 40, 105, 12, new TextComponent("NameField"));
+        nameField = new EditBox(font, (width / 2) - 65, 40, 130, 12, new TextComponent("NameField"));
         nameField.changeFocus(true);
         nameField.setCanLoseFocus(false);
         nameField.setTextColor(-1);
@@ -109,7 +118,12 @@ public class JournalLocationScreen extends BaseJournalScreen {
             hasInitializedUpdateButtons = true;
         }
 
+        if (!hasInitializedPhotoButtons) {
+            hasInitializedPhotoButtons = true;
+        }
+
         hasRenderedUpdateButtons = false;
+        hasRenderedPhotoButtons = false;
         hasPhoto = hasPhoto();
     }
 
@@ -117,31 +131,72 @@ public class JournalLocationScreen extends BaseJournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
         int mid = width / 2;
+        int buttonWidth = 105;
+        int buttonHeight = 20;
 
         // render icon next to title
         renderTitleIcon(location.getIcon());
 
-
-        // render left-side page
+        // render photo and buttons
         if (hasPhoto) {
             renderPhoto(poseStack);
-        } else {
-            // TODO: show button to take photo here?
         }
 
-        // render right-side buttons
+        // render update buttons
         if (!hasRenderedUpdateButtons) {
-            int buttonWidth = 105;
-            int buttonHeight = 20;
             int left = mid + 5;
-            int yStart = 150;
-            int yOffset = -22;
+            int top = 60;
+            int yOffset = 22;
 
-            renderButtons(updateButtons, left, yStart, 0, yOffset, buttonWidth, buttonHeight);
+            renderButtons(updateButtons, left, top, 0, yOffset, buttonWidth, buttonHeight);
             hasRenderedUpdateButtons = true;
         }
 
+        // render runes for this location
+        renderRunes(poseStack);
+
         nameField.render(poseStack, mouseX, mouseY, delta);
+    }
+
+    protected void renderRunes(PoseStack poseStack) {
+        if (playerData == null)
+            return;
+
+        ClientHelper.getPlayer().ifPresent(player -> {
+            if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
+                return;
+            }
+
+            String runeString = KnowledgeHelper.convertFromBlockPos(location.getBlockPos());
+            String knownRuneString = KnowledgeHelper.convertWithLearnedRunes(runeString, playerData);
+
+            int left = (width / 2) + 9;
+            int top = 157;
+            int xOffset = 13;
+            int yOffset = 15;
+            int index = 0;
+
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 8; x++) {
+                    if (index < knownRuneString.length()) {
+                        Component rune;
+                        int color;
+
+                        String s = String.valueOf(knownRuneString.charAt(index));
+                        if (s.equals(KnowledgeHelper.UNKNOWN)) {
+                            rune = new TextComponent("?");
+                            color = UNKNOWN_COLOR;
+                        } else {
+                            rune = new TextComponent(s).withStyle(SGA_STYLE);
+                            color = KNOWN_COLOR;
+                        }
+
+                        font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
+                    }
+                    index++;
+                }
+            }
+        });
     }
 
     protected void renderPhoto(PoseStack poseStack) {
@@ -183,8 +238,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
         if (registeredPhotoTexture != null) {
             RenderSystem.setShaderTexture(0, registeredPhotoTexture);
             poseStack.pushPose();
-            poseStack.scale(0.425F, 0.33F, 0.425F);
-            blit(poseStack, ((int)((width / 2) / 0.425F) - 265), 120, 0, 0, 256, 200);
+            poseStack.scale(0.425F, 0.32F, 0.425F);
+            blit(poseStack, ((int)((width / 2) / 0.425F) - 265), 187, 0, 0, 256, 200);
 
             poseStack.popPose();
         }
@@ -196,10 +251,14 @@ public class JournalLocationScreen extends BaseJournalScreen {
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         int mid = width / 2;
+        int left = 112;
+        int top = 60;
+        int height = 64;
+        int width = 109;
 
         if (hasPhoto && registeredPhotoTexture != null) {
-            if (x > (mid - 112) && x < mid - 3
-                && y > 39 && y < 106) {
+            if (x > (mid - left) && x < mid - left + width
+                && y > top && y < top + height) {
                 minecraft.setScreen(new JournalPhotoScreen(location));
                 return true;
             }
