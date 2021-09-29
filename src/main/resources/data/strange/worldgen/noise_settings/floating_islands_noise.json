@@ -15,6 +15,44 @@
   "bedrock_roof_position": -2147483648,
   "bedrock_floor_position": -2147483648,
   "sea_level": 0,
+  "octaves": {
+    "temperature": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    },
+    "humidity": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    },
+    "continentalness": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    },
+    "erosion": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    },
+    "weirdness": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    },
+    "shift": {
+      "firstOctave": 0,
+      "amplitudes": [
+        0
+      ]
+    }
+  },
   "structures": {
     "stronghold": {
       "distance": 32,
