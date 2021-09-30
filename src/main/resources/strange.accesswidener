@@ -14,5 +14,7 @@ accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (L
 accessible method net/minecraft/server/level/ServerLevel findLightningTargetAround (Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;
 
 # Inaccessible fields
-accessible  field   net/minecraft/world/level/chunk/ChunkGenerator   strongholdSeed    J
-mutable     field   net/minecraft/world/level/chunk/ChunkGenerator   strongholdSeed    J
+accessible field net/minecraft/client/gui/screens/Screen children Ljava/util/List;
+accessible field net/minecraft/world/level/chunk/ChunkGenerator strongholdSeed J
+mutable    field net/minecraft/world/level/chunk/ChunkGenerator strongholdSeed J
+mutable    field net/minecraft/client/gui/screens/Screen children Ljava/util/List;

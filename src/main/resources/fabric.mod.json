@@ -30,18 +30,15 @@
     ],
     "client": [
       "svenhjol.strange.StrangeClient"
-    ],
-    "modmenu": [
-      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
     ]
   },
 
   "depends": {
-    "fabricloader": ">=0.11.6",
+    "fabricloader": ">=0.11.7",
     "fabric": "*",
     "fabric-key-binding-api-v1": "*",
-    "minecraft": "1.17.x",
-    "charm": ">=3.3.0"
+    "minecraft": "1.18.x",
+    "charm": ">=4.0.0"
   },
   "suggests": {
     "charmonium": ">=3.3.0",

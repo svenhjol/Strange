@@ -2,7 +2,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
 plugins {
-	id 'fabric-loom' version '0.8-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -13,8 +13,8 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-minecraft {
-	accessWidener = file("src/main/resources/strange.accesswidener")
+loom {
+	accessWidenerPath = file("src/main/resources/strange.accesswidener")
 }
 
 runServer {
@@ -30,31 +30,30 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Charm (required) and Charmonium (optional)
-	modImplementation "svenhjol.charm:charm:${project.charm_version}"
-//	modRuntime "svenhjol.charmonium:charmonium:${project.charmonium_version}"
-
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
 	// REI. Disable the modRuntime line if REI is broken.
-	modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-	modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+//	modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+//	modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+//	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
+//
+//	// ModMenu
+//	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	// ModMenu
-	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-	// TOML
 	implementation "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
 	implementation "com.electronwill.night-config:core:${project.tomlnc_version}"
 	implementation "com.electronwill.night-config:toml:${project.tomlnc_version}"
+
 	include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
 	include "com.electronwill.night-config:core:${project.tomlnc_version}"
 	include "com.electronwill.night-config:toml:${project.tomlnc_version}"
+
+	modImplementation "svenhjol.charm:charm:${project.charm_version}"
+//	modRuntime "svenhjol.charmonium:charmonium:${project.charmonium_version}"
 }
 
 
@@ -139,6 +138,4 @@ publishing {
 repositories {
 	flatDir { dirs "libs" }
 	maven { url "https://maven.shedaniel.me" }
-	maven { url "https://hephaestus.dev/release" }
-	maven { url "https://maven.terraformersmc.com" } // if this maven is broken, add modmenu to libs
 }
