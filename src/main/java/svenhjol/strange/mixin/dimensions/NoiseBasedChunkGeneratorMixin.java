@@ -7,12 +7,9 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.StructureSettings;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import svenhjol.strange.module.dimensions.Dimensions;
 
@@ -53,7 +50,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
             shift = At.Shift.AFTER
         )
     )
-    private void hookConstructorRandomSeed(BiomeSource populationSource, BiomeSource biomeSource, long seed, Supplier<NoiseGeneratorSettings> settings, CallbackInfo ci) {
+    private void hookConstructor(BiomeSource populationSource, BiomeSource biomeSource, long seed, Supplier<NoiseGeneratorSettings> settings, CallbackInfo ci) {
         if (seed == Dimensions.SeedSupplier.MARKER) {
             this.seed = LAST_SEED;
             this.strongholdSeed = LAST_SEED;
@@ -62,40 +59,38 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
         }
     }
 
-    @Redirect(
+    @ModifyArg(
         method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
-            value = "NEW",
-            target = "net/minecraft/world/level/levelgen/WorldgenRandom"
-        )
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/levelgen/NoiseSampler;<init>(IIILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/NoiseOctaves;ZJ)V"
+        ),
+        index = 6
     )
-    private WorldgenRandom hookConstructorRandomSourceWithSeed(long seed) {
-        return new WorldgenRandom(this.seed);
+    private long hookNoiseSampler(long seed) {
+        if (seed == Dimensions.SeedSupplier.MARKER) {
+            return LAST_SEED;
+        } else {
+            LAST_SEED = seed;
+        }
+
+        return seed;
     }
 
-    // the old way of doing it, commented in case seedy-behavior breaks
-    //
-    //    private static ThreadLocal<Long> storedLevelSeed = new ThreadLocal<>();
-    //
+    @ModifyArg(
+        method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/levelgen/SimpleRandomSource;<init>(J)V"
+        )
+    )
+    private long hookSimpleRandomSource(long seed) {
+        if (seed == Dimensions.SeedSupplier.MARKER) {
+            return LAST_SEED;
+        } else {
+            LAST_SEED = seed;
+        }
 
-    //    @Inject(
-    //        method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
-    //        at = @At(
-    //            value = "INVOKE",
-    //            target = "Lnet/minecraft/world/level/levelgen/NoiseSettings;height()I",
-    //            ordinal = 0
-    //        )
-    //    )
-    //    private void hookInit(BiomeSource b1, BiomeSource b2, long l, Supplier<NoiseGeneratorSettings> supplier, CallbackInfo ci) {
-    //        NoiseGeneratorSettings settings = supplier.get();
-    //        if (l == 0 && storedLevelSeed != null && storedLevelSeed.get() != 0) {
-    //            seed = storedLevelSeed.get();
-    //            ((ChunkGeneratorAccessor)this).setBiomeSource(b1.withSeed(seed));
-    //            ((ChunkGeneratorAccessor)this).setRuntimeBiomeSource(b2.withSeed(seed));
-    //            LogHelper.info(this.getClass(), ">> Set seed to " + storedLevelSeed.get());
-    //        } else if (l != 0) {
-    //            storedLevelSeed.remove();
-    //            storedLevelSeed.set(l);
-    //        }
-    //    }
+        return seed;
+    }
 }

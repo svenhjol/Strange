@@ -1,11 +1,11 @@
 {
   "type": "strange:darkland_type",
   "generator": {
+    "type": "minecraft:noise",
+    "settings": "minecraft:overworld",
     "biome_source": {
-      "large_biomes": false,
-      "type": "minecraft:vanilla_layered"
-    },
-    "settings": "strange:darkland_noise",
-    "type": "minecraft:noise"
+      "type": "minecraft:multi_noise",
+      "preset": "minecraft:overworld"
+    }
   }
 }
