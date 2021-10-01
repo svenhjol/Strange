@@ -11,13 +11,13 @@ import svenhjol.strange.module.knowledge.Knowledge;
 import java.util.List;
 
 public class JournalLearnedRunesScreen extends BaseJournalScreen {
-    protected JournalsData data = null;
+    protected JournalsData playerData = null;
 
     protected JournalLearnedRunesScreen() {
         super(new TranslatableComponent("gui.strange.journal.learned_runes.title"));
 
         // get reference to player data. Should have been cached on client side when journal opened
-        JournalsClient.getPlayerData().ifPresent(data -> this.data = data);
+        JournalsClient.getPlayerData().ifPresent(data -> this.playerData = data);
 
         // add a back button at the bottom
         bottomButtons.add(0, new ButtonDefinition(b -> knowledge(),
@@ -28,7 +28,7 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
-        if (data == null) {
+        if (playerData == null) {
             // show an error if the runes can't be loaded
             centeredText(poseStack, font, new TranslatableComponent("gui.strange.journal.runes_load_error"), (width / 2), titleY + 14, errorColor);
             return;
@@ -41,7 +41,7 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
         int yOffset = 18;
         int index = 0;
 
-        List<Integer> learnedRunes = data.getLearnedRunes();
+        List<Integer> learnedRunes = playerData.getLearnedRunes();
 
         for (int sx = 0; sx <= 4; sx++) {
             for (int sy = 0; sy < 7; sy++) {
@@ -53,10 +53,10 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
                     if (knownRune) {
                         String runeChar = Character.toString((char) (index + 97));
                         runeText = new TextComponent(runeChar).withStyle(SGA_STYLE);
-                        color = 0x707070;
+                        color = KNOWN_COLOR;
                     } else {
                         runeText = new TextComponent("?");
-                        color = 0xd0c0c0;
+                        color = UNKNOWN_COLOR;
                     }
 
                     font.draw(poseStack, runeText, left + (sx * xOffset), top + (sy * yOffset), color);

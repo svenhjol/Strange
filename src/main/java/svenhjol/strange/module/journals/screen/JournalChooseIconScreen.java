@@ -98,7 +98,7 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
                 ItemStack stack = new ItemStack(icons.get(index));
 
                 if (ItemStack.isSame(location.getIcon(), stack))
-                    fill(poseStack, mid + left + x, top + y, mid + left + x + 16, top + y + 16, 0x9F9F9640);
+                    fill(poseStack, mid + left + (x * xOffset), top + (y * yOffset), mid + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
 
                 itemRenderer.renderGuiItem(stack, mid + left + (x * xOffset), top + (y * yOffset));
                 index++;

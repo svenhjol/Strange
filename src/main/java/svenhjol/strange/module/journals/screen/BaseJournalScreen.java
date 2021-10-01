@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 
@@ -22,6 +23,8 @@ import java.util.List;
 public abstract class BaseJournalScreen extends Screen {
     public static final int BGWIDTH = 256;
     public static final int BGHEIGHT = 208;
+    public static final int KNOWN_COLOR = 0x707070;
+    public static final int UNKNOWN_COLOR = 0xd0c0c0;
 
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
@@ -114,6 +117,12 @@ public abstract class BaseJournalScreen extends Screen {
      */
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
         centeredText(poseStack, font, getTitle(), (width / 2) + titleX, titleY, titleColor);
+    }
+
+    public void renderTitleIcon(ItemStack icon) {
+        // render icon next to title
+        int iconX = width / 2 - 17 - ((this.title.getString().length() * 6) / 2);
+        itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
     }
 
     public void renderNavigation(PoseStack poseStack) {
