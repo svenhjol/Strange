@@ -23,6 +23,7 @@
 !/libs/.gitkeep
 /web/node_modules
 /web/vendor
+/backup
 
 ## Windows
 Thumbs.db
