@@ -2,8 +2,8 @@
   "type": "strange:floating_islands_type",
   "generator": {
     "biome_source": {
-      "large_biomes": false,
-      "type": "minecraft:vanilla_layered"
+      "type": "minecraft:multi_noise",
+      "preset": "minecraft:overworld"
     },
     "settings": "strange:floating_islands_noise",
     "type": "minecraft:noise"
