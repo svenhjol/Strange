@@ -1,13 +1,13 @@
 package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.WorldHelper;
-import svenhjol.charm.mixin.accessor.ScreenAccessor;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.data.JournalLocation;
@@ -53,7 +53,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         nameField.setEditable(true);
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        ((ScreenAccessor)this).getChildren().add(nameField);
+        this.children.add(nameField);
         setFocused(nameField);
 
         if (!hasInitializedUpdateButtons) {
