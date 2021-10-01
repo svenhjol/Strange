@@ -9,9 +9,7 @@
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
     "dimensions.BiomeMixin",
-    "dimensions.MultiNoiseBiomeSourceMixin",
     "dimensions.NoiseBasedChunkGeneratorMixin",
-    "dimensions.OverworldBiomeSourceMixin",
     "dimensions.WorldGenSettingsMixin"
   ],
   "client": [
