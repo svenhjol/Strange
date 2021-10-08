@@ -3,13 +3,14 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.ClientHelper;
@@ -144,7 +145,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         // render update buttons
         if (!hasRenderedUpdateButtons) {
-            int left = mid + 5;
+            int left = hasPhoto ? mid + 5 : mid - 50;
             int top = 60;
             int yOffset = 22;
 
@@ -152,51 +153,78 @@ public class JournalLocationScreen extends BaseJournalScreen {
             hasRenderedUpdateButtons = true;
         }
 
-        // render runes for this location
-        renderRunes(poseStack);
+        // render coordinates and runes for this location
+        ClientHelper.getPlayer().ifPresent(player -> {
+            renderRunes(poseStack, player);
+            renderCoordinates(poseStack, player);
+        });
 
         nameField.render(poseStack, mouseX, mouseY, delta);
     }
 
-    protected void renderRunes(PoseStack poseStack) {
+    protected void renderCoordinates(PoseStack poseStack, Player player) {
+        int mid = width / 2;
+
+        if (!player.isCreative())
+            return;
+
+
+        BlockPos pos = location.getBlockPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+
+        String max = String.valueOf(Math.max(z, Math.max(x, y)));
+
+        int left = mid - 60 - (max.length() * 4);
+        int top = 130;
+        int yOffset = 14;
+
+        font.draw(poseStack, "X: " + x, left, top + yOffset, KNOWN_COLOR);
+        font.draw(poseStack, "Y: " + y, left, top + (yOffset * 2), KNOWN_COLOR);
+        font.draw(poseStack, "Z: " + z, left, top + (yOffset * 3), KNOWN_COLOR);
+    }
+
+    protected void renderRunes(PoseStack poseStack, Player player) {
+        int mid = width / 2;
+        boolean isCreative = player.isCreative();
+
         if (playerData == null)
             return;
 
-        ClientHelper.getPlayer().ifPresent(player -> {
-            if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
-                return;
-            }
+        if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
+            return;
+        }
 
-            String runeString = KnowledgeHelper.convertFromBlockPos(location.getBlockPos());
-            String knownRuneString = KnowledgeHelper.convertWithLearnedRunes(runeString, playerData);
+        String runeString = KnowledgeHelper.convertFromBlockPos(location.getBlockPos());
+        String knownRuneString = KnowledgeHelper.convertWithLearnedRunes(runeString, playerData);
 
-            int left = (width / 2) + 9;
-            int top = 157;
-            int xOffset = 13;
-            int yOffset = 15;
-            int index = 0;
+        int left = isCreative ? mid + 9 : mid - 48;
+        int top = 150;
+        int xOffset = 13;
+        int yOffset = 15;
+        int index = 0;
 
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 8; x++) {
-                    if (index < knownRuneString.length()) {
-                        Component rune;
-                        int color;
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (index < knownRuneString.length()) {
+                    Component rune;
+                    int color;
 
-                        String s = String.valueOf(knownRuneString.charAt(index));
-                        if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                            rune = new TextComponent("?");
-                            color = UNKNOWN_COLOR;
-                        } else {
-                            rune = new TextComponent(s).withStyle(SGA_STYLE);
-                            color = KNOWN_COLOR;
-                        }
-
-                        font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
+                    String s = String.valueOf(knownRuneString.charAt(index));
+                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
+                        rune = new TextComponent("?");
+                        color = UNKNOWN_COLOR;
+                    } else {
+                        rune = new TextComponent(s).withStyle(ILLAGER_GLYPHS_STYLE);
+                        color = KNOWN_COLOR;
                     }
-                    index++;
+
+                    font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
                 }
+                index++;
             }
-        });
+        }
     }
 
     protected void renderPhoto(PoseStack poseStack) {

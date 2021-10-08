@@ -29,9 +29,11 @@ public abstract class BaseJournalScreen extends Screen {
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
     public static final ResourceLocation NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
-    public static final ResourceLocation SGA_TEXTURE = new ResourceLocation("minecraft", "alt");
+    public static final ResourceLocation DEFAULT_GLYPHS = new ResourceLocation("minecraft", "alt");
+    public static final ResourceLocation ILLAGER_GLYPHS = new ResourceLocation("minecraft", "illageralt");
 
-    protected final Style SGA_STYLE = Style.EMPTY.withFont(SGA_TEXTURE);
+    protected final Style DEFAULT_GLYPHS_STYLE = Style.EMPTY.withFont(DEFAULT_GLYPHS);
+    protected final Style ILLAGER_GLYPHS_STYLE = Style.EMPTY.withFont(ILLAGER_GLYPHS);
 
     protected boolean hasRenderedBottomButtons = false;
     protected boolean hasRenderedNavigation = false;

@@ -52,7 +52,7 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
 
                     if (knownRune) {
                         String runeChar = Character.toString((char) (index + 97));
-                        runeText = new TextComponent(runeChar).withStyle(SGA_STYLE);
+                        runeText = new TextComponent(runeChar).withStyle(ILLAGER_GLYPHS_STYLE);
                         color = KNOWN_COLOR;
                     } else {
                         runeText = new TextComponent("?");
