@@ -6,6 +6,7 @@
   "min_surface_level": 0,
   "disable_mob_generation": false,
   "aquifers_enabled": false,
+  "legacy_random_source": true,
   "default_fluid": {
     "Properties": {
       "level": "0"
