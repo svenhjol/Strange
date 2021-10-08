@@ -28,7 +28,6 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
      * IntelliJ minecraft plugin can't handle mixins into synthetic methods.
      * Suppress here or this mixin will cause a compile-time error.
      */
-    @SuppressWarnings("UnresolvedMixinReference")
     @Redirect(
         method = "lambda$static$3",
         at = @At(
@@ -63,7 +62,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
         method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/NoiseSampler;<init>(IIILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/NoiseOctaves;ZJ)V"
+            target = "Lnet/minecraft/world/level/levelgen/NoiseSampler;<init>(IIILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/NoiseOctaves;ZJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
         ),
         index = 6
     )
@@ -81,7 +80,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
         method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/SimpleRandomSource;<init>(J)V"
+            target = "Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;createRandomSource(J)Lnet/minecraft/world/level/levelgen/RandomSource;"
         )
     )
     private long hookSimpleRandomSource(long seed) {
