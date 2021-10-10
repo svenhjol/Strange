@@ -48,8 +48,9 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
 
     public StoneCirclePiece(StructurePieceSerializationContext context, CompoundTag tag) {
         super(StoneCircles.STONE_CIRCLE_PIECE, tag);
-        DataResult<StoneCircleConfiguration> stoneCircleType = StoneCircleConfiguration.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, tag.get("stone_circle_type")));
-        this.stoneCircleType = stoneCircleType.getOrThrow(true, err -> LogHelper.error(this.getClass(), err)).stoneCircleType;
+//        DataResult<StoneCircleConfiguration> stoneCircleType = StoneCircleConfiguration.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, tag.get("stone_circle_type")));
+//        this.stoneCircleType = stoneCircleType.getOrThrow(true, err -> LogHelper.error(this.getClass(), err)).stoneCircleType;
+        this.stoneCircleType = StoneCircleFeature.Type.OVERWORLD;
     }
 
     @Override

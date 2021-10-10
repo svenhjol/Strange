@@ -1,11 +1,17 @@
 package svenhjol.strange.module.stone_circles;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -14,10 +20,9 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.charm.helper.BiomeHelper;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguration> {
@@ -35,7 +40,16 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         int z = chunkPos.getMinBlockZ();
         int y = findSuitableY(config, chunkGenerator, height, random, x, z);
 
-        builder.addPiece(new StoneCirclePiece(config.stoneCircleType, context, x, y, z));
+        Biome biome = chunkGenerator.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
+        Objects.requireNonNull(builder);
+
+        if (context.validBiome().test(biome)) {
+//        Optional<ResourceKey<Biome>> opt = BuiltinRegistries.BIOME.getResourceKey(biome);
+//        ResourceKey<Biome> biomeKey = BiomeHelper.getBiomeKeyFromBiome(biome);
+//        if (biomeKey != null && biomeKey.location().toString().equals("minecraft:plains")) {
+//        if (StoneCircles.validBiomeCategories.contains(biome.getBiomeCategory())) {
+            builder.addPiece(new StoneCirclePiece(config.stoneCircleType, context, x, y, z));
+        }
     }
 
     private static int findSuitableY(StoneCircleConfiguration config, ChunkGenerator chunkGenerator, LevelHeightAccessor levelHeight, Random random, int x, int z) {

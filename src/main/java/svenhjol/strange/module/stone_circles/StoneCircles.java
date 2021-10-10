@@ -1,8 +1,15 @@
 package svenhjol.strange.module.stone_circles;
 
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
+import net.minecraft.data.worldgen.StructureFeatures;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -19,6 +26,7 @@ import svenhjol.strange.module.runestones.Runestones;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class StoneCircles extends CharmModule {
@@ -33,6 +41,8 @@ public class StoneCircles extends CharmModule {
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE_OVERWORLD;
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE_NETHER;
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE_END;
+
+    public static List<Biome.BiomeCategory> validBiomeCategories = new ArrayList<>();
 
     @Config(name = "Biome category generation", description = "Biome categories that stone circles may generate in.")
     public static List<String> configBiomeCategories = new ArrayList<>(Arrays.asList(
@@ -50,11 +60,6 @@ public class StoneCircles extends CharmModule {
         // init raw structure feature
         STONE_CIRCLE_STRUCTURE = new StoneCircleFeature(StoneCircleConfiguration.CODEC);
 
-        // add configuration for each structure feature type
-        STONE_CIRCLE_OVERWORLD = STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.OVERWORLD));
-        STONE_CIRCLE_NETHER = STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER));
-        STONE_CIRCLE_END = STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END));
-
         // register the structure feature with Fabric API
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_CIRCLE_STRUCTURE)
             .step(GenerationStep.Decoration.SURFACE_STRUCTURES)
@@ -62,9 +67,9 @@ public class StoneCircles extends CharmModule {
             .register();
 
         // register each structure feature type with Charm
-        RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_overworld"), STONE_CIRCLE_OVERWORLD);
-        RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_NETHER);
-        RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_END);
+        STONE_CIRCLE_OVERWORLD = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_overworld"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.OVERWORLD)));
+//        STONE_CIRCLE_NETHER = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER)));
+//        STONE_CIRCLE_END = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END)));
 
         // disable further processing if runestones module is not enabled
         this.addDependencyCheck(m -> Strange.LOADER.isEnabled(Runestones.class));
@@ -77,10 +82,14 @@ public class StoneCircles extends CharmModule {
             Biome.BiomeCategory category = Biome.BiomeCategory.byName(configCategory);
             if (category == null) return;
 
+            if (!validBiomeCategories.contains(category)) {
+                validBiomeCategories.add(category);
+            }
+
             switch (category) {
-                case NETHER -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_NETHER, category);
-                case THEEND -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_END, category);
-                default -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_OVERWORLD, category);
+//                case NETHER -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_NETHER, category);
+//                case THEEND -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_END, category);
+                default -> BiomeHelper.addStructureToBiome(STONE_CIRCLE_OVERWORLD, Biomes.PLAINS);
             }
         });
     }
