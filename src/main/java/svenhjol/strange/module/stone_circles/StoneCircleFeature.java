@@ -46,10 +46,6 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         Objects.requireNonNull(builder);
 
         if (context.validBiome().test(biome)) {
-//        Optional<ResourceKey<Biome>> opt = BuiltinRegistries.BIOME.getResourceKey(biome);
-//        ResourceKey<Biome> biomeKey = BiomeHelper.getBiomeKeyFromBiome(biome);
-//        if (biomeKey != null && biomeKey.location().toString().equals("minecraft:plains")) {
-//        if (StoneCircles.validBiomeCategories.contains(biome.getBiomeCategory())) {
             builder.addPiece(new StoneCirclePiece(config.stoneCircleType, context, x, y, z));
         }
     }
