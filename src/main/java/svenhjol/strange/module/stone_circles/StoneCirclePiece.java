@@ -1,10 +1,7 @@
 package svenhjol.strange.module.stone_circles;
 
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -48,9 +45,13 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
 
     public StoneCirclePiece(StructurePieceSerializationContext context, CompoundTag tag) {
         super(StoneCircles.STONE_CIRCLE_PIECE, tag);
-//        DataResult<StoneCircleConfiguration> stoneCircleType = StoneCircleConfiguration.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, tag.get("stone_circle_type")));
-//        this.stoneCircleType = stoneCircleType.getOrThrow(true, err -> LogHelper.error(this.getClass(), err)).stoneCircleType;
-        this.stoneCircleType = StoneCircleFeature.Type.OVERWORLD;
+        this.stoneCircleType = StoneCircleFeature.Type.byName(tag.getString("StoneCircleType"));
+    }
+
+    @Override
+    protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
+        super.addAdditionalSaveData(context, tag);
+        tag.putString("StoneCircleType", this.stoneCircleType.getName());
     }
 
     @Override
@@ -120,7 +121,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                 boolean generatedColumn = false;
                 int height = random.nextInt(maxHeight - minHeight) + minHeight;
                 world.setBlock(checkPos, blocks.get(0), 2);
-
 
                 for (int y = 1; y < height; y++) {
                     BlockState state = blocks.get(random.nextInt(blocks.size()));

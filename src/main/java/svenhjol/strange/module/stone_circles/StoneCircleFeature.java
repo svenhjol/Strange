@@ -2,16 +2,12 @@ package svenhjol.strange.module.stone_circles;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.QuartPos;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -20,9 +16,11 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.charm.helper.BiomeHelper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguration> {
@@ -39,6 +37,10 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         int x = chunkPos.getMinBlockX();
         int z = chunkPos.getMinBlockZ();
         int y = findSuitableY(config, chunkGenerator, height, random, x, z);
+
+        if (y == Integer.MIN_VALUE) {
+            return;
+        }
 
         Biome biome = chunkGenerator.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
         Objects.requireNonNull(builder);
@@ -57,7 +59,7 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         int y;
 
         if (config.stoneCircleType == Type.NETHER) {
-            y = Mth.randomBetweenInclusive(random, 32, 100);
+            y = Mth.randomBetweenInclusive(random, 70, 100);
         } else {
             y = chunkGenerator.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, levelHeight);
         }
@@ -68,12 +70,13 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         int surface;
         for (surface = y; surface > min; --surface) {
             BlockState state = column.getBlock(y);
-            if (heightMap.isOpaque().test(state)) {
+            BlockState above = column.getBlock(y + 1);
+            if (heightMap.isOpaque().test(state) && (!heightMap.isOpaque().test(above))) {
                 return surface;
             }
         }
 
-        return surface;
+        return Integer.MIN_VALUE;
     }
 
     public enum Type implements ICharmEnum {

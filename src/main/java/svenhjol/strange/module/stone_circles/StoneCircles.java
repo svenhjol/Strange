@@ -1,15 +1,8 @@
 package svenhjol.strange.module.stone_circles;
 
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
-import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
-import net.minecraft.data.worldgen.StructureFeatures;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -26,7 +19,6 @@ import svenhjol.strange.module.runestones.Runestones;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class StoneCircles extends CharmModule {
@@ -68,8 +60,8 @@ public class StoneCircles extends CharmModule {
 
         // register each structure feature type with Charm
         STONE_CIRCLE_OVERWORLD = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_overworld"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.OVERWORLD)));
-//        STONE_CIRCLE_NETHER = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER)));
-//        STONE_CIRCLE_END = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END)));
+        STONE_CIRCLE_NETHER = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER)));
+        STONE_CIRCLE_END = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END)));
 
         // disable further processing if runestones module is not enabled
         this.addDependencyCheck(m -> Strange.LOADER.isEnabled(Runestones.class));
@@ -87,9 +79,9 @@ public class StoneCircles extends CharmModule {
             }
 
             switch (category) {
-//                case NETHER -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_NETHER, category);
-//                case THEEND -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_END, category);
-                default -> BiomeHelper.addStructureToBiome(STONE_CIRCLE_OVERWORLD, Biomes.PLAINS);
+                case NETHER -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_NETHER, category);
+                case THEEND -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_END, category);
+                default -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_OVERWORLD, category);
             }
         });
     }
