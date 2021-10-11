@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityDimensions;
@@ -67,11 +68,11 @@ public class Runestones extends CharmModule {
         "minecraft:the_nether -> strange:stone_circle",
         "minecraft:the_nether -> minecraft:ruined_portal",
         "minecraft:the_nether -> minecraft:bastion_remnant",
-        "minecraft:the_nether -> minecraft:nether_fortress",
+        "minecraft:the_nether -> minecraft:fortress",
         "minecraft:the_nether -> strange:nether_ruin",
         "minecraft:the_nether -> strange:citadel",
         "minecraft:the_end -> strange:stone_circle",
-        "minecraft:the_end -> minecraft:end_city",
+        "minecraft:the_end -> minecraft:endcity",
         "minecraft:the_end -> strange:end_ruin"
     ));
 
@@ -152,7 +153,7 @@ public class Runestones extends CharmModule {
     }
 
     private boolean isValidBiome(ResourceLocation biomeId) {
-        if (Registry.STRUCTURE_FEATURE.get(biomeId) == null) {
+        if (BuiltinRegistries.BIOME.get(biomeId) == null) {
             LogHelper.debug(this.getClass(), "Could not find biome " + biomeId + ", ignoring as runestone destination");
             return false;
         }

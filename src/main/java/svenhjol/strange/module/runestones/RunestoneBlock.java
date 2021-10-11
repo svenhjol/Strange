@@ -6,13 +6,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
-import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 
 import javax.annotation.Nullable;
 
 public class RunestoneBlock extends CharmBlockWithEntity {
     public RunestoneBlock(CharmModule module, IRunestoneMaterial material) {
-        super(module, "runestone_" + material.getSerializedName(), material.getProperties());
+        super(module, material.getSerializedName() + "_runestone", material.getProperties());
     }
 
     @Nullable
