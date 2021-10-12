@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
@@ -37,6 +38,7 @@ public class Runestones extends CharmModule {
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
     public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
+    public static MenuType<RunestoneMenu> MENU;
 
     public static Map<ResourceLocation, List<BaseDestination>> AVAILABLE_DESTINATIONS = new HashMap<>();
 
@@ -89,7 +91,10 @@ public class Runestones extends CharmModule {
             RUNESTONE_BLOCKS.put(material, new RunestoneBlock(this, material));
         }
 
+        // TODO: Dispenser behavior. See Strange16 RunicAltars
+
         BLOCK_ENTITY = RegistryHelper.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
+        MENU = RegistryHelper.screenHandler(BLOCK_ID, RunestoneMenu::new);
 
         // setup runestone dust item and entity
         RUNESTONE_DUST = new RunestoneDustItem(this);
@@ -103,8 +108,7 @@ public class Runestones extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::handleServerStarted);
-
-        this.initDestinations();
+        initDestinations();
     }
 
     private void handleServerStarted(MinecraftServer server) {
