@@ -12,9 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
@@ -25,9 +23,6 @@ public class Knowledge extends CharmModule {
     public static final int NUM_RUNES = 26;
     public static long seed;
     public static KnowledgeData savedData;
-
-    @Config(name = "Seed", description = "Seed used to generate rune sets for each knowledge type.")
-    public static String configSeed = "Ostrich";
 
     @Override
     public void register() {
@@ -49,10 +44,7 @@ public class Knowledge extends CharmModule {
             // overworld gets loaded first, set up the knowledge data here
             ServerLevel overworld = (ServerLevel)level;
 
-            StringHelper.parseSeed(configSeed).ifPresentOrElse(
-                s -> seed = s,
-                () -> seed = overworld.getSeed());
-
+            seed = overworld.getSeed();
             DimensionDataStorage storage = overworld.getDataStorage();
 
             savedData = storage.computeIfAbsent(
@@ -66,7 +58,7 @@ public class Knowledge extends CharmModule {
         } else {
             getSavedData().ifPresent(data -> {
                 // capture the world that just got loaded
-                data.registerLevel(level);
+                data.registerDimension(level);
                 data.setDirty();
             });
         }

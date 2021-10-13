@@ -54,6 +54,7 @@ public class Journals extends CharmModule {
         PlayerDieCallback.EVENT.register(this::handlePlayerDeath);
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_OPEN_JOURNAL, this::handleOpenJournal);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_JOURNAL, this::handleSyncJournal);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ADD_LOCATION, this::handleAddLocation);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_LOCATION, this::handleUpdateLocation);
     }

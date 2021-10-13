@@ -3,8 +3,6 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityDimensions;
@@ -14,22 +12,20 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.runestones.destination.BaseDestination;
-import svenhjol.strange.module.runestones.destination.BiomeDestination;
-import svenhjol.strange.module.runestones.destination.StructureDestination;
+import svenhjol.strange.module.runestones.location.BaseLocation;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Runestones extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
+
+    public static final ResourceLocation MSG_CLIENT_SET_ACTIVE_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_looking_at");
 
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
@@ -40,7 +36,7 @@ public class Runestones extends CharmModule {
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
     public static MenuType<RunestoneMenu> MENU;
 
-    public static Map<ResourceLocation, List<BaseDestination>> AVAILABLE_DESTINATIONS = new HashMap<>();
+    public static Map<ResourceLocation, List<BaseLocation>> AVAILABLE_LOCATIONS = new HashMap<>();
 
     public static Map<UUID, BlockPos> teleportFrom = new HashMap<>(); // location of the runestone that the player activated
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated
@@ -108,59 +104,12 @@ public class Runestones extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::handleServerStarted);
-        initDestinations();
+        RunestoneLoot.create();
+        RunestoneLocations.create();
     }
 
     private void handleServerStarted(MinecraftServer server) {
     }
 
-    private void initDestinations() {
-        // add all structures from config file
-        for (int i = 0; i < configStructures.size(); i++) {
-            List<String> split = splitConfigEntry(configStructures.get(i));
-            if (split.size() != 2) continue;
 
-            ResourceLocation dimensionId = new ResourceLocation(split.get(0));
-            ResourceLocation structureId = new ResourceLocation(split.get(1));
-            if (!isValidStructure(structureId)) continue;
-
-            float weight = 1.0F - (i / (float) configStructures.size());
-            AVAILABLE_DESTINATIONS.computeIfAbsent(dimensionId, a -> new ArrayList<>())
-                .add(new StructureDestination(structureId, weight));
-        }
-
-        // add all biomes from config file
-        for (int i = 0; i < configBiomes.size(); i++) {
-            List<String> split = splitConfigEntry(configBiomes.get(i));
-            if (split.size() != 2) continue;
-
-            ResourceLocation dimensionId = new ResourceLocation(split.get(0));
-            ResourceLocation biomeId = new ResourceLocation(split.get(1));
-            if (!isValidBiome(biomeId)) continue;
-
-            float weight = 1.0F - (i / (float) configBiomes.size());
-            AVAILABLE_DESTINATIONS.computeIfAbsent(dimensionId, a -> new ArrayList<>())
-                .add(new BiomeDestination(biomeId, weight));
-        }
-    }
-
-    private List<String> splitConfigEntry(String entry) {
-        return Arrays.stream(entry.split("->")).map(s -> s.trim().toLowerCase(Locale.ROOT)).collect(Collectors.toList());
-    }
-
-    private boolean isValidStructure(ResourceLocation structureId) {
-        if (Registry.STRUCTURE_FEATURE.get(structureId) == null) {
-            LogHelper.debug(this.getClass(), "Could not find structure " + structureId + ", ignoring as runestone destination");
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isValidBiome(ResourceLocation biomeId) {
-        if (BuiltinRegistries.BIOME.get(biomeId) == null) {
-            LogHelper.debug(this.getClass(), "Could not find biome " + biomeId + ", ignoring as runestone destination");
-            return false;
-        }
-        return true;
-    }
 }

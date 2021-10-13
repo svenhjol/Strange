@@ -8,6 +8,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -15,15 +16,17 @@ import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.runestones.RunestoneBlockEntity;
 import svenhjol.strange.module.runestones.Runestones;
-import svenhjol.strange.module.runestones.destination.BaseDestination;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
+import svenhjol.strange.module.runestones.location.BaseLocation;
+import svenhjol.strange.module.runestones.location.SpawnLocation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StoneCirclePiece extends ScatteredFeaturePiece {
@@ -61,6 +64,13 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         ResourceLocation dimension = null;
         List<BlockState> blocks = new ArrayList<>();
 
+        if (Knowledge.getSavedData().isEmpty()) {
+            LogHelper.warn(this.getClass(), "Could not load KnowledgeData, giving up");
+            return;
+        }
+
+        KnowledgeData knowledgeData = Knowledge.getSavedData().get();
+
         switch (stoneCircleType) {
             case OVERWORLD -> {
                 dimension = ServerLevel.OVERWORLD.location();
@@ -94,7 +104,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         boolean generatedSomething = false;
         boolean generatedSpawnRune = false;
 
-        List<BaseDestination> destinations = Runestones.AVAILABLE_DESTINATIONS.get(dimension);
+        List<BaseLocation> destinations = Runestones.AVAILABLE_LOCATIONS.get(dimension);
 
         if (destinations.isEmpty()) {
             LogHelper.warn(this.getClass(), "There are no available runestone destinations for this dimension, giving up");
@@ -125,24 +135,28 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                 for (int y = 1; y < height; y++) {
                     BlockState state = blocks.get(random.nextInt(blocks.size()));
                     boolean isTop = y == height - 1;
+                    Optional<Destination> dest = Optional.empty();
 
                     if (isTop) {
                         // always try and generate a spawn rune first
                         if (!generatedSpawnRune) {
-                            // TODO: set the runestone properties here
                             state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
+
+                            dest = knowledgeData.createDestination(random, 0.5F, dimension, SpawnLocation.SPAWN, null);
                             generatedSpawnRune = true;
+
                         } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.3F) {
 
                             // Try and generate a runestone. Replace the state with the runestone if successful
                             for (int tries = 0; tries < runestoneTries; tries++) {
                                 float f = random.nextFloat();
-                                List<BaseDestination> matching = destinations.stream().filter(d -> f < d.getWeight()).collect(Collectors.toList());
+                                List<BaseLocation> matching = destinations.stream().filter(d -> f < d.getDifficulty()).collect(Collectors.toList());
                                 if (matching.isEmpty()) continue;
 
-                                BaseDestination destination = matching.get(random.nextInt(matching.size()));
-                                // TODO set the runestone properties here
+                                BaseLocation destination = matching.get(random.nextInt(matching.size()));
                                 state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
+                                dest = knowledgeData.createDestination(random, destination.getDifficulty(), dimension, destination.getLocation(), null);
+
                                 ++numberOfRunestonesGenerated;
                                 break;
                             }
@@ -150,6 +164,15 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                     }
 
                     world.setBlock(checkPos.above(y), state, 2);
+
+                    if (dest.isPresent()) {
+                        BlockEntity blockEntity = world.getBlockEntity(checkPos.above(y));
+                        if (blockEntity instanceof RunestoneBlockEntity runestone) {
+                            runestone.runes = dest.get().runes;
+                            runestone.setChanged();
+                        }
+                    }
+
                     generatedColumn = true;
                 }
 

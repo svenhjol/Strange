@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -24,25 +23,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RunestoneBlockEntity extends BlockEntity implements Container, WorldlyContainer, MenuProvider {
-    public static final String RUNES_NBT = "Runes";
-    public static final String POSITION_NBT = "Position";
-    public static final String LOCATION_NBT = "Location";
-    public static final String PLAYER_NBT = "Player";
     public static final String MATERIAL_NBT = "Material";
+    public static final String RUNES_NBT = "Runes";
 
     public static final int SIZE = 1;
     public static final int[] SLOTS = IntStream.range(0, SIZE).toArray();
 
-    public List<Integer> runes;
-    public BlockPos position;
-    public ResourceLocation location;
-    public String player;
+    public String runes;
     public int material;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
@@ -79,13 +69,10 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.runes = Arrays.stream(tag.getIntArray(RUNES_NBT)).boxed().collect(Collectors.toList());
-        this.position = BlockPos.of(tag.getLong(POSITION_NBT));
-        this.player = tag.getString(PLAYER_NBT);
         this.material = tag.getInt(MATERIAL_NBT);
 
-        String location = tag.getString(LOCATION_NBT);
-        this.location = !location.isEmpty() ? new ResourceLocation(location) : null;
+        String runes = tag.getString(RUNES_NBT);
+        this.runes = !runes.isEmpty() ? runes : null;
 
         ContainerHelper.loadAllItems(tag, this.items);
     }
@@ -94,21 +81,11 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt(MATERIAL_NBT, this.material);
+
+        if (this.runes != null)
+            tag.putString(RUNES_NBT, this.runes);
+
         ContainerHelper.saveAllItems(tag, this.items, false);
-
-        if (this.runes != null) {
-            tag.putIntArray(RUNES_NBT, this.runes);
-        }
-
-        if (this.position != null) {
-            tag.putLong(POSITION_NBT, this.position.asLong());
-
-            if (location != null)
-                tag.putString(LOCATION_NBT, this.location.toString());
-
-            if (player != null)
-                tag.putString(PLAYER_NBT, this.player);
-        }
     }
 
     @Nullable
@@ -172,7 +149,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
 
         if (level != null && level.isClientSide) {
             // TODO: custom sound effect
-            level.playSound(null, position, SoundEvents.LODESTONE_COMPASS_LOCK, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, getBlockPos(), SoundEvents.LODESTONE_COMPASS_LOCK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         this.setChanged();
@@ -198,4 +175,17 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
         return new RunestoneMenu(syncId, playerInventory, this, this.data);
     }
+
+//    public void test(Level level) {
+//        List<ItemStack> stacks = KnowledgeHelper.generateItemStacksFromBlockPos(level, pos, entity, RunestoneLoot.BASIC);
+//        if (stacks.isEmpty() || stacks.size() == 1) {
+//            return false;
+//        }
+//
+//        // shift first element as primary
+//        ItemStack primary = stacks.remove(0);
+//        List<ItemStack> secondary = stacks;
+//
+//
+//    }
 }
