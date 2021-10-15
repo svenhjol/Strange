@@ -34,5 +34,16 @@
   "gui.strange.journal.runes_load_error": "Could not load runes",
   "gui.strange.journal.save": "Save",
   "gui.strange.journal.take_photo": "Take photo",
-  "gui.strange.journal.title": "Journal"
+  "gui.strange.journal.title": "Journal",
+  "gui.strange.clues.ancient": "Ancient",
+  "gui.strange.clues.cold": "Cold",
+  "gui.strange.clues.dangerous": "Dangerous",
+  "gui.strange.clues.dry": "Dry",
+  "gui.strange.clues.humid": "Humid",
+  "gui.strange.clues.lucrative": "Lucrative",
+  "gui.strange.clues.populated": "Populated",
+  "gui.strange.clues.safe": "Safe",
+  "gui.strange.clues.surface": "Surface",
+  "gui.strange.clues.underground": "Underground",
+  "gui.strange.clues.underwater": "Underwater"
 }

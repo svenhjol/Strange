@@ -48,37 +48,95 @@ public class Runestones extends CharmModule {
     @Config(name = "Travel protection time", description = "Number of seconds of regeneration, fire resistance and slow fall after teleporting.")
     public static int protectionDuration = 10;
 
-    @Config(name = "Structures", description = "Structures that runestones may teleport you to.  Format: [dimension -> structure]\nStructures are listed in order of rarity and missing structures will be skipped.")
-    public static List<String> configStructures = new ArrayList<>(Arrays.asList(
-        "minecraft:overworld -> strange:stone_circle",
-        "minecraft:overworld -> minecraft:village",
-        "minecraft:overworld -> minecraft:pillager_outpost",
-        "minecraft:overworld -> minecraft:desert_pyramid",
-        "minecraft:overworld -> minecraft:jungle_pyramid",
-        "minecraft:overworld -> minecraft:mineshaft",
-        "minecraft:overworld -> minecraft:ocean_ruin",
-        "minecraft:overworld -> minecraft:swamp_hut",
-        "minecraft:overworld -> minecraft:igloo",
-        "minecraft:overworld -> minecraft:ruined_portal",
-        "minecraft:overworld -> strange:cave_ruin",
-        "minecraft:overworld -> strange:surface_ruin",
-        "minecraft:overworld -> strange:deep_ruin",
-        "minecraft:the_nether -> strange:stone_circle",
-        "minecraft:the_nether -> minecraft:ruined_portal",
-        "minecraft:the_nether -> minecraft:bastion_remnant",
-        "minecraft:the_nether -> minecraft:fortress",
-        "minecraft:the_nether -> strange:nether_ruin",
-        "minecraft:the_nether -> strange:citadel",
-        "minecraft:the_end -> strange:stone_circle",
-        "minecraft:the_end -> minecraft:endcity",
-        "minecraft:the_end -> strange:end_ruin"
+    @Config(name = "Locations", description = "Locations that runestones may teleport you to.  Format: [dimension -> location]\nLocations are ordered by rune difficulty. Missing structures will be skipped.")
+    public static List<String> configLocations = new ArrayList<>(Arrays.asList(
+        "overworld -> strange:stone_circle",
+        "overworld -> village",
+        "overworld -> pillager_outpost",
+        "overworld -> desert_pyramid",
+        "overworld -> mineshaft",
+        "overworld -> badlands",
+        "overworld -> bamboo_jungle",
+        "overworld -> jungle_pyramid",
+        "overworld -> flower_forest",
+        "overworld -> ice_spikes",
+        "overworld -> snowy_slopes",
+        "overworld -> windswept_savanna",
+        "overworld -> ocean_ruin",
+        "overworld -> swamp_hut",
+        "overworld -> igloo",
+        "overworld -> meadow",
+        "overworld -> ruined_portal",
+        "overworld -> lush_caves",
+        "overworld -> dripstone_caves",
+        "overworld -> jagged_peaks",
+        "overworld -> shipwreck",
+        "overworld -> strange:surface_ruin",
+        "overworld -> strange:cave_ruin",
+        "overworld -> strange:deep_ruin",
+        "overworld -> monument",
+        "overworld -> mushroom_fields",
+        "overworld -> woodland_mansion",
+        "overworld -> stronghold",
+        "the_nether -> strange:stone_circle",
+        "the_nether -> crimson_forest",
+        "the_nether -> ruined_portal",
+        "the_nether -> soul_sand_valley",
+        "the_nether -> warped_forest",
+        "the_nether -> basalt_deltas",
+        "the_nether -> bastion_remnant",
+        "the_nether -> fortress",
+        "the_nether -> strange:nether_ruin",
+        "the_nether -> strange:citadel",
+        "the_end -> strange:stone_circle",
+        "the_end -> endcity",
+        "the_end -> strange:end_ruin",
+        "strange:darkland -> strange:stone_circle",
+        "strange:darkland -> strange:surface_ruin",
+        "strange:darkland -> strange:cave_ruin",
+        "strange:darkland -> strange:deep_ruin"
     ));
 
-    @Config(name = "Biomes", description = "Biomes that runestones may teleport you to.  Format: [dimension -> structure]\nBiomes are listed in order of rarity and missing biomes will be skipped.")
-    public static List<String> configBiomes = new ArrayList<>(Arrays.asList(
-        "minecraft:overworld -> minecraft:flower_forest",
-        "minecraft:overworld -> minecraft:ice_spikes",
-        "minecraft:overworld -> minecraft:badlands"
+    @Config(name = "Clues", description = "Clues give hints about the kind of structure or biome that a runestone will teleport you to.")
+    public static List<String> configClues = new ArrayList<>(Arrays.asList(
+        "strange:spawn_point    -> safe",
+        "strange:stone_circle   -> surface,safe,ancient",
+        "village                -> surface,populated,safe,lucrative",
+        "pillager_outpost       -> surface,populated,dangerous",
+        "desert_pyramid         -> surface,lucrative,dry",
+        "jungle_pyramid         -> surface,lucrative,humid",
+        "mineshaft              -> underground,dangerous",
+        "ocean_ruin             -> underwater,dangerous,lucrative,ancient",
+        "swamp_hut              -> surface,dangerous",
+        "igloo                  -> surface,safe,cold",
+        "ruined_portal          -> lucrative,ancient",
+        "shipwreck              -> lucrative,underwater",
+        "strange:surface_ruin   -> surface,ancient",
+        "strange:cave_ruin      -> underground,dangerous,lucrative,populated",
+        "strange:deep_ruin      -> underground,lucrative,ancient",
+        "monument               -> underwater,surface,populated,dangerous,lucrative",
+        "stronghold             -> underground,dangerous,lucrative",
+        "bastion_remnant        -> populated,dangerous,lucrative,ancient",
+        "fortress               -> populated,dangerous,lucrative",
+        "strange:nether_ruin    -> underground,lucrative",
+        "strange:citadel        -> populated,dangerous,lucrative",
+        "endcity                -> surface,populated,dangerous,lucrative",
+        "strange:end_ruin       -> dangerous,lucrative",
+        "badlands               -> surface,dry",
+        "bamboo_jungle          -> surface,humid",
+        "flower_forest          -> surface,safe",
+        "ice_spikes             -> surface,cold",
+        "snowy_slopes           -> surface,cold",
+        "windswept_savanna      -> surface,dry",
+        "meadow                 -> surface,safe",
+        "lush_caves             -> underground,humid",
+        "dripstone_caves        -> underground,humid",
+        "jagged_peaks           -> surface,cold",
+        "mushroom_fields        -> surface,lucrative",
+        "crimson_forest         -> surface",
+        "warped_forest          -> surface",
+        "soul_sand_valley       -> surface,dangerous",
+        "basalt_deltas          -> surface,dangerous"
     ));
 
     @Override
@@ -105,7 +163,7 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::handleServerStarted);
         RunestoneLoot.create();
-        RunestoneLocations.create();
+        RunestoneLocations.init();
     }
 
     private void handleServerStarted(MinecraftServer server) {

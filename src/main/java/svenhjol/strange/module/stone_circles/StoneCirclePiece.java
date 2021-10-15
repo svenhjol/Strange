@@ -16,18 +16,19 @@ import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
+import svenhjol.strange.module.runestones.RunestoneLocations;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 import svenhjol.strange.module.runestones.location.BaseLocation;
-import svenhjol.strange.module.runestones.location.SpawnLocation;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class StoneCirclePiece extends ScatteredFeaturePiece {
     public static int maxCheckSurface = 5; // if the surface Y value is this many blocks higher than starting Y, don't generate
@@ -37,7 +38,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
     public static int maxHeight = 8; // max possible height of a stone pillar
     public static int minHeight = 4; // min height of a stone pillar
     public static int maxRunestones = 5; // max number of runestones that will generate per circle
-    public static int runestoneTries = 10; // number of attempts at runestone placement from available runestones
 
     private final StoneCircleFeature.Type stoneCircleType;
 
@@ -58,7 +58,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
     }
 
     @Override
-    public void postProcess(WorldGenLevel world, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
+    public void postProcess(WorldGenLevel level, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
         IRunestoneMaterial material = null;
         ResourceLocation dimension = null;
@@ -119,60 +119,63 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
             for (int s = maxCheckSurface; s > minCheckSurface; s--) {
                 BlockPos checkPos = blockPos.offset(x, s, z);
                 BlockPos checkUpPos = checkPos.above();
-                BlockState checkState = world.getBlockState(checkPos);
-                BlockState checkUpState = world.getBlockState(checkUpPos);
+                BlockState checkState = level.getBlockState(checkPos);
+                BlockState checkUpState = level.getBlockState(checkUpPos);
 
                 boolean validSurfacePos = ((checkState.canOcclude() || checkState.getBlock() == Blocks.LAVA)
-                    && (checkUpState.isAir() || !checkUpState.canOcclude() || world.isWaterAt(checkUpPos)));
+                    && (checkUpState.isAir() || !checkUpState.canOcclude() || level.isWaterAt(checkUpPos)));
 
                 if (!validSurfacePos)
                     continue;
 
                 boolean generatedColumn = false;
                 int height = random.nextInt(maxHeight - minHeight) + minHeight;
-                world.setBlock(checkPos, blocks.get(0), 2);
+                level.setBlock(checkPos, blocks.get(0), 2);
 
                 for (int y = 1; y < height; y++) {
+                    BlockPos currentPos = checkPos.above(y);
                     BlockState state = blocks.get(random.nextInt(blocks.size()));
                     boolean isTop = y == height - 1;
-                    Optional<Destination> dest = Optional.empty();
+                    float difficulty = 0F;
+                    ResourceLocation location = null;
 
                     if (isTop) {
                         // always try and generate a spawn rune first
                         if (!generatedSpawnRune) {
                             state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
-
-                            dest = knowledgeData.createDestination(random, 0.5F, dimension, SpawnLocation.SPAWN, null);
+                            location = RunestoneLocations.SPAWN;
                             generatedSpawnRune = true;
 
-                        } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.3F) {
+                        } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.5F) {
+                            // scale difficulty according to number of runes added
+                            difficulty += ((numberOfRunestonesGenerated + 1) * (random.nextFloat() * (1F / maxRunestones)));
 
-                            // Try and generate a runestone. Replace the state with the runestone if successful
-                            for (int tries = 0; tries < runestoneTries; tries++) {
-                                float f = random.nextFloat();
-                                List<BaseLocation> matching = destinations.stream().filter(d -> f < d.getDifficulty()).collect(Collectors.toList());
-                                if (matching.isEmpty()) continue;
+                            // scale difficulty according to distance from spawn
+                            double distX = Math.min(1.0D, Math.abs(x / 1000000D));
+                            double distZ = Math.min(1.0D, Math.abs(z / 1000000D));
+                            difficulty += random.nextFloat() * Math.max(distX, distZ) / 2;
 
-                                BaseLocation destination = matching.get(random.nextInt(matching.size()));
-                                state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
-                                dest = knowledgeData.createDestination(random, destination.getDifficulty(), dimension, destination.getLocation(), null);
-
-                                ++numberOfRunestonesGenerated;
-                                break;
-                            }
+                            state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
+                            ++numberOfRunestonesGenerated;
                         }
                     }
 
-                    world.setBlock(checkPos.above(y), state, 2);
+                    level.setBlock(currentPos, state, 2);
 
-                    if (dest.isPresent()) {
-                        BlockEntity blockEntity = world.getBlockEntity(checkPos.above(y));
-                        if (blockEntity instanceof RunestoneBlockEntity runestone) {
-                            runestone.runes = dest.get().runes;
-                            runestone.setChanged();
+                    BlockEntity blockEntity = level.getBlockEntity(currentPos);
+                    if (blockEntity instanceof RunestoneBlockEntity runestone) {
+                        runestone.difficulty = Math.max(0.0F, Math.min(1.0F, difficulty));
+                        if (location != null) {
+                            runestone.location = location;
                         }
                     }
-
+//                    if (dest.isPresent()) {
+//                        BlockEntity blockEntity = world.getBlockEntity(currentPos);
+//                        if (blockEntity instanceof RunestoneBlockEntity runestone) {
+//                            runestone.runes = dest.get().runes;
+//                            runestone.setChanged();
+//                        }
+//                    }
                     generatedColumn = true;
                 }
 

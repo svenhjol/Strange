@@ -12,9 +12,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import svenhjol.strange.module.journals.JournalsData;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 public class KnowledgeHelper {
     public static final String UNKNOWN = "?";
@@ -120,7 +118,7 @@ public class KnowledgeHelper {
     public static String generateDestinationString(Random random, float difficulty) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < KnowledgeData.MAX_LENGTH; i++) {
-            int chr = Math.min(122, Math.max(97, random.nextInt((int) (Knowledge.NUM_RUNES * difficulty)) + 97));
+            int chr = Math.min(122, Math.max(97, random.nextInt((int) Math.max(6, Knowledge.NUM_RUNES * difficulty)) + 97));
             sb.append((char)chr);
             if (sb.length() > KnowledgeData.MIN_LENGTH && i / (float) KnowledgeData.MAX_LENGTH > difficulty) {
                 break;
@@ -130,6 +128,7 @@ public class KnowledgeHelper {
     }
 
     public static String generateStringFromBlockPos(BlockPos pos) {
+        KnowledgeData knowledgeData = Knowledge.getSavedData().orElseThrow();
         long l = pos.asLong();
         boolean negative = l < 0L;
         char[] chars = Long.toString(Math.abs(l), Knowledge.NUM_RUNES).toCharArray();
@@ -138,7 +137,7 @@ public class KnowledgeHelper {
             chars[i] = (char)(chars[i] + (chars[i] > '9' ? 10 : 49));
         }
 
-        return (negative ? KnowledgeData.PREFIX_NEGATIVE_BLOCKPOS : KnowledgeData.PREFIX_POSITIVE_BLOCKPOS) + new String(chars);
+        return (negative ? knowledgeData.NEGATIVE_RUNE : knowledgeData.POSITIVE_RUNE) + new String(chars);
     }
 
     public static List<ItemStack> generateItemStacksFromBlockPos(ServerLevel level, BlockPos pos, Entity entity, ResourceLocation loot) {
@@ -152,5 +151,19 @@ public class KnowledgeHelper {
             .create(LootContextParamSets.CHEST));
 
         return list;
+    }
+
+    public static char getCharFromRange(String range, int index) {
+        List<Character> chars = new ArrayList<>();
+        for (int i = 0; i < range.length(); i++) {
+            chars.add(range.charAt(i));
+        }
+
+        Collections.shuffle(chars, getRandom());
+        if (index < chars.size()) {
+            return chars.get(index);
+        }
+
+        throw new IndexOutOfBoundsException("Invalid index");
     }
 }

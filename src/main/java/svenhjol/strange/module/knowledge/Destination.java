@@ -17,6 +17,7 @@ public class Destination {
     public static final String TAG_ITEMS = "Items";
     public static final String TAG_PLAYER = "Player";
     public static final String TAG_DIFFICULTY = "Diff";
+    public static final String TAG_DECAY = "Decay";
 
     public String runes;
     public BlockPos pos;
@@ -25,9 +26,10 @@ public class Destination {
     public List<ItemStack> items = new ArrayList<>();
     public String player;
     public float difficulty;
+    public float decay;
 
-    public Destination() {
-
+    public Destination(String runes) {
+        this.runes = runes;
     }
 
     public String getId() {
@@ -36,6 +38,9 @@ public class Destination {
 
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
+
+        tag.putFloat(TAG_DIFFICULTY, difficulty);
+        tag.putFloat(TAG_DECAY, decay);
 
         if (this.items != null && !this.items.isEmpty()) {
             ListTag itemsNbt = new ListTag();
@@ -55,8 +60,6 @@ public class Destination {
             tag.putLong(TAG_POSITION, pos.asLong());
         }
 
-        tag.putFloat(TAG_DIFFICULTY, difficulty);
-
         if (dimension != null) {
             tag.putString(TAG_DIMENSION, dimension.toString());
         }
@@ -73,21 +76,23 @@ public class Destination {
     }
 
     public static Destination fromTag(CompoundTag tag) {
-        Destination dest = new Destination();
-        dest.runes = tag.getString(TAG_RUNES);
-        dest.pos = BlockPos.of(tag.getLong(TAG_POSITION));
-        dest.difficulty = tag.getFloat(TAG_DIFFICULTY);
-        dest.dimension = new ResourceLocation(tag.getString(TAG_DIMENSION));
-        dest.location = new ResourceLocation(tag.getString(TAG_LOCATION));
-        dest.player = tag.getString(TAG_PLAYER);
+        String runes = tag.getString(TAG_RUNES);
+        Destination destination = new Destination(runes);
+
+        destination.pos = BlockPos.of(tag.getLong(TAG_POSITION));
+        destination.dimension = new ResourceLocation(tag.getString(TAG_DIMENSION));
+        destination.location = new ResourceLocation(tag.getString(TAG_LOCATION));
+        destination.player = tag.getString(TAG_PLAYER);
+        destination.difficulty = tag.getFloat(TAG_DIFFICULTY);
+        destination.decay = tag.getFloat(TAG_DECAY);
 
         ListTag itemsList = tag.getList(TAG_ITEMS, 10);
         for (int i = 0; i < itemsList.size(); i++) {
             CompoundTag itemTag = itemsList.getCompound(i);
             ItemStack stack = ItemStack.of(itemTag);
-            dest.items.add(stack);
+            destination.items.add(stack);
         }
 
-        return dest;
+        return destination;
     }
 }

@@ -1,6 +1,5 @@
 package svenhjol.strange.module.knowledge;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -8,30 +7,36 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.saveddata.SavedData;
-import svenhjol.charm.helper.LogHelper;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class KnowledgeData extends SavedData {
-    public static final int MIN_LENGTH = 4;
-    public static final int MAX_LENGTH = 20;
-    public static final String PREFIX_POSITIVE_BLOCKPOS = "a";
-    public static final String PREFIX_NEGATIVE_BLOCKPOS = "b";
-    public static final String PREFIX_LOCATION = "a";
-    public static final String PREFIX_BIOME = "b";
-    public static final String PREFIX_STRUCTURE = "c";
-    public static final String PREFIX_DESTINATION = "e";
-    public static final String PREFIX_PLAYER = "y";
-    public static final String PREFIX_DIMENSION = "z";
+    public static final int MIN_LENGTH = 6;
+    public static final int MAX_LENGTH = 24;
+    public static final String NOVICE_RUNES = "abcdef";
+    public static final String APPRENTICE_RUNES = "ghijkl";
+    public static final String JOURNEYMAN_RUNES = "mnopqr";
+    public static final String EXPERT_RUNES = "stuv";
+    public static final String MASTER_RUNES = "wxyz";
+
+    public char SPAWN_RUNE = 0;
+    public char BIOME_RUNE = 0;
+    public char STRUCTURE_RUNE = 0;
+    public char LOCATION_RUNE = 0;
+    public char DESTINATION_RUNE = 0;
+    public char PLAYER_RUNE = 0;
+    public char DIMENSION_RUNE = 0;
+    public char POSITIVE_RUNE = 0;
+    public char NEGATIVE_RUNE = 0;
 
     private static final String TAG_SEED = "Seed";
     private static final String TAG_DESTINATIONS = "Destinations";
@@ -39,6 +44,17 @@ public class KnowledgeData extends SavedData {
     private static final String TAG_DIMENSIONS = "Dimensions";
     private static final String TAG_BIOMES = "Biomes";
     private static final String TAG_PLAYERS = "Players";
+    private static final String TAG_PREFIXES = "Prefixes";
+
+    private static final String TAG_SPAWN_RUNE = "SpawnRune";
+    private static final String TAG_BIOME_RUNE = "BiomeRune";
+    private static final String TAG_STRUCTURE_RUNE = "StructureRune";
+    private static final String TAG_LOCATION_RUNE = "LocationRune";
+    private static final String TAG_DESTINATION_RUNE = "DestinationRune";
+    private static final String TAG_PLAYER_RUNE = "PlayerRune";
+    private static final String TAG_DIMENSION_RUNE = "DimensionRune";
+    private static final String TAG_POSITIVE_RUNE = "PositiveRune";
+    private static final String TAG_NEGATIVE_RUNE = "NegativeRune";
 
     private Map<String, Destination> destinations = new HashMap<>();
     private Map<ResourceLocation, String> structures = new HashMap<>();
@@ -60,6 +76,17 @@ public class KnowledgeData extends SavedData {
         CompoundTag biomesNbt = nbt.getCompound(TAG_BIOMES);
         CompoundTag structuresNbt = nbt.getCompound(TAG_STRUCTURES);
         CompoundTag dimensionsNbt = nbt.getCompound(TAG_DIMENSIONS);
+        CompoundTag prefixesNbt = nbt.getCompound(TAG_PREFIXES);
+
+        data.SPAWN_RUNE = (char)prefixesNbt.getInt(TAG_SPAWN_RUNE);
+        data.BIOME_RUNE = (char)prefixesNbt.getInt(TAG_BIOME_RUNE);
+        data.STRUCTURE_RUNE = (char)prefixesNbt.getInt(TAG_STRUCTURE_RUNE);
+        data.LOCATION_RUNE = (char)prefixesNbt.getInt(TAG_LOCATION_RUNE);
+        data.DESTINATION_RUNE = (char)prefixesNbt.getInt(TAG_DESTINATION_RUNE);
+        data.PLAYER_RUNE = (char)prefixesNbt.getInt(TAG_PLAYER_RUNE);
+        data.DIMENSION_RUNE = (char)prefixesNbt.getInt(TAG_DIMENSION_RUNE);
+        data.POSITIVE_RUNE = (char)prefixesNbt.getInt(TAG_POSITIVE_RUNE);
+        data.NEGATIVE_RUNE = (char)prefixesNbt.getInt(TAG_NEGATIVE_RUNE);
 
         destinationsNbt.getAllKeys().forEach(key -> {
             Destination destination = Destination.fromTag(destinationsNbt.getCompound(key));
@@ -95,6 +122,7 @@ public class KnowledgeData extends SavedData {
         CompoundTag dimensionsNbt = new CompoundTag();
         CompoundTag biomesNbt = new CompoundTag();
         CompoundTag playersNbt = new CompoundTag();
+        CompoundTag prefixesNbt = new CompoundTag();
 
         this.destinations.forEach((key, dest) -> destinationsNbt.put(key, dest.toTag()));
         this.structures.forEach((res, key) -> structuresNbt.putString(res.toString(), key));
@@ -109,10 +137,22 @@ public class KnowledgeData extends SavedData {
         nbt.put(TAG_PLAYERS, playersNbt);
         nbt.putLong(TAG_SEED, Knowledge.seed);
 
+        prefixesNbt.putInt(TAG_SPAWN_RUNE, SPAWN_RUNE);
+        prefixesNbt.putInt(TAG_BIOME_RUNE, BIOME_RUNE);
+        prefixesNbt.putInt(TAG_STRUCTURE_RUNE, STRUCTURE_RUNE);
+        prefixesNbt.putInt(TAG_LOCATION_RUNE, LOCATION_RUNE);
+        prefixesNbt.putInt(TAG_DESTINATION_RUNE, DESTINATION_RUNE);
+        prefixesNbt.putInt(TAG_PLAYER_RUNE, PLAYER_RUNE);
+        prefixesNbt.putInt(TAG_DIMENSION_RUNE, DIMENSION_RUNE);
+        prefixesNbt.putInt(TAG_POSITIVE_RUNE, POSITIVE_RUNE);
+        prefixesNbt.putInt(TAG_NEGATIVE_RUNE, NEGATIVE_RUNE);
+        nbt.put(TAG_PREFIXES, prefixesNbt);
+
         return nbt;
     }
 
     public void populate(MinecraftServer server) {
+        this.registerPrefixes();
         BuiltinRegistries.BIOME.entrySet().forEach((e) -> this.registerBiome(e.getValue()));
         Registry.STRUCTURE_FEATURE.forEach(this::registerStructure);
         server.getAllLevels().forEach(this::registerDimension);
@@ -120,32 +160,46 @@ public class KnowledgeData extends SavedData {
         this.setDirty();
     }
 
-    public void registerStructure(StructureFeature<?> structure) {
-        ResourceLocation res = Registry.STRUCTURE_FEATURE.getKey(structure);
-        if (res != null && !this.structures.containsKey(res)) {
-            this.structures.put(res, PREFIX_STRUCTURE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
-        }
-    }
-
     public void registerBiome(Biome biome) {
         ResourceLocation res = BuiltinRegistries.BIOME.getKey(biome);
         if (res != null && !this.biomes.containsKey(res)) {
-            this.biomes.put(res, PREFIX_BIOME + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+            this.biomes.put(res, BIOME_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+        }
+    }
+
+    public void registerStructure(StructureFeature<?> structure) {
+        ResourceLocation res = Registry.STRUCTURE_FEATURE.getKey(structure);
+        if (res != null && !this.structures.containsKey(res)) {
+            this.structures.put(res, STRUCTURE_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
         }
     }
 
     public void registerDimension(Level level) {
         ResourceLocation res = level.dimension().location();
         if (res != null && !this.dimensions.containsKey(res)) {
-            this.dimensions.put(res, PREFIX_DIMENSION + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+            this.dimensions.put(res, DIMENSION_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
         }
     }
 
     public void registerPlayer(Player player) {
         UUID uuid = player.getUUID();
         if (uuid != null && !this.players.containsKey(uuid)) {
-            this.players.put(uuid, PREFIX_PLAYER + KnowledgeHelper.generateStringFromString(uuid.toString(), MAX_LENGTH));
+            this.players.put(uuid, PLAYER_RUNE + KnowledgeHelper.generateStringFromString(uuid.toString(), MAX_LENGTH));
         }
+    }
+
+    public void registerPrefixes() {
+        SPAWN_RUNE = KnowledgeHelper.getCharFromRange(NOVICE_RUNES,0);
+        LOCATION_RUNE = KnowledgeHelper.getCharFromRange(NOVICE_RUNES,1);
+        DESTINATION_RUNE = KnowledgeHelper.getCharFromRange(NOVICE_RUNES, 2);
+
+        BIOME_RUNE = KnowledgeHelper.getCharFromRange(APPRENTICE_RUNES,0);
+        STRUCTURE_RUNE = KnowledgeHelper.getCharFromRange(APPRENTICE_RUNES,1);
+        POSITIVE_RUNE = KnowledgeHelper.getCharFromRange(APPRENTICE_RUNES,2);
+        NEGATIVE_RUNE = KnowledgeHelper.getCharFromRange(APPRENTICE_RUNES,3);
+
+        PLAYER_RUNE = KnowledgeHelper.getCharFromRange(JOURNEYMAN_RUNES,0);
+        DIMENSION_RUNE = KnowledgeHelper.getCharFromRange(JOURNEYMAN_RUNES,1);
     }
 
     public Map<ResourceLocation, String> getBiomes() {
@@ -164,51 +218,21 @@ public class KnowledgeData extends SavedData {
         return structures;
     }
 
-    public Optional<Destination> getDestination(String runes) {
-        return Optional.ofNullable(destinations.get(runes));
+    public Map<String, Destination> getDestinations() {
+        return this.destinations;
     }
 
-    /**
-     * A destination is used by runestone generation to specify a location to send the player to.
-     *
-     * @param dimension Dimension where the destination can be found.
-     * @param location Resource ID of the destination's location (e.g. "minecraft:mansion", "minecraft:ice_spikes").
-     * @param pos BlockPos of the destination. Null means it hasn't been resolved yet.
-     * @return Rune string that represents this new destination.
-     */
-    public Optional<Destination> createDestination(Random random, float difficulty, ResourceLocation dimension, ResourceLocation location, @Nullable BlockPos pos) {
-        int tries = 0;
-        int maxTries = 10;
-        boolean foundUniqueRunes = false;
-        String runes = "";
+    public boolean hasDestination(String runes) {
+        return destinations.containsKey(runes);
+    }
 
-        // keep trying to find a unique rune string for this destination
-        while (!foundUniqueRunes && tries++ < maxTries) {
-            runes = KnowledgeHelper.generateDestinationString(random, difficulty);
-            foundUniqueRunes = !this.destinations.containsKey(runes);
-        }
-
-        if (!foundUniqueRunes) {
-            LogHelper.debug(this.getClass(), "Could not find unique rune string for this destination, giving up");
-            return Optional.empty();
-        }
-
-        String prefixed = PREFIX_DESTINATION + runes;
-        if (pos == null) {
-            pos = BlockPos.ZERO;
-        }
-
-        Destination dest = new Destination();
-        dest.runes = prefixed;
-        dest.pos = pos;
-        dest.dimension = dimension;
-        dest.location = location;
-        dest.items = Arrays.asList(new ItemStack(Items.DIAMOND)); // TODO: testdata
-
-        this.destinations.put(prefixed, dest);
+    public void updateDestination(String runes, Destination destination) {
+        this.destinations.put(runes, destination);
         this.setDirty();
+    }
 
-        return Optional.of(dest);
+    public Optional<Destination> getDestination(String runes) {
+        return Optional.ofNullable(destinations.get(runes));
     }
 
     public static String getFileId(DimensionType dimensionType) {
@@ -221,5 +245,13 @@ public class KnowledgeData extends SavedData {
         data.dimensions = new HashMap<>();
         data.biomes = new HashMap<>();
         data.players = new HashMap<>();
+
+        data.SPAWN_RUNE = 0;
+        data.DIMENSION_RUNE = 0;
+        data.PLAYER_RUNE = 0;
+        data.LOCATION_RUNE = 0;
+        data.STRUCTURE_RUNE = 0;
+        data.BIOME_RUNE = 0;
+        data.DESTINATION_RUNE = 0;
     }
 }

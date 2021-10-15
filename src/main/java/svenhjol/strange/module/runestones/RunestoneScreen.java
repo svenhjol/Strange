@@ -97,7 +97,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         String knownRuneString = KnowledgeHelper.convertStringWithLearnedRunes(runeString, playerData);
 
         int left = mid - 76;
-        int top = 76;
+        int top = (height / 2) - 70;
         int xOffset = 11;
         int yOffset = 14;
         int index = 0;
@@ -111,7 +111,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
                     String s = String.valueOf(knownRuneString.charAt(index));
                     if (s.equals(KnowledgeHelper.UNKNOWN)) {
                         rune = new TextComponent("?");
-                        color = 0xAA0000;
+                        color = 0xDDCCBB;
                     } else {
                         rune = new TextComponent(s).withStyle(ILLAGER_GLYPHS_STYLE);
                         color = 0xFFFFFF;

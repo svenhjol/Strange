@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -26,14 +27,20 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class RunestoneBlockEntity extends BlockEntity implements Container, WorldlyContainer, MenuProvider {
-    public static final String MATERIAL_NBT = "Material";
-    public static final String RUNES_NBT = "Runes";
+    public static final String TAG_MATERIAL = "Material";
+    public static final String TAG_RUNES = "Runes";
+    public static final String TAG_LOCATION = "Location";
+    public static final String TAG_DIFFICULTY = "Difficulty";
+    public static final String TAG_DECAY = "Decay";
 
     public static final int SIZE = 1;
     public static final int[] SLOTS = IntStream.range(0, SIZE).toArray();
 
+    public ResourceLocation location;
     public String runes;
     public int material;
+    public float difficulty;
+    public float decay;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
     private final ContainerData data;
@@ -69,10 +76,15 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.material = tag.getInt(MATERIAL_NBT);
+        this.material = tag.getInt(TAG_MATERIAL);
+        this.difficulty = tag.getFloat(TAG_DIFFICULTY);
+        this.decay = tag.getFloat(TAG_DECAY);
 
-        String runes = tag.getString(RUNES_NBT);
+        String runes = tag.getString(TAG_RUNES);
         this.runes = !runes.isEmpty() ? runes : null;
+
+        String location = tag.getString(TAG_LOCATION);
+        this.location = !runes.isEmpty() ? new ResourceLocation(location) : null;
 
         ContainerHelper.loadAllItems(tag, this.items);
     }
@@ -80,10 +92,17 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt(MATERIAL_NBT, this.material);
+        tag.putInt(TAG_MATERIAL, this.material);
+        tag.putFloat(TAG_DIFFICULTY, this.difficulty);
+        tag.putFloat(TAG_DECAY, this.decay);
 
-        if (this.runes != null)
-            tag.putString(RUNES_NBT, this.runes);
+        if (this.runes != null) {
+            tag.putString(TAG_RUNES, this.runes);
+        }
+
+        if (this.location != null) {
+            tag.putString(TAG_LOCATION, this.location.toString());
+        }
 
         ContainerHelper.saveAllItems(tag, this.items, false);
     }
