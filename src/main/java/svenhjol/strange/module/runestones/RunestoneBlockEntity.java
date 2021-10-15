@@ -84,7 +84,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
         this.runes = !runes.isEmpty() ? runes : null;
 
         String location = tag.getString(TAG_LOCATION);
-        this.location = !runes.isEmpty() ? new ResourceLocation(location) : null;
+        this.location = !runes.isEmpty() && !location.isEmpty() ? new ResourceLocation(location) : null;
 
         ContainerHelper.loadAllItems(tag, this.items);
     }
@@ -100,7 +100,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
             tag.putString(TAG_RUNES, this.runes);
         }
 
-        if (this.location != null) {
+        if (this.location != null && !this.location.toString().isEmpty()) {
             tag.putString(TAG_LOCATION, this.location.toString());
         }
 
