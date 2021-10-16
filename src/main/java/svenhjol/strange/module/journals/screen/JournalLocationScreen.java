@@ -196,8 +196,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
             return;
         }
 
-        String runeString = KnowledgeHelper.generateStringFromBlockPos(location.getBlockPos());
-        String knownRuneString = KnowledgeHelper.convertStringWithLearnedRunes(runeString, playerData);
+        String runeString = KnowledgeHelper.generateRunesFromPos(location.getBlockPos());
+        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, playerData);
 
         int left = isCreative ? mid + 9 : mid - 48;
         int top = 150;

@@ -21,7 +21,7 @@ public class KnowledgeHelper {
         return new Random(Knowledge.seed);
     }
 
-    public static String generateString(int length) {
+    public static String generateRunes(int length) {
         StringBuilder builder = new StringBuilder();
         Random random = getRandom();
 
@@ -32,14 +32,14 @@ public class KnowledgeHelper {
         return builder.toString();
     }
 
-    public static String convertWithDegradation(String string, float amount) {
+    public static String convertRunesWithDecay(String runes, float amount) {
         StringBuilder out = new StringBuilder();
         amount = Mth.clamp(amount, 0.0F, 1.0F);
         Random random = getRandom();
 
-        for(int i = 0; i < string.length(); ++i) {
+        for(int i = 0; i < runes.length(); ++i) {
             if (random.nextFloat() > amount) {
-                out.append(string.charAt(i));
+                out.append(runes.charAt(i));
             } else {
                 out.append(UNKNOWN);
             }
@@ -48,13 +48,13 @@ public class KnowledgeHelper {
         return out.toString();
     }
 
-    public static String convertStringWithLearnedRunes(String string, JournalsData playerJournal) {
+    public static String convertRunesWithLearnedRunes(String runes, JournalsData playerJournal) {
         StringBuilder out = new StringBuilder();
 
-        for(int i = 0; i < string.length(); ++i) {
-            int chr = string.charAt(i) - 97;
+        for(int i = 0; i < runes.length(); ++i) {
+            int chr = runes.charAt(i) - 97;
             if (playerJournal.getLearnedRunes().contains(chr)) {
-                out.append(string.charAt(i));
+                out.append(runes.charAt(i));
             } else {
                 out.append(UNKNOWN);
             }
@@ -63,16 +63,16 @@ public class KnowledgeHelper {
         return out.toString();
     }
 
-    public static String generateStringFromResource(ResourceLocation res, int length) {
+    public static String generateRunesFromResource(ResourceLocation res, int length) {
         String namespace = res.getNamespace();
         String first = namespace.substring(0, Math.min(4, namespace.length()));
         String path = res.getPath();
         String out = path + first;
 
-        return generateStringFromString(out.toLowerCase(Locale.ROOT), length);
+        return generateRunesFromString(out.toLowerCase(Locale.ROOT), length);
     }
 
-    public static String generateStringFromString(String string, int length) {
+    public static String generateRunesFromString(String string, int length) {
         String filtered = string.replaceAll("[^a-zA-Z0-9]", "");
         StringBuilder in = new StringBuilder(filtered);
         StringBuilder out = new StringBuilder();
@@ -115,7 +115,7 @@ public class KnowledgeHelper {
         throw new RuntimeException("Max loops reached when checking string length");
     }
 
-    public static String generateDestinationString(Random random, float difficulty) {
+    public static String generateDestinationRunes(Random random, float difficulty) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < KnowledgeData.MAX_LENGTH; i++) {
             int chr = Math.min(122, Math.max(97, random.nextInt((int) Math.max(6, Knowledge.NUM_RUNES * difficulty)) + 97));
@@ -127,7 +127,7 @@ public class KnowledgeHelper {
         return sb.toString();
     }
 
-    public static String generateStringFromBlockPos(BlockPos pos) {
+    public static String generateRunesFromPos(BlockPos pos) {
         KnowledgeData knowledgeData = Knowledge.getSavedData().orElseThrow();
         long l = pos.asLong();
         boolean negative = l < 0L;
@@ -140,7 +140,7 @@ public class KnowledgeHelper {
         return (negative ? knowledgeData.NEGATIVE_RUNE : knowledgeData.POSITIVE_RUNE) + new String(chars);
     }
 
-    public static List<ItemStack> generateItemStacksFromBlockPos(ServerLevel level, BlockPos pos, Entity entity, ResourceLocation loot) {
+    public static List<ItemStack> generateItemsFromRunes(ServerLevel level, BlockPos pos, Entity entity, ResourceLocation loot) {
         Random random = new Random(pos.asLong());
 
         LootTable lootTable = level.getServer().getLootTables().get(loot);

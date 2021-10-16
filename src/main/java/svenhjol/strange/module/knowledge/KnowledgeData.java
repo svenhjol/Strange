@@ -163,28 +163,28 @@ public class KnowledgeData extends SavedData {
     public void registerBiome(Biome biome) {
         ResourceLocation res = BuiltinRegistries.BIOME.getKey(biome);
         if (res != null && !this.biomes.containsKey(res)) {
-            this.biomes.put(res, BIOME_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+            this.biomes.put(res, BIOME_RUNE + KnowledgeHelper.generateRunesFromResource(res, MAX_LENGTH));
         }
     }
 
     public void registerStructure(StructureFeature<?> structure) {
         ResourceLocation res = Registry.STRUCTURE_FEATURE.getKey(structure);
         if (res != null && !this.structures.containsKey(res)) {
-            this.structures.put(res, STRUCTURE_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+            this.structures.put(res, STRUCTURE_RUNE + KnowledgeHelper.generateRunesFromResource(res, MAX_LENGTH));
         }
     }
 
     public void registerDimension(Level level) {
         ResourceLocation res = level.dimension().location();
         if (res != null && !this.dimensions.containsKey(res)) {
-            this.dimensions.put(res, DIMENSION_RUNE + KnowledgeHelper.generateStringFromResource(res, MAX_LENGTH));
+            this.dimensions.put(res, DIMENSION_RUNE + KnowledgeHelper.generateRunesFromResource(res, MAX_LENGTH));
         }
     }
 
     public void registerPlayer(Player player) {
         UUID uuid = player.getUUID();
         if (uuid != null && !this.players.containsKey(uuid)) {
-            this.players.put(uuid, PLAYER_RUNE + KnowledgeHelper.generateStringFromString(uuid.toString(), MAX_LENGTH));
+            this.players.put(uuid, PLAYER_RUNE + KnowledgeHelper.generateRunesFromString(uuid.toString(), MAX_LENGTH));
         }
     }
 

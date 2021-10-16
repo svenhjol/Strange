@@ -94,7 +94,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         }
 
         String runeString = RunestonesClient.activeDestination.runes;
-        String knownRuneString = KnowledgeHelper.convertStringWithLearnedRunes(runeString, playerData);
+        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, playerData);
 
         int left = mid - 76;
         int top = (height / 2) - 70;

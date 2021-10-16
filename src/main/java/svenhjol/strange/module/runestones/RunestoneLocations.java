@@ -149,7 +149,7 @@ public class RunestoneLocations {
 
         // keep trying to find a unique rune string for this destination
         while (!foundUniqueRunes && tries < maxTries) {
-            runes = KnowledgeHelper.generateDestinationString(random, difficulty + (tries * 0.05F));
+            runes = KnowledgeHelper.generateDestinationRunes(random, difficulty + (tries * 0.05F));
             foundUniqueRunes = !knowledgeData.hasDestination(runes);
             ++tries;
         }
