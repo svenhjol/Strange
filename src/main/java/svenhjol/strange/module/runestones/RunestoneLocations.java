@@ -1,12 +1,12 @@
 package svenhjol.strange.module.runestones;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.StringHelper;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.Knowledge;
@@ -21,7 +21,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RunestoneLocations {
-    public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn");
+    public static final String UNKNOWN_CLUE = "unknown";
+    public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
 
     public static void init() {
         // assemble map of dimension -> locations first
@@ -29,7 +30,7 @@ public class RunestoneLocations {
 
         for (int i = 0; i < Runestones.configLocations.size(); i++) {
 
-            List<String> split = splitConfigEntry(Runestones.configLocations.get(i));
+            List<String> split = StringHelper.splitConfigEntry(Runestones.configLocations.get(i));
             if (split.size() != 2) continue;
 
             ResourceLocation dimensionId = new ResourceLocation(split.get(0));
@@ -46,10 +47,10 @@ public class RunestoneLocations {
                 BaseLocation location;
                 String type;
 
-                if (isBiome(locationId)) {
+                if (WorldHelper.isBiome(locationId)) {
                     type = "biome";
                     location = new BiomeLocation(locationId, difficulty);
-                } else if (isStructure(locationId)) {
+                } else if (WorldHelper.isStructure(locationId)) {
                     type = "structure";
                     location = new StructureLocation(locationId, difficulty);
                 } else {
@@ -72,9 +73,11 @@ public class RunestoneLocations {
             return knowledgeData.getDestination(spawnRune);
         }
 
+        Random random = KnowledgeHelper.getRandom();
         Destination destination = new Destination(spawnRune);
         destination.location = SPAWN;
-        destination.items = Arrays.asList(new ItemStack(Items.WHEAT_SEEDS)); // TODO: testdata
+        destination.clue = getClue(SPAWN, random);
+        destination.items = getItems(0.0F, random);
 
         knowledgeData.updateDestination(spawnRune, destination);
         return Optional.of(destination);
@@ -103,7 +106,8 @@ public class RunestoneLocations {
         destination.pos = BlockPos.ZERO;
         destination.dimension = dimension;
         destination.location = location;
-        destination.items = Arrays.asList(new ItemStack(Items.DIAMOND)); // TODO: testdata
+        destination.clue = getClue(location, random);
+        destination.items = getItems(difficulty, random);
 
         return tryUpdateDestination(runes, destination) ? Optional.of(destination) : Optional.empty();
     }
@@ -132,7 +136,8 @@ public class RunestoneLocations {
             .collect(Collectors.toList());
 
         if (locations.isEmpty()) {
-            LogHelper.debug(RunestoneLocations.class, "No locations found for this difficulty, giving up");
+            LogHelper.debug(RunestoneLocations.class, "No locations found for this difficulty (" + difficulty + "), defaulting to first available");
+            locations.add(Runestones.AVAILABLE_LOCATIONS.get(dimension).get(0));
         }
 
         Collections.shuffle(locations, random);
@@ -162,15 +167,27 @@ public class RunestoneLocations {
         return knowledgeData.DESTINATION_RUNE + runes;
     }
 
-    private static List<String> splitConfigEntry(String entry) {
-        return Arrays.stream(entry.split("->")).map(s -> s.trim().toLowerCase(Locale.ROOT)).collect(Collectors.toList());
+    private static List<Item> getItems(float difficulty, Random random) {
+        List<Item> items;
+
+        int tier = Math.round(Runestones.TIERS * difficulty);
+        if (Runestones.items.containsKey(tier) && !Runestones.items.get(tier).isEmpty()) {
+            List<Item> tierItems = Runestones.items.get(tier);
+            Collections.shuffle(tierItems, random);
+            items = tierItems.subList(0, Math.min(tierItems.size(), 4));
+        } else {
+            items = List.of(Items.ENDER_PEARL);
+        }
+
+        return items;
     }
 
-    private static boolean isStructure(ResourceLocation structureId) {
-        return Registry.STRUCTURE_FEATURE.get(structureId) != null;
-    }
+    private static String getClue(ResourceLocation location, Random random) {
+        if (Runestones.clues.containsKey(location) && !Runestones.clues.get(location).isEmpty()) {
+            List<String> clues = Runestones.clues.get(location);
+            return clues.get(random.nextInt(clues.size()));
+        }
 
-    private static boolean isBiome(ResourceLocation biomeId) {
-        return BuiltinRegistries.BIOME.get(biomeId) != null;
+        return UNKNOWN_CLUE;
     }
 }

@@ -63,6 +63,19 @@ public class KnowledgeHelper {
         return out.toString();
     }
 
+    public static int getNumberOfUnknownRunes(String runes, JournalsData playerJournal) {
+        int num = 0;
+
+        for (int i = 0; i < runes.length(); i++) {
+            int chr = runes.charAt(i) - 97;
+            if (!playerJournal.getLearnedRunes().contains(chr)) {
+                num++;
+            }
+        }
+
+        return num;
+    }
+
     public static String generateRunesFromResource(ResourceLocation res, int length) {
         String namespace = res.getNamespace();
         String first = namespace.substring(0, Math.min(4, namespace.length()));

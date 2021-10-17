@@ -10,7 +10,8 @@ import java.util.List;
 public class RunestoneLoot {
     public static List<ResourceLocation> REGISTER = new ArrayList<>();
 
-    public static ResourceLocation BASIC = createLootTable("runestones/basic");
+    // must be a literal path so that we can load the json manually
+    public static ResourceLocation REQUIRED_ITEMS = new ResourceLocation(Strange.MOD_ID, "loot_tables/runestones/required_items.json");
 
     public static void create() {
         LootHelper.CUSTOM_LOOT_TABLES.addAll(REGISTER);

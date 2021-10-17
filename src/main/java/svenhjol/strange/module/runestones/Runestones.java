@@ -1,29 +1,48 @@
 package svenhjol.strange.module.runestones;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
+import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.runestones.location.BaseLocation;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
+import svenhjol.strange.module.runestones.location.BaseLocation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Runestones extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
+    public static final int TIERS = 5;
 
     public static final ResourceLocation MSG_CLIENT_SET_ACTIVE_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_looking_at");
 
@@ -42,11 +61,17 @@ public class Runestones extends CharmModule {
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated
     public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has activated
 
+    public static Map<Integer, List<Item>> items = new HashMap<>();
+    public static Map<ResourceLocation, List<String>> clues = new HashMap<>();
+
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
     public static int maxDistance = 5000;
 
     @Config(name = "Travel protection time", description = "Number of seconds of regeneration, fire resistance and slow fall after teleporting.")
     public static int protectionDuration = 10;
+
+    @Config(name = "Travel penalty time", description = "Number of seconds of poison, wither, burning, slowness or weakness after teleporting without the correct item.")
+    public static int penaltyDuration = 10;
 
     @Config(name = "Locations", description = "Locations that runestones may teleport you to.  Format: [dimension -> location]\nLocations are ordered by rune difficulty. Missing structures will be skipped.")
     public static List<String> configLocations = new ArrayList<>(Arrays.asList(
@@ -162,12 +187,60 @@ public class Runestones extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::handleServerStarted);
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         RunestoneLoot.create();
         RunestoneLocations.init();
+    }
+
+    private void handleWorldLoad(MinecraftServer server, Level level) {
+        if (level.dimension() == Level.OVERWORLD) {
+            this.initClues(server);
+        }
     }
 
     private void handleServerStarted(MinecraftServer server) {
     }
 
+    private void initClues(MinecraftServer server) {
+        clues = new HashMap<>();
 
+        configClues.forEach(str -> {
+            List<String> split = StringHelper.splitConfigEntry(str);
+            if (split.size() != 2) return;
+
+            ResourceLocation locationId = new ResourceLocation(split.get(0));
+            List<String> cluesList = Arrays.stream(split.get(1).split(",")).map(s -> s.toLowerCase(Locale.ROOT).trim()).collect(Collectors.toList());
+            clues.put(locationId, cluesList);
+        });
+
+        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+        Resource resource;
+        try {
+            resource = server.getResourceManager().getResource(RunestoneLoot.REQUIRED_ITEMS);
+        } catch (IOException e) {
+            return;
+        }
+
+        InputStream inputStream = resource.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+        JsonObject jsonObject = GsonHelper.fromJson(gson, reader, JsonObject.class);
+        JsonArray pools = GsonHelper.getAsJsonArray(jsonObject, "pools");
+
+        for (int p = 0; p < pools.size(); p++) {
+            JsonArray elements = GsonHelper.getAsJsonArray((JsonObject) pools.get(p), "entries");
+            for (int e = 0; e < elements.size(); e++) {
+                JsonObject entry = (JsonObject)elements.get(e);
+                String name = entry.get("name").getAsString();
+                ResourceLocation res = new ResourceLocation(name);
+
+                // try instantiate
+                if (Registry.ITEM.getOptional(res).isPresent()) {
+                    items.computeIfAbsent(p, a -> new ArrayList<>()).add(Registry.ITEM.get(res));
+                } else {
+                    LogHelper.debug(this.getClass(), "Could not find item in registry: " + res);
+                }
+            }
+        }
+    }
 }

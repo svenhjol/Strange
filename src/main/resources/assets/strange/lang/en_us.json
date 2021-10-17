@@ -45,5 +45,8 @@
   "gui.strange.clues.safe": "Safe",
   "gui.strange.clues.surface": "Surface",
   "gui.strange.clues.underground": "Underground",
-  "gui.strange.clues.underwater": "Underwater"
+  "gui.strange.clues.underwater": "Underwater",
+  "gui.strange.clues.unknown": "Unknown",
+  "gui.strange.clues.possible_items": "Possible items",
+  "gui.strange.clues.required_item": "Required item"
 }
