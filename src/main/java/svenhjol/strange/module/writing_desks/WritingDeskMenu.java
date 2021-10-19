@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -158,8 +157,6 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         } else {
             clearResult();
         }
-
-        NetworkHelper.sendPacketToClient(serverPlayer, WritingDesks.MSG_CLIENT_VALID_RUNES, buf -> buf.writeBoolean(hasValidRunes));
 
         return true;
     }

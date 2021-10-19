@@ -17,8 +17,6 @@ public class WritingDesks extends CharmModule {
     public static WritingDeskBlock WRITING_DESK;
     public static MenuType<WritingDeskMenu> MENU;
 
-    public static final ResourceLocation MSG_CLIENT_VALID_RUNES = new ResourceLocation(Strange.MOD_ID, "client_valid_runes");
-
     public static Map<UUID, String> writtenRunes = new WeakHashMap<>();
 
     @Override

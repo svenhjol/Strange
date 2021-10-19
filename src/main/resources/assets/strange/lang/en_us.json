@@ -50,5 +50,6 @@
   "gui.strange.clues.underwater": "Underwater",
   "gui.strange.clues.unknown": "Unknown",
   "gui.strange.clues.possible_items": "Possible items",
-  "gui.strange.clues.required_item": "Required item"
+  "gui.strange.clues.required_item": "Required item",
+  "gui.strange.writing_desk.delete": "Delete last rune"
 }

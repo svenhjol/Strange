@@ -22,6 +22,8 @@ import java.util.UUID;
 public class KnowledgeData extends SavedData {
     public static final int MIN_LENGTH = 6;
     public static final int MAX_LENGTH = 24;
+    public static final int ALPHABET_START = 97;
+    public static final int ALPHABET_END = 122;
     public static final String NOVICE_RUNES = "abcdef";
     public static final String APPRENTICE_RUNES = "ghijkl";
     public static final String JOURNEYMAN_RUNES = "mnopqr";
