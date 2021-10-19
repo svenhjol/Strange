@@ -194,17 +194,4 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
         return new RunestoneMenu(syncId, playerInventory, this, this.data);
     }
-
-//    public void test(Level level) {
-//        List<ItemStack> stacks = KnowledgeHelper.generateItemStacksFromBlockPos(level, pos, entity, RunestoneLoot.BASIC);
-//        if (stacks.isEmpty() || stacks.size() == 1) {
-//            return false;
-//        }
-//
-//        // shift first element as primary
-//        ItemStack primary = stacks.remove(0);
-//        List<ItemStack> secondary = stacks;
-//
-//
-//    }
 }

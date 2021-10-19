@@ -10,7 +10,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import svenhjol.strange.module.journals.JournalsData;
 
 import java.util.*;
 
@@ -48,12 +47,12 @@ public class KnowledgeHelper {
         return out.toString();
     }
 
-    public static String convertRunesWithLearnedRunes(String runes, JournalsData playerJournal) {
+    public static String convertRunesWithLearnedRunes(String runes, List<Integer> learned) {
         StringBuilder out = new StringBuilder();
 
         for(int i = 0; i < runes.length(); ++i) {
             int chr = runes.charAt(i) - 97;
-            if (playerJournal.getLearnedRunes().contains(chr)) {
+            if (learned.contains(chr)) {
                 out.append(runes.charAt(i));
             } else {
                 out.append(UNKNOWN);
@@ -61,19 +60,6 @@ public class KnowledgeHelper {
         }
 
         return out.toString();
-    }
-
-    public static int getNumberOfUnknownRunes(String runes, JournalsData playerJournal) {
-        int num = 0;
-
-        for (int i = 0; i < runes.length(); i++) {
-            int chr = runes.charAt(i) - 97;
-            if (!playerJournal.getLearnedRunes().contains(chr)) {
-                num++;
-            }
-        }
-
-        return num;
     }
 
     public static String generateRunesFromResource(ResourceLocation res, int length) {
@@ -178,5 +164,40 @@ public class KnowledgeHelper {
         }
 
         throw new IndexOutOfBoundsException("Invalid index");
+    }
+
+    public static boolean isValidRuneString(String runes) {
+        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+
+        if (runes.length() == 0) {
+            return false;
+        }
+
+        // get start
+        char first = runes.charAt(0);
+
+        if (first == knowledge.SPAWN_RUNE) {
+            return runes.length() == 1;
+        }
+        if (first == knowledge.BIOME_RUNE) {
+            return knowledge.getBiomes().containsValue(runes);
+        }
+        if (first == knowledge.DESTINATION_RUNE) {
+            return knowledge.getDestinations().containsKey(runes);
+        }
+        if (first == knowledge.DIMENSION_RUNE) {
+            return knowledge.getDimensions().containsValue(runes);
+        }
+        if (first == knowledge.PLAYER_RUNE) {
+            return knowledge.getPlayers().containsValue(runes);
+        }
+        if (first == knowledge.STRUCTURE_RUNE) {
+            return knowledge.getStructures().containsValue(runes);
+        }
+        if (first == knowledge.LOCATION_RUNE) {
+            return runes.length() >= KnowledgeData.MIN_LENGTH;
+        }
+
+        return false;
     }
 }

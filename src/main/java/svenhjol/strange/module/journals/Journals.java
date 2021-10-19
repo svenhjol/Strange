@@ -37,7 +37,7 @@ public class Journals extends CharmModule {
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
     public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
 
-    private static final Map<UUID, JournalsData> playerData = new HashMap<>();
+    private static final Map<UUID, JournalData> playerData = new HashMap<>();
 
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
     public static boolean enableKeybind = true;
@@ -62,7 +62,7 @@ public class Journals extends CharmModule {
     private void handlePlayerLoadData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
         CompoundTag nbt = PlayerLoadDataCallback.readFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"));
-        playerData.put(uuid, JournalsData.fromNbt(player, nbt));
+        playerData.put(uuid, JournalData.fromNbt(player, nbt));
     }
 
     private void handlePlayerSaveData(Player player, File playerDataDir) {
@@ -113,14 +113,14 @@ public class Journals extends CharmModule {
             data.addDeathLocation(player.level, player.blockPosition()));
     }
 
-    private void processPacketFromClient(MinecraftServer server, ServerPlayer player, Consumer<JournalsData> callback) {
+    private void processPacketFromClient(MinecraftServer server, ServerPlayer player, Consumer<JournalData> callback) {
         server.execute(() -> {
             if (player == null) return;
             Journals.getPlayerData(player).ifPresent(callback);
         });
     }
 
-    public static Optional<JournalsData> getPlayerData(Player player) {
+    public static Optional<JournalData> getPlayerData(Player player) {
         return Optional.ofNullable(playerData.get(player.getUUID()));
     }
 

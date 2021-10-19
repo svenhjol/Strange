@@ -5,13 +5,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalsData;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.knowledge.Knowledge;
 
 import java.util.List;
 
 public class JournalLearnedRunesScreen extends BaseJournalScreen {
-    protected JournalsData playerData = null;
+    protected JournalData playerData = null;
 
     protected JournalLearnedRunesScreen() {
         super(new TranslatableComponent("gui.strange.journal.learned_runes.title"));

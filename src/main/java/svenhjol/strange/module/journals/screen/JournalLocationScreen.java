@@ -19,7 +19,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalsData;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -40,7 +40,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected JournalLocation location;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
-    protected JournalsData playerData = null;
+    protected JournalData journal = null;
     protected int photoFailureRetries = 0;
     protected boolean hasInitializedUpdateButtons = false;
     protected boolean hasInitializedPhotoButtons = false;
@@ -54,7 +54,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         super(new TextComponent(location.getName()));
 
         // get reference to cached player data
-        JournalsClient.getPlayerData().ifPresent(data -> this.playerData = data);
+        JournalsClient.getPlayerData().ifPresent(data -> this.journal = data);
 
         this.name = location.getName();
         this.location = location.copy();
@@ -189,7 +189,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         int mid = width / 2;
         boolean isCreative = player.isCreative();
 
-        if (playerData == null)
+        if (journal == null)
             return;
 
         if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
@@ -197,7 +197,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         }
 
         String runeString = KnowledgeHelper.generateRunesFromPos(location.getBlockPos());
-        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, playerData);
+        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, journal.getLearnedRunes());
 
         int left = isCreative ? mid + 9 : mid - 48;
         int top = 150;

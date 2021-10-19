@@ -44,7 +44,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             boolean result = tryStudyRunestone((ServerLevel)level, pos, player);
 
@@ -52,7 +52,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
                 return InteractionResult.FAIL;
             }
 
-            player.openMenu(blockState.getMenuProvider(level, pos));
+            player.openMenu(state.getMenuProvider(level, pos));
         }
 
         return InteractionResult.CONSUME;

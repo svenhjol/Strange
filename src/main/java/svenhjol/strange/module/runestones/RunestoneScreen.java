@@ -7,19 +7,20 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.init.StrangeFonts;
+import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalsData;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
@@ -30,8 +31,6 @@ import java.util.Optional;
 import java.util.Random;
 
 public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
-    private final ResourceLocation ILLAGER_GLYPHS = new ResourceLocation("minecraft", "illageralt");
-    private final Style ILLAGER_GLYPHS_STYLE = Style.EMPTY.withFont(ILLAGER_GLYPHS);
     private final int UNKNOWN_COLOR = 0xDDCCBB;
     private final int KNOWN_COLOR = 0xFFFFFF;
     private final int WRAP_AT = 14;
@@ -39,15 +38,13 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private Random random;
     private IRunestoneMaterial material;
     private ResourceLocation texture;
-    private JournalsData playerData = null;
-    private int journalCheckTicks = 0;
     private int itemRandomTicks = 0;
     private NonNullList<ItemStack> items;
 
     public RunestoneScreen(RunestoneMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
-        passEvents = false;
-        random = new Random(menu.containerId);
+        this.passEvents = false;
+        this.random = new Random(menu.containerId);
 
         // ask server to update the player journal
         JournalsClient.sendSyncJournal();
@@ -61,20 +58,13 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 
-        if (this.playerData == null && journalCheckTicks++ >= 20) {
-            // get reference to cached player data
-            JournalsClient.getPlayerData().ifPresent(data -> this.playerData = data);
-            journalCheckTicks = 0;
-        }
-
-        ClientHelper.getPlayer().ifPresent(player -> {
-            if (playerData == null) return;
-            if (RunestonesClient.activeDestination == null) return;
-
-            renderRunes(poseStack, player);
-            renderLocationClue(poseStack);
-            renderItemClue(poseStack, mouseX, mouseY);
-            renderTooltip(poseStack, mouseX, mouseY);
+        getDestination().ifPresent(destination -> {
+            ClientHelper.getPlayer().flatMap(Journals::getPlayerData).ifPresent(journal -> {
+                renderRunes(poseStack, destination, journal);
+                renderLocationClue(poseStack, destination, journal);
+                renderItemClue(poseStack, mouseX, mouseY, destination, journal);
+                renderTooltip(poseStack, mouseX, mouseY);
+            });
         });
     }
 
@@ -96,15 +86,14 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         // nah
     }
 
-    protected void renderRunes(PoseStack poseStack, Player player) {
+    protected void renderRunes(PoseStack poseStack, Destination destination, JournalData journal) {
         if (this.material == null) {
             this.material = menu.getMaterial();
         }
 
-        String runeString = RunestonesClient.activeDestination.runes;
-        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, playerData);
+        String runeString = destination.runes;
+        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, journal.getLearnedRunes());
 
-        boolean isCreative = player.isCreative();
         int mid = width / 2;
         int left = mid - 76;
         int top = (height / 2) - 70;
@@ -120,10 +109,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
                     String s = String.valueOf(knownRuneString.charAt(index));
                     if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent("?");
+                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
                         color = UNKNOWN_COLOR;
                     } else {
-                        rune = new TextComponent(s).withStyle(ILLAGER_GLYPHS_STYLE);
+                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
                         color = KNOWN_COLOR;
                     }
 
@@ -134,10 +123,9 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         }
     }
 
-    protected void renderLocationClue(PoseStack poseStack) {
+    protected void renderLocationClue(PoseStack poseStack, Destination destination, JournalData journal) {
         String name;
-        Destination destination = RunestonesClient.activeDestination;
-        int numberOfUnknownRunes = KnowledgeHelper.getNumberOfUnknownRunes(destination.runes, playerData);
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.runes, journal);
 
         if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < 5) {
             name = I18n.get("gui.strange.clues." + destination.clue) + "...";
@@ -154,15 +142,14 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         font.drawShadow(poseStack, name, left, top, KNOWN_COLOR);
     }
 
-    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Destination destination, JournalData journal) {
         List<Component> text = Lists.newArrayList();
         Slot slot = menu.getSlot(0);
         if (slot.hasItem()) {
             return;
         }
 
-        Destination destination = RunestonesClient.activeDestination;
-        int numberOfUnknownRunes = KnowledgeHelper.getNumberOfUnknownRunes(destination.runes, playerData);
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.runes, journal);
         if (numberOfUnknownRunes > destination.items.size()) {
             return;
         }
@@ -200,13 +187,17 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         }
     }
 
-    protected ResourceLocation getBackgroundTexture() {
+    private ResourceLocation getBackgroundTexture() {
         if (texture == null) {
             material = menu.getMaterial();
             texture = new ResourceLocation(Strange.MOD_ID, "textures/gui/" + material.getSerializedName() + "_runestone.png");
         }
 
         return texture;
+    }
+
+    private Optional<Destination> getDestination() {
+        return Optional.ofNullable(RunestonesClient.activeDestination);
     }
 
     @Override

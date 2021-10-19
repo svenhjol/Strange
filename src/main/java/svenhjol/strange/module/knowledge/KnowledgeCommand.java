@@ -22,7 +22,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.command.CommandHelper;
 import svenhjol.strange.command.arg.RuneArgType;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.JournalsData;
+import svenhjol.strange.module.journals.JournalData;
 
 public class KnowledgeCommand {
     // from LocateBiomeCommand
@@ -73,7 +73,7 @@ public class KnowledgeCommand {
 
     public static int learnAllBiomes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalsData journal = getJournal(player);
+        JournalData journal = getJournal(player);
         KnowledgeData knowledge = getKnowledge();
 
         knowledge.getBiomes().forEach((res, runes) -> journal.learnBiome(res));
@@ -84,7 +84,7 @@ public class KnowledgeCommand {
 
     private static int learnAllRunes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalsData journal = getJournal(player);
+        JournalData journal = getJournal(player);
 
         for (int i = 0; i < Knowledge.NUM_RUNES; i++) {
             journal.learnRune(i);
@@ -96,7 +96,7 @@ public class KnowledgeCommand {
 
     private static int learnAllStructures(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalsData journal = getJournal(player);
+        JournalData journal = getJournal(player);
         KnowledgeData knowledge = getKnowledge();
 
         knowledge.getStructures().forEach((res, runes) -> journal.learnStructure(res));
@@ -153,7 +153,7 @@ public class KnowledgeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static JournalsData getJournal(ServerPlayer player) throws CommandSyntaxException {
+    private static JournalData getJournal(ServerPlayer player) throws CommandSyntaxException {
         return Journals.getPlayerData(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
     }
 

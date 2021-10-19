@@ -17,7 +17,7 @@ import svenhjol.strange.module.journals.data.JournalNote;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class JournalsData {
+public class JournalData {
     public static final int MAX_LOCATIONS = 200;
 
     private static final String TAG_RUNES = "Runes";
@@ -38,12 +38,12 @@ public class JournalsData {
     private final List<ResourceLocation> biomes = new ArrayList<>();
     private final List<UUID> players = new ArrayList<>();
 
-    private JournalsData(Player player) {
+    private JournalData(Player player) {
         this.uuid = player.getUUID();
     }
 
-    public static JournalsData fromNbt(Player player, CompoundTag nbt) {
-        JournalsData data = new JournalsData(player);
+    public static JournalData fromNbt(Player player, CompoundTag nbt) {
+        JournalData data = new JournalData(player);
 
         ListTag locationsNbt = nbt.getList(TAG_LOCATIONS, 10);
         ListTag inscriptionsNbt = nbt.getList(TAG_INSCRIPTIONS, 10);

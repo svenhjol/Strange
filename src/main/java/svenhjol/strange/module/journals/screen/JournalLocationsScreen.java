@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalsData;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class JournalLocationsScreen extends BaseJournalScreen {
 
     protected boolean hasRenderedLocationButtons = false;
     protected int lastPage = 0;
-    protected JournalsData data;
+    protected JournalData data;
     protected List<JournalLocation> locations;
 
     public JournalLocationsScreen() {

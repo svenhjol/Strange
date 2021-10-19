@@ -1,4 +1,5 @@
 {
+  "block.strange.writing_desk": "Writing Desk",
   "commands.strange.invalid_biome": "Invalid biome",
   "commands.strange.invalid_structure": "Invalid structure",
   "commands.strange.learned_all_biomes": "Learned all biomes",
@@ -8,6 +9,7 @@
   "commands.strange.learned_rune": "Learned rune %s",
   "commands.strange.learned_structure": "Learned structure %s",
   "container.strange.runestone": "Runestone",
+  "container.strange.writing_desk": "Writing Desk",
   "gui.strange.journal.add_location": "Add location",
   "gui.strange.journal.choose_icon": "Choose icon",
   "gui.strange.journal.close": "Close",

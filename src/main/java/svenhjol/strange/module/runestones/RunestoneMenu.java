@@ -39,12 +39,12 @@ public class RunestoneMenu extends CharmContainerMenu {
             }
 
             @Override
-            public boolean mayPlace(ItemStack itemStack) {
+            public boolean mayPlace(ItemStack stack) {
                 return true;
             }
         });
 
-        // this adds the player inventory
+        // TODO: abstract this
         int k;
         for(k = 0; k < 3; ++k) {
             for(int j = 0; j < 9; ++j) {
