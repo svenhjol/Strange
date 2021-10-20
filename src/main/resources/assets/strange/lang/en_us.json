@@ -37,6 +37,7 @@
   "gui.strange.journal.save": "Save",
   "gui.strange.journal.take_photo": "Take photo",
   "gui.strange.journal.title": "Journal",
+  "gui.strange.knowledge.somewhere": "Somewhere",
   "gui.strange.clues.ancient": "Ancient",
   "gui.strange.clues.cold": "Cold",
   "gui.strange.clues.dangerous": "Dangerous",
@@ -51,5 +52,6 @@
   "gui.strange.clues.unknown": "Unknown",
   "gui.strange.clues.possible_items": "Possible items",
   "gui.strange.clues.required_item": "Required item",
-  "gui.strange.writing_desk.delete": "Delete last rune"
+  "gui.strange.writing_desks.delete": "Delete last rune",
+  "gui.strange.writing_desks.runic_tome": "Runic Tome"
 }

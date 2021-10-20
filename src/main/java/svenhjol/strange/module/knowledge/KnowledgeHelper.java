@@ -2,14 +2,8 @@ package svenhjol.strange.module.knowledge;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import svenhjol.charm.helper.LogHelper;
 
 import java.util.*;
 
@@ -25,7 +19,7 @@ public class KnowledgeHelper {
         Random random = getRandom();
 
         for(int i = 0; i < length; ++i) {
-            builder.append((char)(random.nextInt(Knowledge.NUM_RUNES) + 97));
+            builder.append((char)(random.nextInt(Knowledge.NUM_RUNES) + Knowledge.ALPHABET_START));
         }
 
         return builder.toString();
@@ -51,7 +45,7 @@ public class KnowledgeHelper {
         StringBuilder out = new StringBuilder();
 
         for(int i = 0; i < runes.length(); ++i) {
-            int chr = runes.charAt(i) - 97;
+            int chr = runes.charAt(i) - Knowledge.ALPHABET_START;
             if (learned.contains(chr)) {
                 out.append(runes.charAt(i));
             } else {
@@ -114,12 +108,17 @@ public class KnowledgeHelper {
         throw new RuntimeException("Max loops reached when checking string length");
     }
 
-    public static String generateDestinationRunes(Random random, float difficulty) {
+    public static String generateRandomRunesString(Random random, float difficulty) {
+        return generateRandomRunesString(random, difficulty, Knowledge.MIN_LENGTH, Knowledge.MAX_LENGTH);
+    }
+
+    public static String generateRandomRunesString(Random random, float difficulty, int minLength, int maxLength) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < KnowledgeData.MAX_LENGTH; i++) {
-            int chr = Math.min(122, Math.max(97, random.nextInt((int) Math.max(6, Knowledge.NUM_RUNES * difficulty)) + 97));
+
+        for (int i = 0; i < maxLength; i++) {
+            int chr = Math.min(Knowledge.ALPHABET_END, Math.max(Knowledge.ALPHABET_START, random.nextInt((int) Math.max(6, Knowledge.NUM_RUNES * difficulty)) + Knowledge.ALPHABET_START));
             sb.append((char)chr);
-            if (sb.length() > KnowledgeData.MIN_LENGTH && i / (float) KnowledgeData.MAX_LENGTH > difficulty) {
+            if (sb.length() > minLength && i / (float) maxLength > difficulty) {
                 break;
             }
         }
@@ -127,7 +126,6 @@ public class KnowledgeHelper {
     }
 
     public static String generateRunesFromPos(BlockPos pos) {
-        KnowledgeData knowledgeData = Knowledge.getSavedData().orElseThrow();
         long l = pos.asLong();
         boolean negative = l < 0L;
         char[] chars = Long.toString(Math.abs(l), Knowledge.NUM_RUNES).toCharArray();
@@ -136,20 +134,7 @@ public class KnowledgeHelper {
             chars[i] = (char)(chars[i] + (chars[i] > '9' ? 10 : 49));
         }
 
-        return (negative ? knowledgeData.NEGATIVE_RUNE : knowledgeData.POSITIVE_RUNE) + new String(chars);
-    }
-
-    public static List<ItemStack> generateItemsFromRunes(ServerLevel level, BlockPos pos, Entity entity, ResourceLocation loot) {
-        Random random = new Random(pos.asLong());
-
-        LootTable lootTable = level.getServer().getLootTables().get(loot);
-        List<ItemStack> list = lootTable.getRandomItems(new LootContext.Builder(level)
-            .withParameter(LootContextParams.THIS_ENTITY, entity)
-            .withParameter(LootContextParams.ORIGIN, entity.position())
-            .withRandom(random)
-            .create(LootContextParamSets.CHEST));
-
-        return list;
+        return (negative ? "a" : "b") + new String(chars);
     }
 
     public static char getCharFromRange(String range, int index) {
@@ -167,37 +152,35 @@ public class KnowledgeHelper {
     }
 
     public static boolean isValidRuneString(String runes) {
-        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
-
         if (runes.length() == 0) {
             return false;
         }
 
         // get start
-        char first = runes.charAt(0);
+        char start = runes.charAt(0);
+        Optional<KnowledgeBranch<?, ?>> branch = KnowledgeBranch.getByStartRune(start);
+        if (branch.isEmpty()) return false;
+        return branch.get().has(runes);
+    }
 
-        if (first == knowledge.SPAWN_RUNE) {
-            return runes.length() == 1;
-        }
-        if (first == knowledge.BIOME_RUNE) {
-            return knowledge.getBiomes().containsValue(runes);
-        }
-        if (first == knowledge.DESTINATION_RUNE) {
-            return knowledge.getDestinations().containsKey(runes);
-        }
-        if (first == knowledge.DIMENSION_RUNE) {
-            return knowledge.getDimensions().containsValue(runes);
-        }
-        if (first == knowledge.PLAYER_RUNE) {
-            return knowledge.getPlayers().containsValue(runes);
-        }
-        if (first == knowledge.STRUCTURE_RUNE) {
-            return knowledge.getStructures().containsValue(runes);
-        }
-        if (first == knowledge.LOCATION_RUNE) {
-            return runes.length() >= KnowledgeData.MIN_LENGTH;
+    public static Optional<String> tryGenerateUniqueId(KnowledgeBranch<?, ?> branch, Random random, float difficulty, int minLength, int maxLength) {
+        int tries = 0;
+        int maxTries = 20;
+        boolean foundUniqueRunes = false;
+        String runes = "";
+
+        // keep trying to find a unique rune string
+        while (!foundUniqueRunes && tries < maxTries) {
+            runes = generateRandomRunesString(random, difficulty + (tries * 0.05F), minLength, maxLength);
+            foundUniqueRunes = !branch.has(runes);
+            ++tries;
         }
 
-        return false;
+        if (!foundUniqueRunes) {
+            LogHelper.debug(KnowledgeHelper.class, "Could not calculate unique rune string for this branch, giving up");
+            return Optional.empty();
+        }
+
+        return Optional.of(branch.getStartRune() + runes);
     }
 }

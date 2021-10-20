@@ -31,7 +31,7 @@ public class KnowledgeCommand {
     public static final SuggestionProvider<CommandSourceStack> AVAILABLE_STRUCTURES;
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(Strange.MOD_ID + "_knowledge")
+        dispatcher.register(Commands.literal(Strange.MOD_ID)
             // strange_knowledge learn_all_runes
             .then(Commands.literal("learn_all_biomes")
                 .requires(source -> source.hasPermission(2))
@@ -76,7 +76,7 @@ public class KnowledgeCommand {
         JournalData journal = getJournal(player);
         KnowledgeData knowledge = getKnowledge();
 
-        knowledge.getBiomes().forEach((res, runes) -> journal.learnBiome(res));
+        knowledge.biomes.values().forEach(journal::learnBiome);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.learned_all_biomes"), false);
         return Command.SINGLE_SUCCESS;
@@ -99,7 +99,7 @@ public class KnowledgeCommand {
         JournalData journal = getJournal(player);
         KnowledgeData knowledge = getKnowledge();
 
-        knowledge.getStructures().forEach((res, runes) -> journal.learnStructure(res));
+        knowledge.structures.values().forEach(journal::learnStructure);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.learned_all_structures"), false);
         return Command.SINGLE_SUCCESS;
@@ -154,7 +154,7 @@ public class KnowledgeCommand {
     }
 
     private static JournalData getJournal(ServerPlayer player) throws CommandSyntaxException {
-        return Journals.getPlayerData(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
+        return Journals.getJournalData(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
     }
 
     private static KnowledgeData getKnowledge() throws CommandSyntaxException {

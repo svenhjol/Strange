@@ -2,6 +2,7 @@ package svenhjol.strange.module.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.knowledge.Destination;
@@ -23,6 +25,7 @@ import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Random;
 
 public class RunestoneBlock extends CharmBlockWithEntity {
@@ -87,26 +90,45 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             return false;
         }
 
-        KnowledgeData knowledgeData = Knowledge.getSavedData().orElseThrow();
+        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
         Destination destination;
+        boolean generate = false;
 
-        // try and generate a new destination if this runestone hasn't been set up or if there's no recorded destination
-        if (runestone.runes == null || runestone.runes.isEmpty() || !knowledgeData.hasDestination(runestone.runes)) {
+        if (runestone.runes == null || runestone.runes.isEmpty()) {
+            generate = true;
+        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.destinations.has(runestone.runes)) {
+            generate = true; // the knowledgedata was erased for this runestone - regenerate it
+        }
 
-            // update the runestone with the generated runes. If runestone.location is null, a location will be generated from the difficulty
-            destination = RunestoneLocations.createDestination(DimensionHelper.getDimension(level), new Random(pos.asLong()), runestone.difficulty, runestone.decay, runestone.location)
-                .orElseThrow();
+        if (generate) {
+            ResourceLocation location = runestone.location;
+            ResourceLocation dimension = DimensionHelper.getDimension(level);
+            Random random = new Random(pos.asLong());
+            float difficulty = runestone.difficulty;
+            float decay = runestone.decay;
+
+            // If runestone.location is null, a location will be generated from the difficulty.
+            destination = RunestoneHelper.getOrCreateDestination(dimension, random, difficulty, decay, location).orElseThrow();
 
             runestone.runes = destination.runes;
             runestone.setChanged();
         }
 
-        destination = knowledgeData.getDestination(runestone.runes).orElseThrow();
-        CompoundTag tag = destination.toTag();
+        Optional<Destination> optSpawn = knowledge.specials.get(runestone.runes);
+        Optional<Destination> optDest = knowledge.destinations.get(runestone.runes);
+
+        if (optSpawn.isPresent()) {
+            destination = optSpawn.get();
+        } else if (optDest.isPresent()) {
+            destination = optDest.get();
+        } else {
+            LogHelper.error(this.getClass(), "The runestone doesn't refer to spawn or a destination, giving up");
+            return false;
+        }
 
         // send the destination tag to the player who looked at the runestone
-        NetworkHelper.sendPacketToClient((ServerPlayer) player, Runestones.MSG_CLIENT_SET_ACTIVE_DESTINATION, buf
-            -> buf.writeNbt(tag));
+        CompoundTag tag = destination.toTag();
+        NetworkHelper.sendPacketToClient((ServerPlayer) player, Runestones.MSG_CLIENT_SET_ACTIVE_DESTINATION, buf -> buf.writeNbt(tag));
 
         return true;
     }

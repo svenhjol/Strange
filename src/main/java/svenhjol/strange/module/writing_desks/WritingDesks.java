@@ -16,6 +16,7 @@ public class WritingDesks extends CharmModule {
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "writing_desk");
     public static WritingDeskBlock WRITING_DESK;
     public static MenuType<WritingDeskMenu> MENU;
+    public static RunicTomeItem RUNIC_TOME;
 
     public static Map<UUID, String> writtenRunes = new WeakHashMap<>();
 
@@ -23,5 +24,6 @@ public class WritingDesks extends CharmModule {
     public void register() {
         WRITING_DESK = new WritingDeskBlock(this);
         MENU = RegistryHelper.screenHandler(BLOCK_ID, WritingDeskMenu::new);
+        RUNIC_TOME = new RunicTomeItem(this);
     }
 }

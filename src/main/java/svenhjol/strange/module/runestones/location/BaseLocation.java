@@ -62,20 +62,18 @@ public abstract class BaseLocation {
         if (blockEntity instanceof RunestoneBlockEntity runestone) {
             String runes = runestone.runes;
 
-            if (Knowledge.getSavedData().isEmpty()) return null;
-            KnowledgeData data = Knowledge.getSavedData().get();
-
-            Optional<Destination> optDest = data.getDestination(runes);
+            KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+            Optional<Destination> optDest = knowledge.destinations.get(runes);
             if (optDest.isEmpty()) return null;
-            Destination dest = optDest.get();
 
-            if (dest.pos == BlockPos.ZERO) {
+            Destination destination = optDest.get();
+            if (destination.pos == BlockPos.ZERO) {
                 return null;
             }
 
-            if (DimensionHelper.isDimension(level, dest.dimension)) {
-                LogHelper.debug(this.getClass(), "Runestone has location " + dest.location + " with position " + dest.pos);
-                return dest.pos;
+            if (DimensionHelper.isDimension(level, destination.dimension)) {
+                LogHelper.debug(this.getClass(), "Runestone has location " + destination.location + " with position " + destination.pos);
+                return destination.pos;
             }
         }
 
@@ -87,9 +85,8 @@ public abstract class BaseLocation {
         if (blockEntity instanceof RunestoneBlockEntity runestone) {
             String runes = runestone.runes;
 
-            if (Knowledge.getSavedData().isEmpty()) return;
-            KnowledgeData data = Knowledge.getSavedData().get();
-            data.getDestination(runes).ifPresent(dest -> {
+            KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+            knowledge.destinations.get(runes).ifPresent(dest -> {
                 dest.pos = storePos;
                 dest.player = player != null ? player.getName().getContents() : "";
             });

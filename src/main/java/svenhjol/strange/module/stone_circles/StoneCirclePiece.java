@@ -104,7 +104,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         boolean generatedSomething = false;
         boolean generatedSpawnRune = false;
 
-        List<BaseLocation> destinations = Runestones.AVAILABLE_LOCATIONS.get(dimension);
+        List<BaseLocation> destinations = Runestones.DIMENSION_LOCATIONS.get(dimension);
 
         if (destinations.isEmpty()) {
             LogHelper.warn(this.getClass(), "There are no available runestone destinations for this dimension, giving up");

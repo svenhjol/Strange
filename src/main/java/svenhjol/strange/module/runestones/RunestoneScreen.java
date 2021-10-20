@@ -59,7 +59,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         renderTooltip(poseStack, mouseX, mouseY);
 
         getDestination().ifPresent(destination -> {
-            ClientHelper.getPlayer().flatMap(Journals::getPlayerData).ifPresent(journal -> {
+            ClientHelper.getPlayer().flatMap(Journals::getJournalData).ifPresent(journal -> {
                 renderRunes(poseStack, destination, journal);
                 renderLocationClue(poseStack, destination, journal);
                 renderItemClue(poseStack, mouseX, mouseY, destination, journal);
@@ -127,7 +127,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         String name;
         int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.runes, journal);
 
-        if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < 5) {
+        if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < Runestones.SHOW_TEXT_CLUE) {
             name = I18n.get("gui.strange.clues." + destination.clue) + "...";
         } else if (numberOfUnknownRunes == 0) {
             name = StringHelper.snakeToPretty(destination.location.getPath());

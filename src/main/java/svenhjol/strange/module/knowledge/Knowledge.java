@@ -21,6 +21,15 @@ import java.util.Optional;
 @CommonModule(mod = Strange.MOD_ID)
 public class Knowledge extends CharmModule {
     public static final int NUM_RUNES = 26;
+    public static final int MIN_LENGTH = 6;
+    public static final int MAX_LENGTH = 24;
+    public static final int ALPHABET_START = 97;
+    public static final int ALPHABET_END = 122;
+    public static final String NOVICE_RUNES = "abcdef";
+    public static final String APPRENTICE_RUNES = "ghijkl";
+    public static final String JOURNEYMAN_RUNES = "mnopqr";
+    public static final String EXPERT_RUNES = "stuv";
+    public static final String MASTER_RUNES = "wxyz";
     public static long seed;
     public static KnowledgeData savedData;
 
@@ -58,7 +67,7 @@ public class Knowledge extends CharmModule {
         } else {
             getSavedData().ifPresent(data -> {
                 // capture the world that just got loaded
-                data.registerDimension(level);
+                data.dimensions.register(level);
                 data.setDirty();
             });
         }
@@ -67,7 +76,7 @@ public class Knowledge extends CharmModule {
     private void handleEntityLoad(Entity entity, ServerLevel level) {
         if (entity instanceof Player) {
             getSavedData().ifPresent((data) -> {
-                data.registerPlayer((Player)entity);
+                data.players.register((Player) entity);
                 data.setDirty();
             });
         }

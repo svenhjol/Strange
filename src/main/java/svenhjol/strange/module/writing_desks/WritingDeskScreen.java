@@ -18,7 +18,6 @@ import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.List;
@@ -99,6 +98,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             renderInputRunes(poseStack, journal);
             renderDeleteButton(poseStack, mouseX, mouseY);
             renderWrittenRunes(poseStack);
+            renderTooltip(poseStack, mouseX, mouseY);
         });
     }
 
@@ -134,7 +134,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             int color;
 
             if (learnedRunes.contains(r)) {
-                String s = String.valueOf((char)(r + KnowledgeData.ALPHABET_START));
+                String s = String.valueOf((char)(r + Knowledge.ALPHABET_START));
                 rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
                 color = hasInk ? knownColor : uninkedColor;
             } else {
@@ -159,7 +159,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             blit(poseStack, left, top, imageWidth, deleteButtonYOffset, deleteButtonWidth, deleteButtonHeight, 512, 256);
 
             if (mouseX > left && mouseX < left + deleteButtonWidth && mouseY > top && mouseY < top + deleteButtonHeight) {
-                List<Component> hoverText = List.of(new TranslatableComponent("gui.strange.writing_desk.delete"));
+                List<Component> hoverText = List.of(new TranslatableComponent("gui.strange.writing_desks.delete"));
                 renderTooltip(poseStack, hoverText, Optional.empty(), mouseX, mouseY);
             }
         }
@@ -199,7 +199,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             int sx = left + (ix * inputRunesXOffset);
             int sy = top + (iy * inputRunesYOffset);
 
-            if (hasInk && x > sx && x < sx + inputRunesXOffset && y > sy && y < sy + inputRunesYOffset) {
+            if (hasBook && hasInk && x > sx && x < sx + inputRunesXOffset && y > sy && y < sy + inputRunesYOffset) {
                 runeClicked(r);
                 return true;
             }
@@ -244,8 +244,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
 
     private void runeClicked(int rune) {
         runForValidPlayer((player, journal) -> {
-            if (journal.getLearnedRunes().contains(rune) && runes.length() <= KnowledgeData.MAX_LENGTH) {
-                runes += String.valueOf((char)(rune + KnowledgeData.ALPHABET_START));
+            if (journal.getLearnedRunes().contains(rune) && runes.length() <= Knowledge.MAX_LENGTH) {
+                runes += String.valueOf((char)(rune + Knowledge.ALPHABET_START));
                 syncClickedButton(rune);
             }
         });
@@ -265,7 +265,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void runForValidPlayer(BiConsumer<Player, JournalData> run) {
-        ClientHelper.getPlayer().ifPresent(player -> Journals.getPlayerData(player).ifPresent(journal
+        ClientHelper.getPlayer().ifPresent(player -> Journals.getJournalData(player).ifPresent(journal
             -> run.accept(player, journal)));
     }
 

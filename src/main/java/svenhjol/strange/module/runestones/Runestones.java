@@ -43,9 +43,10 @@ import java.util.stream.Collectors;
 public class Runestones extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
     public static final int TIERS = 5;
+    public static final int MAX_ITEMS = 3; // number of item possibilities
+    public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
 
     public static final ResourceLocation MSG_CLIENT_SET_ACTIVE_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_looking_at");
-
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
 
@@ -55,7 +56,7 @@ public class Runestones extends CharmModule {
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
     public static MenuType<RunestoneMenu> MENU;
 
-    public static Map<ResourceLocation, List<BaseLocation>> AVAILABLE_LOCATIONS = new HashMap<>();
+    public static Map<ResourceLocation, List<BaseLocation>> DIMENSION_LOCATIONS = new HashMap<>();
 
     public static Map<UUID, BlockPos> teleportFrom = new HashMap<>(); // location of the runestone that the player activated
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated

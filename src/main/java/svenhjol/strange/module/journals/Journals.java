@@ -37,15 +37,10 @@ public class Journals extends CharmModule {
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
     public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
 
-    private static final Map<UUID, JournalData> playerData = new HashMap<>();
+    private static final Map<UUID, JournalData> journalData = new HashMap<>();
 
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
     public static boolean enableKeybind = true;
-
-    @Override
-    public void register() {
-
-    }
 
     @Override
     public void runWhenEnabled() {
@@ -62,14 +57,14 @@ public class Journals extends CharmModule {
     private void handlePlayerLoadData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
         CompoundTag nbt = PlayerLoadDataCallback.readFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"));
-        playerData.put(uuid, JournalData.fromNbt(player, nbt));
+        journalData.put(uuid, JournalData.fromNbt(player, nbt));
     }
 
     private void handlePlayerSaveData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
-        if (playerData.containsKey(uuid)) {
+        if (journalData.containsKey(uuid)) {
             CompoundTag nbt = new CompoundTag();
-            playerData.get(uuid).toNbt(nbt);
+            journalData.get(uuid).toNbt(nbt);
             PlayerSaveDataCallback.writeFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"), nbt);
         }
     }
@@ -97,31 +92,32 @@ public class Journals extends CharmModule {
     }
 
     private void handleUpdateLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag nbt = buffer.readNbt();
+        CompoundTag tag = buffer.readNbt();
 
-        if (nbt == null)
+        if (tag == null) {
             return; // don't handle
+        }
 
         processPacketFromClient(server, player, data -> {
-            JournalLocation location = JournalLocation.fromNbt(nbt);
+            JournalLocation location = JournalLocation.fromNbt(tag);
             data.updateLocation(location);
         });
     }
 
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
-        getPlayerData(player).ifPresent(data ->
+        getJournalData(player).ifPresent(data ->
             data.addDeathLocation(player.level, player.blockPosition()));
     }
 
     private void processPacketFromClient(MinecraftServer server, ServerPlayer player, Consumer<JournalData> callback) {
         server.execute(() -> {
             if (player == null) return;
-            Journals.getPlayerData(player).ifPresent(callback);
+            Journals.getJournalData(player).ifPresent(callback);
         });
     }
 
-    public static Optional<JournalData> getPlayerData(Player player) {
-        return Optional.ofNullable(playerData.get(player.getUUID()));
+    public static Optional<JournalData> getJournalData(Player player) {
+        return Optional.ofNullable(journalData.get(player.getUUID()));
     }
 
     public enum Page {

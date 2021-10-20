@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -25,9 +27,10 @@ public class JournalLocation {
     private static final String TAG_ICON = "Icon";
     private static final String TAG_NOTE_ID = "Note";
 
-    private String id = "";
-    private String name = "";
-    private String noteId = "";
+    private String id;
+    private String name;
+    private String noteId;
+    private String runes;
     private BlockPos pos;
     private ResourceLocation dim;
     private ResourceLocation icon;
@@ -42,33 +45,34 @@ public class JournalLocation {
 
     public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
         this.id = id;
-        this.name = name;
         this.noteId = noteId != null ? noteId : "";
-        this.pos = pos;
-        this.dim = dim;
-        this.icon = icon;
+
+        setName(name);
+        setBlockPos(pos);
+        setDimension(dim);
+        setIcon(icon);
     }
 
-    public static JournalLocation fromNbt(CompoundTag nbt) {
-        String id = nbt.getString(TAG_ID);
-        String name = nbt.getString(TAG_NAME);
-        String noteId = nbt.getString(TAG_NOTE_ID);
-        BlockPos pos = BlockPos.of(nbt.getLong(TAG_POS));
-        ResourceLocation dim = new ResourceLocation(nbt.getString(TAG_DIM));
-        ResourceLocation icon = new ResourceLocation(nbt.getString(TAG_ICON));
+    public static JournalLocation fromNbt(CompoundTag tag) {
+        String id = tag.getString(TAG_ID);
+        String name = tag.getString(TAG_NAME);
+        String noteId = tag.getString(TAG_NOTE_ID);
+        BlockPos pos = BlockPos.of(tag.getLong(TAG_POS));
+        ResourceLocation dim = new ResourceLocation(tag.getString(TAG_DIM));
+        ResourceLocation icon = new ResourceLocation(tag.getString(TAG_ICON));
 
         return new JournalLocation(id, name, pos, dim, icon, noteId);
     }
 
-    public CompoundTag toNbt(CompoundTag nbt) {
-        nbt.putString(TAG_ID, id);
-        nbt.putString(TAG_NAME, name);
-        nbt.putString(TAG_NOTE_ID, noteId != null ? noteId : "");
-        nbt.putString(TAG_DIM, dim.toString());
-        nbt.putString(TAG_ICON, icon.toString());
-        nbt.putLong(TAG_POS, pos.asLong());
+    public CompoundTag toNbt(CompoundTag tag) {
+        tag.putString(TAG_ID, id);
+        tag.putString(TAG_NAME, name);
+        tag.putString(TAG_NOTE_ID, noteId != null ? noteId : "");
+        tag.putString(TAG_DIM, dim.toString());
+        tag.putString(TAG_ICON, icon.toString());
+        tag.putLong(TAG_POS, pos.asLong());
 
-        return nbt;
+        return tag;
     }
 
     public String getId() {
@@ -77,6 +81,10 @@ public class JournalLocation {
 
     public String getName() {
         return name;
+    }
+
+    public String getRunes() {
+        return runes;
     }
 
     public BlockPos getBlockPos() {
@@ -89,14 +97,18 @@ public class JournalLocation {
 
     public ItemStack getIcon() {
         Optional<Item> opt = DefaultedRegistry.ITEM.getOptional(icon);
-        if (opt.isEmpty())
+        if (opt.isEmpty()) {
             return ItemStack.EMPTY;
-
+        }
         return new ItemStack(opt.get());
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setIcon(ResourceLocation icon) {
+        this.icon = icon;
     }
 
     public void setIcon(ItemStack icon) {
@@ -105,6 +117,9 @@ public class JournalLocation {
 
     public void setBlockPos(BlockPos pos) {
         this.pos = pos;
+
+        Knowledge.getSavedData().ifPresent(knowledge
+            -> this.runes = knowledge.locations.getStartRune() + KnowledgeHelper.generateRunesFromPos(pos));
     }
 
     public void setDimension(ResourceLocation dim) {

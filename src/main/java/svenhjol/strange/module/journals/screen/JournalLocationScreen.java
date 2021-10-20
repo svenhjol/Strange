@@ -17,6 +17,7 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.JournalData;
@@ -196,8 +197,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
             return;
         }
 
-        String runeString = KnowledgeHelper.generateRunesFromPos(location.getBlockPos());
-        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, journal.getLearnedRunes());
+        String runes = location.getRunes();
+        String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
 
         int left = isCreative ? mid + 9 : mid - 48;
         int top = 150;
@@ -207,16 +208,16 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 8; x++) {
-                if (index < knownRuneString.length()) {
+                if (index < knownRunes.length()) {
                     Component rune;
                     int color;
 
-                    String s = String.valueOf(knownRuneString.charAt(index));
+                    String s = String.valueOf(knownRunes.charAt(index));
                     if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent("?");
+                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
                         color = UNKNOWN_COLOR;
                     } else {
-                        rune = new TextComponent(s).withStyle(ILLAGER_GLYPHS_STYLE);
+                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
                         color = KNOWN_COLOR;
                     }
 

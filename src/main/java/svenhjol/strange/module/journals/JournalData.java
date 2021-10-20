@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.strange.module.journals.data.JournalInscription;
 import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.journals.data.JournalNote;
 
@@ -18,10 +17,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class JournalData {
-    public static final int MAX_LOCATIONS = 200;
+    public static final int MAX_LOCATIONS = 256;
 
     private static final String TAG_RUNES = "Runes";
-    private static final String TAG_INSCRIPTIONS = "Inscriptions";
     private static final String TAG_LOCATIONS = "Locations";
     private static final String TAG_STRUCTURES = "Structures";
     private static final String TAG_BIOMES = "Biomes";
@@ -32,30 +30,30 @@ public class JournalData {
     private List<Integer> runes = new ArrayList<>();
 
     private final List<JournalLocation> locations = new ArrayList<>();
-    private final List<JournalInscription> inscriptions = new ArrayList<>();
     private final List<JournalNote> notes = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
     private final List<ResourceLocation> biomes = new ArrayList<>();
     private final List<UUID> players = new ArrayList<>();
 
+    private static final Map<String, JournalLocation> mappedByRuneString = new HashMap<>();
+
     private JournalData(Player player) {
         this.uuid = player.getUUID();
     }
 
-    public static JournalData fromNbt(Player player, CompoundTag nbt) {
+    public static JournalData fromNbt(Player player, CompoundTag tag) {
         JournalData data = new JournalData(player);
 
-        ListTag locationsNbt = nbt.getList(TAG_LOCATIONS, 10);
-        ListTag inscriptionsNbt = nbt.getList(TAG_INSCRIPTIONS, 10);
-        ListTag notesNbt = nbt.getList(TAG_NOTES, 10);
-        ListTag structuresNbt = nbt.getList(TAG_STRUCTURES, 8);
-        ListTag biomesNbt = nbt.getList(TAG_BIOMES, 8);
-        ListTag playersNbt = nbt.getList(TAG_PLAYERS, 8);
+        ListTag locationsNbt = tag.getList(TAG_LOCATIONS, 10);
+        ListTag notesNbt = tag.getList(TAG_NOTES, 10);
+        ListTag structuresNbt = tag.getList(TAG_STRUCTURES, 8);
+        ListTag biomesNbt = tag.getList(TAG_BIOMES, 8);
+        ListTag playersNbt = tag.getList(TAG_PLAYERS, 8);
 
-        data.runes = Arrays.stream(nbt.getIntArray(TAG_RUNES)).boxed().collect(Collectors.toList());
+        data.runes = Arrays.stream(tag.getIntArray(TAG_RUNES)).boxed().collect(Collectors.toList());
 
-        inscriptionsNbt.forEach(compound -> data.inscriptions.add(JournalInscription.fromNbt((CompoundTag)compound)));
         locationsNbt.forEach(compound -> data.locations.add(JournalLocation.fromNbt((CompoundTag)compound)));
+
         notesNbt.forEach(compound -> data.notes.add(JournalNote.fromNbt((CompoundTag)compound)));
 
         structuresNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
@@ -76,33 +74,19 @@ public class JournalData {
 
     public CompoundTag toNbt(CompoundTag nbt) {
         ListTag locationsNbt = new ListTag();
-        ListTag inscriptionsNbt = new ListTag();
         ListTag notesNbt = new ListTag();
         ListTag structuresNbt = new ListTag();
         ListTag biomesNbt = new ListTag();
         ListTag playersNbt = new ListTag();
 
-        locations.forEach(location
-            -> locationsNbt.add(location.toNbt(new CompoundTag())));
-
-        inscriptions.forEach(inscription
-            -> inscriptionsNbt.add(inscription.toNbt(new CompoundTag())));
-
-        notes.forEach(note
-            -> notesNbt.add(note.toNbt(new CompoundTag())));
-
-        structures.forEach(structure
-            -> structuresNbt.add(StringTag.valueOf(structure.toString())));
-
-        biomes.forEach(biome
-            -> biomesNbt.add(StringTag.valueOf(biome.toString())));
-
-        players.forEach(player
-            -> playersNbt.add(StringTag.valueOf(player.toString())));
+        locations.forEach(location -> locationsNbt.add(location.toNbt(new CompoundTag())));
+        notes.forEach(note -> notesNbt.add(note.toNbt(new CompoundTag())));
+        structures.forEach(structure -> structuresNbt.add(StringTag.valueOf(structure.toString())));
+        biomes.forEach(biome -> biomesNbt.add(StringTag.valueOf(biome.toString())));
+        players.forEach(player -> playersNbt.add(StringTag.valueOf(player.toString())));
 
         nbt.putIntArray(TAG_RUNES, runes);
         nbt.put(TAG_LOCATIONS, locationsNbt);
-        nbt.put(TAG_INSCRIPTIONS, inscriptionsNbt);
         nbt.put(TAG_NOTES, notesNbt);
         nbt.put(TAG_STRUCTURES, structuresNbt);
         nbt.put(TAG_BIOMES, biomesNbt);
@@ -142,22 +126,31 @@ public class JournalData {
     }
 
     public void learnRune(int val) {
-        if (!runes.contains(val))
+        if (!runes.contains(val)) {
             runes.add(val);
+        }
     }
 
     public void learnBiome(ResourceLocation biome) {
-        if (!biomes.contains(biome))
+        if (!biomes.contains(biome)) {
             biomes.add(biome);
+        }
     }
 
     public void learnStructure(ResourceLocation structure) {
-        if (!structures.contains(structure))
+        if (!structures.contains(structure)) {
             structures.add(structure);
+        }
     }
 
     private void addLocation(JournalLocation location) {
-        if (locations.size() < MAX_LOCATIONS)
+        if (locations.size() < MAX_LOCATIONS) {
             locations.add(0, location);
+            mappedByRuneString.put(location.getRunes(), location);
+        }
+    }
+
+    public static Optional<JournalLocation> getLocationByRunes(String runes) {
+        return Optional.ofNullable(mappedByRuneString.get(runes));
     }
 }

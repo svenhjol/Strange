@@ -1,6 +1,10 @@
 package svenhjol.strange.module.writing_desks;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,7 +16,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.UUID;
@@ -119,10 +124,41 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     }
 
     private void onTake(Player player, ItemStack stack) {
+        boolean isCreative = player.getAbilities().instabuild;
+
+        if (!isCreative) {
+            ItemStack books = this.inputSlots.getItem(0);
+            ItemStack ink = this.inputSlots.getItem(1);
+
+            books.shrink(1);
+            ink.shrink(1);
+
+            this.inputSlots.setItem(0, books);
+            this.inputSlots.setItem(1, ink);
+        }
+
+        WritingDesks.writtenRunes.remove(player.getUUID());
+
+        this.access.execute((level, pos) -> {
+            level.playSound(null, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
+        });
     }
 
-    private void createResult() {
-        resultSlots.setItem(0, new ItemStack(Items.BLAZE_ROD)); // TODO: silly testdata
+    private void createResult(ServerPlayer player, String runes) {
+        ItemStack tome = new ItemStack(WritingDesks.RUNIC_TOME);
+        RunicTomeItem.setRunes(tome, runes);
+        RunicTomeItem.setAuthor(tome, player.getName().getString());
+
+        // get the name of the location according to the branch
+        KnowledgeBranch.getByStartRune(runes.charAt(0)).flatMap(branch
+            -> branch.getPrettyName(runes)).ifPresent(name
+                -> tome.setHoverName(new TextComponent(name)));
+
+        if (!tome.hasCustomHoverName()) {
+            tome.setHoverName(new TranslatableComponent("gui.strange.writing_desks.runic_tome"));
+        }
+
+        resultSlots.setItem(0, tome);
     }
 
     private void clearResult() {
@@ -143,17 +179,23 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         UUID uuid = serverPlayer.getUUID();
         String runes = WritingDesks.writtenRunes.computeIfAbsent(uuid, s -> "");
 
+        // don't allow writing if there is no book or ink
+        if (inputSlots.getItem(0).isEmpty() || inputSlots.getItem(1).isEmpty()) {
+            WritingDesks.writtenRunes.remove(uuid);
+            return false;
+        }
+
         if (r == DELETE) {
             runes = runes.substring(0, runes.length() - 1);
-        } else if (runes.length() < KnowledgeData.MAX_LENGTH) {
-            runes += String.valueOf((char)(r + 97));
+        } else if (runes.length() < Knowledge.MAX_LENGTH) {
+            runes += String.valueOf((char)(r + Knowledge.ALPHABET_START));
         }
 
         boolean hasValidRunes = KnowledgeHelper.isValidRuneString(runes);
         WritingDesks.writtenRunes.put(uuid, runes);
 
         if (hasValidRunes) {
-            createResult();
+            createResult(serverPlayer, runes);
         } else {
             clearResult();
         }

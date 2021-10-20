@@ -36,7 +36,7 @@ public class Destination {
         this.runes = runes;
     }
 
-    public String getId() {
+    public String getRunes() {
         return this.runes;
     }
 
