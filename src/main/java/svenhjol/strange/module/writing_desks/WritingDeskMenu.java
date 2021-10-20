@@ -49,8 +49,11 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             @Override
             public void setChanged() {
                 super.setChanged();
-                if (!WritingDeskMenu.this.player.level.isClientSide) {
-                    WritingDesks.writtenRunes.remove(WritingDeskMenu.this.player.getUUID());
+                Player player = WritingDeskMenu.this.player;
+
+                if (!player.level.isClientSide) {
+                    clearWrittenRunes(player);
+                    clearResult();
                 }
                 slotsChanged(inputSlots);
             }
@@ -66,6 +69,13 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             @Override
             public void setChanged() {
                 super.setChanged();
+                Player player = WritingDeskMenu.this.player;
+
+                if (!player.level.isClientSide) {
+                    clearWrittenRunes(player);
+                    clearResult();
+                }
+
                 slotsChanged(inputSlots);
             }
 
@@ -137,7 +147,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             this.inputSlots.setItem(1, ink);
         }
 
-        WritingDesks.writtenRunes.remove(player.getUUID());
+        clearWrittenRunes(player);
 
         this.access.execute((level, pos) -> {
             level.playSound(null, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -181,26 +191,37 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
         // don't allow writing if there is no book or ink
         if (inputSlots.getItem(0).isEmpty() || inputSlots.getItem(1).isEmpty()) {
-            WritingDesks.writtenRunes.remove(uuid);
+            clearWrittenRunes(serverPlayer);
             return false;
         }
 
         if (r == DELETE) {
             runes = runes.substring(0, runes.length() - 1);
-        } else if (runes.length() < Knowledge.MAX_LENGTH) {
+        } else if (runes.length() <= Knowledge.MAX_LENGTH) {
             runes += String.valueOf((char)(r + Knowledge.ALPHABET_START));
         }
 
-        boolean hasValidRunes = KnowledgeHelper.isValidRuneString(runes);
         WritingDesks.writtenRunes.put(uuid, runes);
+        checkAndUpdateResult(serverPlayer);
 
-        if (hasValidRunes) {
-            createResult(serverPlayer, runes);
+        return true;
+    }
+
+    public void checkAndUpdateResult(ServerPlayer player) {
+        String runes = WritingDesks.writtenRunes.get(player.getUUID());
+        boolean validRuneString = KnowledgeHelper.isValidRuneString(runes);
+        boolean hasBook = !inputSlots.getItem(0).isEmpty();
+        boolean hasInk = !inputSlots.getItem(1).isEmpty();
+
+        if (hasBook && hasInk && validRuneString) {
+            createResult(player, runes);
         } else {
             clearResult();
         }
+    }
 
-        return true;
+    public void clearWrittenRunes(Player player) {
+        WritingDesks.writtenRunes.remove(player.getUUID());
     }
 
     public ItemStack quickMoveStack(Player player, int index) {

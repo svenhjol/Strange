@@ -89,7 +89,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         hasBook = bookSlot != null && bookSlot.hasItem();
         hasInk = inkSlot != null && inkSlot.hasItem();
 
-        if (!hasBook) {
+        if (!hasBook || !hasInk) {
             runes = "";
         }
 
