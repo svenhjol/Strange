@@ -23,10 +23,7 @@ import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private final int UNKNOWN_COLOR = 0xDDCCBB;
@@ -163,8 +160,12 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         if (numberOfUnknownRunes > 0) {
             text.add(new TranslatableComponent("gui.strange.clues.possible_items"));
+            for (ItemStack item : items) {
+                text.add(item.getHoverName());
+            }
         } else {
             text.add(new TranslatableComponent("gui.strange.clues.required_item"));
+            text.add(items.get(0).getHoverName());
         }
 
         int top = midY - 28;

@@ -19,6 +19,28 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class RunestoneHelper {
+    public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
+        Item item;
+
+        // dimension doesn't do anything yet
+
+        int tier = Math.round(Runestones.TIERS * difficulty);
+        if (Runestones.items.containsKey(tier) && !Runestones.items.get(tier).isEmpty()) {
+            List<Item> tierItems = Runestones.items.get(tier);
+
+            tierItems.sort((i1, i2) -> {
+                if (i1.hashCode() == i2.hashCode()) return 0;
+                return i1.hashCode() < i2.hashCode() ? -1 : 1;
+            });
+
+            item = tierItems.get(random.nextInt(tierItems.size()));
+        } else {
+            item = Items.ENDER_PEARL;
+        }
+
+        return item;
+    }
+
     public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
         List<Item> items;
 

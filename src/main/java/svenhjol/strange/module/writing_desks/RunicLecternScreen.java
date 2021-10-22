@@ -19,7 +19,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 
@@ -39,9 +38,8 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     private ItemStack tome;
     private String runes;
-    private String author;
-    private Item item;
-    private KnowledgeBranch<?, ?> branch;
+    private Item requiredItem;
+    private boolean hasProvidedItem;
 
     public RunicLecternScreen(RunicLecternMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -49,6 +47,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         this.passEvents = false;
         this.midX = 0;
         this.midY = 0;
+
+        this.imageWidth = 176;
+        this.imageHeight = 174;
     }
 
     @Override
@@ -60,14 +61,14 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         int buttonWidth = 90;
 
-        doneButton = addRenderableWidget(new Button(midX - 140, midY + 90, buttonWidth, 20, CommonComponents.GUI_DONE, button -> {
+        doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> {
             onClose();
         }));
-        takeButton = addRenderableWidget(new Button(midX - 45, midY + 90, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.take_tome"), button -> {
+        takeButton = addRenderableWidget(new Button(midX - 45, midY + 94, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.take_tome"), button -> {
             syncClickedButton(0);
             onClose();
         }));
-        activateButton = addRenderableWidget(new Button(midX + 49, midY + 90, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.activate"), button -> {
+        activateButton = addRenderableWidget(new Button(midX + 49, midY + 94, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.activate"), button -> {
             syncClickedButton(1);
             onClose();
         }));
@@ -78,18 +79,13 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
 
-        ItemStack providedItem = menu.slots.get(0).getItem();
+        hasProvidedItem = menu.slots.get(0).hasItem();
 
         // if there is a sacrificial item, allow the activate button to be clicked
-        activateButton.active = !providedItem.isEmpty();
+        activateButton.active = hasProvidedItem;
 
         super.render(poseStack, mouseX, mouseY, delta);
-
-        if (providedItem.isEmpty()) {
-            renderItemHover(poseStack, mouseX, mouseY);
-        } else {
-            renderTooltip(poseStack, mouseX, mouseY);
-        }
+        renderTooltip(poseStack, mouseX, mouseY);
 
         // if tome has been sent from the server, update screen props
         if (WritingDesksClient.tomeHolder == null) {
@@ -99,16 +95,10 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         if (tome == null) {
             tome = WritingDesksClient.tomeHolder.copy();
             RunicTomeItem.getRunes(tome).ifPresent(r -> runes = r);
-            RunicTomeItem.getAuthor(tome).ifPresent(a -> author = a);
-            RunicTomeItem.getBranch(tome).ifPresent(b -> branch = b);
-            RunicTomeItem.getItem(tome).ifPresent(i -> this.item = i);
+            RunicTomeItem.getItem(tome).ifPresent(i -> requiredItem = i);
         }
 
-        if (!runes.isEmpty()) {
-            renderRunes(poseStack);
-        }
-
-//            renderItemClue(poseStack, mouseX, mouseY, journal);
+        renderRunes(poseStack);
     }
 
     @Override
@@ -122,7 +112,44 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        // nah
+        if (tome != null && tome.hasCustomHoverName()) {
+            font.draw(poseStack, tome.getHoverName(), (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
+        }
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+        int top = midY - 28;
+        int left = midX - 8;
+        int bottom = midY - 12;
+        int right = midX + 8;
+
+        if (!hasProvidedItem && mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
+            if (minecraft.player == null) return;
+            if (requiredItem == null) return;
+
+            Optional<JournalData> optJournal = Journals.getJournalData(minecraft.player);
+            if (optJournal.isEmpty()) return;
+
+            JournalData journal = optJournal.get();
+            int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(runes, journal);
+            if (numberOfUnknownRunes > 0) {
+                return;
+            }
+
+            List<Component> text = Lists.newArrayList();
+            NonNullList<ItemStack> items = NonNullList.create();
+            ItemStack stack = new ItemStack(requiredItem);
+            items.add(stack);
+
+            text.add(new TranslatableComponent("gui.strange.clues.required_item"));
+            text.add(requiredItem.getName(stack));
+            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
+
+            return;
+        }
+
+        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     protected void renderRunes(PoseStack poseStack) {
@@ -131,46 +158,15 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
             poseStack,
             runes,
             midX - 48,
-            midY - 68,
+            midY - 62,
             10,
             13,
             10,
             4,
-            0x997755,
-            0xC0B0A0,
+            WritingDeskScreen.KNOWN_COLOR,
+            WritingDeskScreen.UNKNOWN_COLOR,
             false
         );
-    }
-
-    protected void renderItemHover(PoseStack poseStack, int mouseX, int mouseY) {
-        if (minecraft.player == null) return;
-        if (item == null) return;
-
-        Optional<JournalData> optJournal = Journals.getJournalData(minecraft.player);
-        if (optJournal.isEmpty()) return;
-
-        JournalData journal = optJournal.get();
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(runes, journal);
-        if (numberOfUnknownRunes > 0) {
-            return;
-        }
-
-        List<Component> text = Lists.newArrayList();
-        NonNullList<ItemStack> items = NonNullList.create();
-        ItemStack stack = new ItemStack(item);
-        items.add(stack);
-
-        text.add(new TranslatableComponent("gui.strange.clues.required_item"));
-        text.add(item.getName(stack));
-
-        int top = midY - 28;
-        int left = midX - 8;
-        int bottom = midY - 12;
-        int right = midX + 8;
-
-        if (mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
-            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
-        }
     }
 
     private void setupTextureShaders() {

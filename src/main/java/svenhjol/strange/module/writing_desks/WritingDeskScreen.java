@@ -18,6 +18,7 @@ import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.List;
@@ -26,6 +27,9 @@ import java.util.function.BiConsumer;
 
 @SuppressWarnings("ConstantConditions")
 public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> {
+    public static final int KNOWN_COLOR = 0x997755;
+    public static final int UNKNOWN_COLOR = 0xC0B0A0;
+
     private final int unknownColor;
     private final int uninkedColor;
     private final int knownColor;
@@ -39,7 +43,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private final int deleteButtonWidth;
     private final int deleteButtonHeight;
     private final int deleteButtonYOffset;
-    private final int writtenRunesWrapAt;
     private boolean hasInk = false;
     private boolean hasBook = false;
     private String runes = "";
@@ -66,7 +69,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.deleteButtonWidth = 5;
         this.deleteButtonHeight = 8;
         this.deleteButtonYOffset = 69;
-        this.writtenRunesWrapAt = 10;
         this.midX = 0;
         this.midY = 0;
 
@@ -166,25 +168,20 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderWrittenRunes(PoseStack poseStack) {
-        int left = midX - 48;
-        int top = midY - 88;
-        int runesXOffset = 10;
-        int runesYOffset = 13;
-
-        int ix = 0;
-        int iy = 0;
-        int color = 0x997755;
-
-        for (int i = 0; i < runes.length(); i++) {
-            String s = String.valueOf(runes.charAt(i));
-            Component rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-            font.draw(poseStack, rune, left + (ix * runesXOffset), top + (iy * runesYOffset), color);
-            ix++;
-            if (ix == writtenRunesWrapAt) {
-                ix = 0;
-                iy++;
-            }
-        }
+        KnowledgeClientHelper.renderRunesString(
+            minecraft,
+            poseStack,
+            runes,
+            midX - 48,
+            midY - 88,
+            10,
+            13,
+            10,
+            4,
+            KNOWN_COLOR,
+            UNKNOWN_COLOR,
+            false
+        );
     }
 
     @Override

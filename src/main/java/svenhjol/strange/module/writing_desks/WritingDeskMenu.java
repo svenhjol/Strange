@@ -1,7 +1,5 @@
 package svenhjol.strange.module.writing_desks;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,22 +11,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
-import svenhjol.strange.module.knowledge.branches.DestinationsBranch;
-import svenhjol.strange.module.knowledge.branches.SpecialsBranch;
-import svenhjol.strange.module.runestones.RunestoneHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class WritingDeskMenu extends AbstractContainerMenu {
@@ -164,43 +152,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     }
 
     private void createResult(ServerPlayer player, String runes) {
-        ItemStack tome = new ItemStack(WritingDesks.RUNIC_TOME);
-        RunicTomeItem.setRunes(tome, runes);
-        RunicTomeItem.setAuthor(tome, player.getName().getString());
-
-        KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
-            List<Item> items = new ArrayList<>();
-
-            if (branch instanceof DestinationsBranch destinations) {
-                // destinations have fixed item requirements
-                Optional<Destination> optDest = destinations.get(runes);
-                if (optDest.isPresent()) {
-                    items = optDest.get().items;
-                }
-            } else if (branch instanceof SpecialsBranch specials) {
-                // specials have fixed item requirements
-                Optional<Destination> optDest = specials.get(runes);
-                if (optDest.isPresent()) {
-                    items = optDest.get().items;
-                }
-            } else {
-                // generate item from rune length
-                float difficulty = (runes.length() / (float)Knowledge.MAX_LENGTH);
-                items = RunestoneHelper.getItems(DimensionHelper.getDimension(player.level), difficulty, player.getRandom());
-            }
-
-            if (!items.isEmpty()) {
-                RunicTomeItem.setItem(tome, items.get(0));
-            }
-
-            // set the tome's branch name to the prettyname of the rune branch
-            branch.getPrettyName(runes).ifPresent(name -> tome.setHoverName(new TextComponent(name)));
-        });
-
-        if (!tome.hasCustomHoverName()) {
-            tome.setHoverName(new TranslatableComponent("gui.strange.writing_desks.runic_tome"));
-        }
-
+        ItemStack tome = RunicTomeItem.create(player, runes);
         resultSlots.setItem(0, tome);
     }
 
