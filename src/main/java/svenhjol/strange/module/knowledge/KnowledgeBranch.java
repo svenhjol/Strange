@@ -68,6 +68,10 @@ public abstract class KnowledgeBranch<R, V> {
 
     public abstract char getStartRune();
 
+    public static Optional<KnowledgeBranch<?, ?>> getByName(String name) {
+        return getBranches().stream().filter(b -> b.getBranchName().equals(name)).findFirst();
+    }
+
     public static Optional<KnowledgeBranch<?, ?>> getByStartRune(char start) {
         return Optional.ofNullable(KnowledgeData.getMappedByStartRune().get(start));
     }

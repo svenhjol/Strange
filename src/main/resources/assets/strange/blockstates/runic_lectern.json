@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "strange:block/runic_lectern",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "strange:block/runic_lectern"
+    },
+    "facing=south": {
+      "model": "strange:block/runic_lectern",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "strange:block/runic_lectern",
+      "y": 270
+    }
+  }
+}

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,13 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.init.StrangeFonts;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.knowledge.Destination;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
 import java.util.Collections;
@@ -38,8 +36,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private Random random;
     private IRunestoneMaterial material;
     private ResourceLocation texture;
-    private int itemRandomTicks = 0;
     private NonNullList<ItemStack> items;
+    private int itemRandomTicks = 0;
+    private int midX;
+    private int midY;
 
     public RunestoneScreen(RunestoneMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -51,6 +51,14 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        midX = width / 2;
+        midY = height / 2;
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
@@ -58,12 +66,15 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 
+        if (material == null) {
+            material = menu.getMaterial();
+        }
+
         getDestination().ifPresent(destination -> {
             ClientHelper.getPlayer().flatMap(Journals::getJournalData).ifPresent(journal -> {
-                renderRunes(poseStack, destination, journal);
+                renderRunes(poseStack, destination);
                 renderLocationClue(poseStack, destination, journal);
                 renderItemClue(poseStack, mouseX, mouseY, destination, journal);
-                renderTooltip(poseStack, mouseX, mouseY);
             });
         });
     }
@@ -86,41 +97,21 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         // nah
     }
 
-    protected void renderRunes(PoseStack poseStack, Destination destination, JournalData journal) {
-        if (this.material == null) {
-            this.material = menu.getMaterial();
-        }
-
-        String runeString = destination.runes;
-        String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runeString, journal.getLearnedRunes());
-
-        int mid = width / 2;
-        int left = mid - 76;
-        int top = (height / 2) - 70;
-        int xOffset = 11;
-        int yOffset = 14;
-        int index = 0;
-
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 14; x++) {
-                if (index < knownRuneString.length()) {
-                    Component rune;
-                    int color;
-
-                    String s = String.valueOf(knownRuneString.charAt(index));
-                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
-                        color = UNKNOWN_COLOR;
-                    } else {
-                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-                        color = KNOWN_COLOR;
-                    }
-
-                    font.drawShadow(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
-                }
-                index++;
-            }
-        }
+    protected void renderRunes(PoseStack poseStack, Destination destination) {
+        KnowledgeClientHelper.renderRunesString(
+            minecraft,
+            poseStack,
+            destination.runes,
+            midX - 76,
+            midY - 70,
+            11,
+            14,
+            14,
+            4,
+            KNOWN_COLOR,
+            UNKNOWN_COLOR,
+            true
+        );
     }
 
     protected void renderLocationClue(PoseStack poseStack, Destination destination, JournalData journal) {
@@ -176,11 +167,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
             text.add(new TranslatableComponent("gui.strange.clues.required_item"));
         }
 
-        int mid = width / 2;
-        int top = (height / 2) - 28;
-        int left = mid - 8;
-        int bottom = (height / 2) - 12;
-        int right = mid + 8;
+        int top = midY - 28;
+        int left = midX - 8;
+        int bottom = midY - 12;
+        int right = midX + 8;
 
         if (mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
             renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
@@ -197,12 +187,12 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     }
 
     private Optional<Destination> getDestination() {
-        return Optional.ofNullable(RunestonesClient.activeDestination);
+        return Optional.ofNullable(RunestonesClient.destinationHolder);
     }
 
     @Override
     public void onClose() {
-        RunestonesClient.activeDestination = null;
+        RunestonesClient.destinationHolder = null;
         super.onClose();
     }
 }

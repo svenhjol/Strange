@@ -14,15 +14,19 @@ import svenhjol.strange.module.knowledge.Destination;
 
 @ClientModule(module = Runestones.class)
 public class RunestonesClient extends CharmModule {
-    public static Destination activeDestination = null;
+    public static Destination destinationHolder = null;
+
+    @Override
+    public void register() {
+        ScreenRegistry.register(Runestones.MENU, RunestoneScreen::new);
+    }
 
     @Override
     public void runWhenEnabled() {
-        ScreenRegistry.register(Runestones.MENU, RunestoneScreen::new);
-        ClientPlayNetworking.registerGlobalReceiver(Runestones.MSG_CLIENT_SET_ACTIVE_DESTINATION, this::handleSetActiveDestination);
+        ClientPlayNetworking.registerGlobalReceiver(Runestones.MSG_CLIENT_SET_DESTINATION, this::handleSetDestination);
     }
 
-    private void handleSetActiveDestination(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleSetDestination(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         CompoundTag tag = buffer.readNbt();
         if (tag == null) {
             LogHelper.error(this.getClass(), "Could not read destination tag from buffer");
@@ -30,8 +34,8 @@ public class RunestonesClient extends CharmModule {
         }
 
         client.execute(() -> {
-            activeDestination = Destination.fromTag(tag);
-            LogHelper.debug(this.getClass(), "ActiveDestination set from server. Runes = " + activeDestination.getRunes() + ", Location = " + activeDestination.location);
+            destinationHolder = Destination.fromTag(tag);
+            LogHelper.debug(this.getClass(), "Destination set from server. Runes = " + destinationHolder.getRunes() + ", Location = " + destinationHolder.location);
         });
     }
 }

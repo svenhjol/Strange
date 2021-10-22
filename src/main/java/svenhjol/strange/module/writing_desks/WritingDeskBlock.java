@@ -24,7 +24,7 @@ public class WritingDeskBlock extends CharmBlock {
     private static final Component CONTAINER_TITLE;
 
     public WritingDeskBlock(CharmModule module) {
-        super(module, WritingDesks.BLOCK_ID.getPath(), Properties.copy(Blocks.CARTOGRAPHY_TABLE));
+        super(module, WritingDesks.WRITING_DESK_BLOCK_ID.getPath(), Properties.copy(Blocks.CARTOGRAPHY_TABLE));
     }
 
     @Override

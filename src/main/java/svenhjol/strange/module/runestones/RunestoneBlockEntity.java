@@ -42,7 +42,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     public float difficulty;
     public float decay;
 
-    private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items;
     private final ContainerData data;
 
     public RunestoneBlockEntity(BlockPos pos, BlockState state) {

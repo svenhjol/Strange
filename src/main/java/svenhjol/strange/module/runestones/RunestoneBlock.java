@@ -49,7 +49,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
-            boolean result = tryStudyRunestone((ServerLevel)level, pos, player);
+            boolean result = tryReadRunestone((ServerLevel)level, pos, (ServerPlayer) player);
 
             if (!result) {
                 return InteractionResult.FAIL;
@@ -84,7 +84,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     /**
      * Fetch or generate a destination when a player looks at a runestone.
      */
-    private boolean tryStudyRunestone(ServerLevel level, BlockPos pos, Player player) {
+    private boolean tryReadRunestone(ServerLevel level, BlockPos pos, ServerPlayer player) {
         RunestoneBlockEntity runestone = getBlockEntity(level, pos);
         if (runestone == null) {
             return false;
@@ -128,7 +128,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
 
         // send the destination tag to the player who looked at the runestone
         CompoundTag tag = destination.toTag();
-        NetworkHelper.sendPacketToClient((ServerPlayer) player, Runestones.MSG_CLIENT_SET_ACTIVE_DESTINATION, buf -> buf.writeNbt(tag));
+        NetworkHelper.sendPacketToClient(player, Runestones.MSG_CLIENT_SET_DESTINATION, buf -> buf.writeNbt(tag));
 
         return true;
     }
