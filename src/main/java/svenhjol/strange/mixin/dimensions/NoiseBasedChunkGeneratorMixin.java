@@ -2,14 +2,17 @@ package svenhjol.strange.mixin.dimensions;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.PrimitiveCodec;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.StructureSettings;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import svenhjol.strange.module.dimensions.Dimensions;
 
@@ -24,12 +27,8 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
         super(biomeSource, structureSettings);
     }
 
-    /**
-     * IntelliJ minecraft plugin can't handle mixins into synthetic methods.
-     * Suppress here or this mixin will cause a compile-time error.
-     */
     @Redirect(
-        method = "lambda$static$3",
+        method = "lambda$static$4",
         at = @At(
             value = "INVOKE",
             target = "Lcom/mojang/serialization/codecs/PrimitiveCodec;fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;",
@@ -41,7 +40,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
     }
 
     @Inject(
-        method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
+        method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "FIELD",
             target = "Lnet/minecraft/world/level/levelgen/NoiseBasedChunkGenerator;seed:J",
@@ -49,7 +48,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
             shift = At.Shift.AFTER
         )
     )
-    private void hookConstructor(BiomeSource populationSource, BiomeSource biomeSource, long seed, Supplier<NoiseGeneratorSettings> settings, CallbackInfo ci) {
+    private void hookConstructor(Registry registry, BiomeSource biomeSource, BiomeSource biomeSource2, long seed, Supplier supplier, CallbackInfo ci) {
         if (seed == Dimensions.SeedSupplier.MARKER) {
             this.seed = LAST_SEED;
             this.strongholdSeed = LAST_SEED;
@@ -59,12 +58,12 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
     }
 
     @ModifyArg(
-        method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
+        method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/NoiseSampler;<init>(IIILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/NoiseOctaves;ZJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
+            target = "Lnet/minecraft/world/level/levelgen/NoiseSampler;<init>(IIILnet/minecraft/world/level/levelgen/NoiseSettings;ZJLnet/minecraft/core/Registry;Lnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
         ),
-        index = 6
+        index = 5
     )
     private long hookNoiseSampler(long seed) {
         if (seed == Dimensions.SeedSupplier.MARKER) {
@@ -77,13 +76,31 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
     }
 
     @ModifyArg(
-        method = "<init>(Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
+        method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;createRandomSource(J)Lnet/minecraft/world/level/levelgen/RandomSource;"
         )
     )
     private long hookSimpleRandomSource(long seed) {
+        if (seed == Dimensions.SeedSupplier.MARKER) {
+            return LAST_SEED;
+        } else {
+            LAST_SEED = seed;
+        }
+
+        return seed;
+    }
+
+    @ModifyArg(
+        method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/levelgen/SurfaceSystem;<init>(Lnet/minecraft/world/level/levelgen/NoiseSampler;Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/block/state/BlockState;IJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
+        ),
+        index = 4
+    )
+    private long hookSurfaceSytem(long seed) {
         if (seed == Dimensions.SeedSupplier.MARKER) {
             return LAST_SEED;
         } else {

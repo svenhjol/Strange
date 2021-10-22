@@ -10,7 +10,6 @@ import svenhjol.strange.module.dimensions.Dimensions;
 
 @Mixin(WorldGenSettings.class)
 public class WorldGenSettingsMixin {
-    @SuppressWarnings("UnresolvedMixinReference")
     @Redirect(
         method = "lambda$static$1", // CODEC
         at = @At(
