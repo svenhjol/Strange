@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
@@ -30,6 +31,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     public static final int KNOWN_COLOR = 0x997755;
     public static final int UNKNOWN_COLOR = 0xC0B0A0;
 
+    private final Component journalTitle;
     private final int unknownColor;
     private final int uninkedColor;
     private final int knownColor;
@@ -53,18 +55,19 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        this.journalTitle = new TranslatableComponent("gui.strange.journal.title");
         this.passEvents = false;
-        this.imageWidth = 176;
-        this.imageHeight = 210;
-        this.inputRunesLeft = -69;
-        this.inputRunesTop = -17;
+        this.imageWidth = 300;
+        this.imageHeight = 221;
+        this.inputRunesLeft = -8;
+        this.inputRunesTop = -12;
         this.inputRunesXOffset = 11;
         this.inputRunesYOffset = 14;
         this.inputRunesWrapAt = 13;
         this.unknownColor = 0x999999;
         this.uninkedColor = 0x888888;
         this.knownColor = 0x000000;
-        this.deleteButtonLeft = 39;
+        this.deleteButtonLeft = 102;
         this.deleteButtonTop = -39;
         this.deleteButtonWidth = 5;
         this.deleteButtonHeight = 8;
@@ -119,7 +122,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private void renderBookBg(PoseStack poseStack) {
         if (hasBook) {
             setupTextureShaders();
-            blit(poseStack, midX - 56, midY - 96, this.imageWidth, 0, 110, 69, 512, 256);
+            blit(poseStack, midX + 7, midY - 91, this.imageWidth, 0, 111, 69, 512, 256);
         }
     }
 
@@ -172,8 +175,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             minecraft,
             poseStack,
             runes,
-            midX - 48,
-            midY - 88,
+            midX + 15,
+            midY - 85,
             10,
             13,
             10,
@@ -236,7 +239,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
 
     @Override
     protected void renderLabels(PoseStack poseStack, int i, int j) {
-        // nope
+        font.draw(poseStack, this.title, 132, (float) this.titleLabelY, 4210752);
+        GuiHelper.drawCenteredString(poseStack, font, this.journalTitle, 61, 24, 0x222222);
     }
 
     private void runeClicked(int rune) {

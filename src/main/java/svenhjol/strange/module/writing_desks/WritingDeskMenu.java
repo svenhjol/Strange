@@ -42,7 +42,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
 
         // book slot
-        this.addSlot(new Slot(inputSlots, 0, 9, 25) {
+        this.addSlot(new Slot(inputSlots, 0, 134, 35) {
             @Override
             public void setChanged() {
                 super.setChanged();
@@ -62,7 +62,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         });
 
         // ink slot
-        this.addSlot(new Slot(inputSlots, 1, 9, 47) {
+        this.addSlot(new Slot(inputSlots, 1, 134, 57) {
             @Override
             public void setChanged() {
                 super.setChanged();
@@ -82,7 +82,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             }
         });
 
-        this.addSlot(new Slot(resultSlots, 2, 150, 35) {
+        this.addSlot(new Slot(resultSlots, 2, 275, 45) {
             @Override
             public boolean mayPlace(ItemStack itemStack) {
                 return false;
@@ -103,12 +103,12 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         int k;
         for(k = 0; k < 3; ++k) {
             for(int j = 0; j < 9; ++j) {
-                this.addSlot(new Slot(playerInventory, j + k * 9 + 9, 8 + j * 18, 128 + k * 18));
+                this.addSlot(new Slot(playerInventory, j + k * 9 + 9, 132 + j * 18, 139 + k * 18));
             }
         }
 
         for(k = 0; k < 9; ++k) {
-            this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 186));
+            this.addSlot(new Slot(playerInventory, k, 132 + k * 18, 197));
         }
     }
 
