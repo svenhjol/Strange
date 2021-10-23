@@ -22,6 +22,7 @@ import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -50,6 +51,9 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private String runes = "";
     private int midX;
     private int midY;
+
+    private Journals.Page journalPage = Journals.Page.HOME;
+    private List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Strange.MOD_ID, "textures/gui/writing_desk.png");
 
@@ -80,6 +84,15 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     @Override
+    protected void init() {
+        super.init();
+    }
+
+    private void initJournal() {
+        homeButtons.clear();
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         midX = width / 2;
         midY = height / 2;
@@ -103,6 +116,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             renderInputRunes(poseStack, journal);
             renderDeleteButton(poseStack, mouseX, mouseY);
             renderWrittenRunes(poseStack);
+            renderJournal(poseStack, mouseX, mouseY, journal);
             renderTooltip(poseStack, mouseX, mouseY);
         });
     }
@@ -185,6 +199,14 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             UNKNOWN_COLOR,
             false
         );
+    }
+
+    private void renderJournal(PoseStack poseStack, int mouseX, int mouseY, JournalData journal) {
+        switch (journalPage) {
+            case HOME -> {
+
+            }
+        }
     }
 
     @Override
