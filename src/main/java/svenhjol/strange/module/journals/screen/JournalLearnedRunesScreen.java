@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.knowledge.Knowledge;
@@ -20,7 +21,7 @@ public class JournalLearnedRunesScreen extends BaseJournalScreen {
         JournalsClient.getPlayerData().ifPresent(data -> this.playerData = data);
 
         // add a back button at the bottom
-        bottomButtons.add(0, new ButtonDefinition(b -> knowledge(),
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(),
             new TranslatableComponent("gui.strange.journal.go_back")));
     }
 

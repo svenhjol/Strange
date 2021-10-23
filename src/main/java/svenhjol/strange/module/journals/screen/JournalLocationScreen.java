@@ -17,6 +17,7 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
@@ -48,8 +49,8 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected boolean hasRenderedUpdateButtons = false;
     protected boolean hasRenderedPhotoButtons = false;
     protected boolean hasPhoto = false;
-    protected List<ButtonDefinition> updateButtons = new ArrayList<>();
-    protected List<ButtonDefinition> photoButtons = new ArrayList<>();
+    protected List<GuiHelper.ButtonDefinition> updateButtons = new ArrayList<>();
+    protected List<GuiHelper.ButtonDefinition> photoButtons = new ArrayList<>();
 
     public JournalLocationScreen(JournalLocation location) {
         super(new TextComponent(location.getName()));
@@ -86,13 +87,13 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         if (!hasInitializedUpdateButtons) {
             // add a back button at the bottom
-            bottomButtons.add(0, new ButtonDefinition(b -> saveAndGoBack(),
+            bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(),
                 new TranslatableComponent("gui.strange.journal.go_back")));
 
             // if player has empty map, add button to make a map of this location
             if (playerHasEmptyMap()) {
                 updateButtons.add(
-                    new ButtonDefinition(b -> makeMap(),
+                    new GuiHelper.ButtonDefinition(b -> makeMap(),
                         new TranslatableComponent("gui.strange.journal.make_map"))
                 );
             }
@@ -100,20 +101,20 @@ public class JournalLocationScreen extends BaseJournalScreen {
             // if player is near the location, add button to take a photo
             if (playerIsNearLocation()) {
                 updateButtons.add(
-                    new ButtonDefinition(b -> takePhoto(),
+                    new GuiHelper.ButtonDefinition(b -> takePhoto(),
                         new TranslatableComponent("gui.strange.journal.take_photo"))
                 );
             }
 
             // always add an icon button
             updateButtons.add(
-                new ButtonDefinition(b -> chooseIcon(),
+                new GuiHelper.ButtonDefinition(b -> chooseIcon(),
                     new TranslatableComponent("gui.strange.journal.choose_icon"))
             );
 
             // always add a save button
             updateButtons.add(
-                new ButtonDefinition(b -> saveAndGoBack(),
+                new GuiHelper.ButtonDefinition(b -> saveAndGoBack(),
                     new TranslatableComponent("gui.strange.journal.save"))
             );
 
@@ -150,7 +151,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
             int top = 60;
             int yOffset = 22;
 
-            renderButtons(updateButtons, left, top, 0, yOffset, buttonWidth, buttonHeight);
+            GuiHelper.renderButtons(this, width, font, updateButtons, left, top, 0, yOffset, buttonWidth, buttonHeight);
             hasRenderedUpdateButtons = true;
         }
 

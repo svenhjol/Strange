@@ -7,6 +7,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
@@ -30,7 +31,7 @@ public class JournalLocationsScreen extends BaseJournalScreen {
         locations = data.getLocations();
 
         // "add location" button to the bottom
-        bottomButtons.add(0, new ButtonDefinition(b -> add(),
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> add(),
             new TranslatableComponent("gui.strange.journal.add_location")));
     }
 

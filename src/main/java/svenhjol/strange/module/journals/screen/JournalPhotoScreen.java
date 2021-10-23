@@ -8,6 +8,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.data.JournalLocation;
 
 import javax.annotation.Nullable;
@@ -29,7 +30,7 @@ public class JournalPhotoScreen extends BaseJournalScreen {
 
         this.location = location;
 
-        bottomButtons.add(0, new ButtonDefinition(b -> back(),
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(),
             new TranslatableComponent("gui.strange.journal.go_back")));
     }
 

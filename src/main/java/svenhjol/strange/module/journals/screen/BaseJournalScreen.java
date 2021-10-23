@@ -3,19 +3,16 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.helper.GuiHelper;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,26 +52,26 @@ public abstract class BaseJournalScreen extends Screen {
     protected int errorColor = 0x770000;
 
 
-    protected List<ButtonDefinition> bottomButtons = new ArrayList<>();
-    protected List<ImageButtonDefinition> navigationButtons = new ArrayList<>();
+    protected List<GuiHelper.ButtonDefinition> bottomButtons = new ArrayList<>();
+    protected List<GuiHelper.ImageButtonDefinition> navigationButtons = new ArrayList<>();
 
     public BaseJournalScreen(Component component) {
         super(component);
         passEvents = false;
 
         bottomButtons.add(
-            new ButtonDefinition(b -> onClose(),
+            new GuiHelper.ButtonDefinition(b -> onClose(),
                 new TranslatableComponent("gui.strange.journal.close"))
         );
 
         navigationButtons.addAll(Arrays.asList(
-            new ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18,
+            new GuiHelper.ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18,
                 new TranslatableComponent("gui.strange.journal.home_tooltip")),
-            new ImageButtonDefinition(b -> locations(), NAVIGATION, 60, 36, 18,
+            new GuiHelper.ImageButtonDefinition(b -> locations(), NAVIGATION, 60, 36, 18,
                 new TranslatableComponent("gui.strange.journal.locations_tooltip")),
-            new ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18,
+            new GuiHelper.ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18,
                 new TranslatableComponent("gui.strange.journal.quests_tooltip")),
-            new ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18,
+            new GuiHelper.ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18,
                 new TranslatableComponent("gui.strange.journal.knowledge_tooltip"))
         ));
     }
@@ -134,7 +131,7 @@ public abstract class BaseJournalScreen extends Screen {
         int buttonHeight = 18;
 
         if (!hasRenderedNavigation) {
-            renderImageButtons(navigationButtons, x, y, 0, navigationYOffset, buttonWidth, buttonHeight);
+            GuiHelper.renderImageButtons(this, width, font, navigationButtons, x, y, 0, navigationYOffset, buttonWidth, buttonHeight);
             hasRenderedNavigation = true;
         }
     }
@@ -150,28 +147,8 @@ public abstract class BaseJournalScreen extends Screen {
             int x = (width / 2) - ((numberOfButtons * xOffset) / 2);
             int y = (height / 4) + bottomButtonsY;
 
-            renderButtons(bottomButtons, x, y, xOffset, 0, buttonWidth, buttonHeight);
+            GuiHelper.renderButtons(this, width, font, bottomButtons, x, y, xOffset, 0, buttonWidth, buttonHeight);
             hasRenderedBottomButtons = true;
-        }
-    }
-
-    protected void renderButtons(List<ButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
-        for (ButtonDefinition b : buttons) {
-            Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> renderTooltip(p, font.split(b.tooltip, Math.max(width / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, b.name, b.action, tooltip));
-
-            x += xOffset;
-            y += yOffset;
-        }
-    }
-
-    protected void renderImageButtons(List<ImageButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
-        for (ImageButtonDefinition b : buttons) {
-            Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> renderTooltip(p, font.split(b.tooltip, Math.max(width / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
-            addRenderableWidget(new ImageButton(x, y, buttonWidth, buttonHeight, b.texX, b.texY, b.texHoverOffset, b.texture, 256, 256, b.action, tooltip, TextComponent.EMPTY));
-
-            x += xOffset;
-            y += yOffset;
         }
     }
 
@@ -200,41 +177,4 @@ public abstract class BaseJournalScreen extends Screen {
         renderer.draw(poseStack, string, x - (float)(renderer.width(string) / 2), y, color);
     }
 
-    protected static class ButtonDefinition {
-        private final Component name;
-        private final Component tooltip;
-        private final Button.OnPress action;
-
-        public ButtonDefinition(Button.OnPress action, @Nullable Component name) {
-            this(action, name, null);
-        }
-
-        public ButtonDefinition(Button.OnPress action, @Nullable Component name, @Nullable Component tooltip) {
-            this.name = name;
-            this.action = action;
-            this.tooltip = tooltip;
-        }
-    }
-
-    protected static class ImageButtonDefinition {
-        private final Button.OnPress action;
-        private final Component tooltip;
-        private final ResourceLocation texture;
-        private final int texX;
-        private final int texY;
-        private final int texHoverOffset;
-
-        public ImageButtonDefinition(Button.OnPress action, ResourceLocation texture, int texX, int texY, int texHoverOffset) {
-            this(action, texture, texX, texY, texHoverOffset, null);
-        }
-
-        public ImageButtonDefinition(Button.OnPress action, ResourceLocation texture, int texX, int texY, int texHoverOffset, @Nullable Component tooltip) {
-            this.action = action;
-            this.tooltip = tooltip;
-            this.texture = texture;
-            this.texX = texX;
-            this.texY = texY;
-            this.texHoverOffset = texHoverOffset;
-        }
-    }
 }
