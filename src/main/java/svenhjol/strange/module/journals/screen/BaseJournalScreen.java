@@ -46,6 +46,9 @@ public abstract class BaseJournalScreen extends Screen {
     protected int page1Center = -56;
     protected int page2Center = 56;
 
+    protected int midX;
+    protected int midY;
+
     protected int textColor = 0x000000;
     protected int secondaryColor = 0x908080;
     protected int titleColor = 0x000000;
@@ -81,6 +84,8 @@ public abstract class BaseJournalScreen extends Screen {
         super.init();
         hasRenderedNavigation = false;
         hasRenderedBottomButtons = false;
+        midX = width / 2;
+        midY = width / 2;
     }
 
     @Override

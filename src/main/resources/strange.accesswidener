@@ -15,6 +15,8 @@ accessible method net/minecraft/server/level/ServerLevel findLightningTargetArou
 accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers register (Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
 
 # Inaccessible fields
+accessible field net/minecraft/client/gui/screens/Screen font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/screens/Screen itemRenderer Lnet/minecraft/client/renderer/entity/ItemRenderer;
 accessible field net/minecraft/client/gui/screens/Screen children Ljava/util/List;
 accessible field net/minecraft/world/level/chunk/ChunkGenerator strongholdSeed J
 accessible field net/minecraft/server/MinecraftServer levels Ljava/util/Map;

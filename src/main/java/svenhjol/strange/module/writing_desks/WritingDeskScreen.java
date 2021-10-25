@@ -2,7 +2,10 @@ package svenhjol.strange.module.writing_desks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -11,20 +14,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.screen.BaseJournalScreen;
+import svenhjol.strange.module.journals.screen.JournalHomeScreen;
+import svenhjol.strange.module.journals.screen.MiniJournalClient;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("ConstantConditions")
@@ -32,7 +40,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     public static final int KNOWN_COLOR = 0x997755;
     public static final int UNKNOWN_COLOR = 0xC0B0A0;
 
-    private final Component journalTitle;
     private final int unknownColor;
     private final int uninkedColor;
     private final int knownColor;
@@ -48,18 +55,16 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private final int deleteButtonYOffset;
     private boolean hasInk = false;
     private boolean hasBook = false;
+    private final MiniJournalClient journalClient;
+
     private String runes = "";
     private int midX;
     private int midY;
-
-    private Journals.Page journalPage = Journals.Page.HOME;
-    private List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Strange.MOD_ID, "textures/gui/writing_desk.png");
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
-        this.journalTitle = new TranslatableComponent("gui.strange.journal.title");
         this.passEvents = false;
         this.imageWidth = 300;
         this.imageHeight = 221;
@@ -78,6 +83,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.deleteButtonYOffset = 69;
         this.midX = 0;
         this.midY = 0;
+        this.journalClient = new MiniJournalClient(this);
 
         // ask server to update the player journal
         JournalsClient.sendSyncJournal();
@@ -86,10 +92,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     @Override
     protected void init() {
         super.init();
-    }
-
-    private void initJournal() {
-        homeButtons.clear();
+        journalClient.init();
     }
 
     @Override
@@ -116,13 +119,13 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             renderInputRunes(poseStack, journal);
             renderDeleteButton(poseStack, mouseX, mouseY);
             renderWrittenRunes(poseStack);
-            renderJournal(poseStack, mouseX, mouseY, journal);
             renderTooltip(poseStack, mouseX, mouseY);
+            journalClient.render(poseStack, mouseX, mouseY, journal);
         });
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
+    protected void renderBg(PoseStack poseStack, float delta, int mouseX, int mouseY) {
         if (minecraft == null || minecraft.player == null) {
             return;
         }
@@ -131,6 +134,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
         blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 256);
+
+        journalClient.renderBg(poseStack, delta, mouseX, mouseY);
     }
 
     private void renderBookBg(PoseStack poseStack) {
@@ -201,14 +206,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         );
     }
 
-    private void renderJournal(PoseStack poseStack, int mouseX, int mouseY, JournalData journal) {
-        switch (journalPage) {
-            case HOME -> {
-
-            }
-        }
-    }
-
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         int left = midX + inputRunesLeft;
@@ -262,7 +259,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     @Override
     protected void renderLabels(PoseStack poseStack, int i, int j) {
         font.draw(poseStack, this.title, 132, (float) this.titleLabelY, 4210752);
-        GuiHelper.drawCenteredString(poseStack, font, this.journalTitle, 61, 24, 0x222222);
     }
 
     private void runeClicked(int rune) {

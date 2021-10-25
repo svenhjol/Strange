@@ -99,7 +99,7 @@ public class JournalLocationsScreen extends BaseJournalScreen {
 
         if (numberOfLocations > PER_PAGE) {
             // render the page number each time
-            centeredText(poseStack, font, new TranslatableComponent("gui.strange.journal.page", lastPage), mid, paginationY + 4, secondaryColor);
+            centeredText(poseStack, font, new TranslatableComponent("gui.strange.journal.page", lastPage), mid, paginationY + 6, secondaryColor);
 
             // only render pagination buttons on the first render pass
             if (!hasRenderedLocationButtons) {
