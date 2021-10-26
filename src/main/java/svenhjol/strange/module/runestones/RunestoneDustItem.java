@@ -26,10 +26,10 @@ public class RunestoneDustItem extends CharmItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!DimensionHelper.isOverworld(world))
+        if (!DimensionHelper.isOverworld(level))
             return InteractionResultHolder.fail(stack);
 
         if (!Strange.LOADER.isEnabled(StoneCircles.class))
@@ -45,22 +45,22 @@ public class RunestoneDustItem extends CharmItem {
         player.getCooldowns().addCooldown(this, 40);
 
         // client
-        if (world.isClientSide) {
+        if (level.isClientSide) {
             player.swing(hand);
-            world.playSound(player, x, y, z, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS, 1.0F, 1.0F);
+            level.playSound(player, x, y, z, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS, 1.0F, 1.0F);
         }
 
         // server
-        if (!world.isClientSide) {
-            ServerLevel serverWorld = (ServerLevel)world;
+        if (!level.isClientSide) {
+            ServerLevel serverWorld = (ServerLevel)level;
 
             BlockPos pos = serverWorld.findNearestMapFeature(StoneCircles.STONE_CIRCLE_STRUCTURE, player.blockPosition(), 1500, false);
             if (pos != null) {
-                RunestoneDustEntity entity = new RunestoneDustEntity(world, pos.getX(), pos.getZ());
+                RunestoneDustEntity entity = new RunestoneDustEntity(level, pos.getX(), pos.getZ());
                 Vec3 look = player.getLookAngle();
 
                 entity.setPosRaw(x + look.x * 2, y + 0.5, z + look.z * 2);
-                world.addFreshEntity(entity);
+                level.addFreshEntity(entity);
                 return InteractionResultHolder.pass(stack);
             }
         }
