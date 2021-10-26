@@ -36,7 +36,7 @@ public class JournalLocation {
     private ResourceLocation icon;
 
     public JournalLocation(BlockPos pos, ResourceLocation dim) {
-        this(new TranslatableComponent("gui.strange.journal.new_location").getString(), pos, dim, DEFAULT_ICON, null);
+        this(new TranslatableComponent("gui.strange.journal.somewhere").getString(), pos, dim, DEFAULT_ICON, null);
     }
 
     public JournalLocation(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {

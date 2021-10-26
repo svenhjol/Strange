@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MiniJournalClient {
     private JournalSection section;
@@ -150,44 +153,27 @@ public class MiniJournalClient {
                     itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
                     GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
                     KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 42, midY - 8, 11, 14, 8, 4, primaryColor, secondaryColor, false);
+                    hasRenderedButtons = true;
 
                 } else {
-                    int y = midY - 78;
-                    int yOffset = 21;
-                    int paginationY = 184;
-                    int currentPage = lastPage - 1;
-                    ResourceLocation navigation = BaseJournalScreen.NAVIGATION;
-                    List<JournalLocation> locations = journal.getLocations();
-                    List<JournalLocation> sublist;
-
                     if (!hasRenderedButtons) {
                         renderBackButton(b -> {
-                            selectedLocation = null;
                             changeJournalSection(JournalSection.HOME);
                         });
                     }
 
-                    int numberOfLocations = locations.size();
-                    if (numberOfLocations > perPage) {
-                        if (currentPage * perPage >= numberOfLocations || currentPage * perPage < 0) {
-                            // out of range, reset
-                            lastPage = 1;
-                            currentPage = 0;
-                        }
-                        sublist = locations.subList(currentPage * perPage, Math.min(currentPage * perPage + perPage, numberOfLocations));
-                    } else {
-                        sublist = locations;
-                    }
-
-                    for (JournalLocation location : sublist) {
+                    AtomicInteger y = new AtomicInteger(midY - 78);
+                    List<JournalLocation> locations = journal.getLocations();
+                    Supplier<Component> label = () -> new TranslatableComponent("gui.strange.journal.no_locations");
+                    Consumer<JournalLocation> renderItem = location -> {
                         String name = getTruncatedName(location.getName());
                         ItemStack icon = location.getIcon();
 
                         // render item icons
-                        itemRenderer.renderGuiItem(icon, journalMidX - (buttonWidth / 2) - 12, y + 2);
+                        itemRenderer.renderGuiItem(icon, journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
 
                         if (!hasRenderedButtons) {
-                            Button button = new Button(midX - (buttonWidth / 2) - 82, y, buttonWidth, buttonHeight, new TextComponent(name), b -> {
+                            Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), b -> {
                                 selectedLocation = location;
                                 redraw();
                             });
@@ -197,35 +183,9 @@ public class MiniJournalClient {
                             screen.addRenderableWidget(button);
                         }
 
-                        y += yOffset;
-                    }
-
-                    if (numberOfLocations > perPage) {
-                        TranslatableComponent component = new TranslatableComponent("gui.strange.journal.page", lastPage);
-                        GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, paginationY + 6, secondaryColor);
-
-                        // only render pagination buttons on the first render pass
-                        if (!hasRenderedButtons) {
-                            if (lastPage * perPage < numberOfLocations) {
-                                screen.addRenderableWidget(new ImageButton(midX - 60, paginationY, 20, 18, 120, 0, 18, navigation, b -> {
-                                    ++lastPage;
-                                    redraw();
-                                }));
-                            }
-                            if (lastPage > 1) {
-                                screen.addRenderableWidget(new ImageButton(midX - 138, paginationY, 20, 18, 140, 0, 18, navigation, b -> {
-                                    --lastPage;
-                                    redraw();
-                                }));
-                            }
-                        }
-                    }
-
-                    if (numberOfLocations == 0) {
-                        Component component = new TranslatableComponent("gui.strange.journal.no_locations");
-                        GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, midY - 8, secondaryColor);
-                    }
-
+                        y.addAndGet(21);
+                    };
+                    paginator(poseStack, font, locations, renderItem, label, !hasRenderedButtons);
                     hasRenderedButtons = true;
                 }
             }
@@ -266,6 +226,55 @@ public class MiniJournalClient {
         int buttonHeight = 20;
         Component component = new TranslatableComponent("gui.strange.journal.back");
         screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, component, onPress));
+    }
+
+    private <T> void paginator(PoseStack poseStack, Font font, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
+        int perPage = 6;
+        int paginationY = 180;
+        int secondaryColor = 0x909090;
+        int currentPage = lastPage - 1;
+        List<T> sublist;
+
+        int size = items.size();
+        if (size > perPage) {
+            if (currentPage * perPage >= size || currentPage * perPage < 0) {
+                // out of range, reset
+                lastPage = 1;
+                currentPage = 0;
+            }
+            sublist = items.subList(currentPage * perPage, Math.min(currentPage * perPage + perPage, size));
+        } else {
+            sublist = items;
+        }
+
+        for (T item : sublist) {
+            renderItem.accept(item);
+        }
+
+        if (size > perPage) {
+            TranslatableComponent component = new TranslatableComponent("gui.strange.journal.page", lastPage);
+            GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, paginationY + 6, secondaryColor);
+
+            // only render pagination buttons on the first render pass
+            if (shouldRenderButtons) {
+                if (lastPage * perPage < size) {
+                    screen.addRenderableWidget(new ImageButton(midX - 60, paginationY, 20, 18, 120, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                        ++lastPage;
+                        redraw();
+                    }));
+                }
+                if (lastPage > 1) {
+                    screen.addRenderableWidget(new ImageButton(midX - 138, paginationY, 20, 18, 140, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                        --lastPage;
+                        redraw();
+                    }));
+                }
+            }
+        }
+
+        if (size == 0) {
+            GuiHelper.drawCenteredString(poseStack, font, labelForNoItems.get(), journalMidX, midY - 8, secondaryColor);
+        }
     }
 
     private void redraw() {
