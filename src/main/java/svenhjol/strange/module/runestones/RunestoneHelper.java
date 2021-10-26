@@ -71,8 +71,11 @@ public class RunestoneHelper {
             return Optional.empty();
         }
 
-        List<BaseLocation> locations = Runestones.DIMENSION_LOCATIONS.get(dimension).stream()
-            .filter(l -> l.getDifficulty() <= difficulty + 0.05F && l.getDifficulty() > difficulty - 0.05F)
+        List<BaseLocation> dimensionRunestones = Runestones.DIMENSION_LOCATIONS.get(dimension);
+        float size = 1F / dimensionRunestones.size();
+
+        List<BaseLocation> locations = dimensionRunestones.stream()
+            .filter(l -> l.getDifficulty() <= difficulty + size && l.getDifficulty() > difficulty - size)
             .collect(Collectors.toList());
 
         if (locations.isEmpty()) {
