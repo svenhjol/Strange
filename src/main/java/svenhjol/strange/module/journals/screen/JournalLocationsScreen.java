@@ -15,7 +15,7 @@ import svenhjol.strange.module.journals.data.JournalLocation;
 import java.util.List;
 
 public class JournalLocationsScreen extends BaseJournalScreen {
-    public static final int PER_PAGE = 7;
+    public static final int PER_PAGE = 6;
     public static final int NAME_CUTOFF = 27;
 
     protected boolean hasRenderedLocationButtons = false;

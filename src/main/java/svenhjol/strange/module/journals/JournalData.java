@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class JournalData {
-    public static final int MAX_LOCATIONS = 256;
+    public static final int MAX_LOCATIONS = 128;
 
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_LOCATIONS = "Locations";

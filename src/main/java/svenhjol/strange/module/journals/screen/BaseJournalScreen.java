@@ -4,9 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
@@ -120,12 +118,14 @@ public abstract class BaseJournalScreen extends Screen {
      * Override this to change title color and position in subclasses.
      */
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        centeredText(poseStack, font, getTitle(), (width / 2) + titleX, titleY, titleColor);
+        Component title = getTitle();
+        ((BaseComponent)title).setStyle(Style.EMPTY.withBold(true));
+        GuiHelper.drawCenteredString(poseStack, font, title, (width / 2) + titleX, titleY, titleColor);
     }
 
     public void renderTitleIcon(ItemStack icon) {
         // render icon next to title
-        int iconX = width / 2 - 17 - ((this.title.getString().length() * 6) / 2);
+        int iconX = width / 2 - 20 - ((this.title.getString().length() * 6) / 2);
         itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
     }
 

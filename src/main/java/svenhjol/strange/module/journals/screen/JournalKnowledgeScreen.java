@@ -52,14 +52,14 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
 
     @Override
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, page1Center, titleY, titleColor);
+        super.renderTitle(poseStack, titleX, titleY, titleColor);
     }
 
     public void renderKnowledgeButtons(PoseStack poseStack) {
         if (!hasRenderedKnowledgeButtons) {
             int buttonWidth = 105;
             int buttonHeight = 20;
-            int x = (width / 2) + 5;
+            int x = (width / 2) - 50;
             int y = 40;
             int yOffset = 24;
 

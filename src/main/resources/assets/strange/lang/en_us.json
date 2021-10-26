@@ -13,6 +13,7 @@
   "container.strange.runic_lectern": "Runic Lectern",
   "container.strange.writing_desk": "Writing Desk",
   "gui.strange.journal.add_location": "Add location",
+  "gui.strange.journal.back": "Back",
   "gui.strange.journal.choose_icon": "Choose icon",
   "gui.strange.journal.close": "Close",
   "gui.strange.journal.death_location": "Death Location",

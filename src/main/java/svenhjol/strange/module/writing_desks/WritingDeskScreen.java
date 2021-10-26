@@ -100,6 +100,10 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         midX = width / 2;
         midY = height / 2;
 
+        if (height % 2 == 0) {
+            midY -= 1;
+        }
+
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
 

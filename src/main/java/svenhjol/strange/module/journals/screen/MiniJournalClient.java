@@ -9,9 +9,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +48,7 @@ public class MiniJournalClient {
     private int lastPage;
     private int midX;
     private int midY;
+    private int journalMidX;
 
     public static final ResourceLocation CLOSED = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal.png");
     public static final ResourceLocation OPEN = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal_open.png");
@@ -73,6 +72,12 @@ public class MiniJournalClient {
     public void init() {
         midX = screen.width / 2;
         midY = screen.height / 2;
+
+        if (screen.height % 2 == 0) {
+            midY -= 1;
+        }
+
+        journalMidX = midX - 88;
         hasRenderedButtons = false;
     }
 
@@ -96,11 +101,10 @@ public class MiniJournalClient {
         Font font = screen.font;
         ItemRenderer itemRenderer = screen.itemRenderer;
 
-        int journalMidX = midX - 88;
         int width = screen.width;
         int height = screen.height;
         int titleTop;
-        int perPage = 7;
+        int perPage = 6;
         int buttonWidth = 84;
         int buttonHeight = 20;
         int primaryColor = 0x222222;
@@ -123,30 +127,45 @@ public class MiniJournalClient {
             case LOCATIONS -> {
                 title = locationsTitle;
                 titleTop = -94;
+
                 if (selectedLocation != null) {
                     if (!DimensionHelper.isDimension(player.level, selectedLocation.getDimension())) {
                         return;
+                    }
+
+                    if (!hasRenderedButtons) {
+                        renderBackButton(b -> {
+                            selectedLocation = null;
+                            changeJournalSection(JournalSection.LOCATIONS);
+                        });
                     }
 
                     int x = journalMidX - (buttonWidth / 2);
                     int y = midY - 78;
                     String runes = selectedLocation.getRunes();
                     ItemStack icon = selectedLocation.getIcon();
-                    Component component = new TextComponent(selectedLocation.getName());
+                    Component component = new TextComponent(getTruncatedName(selectedLocation.getName(), 18));
 
                     // render item icon
-                    itemRenderer.renderGuiItem(icon, x - 12, y + 2);
-                    GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 6, primaryColor);
-                    KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 42, y + 30, 11, 14, 8, 4, primaryColor, secondaryColor, false);
+                    itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
+                    GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
+                    KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 42, midY - 8, 11, 14, 8, 4, primaryColor, secondaryColor, false);
 
                 } else {
                     int y = midY - 78;
                     int yOffset = 21;
-                    int paginationY = 214;
+                    int paginationY = 184;
                     int currentPage = lastPage - 1;
                     ResourceLocation navigation = BaseJournalScreen.NAVIGATION;
                     List<JournalLocation> locations = journal.getLocations();
                     List<JournalLocation> sublist;
+
+                    if (!hasRenderedButtons) {
+                        renderBackButton(b -> {
+                            selectedLocation = null;
+                            changeJournalSection(JournalSection.HOME);
+                        });
+                    }
 
                     int numberOfLocations = locations.size();
                     if (numberOfLocations > perPage) {
@@ -211,28 +230,29 @@ public class MiniJournalClient {
                 }
             }
             case BIOMES -> {
-                titleTop = -78;
+                titleTop = -94;
                 title = biomesTitle;
             }
             case STRUCTURES -> {
-                titleTop = -78;
+                titleTop = -94;
                 title = structuresTitle;
             }
             case PLAYERS -> {
-                titleTop = -78;
+                titleTop = -94;
                 title = playersTitle;
             }
             case DIMENSIONS -> {
-                titleTop = -78;
+                titleTop = -94;
                 title = dimensionsTitle;
             }
             default -> {
-                titleTop = -78;
+                titleTop = -94;
                 title = standardTitle;
             }
         }
 
         // draw the journal title
+        ((BaseComponent)title).setStyle(Style.EMPTY.withBold(true));
         GuiHelper.drawCenteredString(poseStack, font, title, journalMidX, midY + titleTop, primaryColor);
     }
 
@@ -241,13 +261,23 @@ public class MiniJournalClient {
         redraw();
     }
 
+    private void renderBackButton(Button.OnPress onPress) {
+        int buttonWidth = 74;
+        int buttonHeight = 20;
+        Component component = new TranslatableComponent("gui.strange.journal.back");
+        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, component, onPress));
+    }
+
     private void redraw() {
         ClientHelper.getClient().ifPresent(mc -> screen.init(mc, screen.width, screen.height));
     }
 
+    private String getTruncatedName(String name, int length) {
+        return name.substring(0, Math.min(name.length(), length));
+    }
+
     private String getTruncatedName(String name) {
-        int nameCutoff = 20;
-        return name.substring(0, Math.min(name.length(), nameCutoff));
+        return getTruncatedName(name, 14);
     }
 
     public enum JournalSection implements ICharmEnum {
