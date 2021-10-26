@@ -12,10 +12,7 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.runestones.location.BaseLocation;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RunestoneHelper {
@@ -48,7 +45,7 @@ public class RunestoneHelper {
 
         int tier = Math.round(Runestones.TIERS * difficulty);
         if (Runestones.items.containsKey(tier) && !Runestones.items.get(tier).isEmpty()) {
-            List<Item> tierItems = Runestones.items.get(tier);
+            List<Item> tierItems = new ArrayList<>(Runestones.items.get(tier));
             Collections.shuffle(tierItems, random);
             items = tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS));
         } else {
@@ -75,7 +72,7 @@ public class RunestoneHelper {
         }
 
         List<BaseLocation> locations = Runestones.DIMENSION_LOCATIONS.get(dimension).stream()
-            .filter(l -> l.getDifficulty() <= difficulty && l.getDifficulty() > difficulty - 0.1F)
+            .filter(l -> l.getDifficulty() <= difficulty + 0.05F && l.getDifficulty() > difficulty - 0.05F)
             .collect(Collectors.toList());
 
         if (locations.isEmpty()) {

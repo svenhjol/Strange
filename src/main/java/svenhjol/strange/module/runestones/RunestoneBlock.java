@@ -97,6 +97,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         if (runestone.runes == null || runestone.runes.isEmpty()) {
             generate = true;
         } else if (!knowledge.specials.has(runestone.runes) && !knowledge.destinations.has(runestone.runes)) {
+            LogHelper.warn(this.getClass(), "Runestone data was erased for this runestone, regenerating it");
             generate = true; // the knowledgedata was erased for this runestone - regenerate it
         }
 

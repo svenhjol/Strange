@@ -146,14 +146,14 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                             location = RunestoneLocations.SPAWN;
                             generatedSpawnRune = true;
 
-                        } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.5F) {
+                        } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.75F) {
                             // scale difficulty according to number of runes added
                             difficulty += ((numberOfRunestonesGenerated + 1) * (random.nextFloat() * (1F / maxRunestones)));
 
                             // scale difficulty according to distance from spawn
-                            double distX = Math.min(1.0D, Math.abs(x / 1000000D));
-                            double distZ = Math.min(1.0D, Math.abs(z / 1000000D));
-                            difficulty += random.nextFloat() * Math.max(distX, distZ) / 2;
+                            double distX = Math.min(1.0D, Math.abs(currentPos.getX()) / 1000000D);
+                            double distZ = Math.min(1.0D, Math.abs(currentPos.getZ()) / 1000000D);
+                            difficulty += random.nextFloat() * (Math.max(distX, distZ) * 0.8F);
 
                             state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
                             ++numberOfRunestonesGenerated;
@@ -168,6 +168,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                         if (location != null) {
                             runestone.location = location;
                         }
+                        LogHelper.debug(this.getClass(), "Created runestone with difficulty: " + difficulty);
                     }
 //                    if (dest.isPresent()) {
 //                        BlockEntity blockEntity = world.getBlockEntity(currentPos);

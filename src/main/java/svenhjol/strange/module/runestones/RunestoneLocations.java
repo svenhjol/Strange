@@ -9,10 +9,7 @@ import svenhjol.strange.module.runestones.location.BaseLocation;
 import svenhjol.strange.module.runestones.location.BiomeLocation;
 import svenhjol.strange.module.runestones.location.StructureLocation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RunestoneLocations {
     public static final String UNKNOWN_CLUE = "unknown";
@@ -31,13 +28,12 @@ public class RunestoneLocations {
 
             ResourceLocation dimensionId = new ResourceLocation(split.get(0));
             ResourceLocation locationId = new ResourceLocation(split.get(1));
-            dimensionLocations.computeIfAbsent(dimensionId, a -> new ArrayList<>())
-                .add(locationId);
+            dimensionLocations.computeIfAbsent(dimensionId, a -> new LinkedList<>()).add(locationId);
         }
 
         // iterate through each dimension, setting the difficulty for each location by its position in the list
         dimensionLocations.forEach((dimensionId, locations) -> {
-            Map<ResourceLocation, String> filteredLocations = new HashMap<>();
+            Map<ResourceLocation, String> filteredLocations = new LinkedHashMap<>();
 
             // filter out locations that are not structures or biomes
             locations.forEach(locationId -> {
@@ -53,7 +49,12 @@ public class RunestoneLocations {
             int index = 0;
             for (Map.Entry<ResourceLocation, String> entry : filteredLocations.entrySet()) {
                 BaseLocation location;
-                float difficulty = 0.0F + (index / (float)locations.size());
+
+                if (index == filteredLocations.size() - 1) {
+                    index = filteredLocations.size();
+                }
+
+                float difficulty = 0.0F + (index / (float)filteredLocations.size());
                 ResourceLocation locationId = entry.getKey();
                 String type = entry.getValue();
 
@@ -70,6 +71,7 @@ public class RunestoneLocations {
 
                 Runestones.DIMENSION_LOCATIONS.computeIfAbsent(dimensionId, a -> new ArrayList<>()).add(location);
                 LogHelper.debug(RunestoneLocations.class, "Added " + type + " " + locationId + " to dimension " + dimensionId + " with difficulty " + difficulty);
+                index++;
             }
         });
     }
