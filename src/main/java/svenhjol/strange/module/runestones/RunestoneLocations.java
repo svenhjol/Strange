@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class RunestoneLocations {
     public static final String UNKNOWN_CLUE = "unknown";
+    public static final String BIOME = "biome";
+    public static final String STRUCTURE = "structure";
     public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
 
     public static void init() {
@@ -35,21 +37,35 @@ public class RunestoneLocations {
 
         // iterate through each dimension, setting the difficulty for each location by its position in the list
         dimensionLocations.forEach((dimensionId, locations) -> {
-            for (int i = 0; i < locations.size(); i++) {
-                float difficulty = 0.0F + (i / (float)locations.size());
-                ResourceLocation locationId = locations.get(i);
-                BaseLocation location;
-                String type;
+            Map<ResourceLocation, String> filteredLocations = new HashMap<>();
 
+            // filter out locations that are not structures or biomes
+            locations.forEach(locationId -> {
                 if (WorldHelper.isBiome(locationId)) {
-                    type = "biome";
-                    location = new BiomeLocation(locationId, difficulty);
+                    filteredLocations.put(locationId, BIOME);
                 } else if (WorldHelper.isStructure(locationId)) {
-                    type = "structure";
-                    location = new StructureLocation(locationId, difficulty);
+                    filteredLocations.put(locationId, STRUCTURE);
                 } else {
                     LogHelper.debug(RunestoneLocations.class, "Location " + locationId + " is not a structure or biome, ignoring as runestone destination");
-                    continue;
+                }
+            });
+
+            int index = 0;
+            for (Map.Entry<ResourceLocation, String> entry : filteredLocations.entrySet()) {
+                BaseLocation location;
+                float difficulty = 0.0F + (index / (float)locations.size());
+                ResourceLocation locationId = entry.getKey();
+                String type = entry.getValue();
+
+                switch (type) {
+                    case BIOME:
+                        location = new BiomeLocation(locationId, difficulty);
+                        break;
+                    case STRUCTURE:
+                        location = new StructureLocation(locationId, difficulty);
+                        break;
+                    default:
+                        continue;
                 }
 
                 Runestones.DIMENSION_LOCATIONS.computeIfAbsent(dimensionId, a -> new ArrayList<>()).add(location);
