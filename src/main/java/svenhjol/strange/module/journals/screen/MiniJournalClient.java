@@ -105,10 +105,8 @@ public class MiniJournalClient {
         ItemRenderer itemRenderer = screen.itemRenderer;
 
         int width = screen.width;
-        int height = screen.height;
         int titleTop;
-        int perPage = 6;
-        int buttonWidth = 84;
+        int buttonWidth = 88;
         int buttonHeight = 20;
         int primaryColor = 0x222222;
         int secondaryColor = 0x909090;
@@ -152,14 +150,12 @@ public class MiniJournalClient {
                     // render item icon
                     itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
                     GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
-                    KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 42, midY - 8, 11, 14, 8, 4, primaryColor, secondaryColor, false);
+                    KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
                     hasRenderedButtons = true;
 
                 } else {
                     if (!hasRenderedButtons) {
-                        renderBackButton(b -> {
-                            changeJournalSection(JournalSection.HOME);
-                        });
+                        renderBackButton(b -> changeJournalSection(JournalSection.HOME));
                     }
 
                     AtomicInteger y = new AtomicInteger(midY - 78);
@@ -192,22 +188,42 @@ public class MiniJournalClient {
             case BIOMES -> {
                 titleTop = -94;
                 title = biomesTitle;
+
+                if (!hasRenderedButtons) {
+                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                }
             }
             case STRUCTURES -> {
                 titleTop = -94;
                 title = structuresTitle;
+
+                if (!hasRenderedButtons) {
+                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                }
             }
             case PLAYERS -> {
                 titleTop = -94;
                 title = playersTitle;
+
+                if (!hasRenderedButtons) {
+                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                }
             }
             case DIMENSIONS -> {
                 titleTop = -94;
                 title = dimensionsTitle;
+
+                if (!hasRenderedButtons) {
+                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                }
             }
             default -> {
                 titleTop = -94;
                 title = standardTitle;
+
+                if (!hasRenderedButtons) {
+                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                }
             }
         }
 
