@@ -23,6 +23,10 @@ public abstract class KnowledgeBranch<R, V> {
         return new ArrayList<>(data.keySet());
     }
 
+    public int size() {
+        return data.size();
+    }
+
     public List<V> values() {
         return new ArrayList<>(data.values());
     }

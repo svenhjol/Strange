@@ -41,6 +41,10 @@
   "gui.strange.journal.take_photo": "Take photo",
   "gui.strange.journal.title": "Journal",
   "gui.strange.knowledge.somewhere": "Somewhere",
+  "gui.strange.knowledge_stones.learned_biome": "You learned the runes for the %s biome",
+  "gui.strange.knowledge_stones.learned_structure": "You learned the runes for the %s structure",
+  "gui.strange.knowledge_stones.learned_player": "You learned the runes for %s",
+  "gui.strange.knowledge_stones.learned_dimension": "You learned the runes for the %s dimension",
   "gui.strange.clues.ancient": "Ancient",
   "gui.strange.clues.cold": "Cold",
   "gui.strange.clues.dangerous": "Dangerous",
@@ -59,5 +63,7 @@
   "gui.strange.runic_lecterns.take_tome": "Take Tome",
   "gui.strange.writing_desks.delete": "Delete last rune",
   "gui.strange.writing_desks.runic_tome": "Runic Tome",
+  "item.strange.knowledge_stone": "Knowledge Stone",
+  "item.strange.knowledge_stone_with_rarity": "%s Knowledge Stone",
   "item.strange.runic_tome": "Runic Tome"
 }
