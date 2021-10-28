@@ -63,7 +63,9 @@
   "gui.strange.runic_lecterns.take_tome": "Take Tome",
   "gui.strange.writing_desks.delete": "Delete last rune",
   "gui.strange.writing_desks.runic_tome": "Runic Tome",
-  "item.strange.knowledge_stone": "Knowledge Stone",
-  "item.strange.knowledge_stone_with_rarity": "%s Knowledge Stone",
+  "item.strange.biome_knowledge_stone": "Biome Knowledge Stone",
+  "item.strange.dimension_knowledge_stone": "Dimension Knowledge Stone",
+  "item.strange.player_knowledge_stone": "Player Knowledge Stone",
+  "item.strange.structure_knowledge_stone": "Structure Knowledge Stone",
   "item.strange.runic_tome": "Runic Tome"
 }
