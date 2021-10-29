@@ -11,7 +11,9 @@ public class RunestoneLoot {
     public static List<ResourceLocation> REGISTER = new ArrayList<>();
 
     // must be a literal path so that we can load the json manually
-    public static ResourceLocation REQUIRED_ITEMS = new ResourceLocation(Strange.MOD_ID, "loot_tables/runestones/required_items.json");
+    public static ResourceLocation OVERWORLD_ITEMS = new ResourceLocation(Strange.MOD_ID, "loot_tables/runestones/overworld_items.json");
+    public static ResourceLocation NETHER_ITEMS = new ResourceLocation(Strange.MOD_ID, "loot_tables/runestones/nether_items.json");
+    public static ResourceLocation END_ITEMS = new ResourceLocation(Strange.MOD_ID, "loot_tables/runestones/end_items.json");
 
     public static void create() {
         LootHelper.CUSTOM_LOOT_TABLES.addAll(REGISTER);

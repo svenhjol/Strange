@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityDimensions;
@@ -62,7 +63,7 @@ public class Runestones extends CharmModule {
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated
     public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has activated
 
-    public static Map<Integer, List<Item>> items = new HashMap<>();
+    public static Map<ResourceLocation, Map<Integer, List<Item>>> dimensionItems = new HashMap<>();
     public static Map<ResourceLocation, List<String>> clues = new HashMap<>();
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
@@ -214,34 +215,45 @@ public class Runestones extends CharmModule {
             clues.put(locationId, cluesList);
         });
 
+        Map<ResourceLocation, ResourceLocation> tables = new HashMap<>();
+        tables.put(ServerLevel.OVERWORLD.location(), RunestoneLoot.OVERWORLD_ITEMS);
+        tables.put(ServerLevel.NETHER.location(), RunestoneLoot.NETHER_ITEMS);
+        tables.put(ServerLevel.END.location(), RunestoneLoot.END_ITEMS);
+
         Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-        Resource resource;
-        try {
-            resource = server.getResourceManager().getResource(RunestoneLoot.REQUIRED_ITEMS);
-        } catch (IOException e) {
-            return;
-        }
 
-        InputStream inputStream = resource.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        tables.forEach((dimension, table) -> {
+            Resource resource;
+            try {
+                resource = server.getResourceManager().getResource(table);
+            } catch (IOException e) {
+                return;
+            }
 
-        JsonObject jsonObject = GsonHelper.fromJson(gson, reader, JsonObject.class);
-        JsonArray pools = GsonHelper.getAsJsonArray(jsonObject, "pools");
+            InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
-        for (int p = 0; p < pools.size(); p++) {
-            JsonArray elements = GsonHelper.getAsJsonArray((JsonObject) pools.get(p), "entries");
-            for (int e = 0; e < elements.size(); e++) {
-                JsonObject entry = (JsonObject)elements.get(e);
-                String name = entry.get("name").getAsString();
-                ResourceLocation res = new ResourceLocation(name);
+            JsonObject obj = GsonHelper.fromJson(gson, reader, JsonObject.class);
+            if (obj == null) return;
+            JsonArray pools = GsonHelper.getAsJsonArray(obj, "pools");
 
-                // try instantiate
-                if (Registry.ITEM.getOptional(res).isPresent()) {
-                    items.computeIfAbsent(p, a -> new ArrayList<>()).add(Registry.ITEM.get(res));
-                } else {
-                    LogHelper.debug(this.getClass(), "Could not find item in registry: " + res);
+            for (int p = 0; p < pools.size(); p++) {
+                JsonArray elements = GsonHelper.getAsJsonArray((JsonObject) pools.get(p), "entries");
+                for (int e = 0; e < elements.size(); e++) {
+                    JsonObject entry = (JsonObject) elements.get(e);
+                    String name = entry.get("name").getAsString();
+                    ResourceLocation res = new ResourceLocation(name);
+
+                    // try instantiate
+                    if (Registry.ITEM.getOptional(res).isPresent()) {
+                        dimensionItems
+                            .computeIfAbsent(dimension, d -> new HashMap<>())
+                            .computeIfAbsent(p, a -> new ArrayList<>()).add(Registry.ITEM.get(res));
+                    } else {
+                        LogHelper.debug(this.getClass(), "Could not find item in registry: " + res);
+                    }
                 }
             }
-        }
+        });
     }
 }

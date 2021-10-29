@@ -16,43 +16,45 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RunestoneHelper {
+    public static Item DEFAULT_ITEM = Items.ENDER_PEARL;
+
     public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
-        Item item;
+        if (!Runestones.dimensionItems.containsKey(dimension)) {
+            return DEFAULT_ITEM;
+        }
 
-        // dimension doesn't do anything yet
-
+        Map<Integer, List<Item>> items = Runestones.dimensionItems.get(dimension);
         int tier = Math.round(Runestones.TIERS * difficulty);
-        if (Runestones.items.containsKey(tier) && !Runestones.items.get(tier).isEmpty()) {
-            List<Item> tierItems = Runestones.items.get(tier);
+
+        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
+            List<Item> tierItems = items.get(tier);
 
             tierItems.sort((i1, i2) -> {
                 if (i1.hashCode() == i2.hashCode()) return 0;
                 return i1.hashCode() < i2.hashCode() ? -1 : 1;
             });
 
-            item = tierItems.get(random.nextInt(tierItems.size()));
+            return tierItems.get(random.nextInt(tierItems.size()));
         } else {
-            item = Items.ENDER_PEARL;
+            return DEFAULT_ITEM;
         }
-
-        return item;
     }
 
     public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
-        List<Item> items;
-
-        // dimension doesn't do anything yet
-
-        int tier = Math.round(Runestones.TIERS * difficulty);
-        if (Runestones.items.containsKey(tier) && !Runestones.items.get(tier).isEmpty()) {
-            List<Item> tierItems = new ArrayList<>(Runestones.items.get(tier));
-            Collections.shuffle(tierItems, random);
-            items = tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS));
-        } else {
-            items = List.of(Items.ENDER_PEARL);
+        if (!Runestones.dimensionItems.containsKey(dimension)) {
+            return List.of(Items.ENDER_PEARL);
         }
 
-        return items;
+        Map<Integer, List<Item>> items = Runestones.dimensionItems.get(dimension);
+        int tier = Math.round(Runestones.TIERS * difficulty);
+
+        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
+            List<Item> tierItems = new ArrayList<>(items.get(tier));
+            Collections.shuffle(tierItems, random);
+            return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS));
+        } else {
+            return List.of(Items.ENDER_PEARL);
+        }
     }
 
     public static String getClue(ResourceLocation location, Random random) {
