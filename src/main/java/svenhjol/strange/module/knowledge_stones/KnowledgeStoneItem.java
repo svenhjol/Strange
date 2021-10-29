@@ -53,13 +53,13 @@ public class KnowledgeStoneItem extends CharmItem {
             boolean learnedThing = switch (stone.type) {
                 case BIOME -> tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
                     journal.learnBiome(b);
-                    clientMessage(serverPlayer, "biome", b.getPath());
+                    sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
 
                 case STRUCTURE -> tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
                     journal.learnStructure(s);
-                    clientMessage(serverPlayer, "structure", s.getPath());
+                    sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
 
@@ -67,7 +67,7 @@ public class KnowledgeStoneItem extends CharmItem {
                     journal.learnPlayer(p);
                     Optional<String> optName = PlayerHelper.getPlayerName(server, p);
                     if (optName.isPresent()) {
-                        clientMessage(serverPlayer, "player", optName.get());
+                        sendClientMessage(serverPlayer, "player", optName.get());
                         return true;
                     } else {
                         return false;
@@ -76,7 +76,7 @@ public class KnowledgeStoneItem extends CharmItem {
 
                 case DIMENSION -> tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
                     journal.learnDimension(d);
-                    clientMessage(serverPlayer, "dimension", d.getPath());
+                    sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
                 });
             };
@@ -108,7 +108,7 @@ public class KnowledgeStoneItem extends CharmItem {
         return false;
     }
 
-    private void clientMessage(ServerPlayer player, String type, String name) {
+    private void sendClientMessage(ServerPlayer player, String type, String name) {
         Component component = new TranslatableComponent("gui.strange.knowledge_stones.learned_" + type, StringHelper.snakeToPretty(name, true));
         player.displayClientMessage(component, true);
     }
