@@ -35,7 +35,7 @@ public class RunestonesClient extends CharmModule {
 
         client.execute(() -> {
             destinationHolder = Destination.fromTag(tag);
-            LogHelper.debug(this.getClass(), "Destination set from server. Runes = " + destinationHolder.getRunes() + ", Location = " + destinationHolder.location);
+            LogHelper.debug(this.getClass(), "Destination set from server. Runes = " + destinationHolder.getRunes() + ", Location = " + destinationHolder.getLocation());
         });
     }
 }

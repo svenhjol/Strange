@@ -1,43 +1,34 @@
 package svenhjol.strange.module.knowledge;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import svenhjol.charm.helper.LogHelper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 public class Destination {
     public static final String TAG_RUNES = "Runes";
     public static final String TAG_POSITION = "Pos";
     public static final String TAG_DIMENSION = "Dim";
     public static final String TAG_LOCATION = "Loc";
-    public static final String TAG_ITEMS = "Items";
     public static final String TAG_PLAYER = "Player";
-    public static final String TAG_CLUE = "Clue";
     public static final String TAG_DIFFICULTY = "Diff";
     public static final String TAG_DECAY = "Decay";
 
-    public String runes;
-    public BlockPos pos;
-    public ResourceLocation dimension;
-    public ResourceLocation location;
-    public List<Item> items = new ArrayList<>();
-    public String clue;
-    public String player;
-    public float difficulty;
-    public float decay;
+    private final String runes;
+    private final ResourceLocation location;
+    private BlockPos pos;
+    private ResourceLocation dimension;
+    private String player;
+    private float difficulty;
+    private float decay;
 
-    public Destination(String runes) {
+    private long cachedSeed;
+
+    public Destination(String runes, ResourceLocation location) {
         this.runes = runes;
-    }
-
-    public String getRunes() {
-        return this.runes;
+        this.location = location;
     }
 
     public CompoundTag toTag() {
@@ -46,25 +37,15 @@ public class Destination {
         tag.putFloat(TAG_DIFFICULTY, difficulty);
         tag.putFloat(TAG_DECAY, decay);
 
-        if (this.items != null && !this.items.isEmpty()) {
-            ListTag itemsNbt = new ListTag();
-            this.items.forEach(item -> itemsNbt.add(StringTag.valueOf(Registry.ITEM.getKey(item).toString())));
-            tag.put(TAG_ITEMS, itemsNbt);
-        }
-
         if (runes != null) {
             tag.putString(TAG_RUNES, runes);
-        }
-
-        if (clue != null) {
-            tag.putString(TAG_CLUE, clue);
         }
 
         if (pos != null) {
             tag.putLong(TAG_POSITION, pos.asLong());
         }
 
-        if (dimension != null) {
+        if (dimension != null && !dimension.toString().isEmpty()) {
             tag.putString(TAG_DIMENSION, dimension.toString());
         }
 
@@ -79,23 +60,78 @@ public class Destination {
         return tag;
     }
 
+    public void setDecay(float decay) {
+        this.decay = decay;
+    }
+
+    public void setDimension(ResourceLocation dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setDifficulty(float difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setPlayer(String player) {
+        this.player = player;
+    }
+
+    public void setPos(BlockPos pos) {
+        this.pos = pos;
+    }
+
+    public String getRunes() {
+        return this.runes;
+    }
+
+    public long getSeed() {
+        if (cachedSeed == 0) {
+            cachedSeed = KnowledgeHelper.generateSeedFromString(this.runes);
+            LogHelper.debug(this.getClass(), "This block's random seed is " + cachedSeed);
+        }
+        return cachedSeed;
+    }
+
+    public ResourceLocation getLocation() {
+        return location;
+    }
+
+    public float getDifficulty() {
+        return difficulty;
+    }
+
+    public float getDecay() {
+        return decay;
+    }
+
+    public String getPlayer() {
+        return player;
+    }
+
+    public Optional<BlockPos> getPos() {
+        return Optional.ofNullable(pos);
+    }
+
+    public Optional<ResourceLocation> getDimension() {
+        return Optional.ofNullable(dimension);
+    }
+
     public static Destination fromTag(CompoundTag tag) {
         String runes = tag.getString(TAG_RUNES);
-        Destination destination = new Destination(runes);
+        ResourceLocation location = new ResourceLocation(tag.getString(TAG_LOCATION));
+        Destination destination = new Destination(runes, location);
 
-        destination.pos = BlockPos.of(tag.getLong(TAG_POSITION));
-        destination.dimension = new ResourceLocation(tag.getString(TAG_DIMENSION));
-        destination.location = new ResourceLocation(tag.getString(TAG_LOCATION));
-        destination.player = tag.getString(TAG_PLAYER);
-        destination.clue = tag.getString(TAG_CLUE);
+        String dimensionFromTag = tag.getString(TAG_DIMENSION);
+        destination.dimension = dimensionFromTag.isEmpty() ? null : new ResourceLocation(dimensionFromTag);
+
+        BlockPos pos = BlockPos.of(tag.getLong(TAG_POSITION));
+        destination.pos = pos.equals(BlockPos.ZERO) ? null : pos;
+
+        String playerFromTag = tag.getString(TAG_PLAYER);
+        destination.player = playerFromTag.isEmpty() ? null : tag.getString(TAG_PLAYER);
+
         destination.difficulty = tag.getFloat(TAG_DIFFICULTY);
         destination.decay = tag.getFloat(TAG_DECAY);
-
-        ListTag itemsList = tag.getList(TAG_ITEMS, 8);
-        for (int i = 0; i < itemsList.size(); i++) {
-            ResourceLocation res = new ResourceLocation(itemsList.getString(i));
-            destination.items.add(Registry.ITEM.get(res));
-        }
 
         return destination;
     }

@@ -11,8 +11,10 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalData;
@@ -23,7 +25,10 @@ import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private final int UNKNOWN_COLOR = 0xDDCCBB;
@@ -98,7 +103,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         KnowledgeClientHelper.renderRunesString(
             minecraft,
             poseStack,
-            destination.runes,
+            destination.getRunes(),
             midX - 76,
             midY - 70,
             11,
@@ -113,19 +118,20 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
     protected void renderLocationClue(PoseStack poseStack, Destination destination, JournalData journal) {
         String name;
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.runes, journal);
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.getRunes(), journal);
 
         if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < Runestones.SHOW_TEXT_CLUE) {
-            name = I18n.get("gui.strange.clues." + destination.clue) + "...";
+            String clue = RunestoneHelper.getClue(destination.getLocation(), new Random(destination.getSeed()));
+            name = I18n.get("gui.strange.clues." + clue) + "...";
         } else if (numberOfUnknownRunes == 0) {
-            name = StringHelper.snakeToPretty(destination.location.getPath());
+            name = StringHelper.snakeToPretty(destination.getLocation().getPath());
         } else {
             return;
         }
 
         int mid = width / 2;
         int left = mid - 76;
-        int top = (height / 2) - (destination.runes.length() > WRAP_AT ? 44 : 54);
+        int top = (height / 2) - (destination.getRunes().length() > WRAP_AT ? 44 : 54);
 
         font.drawShadow(poseStack, name, left, top, KNOWN_COLOR);
     }
@@ -137,35 +143,40 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
             return;
         }
 
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.runes, journal);
-        if (numberOfUnknownRunes > destination.items.size()) {
+        if (minecraft == null || minecraft.level == null) return;
+        ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
+        Random random = new Random(destination.getSeed());
+        List<Item> items = RunestoneHelper.getItems(dimension, destination.getDifficulty(), random);
+
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.getRunes(), journal);
+        if (numberOfUnknownRunes > items.size()) {
             return;
         }
 
-        if (items == null || itemRandomTicks++ >= 100) {
-            items = NonNullList.create();
+        if (this.items == null || itemRandomTicks++ >= 100) {
+            this.items = NonNullList.create();
             NonNullList<ItemStack> sublist = NonNullList.create();
-            destination.items.forEach(item -> items.add(new ItemStack(item)));
+            items.forEach(item -> this.items.add(new ItemStack(item)));
 
             if (numberOfUnknownRunes > 0) {
-                sublist.addAll(items.subList(0, Math.min(items.size(), numberOfUnknownRunes + 1)));
+                sublist.addAll(this.items.subList(0, Math.min(this.items.size(), numberOfUnknownRunes + 1)));
                 Collections.shuffle(sublist, new Random());
             } else {
-                sublist.addAll(items.subList(0, 1));
+                sublist.addAll(this.items.subList(0, 1));
             }
 
-            items = sublist;
+            this.items = sublist;
             itemRandomTicks = 0;
         }
 
         if (numberOfUnknownRunes > 0) {
             text.add(new TranslatableComponent("gui.strange.clues.possible_items"));
-            for (ItemStack item : items) {
+            for (ItemStack item : this.items) {
                 text.add(item.getHoverName());
             }
         } else {
             text.add(new TranslatableComponent("gui.strange.clues.required_item"));
-            text.add(items.get(0).getHoverName());
+            text.add(this.items.get(0).getHoverName());
         }
 
         int top = midY - 28;
@@ -174,7 +185,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         int right = midX + 8;
 
         if (mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
-            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
+            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(this.items)), mouseX, mouseY);
         }
     }
 

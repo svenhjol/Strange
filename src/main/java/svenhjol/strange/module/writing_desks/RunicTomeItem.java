@@ -51,13 +51,17 @@ public class RunicTomeItem extends CharmItem {
                 // destinations have fixed item requirements
                 Optional<Destination> optDest = destinations.get(runes);
                 if (optDest.isPresent()) {
-                    items = optDest.get().items;
+                    Destination dest = optDest.get();
+                    ResourceLocation dimension = dest.getDimension().orElseGet(() -> DimensionHelper.getDimension(player.level));
+                    items = RunestoneHelper.getItems(dimension, dest.getDifficulty(), new Random(dest.getSeed()));
                 }
             } else if (branch instanceof SpecialsBranch specials) {
                 // specials have fixed item requirements
                 Optional<Destination> optDest = specials.get(runes);
                 if (optDest.isPresent()) {
-                    items = optDest.get().items;
+                    Destination dest = optDest.get();
+                    ResourceLocation dimension = dest.getDimension().orElseGet(() -> DimensionHelper.getDimension(player.level));
+                    items = RunestoneHelper.getItems(dimension, dest.getDifficulty(), new Random(dest.getSeed()));
                 }
             } else {
                 // generate item from rune length

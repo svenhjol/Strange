@@ -25,6 +25,17 @@ public class KnowledgeHelper {
         return builder.toString();
     }
 
+    public static long generateSeedFromString(String string) {
+        int s = 0;
+
+        for (int i = 0; i < string.length(); i++) {
+            s += string.charAt(i);
+        }
+
+        Random random = new Random(s);
+        return random.nextLong();
+    }
+
     public static String convertRunesWithDecay(String runes, float amount) {
         StringBuilder out = new StringBuilder();
         amount = Mth.clamp(amount, 0.0F, 1.0F);

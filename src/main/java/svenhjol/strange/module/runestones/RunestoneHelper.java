@@ -1,6 +1,5 @@
 package svenhjol.strange.module.runestones;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -49,9 +48,9 @@ public class RunestoneHelper {
         int tier = Math.round(Runestones.TIERS * difficulty);
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
-            List<Item> tierItems = new ArrayList<>(items.get(tier));
+            List<Item> tierItems = new LinkedList<>(items.get(tier));
             Collections.shuffle(tierItems, random);
-            return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS));
+            return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
         } else {
             return List.of(Items.ENDER_PEARL);
         }
@@ -95,19 +94,17 @@ public class RunestoneHelper {
         if (location != null) {
             if (location.equals(RunestoneLocations.SPAWN)) {
                 // does it exist?
-                Optional<Destination> optSpawn = knowledge.specials.values().stream().filter(d -> d.location.equals(RunestoneLocations.SPAWN)).findFirst();
+                Optional<Destination> optSpawn = knowledge.specials.values().stream().filter(d -> d.getLocation().equals(RunestoneLocations.SPAWN)).findFirst();
                 if (optSpawn.isPresent()) {
-                    return optSpawn;
+                    // generate items for it
+                    Destination spawn = optSpawn.get();
+                    return Optional.of(spawn);
                 }
 
                 // generate a new set of runes for it, check if they already exist
                 String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.specials, random, difficulty, 1, 1).orElseThrow();
 
-                Destination destination = new Destination(runes);
-                destination.pos = BlockPos.ZERO;
-                destination.location = RunestoneLocations.SPAWN;
-                destination.clue = getClue(RunestoneLocations.SPAWN, random);
-                destination.items = getItems(dimension, 0.0F, random);
+                Destination destination = new Destination(runes, RunestoneLocations.SPAWN);
 
                 knowledge.specials.add(runes, destination);
                 knowledge.setDirty();
@@ -124,14 +121,10 @@ public class RunestoneHelper {
 
         String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.destinations, random, difficulty, Knowledge.MIN_LENGTH, Knowledge.MAX_LENGTH).orElseThrow();
 
-        Destination destination = new Destination(runes);
-        destination.difficulty = difficulty;
-        destination.decay = decay;
-        destination.pos = BlockPos.ZERO;
-        destination.dimension = dimension;
-        destination.location = location;
-        destination.clue = getClue(location, random);
-        destination.items = getItems(dimension, difficulty, random);
+        Destination destination = new Destination(runes, location);
+        destination.setDifficulty(difficulty);
+        destination.setDecay(decay);
+        destination.setDimension(dimension);
 
         knowledge.destinations.add(runes, destination);
         knowledge.setDirty();

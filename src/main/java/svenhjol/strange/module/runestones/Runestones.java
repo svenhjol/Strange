@@ -1,19 +1,12 @@
 package svenhjol.strange.module.runestones;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -23,20 +16,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.helper.LootHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 import svenhjol.strange.module.runestones.location.BaseLocation;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,7 +51,7 @@ public class Runestones extends CharmModule {
     public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated
     public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has activated
 
-    public static Map<ResourceLocation, Map<Integer, List<Item>>> dimensionItems = new HashMap<>();
+    public static Map<ResourceLocation, Map<Integer, List<Item>>> dimensionItems = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> clues = new HashMap<>();
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
@@ -190,7 +178,6 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::handleServerStarted);
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
-        RunestoneLoot.create();
         RunestoneLocations.init();
     }
 
@@ -205,6 +192,7 @@ public class Runestones extends CharmModule {
 
     private void initClues(MinecraftServer server) {
         clues = new HashMap<>();
+        dimensionItems = new TreeMap<>();
 
         configClues.forEach(str -> {
             List<String> split = StringHelper.splitConfigEntry(str);
@@ -215,45 +203,13 @@ public class Runestones extends CharmModule {
             clues.put(locationId, cluesList);
         });
 
-        Map<ResourceLocation, ResourceLocation> tables = new HashMap<>();
-        tables.put(ServerLevel.OVERWORLD.location(), RunestoneLoot.OVERWORLD_ITEMS);
-        tables.put(ServerLevel.NETHER.location(), RunestoneLoot.NETHER_ITEMS);
-        tables.put(ServerLevel.END.location(), RunestoneLoot.END_ITEMS);
+        LootHelper.fetchItems(server, RunestoneLoot.OVERWORLD_ITEMS)
+            .ifPresent(m -> dimensionItems.put(ServerLevel.OVERWORLD.location(), m));
 
-        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+        LootHelper.fetchItems(server, RunestoneLoot.NETHER_ITEMS)
+            .ifPresent(m -> dimensionItems.put(ServerLevel.NETHER.location(), m));
 
-        tables.forEach((dimension, table) -> {
-            Resource resource;
-            try {
-                resource = server.getResourceManager().getResource(table);
-            } catch (IOException e) {
-                return;
-            }
-
-            InputStream inputStream = resource.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-            JsonObject obj = GsonHelper.fromJson(gson, reader, JsonObject.class);
-            if (obj == null) return;
-            JsonArray pools = GsonHelper.getAsJsonArray(obj, "pools");
-
-            for (int p = 0; p < pools.size(); p++) {
-                JsonArray elements = GsonHelper.getAsJsonArray((JsonObject) pools.get(p), "entries");
-                for (int e = 0; e < elements.size(); e++) {
-                    JsonObject entry = (JsonObject) elements.get(e);
-                    String name = entry.get("name").getAsString();
-                    ResourceLocation res = new ResourceLocation(name);
-
-                    // try instantiate
-                    if (Registry.ITEM.getOptional(res).isPresent()) {
-                        dimensionItems
-                            .computeIfAbsent(dimension, d -> new HashMap<>())
-                            .computeIfAbsent(p, a -> new ArrayList<>()).add(Registry.ITEM.get(res));
-                    } else {
-                        LogHelper.debug(this.getClass(), "Could not find item in registry: " + res);
-                    }
-                }
-            }
-        });
+        LootHelper.fetchItems(server, RunestoneLoot.END_ITEMS)
+            .ifPresent(m -> dimensionItems.put(ServerLevel.END.location(), m));
     }
 }

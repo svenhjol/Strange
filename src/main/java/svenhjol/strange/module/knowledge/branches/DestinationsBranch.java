@@ -41,6 +41,6 @@ public class DestinationsBranch extends KnowledgeBranch<Destination, Destination
 
     @Override
     public Optional<String> getPrettyName(String runes) {
-        return get(runes).map(destination -> StringHelper.snakeToPretty(destination.location.getPath()));
+        return get(runes).map(destination -> StringHelper.snakeToPretty(destination.getLocation().getPath()));
     }
 }

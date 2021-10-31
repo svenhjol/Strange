@@ -111,7 +111,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             // If runestone.location is null, a location will be generated from the difficulty.
             destination = RunestoneHelper.getOrCreateDestination(dimension, random, difficulty, decay, location).orElseThrow();
 
-            runestone.runes = destination.runes;
+            runestone.runes = destination.getRunes();
             runestone.setChanged();
         }
 

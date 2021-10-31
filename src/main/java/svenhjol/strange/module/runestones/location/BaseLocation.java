@@ -67,13 +67,15 @@ public abstract class BaseLocation {
             if (optDest.isEmpty()) return null;
 
             Destination destination = optDest.get();
-            if (destination.pos == BlockPos.ZERO) {
+            Optional<BlockPos> pos = destination.getPos();
+            if (pos.isEmpty()) {
                 return null;
             }
 
-            if (DimensionHelper.isDimension(level, destination.dimension)) {
-                LogHelper.debug(this.getClass(), "Runestone has location " + destination.location + " with position " + destination.pos);
-                return destination.pos;
+            Optional<ResourceLocation> dimension = destination.getDimension();
+            if (dimension.isPresent() && DimensionHelper.isDimension(level, dimension.get())) {
+                LogHelper.debug(this.getClass(), "Runestone has location " + destination.getLocation() + " with position " + pos.get());
+                return pos.get();
             }
         }
 
@@ -87,8 +89,10 @@ public abstract class BaseLocation {
 
             KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
             knowledge.destinations.get(runes).ifPresent(dest -> {
-                dest.pos = storePos;
-                dest.player = player != null ? player.getName().getContents() : "";
+                dest.setPos(storePos);
+                if (player != null) {
+                    dest.setPlayer(player.getName().getContents());
+                }
             });
             runestone.setChanged();
             LogHelper.debug(this.getClass(), "Stored position " + storePos + " in runestone");
