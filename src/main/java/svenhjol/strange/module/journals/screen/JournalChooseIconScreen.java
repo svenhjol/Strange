@@ -3,19 +3,12 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.data.JournalLocation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class JournalChooseIconScreen extends BaseJournalScreen {
     protected JournalLocation location;
     protected ItemStack selected;
-    protected List<ItemLike> icons = new ArrayList<>();
 
     protected int perRow;
     protected int maxRows;
@@ -28,61 +21,12 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
         super(new TranslatableComponent("gui.strange.journal.choose_icon"));
 
         this.location = location;
-
-        // populate the icons
-        icons.addAll(Arrays.asList(
-            Blocks.GRASS_BLOCK,
-            Blocks.DIRT,
-            Blocks.COBBLESTONE,
-            Blocks.STONE_BRICKS,
-            Blocks.SAND,
-            Blocks.END_STONE,
-            Blocks.BLUE_ICE,
-            Blocks.NETHERRACK,
-
-            Blocks.OAK_LOG,
-            Blocks.OAK_PLANKS,
-            Blocks.OAK_LEAVES,
-            Blocks.BAMBOO,
-            Blocks.BIG_DRIPLEAF,
-            Blocks.MAGMA_BLOCK,
-            Blocks.TERRACOTTA,
-            Blocks.GLASS,
-
-            Blocks.CRAFTING_TABLE,
-            Blocks.FURNACE,
-            Blocks.ANVIL,
-            Blocks.SPAWNER,
-            Blocks.IRON_ORE,
-            Blocks.DIAMOND_ORE,
-            Items.TORCH,
-            Items.REDSTONE_TORCH,
-
-            Items.RED_BED,
-            Items.CHEST,
-            Items.BELL,
-            Items.IRON_INGOT,
-            Items.IRON_PICKAXE,
-            Items.LAVA_BUCKET,
-            Items.WATER_BUCKET,
-            Items.COMPASS,
-
-            Items.RED_DYE,
-            Items.ORANGE_DYE,
-            Items.YELLOW_DYE,
-            Items.GREEN_DYE,
-            Items.BLUE_DYE,
-            Items.PURPLE_DYE,
-            Items.BLACK_DYE,
-            Items.WHITE_DYE
-        ));
-
-        perRow = 8;
-        maxRows = 5;
-        xOffset = 20;
-        yOffset = 20;
-        left = width - ((perRow * xOffset) / 2) + 2;
-        top = 62;
+        this.perRow = 8;
+        this.maxRows = 5;
+        this.xOffset = 20;
+        this.yOffset = 20;
+        this.left = width - ((perRow * xOffset) / 2) + 2;
+        this.top = 62;
     }
 
     @Override
@@ -94,8 +38,8 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
 
         for (int y = 0; y < maxRows; y++) {
             for (int x = 0; x < perRow; x++) {
-                if (index >= icons.size()) continue;
-                ItemStack stack = new ItemStack(icons.get(index));
+                if (index >= Journals.locationIcons.size()) continue;
+                ItemStack stack = new ItemStack(Journals.locationIcons.get(index));
 
                 if (ItemStack.isSame(location.getIcon(), stack))
                     fill(poseStack, mid + left + (x * xOffset), top + (y * yOffset), mid + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
@@ -113,10 +57,10 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
 
         for (int cy = 0; cy < maxRows; cy++) {
             for (int cx = 0; cx < perRow; cx++) {
-                if (index >= icons.size()) continue;
+                if (index >= Journals.locationIcons.size()) continue;
                 if (x >= (mid + left + (cx * xOffset)) && x < (mid + left + (cx * xOffset) + 16)
                     && y >= (top + (cy * yOffset)) && y < (top + (cy * yOffset) + 16)) {
-                    selected = new ItemStack(icons.get(index));
+                    selected = new ItemStack(Journals.locationIcons.get(index));
                     break;
                 }
                 index++;
