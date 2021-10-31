@@ -90,7 +90,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             return false;
         }
 
-        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
         Destination destination;
         boolean generate = false;
 

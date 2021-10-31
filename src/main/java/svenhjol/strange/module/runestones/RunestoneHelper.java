@@ -89,7 +89,7 @@ public class RunestoneHelper {
     }
 
     public static Optional<Destination> getOrCreateDestination(ResourceLocation dimension, Random random, float difficulty, float decay, @Nullable ResourceLocation location) {
-        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
 
         if (location != null) {
             if (location.equals(RunestoneLocations.SPAWN)) {

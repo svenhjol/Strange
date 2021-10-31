@@ -33,7 +33,7 @@ public class JournalData {
     private final List<JournalLocation> locations = new ArrayList<>();
     private final List<JournalNote> notes = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
-    private final List<ResourceLocation> biomes = new ArrayList<>();
+    private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
     private final List<UUID> players = new ArrayList<>();
 
@@ -68,6 +68,8 @@ public class JournalData {
 
         dimensionsNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
             key -> data.dimensions.add(new ResourceLocation(key)));
+
+        Collections.sort(data.biomes);
 
         return data;
     }

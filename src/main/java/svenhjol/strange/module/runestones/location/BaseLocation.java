@@ -62,7 +62,7 @@ public abstract class BaseLocation {
         if (blockEntity instanceof RunestoneBlockEntity runestone) {
             String runes = runestone.runes;
 
-            KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+            KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
             Optional<Destination> optDest = knowledge.destinations.get(runes);
             if (optDest.isEmpty()) return null;
 
@@ -87,7 +87,7 @@ public abstract class BaseLocation {
         if (blockEntity instanceof RunestoneBlockEntity runestone) {
             String runes = runestone.runes;
 
-            KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+            KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
             knowledge.destinations.get(runes).ifPresent(dest -> {
                 dest.setPos(storePos);
                 if (player != null) {

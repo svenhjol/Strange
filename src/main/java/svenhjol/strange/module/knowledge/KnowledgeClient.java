@@ -1,16 +1,29 @@
 package svenhjol.strange.module.knowledge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.helper.NetworkHelper;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 
-public class KnowledgeClientHelper {
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+@ClientModule(module = Knowledge.class)
+public class KnowledgeClient extends CharmModule {
+    public static KnowledgeData knowledge;
+
     public static void renderRunesString(@Nullable Minecraft client, PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, int knownColor, int unknownColor, boolean withShadow) {
         if (client == null || client.player == null) return;
 
@@ -49,4 +62,28 @@ public class KnowledgeClientHelper {
             }
         }
     }
+
+    @Override
+    public void runWhenEnabled() {
+        ClientPlayNetworking.registerGlobalReceiver(Knowledge.MSG_CLIENT_SYNC_KNOWLEDGE, this::handleSyncKnowledge);
+    }
+
+    public static Optional<KnowledgeData> getKnowledgeData() {
+        return Optional.ofNullable(knowledge);
+    }
+
+    public void handleSyncKnowledge(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
+        updateKnowledge(buffer.readNbt());
+    }
+
+    public static void sendSyncKnowledge() {
+        NetworkHelper.sendEmptyPacketToServer(Knowledge.MSG_SERVER_SYNC_KNOWLEDGE);
+    }
+
+    private void updateKnowledge(@Nullable CompoundTag tag) {
+        if (tag != null) {
+            knowledge = KnowledgeData.fromNbt(tag);
+        }
+    }
 }
+

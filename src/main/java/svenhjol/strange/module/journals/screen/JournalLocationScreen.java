@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -18,11 +17,10 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import javax.annotation.Nullable;
@@ -42,7 +40,6 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected JournalLocation location;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
-    protected JournalData journal = null;
     protected int photoFailureRetries = 0;
     protected boolean hasInitializedUpdateButtons = false;
     protected boolean hasInitializedPhotoButtons = false;
@@ -50,13 +47,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected boolean hasRenderedPhotoButtons = false;
     protected boolean hasPhoto = false;
     protected List<GuiHelper.ButtonDefinition> updateButtons = new ArrayList<>();
-    protected List<GuiHelper.ButtonDefinition> photoButtons = new ArrayList<>();
 
     public JournalLocationScreen(JournalLocation location) {
         super(new TextComponent(location.getName()));
-
-        // get reference to cached player data
-        JournalsClient.getPlayerData().ifPresent(data -> this.journal = data);
 
         this.name = location.getName();
         this.location = location.copy();
@@ -66,8 +59,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
     protected void init() {
         super.init();
 
-        if (minecraft == null)
+        if (minecraft == null) {
             return;
+        }
 
         // set up the input field for editing the entry name
         nameField = new EditBox(font, (width / 2) - 65, 40, 130, 12, new TextComponent("NameField"));
@@ -133,7 +127,6 @@ public class JournalLocationScreen extends BaseJournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
-        int mid = width / 2;
         int buttonWidth = 105;
         int buttonHeight = 20;
 
@@ -147,7 +140,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         // render update buttons
         if (!hasRenderedUpdateButtons) {
-            int left = hasPhoto ? mid + 5 : mid - 50;
+            int left = hasPhoto ? midX + 5 : midX - 50;
             int top = 60;
             int yOffset = 22;
 
@@ -165,11 +158,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
     }
 
     protected void renderCoordinates(PoseStack poseStack, Player player) {
-        int mid = width / 2;
-
-        if (!player.isCreative())
+        if (!player.isCreative()) {
             return;
-
+        }
 
         BlockPos pos = location.getBlockPos();
         int x = pos.getX();
@@ -178,7 +169,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         String max = String.valueOf(Math.max(z, Math.max(x, y)));
 
-        int left = mid - 60 - (max.length() * 4);
+        int left = midX - 60 - (max.length() * 4);
         int top = 130;
         int yOffset = 14;
 
@@ -188,11 +179,11 @@ public class JournalLocationScreen extends BaseJournalScreen {
     }
 
     protected void renderRunes(PoseStack poseStack, Player player) {
-        int mid = width / 2;
         boolean isCreative = player.isCreative();
 
-        if (journal == null)
+        if (journal == null) {
             return;
+        }
 
         if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
             return;
@@ -201,37 +192,39 @@ public class JournalLocationScreen extends BaseJournalScreen {
         String runes = location.getRunes();
         String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
 
-        int left = isCreative ? mid + 9 : mid - 48;
+        int left = isCreative ? midX + 9 : midX - 48;
         int top = 150;
         int xOffset = 13;
         int yOffset = 15;
-        int index = 0;
 
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 8; x++) {
-                if (index < knownRunes.length()) {
-                    Component rune;
-                    int color;
+        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 8, 4, KNOWN_COLOR, UNKNOWN_COLOR, false);
 
-                    String s = String.valueOf(knownRunes.charAt(index));
-                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
-                        color = UNKNOWN_COLOR;
-                    } else {
-                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-                        color = KNOWN_COLOR;
-                    }
-
-                    font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
-                }
-                index++;
-            }
-        }
+//        for (int y = 0; y < 4; y++) {
+//            for (int x = 0; x < 8; x++) {
+//                if (index < knownRunes.length()) {
+//                    Component rune;
+//                    int color;
+//
+//                    String s = String.valueOf(knownRunes.charAt(index));
+//                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
+//                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+//                        color = UNKNOWN_COLOR;
+//                    } else {
+//                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
+//                        color = KNOWN_COLOR;
+//                    }
+//
+//                    font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
+//                }
+//                index++;
+//            }
+//        }
     }
 
     protected void renderPhoto(PoseStack poseStack) {
-        if (minecraft == null)
+        if (minecraft == null) {
             return;
+        }
 
         if (photoTexture == null) {
             try {
@@ -270,7 +263,6 @@ public class JournalLocationScreen extends BaseJournalScreen {
             poseStack.pushPose();
             poseStack.scale(0.425F, 0.32F, 0.425F);
             blit(poseStack, ((int)((width / 2) / 0.425F) - 265), 187, 0, 0, 256, 200);
-
             poseStack.popPose();
         }
     }
@@ -280,14 +272,13 @@ public class JournalLocationScreen extends BaseJournalScreen {
      */
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        int mid = width / 2;
         int left = 112;
         int top = 60;
         int height = 64;
         int width = 109;
 
         if (hasPhoto && registeredPhotoTexture != null) {
-            if (x > (mid - left) && x < mid - left + width
+            if (x > (midX - left) && x < midX - left + width
                 && y > top && y < top + height) {
                 minecraft.setScreen(new JournalPhotoScreen(location));
                 return true;
@@ -330,8 +321,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
     @Nullable
     protected File getPhoto() {
-        if (minecraft == null)
+        if (minecraft == null) {
             return null;
+        }
 
         File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
         return new File(screenshotsDirectory, location.getId() + ".png");
@@ -343,15 +335,17 @@ public class JournalLocationScreen extends BaseJournalScreen {
     }
 
     protected boolean playerHasEmptyMap() {
-        if (minecraft != null && minecraft.player != null)
+        if (minecraft != null && minecraft.player != null) {
             return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
+        }
 
         return false;
     }
 
     protected boolean playerIsNearLocation() {
-        if (minecraft != null && minecraft.player != null)
+        if (minecraft != null && minecraft.player != null) {
             return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), location.getBlockPos()) < MIN_PHOTO_DISTANCE;
+        }
 
         return false;
     }

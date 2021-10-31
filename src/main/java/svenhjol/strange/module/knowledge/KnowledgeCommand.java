@@ -158,7 +158,7 @@ public class KnowledgeCommand {
     }
 
     private static KnowledgeData getKnowledge() throws CommandSyntaxException {
-        return Knowledge.getSavedData().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
+        return Knowledge.getKnowledgeData().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
     }
 
     static {

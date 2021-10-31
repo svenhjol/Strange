@@ -3,14 +3,13 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class JournalKnowledgeScreen extends BaseJournalScreen {
-    protected boolean hasRenderedKnowledgeButtons = false;
+    protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> knowledgeButtons;
 
     public JournalKnowledgeScreen() {
@@ -20,11 +19,11 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
     public JournalKnowledgeScreen(Component component) {
         super(component);
 
-        knowledgeButtons = Arrays.asList(
+        this.knowledgeButtons = Arrays.asList(
             new GuiHelper.ButtonDefinition(b -> runes(),
                 new TranslatableComponent("gui.strange.journal.learned_runes")),
 
-            new GuiHelper.ButtonDefinition(b -> onClose(),
+            new GuiHelper.ButtonDefinition(b -> biomes(),
                 new TranslatableComponent("gui.strange.journal.learned_biomes")),
 
             new GuiHelper.ButtonDefinition(b -> onClose(),
@@ -36,12 +35,14 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
             new GuiHelper.ButtonDefinition(b -> onClose(),
                 new TranslatableComponent("gui.strange.journal.learned_players"))
         );
+
+        this.hasRenderedButtons = false;
     }
 
     @Override
     protected void init() {
         super.init();
-        hasRenderedKnowledgeButtons = false;
+        hasRenderedButtons = false;
     }
 
     @Override
@@ -56,20 +57,15 @@ public class JournalKnowledgeScreen extends BaseJournalScreen {
     }
 
     public void renderKnowledgeButtons(PoseStack poseStack) {
-        if (!hasRenderedKnowledgeButtons) {
+        if (!hasRenderedButtons) {
             int buttonWidth = 105;
             int buttonHeight = 20;
-            int x = (width / 2) - 50;
+            int x = midX - 50;
             int y = 40;
             int yOffset = 24;
 
             GuiHelper.renderButtons(this, width, font, knowledgeButtons, x, y, 0, yOffset, buttonWidth, buttonHeight);
-            hasRenderedKnowledgeButtons = true;
+            hasRenderedButtons = true;
         }
-    }
-
-    protected void runes() {
-        ClientHelper.getClient().ifPresent(client
-            -> client.setScreen(new JournalLearnedRunesScreen()));
     }
 }

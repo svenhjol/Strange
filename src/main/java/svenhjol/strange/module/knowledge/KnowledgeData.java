@@ -9,6 +9,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import svenhjol.strange.module.knowledge.branches.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,13 +30,15 @@ public class KnowledgeData extends SavedData {
     public LocationsBranch locations = new LocationsBranch();
 
     @SuppressWarnings("unused")
-    public KnowledgeData(ServerLevel level) {
+    public KnowledgeData(@Nullable ServerLevel level) {
         this.setDirty();
     }
 
-    public static KnowledgeData fromNbt(ServerLevel level, CompoundTag tag) {
-        clearAllData();
+    public static KnowledgeData fromNbt(CompoundTag tag) {
+        return fromNbt(null, tag);
+    }
 
+    public static KnowledgeData fromNbt(@Nullable ServerLevel level, CompoundTag tag) {
         KnowledgeData data = new KnowledgeData(level);
 
         data.specials = SpecialsBranch.load(tag);

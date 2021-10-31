@@ -29,16 +29,14 @@ public class JournalPhotoScreen extends BaseJournalScreen {
         super(new TextComponent(location.getName()));
 
         this.location = location;
-
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(),
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(),
             new TranslatableComponent("gui.strange.journal.go_back")));
     }
 
     @Override
     protected void init() {
         super.init();
-
-        this.hasPhoto = hasPhoto();
+        hasPhoto = hasPhoto();
     }
 
     @Override
@@ -48,8 +46,9 @@ public class JournalPhotoScreen extends BaseJournalScreen {
         // render icon next to title
         renderTitleIcon(location.getIcon());
 
-        if (!hasPhoto || minecraft == null)
+        if (!hasPhoto || minecraft == null) {
             return;
+        }
 
         if (photoTexture == null) {
             try {
@@ -87,8 +86,7 @@ public class JournalPhotoScreen extends BaseJournalScreen {
             RenderSystem.setShaderTexture(0, registeredPhotoTexture);
             poseStack.pushPose();
             poseStack.scale(0.825F, 0.66F, 0.825F);
-            blit(poseStack, ((int)((width / 2) / 0.825F) - 128), 65, 0, 0, 256, 200);
-
+            blit(poseStack, ((int)(midX / 0.825F) - 128), 65, 0, 0, 256, 200);
             poseStack.popPose();
         }
     }
@@ -98,10 +96,8 @@ public class JournalPhotoScreen extends BaseJournalScreen {
      */
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        int mid = width / 2;
-
         if (hasPhoto && registeredPhotoTexture != null) {
-            if (x > (mid - 107) && x < mid + 107
+            if (x > (midX - 107) && x < midX + 107
                 && y > 42 && y < 175) {
                 minecraft.setScreen(new JournalLocationScreen(location));
                 return true;
@@ -113,8 +109,9 @@ public class JournalPhotoScreen extends BaseJournalScreen {
 
     @Nullable
     protected File getPhoto() {
-        if (minecraft == null)
+        if (minecraft == null) {
             return null;
+        }
 
         File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
         return new File(screenshotsDirectory, location.getId() + ".png");
@@ -126,7 +123,8 @@ public class JournalPhotoScreen extends BaseJournalScreen {
     }
 
     private void back() {
-        if (minecraft != null)
+        if (minecraft != null) {
             minecraft.setScreen(new JournalLocationScreen(location));
+        }
     }
 }

@@ -53,12 +53,11 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         int index = 0;
-        int mid = width / 2;
 
         for (int cy = 0; cy < maxRows; cy++) {
             for (int cx = 0; cx < perRow; cx++) {
                 if (index >= Journals.locationIcons.size()) continue;
-                if (x >= (mid + left + (cx * xOffset)) && x < (mid + left + (cx * xOffset) + 16)
+                if (x >= (midX + left + (cx * xOffset)) && x < (midX + left + (cx * xOffset) + 16)
                     && y >= (top + (cy * yOffset)) && y < (top + (cy * yOffset) + 16)) {
                     selected = new ItemStack(Journals.locationIcons.get(index));
                     break;

@@ -39,7 +39,7 @@ public class Journals extends CharmModule {
     public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
 
     public static final List<ItemLike> locationIcons = new LinkedList<>();
-    private static final Map<UUID, JournalData> journalData = new HashMap<>();
+    private static final Map<UUID, JournalData> journal = new HashMap<>();
 
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
     public static boolean enableKeybind = true;
@@ -60,14 +60,14 @@ public class Journals extends CharmModule {
     private void handlePlayerLoadData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
         CompoundTag nbt = PlayerLoadDataCallback.readFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"));
-        journalData.put(uuid, JournalData.fromNbt(player, nbt));
+        journal.put(uuid, JournalData.fromNbt(player, nbt));
     }
 
     private void handlePlayerSaveData(Player player, File playerDataDir) {
         UUID uuid = player.getUUID();
-        if (journalData.containsKey(uuid)) {
+        if (journal.containsKey(uuid)) {
             CompoundTag nbt = new CompoundTag();
-            journalData.get(uuid).toNbt(nbt);
+            journal.get(uuid).toNbt(nbt);
             PlayerSaveDataCallback.writeFile(new File(playerDataDir + "/" + uuid.toString() + "_strange_journal.dat"), nbt);
         }
     }
@@ -133,7 +133,7 @@ public class Journals extends CharmModule {
     }
 
     public static Optional<JournalData> getJournalData(Player player) {
-        return Optional.ofNullable(journalData.get(player.getUUID()));
+        return Optional.ofNullable(journal.get(player.getUUID()));
     }
 
     public enum Page {

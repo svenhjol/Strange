@@ -20,7 +20,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
-import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +150,7 @@ public class MiniJournalClient {
                     // render item icon
                     itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
                     GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
-                    KnowledgeClientHelper.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
+                    KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
                     hasRenderedButtons = true;
 
                 } else {

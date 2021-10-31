@@ -64,12 +64,12 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         ResourceLocation dimension = null;
         List<BlockState> blocks = new ArrayList<>();
 
-        if (Knowledge.getSavedData().isEmpty()) {
+        if (Knowledge.getKnowledgeData().isEmpty()) {
             LogHelper.warn(this.getClass(), "Could not load KnowledgeData, giving up");
             return;
         }
 
-        KnowledgeData knowledgeData = Knowledge.getSavedData().get();
+        KnowledgeData knowledgeData = Knowledge.getKnowledgeData().get();
 
         switch (stoneCircleType) {
             case OVERWORLD -> {

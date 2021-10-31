@@ -2,10 +2,7 @@ package svenhjol.strange.module.writing_desks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -14,22 +11,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.data.JournalLocation;
-import svenhjol.strange.module.journals.screen.BaseJournalScreen;
-import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 import svenhjol.strange.module.journals.screen.MiniJournalClient;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.*;
@@ -194,7 +184,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderWrittenRunes(PoseStack poseStack) {
-        KnowledgeClientHelper.renderRunesString(
+        KnowledgeClient.renderRunesString(
             minecraft,
             poseStack,
             runes,

@@ -41,7 +41,7 @@ public class KnowledgeStoneItem extends CharmItem {
         ItemStack held = player.getItemInHand(hand);
         KnowledgeStoneItem stone = (KnowledgeStoneItem)held.getItem();
         JournalData journal = Journals.getJournalData(player).orElseThrow();
-        KnowledgeData knowledge = Knowledge.getSavedData().orElseThrow();
+        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
 
         if (!level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
@@ -117,6 +117,6 @@ public class KnowledgeStoneItem extends CharmItem {
         BIOME,
         STRUCTURE,
         PLAYER,
-        DIMENSION;
+        DIMENSION
     }
 }

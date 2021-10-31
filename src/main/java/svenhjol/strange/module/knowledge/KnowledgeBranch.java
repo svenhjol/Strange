@@ -39,6 +39,10 @@ public abstract class KnowledgeBranch<R, V> {
         return Optional.ofNullable(data.get(runes));
     }
 
+    public Optional<String> get(V value) {
+        return data.entrySet().stream().filter(e -> e.getValue().equals(value)).map(Map.Entry::getKey).findFirst();
+    }
+
     public boolean has(String runes) {
         return data.containsKey(runes);
     }

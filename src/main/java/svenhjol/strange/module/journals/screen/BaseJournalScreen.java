@@ -3,17 +3,26 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalData;
+import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class BaseJournalScreen extends Screen {
     public static final int BGWIDTH = 256;
@@ -52,20 +61,27 @@ public abstract class BaseJournalScreen extends Screen {
     protected int titleColor = 0x000000;
     protected int errorColor = 0x770000;
 
+    protected int lastPage;
+    protected JournalData journal;
 
     protected List<GuiHelper.ButtonDefinition> bottomButtons = new ArrayList<>();
     protected List<GuiHelper.ImageButtonDefinition> navigationButtons = new ArrayList<>();
 
     public BaseJournalScreen(Component component) {
         super(component);
-        passEvents = false;
+        this.passEvents = false;
 
-        bottomButtons.add(
+        JournalsClient.getJournalData().ifPresent(j -> this.journal = j);
+
+        // ask server to update knowledge on the client
+        KnowledgeClient.sendSyncKnowledge();
+
+        this.bottomButtons.add(
             new GuiHelper.ButtonDefinition(b -> onClose(),
                 new TranslatableComponent("gui.strange.journal.close"))
         );
 
-        navigationButtons.addAll(Arrays.asList(
+        this.navigationButtons.addAll(Arrays.asList(
             new GuiHelper.ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18,
                 new TranslatableComponent("gui.strange.journal.home_tooltip")),
             new GuiHelper.ImageButtonDefinition(b -> locations(), NAVIGATION, 60, 36, 18,
@@ -75,6 +91,8 @@ public abstract class BaseJournalScreen extends Screen {
             new GuiHelper.ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18,
                 new TranslatableComponent("gui.strange.journal.knowledge_tooltip"))
         ));
+
+        this.lastPage = 0;
     }
 
     @Override
@@ -157,6 +175,67 @@ public abstract class BaseJournalScreen extends Screen {
         }
     }
 
+    protected <T> void paginator(PoseStack poseStack, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
+        int perPage = 6;
+        int paginationY = 180;
+        int currentPage = lastPage - 1;
+        List<T> sublist;
+
+        int size = items.size();
+        if (size > perPage) {
+            if (currentPage * perPage >= size || currentPage * perPage < 0) {
+                // out of range, reset
+                lastPage = 1;
+                currentPage = 0;
+            }
+            sublist = items.subList(currentPage * perPage, Math.min(currentPage * perPage + perPage, size));
+        } else {
+            sublist = items;
+        }
+
+        for (T item : sublist) {
+            renderItem.accept(item);
+        }
+
+        if (size > perPage) {
+            TranslatableComponent component = new TranslatableComponent("gui.strange.journal.page", lastPage);
+            GuiHelper.drawCenteredString(poseStack, font, component, midX, paginationY + 6, secondaryColor);
+
+            // only render pagination buttons on the first render pass
+            if (shouldRenderButtons) {
+                if (lastPage * perPage < size) {
+                    addRenderableWidget(new ImageButton(midX + 30, paginationY, 20, 18, 120, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                        ++lastPage;
+                        redraw();
+                    }));
+                }
+                if (lastPage > 1) {
+                    addRenderableWidget(new ImageButton(midX - 50, paginationY, 20, 18, 140, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                        --lastPage;
+                        redraw();
+                    }));
+                }
+            }
+        }
+
+        if (size == 0) {
+            GuiHelper.drawCenteredString(poseStack, font, labelForNoItems.get(), midX, 100, secondaryColor);
+        }
+    }
+
+    protected void redraw() {
+        ClientHelper.getClient().ifPresent(mc -> init(mc, width, height));
+    }
+
+    protected String getTruncatedName(String name, int length) {
+        return name.substring(0, Math.min(name.length(), length));
+    }
+
+    private String getTruncatedName(String name) {
+        return getTruncatedName(name, 14);
+    }
+
+
     protected void home() {
         ClientHelper.getClient().ifPresent(client
             -> client.setScreen(new JournalHomeScreen()));
@@ -165,6 +244,16 @@ public abstract class BaseJournalScreen extends Screen {
     protected void knowledge() {
         ClientHelper.getClient().ifPresent(client
             -> client.setScreen(new JournalKnowledgeScreen()));
+    }
+
+    protected void biomes() {
+        ClientHelper.getClient().ifPresent(client
+            -> client.setScreen(new JournalBiomesScreen()));
+    }
+
+    protected void runes() {
+        ClientHelper.getClient().ifPresent(client
+            -> client.setScreen(new JournalRunesScreen()));
     }
 
     protected void locations() {

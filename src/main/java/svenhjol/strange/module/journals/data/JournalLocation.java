@@ -118,7 +118,7 @@ public class JournalLocation {
     public void setBlockPos(BlockPos pos) {
         this.pos = pos;
 
-        Knowledge.getSavedData().ifPresent(knowledge
+        Knowledge.getKnowledgeData().ifPresent(knowledge
             -> this.runes = knowledge.locations.getStartRune() + KnowledgeHelper.generateRunesFromPos(pos));
     }
 

@@ -19,7 +19,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 
 import java.util.List;
@@ -153,7 +153,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     }
 
     protected void renderRunes(PoseStack poseStack) {
-        KnowledgeClientHelper.renderRunesString(
+        KnowledgeClient.renderRunesString(
             minecraft,
             poseStack,
             runes,

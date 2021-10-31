@@ -36,7 +36,7 @@ public class JournalsClient extends CharmModule {
     private static final int MAX_PHOTO_TICKS = 30;
 
     private KeyMapping keyBinding;
-    private static JournalData playerData;
+    private static JournalData journal;
 
     public static JournalLocation locationBeingPhotographed;
     public static int photoTicks = 0;
@@ -63,8 +63,8 @@ public class JournalsClient extends CharmModule {
      * Always use this method to reference the current player's journal data on the client.
      * If you need to synchronise it, call sendSyncJournal() or sendOpenJournal() to sync and open
      */
-    public static Optional<JournalData> getPlayerData() {
-        return Optional.ofNullable(playerData);
+    public static Optional<JournalData> getJournalData() {
+        return Optional.ofNullable(journal);
     }
 
     private void handleKeyPressed() {
@@ -110,11 +110,11 @@ public class JournalsClient extends CharmModule {
     }
 
     private void handleSyncJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        updatePlayerData(buffer.readNbt());
+        updateJournal(buffer.readNbt());
     }
 
     private void handleOpenJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        updatePlayerData(buffer.readNbt());
+        updateJournal(buffer.readNbt());
         Page page = buffer.readEnum(Page.class);
 
         processPacketFromServer(client, mc -> {
@@ -151,9 +151,10 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
     }
 
-    private void updatePlayerData(@Nullable CompoundTag nbt) {
-        if (nbt != null)
-            ClientHelper.getPlayer().ifPresent(player -> playerData = JournalData.fromNbt(player, nbt));
+    private void updateJournal(@Nullable CompoundTag tag) {
+        if (tag != null) {
+            ClientHelper.getPlayer().ifPresent(player -> journal = JournalData.fromNbt(player, tag));
+        }
     }
 
     private void processPacketFromServer(Minecraft client, Consumer<Minecraft> clientCallback) {

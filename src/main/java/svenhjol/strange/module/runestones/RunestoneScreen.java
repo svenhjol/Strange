@@ -22,7 +22,7 @@ import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.Destination;
-import svenhjol.strange.module.knowledge.KnowledgeClientHelper;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
 import java.util.Collections;
@@ -100,7 +100,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     }
 
     protected void renderRunes(PoseStack poseStack, Destination destination) {
-        KnowledgeClientHelper.renderRunesString(
+        KnowledgeClient.renderRunesString(
             minecraft,
             poseStack,
             destination.getRunes(),

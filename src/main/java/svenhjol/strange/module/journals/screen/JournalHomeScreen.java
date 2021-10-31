@@ -12,13 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JournalHomeScreen extends BaseJournalScreen {
-    protected boolean hasRenderedHomeButtons = false;
+    protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
         super(new TranslatableComponent("gui.strange.journal.title"));
 
-        homeButtons.addAll(Arrays.asList(
+        this.homeButtons.addAll(Arrays.asList(
             new GuiHelper.ButtonDefinition(b -> locations(),
                 new TranslatableComponent("gui.strange.journal.locations")),
 
@@ -28,12 +28,14 @@ public class JournalHomeScreen extends BaseJournalScreen {
             new GuiHelper.ButtonDefinition(b -> knowledge(),
                 new TranslatableComponent("gui.strange.journal.knowledge"))
         ));
+
+        this.hasRenderedButtons = false;
     }
 
     @Override
     protected void init() {
         super.init();
-        hasRenderedHomeButtons = false;
+        hasRenderedButtons = false;
     }
 
     @Override
@@ -59,15 +61,15 @@ public class JournalHomeScreen extends BaseJournalScreen {
     }
 
     public void renderButtons(PoseStack poseStack) {
-        if (!hasRenderedHomeButtons) {
+        if (!hasRenderedButtons) {
             int buttonWidth = 100;
             int buttonHeight = 20;
-            int x = (width / 2) - (buttonWidth / 2);
+            int x = midX - (buttonWidth / 2);
             int y = 48;
             int xOffset = 0;
             int yOffset = 24;
             renderHome(this, font, width, poseStack, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
-            hasRenderedHomeButtons = true;
+            hasRenderedButtons = true;
         }
     }
 
