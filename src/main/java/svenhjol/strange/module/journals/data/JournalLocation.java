@@ -3,12 +3,12 @@ package svenhjol.strange.module.journals.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
@@ -36,7 +36,7 @@ public class JournalLocation {
     private ResourceLocation icon;
 
     public JournalLocation(BlockPos pos, ResourceLocation dim) {
-        this(new TranslatableComponent("gui.strange.journal.somewhere").getString(), pos, dim, DEFAULT_ICON, null);
+        this(StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.somewhere").orElse("Somewhere"), pos, dim, DEFAULT_ICON, null);
     }
 
     public JournalLocation(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
@@ -46,6 +46,7 @@ public class JournalLocation {
     public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
         this.id = id;
         this.noteId = noteId != null ? noteId : "";
+        this.runes = "";
 
         setName(name);
         setBlockPos(pos);

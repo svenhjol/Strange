@@ -15,14 +15,14 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.screen.MiniJournalScreen;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("ConstantConditions")
@@ -278,7 +278,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void runForValidPlayer(BiConsumer<Player, JournalData> run) {
-        ClientHelper.getPlayer().ifPresent(player -> Journals.getJournalData(player).ifPresent(journal
+        ClientHelper.getPlayer().ifPresent(player -> JournalsClient.getJournalData().ifPresent(journal
             -> run.accept(player, journal)));
     }
 
