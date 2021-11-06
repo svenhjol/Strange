@@ -20,11 +20,6 @@ public abstract class JournalResourceScreen extends JournalScreen {
     }
 
     @Override
-    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, titleX, 16, titleColor);
-    }
-
-    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 

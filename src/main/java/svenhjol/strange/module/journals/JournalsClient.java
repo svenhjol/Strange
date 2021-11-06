@@ -151,6 +151,12 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
     }
 
+    public static void sendDeleteLocation(JournalLocation location) {
+        // delete on client then sync with server via a packet
+        journal.getLocations().remove(location);
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
+    }
+
     private void updateJournal(@Nullable CompoundTag tag) {
         if (tag != null) {
             ClientHelper.getPlayer().ifPresent(player -> journal = JournalData.fromNbt(player, tag));

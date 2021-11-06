@@ -15,20 +15,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class JournalResourcesScreen extends JournalScreen {
-    protected boolean hasRenderedButtons;
-
     public JournalResourcesScreen(Component component) {
         super(component);
 
-        this.hasRenderedButtons = false;
-
         // add a back button at the bottom
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
-    }
-
-    @Override
-    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, titleX, 16, titleColor);
     }
 
     @Override

@@ -9,7 +9,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class JournalKnowledgeScreen extends JournalScreen {
-    protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> knowledgeButtons;
 
     public JournalKnowledgeScreen() {
@@ -25,25 +24,12 @@ public class JournalKnowledgeScreen extends JournalScreen {
             new GuiHelper.ButtonDefinition(b -> structures(), LEARNED_STRUCTURES),
             new GuiHelper.ButtonDefinition(b -> dimensions(), LEARNED_DIMENSIONS)
         );
-
-        this.hasRenderedButtons = false;
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        hasRenderedButtons = false;
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
         renderKnowledgeButtons(poseStack);
-    }
-
-    @Override
-    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, titleX, titleY, titleColor);
     }
 
     public void renderKnowledgeButtons(PoseStack poseStack) {

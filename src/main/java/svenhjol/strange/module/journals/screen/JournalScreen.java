@@ -33,6 +33,7 @@ public abstract class JournalScreen extends Screen {
     public static final Component ADD_LOCATION;
     public static final Component CHOOSE_ICON;
     public static final Component CLOSE;
+    public static final Component DELETE_TOOLTIP;
     public static final Component GO_BACK;
     public static final Component HOME_TOOLTIP;
     public static final Component JOURNAL;
@@ -56,6 +57,7 @@ public abstract class JournalScreen extends Screen {
 
     protected boolean hasRenderedBottomButtons;
     protected boolean hasRenderedNavigation;
+    protected boolean hasRenderedButtons; // generic buttons used by subclasses
 
     protected int backgroundWidth;
     protected int backgroundHeight;
@@ -132,6 +134,7 @@ public abstract class JournalScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        hasRenderedButtons = false;
         hasRenderedNavigation = false;
         hasRenderedBottomButtons = false;
         midX = width / 2;
@@ -310,6 +313,7 @@ public abstract class JournalScreen extends Screen {
         ADD_LOCATION = new TranslatableComponent("gui.strange.journal.add_location");
         CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
         CLOSE = new TranslatableComponent("gui.strange.journal.close");
+        DELETE_TOOLTIP = new TranslatableComponent("gui.strange.journal.delete");
         GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
         HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
         JOURNAL = new TranslatableComponent("gui.strange.journal.title");

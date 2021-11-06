@@ -12,7 +12,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class JournalHomeScreen extends JournalScreen {
-    protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
@@ -23,14 +22,6 @@ public class JournalHomeScreen extends JournalScreen {
             new GuiHelper.ButtonDefinition(b -> quests(), QUESTS),
             new GuiHelper.ButtonDefinition(b -> knowledge(), KNOWLEDGE)
         ));
-
-        this.hasRenderedButtons = false;
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        hasRenderedButtons = false;
     }
 
     @Override

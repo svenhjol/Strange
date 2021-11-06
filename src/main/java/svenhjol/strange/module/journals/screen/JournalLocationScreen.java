@@ -55,6 +55,10 @@ public class JournalLocationScreen extends JournalScreen {
         this.photoFailureRetries = 0;
         this.maxNameLength = 50;
         this.minPhotoDistance = 10;
+
+        this.navigationButtons.add(
+            new GuiHelper.ImageButtonDefinition(b -> delete(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP)
+        );
     }
 
     @Override
@@ -266,6 +270,11 @@ public class JournalLocationScreen extends JournalScreen {
 
     protected void save() {
         JournalsClient.sendUpdateLocation(location);
+    }
+
+    protected void delete() {
+        JournalsClient.sendDeleteLocation(location);
+        JournalsClient.sendOpenJournal(Journals.Page.LOCATIONS);
     }
 
     protected void chooseIcon() {

@@ -34,6 +34,7 @@ public class Journals extends CharmModule {
     public static final ResourceLocation MSG_SERVER_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_sync_journal");
     public static final ResourceLocation MSG_SERVER_ADD_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_add_location");
     public static final ResourceLocation MSG_SERVER_UPDATE_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_update_location");
+    public static final ResourceLocation MSG_SERVER_DELETE_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_delete_location");
     public static final ResourceLocation MSG_CLIENT_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_open_journal");
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
     public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
@@ -55,6 +56,7 @@ public class Journals extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_JOURNAL, this::handleSyncJournal);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ADD_LOCATION, this::handleAddLocation);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_LOCATION, this::handleUpdateLocation);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_DELETE_LOCATION, this::handleDeleteLocation);
     }
 
     private void handlePlayerLoadData(Player player, File playerDataDir) {
@@ -104,6 +106,19 @@ public class Journals extends CharmModule {
         processPacketFromClient(server, player, data -> {
             JournalLocation location = JournalLocation.fromNbt(tag);
             data.updateLocation(location);
+        });
+    }
+
+    private void handleDeleteLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+        CompoundTag tag = buffer.readNbt();
+
+        if (tag == null) {
+            return; // don't handle
+        }
+
+        processPacketFromClient(server, player, data -> {
+            JournalLocation location = JournalLocation.fromNbt(tag);
+            data.deleteLocation(location);
         });
     }
 

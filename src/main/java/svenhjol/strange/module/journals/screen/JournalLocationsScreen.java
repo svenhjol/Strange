@@ -15,20 +15,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class JournalLocationsScreen extends JournalScreen {
-    protected boolean hasRenderedButtons;
-
     public JournalLocationsScreen() {
         super(LOCATIONS);
 
         // "add location" button to the bottom
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> add(), ADD_LOCATION));
-
-        this.hasRenderedButtons = false;
-    }
-
-    @Override
-    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, titleX, 16, titleColor);
     }
 
     @Override
@@ -42,7 +33,7 @@ public class JournalLocationsScreen extends JournalScreen {
         if (journal == null || journal.getLocations() == null || journal.getLocations().size() == 0) {
             // no locations, show "add location" button and exit early
             if (!hasRenderedButtons) {
-                addRenderableWidget(new Button(midX - (buttonWidth / 2), 28, buttonWidth, buttonHeight, ADD_LOCATION, b -> add()));
+                addRenderableWidget(new Button(midX - (buttonWidth / 2), 40, buttonWidth, buttonHeight, ADD_LOCATION, b -> add()));
                 hasRenderedButtons = true;
             }
             return;

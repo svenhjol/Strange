@@ -107,6 +107,11 @@ public class JournalData {
         opt.ifPresent(l -> l.populate(location));
     }
 
+    public void deleteLocation(JournalLocation location) {
+        Optional<JournalLocation> opt = locations.stream().filter(l -> l.getId().equals(location.getId())).findFirst();
+        opt.ifPresent(locations::remove);
+    }
+
     public void addDeathLocation(Level level, BlockPos pos) {
         JournalLocation location = new JournalLocation(
             new TranslatableComponent("gui.strange.journal.death_location").getString(),
