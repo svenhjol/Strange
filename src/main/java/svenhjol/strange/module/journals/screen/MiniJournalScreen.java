@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
@@ -22,6 +21,7 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
+import svenhjol.strange.module.knowledge.KnowledgeData;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,27 +29,41 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MiniJournalScreen {
-    private JournalSection section;
+    private final Component JOURNAL = new TranslatableComponent("gui.strange.journal.title");
+    private final Component LOCATIONS = new TranslatableComponent("gui.strange.journal.locations");
+    private final Component LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
+    private final Component LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
+    private final Component LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
 
-    private final Component standardTitle = new TranslatableComponent("gui.strange.journal.title");
-    private final Component locationsTitle = new TranslatableComponent("gui.strange.journal.locations");
-    private final Component biomesTitle = new TranslatableComponent("gui.strange.journal.learned_biomes");
-    private final Component structuresTitle = new TranslatableComponent("gui.strange.journal.learned_structures");
-    private final Component playersTitle = new TranslatableComponent("gui.strange.journal.learned_players");
-    private final Component dimensionsTitle = new TranslatableComponent("gui.strange.journal.learned_dimensions");
+    private final Component NO_LOCATIONS = new TranslatableComponent("gui.strange.journal.no_locations");
+    private final Component NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
+    private final Component NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
+    private final Component NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
+
+    private final Component BACK = new TranslatableComponent("gui.strange.journal.back");
+
     private final List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
     private final Screen screen;
 
+    private JournalSection section;
     private JournalLocation selectedLocation;
     private ResourceLocation selectedBiome;
     private ResourceLocation selectedStructure;
     private ResourceLocation selectedDimension;
-    private UUID selectedPlayer;
     private boolean hasRenderedButtons;
     private int lastPage;
     private int midX;
     private int midY;
     private int journalMidX;
+
+    private final int perPage;
+    private final int textColor;
+    private final int secondaryColor;
+    private final int buttonWidth;
+    private final int buttonHeight;
+
+    private Font font;
+    private ItemRenderer itemRenderer;
 
     public static final ResourceLocation CLOSED = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal.png");
     public static final ResourceLocation OPEN = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal_open.png");
@@ -59,14 +73,17 @@ public class MiniJournalScreen {
         this.hasRenderedButtons = false;
         this.section = JournalSection.HOME;
         this.lastPage = 0;
+        this.perPage = 6;
+        this.textColor = 0x222222;
+        this.secondaryColor = 0x908000;
+        this.buttonWidth = 88;
+        this.buttonHeight = 20;
 
-        // setup journal buttons
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.LOCATIONS), new TranslatableComponent("gui.strange.journal.locations")),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), new TranslatableComponent("gui.strange.journal.learned_biomes")),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), new TranslatableComponent("gui.strange.journal.learned_structures")),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.PLAYERS), new TranslatableComponent("gui.strange.journal.learned_players")),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), new TranslatableComponent("gui.strange.journal.learned_dimensions"))
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.LOCATIONS), LOCATIONS),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), LEARNED_BIOMES),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), LEARNED_STRUCTURES),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), LEARNED_DIMENSIONS)
         ));
     }
 
@@ -94,177 +111,26 @@ public class MiniJournalScreen {
 
     public void render(PoseStack poseStack, int mouseX, int mouseY, JournalData journal) {
         if (ClientHelper.getClient().isEmpty()) return;
+        if (ClientHelper.getPlayer().isEmpty()) return;
+        if (KnowledgeClient.getKnowledgeData().isEmpty()) return;
+
         Minecraft minecraft = ClientHelper.getClient().get();
+        Player player = ClientHelper.getPlayer().get();
+        KnowledgeData knowledge = KnowledgeClient.getKnowledgeData().get();
 
-        Player player = minecraft.player;
-        if (player == null) return;
-
-        Font font = screen.font;
-        ItemRenderer itemRenderer = screen.itemRenderer;
-
-        int width = screen.width;
-        int titleTop;
-        int buttonWidth = 88;
-        int buttonHeight = 20;
-        int primaryColor = 0x222222;
-        int secondaryColor = 0x909090;
-        Component title;
+        // it's important to set these at this point in the render code otherwise things don't appear properly
+        font = screen.font;
+        itemRenderer = screen.itemRenderer;
 
         switch (section) {
-            case HOME -> {
-                title = standardTitle;
-                titleTop = -86;
-                if (!hasRenderedButtons) {
-                    int x = journalMidX - (buttonWidth / 2);
-                    int y = midY - 60; // start rendering buttons from here
-                    int xOffset = 0;
-                    int yOffset = 24;
-                    JournalHomeScreen.renderHome(screen, font, width, poseStack, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
-                    hasRenderedButtons = true;
-                }
-            }
-            case LOCATIONS -> {
-                title = locationsTitle;
-                titleTop = -94;
-
-                if (selectedLocation != null) {
-                    if (!DimensionHelper.isDimension(player.level, selectedLocation.getDimension())) {
-                        return;
-                    }
-
-                    if (!hasRenderedButtons) {
-                        renderBackButton(b -> {
-                            selectedLocation = null;
-                            changeJournalSection(JournalSection.LOCATIONS);
-                        });
-                    }
-
-                    int y = midY - 78;
-                    String runes = selectedLocation.getRunes();
-                    ItemStack icon = selectedLocation.getIcon();
-                    Component component = new TextComponent(getTruncatedName(selectedLocation.getName(), 18));
-
-                    // render item icon
-                    itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
-                    GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
-                    KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
-
-                } else {
-                    if (!hasRenderedButtons) {
-                        renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                    }
-
-                    AtomicInteger y = new AtomicInteger(midY - 78);
-                    List<JournalLocation> locations = journal.getLocations();
-                    Supplier<Component> labelForNoItem = () -> new TranslatableComponent("gui.strange.journal.no_locations");
-                    Consumer<JournalLocation> renderItem = location -> {
-                        String name = getTruncatedName(location.getName());
-                        ItemStack icon = location.getIcon();
-
-                        // render item icons
-                        itemRenderer.renderGuiItem(icon, journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
-
-                        if (!hasRenderedButtons) {
-                            Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), b -> {
-                                selectedLocation = location;
-                                redraw();
-                            });
-                            if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
-                                button.active = false;
-                            }
-                            screen.addRenderableWidget(button);
-                        }
-                        y.addAndGet(21);
-                    };
-                    paginator(poseStack, font, locations, renderItem, labelForNoItem, !hasRenderedButtons);
-                }
-                hasRenderedButtons = true;
-            }
-            case BIOMES -> {
-                titleTop = -94;
-                title = biomesTitle;
-
-                if (selectedBiome != null) {
-                    if (!hasRenderedButtons) {
-                        renderBackButton(b -> {
-                            selectedBiome = null;
-                            changeJournalSection(JournalSection.BIOMES);
-                        });
-                    }
-
-                    KnowledgeClient.getKnowledgeData().ifPresent(knowledge -> {
-                        int y = midY - 78;
-                        Optional<String> runes = knowledge.biomes.get(selectedBiome);
-                        if (runes.isEmpty()) return;
-
-                        String prettyName = StringHelper.snakeToPretty(selectedBiome.getPath());
-                        Component component = new TextComponent(getTruncatedName(prettyName, 18));
-                        GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
-                        KnowledgeClient.renderRunesString(minecraft, poseStack, runes.get(), journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
-                    });
-                } else {
-                    if (!hasRenderedButtons) {
-                        renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                    }
-
-                    List<ResourceLocation> biomes = journal.getLearnedBiomes();
-                    AtomicInteger y = new AtomicInteger(midY - 78);
-                    Supplier<Component> labelForNoItem = () -> new TranslatableComponent("gui.strange.journal.no_learned_biomes");
-
-                    Consumer<ResourceLocation> renderItem = biome -> {
-                        String name = getTruncatedName(StringHelper.snakeToPretty(biome.getPath(), true), 16);
-
-                        if (!hasRenderedButtons) {
-                            Button button = new Button(midX - (buttonWidth / 2) - 96, y.get(), 100, buttonHeight, new TextComponent(name), b -> {
-                                selectedBiome = biome;
-                                redraw();
-                            });
-                            screen.addRenderableWidget(button);
-                        }
-                        y.addAndGet(21);
-                    };
-
-                    paginator(poseStack, font, biomes, renderItem, labelForNoItem, !hasRenderedButtons);
-                }
-                hasRenderedButtons = true;
-            }
-            case STRUCTURES -> {
-                titleTop = -94;
-                title = structuresTitle;
-
-                if (!hasRenderedButtons) {
-                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                }
-            }
-            case PLAYERS -> {
-                titleTop = -94;
-                title = playersTitle;
-
-                if (!hasRenderedButtons) {
-                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                }
-            }
-            case DIMENSIONS -> {
-                titleTop = -94;
-                title = dimensionsTitle;
-
-                if (!hasRenderedButtons) {
-                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                }
-            }
-            default -> {
-                titleTop = -94;
-                title = standardTitle;
-
-                if (!hasRenderedButtons) {
-                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-                }
-            }
+            case HOME -> renderHome(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
+            case LOCATIONS -> renderLocations(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
+            case BIOMES -> renderBiomes(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
+            case STRUCTURES -> renderStructures(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
+            case DIMENSIONS -> renderDimensions(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
         }
 
-        // draw the journal title
-        ((BaseComponent)title).setStyle(Style.EMPTY.withBold(true));
-        GuiHelper.drawCenteredString(poseStack, font, title, journalMidX, midY + titleTop, primaryColor);
+        hasRenderedButtons = true;
     }
 
     private void changeJournalSection(JournalSection section) {
@@ -273,16 +139,14 @@ public class MiniJournalScreen {
     }
 
     private void renderBackButton(Button.OnPress onPress) {
+        if (hasRenderedButtons) return;
         int buttonWidth = 74;
         int buttonHeight = 20;
-        Component component = new TranslatableComponent("gui.strange.journal.back");
-        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, component, onPress));
+        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, BACK, onPress));
     }
 
     private <T> void paginator(PoseStack poseStack, Font font, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
-        int perPage = 6;
         int paginationY = 186;
-        int secondaryColor = 0x909090;
         int currentPage = lastPage - 1;
         List<T> sublist;
 
@@ -328,6 +192,142 @@ public class MiniJournalScreen {
         }
     }
 
+    private void renderHome(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, JOURNAL, midY - 86);
+
+        if (!hasRenderedButtons) {
+            int x = journalMidX - (buttonWidth / 2);
+            int y = midY - 60; // start rendering buttons from here
+            int xOffset = 0;
+            int yOffset = 24;
+            JournalHomeScreen.renderHome(screen, screen.font, screen.width, poseStack, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
+        }
+    }
+
+    private void renderLocations(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, LOCATIONS, midY - 94);
+
+        if (selectedLocation != null) {
+            if (!DimensionHelper.isDimension(player.level, selectedLocation.getDimension())) {
+                return;
+            }
+
+            renderBackButton(b -> {
+                selectedLocation = null;
+                changeJournalSection(JournalSection.LOCATIONS);
+            });
+
+            int y = midY - 78;
+            Component component = new TextComponent(getTruncatedName(selectedLocation.getName(), 18));
+            itemRenderer.renderGuiItem(selectedLocation.getIcon(), journalMidX - 8, y);
+            GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
+            KnowledgeClient.renderRunesString(minecraft, poseStack, selectedLocation.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
+        } else {
+            renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+            AtomicInteger y = new AtomicInteger(midY - 78);
+            Consumer<JournalLocation> renderItem = location -> {
+                String name = getTruncatedName(location.getName(), 14);
+                itemRenderer.renderGuiItem(location.getIcon(), journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
+
+                if (!hasRenderedButtons) {
+                    Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), b -> {
+                        selectedLocation = location;
+                        redraw();
+                    });
+                    if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
+                        button.active = false;
+                    }
+                    screen.addRenderableWidget(button);
+                }
+                y.addAndGet(21);
+            };
+            paginator(poseStack, font, journal.getLocations(), renderItem, () -> NO_LOCATIONS, !hasRenderedButtons);
+        }
+    }
+
+    private void renderBiomes(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, LEARNED_BIOMES, midY - 94);
+
+        if (selectedBiome != null) {
+            renderBackButton(b -> {
+                selectedBiome = null;
+                changeJournalSection(JournalSection.BIOMES);
+            });
+
+            knowledge.biomes.get(selectedBiome).ifPresent(runes -> renderResourceLocation(poseStack, selectedBiome, runes, minecraft, mouseX, mouseY));
+        } else {
+            renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+            renderResourceLocations(poseStack, journal.getLearnedBiomes(), () -> NO_BIOMES, res -> {
+                selectedBiome = res;
+                redraw();
+            });
+        }
+    }
+
+    private void renderStructures(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, LEARNED_STRUCTURES, midY - 94);
+
+        if (selectedStructure != null) {
+            renderBackButton(b -> {
+                selectedStructure = null;
+                changeJournalSection(JournalSection.STRUCTURES);
+            });
+
+            knowledge.structures.get(selectedStructure).ifPresent(runes -> renderResourceLocation(poseStack, selectedStructure, runes, minecraft, mouseX, mouseY));
+        } else {
+            renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+            renderResourceLocations(poseStack, journal.getLearnedStructures(), () -> NO_STRUCTURES, res -> {
+                selectedStructure = res;
+                redraw();
+            });
+        }
+    }
+
+    private void renderDimensions(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, LEARNED_DIMENSIONS, midY - 94);
+
+        if (selectedDimension != null) {
+            renderBackButton(b -> {
+                selectedDimension = null;
+                changeJournalSection(JournalSection.DIMENSIONS);
+            });
+
+            knowledge.dimensions.get(selectedDimension).ifPresent(runes -> renderResourceLocation(poseStack, selectedDimension, runes, minecraft, mouseX, mouseY));
+        } else {
+            renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+            renderResourceLocations(poseStack, journal.getLearnedDimensions(), () -> NO_DIMENSIONS, res -> {
+                selectedDimension = res;
+                redraw();
+            });
+        }
+    }
+
+    private void renderResourceLocation(PoseStack poseStack, ResourceLocation resource, String runes, Minecraft minecraft, int mouseX, int mouseY) {
+        int y = midY - 78;
+        Component component = new TextComponent(getTruncatedName(StringHelper.snakeToPretty(resource.getPath()), 18));
+        GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
+        KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
+    }
+
+    private void renderResourceLocations(PoseStack poseStack, List<ResourceLocation> resources, Supplier<Component> labelForNoItem, Consumer<ResourceLocation> onPress) {
+        AtomicInteger y = new AtomicInteger(midY - 78);
+        Consumer<ResourceLocation> renderItem = res -> {
+            String name = getTruncatedName(StringHelper.snakeToPretty(res.getPath(), true), 16);
+            if (!hasRenderedButtons) {
+                Button button = new Button(midX - (buttonWidth / 2) - 96, y.get(), 100, buttonHeight, new TextComponent(name), b -> onPress.accept(res));
+                screen.addRenderableWidget(button);
+            }
+            y.addAndGet(21);
+        };
+
+        paginator(poseStack, font, resources, renderItem, labelForNoItem, !hasRenderedButtons);
+    }
+
+    private void renderTitle(PoseStack poseStack, Component title, int y) {
+        ((BaseComponent)title).setStyle(Style.EMPTY.withBold(true));
+        GuiHelper.drawCenteredString(poseStack, font, title, journalMidX, y, textColor);
+    }
+
     private void redraw() {
         ClientHelper.getClient().ifPresent(mc -> screen.init(mc, screen.width, screen.height));
     }
@@ -336,16 +336,11 @@ public class MiniJournalScreen {
         return name.substring(0, Math.min(name.length(), length));
     }
 
-    private String getTruncatedName(String name) {
-        return getTruncatedName(name, 14);
-    }
-
     public enum JournalSection implements ICharmEnum {
         HOME,
         LOCATIONS,
         BIOMES,
         STRUCTURES,
-        PLAYERS,
         DIMENSIONS
     }
 }
