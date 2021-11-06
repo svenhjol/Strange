@@ -32,7 +32,7 @@ public class RunicLecternMenu extends CharmContainerMenu {
         this.player = playerInventory.player;
 
         // sacrificial item
-        this.addSlot(new Slot(inventory, 0, 80, 61) {
+        this.addSlot(new Slot(inventory, 0, 80, 62) {
             @Override
             public void setChanged() {
                 super.setChanged();
