@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("SameParameterValue")
 public abstract class JournalScreen extends Screen {
     public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
@@ -59,7 +60,7 @@ public abstract class JournalScreen extends Screen {
     protected int backgroundHeight;
 
     protected int navigationX; // navigation left relative to center
-    protected int navigationY; // navigation top
+    protected int navigationY;
     protected int navigationYOffset;
 
     protected int bottomButtonsY;

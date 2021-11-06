@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class MiniJournalScreen {
     private final List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
     private final Screen screen;

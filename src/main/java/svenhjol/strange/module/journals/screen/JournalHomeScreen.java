@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class JournalHomeScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();

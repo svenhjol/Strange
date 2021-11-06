@@ -7,6 +7,7 @@ import svenhjol.strange.helper.GuiHelper;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class JournalKnowledgeScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> knowledgeButtons;
