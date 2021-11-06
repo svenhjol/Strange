@@ -12,7 +12,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
@@ -22,7 +21,10 @@ import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
 public class KnowledgeStoneItem extends CharmItem {
@@ -61,17 +63,6 @@ public class KnowledgeStoneItem extends CharmItem {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
-                });
-
-                case PLAYER -> tryLearnFromBranch(journal.getLearnedPlayers(), knowledge.players, p -> {
-                    journal.learnPlayer(p);
-                    Optional<String> optName = PlayerHelper.getPlayerName(server, p);
-                    if (optName.isPresent()) {
-                        sendClientMessage(serverPlayer, "player", optName.get());
-                        return true;
-                    } else {
-                        return false;
-                    }
                 });
 
                 case DIMENSION -> tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
@@ -116,7 +107,6 @@ public class KnowledgeStoneItem extends CharmItem {
     public enum Type implements ICharmEnum {
         BIOME,
         STRUCTURE,
-        PLAYER,
         DIMENSION
     }
 }

@@ -108,8 +108,7 @@ public class Journals extends CharmModule {
     }
 
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
-        getJournalData(player).ifPresent(data ->
-            data.addDeathLocation(player.level, player.blockPosition()));
+        getJournalData(player).ifPresent(data -> data.addDeathLocation(player.level, player.blockPosition()));
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {

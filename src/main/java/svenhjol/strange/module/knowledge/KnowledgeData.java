@@ -23,7 +23,6 @@ public class KnowledgeData extends SavedData {
 
     public SpecialsBranch specials = new SpecialsBranch();
     public DestinationsBranch destinations = new DestinationsBranch();
-    public PlayersBranch players = new PlayersBranch();
     public StructuresBranch structures = new StructuresBranch();
     public DimensionsBranch dimensions = new DimensionsBranch();
     public BiomesBranch biomes = new BiomesBranch();
@@ -43,7 +42,6 @@ public class KnowledgeData extends SavedData {
 
         data.specials = SpecialsBranch.load(tag);
         data.destinations = DestinationsBranch.load(tag);
-        data.players = PlayersBranch.load(tag);
         data.biomes = BiomesBranch.load(tag);
         data.dimensions = DimensionsBranch.load(tag);
         data.structures = StructuresBranch.load(tag);
@@ -59,7 +57,6 @@ public class KnowledgeData extends SavedData {
         biomes.save(tag);
         destinations.save(tag);
         dimensions.save(tag);
-        players.save(tag);
         structures.save(tag);
 
         return tag;
@@ -69,7 +66,6 @@ public class KnowledgeData extends SavedData {
         BuiltinRegistries.BIOME.entrySet().forEach(entry -> biomes.register(entry.getValue()));
         Registry.STRUCTURE_FEATURE.forEach(structure -> structures.register(structure));
         server.getAllLevels().forEach(level -> dimensions.register(level));
-        server.getPlayerList().getPlayers().forEach(player -> players.register(player));
         this.setDirty();
     }
 

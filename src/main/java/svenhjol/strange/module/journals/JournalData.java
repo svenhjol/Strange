@@ -23,7 +23,6 @@ public class JournalData {
     private static final String TAG_LOCATIONS = "Locations";
     private static final String TAG_STRUCTURES = "Structures";
     private static final String TAG_BIOMES = "Biomes";
-    private static final String TAG_PLAYERS = "Players";
     private static final String TAG_DIMENSIONS = "Dimensions";
     private static final String TAG_NOTES = "Notes";
 
@@ -35,7 +34,6 @@ public class JournalData {
     private final List<ResourceLocation> structures = new ArrayList<>();
     private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
-    private final List<UUID> players = new ArrayList<>();
 
     private static final Map<String, JournalLocation> mappedByRuneString = new HashMap<>();
 
@@ -50,7 +48,6 @@ public class JournalData {
         ListTag notesNbt = tag.getList(TAG_NOTES, 10);
         ListTag structuresNbt = tag.getList(TAG_STRUCTURES, 8);
         ListTag biomesNbt = tag.getList(TAG_BIOMES, 8);
-        ListTag playersNbt = tag.getList(TAG_PLAYERS, 8);
         ListTag dimensionsNbt = tag.getList(TAG_DIMENSIONS, 8);
 
         data.runes = Arrays.stream(tag.getIntArray(TAG_RUNES)).boxed().collect(Collectors.toList());
@@ -63,14 +60,12 @@ public class JournalData {
         biomesNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
             key -> data.biomes.add(new ResourceLocation(key)));
 
-        playersNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
-            key -> data.players.add(UUID.fromString(key)));
-
         dimensionsNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
             key -> data.dimensions.add(new ResourceLocation(key)));
 
         Collections.sort(data.biomes);
-
+        Collections.sort(data.structures);
+        Collections.sort(data.dimensions);
         return data;
     }
 
@@ -83,14 +78,12 @@ public class JournalData {
         ListTag notesNbt = new ListTag();
         ListTag structuresNbt = new ListTag();
         ListTag biomesNbt = new ListTag();
-        ListTag playersNbt = new ListTag();
         ListTag dimensionsNbt = new ListTag();
 
         locations.forEach(location -> locationsNbt.add(location.toNbt(new CompoundTag())));
         notes.forEach(note -> notesNbt.add(note.toNbt(new CompoundTag())));
         structures.forEach(structure -> structuresNbt.add(StringTag.valueOf(structure.toString())));
         biomes.forEach(biome -> biomesNbt.add(StringTag.valueOf(biome.toString())));
-        players.forEach(player -> playersNbt.add(StringTag.valueOf(player.toString())));
         dimensions.forEach(dimension -> dimensionsNbt.add(StringTag.valueOf(dimension.toString())));
 
         nbt.putIntArray(TAG_RUNES, runes);
@@ -98,7 +91,6 @@ public class JournalData {
         nbt.put(TAG_NOTES, notesNbt);
         nbt.put(TAG_STRUCTURES, structuresNbt);
         nbt.put(TAG_BIOMES, biomesNbt);
-        nbt.put(TAG_PLAYERS, playersNbt);
         nbt.put(TAG_DIMENSIONS, dimensionsNbt);
 
         return nbt;
@@ -142,10 +134,6 @@ public class JournalData {
         return structures;
     }
 
-    public List<UUID> getLearnedPlayers() {
-        return players;
-    }
-
     public List<ResourceLocation> getLearnedDimensions() {
         return dimensions;
     }
@@ -171,12 +159,6 @@ public class JournalData {
     public void learnDimension(ResourceLocation dimension) {
         if (!dimensions.contains(dimension)) {
             dimensions.add(dimension);
-        }
-    }
-
-    public void learnPlayer(UUID player) {
-        if (!players.contains(player)) {
-            players.add(player);
         }
     }
 

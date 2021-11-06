@@ -2,7 +2,6 @@ package svenhjol.strange.module.knowledge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -14,8 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -52,7 +49,6 @@ public class Knowledge extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
-        ServerEntityEvents.ENTITY_LOAD.register(this::handleEntityLoad);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_KNOWLEDGE, this::handleSyncKnowledge);
     }
 
@@ -86,15 +82,6 @@ public class Knowledge extends CharmModule {
             getKnowledgeData().ifPresent(data -> {
                 // capture the world that just got loaded
                 data.dimensions.register(level);
-                data.setDirty();
-            });
-        }
-    }
-
-    private void handleEntityLoad(Entity entity, ServerLevel level) {
-        if (entity instanceof Player) {
-            getKnowledgeData().ifPresent((data) -> {
-                data.players.register((Player) entity);
                 data.setDirty();
             });
         }
