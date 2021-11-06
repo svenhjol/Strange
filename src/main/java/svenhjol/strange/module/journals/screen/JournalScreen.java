@@ -285,6 +285,14 @@ public abstract class JournalScreen extends Screen {
         ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalLocationsScreen()));
     }
 
+    protected void structures() {
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalStructuresScreen()));
+    }
+
+    protected void dimensions() {
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalDimensionsScreen()));
+    }
+
     protected void quests() {
         ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalQuestsScreen()));
     }

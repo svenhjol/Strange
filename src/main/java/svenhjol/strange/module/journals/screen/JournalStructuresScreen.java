@@ -8,23 +8,23 @@ import svenhjol.strange.module.journals.JournalData;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class JournalBiomesScreen extends JournalResourcesScreen {
-    public JournalBiomesScreen() {
-        super(LEARNED_BIOMES);
+public class JournalStructuresScreen extends JournalResourcesScreen {
+    public JournalStructuresScreen() {
+        super(LEARNED_STRUCTURES);
     }
 
     @Override
     protected List<ResourceLocation> getResources(JournalData journal) {
-        return journal.getLearnedBiomes();
+        return journal.getLearnedStructures();
     }
 
     @Override
     protected Supplier<Component> getLabelForNoItem() {
-        return () -> NO_BIOMES;
+        return () -> NO_STRUCTURES;
     }
 
     @Override
-    protected void select(ResourceLocation biome) {
-        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalBiomeScreen(biome)));
+    protected void select(ResourceLocation structure) {
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalStructureScreen(structure)));
     }
 }

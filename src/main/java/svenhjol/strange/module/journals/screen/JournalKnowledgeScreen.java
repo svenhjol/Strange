@@ -22,8 +22,8 @@ public class JournalKnowledgeScreen extends JournalScreen {
         this.knowledgeButtons = Arrays.asList(
             new GuiHelper.ButtonDefinition(b -> runes(), LEARNED_RUNES),
             new GuiHelper.ButtonDefinition(b -> biomes(), LEARNED_BIOMES),
-            new GuiHelper.ButtonDefinition(b -> onClose(), LEARNED_STRUCTURES),
-            new GuiHelper.ButtonDefinition(b -> onClose(), LEARNED_DIMENSIONS)
+            new GuiHelper.ButtonDefinition(b -> structures(), LEARNED_STRUCTURES),
+            new GuiHelper.ButtonDefinition(b -> dimensions(), LEARNED_DIMENSIONS)
         );
 
         this.hasRenderedButtons = false;

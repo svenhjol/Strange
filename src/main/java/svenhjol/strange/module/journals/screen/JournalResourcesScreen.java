@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public abstract class JournalResourcesScreen extends JournalScreen {
         super(component);
 
         this.hasRenderedButtons = false;
+
+        // add a back button at the bottom
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
     }
 
     @Override
