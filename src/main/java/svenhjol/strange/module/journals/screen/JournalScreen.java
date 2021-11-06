@@ -26,33 +26,33 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("SameParameterValue")
 public abstract class JournalScreen extends Screen {
-    public static final ResourceLocation COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
-    public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
-    public static final ResourceLocation NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
+    public static final ResourceLocation COVER_BACKGROUND;
+    public static final ResourceLocation OPEN_BACKGROUND;
+    public static final ResourceLocation NAVIGATION;
 
-    public static final Component ADD_LOCATION = new TranslatableComponent("gui.strange.journal.add_location");
-    public static final Component CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
-    public static final Component CLOSE = new TranslatableComponent("gui.strange.journal.close");
-    public static final Component GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
-    public static final Component HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
-    public static final Component JOURNAL = new TranslatableComponent("gui.strange.journal.title");
-    public static final Component KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
-    public static final Component KNOWLEDGE_TOOLTIP = new TranslatableComponent("gui.strange.journal.knowledge_tooltip");
-    public static final Component LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
-    public static final Component LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
-    public static final Component LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
-    public static final Component LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
-    public static final Component LOCATIONS = new TranslatableComponent("gui.strange.journal.locations");
-    public static final Component LOCATIONS_TOOLTIP = new TranslatableComponent("gui.strange.journal.locations_tooltip");
-    public static final Component MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
-    public static final Component NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
-    public static final Component NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
-    public static final Component NO_LOCATIONS = new TranslatableComponent("gui.strange.journal.no_locations");
-    public static final Component NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
-    public static final Component QUESTS = new TranslatableComponent("gui.strange.journal.quests");
-    public static final Component QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");
-    public static final Component SAVE = new TranslatableComponent("gui.strange.journal.save");
-    public static final Component TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
+    public static final Component ADD_LOCATION;
+    public static final Component CHOOSE_ICON;
+    public static final Component CLOSE;
+    public static final Component GO_BACK;
+    public static final Component HOME_TOOLTIP;
+    public static final Component JOURNAL;
+    public static final Component KNOWLEDGE;
+    public static final Component KNOWLEDGE_TOOLTIP;
+    public static final Component LEARNED_BIOMES;
+    public static final Component LEARNED_DIMENSIONS;
+    public static final Component LEARNED_RUNES;
+    public static final Component LEARNED_STRUCTURES;
+    public static final Component LOCATIONS;
+    public static final Component LOCATIONS_TOOLTIP;
+    public static final Component MAKE_MAP;
+    public static final Component NO_BIOMES;
+    public static final Component NO_DIMENSIONS;
+    public static final Component NO_LOCATIONS;
+    public static final Component NO_STRUCTURES;
+    public static final Component QUESTS;
+    public static final Component QUESTS_TOOLTIP;
+    public static final Component SAVE;
+    public static final Component TAKE_PHOTO;
 
     protected boolean hasRenderedBottomButtons;
     protected boolean hasRenderedNavigation;
@@ -292,5 +292,35 @@ public abstract class JournalScreen extends Screen {
     protected void centeredText(PoseStack poseStack, Font renderer, Component component, int x, int y, int color) {
         String string = component.getString();
         renderer.draw(poseStack, string, x - (float)(renderer.width(string) / 2), y, color);
+    }
+
+    static {
+        COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
+        OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
+        NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
+
+        ADD_LOCATION = new TranslatableComponent("gui.strange.journal.add_location");
+        CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
+        CLOSE = new TranslatableComponent("gui.strange.journal.close");
+        GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
+        HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
+        JOURNAL = new TranslatableComponent("gui.strange.journal.title");
+        KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
+        KNOWLEDGE_TOOLTIP = new TranslatableComponent("gui.strange.journal.knowledge_tooltip");
+        LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
+        LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
+        LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
+        LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
+        LOCATIONS = new TranslatableComponent("gui.strange.journal.locations");
+        LOCATIONS_TOOLTIP = new TranslatableComponent("gui.strange.journal.locations_tooltip");
+        MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
+        NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
+        NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
+        NO_LOCATIONS = new TranslatableComponent("gui.strange.journal.no_locations");
+        NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
+        QUESTS = new TranslatableComponent("gui.strange.journal.quests");
+        QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");
+        SAVE = new TranslatableComponent("gui.strange.journal.save");
+        TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
     }
 }
