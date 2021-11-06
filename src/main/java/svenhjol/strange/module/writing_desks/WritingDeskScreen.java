@@ -17,7 +17,7 @@ import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.screen.MiniJournalClient;
+import svenhjol.strange.module.journals.screen.MiniJournalScreen;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
@@ -45,7 +45,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private final int deleteButtonYOffset;
     private boolean hasInk = false;
     private boolean hasBook = false;
-    private final MiniJournalClient journalClient;
+    private final MiniJournalScreen journalClient;
 
     private String runes = "";
     private int midX;
@@ -73,7 +73,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.deleteButtonYOffset = 69;
         this.midX = 0;
         this.midY = 0;
-        this.journalClient = new MiniJournalClient(this);
+        this.journalClient = new MiniJournalScreen(this);
 
         // ask server to update the player journal
         JournalsClient.sendSyncJournal();

@@ -16,21 +16,19 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.data.JournalLocation;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class MiniJournalClient {
+public class MiniJournalScreen {
     private JournalSection section;
 
     private final Component standardTitle = new TranslatableComponent("gui.strange.journal.title");
@@ -56,7 +54,7 @@ public class MiniJournalClient {
     public static final ResourceLocation CLOSED = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal.png");
     public static final ResourceLocation OPEN = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal_open.png");
 
-    public MiniJournalClient(Screen screen) {
+    public MiniJournalScreen(Screen screen) {
         this.screen = screen;
         this.hasRenderedButtons = false;
         this.section = JournalSection.HOME;
@@ -141,7 +139,6 @@ public class MiniJournalClient {
                         });
                     }
 
-                    int x = journalMidX - (buttonWidth / 2);
                     int y = midY - 78;
                     String runes = selectedLocation.getRunes();
                     ItemStack icon = selectedLocation.getIcon();
@@ -151,7 +148,6 @@ public class MiniJournalClient {
                     itemRenderer.renderGuiItem(icon, journalMidX - 8, y);
                     GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
                     KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
-                    hasRenderedButtons = true;
 
                 } else {
                     if (!hasRenderedButtons) {
@@ -160,7 +156,7 @@ public class MiniJournalClient {
 
                     AtomicInteger y = new AtomicInteger(midY - 78);
                     List<JournalLocation> locations = journal.getLocations();
-                    Supplier<Component> label = () -> new TranslatableComponent("gui.strange.journal.no_locations");
+                    Supplier<Component> labelForNoItem = () -> new TranslatableComponent("gui.strange.journal.no_locations");
                     Consumer<JournalLocation> renderItem = location -> {
                         String name = getTruncatedName(location.getName());
                         ItemStack icon = location.getIcon();
@@ -178,20 +174,59 @@ public class MiniJournalClient {
                             }
                             screen.addRenderableWidget(button);
                         }
-
                         y.addAndGet(21);
                     };
-                    paginator(poseStack, font, locations, renderItem, label, !hasRenderedButtons);
-                    hasRenderedButtons = true;
+                    paginator(poseStack, font, locations, renderItem, labelForNoItem, !hasRenderedButtons);
                 }
+                hasRenderedButtons = true;
             }
             case BIOMES -> {
                 titleTop = -94;
                 title = biomesTitle;
 
-                if (!hasRenderedButtons) {
-                    renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                if (selectedBiome != null) {
+                    if (!hasRenderedButtons) {
+                        renderBackButton(b -> {
+                            selectedBiome = null;
+                            changeJournalSection(JournalSection.BIOMES);
+                        });
+                    }
+
+                    KnowledgeClient.getKnowledgeData().ifPresent(knowledge -> {
+                        int y = midY - 78;
+                        Optional<String> runes = knowledge.biomes.get(selectedBiome);
+                        if (runes.isEmpty()) return;
+
+                        String prettyName = StringHelper.snakeToPretty(selectedBiome.getPath());
+                        Component component = new TextComponent(getTruncatedName(prettyName, 18));
+                        GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, primaryColor);
+                        KnowledgeClient.renderRunesString(minecraft, poseStack, runes.get(), journalMidX - 46, midY - 8, 9, 14, 10, 4, primaryColor, secondaryColor, false);
+                    });
+                } else {
+                    if (!hasRenderedButtons) {
+                        renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+                    }
+
+                    List<ResourceLocation> biomes = journal.getLearnedBiomes();
+                    AtomicInteger y = new AtomicInteger(midY - 78);
+                    Supplier<Component> labelForNoItem = () -> new TranslatableComponent("gui.strange.journal.no_learned_biomes");
+
+                    Consumer<ResourceLocation> renderItem = biome -> {
+                        String name = getTruncatedName(StringHelper.snakeToPretty(biome.getPath(), true), 16);
+
+                        if (!hasRenderedButtons) {
+                            Button button = new Button(midX - (buttonWidth / 2) - 96, y.get(), 100, buttonHeight, new TextComponent(name), b -> {
+                                selectedBiome = biome;
+                                redraw();
+                            });
+                            screen.addRenderableWidget(button);
+                        }
+                        y.addAndGet(21);
+                    };
+
+                    paginator(poseStack, font, biomes, renderItem, labelForNoItem, !hasRenderedButtons);
                 }
+                hasRenderedButtons = true;
             }
             case STRUCTURES -> {
                 titleTop = -94;
@@ -246,7 +281,7 @@ public class MiniJournalClient {
 
     private <T> void paginator(PoseStack poseStack, Font font, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
         int perPage = 6;
-        int paginationY = 180;
+        int paginationY = 186;
         int secondaryColor = 0x909090;
         int currentPage = lastPage - 1;
         List<T> sublist;
