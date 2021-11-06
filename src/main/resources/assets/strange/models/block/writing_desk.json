@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "strange:block/writing_desk_top",
+    "front": "strange:block/writing_desk_front",
+    "side": "strange:block/writing_desk_side",
+    "bottom": "strange:block/writing_desk_bottom"
+  }
+}
