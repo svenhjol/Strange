@@ -2,38 +2,27 @@ package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class JournalKnowledgeScreen extends BaseJournalScreen {
+public class JournalKnowledgeScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> knowledgeButtons;
 
     public JournalKnowledgeScreen() {
-        this(new TranslatableComponent("gui.strange.journal.knowledge"));
+        this(KNOWLEDGE);
     }
 
     public JournalKnowledgeScreen(Component component) {
         super(component);
 
         this.knowledgeButtons = Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> runes(),
-                new TranslatableComponent("gui.strange.journal.learned_runes")),
-
-            new GuiHelper.ButtonDefinition(b -> biomes(),
-                new TranslatableComponent("gui.strange.journal.learned_biomes")),
-
-            new GuiHelper.ButtonDefinition(b -> onClose(),
-                new TranslatableComponent("gui.strange.journal.learned_structures")),
-
-            new GuiHelper.ButtonDefinition(b -> onClose(),
-                new TranslatableComponent("gui.strange.journal.learned_dimensions")),
-
-            new GuiHelper.ButtonDefinition(b -> onClose(),
-                new TranslatableComponent("gui.strange.journal.learned_players"))
+            new GuiHelper.ButtonDefinition(b -> runes(), LEARNED_RUNES),
+            new GuiHelper.ButtonDefinition(b -> biomes(), LEARNED_BIOMES),
+            new GuiHelper.ButtonDefinition(b -> onClose(), LEARNED_STRUCTURES),
+            new GuiHelper.ButtonDefinition(b -> onClose(), LEARNED_DIMENSIONS)
         );
 
         this.hasRenderedButtons = false;

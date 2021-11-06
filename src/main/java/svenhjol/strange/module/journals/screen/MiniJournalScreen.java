@@ -29,19 +29,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MiniJournalScreen {
-    private final Component JOURNAL = new TranslatableComponent("gui.strange.journal.title");
-    private final Component LOCATIONS = new TranslatableComponent("gui.strange.journal.locations");
-    private final Component LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
-    private final Component LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
-    private final Component LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
-
-    private final Component NO_LOCATIONS = new TranslatableComponent("gui.strange.journal.no_locations");
-    private final Component NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
-    private final Component NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
-    private final Component NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
-
-    private final Component BACK = new TranslatableComponent("gui.strange.journal.back");
-
     private final List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
     private final Screen screen;
 
@@ -80,10 +67,10 @@ public class MiniJournalScreen {
         this.buttonHeight = 20;
 
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.LOCATIONS), LOCATIONS),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), LEARNED_BIOMES),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), LEARNED_STRUCTURES),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), LEARNED_DIMENSIONS)
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.LOCATIONS), JournalScreen.LOCATIONS),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), JournalScreen.LEARNED_BIOMES),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
         ));
     }
 
@@ -142,7 +129,7 @@ public class MiniJournalScreen {
         if (hasRenderedButtons) return;
         int buttonWidth = 74;
         int buttonHeight = 20;
-        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, BACK, onPress));
+        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, JournalScreen.GO_BACK, onPress));
     }
 
     private <T> void paginator(PoseStack poseStack, Font font, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
@@ -173,13 +160,13 @@ public class MiniJournalScreen {
             // only render pagination buttons on the first render pass
             if (shouldRenderButtons) {
                 if (lastPage * perPage < size) {
-                    screen.addRenderableWidget(new ImageButton(midX - 60, paginationY, 20, 18, 120, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                    screen.addRenderableWidget(new ImageButton(midX - 60, paginationY, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
                         ++lastPage;
                         redraw();
                     }));
                 }
                 if (lastPage > 1) {
-                    screen.addRenderableWidget(new ImageButton(midX - 138, paginationY, 20, 18, 140, 0, 18, BaseJournalScreen.NAVIGATION, b -> {
+                    screen.addRenderableWidget(new ImageButton(midX - 138, paginationY, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
                         --lastPage;
                         redraw();
                     }));
@@ -193,7 +180,7 @@ public class MiniJournalScreen {
     }
 
     private void renderHome(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, JOURNAL, midY - 86);
+        renderTitle(poseStack, JournalScreen.JOURNAL, midY - 86);
 
         if (!hasRenderedButtons) {
             int x = journalMidX - (buttonWidth / 2);
@@ -205,7 +192,7 @@ public class MiniJournalScreen {
     }
 
     private void renderLocations(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, LOCATIONS, midY - 94);
+        renderTitle(poseStack, JournalScreen.LOCATIONS, midY - 94);
 
         if (selectedLocation != null) {
             if (!DimensionHelper.isDimension(player.level, selectedLocation.getDimension())) {
@@ -241,12 +228,12 @@ public class MiniJournalScreen {
                 }
                 y.addAndGet(21);
             };
-            paginator(poseStack, font, journal.getLocations(), renderItem, () -> NO_LOCATIONS, !hasRenderedButtons);
+            paginator(poseStack, font, journal.getLocations(), renderItem, () -> JournalScreen.NO_LOCATIONS, !hasRenderedButtons);
         }
     }
 
     private void renderBiomes(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, LEARNED_BIOMES, midY - 94);
+        renderTitle(poseStack, JournalScreen.LEARNED_BIOMES, midY - 94);
 
         if (selectedBiome != null) {
             renderBackButton(b -> {
@@ -257,7 +244,7 @@ public class MiniJournalScreen {
             knowledge.biomes.get(selectedBiome).ifPresent(runes -> renderResourceLocation(poseStack, selectedBiome, runes, minecraft, mouseX, mouseY));
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-            renderResourceLocations(poseStack, journal.getLearnedBiomes(), () -> NO_BIOMES, res -> {
+            renderResourceLocations(poseStack, journal.getLearnedBiomes(), () -> JournalScreen.NO_BIOMES, res -> {
                 selectedBiome = res;
                 redraw();
             });
@@ -265,7 +252,7 @@ public class MiniJournalScreen {
     }
 
     private void renderStructures(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, LEARNED_STRUCTURES, midY - 94);
+        renderTitle(poseStack, JournalScreen.LEARNED_STRUCTURES, midY - 94);
 
         if (selectedStructure != null) {
             renderBackButton(b -> {
@@ -276,7 +263,7 @@ public class MiniJournalScreen {
             knowledge.structures.get(selectedStructure).ifPresent(runes -> renderResourceLocation(poseStack, selectedStructure, runes, minecraft, mouseX, mouseY));
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-            renderResourceLocations(poseStack, journal.getLearnedStructures(), () -> NO_STRUCTURES, res -> {
+            renderResourceLocations(poseStack, journal.getLearnedStructures(), () -> JournalScreen.NO_STRUCTURES, res -> {
                 selectedStructure = res;
                 redraw();
             });
@@ -284,7 +271,7 @@ public class MiniJournalScreen {
     }
 
     private void renderDimensions(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, LEARNED_DIMENSIONS, midY - 94);
+        renderTitle(poseStack, JournalScreen.LEARNED_DIMENSIONS, midY - 94);
 
         if (selectedDimension != null) {
             renderBackButton(b -> {
@@ -295,7 +282,7 @@ public class MiniJournalScreen {
             knowledge.dimensions.get(selectedDimension).ifPresent(runes -> renderResourceLocation(poseStack, selectedDimension, runes, minecraft, mouseX, mouseY));
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
-            renderResourceLocations(poseStack, journal.getLearnedDimensions(), () -> NO_DIMENSIONS, res -> {
+            renderResourceLocations(poseStack, journal.getLearnedDimensions(), () -> JournalScreen.NO_DIMENSIONS, res -> {
                 selectedDimension = res;
                 redraw();
             });

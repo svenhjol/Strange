@@ -1,9 +1,7 @@
 package svenhjol.strange.module.journals.screen;
 
-import net.minecraft.network.chat.TranslatableComponent;
-
-public class JournalQuestsScreen extends BaseJournalScreen {
+public class JournalQuestsScreen extends JournalScreen {
     protected JournalQuestsScreen() {
-        super(new TranslatableComponent("gui.strange.journal.quests"));
+        super(QUESTS);
     }
 }

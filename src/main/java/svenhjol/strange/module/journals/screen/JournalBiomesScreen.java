@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.StringHelper;
@@ -14,15 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class JournalBiomesScreen extends BaseJournalScreen {
+public class JournalBiomesScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
 
     public JournalBiomesScreen() {
-        super(new TranslatableComponent("gui.strange.journal.learned_biomes"));
+        super(LEARNED_BIOMES);
 
         // add a back button at the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(),
-            new TranslatableComponent("gui.strange.journal.go_back")));
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
 
         this.hasRenderedButtons = false;
     }
@@ -45,9 +43,7 @@ public class JournalBiomesScreen extends BaseJournalScreen {
         }
 
         AtomicInteger y = new AtomicInteger(40);
-        Supplier<Component> labelForNoItem =
-            () -> new TranslatableComponent("gui.strange.journal.no_learned_biomes");
-
+        Supplier<Component> labelForNoItem = () -> NO_BIOMES;
         Consumer<ResourceLocation> renderItem = biome -> {
             String prettyName = StringHelper.snakeToPretty(biome.getPath(), true);
             String truncated = getTruncatedName(prettyName, 27);
@@ -71,7 +67,6 @@ public class JournalBiomesScreen extends BaseJournalScreen {
     }
 
     protected void select(ResourceLocation biome) {
-        ClientHelper.getClient().ifPresent(client
-            -> client.setScreen(new JournalBiomeScreen(biome)));
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalBiomeScreen(biome)));
     }
 }

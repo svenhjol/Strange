@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,15 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalLocationScreen extends BaseJournalScreen {
-    protected static final int MAX_NAME_LENGTH = 50;
-    protected static final int MIN_PHOTO_DISTANCE = 10;
+public class JournalLocationScreen extends JournalScreen {
     protected String name;
     protected EditBox nameField;
     protected JournalLocation location;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
-    protected int photoFailureRetries = 0;
+    protected int photoFailureRetries;
+    protected int maxNameLength;
+    protected int minPhotoDistance;
     protected boolean hasInitializedUpdateButtons = false;
     protected boolean hasInitializedPhotoButtons = false;
     protected boolean hasRenderedUpdateButtons = false;
@@ -53,6 +52,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         this.name = location.getName();
         this.location = location.copy();
+        this.photoFailureRetries = 0;
+        this.maxNameLength = 50;
+        this.minPhotoDistance = 10;
     }
 
     @Override
@@ -64,13 +66,13 @@ public class JournalLocationScreen extends BaseJournalScreen {
         }
 
         // set up the input field for editing the entry name
-        nameField = new EditBox(font, (width / 2) - 65, 40, 130, 12, new TextComponent("NameField"));
+        nameField = new EditBox(font, (midX) - 65, 40, 130, 12, new TextComponent("NameField"));
         nameField.changeFocus(true);
         nameField.setCanLoseFocus(false);
         nameField.setTextColor(-1);
         nameField.setTextColorUneditable(-1);
         nameField.setBordered(true);
-        nameField.setMaxLength(MAX_NAME_LENGTH);
+        nameField.setMaxLength(maxNameLength);
         nameField.setResponder(this::nameFieldResponder);
         nameField.setValue(name);
         nameField.setEditable(true);
@@ -81,36 +83,23 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
         if (!hasInitializedUpdateButtons) {
             // add a back button at the bottom
-            bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(),
-                new TranslatableComponent("gui.strange.journal.go_back")));
+            bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
 
             // if player has empty map, add button to make a map of this location
             if (playerHasEmptyMap()) {
-                updateButtons.add(
-                    new GuiHelper.ButtonDefinition(b -> makeMap(),
-                        new TranslatableComponent("gui.strange.journal.make_map"))
-                );
+                updateButtons.add(new GuiHelper.ButtonDefinition(b -> makeMap(), MAKE_MAP));
             }
 
             // if player is near the location, add button to take a photo
             if (playerIsNearLocation()) {
-                updateButtons.add(
-                    new GuiHelper.ButtonDefinition(b -> takePhoto(),
-                        new TranslatableComponent("gui.strange.journal.take_photo"))
-                );
+                updateButtons.add(new GuiHelper.ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
             }
 
             // always add an icon button
-            updateButtons.add(
-                new GuiHelper.ButtonDefinition(b -> chooseIcon(),
-                    new TranslatableComponent("gui.strange.journal.choose_icon"))
-            );
+            updateButtons.add(new GuiHelper.ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
 
             // always add a save button
-            updateButtons.add(
-                new GuiHelper.ButtonDefinition(b -> saveAndGoBack(),
-                    new TranslatableComponent("gui.strange.journal.save"))
-            );
+            updateButtons.add(new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), SAVE));
 
             hasInitializedUpdateButtons = true;
         }
@@ -173,9 +162,9 @@ public class JournalLocationScreen extends BaseJournalScreen {
         int top = 130;
         int yOffset = 14;
 
-        font.draw(poseStack, "X: " + x, left, top + yOffset, KNOWN_COLOR);
-        font.draw(poseStack, "Y: " + y, left, top + (yOffset * 2), KNOWN_COLOR);
-        font.draw(poseStack, "Z: " + z, left, top + (yOffset * 3), KNOWN_COLOR);
+        font.draw(poseStack, "X: " + x, left, top + yOffset, knownColor);
+        font.draw(poseStack, "Y: " + y, left, top + (yOffset * 2), knownColor);
+        font.draw(poseStack, "Z: " + z, left, top + (yOffset * 3), knownColor);
     }
 
     protected void renderRunes(PoseStack poseStack, Player player) {
@@ -197,28 +186,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
         int xOffset = 13;
         int yOffset = 15;
 
-        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 8, 4, KNOWN_COLOR, UNKNOWN_COLOR, false);
-
-//        for (int y = 0; y < 4; y++) {
-//            for (int x = 0; x < 8; x++) {
-//                if (index < knownRunes.length()) {
-//                    Component rune;
-//                    int color;
-//
-//                    String s = String.valueOf(knownRunes.charAt(index));
-//                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-//                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
-//                        color = UNKNOWN_COLOR;
-//                    } else {
-//                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-//                        color = KNOWN_COLOR;
-//                    }
-//
-//                    font.draw(poseStack, rune, left + (x * xOffset), top + (y * yOffset), color);
-//                }
-//                index++;
-//            }
-//        }
+        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 8, 4, knownColor, unknownColor, false);
     }
 
     protected void renderPhoto(PoseStack poseStack) {
@@ -262,7 +230,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
             RenderSystem.setShaderTexture(0, registeredPhotoTexture);
             poseStack.pushPose();
             poseStack.scale(0.425F, 0.32F, 0.425F);
-            blit(poseStack, ((int)((width / 2) / 0.425F) - 265), 187, 0, 0, 256, 200);
+            blit(poseStack, ((int)((midX) / 0.425F) - 265), 187, 0, 0, 256, 200);
             poseStack.popPose();
         }
     }
@@ -344,7 +312,7 @@ public class JournalLocationScreen extends BaseJournalScreen {
 
     protected boolean playerIsNearLocation() {
         if (minecraft != null && minecraft.player != null) {
-            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), location.getBlockPos()) < MIN_PHOTO_DISTANCE;
+            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), location.getBlockPos()) < minPhotoDistance;
         }
 
         return false;

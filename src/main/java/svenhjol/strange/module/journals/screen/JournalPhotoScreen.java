@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.helper.GuiHelper;
@@ -18,19 +17,19 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalPhotoScreen extends BaseJournalScreen {
+public class JournalPhotoScreen extends JournalScreen {
     protected JournalLocation location;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
-    protected int photoFailureRetries = 0;
+    protected int photoFailureRetries;
     protected boolean hasPhoto;
 
     public JournalPhotoScreen(JournalLocation location) {
         super(new TextComponent(location.getName()));
 
         this.location = location;
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(),
-            new TranslatableComponent("gui.strange.journal.go_back")));
+        this.photoFailureRetries = 0;
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(), GO_BACK));
     }
 
     @Override

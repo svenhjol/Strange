@@ -1,12 +1,11 @@
 package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.data.JournalLocation;
 
-public class JournalChooseIconScreen extends BaseJournalScreen {
+public class JournalChooseIconScreen extends JournalScreen {
     protected JournalLocation location;
     protected ItemStack selected;
 
@@ -18,7 +17,7 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
     protected int top;
 
     public JournalChooseIconScreen(JournalLocation location) {
-        super(new TranslatableComponent("gui.strange.journal.choose_icon"));
+        super(CHOOSE_ICON);
 
         this.location = location;
         this.perRow = 8;
@@ -34,7 +33,6 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
         super.render(poseStack, mouseX, mouseY, delta);
 
         int index = 0;
-        int mid = width / 2;
 
         for (int y = 0; y < maxRows; y++) {
             for (int x = 0; x < perRow; x++) {
@@ -42,9 +40,9 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
                 ItemStack stack = new ItemStack(Journals.locationIcons.get(index));
 
                 if (ItemStack.isSame(location.getIcon(), stack))
-                    fill(poseStack, mid + left + (x * xOffset), top + (y * yOffset), mid + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
+                    fill(poseStack, midX + left + (x * xOffset), top + (y * yOffset), midX + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
 
-                itemRenderer.renderGuiItem(stack, mid + left + (x * xOffset), top + (y * yOffset));
+                itemRenderer.renderGuiItem(stack, midX + left + (x * xOffset), top + (y * yOffset));
                 index++;
             }
         }
@@ -76,10 +74,12 @@ public class JournalChooseIconScreen extends BaseJournalScreen {
 
     protected void saveAndGoBack() {
         // TODO: save here
-        if (selected != null)
+        if (selected != null) {
             location.setIcon(selected);
+        }
 
-        if (minecraft != null)
+        if (minecraft != null) {
             minecraft.setScreen(new JournalLocationScreen(location));
+        }
     }
 }

@@ -2,7 +2,6 @@ package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.helper.GuiHelper;
@@ -11,15 +10,14 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.Optional;
 
-public class JournalBiomeScreen extends BaseJournalScreen {
+public class JournalBiomeScreen extends JournalScreen {
     private final ResourceLocation biome;
 
     public JournalBiomeScreen(ResourceLocation biome) {
         super(new TextComponent(StringHelper.snakeToPretty(biome.getPath())));
 
         // add a back button at the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> biomes(),
-            new TranslatableComponent("gui.strange.journal.go_back")));
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> biomes(), GO_BACK));
 
         this.biome = biome;
     }
@@ -47,7 +45,7 @@ public class JournalBiomeScreen extends BaseJournalScreen {
             int xOffset = 13;
             int yOffset = 15;
 
-            KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 12, 3, KNOWN_COLOR, UNKNOWN_COLOR, false);
+            KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 12, 3, knownColor, unknownColor, false);
         });
     }
 }

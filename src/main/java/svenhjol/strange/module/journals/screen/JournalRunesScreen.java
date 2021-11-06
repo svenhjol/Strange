@@ -1,6 +1,7 @@
 package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
@@ -8,13 +9,13 @@ import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 import java.util.List;
 
-public class JournalRunesScreen extends BaseJournalScreen {
+public class JournalRunesScreen extends JournalScreen {
+    public static final Component RUNES_LOAD_ERROR = new TranslatableComponent("gui.strange.journal.runes_load_error");
     protected JournalRunesScreen() {
-        super(new TranslatableComponent("gui.strange.journal.learned_runes.title"));
+        super(LEARNED_RUNES);
 
         // add a back button at the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(),
-            new TranslatableComponent("gui.strange.journal.go_back")));
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
     }
 
     @Override
@@ -23,7 +24,7 @@ public class JournalRunesScreen extends BaseJournalScreen {
 
         if (journal == null) {
             // show an error if the runes can't be loaded
-            centeredText(poseStack, font, new TranslatableComponent("gui.strange.journal.runes_load_error"), midX, titleY + 14, errorColor);
+            centeredText(poseStack, font, RUNES_LOAD_ERROR, midX, titleY + 14, errorColor);
             return;
         }
 
@@ -31,7 +32,6 @@ public class JournalRunesScreen extends BaseJournalScreen {
         int top = 46;
         int xOffset = 22;
         int yOffset = 18;
-        int index = 0;
 
         List<Integer> learnedRunes = journal.getLearnedRunes();
         StringBuilder builder = new StringBuilder();
@@ -40,12 +40,12 @@ public class JournalRunesScreen extends BaseJournalScreen {
             if (learnedRunes.contains(i)) {
                 builder.append((char)(i + 97));
             } else {
-                builder.append("WANK");
+                builder.append("?");
             }
         }
 
         String knownRunes = builder.toString();
-        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 4, 8, KNOWN_COLOR, UNKNOWN_COLOR, false);
+        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 4, 8, knownColor, unknownColor, false);
     }
 
     @Override

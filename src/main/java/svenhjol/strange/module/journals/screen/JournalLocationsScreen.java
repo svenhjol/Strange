@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class JournalLocationsScreen extends BaseJournalScreen {
+public class JournalLocationsScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
 
     public JournalLocationsScreen() {

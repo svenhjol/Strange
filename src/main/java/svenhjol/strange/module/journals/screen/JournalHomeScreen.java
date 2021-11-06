@@ -3,7 +3,6 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
 
@@ -11,22 +10,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class JournalHomeScreen extends BaseJournalScreen {
+public class JournalHomeScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
     protected List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
-        super(new TranslatableComponent("gui.strange.journal.title"));
+        super(JOURNAL);
 
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> locations(),
-                new TranslatableComponent("gui.strange.journal.locations")),
-
-            new GuiHelper.ButtonDefinition(b -> quests(),
-                new TranslatableComponent("gui.strange.journal.quests")),
-
-            new GuiHelper.ButtonDefinition(b -> knowledge(),
-                new TranslatableComponent("gui.strange.journal.knowledge"))
+            new GuiHelper.ButtonDefinition(b -> locations(), LOCATIONS),
+            new GuiHelper.ButtonDefinition(b -> quests(), QUESTS),
+            new GuiHelper.ButtonDefinition(b -> knowledge(), KNOWLEDGE)
         ));
 
         this.hasRenderedButtons = false;
