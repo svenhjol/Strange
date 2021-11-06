@@ -15,7 +15,7 @@ public abstract class JournalResourceScreen extends JournalScreen {
     private final ResourceLocation resource;
 
     public JournalResourceScreen(ResourceLocation resource) {
-        super(new TextComponent(StringHelper.snakeToPretty(resource.getPath())));
+        super(new TextComponent(StringHelper.snakeToPretty(resource.getPath(), true)));
         this.resource = resource;
     }
 

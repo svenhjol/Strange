@@ -73,6 +73,8 @@ public class MiniJournalScreen {
             new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
             new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
         ));
+
+        KnowledgeClient.sendSyncKnowledge();
     }
 
     public void init() {
@@ -292,7 +294,7 @@ public class MiniJournalScreen {
 
     private void renderResourceLocation(PoseStack poseStack, ResourceLocation resource, String runes, Minecraft minecraft, int mouseX, int mouseY) {
         int y = midY - 78;
-        Component component = new TextComponent(getTruncatedName(StringHelper.snakeToPretty(resource.getPath()), 18));
+        Component component = new TextComponent(getTruncatedName(StringHelper.snakeToPretty(resource.getPath(), true), 18));
         GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
         KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
     }
