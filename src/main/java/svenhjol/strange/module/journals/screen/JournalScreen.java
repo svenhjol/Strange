@@ -30,6 +30,7 @@ public abstract class JournalScreen extends Screen {
     public static final ResourceLocation OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
     public static final ResourceLocation NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
 
+    public static final Component ADD_LOCATION = new TranslatableComponent("gui.strange.journal.add_location");
     public static final Component CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
     public static final Component CLOSE = new TranslatableComponent("gui.strange.journal.close");
     public static final Component GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");

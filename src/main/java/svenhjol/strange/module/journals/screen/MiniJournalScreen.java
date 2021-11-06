@@ -63,7 +63,7 @@ public class MiniJournalScreen {
         this.lastPage = 0;
         this.perPage = 6;
         this.textColor = 0x222222;
-        this.secondaryColor = 0x908000;
+        this.secondaryColor = 0x908080;
         this.buttonWidth = 88;
         this.buttonHeight = 20;
 
@@ -134,7 +134,7 @@ public class MiniJournalScreen {
     }
 
     private <T> void paginator(PoseStack poseStack, Font font, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
-        int paginationY = 186;
+        int paginationY = midY + 50;
         int currentPage = lastPage - 1;
         List<T> sublist;
 
@@ -161,13 +161,13 @@ public class MiniJournalScreen {
             // only render pagination buttons on the first render pass
             if (shouldRenderButtons) {
                 if (lastPage * perPage < size) {
-                    screen.addRenderableWidget(new ImageButton(midX - 60, paginationY, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
+                    screen.addRenderableWidget(new ImageButton(midX - 64, paginationY, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
                         ++lastPage;
                         redraw();
                     }));
                 }
                 if (lastPage > 1) {
-                    screen.addRenderableWidget(new ImageButton(midX - 138, paginationY, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
+                    screen.addRenderableWidget(new ImageButton(midX - 134, paginationY, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
                         --lastPage;
                         redraw();
                     }));

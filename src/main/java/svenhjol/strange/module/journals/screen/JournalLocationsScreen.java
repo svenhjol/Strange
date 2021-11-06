@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.helper.GuiHelper;
@@ -19,11 +18,10 @@ public class JournalLocationsScreen extends JournalScreen {
     protected boolean hasRenderedButtons;
 
     public JournalLocationsScreen() {
-        super(new TranslatableComponent("gui.strange.journal.locations"));
+        super(LOCATIONS);
 
         // "add location" button to the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> add(),
-            new TranslatableComponent("gui.strange.journal.add_location")));
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> add(), ADD_LOCATION));
 
         this.hasRenderedButtons = false;
     }
@@ -44,14 +42,14 @@ public class JournalLocationsScreen extends JournalScreen {
         if (journal == null || journal.getLocations() == null || journal.getLocations().size() == 0) {
             // no locations, show "add location" button and exit early
             if (!hasRenderedButtons) {
-                addRenderableWidget(new Button(midX - (buttonWidth / 2), 28, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.journal.add_location"), b -> add()));
+                addRenderableWidget(new Button(midX - (buttonWidth / 2), 28, buttonWidth, buttonHeight, ADD_LOCATION, b -> add()));
                 hasRenderedButtons = true;
             }
             return;
         }
 
         AtomicInteger y = new AtomicInteger(40);
-        Supplier<Component> labelForNoItem = () -> new TranslatableComponent("gui.strange.journal.no_locations");
+        Supplier<Component> labelForNoItem = () -> NO_LOCATIONS;
         Consumer<JournalLocation> renderItem = location -> {
             String name = getTruncatedName(location.getName(), 27);
             ItemStack icon = location.getIcon();

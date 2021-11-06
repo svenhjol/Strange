@@ -1,71 +1,33 @@
 package svenhjol.strange.module.journals.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalData;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.List;
 import java.util.function.Supplier;
 
-public class JournalBiomesScreen extends JournalScreen {
-    protected boolean hasRenderedButtons;
-
+public class JournalBiomesScreen extends JournalResourcesScreen {
     public JournalBiomesScreen() {
         super(LEARNED_BIOMES);
 
         // add a back button at the bottom
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
-
-        this.hasRenderedButtons = false;
     }
 
     @Override
-    public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, titleX, 16, titleColor);
+    protected List<ResourceLocation> getResources(JournalData journal) {
+        return journal.getLearnedBiomes();
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        super.render(poseStack, mouseX, mouseY, delta);
-
-        int buttonWidth = 180;
-        int buttonHeight = 20;
-        int yOffset = 21;
-
-        if (journal == null) {
-            return;
-        }
-
-        AtomicInteger y = new AtomicInteger(40);
-        Supplier<Component> labelForNoItem = () -> NO_BIOMES;
-        Consumer<ResourceLocation> renderItem = biome -> {
-            String prettyName = StringHelper.snakeToPretty(biome.getPath(), true);
-            String truncated = getTruncatedName(prettyName, 27);
-
-            if (!hasRenderedButtons) {
-                Button button = new Button(midX - (buttonWidth / 2), y.get(), buttonWidth, buttonHeight, new TextComponent(truncated), b -> select(biome));
-                addRenderableWidget(button);
-            }
-
-            y.addAndGet(yOffset);
-        };
-
-        paginator(poseStack, journal.getLearnedBiomes(), renderItem, labelForNoItem, !hasRenderedButtons);
-        hasRenderedButtons = true;
+    protected Supplier<Component> getLabelForNoItem() {
+        return () -> NO_BIOMES;
     }
 
     @Override
-    protected void redraw() {
-        super.redraw();
-        hasRenderedButtons = false;
-    }
-
     protected void select(ResourceLocation biome) {
         ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalBiomeScreen(biome)));
     }
