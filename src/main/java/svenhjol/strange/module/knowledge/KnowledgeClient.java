@@ -9,13 +9,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.JournalsClient;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -27,10 +26,8 @@ public class KnowledgeClient extends CharmModule {
     public static void renderRunesString(@Nullable Minecraft client, PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, int knownColor, int unknownColor, boolean withShadow) {
         if (client == null || client.player == null) return;
 
-        Player player = client.player;
-        if (Journals.getJournalData(player).isEmpty()) return;
-
-        JournalData journal = Journals.getJournalData(player).get();
+        if (JournalsClient.getJournalData().isEmpty()) return;
+        JournalData journal = JournalsClient.getJournalData().get();
         String knownRuneString = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
         int index = 0;
 
