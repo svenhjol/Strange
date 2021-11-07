@@ -32,6 +32,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     private int midX;
     private int midY;
 
+    private final int knownColor;
+    private final int unknownColor;
+
     private Button doneButton;
     private Button takeButton;
     private Button activateButton;
@@ -50,6 +53,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         this.imageWidth = 176;
         this.imageHeight = 174;
+
+        this.knownColor = 0x997755;
+        this.unknownColor = 0xC0B0A0;
     }
 
     @Override
@@ -163,8 +169,8 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
             13,
             10,
             4,
-            WritingDeskScreen.KNOWN_COLOR,
-            WritingDeskScreen.UNKNOWN_COLOR,
+            knownColor,
+            unknownColor,
             false
         );
     }

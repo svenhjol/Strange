@@ -27,12 +27,14 @@ import java.util.function.BiConsumer;
 
 @SuppressWarnings("ConstantConditions")
 public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> {
-    public static final int KNOWN_COLOR = 0x997755;
-    public static final int UNKNOWN_COLOR = 0xC0B0A0;
+    public static final ResourceLocation TEXTURE;
+    public static final Component DELETE;
 
     private final int unknownColor;
     private final int uninkedColor;
     private final int knownColor;
+    private final int bookKnownColor;
+    private final int bookUnknownColor;
     private final int inputRunesLeft;
     private final int inputRunesTop;
     private final int inputRunesXOffset;
@@ -51,7 +53,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private int midX;
     private int midY;
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Strange.MOD_ID, "textures/gui/writing_desk.png");
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -66,6 +67,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.unknownColor = 0x999999;
         this.uninkedColor = 0x888888;
         this.knownColor = 0x000000;
+        this.bookKnownColor = 0x997755;
+        this.bookUnknownColor = 0xC0B0A0;
         this.deleteButtonLeft = 102;
         this.deleteButtonTop = -39;
         this.deleteButtonWidth = 5;
@@ -177,7 +180,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             blit(poseStack, left, top, imageWidth, deleteButtonYOffset, deleteButtonWidth, deleteButtonHeight, 512, 256);
 
             if (mouseX > left && mouseX < left + deleteButtonWidth && mouseY > top && mouseY < top + deleteButtonHeight) {
-                List<Component> hoverText = List.of(new TranslatableComponent("gui.strange.writing_desks.delete"));
+                List<Component> hoverText = List.of(DELETE);
                 renderTooltip(poseStack, hoverText, Optional.empty(), mouseX, mouseY);
             }
         }
@@ -194,8 +197,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             13,
             10,
             4,
-            KNOWN_COLOR,
-            UNKNOWN_COLOR,
+            bookKnownColor,
+            bookUnknownColor,
             false
         );
     }
@@ -284,5 +287,10 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
 
     private void syncClickedButton(int r) {
         ClientHelper.getClient().ifPresent(mc -> mc.gameMode.handleInventoryButtonClick((this.menu).containerId, r));
+    }
+
+    static {
+        DELETE = new TranslatableComponent("gui.strange.writing_desks.delete");
+        TEXTURE = new ResourceLocation(Strange.MOD_ID, "textures/gui/writing_desk.png");
     }
 }
