@@ -3,6 +3,7 @@ package svenhjol.strange.module.runestones;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
@@ -30,7 +31,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@SuppressWarnings("ConstantConditions")
 public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
+    public static final Component POSSIBLE_ITEMS;
+    public static final Component REQUIRED_ITEM;
+    public static final Component ACTIVATE;
+
     private final int UNKNOWN_COLOR = 0xDDCCBB;
     private final int KNOWN_COLOR = 0xFFFFFF;
     private final int WRAP_AT = 14;
@@ -42,6 +48,8 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private int itemRandomTicks = 0;
     private int midX;
     private int midY;
+
+    private Button activateButton;
 
     public RunestoneScreen(RunestoneMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -58,12 +66,19 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         midX = width / 2;
         midY = height / 2;
+
+        activateButton = addRenderableWidget(new Button(midX - 45, midY + 94, 90, 20, ACTIVATE, b -> {
+            syncClickedButton(1);
+            onClose();
+        }));
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
+
+        activateButton.active = menu.slots.get(0).hasItem();
 
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
@@ -170,12 +185,12 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         }
 
         if (numberOfUnknownRunes > 0) {
-            text.add(new TranslatableComponent("gui.strange.clues.possible_items"));
+            text.add(POSSIBLE_ITEMS);
             for (ItemStack item : this.items) {
                 text.add(item.getHoverName());
             }
         } else {
-            text.add(new TranslatableComponent("gui.strange.clues.required_item"));
+            text.add(REQUIRED_ITEM);
             text.add(this.items.get(0).getHoverName());
         }
 
@@ -202,9 +217,19 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         return Optional.ofNullable(RunestonesClient.destinationHolder);
     }
 
+    private void syncClickedButton(int r) {
+        ClientHelper.getClient().ifPresent(mc -> mc.gameMode.handleInventoryButtonClick((this.menu).containerId, r));
+    }
+
     @Override
     public void onClose() {
         RunestonesClient.destinationHolder = null;
         super.onClose();
+    }
+
+    static {
+        ACTIVATE = new TranslatableComponent("gui.strange.runestones.activate");
+        POSSIBLE_ITEMS = new TranslatableComponent("gui.strange.clues.possible_items");
+        REQUIRED_ITEM = new TranslatableComponent("gui.strange.clues.required_item");
     }
 }

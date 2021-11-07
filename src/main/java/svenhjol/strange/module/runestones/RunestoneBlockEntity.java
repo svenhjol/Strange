@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -192,6 +193,6 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
-        return new RunestoneMenu(syncId, playerInventory, this, this.data);
+        return new RunestoneMenu(syncId, playerInventory, this, this.data, ContainerLevelAccess.create(player.getLevel(), getBlockPos()));
     }
 }

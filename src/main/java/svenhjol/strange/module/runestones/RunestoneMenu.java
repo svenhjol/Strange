@@ -5,6 +5,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -17,18 +18,20 @@ public class RunestoneMenu extends CharmContainerMenu {
     private final Player player;
     private final Container inventory;
     private final ContainerData data;
+    private final ContainerLevelAccess access;
 
     public RunestoneMenu(int syncId, Inventory playerInventory) {
-        this(syncId, playerInventory, new SimpleContainer(1), new SimpleContainerData(1));
+        this(syncId, playerInventory, new SimpleContainer(1), new SimpleContainerData(1), ContainerLevelAccess.NULL);
     }
 
-    public RunestoneMenu(int syncId, Inventory playerInventory, Container inventory, ContainerData data) {
+    public RunestoneMenu(int syncId, Inventory playerInventory, Container inventory, ContainerData data, ContainerLevelAccess access) {
         super(Runestones.MENU, syncId, playerInventory, inventory);
 
         this.inventory = inventory;
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;
         this.data = data;
+        this.access = access;
         this.addDataSlots(data);
 
         this.addSlot(new Slot(inventory, 0, 80, 55) {
@@ -55,6 +58,24 @@ public class RunestoneMenu extends CharmContainerMenu {
         for(k = 0; k < 9; ++k) {
             this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142));
         }
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int i) {
+        switch (i) {
+            case 1 -> access.execute((level, pos) -> {
+                if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity rune) {
+                    // TODO: there's similarity with the runic lectern menu here so abstract out consume + teleport
+
+                    ItemStack sacrifice = slots.get(0).getItem();
+                    if (!sacrifice.isEmpty()) {
+                        sacrifice.shrink(1);
+                    }
+                }
+                broadcastChanges();
+            });
+        }
+        return true;
     }
 
     public IRunestoneMaterial getMaterial() {

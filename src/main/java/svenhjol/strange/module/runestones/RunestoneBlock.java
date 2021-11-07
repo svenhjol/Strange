@@ -47,6 +47,16 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     }
 
     @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState state2, boolean bl) {
+        super.onPlace(state, level, pos, state2, bl);
+        RunestoneBlockEntity runestone = getBlockEntity(level, pos);
+        if (runestone != null) {
+            runestone.difficulty = level.random.nextFloat();
+            runestone.setChanged();
+        }
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             boolean result = tryReadRunestone((ServerLevel)level, pos, (ServerPlayer) player);

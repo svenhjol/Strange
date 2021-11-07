@@ -60,10 +60,6 @@ public class RunicLecternMenu extends CharmContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int i) {
-//        if (player.level.isClientSide) {
-//            return false;
-//        }
-
         switch (i) {
             case 0 -> access.execute((level, pos) -> {
                 ItemStack sacrifice = slots.get(0).getItem();
@@ -76,7 +72,6 @@ public class RunicLecternMenu extends CharmContainerMenu {
 
                     Inventory inventory = player.getInventory();
                     inventory.placeItemBackInInventory(tome);
-//                    PlayerHelper.addOrDropStack(player, tome);
 
                     BlockState state = level.getBlockState(pos);
                     BlockState newState = Blocks.LECTERN.defaultBlockState();
