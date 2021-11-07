@@ -1,5 +1,6 @@
 {
   "block.strange.runic_lectern": "Runic Lectern",
+  "block.strange.stone_runestone": "Stone Runestone",
   "block.strange.writing_desk": "Writing Desk",
   "commands.strange.invalid_biome": "Invalid biome",
   "commands.strange.invalid_structure": "Invalid structure",
@@ -48,6 +49,7 @@
   "gui.strange.knowledge_stones.learned_biome": "You learned the runes for the %s biome",
   "gui.strange.knowledge_stones.learned_structure": "You learned the runes for the %s structure",
   "gui.strange.knowledge_stones.learned_dimension": "You learned the runes for the %s dimension",
+  "gui.strange.runestones.activate": "Activate",
   "gui.strange.clues.ancient": "Ancient",
   "gui.strange.clues.cold": "Cold",
   "gui.strange.clues.dangerous": "Dangerous",
