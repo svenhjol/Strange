@@ -68,7 +68,7 @@ public class RunestoneMenu extends CharmContainerMenu {
                 if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone) {
                     String runes = runestone.getRunes();
                     ItemStack sacrifice = slots.get(0).getItem();
-                    ActivateRunestoneCallback.EVENT.invoker().interact(player, runes, sacrifice.copy());
+                    ActivateRunestoneCallback.EVENT.invoker().interact(player, runes, sacrifice);
 
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);

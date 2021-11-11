@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -29,7 +29,7 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
     protected ItemStack tome;
 
     public RunicLecternBlockEntity(BlockPos pos, BlockState state) {
-        super(WritingDesks.RUNIC_LECTERN_BLOCK_ENTITY, pos, state);
+        super(RunicTomes.RUNIC_LECTERN_BLOCK_ENTITY, pos, state);
         this.items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         this.tome = ItemStack.EMPTY;
     }

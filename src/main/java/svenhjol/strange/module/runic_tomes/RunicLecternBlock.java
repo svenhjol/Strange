@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.writing_desks.WritingDesks;
 
 public class RunicLecternBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
@@ -142,7 +143,7 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
 
         CompoundTag tomeTag = new CompoundTag();
         lectern.getTome().save(tomeTag);
-        NetworkHelper.sendPacketToClient(player, WritingDesks.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
+        NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
         return true;
     }
 }

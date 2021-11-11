@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.screen.CharmContainerMenu;
+import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 
 public class RunicLecternMenu extends CharmContainerMenu {
     private final Inventory playerInventory;
@@ -24,7 +25,7 @@ public class RunicLecternMenu extends CharmContainerMenu {
     }
 
     public RunicLecternMenu(int syncId, Inventory playerInventory, Container inventory, ContainerLevelAccess access) {
-        super(WritingDesks.RUNIC_LECTERN_MENU, syncId, playerInventory, inventory);
+        super(RunicTomes.RUNIC_LECTERN_MENU, syncId, playerInventory, inventory);
 
         this.access = access;
         this.inventory = inventory;
@@ -83,10 +84,9 @@ public class RunicLecternMenu extends CharmContainerMenu {
             case 1 -> access.execute((level, pos) -> {
                 if (level.getBlockEntity(pos) instanceof RunicLecternBlockEntity lectern) {
                     ItemStack tome = lectern.getTome();
-
-                    // TODO: teleport calculation from tome
-
                     ItemStack sacrifice = slots.get(0).getItem();
+                    ActivateRunicTomeCallback.EVENT.invoker().interact(player, tome, sacrifice);
+
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);
                     }

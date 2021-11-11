@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 
 import java.util.UUID;
 

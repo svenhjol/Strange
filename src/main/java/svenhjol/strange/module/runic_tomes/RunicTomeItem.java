@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
@@ -19,6 +19,7 @@ import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.branches.DiscoveriesBranch;
 import svenhjol.strange.module.knowledge.branches.SpecialsBranch;
 import svenhjol.strange.module.runestones.RunestoneHelper;
+import svenhjol.strange.module.writing_desks.WritingDesks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class RunicTomeItem extends CharmItem {
     }
 
     public static ItemStack create(Player player, String runes) {
-        ItemStack tome = new ItemStack(WritingDesks.RUNIC_TOME);
+        ItemStack tome = new ItemStack(RunicTomes.RUNIC_TOME);
         setRunes(tome, runes);
         setAuthor(tome, player.getName().getString());
 

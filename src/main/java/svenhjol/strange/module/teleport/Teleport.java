@@ -10,6 +10,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;
+import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +36,15 @@ public class Teleport extends CharmModule {
         ServerTickEvents.END_SERVER_TICK.register(this::handleTick);
 
         ActivateRunestoneCallback.EVENT.register(this::handleActivateRunestone);
+        ActivateRunicTomeCallback.EVENT.register(this::handleActivateRunicTome);
     }
 
     private void handleActivateRunestone(Player player, String runes, ItemStack sacrifice) {
-        LogHelper.debug(this.getClass(), "Teleport:", player, runes, sacrifice);
+        LogHelper.debug(this.getClass(), "Activate runestone", player, runes, sacrifice);
+    }
+
+    private void handleActivateRunicTome(Player player, ItemStack tome, ItemStack sacrifice) {
+        LogHelper.debug(this.getClass(), "Activate runic tome", player, tome, sacrifice);
     }
 
     private void handleTick(MinecraftServer server) {

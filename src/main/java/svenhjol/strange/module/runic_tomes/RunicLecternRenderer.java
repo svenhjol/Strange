@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

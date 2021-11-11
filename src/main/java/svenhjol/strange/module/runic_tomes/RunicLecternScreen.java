@@ -1,4 +1,4 @@
-package svenhjol.strange.module.writing_desks;
+package svenhjol.strange.module.runic_tomes;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -94,12 +94,12 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         renderTooltip(poseStack, mouseX, mouseY);
 
         // if tome has been sent from the server, update screen props
-        if (WritingDesksClient.tomeHolder == null) {
+        if (RunicTomesClient.tomeHolder == null) {
             return;
         }
 
         if (tome == null) {
-            tome = WritingDesksClient.tomeHolder.copy();
+            tome = RunicTomesClient.tomeHolder.copy();
             RunicTomeItem.getRunes(tome).ifPresent(r -> runes = r);
             RunicTomeItem.getItem(tome).ifPresent(i -> requiredItem = i);
         }
