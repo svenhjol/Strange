@@ -11,9 +11,11 @@ import svenhjol.strange.module.knowledge.types.Discovery;
 import java.util.Optional;
 
 public class DiscoveriesBranch extends KnowledgeBranch<Discovery, Discovery> {
+    public static final String NAME = "Discoveries";
+
     @Override
     public String getBranchName() {
-        return "Discoveries";
+        return NAME;
     }
 
     @Override

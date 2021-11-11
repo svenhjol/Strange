@@ -14,9 +14,11 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public class BiomesBranch extends KnowledgeBranch<Biome, ResourceLocation> {
+    public static final String NAME = "Biomes";
+
     @Override
     public String getBranchName() {
-        return "Biomes";
+        return NAME;
     }
 
     @Override

@@ -13,9 +13,11 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public class DimensionsBranch extends KnowledgeBranch<Level, ResourceLocation> {
+    public static final String NAME = "Dimensions";
+
     @Override
     public String getBranchName() {
-        return "Dimensions";
+        return NAME;
     }
 
     @Override

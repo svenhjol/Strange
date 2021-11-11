@@ -11,6 +11,8 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public class SpecialsBranch extends KnowledgeBranch<Discovery, Discovery> {
+    public static final String NAME = "Specials";
+
     @Override
     public void register(Discovery type) {
         add(type.getRunes(), type);
@@ -23,7 +25,7 @@ public class SpecialsBranch extends KnowledgeBranch<Discovery, Discovery> {
 
     @Override
     public String getBranchName() {
-        return "Specials";
+        return NAME;
     }
 
     @Override

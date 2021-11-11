@@ -10,14 +10,16 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
+    public static final String NAME = "Bookmarks";
+
     @Override
     public void register(String type) {
-        // you can't register a JournalLocation to the global scope, so do nothing here
+        // you can't register a JournalBookmark to the global scope, so do nothing here
     }
 
     @Override
     public void add(String runes, JournalBookmark value) {
-        // you can't add a JournalLocation to the global scope, so do nothing here
+        // you can't add a JournalBookmark to the global scope, so do nothing here
     }
 
     @Override
@@ -37,7 +39,7 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
 
     @Override
     public String getBranchName() {
-        return "Locations";
+        return NAME;
     }
 
     @Override
