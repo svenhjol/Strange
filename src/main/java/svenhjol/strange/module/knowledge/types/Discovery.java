@@ -1,23 +1,24 @@
-package svenhjol.strange.module.knowledge;
+package svenhjol.strange.module.knowledge.types;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.Optional;
 
-public class Destination {
+public class Discovery {
     public static final String TAG_RUNES = "Runes";
+    public static final String TAG_ID = "Id";
     public static final String TAG_POSITION = "Pos";
     public static final String TAG_DIMENSION = "Dim";
-    public static final String TAG_LOCATION = "Loc";
     public static final String TAG_PLAYER = "Player";
-    public static final String TAG_DIFFICULTY = "Diff";
+    public static final String TAG_DIFFICULTY = "Difficulty";
     public static final String TAG_DECAY = "Decay";
 
     private final String runes;
-    private final ResourceLocation location;
+    private final ResourceLocation id;
     private BlockPos pos;
     private ResourceLocation dimension;
     private String player;
@@ -26,9 +27,9 @@ public class Destination {
 
     private long cachedSeed;
 
-    public Destination(String runes, ResourceLocation location) {
+    public Discovery(String runes, ResourceLocation id) {
         this.runes = runes;
-        this.location = location;
+        this.id = id;
     }
 
     public CompoundTag toTag() {
@@ -49,8 +50,8 @@ public class Destination {
             tag.putString(TAG_DIMENSION, dimension.toString());
         }
 
-        if (location != null) {
-            tag.putString(TAG_LOCATION, location.toString());
+        if (id != null) {
+            tag.putString(TAG_ID, id.toString());
         }
 
         if (player != null) {
@@ -92,8 +93,8 @@ public class Destination {
         return cachedSeed;
     }
 
-    public ResourceLocation getLocation() {
-        return location;
+    public ResourceLocation getId() {
+        return id;
     }
 
     public float getDifficulty() {
@@ -116,23 +117,23 @@ public class Destination {
         return Optional.ofNullable(dimension);
     }
 
-    public static Destination fromTag(CompoundTag tag) {
+    public static Discovery fromTag(CompoundTag tag) {
         String runes = tag.getString(TAG_RUNES);
-        ResourceLocation location = new ResourceLocation(tag.getString(TAG_LOCATION));
-        Destination destination = new Destination(runes, location);
+        ResourceLocation location = new ResourceLocation(tag.getString(TAG_ID));
+        Discovery discovery = new Discovery(runes, location);
 
         String dimensionFromTag = tag.getString(TAG_DIMENSION);
-        destination.dimension = dimensionFromTag.isEmpty() ? null : new ResourceLocation(dimensionFromTag);
+        discovery.dimension = dimensionFromTag.isEmpty() ? null : new ResourceLocation(dimensionFromTag);
 
         BlockPos pos = BlockPos.of(tag.getLong(TAG_POSITION));
-        destination.pos = pos.equals(BlockPos.ZERO) ? null : pos;
+        discovery.pos = pos.equals(BlockPos.ZERO) ? null : pos;
 
         String playerFromTag = tag.getString(TAG_PLAYER);
-        destination.player = playerFromTag.isEmpty() ? null : tag.getString(TAG_PLAYER);
+        discovery.player = playerFromTag.isEmpty() ? null : tag.getString(TAG_PLAYER);
 
-        destination.difficulty = tag.getFloat(TAG_DIFFICULTY);
-        destination.decay = tag.getFloat(TAG_DECAY);
+        discovery.difficulty = tag.getFloat(TAG_DIFFICULTY);
+        discovery.decay = tag.getFloat(TAG_DECAY);
 
-        return destination;
+        return discovery;
     }
 }

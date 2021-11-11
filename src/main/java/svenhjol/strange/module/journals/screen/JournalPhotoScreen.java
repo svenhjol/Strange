@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.JournalBookmark;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -18,16 +18,16 @@ import java.io.RandomAccessFile;
 
 @SuppressWarnings("ConstantConditions")
 public class JournalPhotoScreen extends JournalScreen {
-    protected JournalLocation location;
+    protected JournalBookmark bookmark;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
     protected int photoFailureRetries;
     protected boolean hasPhoto;
 
-    public JournalPhotoScreen(JournalLocation location) {
-        super(new TextComponent(location.getName()));
+    public JournalPhotoScreen(JournalBookmark bookmark) {
+        super(new TextComponent(bookmark.getName()));
 
-        this.location = location;
+        this.bookmark = bookmark;
         this.photoFailureRetries = 0;
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(), GO_BACK));
     }
@@ -43,7 +43,7 @@ public class JournalPhotoScreen extends JournalScreen {
         super.render(poseStack, mouseX, mouseY, delta);
 
         // render icon next to title
-        renderTitleIcon(location.getIcon());
+        renderTitleIcon(bookmark.getIcon());
 
         if (!hasPhoto || minecraft == null) {
             return;
@@ -98,7 +98,7 @@ public class JournalPhotoScreen extends JournalScreen {
         if (hasPhoto && registeredPhotoTexture != null) {
             if (x > (midX - 107) && x < midX + 107
                 && y > 42 && y < 175) {
-                minecraft.setScreen(new JournalLocationScreen(location));
+                minecraft.setScreen(new JournalBookmarkScreen(bookmark));
                 return true;
             }
         }
@@ -113,7 +113,7 @@ public class JournalPhotoScreen extends JournalScreen {
         }
 
         File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
-        return new File(screenshotsDirectory, location.getId() + ".png");
+        return new File(screenshotsDirectory, bookmark.getId() + ".png");
     }
 
     private boolean hasPhoto() {
@@ -123,7 +123,7 @@ public class JournalPhotoScreen extends JournalScreen {
 
     private void back() {
         if (minecraft != null) {
-            minecraft.setScreen(new JournalLocationScreen(location));
+            minecraft.setScreen(new JournalBookmarkScreen(bookmark));
         }
     }
 }

@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals.data;
+package svenhjol.strange.module.journals;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.DefaultedRegistry;
@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.Knowledge;
@@ -16,7 +15,7 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Locale;
 import java.util.Optional;
 
-public class JournalLocation {
+public class JournalBookmark {
     public static final ResourceLocation DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
     public static final ResourceLocation DEFAULT_DEATH_ICON = new ResourceLocation("minecraft", "skeleton_skull");
 
@@ -25,27 +24,24 @@ public class JournalLocation {
     private static final String TAG_DIM = "Dim";
     private static final String TAG_NAME = "Name";
     private static final String TAG_ICON = "Icon";
-    private static final String TAG_NOTE_ID = "Note";
 
     private String id;
     private String name;
-    private String noteId;
     private String runes;
     private BlockPos pos;
     private ResourceLocation dim;
     private ResourceLocation icon;
 
-    public JournalLocation(BlockPos pos, ResourceLocation dim) {
-        this(StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.somewhere").orElse("Somewhere"), pos, dim, DEFAULT_ICON, null);
+    public JournalBookmark(BlockPos pos, ResourceLocation dim) {
+        this(StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.somewhere").orElse("Somewhere"), pos, dim, DEFAULT_ICON);
     }
 
-    public JournalLocation(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
-        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(6).toLowerCase(Locale.ROOT), name, pos, dim, icon, noteId);
+    public JournalBookmark(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon) {
+        this(Strange.MOD_ID + "_" + RandomStringUtils.randomAlphabetic(6).toLowerCase(Locale.ROOT), name, pos, dim, icon);
     }
 
-    public JournalLocation(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon, @Nullable String noteId) {
+    public JournalBookmark(String id, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon) {
         this.id = id;
-        this.noteId = noteId != null ? noteId : "";
         this.runes = "";
 
         setName(name);
@@ -54,21 +50,19 @@ public class JournalLocation {
         setIcon(icon);
     }
 
-    public static JournalLocation fromNbt(CompoundTag tag) {
+    public static JournalBookmark fromNbt(CompoundTag tag) {
         String id = tag.getString(TAG_ID);
         String name = tag.getString(TAG_NAME);
-        String noteId = tag.getString(TAG_NOTE_ID);
         BlockPos pos = BlockPos.of(tag.getLong(TAG_POS));
         ResourceLocation dim = new ResourceLocation(tag.getString(TAG_DIM));
         ResourceLocation icon = new ResourceLocation(tag.getString(TAG_ICON));
 
-        return new JournalLocation(id, name, pos, dim, icon, noteId);
+        return new JournalBookmark(id, name, pos, dim, icon);
     }
 
     public CompoundTag toNbt(CompoundTag tag) {
         tag.putString(TAG_ID, id);
         tag.putString(TAG_NAME, name);
-        tag.putString(TAG_NOTE_ID, noteId != null ? noteId : "");
         tag.putString(TAG_DIM, dim.toString());
         tag.putString(TAG_ICON, icon.toString());
         tag.putLong(TAG_POS, pos.asLong());
@@ -120,21 +114,21 @@ public class JournalLocation {
         this.pos = pos;
 
         Knowledge.getKnowledgeData().ifPresent(knowledge
-            -> this.runes = knowledge.locations.getStartRune() + KnowledgeHelper.generateRunesFromPos(pos));
+            -> this.runes = knowledge.bookmarks.getStartRune() + KnowledgeHelper.generateRunesFromPos(pos));
     }
 
     public void setDimension(ResourceLocation dim) {
         this.dim = dim;
     }
 
-    public JournalLocation copy() {
-        return new JournalLocation(id, name, pos, dim, icon, noteId);
+    public JournalBookmark copy() {
+        return new JournalBookmark(id, name, pos, dim, icon);
     }
 
-    public void populate(JournalLocation location) {
-        setName(location.getName());
-        setIcon(location.getIcon());
-        setBlockPos(location.getBlockPos());
-        setDimension(location.getDimension());
+    public void populate(JournalBookmark bookmark) {
+        setName(bookmark.getName());
+        setIcon(bookmark.getIcon());
+        setBlockPos(bookmark.getBlockPos());
+        setDimension(bookmark.getDimension());
     }
 }

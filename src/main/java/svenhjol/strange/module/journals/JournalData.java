@@ -10,32 +10,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.strange.module.journals.data.JournalLocation;
-import svenhjol.strange.module.journals.data.JournalNote;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class JournalData {
-    public static final int MAX_LOCATIONS = 128;
+    public static final int MAX_BOOKMARKS = 128;
 
     private static final String TAG_RUNES = "Runes";
-    private static final String TAG_LOCATIONS = "Locations";
+    private static final String TAG_BOOKMARKS = "Bookmarks";
     private static final String TAG_STRUCTURES = "Structures";
     private static final String TAG_BIOMES = "Biomes";
     private static final String TAG_DIMENSIONS = "Dimensions";
-    private static final String TAG_NOTES = "Notes";
 
     private final UUID uuid;
     private List<Integer> runes = new ArrayList<>();
 
-    private final List<JournalLocation> locations = new ArrayList<>();
-    private final List<JournalNote> notes = new ArrayList<>();
+    private final List<JournalBookmark> bookmarks = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
     private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
 
-    private static final Map<String, JournalLocation> mappedByRuneString = new HashMap<>();
+    private static final Map<String, JournalBookmark> mappedByRuneString = new HashMap<>();
 
     private JournalData(Player player) {
         this.uuid = player.getUUID();
@@ -44,15 +40,13 @@ public class JournalData {
     public static JournalData fromNbt(Player player, CompoundTag tag) {
         JournalData data = new JournalData(player);
 
-        ListTag locationsNbt = tag.getList(TAG_LOCATIONS, 10);
-        ListTag notesNbt = tag.getList(TAG_NOTES, 10);
+        ListTag bookmarksNbt = tag.getList(TAG_BOOKMARKS, 10);
         ListTag structuresNbt = tag.getList(TAG_STRUCTURES, 8);
         ListTag biomesNbt = tag.getList(TAG_BIOMES, 8);
         ListTag dimensionsNbt = tag.getList(TAG_DIMENSIONS, 8);
 
         data.runes = Arrays.stream(tag.getIntArray(TAG_RUNES)).boxed().collect(Collectors.toList());
-        locationsNbt.forEach(compound -> data.locations.add(JournalLocation.fromNbt((CompoundTag)compound)));
-        notesNbt.forEach(compound -> data.notes.add(JournalNote.fromNbt((CompoundTag)compound)));
+        bookmarksNbt.forEach(compound -> data.bookmarks.add(JournalBookmark.fromNbt((CompoundTag)compound)));
 
         structuresNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
             key -> data.structures.add(new ResourceLocation(key)));
@@ -74,21 +68,18 @@ public class JournalData {
     }
 
     public CompoundTag toNbt(CompoundTag nbt) {
-        ListTag locationsNbt = new ListTag();
-        ListTag notesNbt = new ListTag();
+        ListTag bookmarksNbt = new ListTag();
         ListTag structuresNbt = new ListTag();
         ListTag biomesNbt = new ListTag();
         ListTag dimensionsNbt = new ListTag();
 
-        locations.forEach(location -> locationsNbt.add(location.toNbt(new CompoundTag())));
-        notes.forEach(note -> notesNbt.add(note.toNbt(new CompoundTag())));
+        bookmarks.forEach(bookmark -> bookmarksNbt.add(bookmark.toNbt(new CompoundTag())));
         structures.forEach(structure -> structuresNbt.add(StringTag.valueOf(structure.toString())));
         biomes.forEach(biome -> biomesNbt.add(StringTag.valueOf(biome.toString())));
         dimensions.forEach(dimension -> dimensionsNbt.add(StringTag.valueOf(dimension.toString())));
 
         nbt.putIntArray(TAG_RUNES, runes);
-        nbt.put(TAG_LOCATIONS, locationsNbt);
-        nbt.put(TAG_NOTES, notesNbt);
+        nbt.put(TAG_BOOKMARKS, bookmarksNbt);
         nbt.put(TAG_STRUCTURES, structuresNbt);
         nbt.put(TAG_BIOMES, biomesNbt);
         nbt.put(TAG_DIMENSIONS, dimensionsNbt);
@@ -96,39 +87,38 @@ public class JournalData {
         return nbt;
     }
 
-    public JournalLocation addLocation(Level level, BlockPos pos) {
-        JournalLocation location = new JournalLocation(pos, DimensionHelper.getDimension(level));
-        addLocation(location);
-        return location;
+    public JournalBookmark addBookmark(Level level, BlockPos pos) {
+        JournalBookmark bookmark = new JournalBookmark(pos, DimensionHelper.getDimension(level));
+        addBookmark(bookmark);
+        return bookmark;
     }
 
-    public void updateLocation(JournalLocation location) {
-        Optional<JournalLocation> opt = locations.stream().filter(l -> l.getId().equals(location.getId())).findFirst();
-        opt.ifPresent(l -> l.populate(location));
+    public void updateBookmark(JournalBookmark bookmark) {
+        Optional<JournalBookmark> opt = bookmarks.stream().filter(l -> l.getId().equals(bookmark.getId())).findFirst();
+        opt.ifPresent(l -> l.populate(bookmark));
     }
 
-    public void deleteLocation(JournalLocation location) {
-        Optional<JournalLocation> opt = locations.stream().filter(l -> l.getId().equals(location.getId())).findFirst();
-        opt.ifPresent(locations::remove);
+    public void deleteBookmark(JournalBookmark bookmark) {
+        Optional<JournalBookmark> opt = bookmarks.stream().filter(l -> l.getId().equals(bookmark.getId())).findFirst();
+        opt.ifPresent(bookmarks::remove);
     }
 
-    public void addDeathLocation(Level level, BlockPos pos) {
-        JournalLocation location = new JournalLocation(
-            new TranslatableComponent("gui.strange.journal.death_location").getString(),
+    public void addDeathBookmark(Level level, BlockPos pos) {
+        JournalBookmark bookmark = new JournalBookmark(
+            new TranslatableComponent("gui.strange.journal.death_bookmark").getString(),
             pos,
             DimensionHelper.getDimension(level),
-            JournalLocation.DEFAULT_DEATH_ICON,
-            null
+            JournalBookmark.DEFAULT_DEATH_ICON
         );
-        addLocation(location);
+        addBookmark(bookmark);
     }
 
     public List<Integer> getLearnedRunes() {
         return runes;
     }
 
-    public List<JournalLocation> getLocations() {
-        return locations;
+    public List<JournalBookmark> getBookmarks() {
+        return bookmarks;
     }
 
     public List<ResourceLocation> getLearnedBiomes() {
@@ -167,14 +157,14 @@ public class JournalData {
         }
     }
 
-    private void addLocation(JournalLocation location) {
-        if (locations.size() < MAX_LOCATIONS) {
-            locations.add(0, location);
-            mappedByRuneString.put(location.getRunes(), location);
+    private void addBookmark(JournalBookmark bookmark) {
+        if (bookmarks.size() < MAX_BOOKMARKS) {
+            bookmarks.add(0, bookmark);
+            mappedByRuneString.put(bookmark.getRunes(), bookmark);
         }
     }
 
-    public static Optional<JournalLocation> getLocationByRunes(String runes) {
+    public static Optional<JournalBookmark> getBookmarkByRunes(String runes) {
         return Optional.ofNullable(mappedByRuneString.get(runes));
     }
 }

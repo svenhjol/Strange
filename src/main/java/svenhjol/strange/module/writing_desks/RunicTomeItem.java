@@ -13,10 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.knowledge.branches.DestinationsBranch;
+import svenhjol.strange.module.knowledge.branches.DiscoveriesBranch;
 import svenhjol.strange.module.knowledge.branches.SpecialsBranch;
 import svenhjol.strange.module.runestones.RunestoneHelper;
 
@@ -47,19 +47,19 @@ public class RunicTomeItem extends CharmItem {
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
             List<Item> items = new ArrayList<>();
 
-            if (branch instanceof DestinationsBranch destinations) {
+            if (branch instanceof DiscoveriesBranch destinations) {
                 // destinations have fixed item requirements
-                Optional<Destination> optDest = destinations.get(runes);
+                Optional<Discovery> optDest = destinations.get(runes);
                 if (optDest.isPresent()) {
-                    Destination dest = optDest.get();
+                    Discovery dest = optDest.get();
                     ResourceLocation dimension = dest.getDimension().orElseGet(() -> DimensionHelper.getDimension(player.level));
                     items = RunestoneHelper.getItems(dimension, dest.getDifficulty(), new Random(dest.getSeed()));
                 }
             } else if (branch instanceof SpecialsBranch specials) {
                 // specials have fixed item requirements
-                Optional<Destination> optDest = specials.get(runes);
+                Optional<Discovery> optDest = specials.get(runes);
                 if (optDest.isPresent()) {
-                    Destination dest = optDest.get();
+                    Discovery dest = optDest.get();
                     ResourceLocation dimension = dest.getDimension().orElseGet(() -> DimensionHelper.getDimension(player.level));
                     items = RunestoneHelper.getItems(dimension, dest.getDifficulty(), new Random(dest.getSeed()));
                 }

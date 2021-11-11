@@ -3,7 +3,6 @@ package svenhjol.strange.module.stone_circles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -17,13 +16,11 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
 import svenhjol.strange.module.runestones.RunestoneLocations;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
-import svenhjol.strange.module.runestones.location.BaseLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +58,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
     public void postProcess(WorldGenLevel level, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
         IRunestoneMaterial material = null;
-        ResourceLocation dimension = null;
         List<BlockState> blocks = new ArrayList<>();
 
         if (Knowledge.getKnowledgeData().isEmpty()) {
@@ -69,11 +65,8 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
             return;
         }
 
-        KnowledgeData knowledgeData = Knowledge.getKnowledgeData().get();
-
         switch (stoneCircleType) {
             case OVERWORLD -> {
-                dimension = ServerLevel.OVERWORLD.location();
                 material = RunestoneMaterial.STONE;
                 blocks = Arrays.asList(
                     Blocks.STONE.defaultBlockState(),
@@ -82,7 +75,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                 );
             }
             case NETHER -> {
-                dimension = ServerLevel.NETHER.location();
                 material = RunestoneMaterial.BLACKSTONE;
                 blocks = Arrays.asList(
                     Blocks.BLACKSTONE.defaultBlockState(),
@@ -91,7 +83,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                 );
             }
             case END -> {
-                dimension = ServerLevel.END.location();
                 material = RunestoneMaterial.OBSIDIAN;
                 blocks = Arrays.asList(
                     Blocks.OBSIDIAN.defaultBlockState(),
@@ -103,13 +94,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         // generate the circle
         boolean generatedSomething = false;
         boolean generatedSpawnRune = false;
-
-        List<BaseLocation> destinations = Runestones.DIMENSION_LOCATIONS.get(dimension);
-
-        if (destinations.isEmpty()) {
-            LogHelper.warn(this.getClass(), "There are no available runestone destinations for this dimension, giving up");
-            return;
-        }
 
         int numberOfRunestonesGenerated = 0;
         for (int i = 0; i < 360; i += 45) {
@@ -170,13 +154,6 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                         }
                         LogHelper.debug(this.getClass(), "Created runestone with difficulty: " + difficulty);
                     }
-//                    if (dest.isPresent()) {
-//                        BlockEntity blockEntity = world.getBlockEntity(currentPos);
-//                        if (blockEntity instanceof RunestoneBlockEntity runestone) {
-//                            runestone.runes = dest.get().runes;
-//                            runestone.setChanged();
-//                        }
-//                    }
                     generatedColumn = true;
                 }
 

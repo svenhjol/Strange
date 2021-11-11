@@ -3,10 +3,10 @@ package svenhjol.strange.module.journals.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.JournalBookmark;
 
 public class JournalChooseIconScreen extends JournalScreen {
-    protected JournalLocation location;
+    protected JournalBookmark bookmark;
     protected ItemStack selected;
 
     protected int perRow;
@@ -16,10 +16,10 @@ public class JournalChooseIconScreen extends JournalScreen {
     protected int left;
     protected int top;
 
-    public JournalChooseIconScreen(JournalLocation location) {
+    public JournalChooseIconScreen(JournalBookmark bookmark) {
         super(CHOOSE_ICON);
 
-        this.location = location;
+        this.bookmark = bookmark;
         this.perRow = 8;
         this.maxRows = 5;
         this.xOffset = 20;
@@ -36,10 +36,10 @@ public class JournalChooseIconScreen extends JournalScreen {
 
         for (int y = 0; y < maxRows; y++) {
             for (int x = 0; x < perRow; x++) {
-                if (index >= Journals.locationIcons.size()) continue;
-                ItemStack stack = new ItemStack(Journals.locationIcons.get(index));
+                if (index >= Journals.bookmarkIcons.size()) continue;
+                ItemStack stack = new ItemStack(Journals.bookmarkIcons.get(index));
 
-                if (ItemStack.isSame(location.getIcon(), stack))
+                if (ItemStack.isSame(bookmark.getIcon(), stack))
                     fill(poseStack, midX + left + (x * xOffset), top + (y * yOffset), midX + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
 
                 itemRenderer.renderGuiItem(stack, midX + left + (x * xOffset), top + (y * yOffset));
@@ -54,10 +54,10 @@ public class JournalChooseIconScreen extends JournalScreen {
 
         for (int cy = 0; cy < maxRows; cy++) {
             for (int cx = 0; cx < perRow; cx++) {
-                if (index >= Journals.locationIcons.size()) continue;
+                if (index >= Journals.bookmarkIcons.size()) continue;
                 if (x >= (midX + left + (cx * xOffset)) && x < (midX + left + (cx * xOffset) + 16)
                     && y >= (top + (cy * yOffset)) && y < (top + (cy * yOffset) + 16)) {
-                    selected = new ItemStack(Journals.locationIcons.get(index));
+                    selected = new ItemStack(Journals.bookmarkIcons.get(index));
                     break;
                 }
                 index++;
@@ -75,11 +75,11 @@ public class JournalChooseIconScreen extends JournalScreen {
     protected void saveAndGoBack() {
         // TODO: save here
         if (selected != null) {
-            location.setIcon(selected);
+            bookmark.setIcon(selected);
         }
 
         if (minecraft != null) {
-            minecraft.setScreen(new JournalLocationScreen(location));
+            minecraft.setScreen(new JournalBookmarkScreen(bookmark));
         }
     }
 }

@@ -2,27 +2,27 @@ package svenhjol.strange.module.knowledge.branches;
 
 import net.minecraft.nbt.Tag;
 import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
 import java.util.Optional;
 
-public class LocationsBranch extends KnowledgeBranch<String, JournalLocation> {
+public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
     @Override
     public void register(String type) {
         // you can't register a JournalLocation to the global scope, so do nothing here
     }
 
     @Override
-    public void add(String runes, JournalLocation value) {
+    public void add(String runes, JournalBookmark value) {
         // you can't add a JournalLocation to the global scope, so do nothing here
     }
 
     @Override
-    public Optional<JournalLocation> get(String runes) {
-        return JournalData.getLocationByRunes(runes);
+    public Optional<JournalBookmark> get(String runes) {
+        return JournalData.getBookmarkByRunes(runes);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class LocationsBranch extends KnowledgeBranch<String, JournalLocation> {
     }
 
     @Override
-    public Tag tagify(JournalLocation value) {
+    protected Tag tagify(JournalBookmark value) {
         return null;
     }
 
@@ -42,7 +42,7 @@ public class LocationsBranch extends KnowledgeBranch<String, JournalLocation> {
 
     @Override
     public Optional<String> getPrettyName(String runes) {
-        return JournalData.getLocationByRunes(runes).map(JournalLocation::getName);
+        return JournalData.getBookmarkByRunes(runes).map(JournalBookmark::getName);
     }
 
     @Override

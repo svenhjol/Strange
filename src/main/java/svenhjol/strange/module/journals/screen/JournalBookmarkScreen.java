@@ -18,7 +18,7 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalLocationScreen extends JournalScreen {
+public class JournalBookmarkScreen extends JournalScreen {
     protected String name;
     protected EditBox nameField;
-    protected JournalLocation location;
+    protected JournalBookmark bookmark;
     protected DynamicTexture photoTexture = null;
     protected ResourceLocation registeredPhotoTexture = null;
     protected int photoFailureRetries;
@@ -47,11 +47,11 @@ public class JournalLocationScreen extends JournalScreen {
     protected boolean hasPhoto = false;
     protected List<GuiHelper.ButtonDefinition> updateButtons = new ArrayList<>();
 
-    public JournalLocationScreen(JournalLocation location) {
-        super(new TextComponent(location.getName()));
+    public JournalBookmarkScreen(JournalBookmark bookmark) {
+        super(new TextComponent(bookmark.getName()));
 
-        this.name = location.getName();
-        this.location = location.copy();
+        this.name = bookmark.getName();
+        this.bookmark = bookmark.copy();
         this.photoFailureRetries = 0;
         this.maxNameLength = 50;
         this.minPhotoDistance = 10;
@@ -89,13 +89,13 @@ public class JournalLocationScreen extends JournalScreen {
             // add a back button at the bottom
             bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
 
-            // if player has empty map, add button to make a map of this location
+            // if player has empty map, add button to make a map of this bookmark
             if (playerHasEmptyMap()) {
                 updateButtons.add(new GuiHelper.ButtonDefinition(b -> makeMap(), MAKE_MAP));
             }
 
-            // if player is near the location, add button to take a photo
-            if (playerIsNearLocation()) {
+            // if player is near the bookmark, add button to take a photo
+            if (playerIsNearBookmark()) {
                 updateButtons.add(new GuiHelper.ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
             }
 
@@ -124,7 +124,7 @@ public class JournalLocationScreen extends JournalScreen {
         int buttonHeight = 20;
 
         // render icon next to title
-        renderTitleIcon(location.getIcon());
+        renderTitleIcon(bookmark.getIcon());
 
         // render photo and buttons
         if (hasPhoto) {
@@ -141,7 +141,7 @@ public class JournalLocationScreen extends JournalScreen {
             hasRenderedUpdateButtons = true;
         }
 
-        // render coordinates and runes for this location
+        // render coordinates and runes for this bookmark
         ClientHelper.getPlayer().ifPresent(player -> {
             renderRunes(poseStack, player);
             renderCoordinates(poseStack, player);
@@ -155,7 +155,7 @@ public class JournalLocationScreen extends JournalScreen {
             return;
         }
 
-        BlockPos pos = location.getBlockPos();
+        BlockPos pos = bookmark.getBlockPos();
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -178,11 +178,11 @@ public class JournalLocationScreen extends JournalScreen {
             return;
         }
 
-        if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
+        if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) {
             return;
         }
 
-        String runes = location.getRunes();
+        String runes = bookmark.getRunes();
         String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
 
         int left = isCreative ? midX + 9 : midX - 48;
@@ -252,7 +252,7 @@ public class JournalLocationScreen extends JournalScreen {
         if (hasPhoto && registeredPhotoTexture != null) {
             if (x > (midX - left) && x < midX - left + width
                 && y > top && y < top + height) {
-                minecraft.setScreen(new JournalPhotoScreen(location));
+                minecraft.setScreen(new JournalPhotoScreen(bookmark));
                 return true;
             }
         }
@@ -261,26 +261,26 @@ public class JournalLocationScreen extends JournalScreen {
     }
 
     /**
-     * We need to resync the journal when leaving this page to go back to locations.
+     * We need to resync the journal when leaving this page to go back to bookmarks.
      */
     protected void saveAndGoBack() {
         save(); // save progress before changing screen
-        JournalsClient.sendOpenJournal(Journals.Page.LOCATIONS);
+        JournalsClient.sendOpenJournal(Journals.Page.BOOKMARKS);
     }
 
     protected void save() {
-        JournalsClient.sendUpdateLocation(location);
+        JournalsClient.sendUpdateBookmark(bookmark);
     }
 
     protected void delete() {
-        JournalsClient.sendDeleteLocation(location);
-        JournalsClient.sendOpenJournal(Journals.Page.LOCATIONS);
+        JournalsClient.sendDeleteBookmark(bookmark);
+        JournalsClient.sendOpenJournal(Journals.Page.BOOKMARKS);
     }
 
     protected void chooseIcon() {
         save(); // save progress before changing screen
         if (minecraft != null)
-            minecraft.setScreen(new JournalChooseIconScreen(location));
+            minecraft.setScreen(new JournalChooseIconScreen(bookmark));
     }
 
     protected void makeMap() {
@@ -291,7 +291,7 @@ public class JournalLocationScreen extends JournalScreen {
         if (minecraft != null && minecraft.player != null) {
             minecraft.setScreen(null);
             minecraft.options.hideGui = true;
-            JournalsClient.locationBeingPhotographed = location;
+            JournalsClient.bookmarkBeingPhotographed = bookmark;
             JournalsClient.photoTicks = 1;
         }
     }
@@ -303,7 +303,7 @@ public class JournalLocationScreen extends JournalScreen {
         }
 
         File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
-        return new File(screenshotsDirectory, location.getId() + ".png");
+        return new File(screenshotsDirectory, bookmark.getId() + ".png");
     }
 
     private boolean hasPhoto() {
@@ -319,15 +319,15 @@ public class JournalLocationScreen extends JournalScreen {
         return false;
     }
 
-    protected boolean playerIsNearLocation() {
+    protected boolean playerIsNearBookmark() {
         if (minecraft != null && minecraft.player != null) {
-            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), location.getBlockPos()) < minPhotoDistance;
+            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
         }
 
         return false;
     }
 
     private void nameFieldResponder(String text) {
-        location.setName(text);
+        bookmark.setName(text);
     }
 }

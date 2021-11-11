@@ -1,8 +1,12 @@
 package svenhjol.strange.module.knowledge;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class KnowledgeBranch<R, V> {
@@ -59,7 +63,6 @@ public abstract class KnowledgeBranch<R, V> {
         data = new HashMap<>();
     }
 
-
     public void save(CompoundTag masterTag) {
         CompoundTag tag = new CompoundTag();
         data.forEach((runes, value) -> tag.put(runes, tagify(value)));
@@ -68,13 +71,17 @@ public abstract class KnowledgeBranch<R, V> {
 
     public abstract void register(R type);
 
-    public abstract Tag tagify(V value);
+    protected abstract Tag tagify(V value);
 
     public abstract String getBranchName();
 
     public abstract Optional<String> getPrettyName(String runes);
 
     public abstract char getStartRune();
+
+    public boolean travel(String runes, ItemStack sacrifice, LivingEntity entity, @Nullable BlockPos origin) {
+        return false;
+    }
 
     public static Optional<KnowledgeBranch<?, ?>> getByName(String name) {
         return getBranches().stream().filter(b -> b.getBranchName().equals(name)).findFirst();

@@ -22,7 +22,6 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.LootHelper;
-import svenhjol.strange.module.journals.data.JournalLocation;
 
 import java.io.File;
 import java.util.*;
@@ -32,14 +31,14 @@ import java.util.function.Consumer;
 public class Journals extends CharmModule {
     public static final ResourceLocation MSG_SERVER_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_open_journal");
     public static final ResourceLocation MSG_SERVER_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_sync_journal");
-    public static final ResourceLocation MSG_SERVER_ADD_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_add_location");
-    public static final ResourceLocation MSG_SERVER_UPDATE_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_update_location");
-    public static final ResourceLocation MSG_SERVER_DELETE_LOCATION = new ResourceLocation(Strange.MOD_ID, "server_delete_location");
+    public static final ResourceLocation MSG_SERVER_ADD_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "server_add_bookmark");
+    public static final ResourceLocation MSG_SERVER_UPDATE_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "server_update_bookmark");
+    public static final ResourceLocation MSG_SERVER_DELETE_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "server_delete_bookmark");
     public static final ResourceLocation MSG_CLIENT_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_open_journal");
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
-    public static final ResourceLocation MSG_CLIENT_OPEN_LOCATION = new ResourceLocation(Strange.MOD_ID, "client_open_location");
+    public static final ResourceLocation MSG_CLIENT_OPEN_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "client_open_bookmark");
 
-    public static final List<ItemLike> locationIcons = new LinkedList<>();
+    public static final List<ItemLike> bookmarkIcons = new LinkedList<>();
     private static final Map<UUID, JournalData> journal = new HashMap<>();
 
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
@@ -54,9 +53,9 @@ public class Journals extends CharmModule {
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_OPEN_JOURNAL, this::handleOpenJournal);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_JOURNAL, this::handleSyncJournal);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ADD_LOCATION, this::handleAddLocation);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_LOCATION, this::handleUpdateLocation);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_DELETE_LOCATION, this::handleDeleteLocation);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ADD_BOOKMARK, this::handleAddBookmark);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_BOOKMARK, this::handleUpdateBookmark);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_DELETE_BOOKMARK, this::handleDeleteBookmark);
     }
 
     private void handlePlayerLoadData(Player player, File playerDataDir) {
@@ -89,14 +88,14 @@ public class Journals extends CharmModule {
             data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(data.toNbt())));
     }
 
-    private void handleAddLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleAddBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
         processPacketFromClient(server, player, data -> {
-            JournalLocation newLocation = data.addLocation(player.level, player.blockPosition());
-            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_LOCATION, buf -> buf.writeNbt(newLocation.toNbt(new CompoundTag())));
+            JournalBookmark newBookmark = data.addBookmark(player.level, player.blockPosition());
+            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_BOOKMARK, buf -> buf.writeNbt(newBookmark.toNbt(new CompoundTag())));
         });
     }
 
-    private void handleUpdateLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleUpdateBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
         CompoundTag tag = buffer.readNbt();
 
         if (tag == null) {
@@ -104,12 +103,12 @@ public class Journals extends CharmModule {
         }
 
         processPacketFromClient(server, player, data -> {
-            JournalLocation location = JournalLocation.fromNbt(tag);
-            data.updateLocation(location);
+            JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
+            data.updateBookmark(bookmark);
         });
     }
 
-    private void handleDeleteLocation(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleDeleteBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buffer, PacketSender sender) {
         CompoundTag tag = buffer.readNbt();
 
         if (tag == null) {
@@ -117,18 +116,18 @@ public class Journals extends CharmModule {
         }
 
         processPacketFromClient(server, player, data -> {
-            JournalLocation location = JournalLocation.fromNbt(tag);
-            data.deleteLocation(location);
+            JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
+            data.deleteBookmark(bookmark);
         });
     }
 
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
-        getJournalData(player).ifPresent(data -> data.addDeathLocation(player.level, player.blockPosition()));
+        getJournalData(player).ifPresent(data -> data.addDeathBookmark(player.level, player.blockPosition()));
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
-            initLocationIcons(server);
+            initBookmarkIcons(server);
         }
     }
 
@@ -139,11 +138,11 @@ public class Journals extends CharmModule {
         });
     }
 
-    private void initLocationIcons(MinecraftServer server) {
-        locationIcons.clear();
+    private void initBookmarkIcons(MinecraftServer server) {
+        bookmarkIcons.clear();
 
-        LootHelper.fetchItems(server, JournalLoot.LOCATION_ICONS)
-            .ifPresent(m -> locationIcons.addAll(m.get(0)));
+        LootHelper.fetchItems(server, JournalLoot.BOOKMARK_ICONS)
+            .ifPresent(m -> bookmarkIcons.addAll(m.get(0)));
     }
 
     public static Optional<JournalData> getJournalData(Player player) {
@@ -152,7 +151,7 @@ public class Journals extends CharmModule {
 
     public enum Page {
         HOME,
-        LOCATIONS,
+        BOOKMARKS,
         KNOWLEDGE
     }
 }

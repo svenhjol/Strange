@@ -22,11 +22,10 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.journals.Journals.Page;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.screen.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 import svenhjol.strange.module.journals.screen.JournalKnowledgeScreen;
-import svenhjol.strange.module.journals.screen.JournalLocationScreen;
-import svenhjol.strange.module.journals.screen.JournalLocationsScreen;
+import svenhjol.strange.module.journals.screen.JournalBookmarksScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +37,7 @@ public class JournalsClient extends CharmModule {
     private KeyMapping keyBinding;
     private static JournalData journal;
 
-    public static JournalLocation locationBeingPhotographed;
+    public static JournalBookmark bookmarkBeingPhotographed;
     public static int photoTicks = 0;
 
     @Override
@@ -56,7 +55,7 @@ public class JournalsClient extends CharmModule {
 
         ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_JOURNAL, this::handleOpenJournal);
         ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
-        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_LOCATION, this::handleOpenLocation);
+        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_BOOKMARK, this::handleOpenBookmark);
     }
 
     /**
@@ -82,14 +81,14 @@ public class JournalsClient extends CharmModule {
         ClientHelper.getPlayer().ifPresent(player -> {
             if (photoTicks > 0) {
 
-                if (locationBeingPhotographed == null) {
+                if (bookmarkBeingPhotographed == null) {
                     // reset photo timer
                     photoTicks = 0;
                 } else if (++photoTicks > MAX_PHOTO_TICKS) {
                     Minecraft client = Minecraft.getInstance();
                     Screenshot.grab(
                         client.gameDirectory,
-                        locationBeingPhotographed.getId() + ".png",
+                        bookmarkBeingPhotographed.getId() + ".png",
                         client.getMainRenderTarget(),
                         component -> {
                             if (client.player != null)
@@ -97,8 +96,8 @@ public class JournalsClient extends CharmModule {
 
                             client.options.hideGui = false;
                             client.execute(() -> {
-                                client.setScreen(new JournalLocationScreen(locationBeingPhotographed));
-                                locationBeingPhotographed = null;
+                                client.setScreen(new JournalBookmarkScreen(bookmarkBeingPhotographed));
+                                bookmarkBeingPhotographed = null;
                             });
                             LogHelper.debug(this.getClass(), "Screenshot taken");
                         }
@@ -119,20 +118,20 @@ public class JournalsClient extends CharmModule {
 
         processPacketFromServer(client, mc -> {
             switch (page) {
-                case LOCATIONS -> mc.setScreen(new JournalLocationsScreen());
+                case BOOKMARKS -> mc.setScreen(new JournalBookmarksScreen());
                 case KNOWLEDGE -> mc.setScreen(new JournalKnowledgeScreen());
                 default -> mc.setScreen(new JournalHomeScreen());
             }
         });
     }
 
-    private void handleOpenLocation(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag locationNbt = buffer.readNbt();
-        if (locationNbt == null)
+    private void handleOpenBookmark(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
+        CompoundTag bookmarkNbt = buffer.readNbt();
+        if (bookmarkNbt == null)
             return;
 
-        JournalLocation newLocation = JournalLocation.fromNbt(locationNbt);
-        processPacketFromServer(client, mc -> mc.setScreen(new JournalLocationScreen(newLocation)));
+        JournalBookmark newBookmark = JournalBookmark.fromNbt(bookmarkNbt);
+        processPacketFromServer(client, mc -> mc.setScreen(new JournalBookmarkScreen(newBookmark)));
     }
 
     public static void sendSyncJournal() {
@@ -143,18 +142,18 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_OPEN_JOURNAL, data -> data.writeEnum(page));
     }
 
-    public static void sendAddLocation() {
-        NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_ADD_LOCATION);
+    public static void sendAddBookmark() {
+        NetworkHelper.sendEmptyPacketToServer(Journals.MSG_SERVER_ADD_BOOKMARK);
     }
 
-    public static void sendUpdateLocation(JournalLocation location) {
-        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
+    public static void sendUpdateBookmark(JournalBookmark bookmark) {
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_BOOKMARK, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
     }
 
-    public static void sendDeleteLocation(JournalLocation location) {
+    public static void sendDeleteBookmark(JournalBookmark bookmark) {
         // delete on client then sync with server via a packet
-        journal.getLocations().remove(location);
-        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_LOCATION, data -> data.writeNbt(location.toNbt(new CompoundTag())));
+        journal.getBookmarks().remove(bookmark);
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_BOOKMARK, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
     }
 
     private void updateJournal(@Nullable CompoundTag tag) {

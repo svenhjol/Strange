@@ -19,7 +19,7 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
@@ -101,12 +101,12 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
-        Destination destination;
+        Discovery discovery;
         boolean generate = false;
 
         if (runestone.runes == null || runestone.runes.isEmpty()) {
             generate = true;
-        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.destinations.has(runestone.runes)) {
+        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.discoveries.has(runestone.runes)) {
             LogHelper.warn(this.getClass(), "Runestone data was erased for this runestone, regenerating it");
             generate = true; // the knowledgedata was erased for this runestone - regenerate it
         }
@@ -119,26 +119,26 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             float decay = runestone.decay;
 
             // If runestone.location is null, a location will be generated from the difficulty.
-            destination = RunestoneHelper.getOrCreateDestination(dimension, random, difficulty, decay, location).orElseThrow();
+            discovery = RunestoneHelper.getOrCreateDestination(dimension, random, difficulty, decay, location).orElseThrow();
 
-            runestone.runes = destination.getRunes();
+            runestone.runes = discovery.getRunes();
             runestone.setChanged();
         }
 
-        Optional<Destination> optSpawn = knowledge.specials.get(runestone.runes);
-        Optional<Destination> optDest = knowledge.destinations.get(runestone.runes);
+        Optional<Discovery> optSpawn = knowledge.specials.get(runestone.runes);
+        Optional<Discovery> optDest = knowledge.discoveries.get(runestone.runes);
 
         if (optSpawn.isPresent()) {
-            destination = optSpawn.get();
+            discovery = optSpawn.get();
         } else if (optDest.isPresent()) {
-            destination = optDest.get();
+            discovery = optDest.get();
         } else {
             LogHelper.error(this.getClass(), "The runestone doesn't refer to spawn or a destination, giving up");
             return false;
         }
 
         // send the destination tag to the player who looked at the runestone
-        CompoundTag tag = destination.toTag();
+        CompoundTag tag = discovery.toTag();
         NetworkHelper.sendPacketToClient(player, Runestones.MSG_CLIENT_SET_DESTINATION, buf -> buf.writeNbt(tag));
 
         return true;

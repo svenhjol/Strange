@@ -42,7 +42,7 @@ public class BiomesBranch extends KnowledgeBranch<Biome, ResourceLocation> {
     }
 
     @Override
-    public Tag tagify(ResourceLocation value) {
+    protected Tag tagify(ResourceLocation value) {
         return StringTag.valueOf(value.toString());
     }
 

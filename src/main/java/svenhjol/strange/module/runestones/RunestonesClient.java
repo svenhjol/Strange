@@ -10,11 +10,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.types.Discovery;
 
 @ClientModule(module = Runestones.class)
 public class RunestonesClient extends CharmModule {
-    public static Destination destinationHolder = null;
+    public static Discovery discoveryHolder = null;
 
     @Override
     public void register() {
@@ -34,8 +34,8 @@ public class RunestonesClient extends CharmModule {
         }
 
         client.execute(() -> {
-            destinationHolder = Destination.fromTag(tag);
-            LogHelper.debug(this.getClass(), "Destination set from server. Runes = " + destinationHolder.getRunes() + ", Location = " + destinationHolder.getLocation());
+            discoveryHolder = Discovery.fromTag(tag);
+            LogHelper.debug(this.getClass(), "Destination set from server. Runes = " + discoveryHolder.getRunes() + ", Location = " + discoveryHolder.getId());
         });
     }
 }

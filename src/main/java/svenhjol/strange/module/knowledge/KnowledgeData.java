@@ -22,11 +22,11 @@ public class KnowledgeData extends SavedData {
     private static final Map<Character, KnowledgeBranch<?, ?>> mappedByStartRune = new HashMap<>();
 
     public SpecialsBranch specials = new SpecialsBranch();
-    public DestinationsBranch destinations = new DestinationsBranch();
+    public DiscoveriesBranch discoveries = new DiscoveriesBranch();
     public StructuresBranch structures = new StructuresBranch();
     public DimensionsBranch dimensions = new DimensionsBranch();
     public BiomesBranch biomes = new BiomesBranch();
-    public LocationsBranch locations = new LocationsBranch();
+    public BookmarksBranch bookmarks = new BookmarksBranch();
 
     @SuppressWarnings("unused")
     public KnowledgeData(@Nullable ServerLevel level) {
@@ -41,11 +41,11 @@ public class KnowledgeData extends SavedData {
         KnowledgeData data = new KnowledgeData(level);
 
         data.specials = SpecialsBranch.load(tag);
-        data.destinations = DestinationsBranch.load(tag);
+        data.discoveries = DiscoveriesBranch.load(tag);
         data.biomes = BiomesBranch.load(tag);
         data.dimensions = DimensionsBranch.load(tag);
         data.structures = StructuresBranch.load(tag);
-        data.locations = new LocationsBranch(); // not saved to disk
+        data.bookmarks = new BookmarksBranch(); // not saved to disk
 
         return data;
     }
@@ -55,7 +55,7 @@ public class KnowledgeData extends SavedData {
 
         specials.save(tag);
         biomes.save(tag);
-        destinations.save(tag);
+        discoveries.save(tag);
         dimensions.save(tag);
         structures.save(tag);
 

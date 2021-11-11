@@ -22,7 +22,7 @@ import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 
@@ -114,11 +114,11 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         // nah
     }
 
-    protected void renderRunes(PoseStack poseStack, Destination destination) {
+    protected void renderRunes(PoseStack poseStack, Discovery discovery) {
         KnowledgeClient.renderRunesString(
             minecraft,
             poseStack,
-            destination.getRunes(),
+            discovery.getRunes(),
             midX - 76,
             midY - 70,
             11,
@@ -131,27 +131,27 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         );
     }
 
-    protected void renderLocationClue(PoseStack poseStack, Destination destination, JournalData journal) {
+    protected void renderLocationClue(PoseStack poseStack, Discovery discovery, JournalData journal) {
         String name;
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.getRunes(), journal);
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(discovery.getRunes(), journal);
 
         if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < Runestones.SHOW_TEXT_CLUE) {
-            String clue = RunestoneHelper.getClue(destination.getLocation(), new Random(destination.getSeed()));
+            String clue = RunestoneHelper.getClue(discovery.getId(), new Random(discovery.getSeed()));
             name = I18n.get("gui.strange.clues." + clue) + "...";
         } else if (numberOfUnknownRunes == 0) {
-            name = StringHelper.snakeToPretty(destination.getLocation().getPath());
+            name = StringHelper.snakeToPretty(discovery.getId().getPath());
         } else {
             return;
         }
 
         int mid = width / 2;
         int left = mid - 76;
-        int top = (height / 2) - (destination.getRunes().length() > WRAP_AT ? 44 : 54);
+        int top = (height / 2) - (discovery.getRunes().length() > WRAP_AT ? 44 : 54);
 
         font.drawShadow(poseStack, name, left, top, KNOWN_COLOR);
     }
 
-    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Destination destination, JournalData journal) {
+    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery, JournalData journal) {
         List<Component> text = Lists.newArrayList();
         Slot slot = menu.getSlot(0);
         if (slot.hasItem()) {
@@ -160,10 +160,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         if (minecraft == null || minecraft.level == null) return;
         ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
-        Random random = new Random(destination.getSeed());
-        List<Item> items = RunestoneHelper.getItems(dimension, destination.getDifficulty(), random);
+        Random random = new Random(discovery.getSeed());
+        List<Item> items = RunestoneHelper.getItems(dimension, discovery.getDifficulty(), random);
 
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(destination.getRunes(), journal);
+        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(discovery.getRunes(), journal);
         if (numberOfUnknownRunes > items.size()) {
             return;
         }
@@ -213,8 +213,8 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         return texture;
     }
 
-    private Optional<Destination> getDestination() {
-        return Optional.ofNullable(RunestonesClient.destinationHolder);
+    private Optional<Discovery> getDestination() {
+        return Optional.ofNullable(RunestonesClient.discoveryHolder);
     }
 
     private void syncClickedButton(int r) {
@@ -223,7 +223,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
     @Override
     public void onClose() {
-        RunestonesClient.destinationHolder = null;
+        RunestonesClient.discoveryHolder = null;
         super.onClose();
     }
 

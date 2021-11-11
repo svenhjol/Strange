@@ -3,7 +3,6 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -23,48 +22,32 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.LootHelper;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
-import svenhjol.strange.module.runestones.location.BaseLocation;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Runestones extends CharmModule {
-    public static final int TELEPORT_TICKS = 10;
     public static final int TIERS = 5;
     public static final int MAX_ITEMS = 3; // number of item possibilities
     public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
 
-    public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
+    public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
 
     public static Map<IRunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
-    public static RunestoneDustItem RUNESTONE_DUST;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
+    public static RunestoneDustItem RUNESTONE_DUST;
     public static MenuType<RunestoneMenu> MENU;
 
-    public static Map<ResourceLocation, List<BaseLocation>> DIMENSION_LOCATIONS = new HashMap<>();
+    public static Map<ResourceLocation, ArrayList<ResourceLocation>> DESTINATIONS = new HashMap<>();
+    public static Map<ResourceLocation, Map<Integer, List<Item>>> ITEMS = new TreeMap<>();
+    public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
 
-    public static Map<UUID, BlockPos> teleportFrom = new HashMap<>(); // location of the runestone that the player activated
-    public static Map<UUID, BlockPos> teleportTo = new HashMap<>(); // location to teleport player who has just activated
-    public static Map<UUID, Integer> teleportTicks = new HashMap<>(); // number of ticks since player has activated
-
-    public static Map<ResourceLocation, Map<Integer, List<Item>>> dimensionItems = new TreeMap<>();
-    public static Map<ResourceLocation, List<String>> clues = new HashMap<>();
-
-    @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
-    public static int maxDistance = 5000;
-
-    @Config(name = "Travel protection time", description = "Number of seconds of regeneration, fire resistance and slow fall after teleporting.")
-    public static int protectionDuration = 10;
-
-    @Config(name = "Travel penalty time", description = "Number of seconds of poison, wither, burning, slowness or weakness after teleporting without the correct item.")
-    public static int penaltyDuration = 10;
-
-    @Config(name = "Locations", description = "Locations that runestones may teleport you to.  Format: [dimension -> location]\nLocations are ordered by rune difficulty. Missing structures will be skipped.")
-    public static List<String> configLocations = new ArrayList<>(Arrays.asList(
+    @Config(name = "Destinations", description = "Destinations that runestones may teleport you to.  Format: [dimension -> id]\nDestinations are ordered by rune difficulty. Missing structures will be skipped.")
+    public static List<String> configDestinations = new ArrayList<>(Arrays.asList(
         "overworld -> strange:stone_circle",
         "overworld -> village",
         "overworld -> pillager_outpost",
@@ -112,7 +95,7 @@ public class Runestones extends CharmModule {
         "strange:darkland -> strange:deep_ruin"
     ));
 
-    @Config(name = "Clues", description = "Clues give hints about the kind of structure or biome that a runestone will teleport you to.")
+    @Config(name = "Clues", description = "Clues give hints about the destination that a runestone will teleport you to.")
     public static List<String> configClues = new ArrayList<>(Arrays.asList(
         "strange:spawn_point -> safe",
         "strange:stone_circle -> surface,safe,ancient",
@@ -191,25 +174,25 @@ public class Runestones extends CharmModule {
     }
 
     private void initClues(MinecraftServer server) {
-        clues = new HashMap<>();
-        dimensionItems = new TreeMap<>();
+        CLUES = new HashMap<>();
+        ITEMS = new TreeMap<>();
 
         configClues.forEach(str -> {
             List<String> split = StringHelper.splitConfigEntry(str);
             if (split.size() != 2) return;
 
-            ResourceLocation locationId = new ResourceLocation(split.get(0));
+            ResourceLocation destinationId = new ResourceLocation(split.get(0));
             List<String> cluesList = Arrays.stream(split.get(1).split(",")).map(s -> s.toLowerCase(Locale.ROOT).trim()).collect(Collectors.toList());
-            clues.put(locationId, cluesList);
+            CLUES.put(destinationId, cluesList);
         });
 
         LootHelper.fetchItems(server, RunestoneLoot.OVERWORLD_ITEMS)
-            .ifPresent(m -> dimensionItems.put(ServerLevel.OVERWORLD.location(), m));
+            .ifPresent(m -> ITEMS.put(ServerLevel.OVERWORLD.location(), m));
 
         LootHelper.fetchItems(server, RunestoneLoot.NETHER_ITEMS)
-            .ifPresent(m -> dimensionItems.put(ServerLevel.NETHER.location(), m));
+            .ifPresent(m -> ITEMS.put(ServerLevel.NETHER.location(), m));
 
         LootHelper.fetchItems(server, RunestoneLoot.END_ITEMS)
-            .ifPresent(m -> dimensionItems.put(ServerLevel.END.location(), m));
+            .ifPresent(m -> ITEMS.put(ServerLevel.END.location(), m));
     }
 }

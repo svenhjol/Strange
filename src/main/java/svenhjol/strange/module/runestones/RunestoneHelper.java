@@ -4,11 +4,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.knowledge.Destination;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
-import svenhjol.strange.module.runestones.location.BaseLocation;
+import svenhjol.strange.module.knowledge.types.Discovery;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -18,11 +17,11 @@ public class RunestoneHelper {
     public static Item DEFAULT_ITEM = Items.ENDER_PEARL;
 
     public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
-        if (!Runestones.dimensionItems.containsKey(dimension)) {
+        if (!Runestones.ITEMS.containsKey(dimension)) {
             return DEFAULT_ITEM;
         }
 
-        Map<Integer, List<Item>> items = Runestones.dimensionItems.get(dimension);
+        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
         int tier = Math.round(Runestones.TIERS * difficulty);
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
@@ -40,11 +39,11 @@ public class RunestoneHelper {
     }
 
     public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
-        if (!Runestones.dimensionItems.containsKey(dimension)) {
+        if (!Runestones.ITEMS.containsKey(dimension)) {
             return List.of(Items.ENDER_PEARL);
         }
 
-        Map<Integer, List<Item>> items = Runestones.dimensionItems.get(dimension);
+        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
         int tier = Math.round(Runestones.TIERS * difficulty);
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
@@ -57,78 +56,67 @@ public class RunestoneHelper {
     }
 
     public static String getClue(ResourceLocation location, Random random) {
-        if (Runestones.clues.containsKey(location) && !Runestones.clues.get(location).isEmpty()) {
-            List<String> clues = Runestones.clues.get(location);
+        if (Runestones.CLUES.containsKey(location) && !Runestones.CLUES.get(location).isEmpty()) {
+            List<String> clues = Runestones.CLUES.get(location);
             return clues.get(random.nextInt(clues.size()));
         }
 
         return RunestoneLocations.UNKNOWN_CLUE;
     }
 
-    public static Optional<ResourceLocation> tryFetchLocationByDifficulty(ResourceLocation dimension, Random random, float difficulty) {
+    public static Optional<ResourceLocation> tryFetchDestinationByDifficulty(ResourceLocation dimension, Random random, float difficulty) {
         // fetch a location using the difficulty
-        if (!Runestones.DIMENSION_LOCATIONS.containsKey(dimension)) {
+        if (!Runestones.DESTINATIONS.containsKey(dimension)) {
             LogHelper.debug(RunestoneHelper.class, "No locations available for this dimension, giving up");
             return Optional.empty();
         }
 
-        List<BaseLocation> dimensionRunestones = Runestones.DIMENSION_LOCATIONS.get(dimension);
-        float size = 1F / dimensionRunestones.size();
-
-        List<BaseLocation> locations = dimensionRunestones.stream()
-            .filter(l -> l.getDifficulty() <= difficulty + size && l.getDifficulty() > difficulty - size)
-            .collect(Collectors.toList());
-
-        if (locations.isEmpty()) {
-            LogHelper.debug(RunestoneHelper.class, "No locations found for this difficulty (" + difficulty + "), defaulting to first available");
-            locations.add(Runestones.DIMENSION_LOCATIONS.get(dimension).get(0));
-        }
-
-        Collections.shuffle(locations, random);
-        return Optional.of(locations.get(0).getLocation());
+        List<ResourceLocation> dimensionDestinations = new ArrayList<>(Runestones.DESTINATIONS.get(dimension));
+        int index = (int)Math.ceil(dimensionDestinations.size() * difficulty);
+        return Optional.of(dimensionDestinations.get(index));
     }
 
-    public static Optional<Destination> getOrCreateDestination(ResourceLocation dimension, Random random, float difficulty, float decay, @Nullable ResourceLocation location) {
+    public static Optional<Discovery> getOrCreateDestination(ResourceLocation dimension, Random random, float difficulty, float decay, @Nullable ResourceLocation id) {
         KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
 
-        if (location != null) {
-            if (location.equals(RunestoneLocations.SPAWN)) {
+        if (id != null) {
+            if (id.equals(RunestoneLocations.SPAWN)) {
                 // does it exist?
-                Optional<Destination> optSpawn = knowledge.specials.values().stream().filter(d -> d.getLocation().equals(RunestoneLocations.SPAWN)).findFirst();
+                Optional<Discovery> optSpawn = knowledge.specials.values().stream().filter(d -> d.getId().equals(RunestoneLocations.SPAWN)).findFirst();
                 if (optSpawn.isPresent()) {
                     // generate items for it
-                    Destination spawn = optSpawn.get();
+                    Discovery spawn = optSpawn.get();
                     return Optional.of(spawn);
                 }
 
                 // generate a new set of runes for it, check if they already exist
                 String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.specials, random, difficulty, 1, 1).orElseThrow();
 
-                Destination destination = new Destination(runes, RunestoneLocations.SPAWN);
+                Discovery discovery = new Discovery(runes, RunestoneLocations.SPAWN);
 
-                knowledge.specials.add(runes, destination);
+                knowledge.specials.add(runes, discovery);
                 knowledge.setDirty();
-                return Optional.of(destination);
+                return Optional.of(discovery);
             }
         } else {
-            Optional<ResourceLocation> optLocation = tryFetchLocationByDifficulty(dimension, random, difficulty);
+            Optional<ResourceLocation> optLocation = tryFetchDestinationByDifficulty(dimension, random, difficulty);
             if (optLocation.isEmpty()) {
                 return Optional.empty();
             }
 
-            location = optLocation.get();
+            id = optLocation.get();
         }
 
-        String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.destinations, random, difficulty, Knowledge.MIN_LENGTH, Knowledge.MAX_LENGTH).orElseThrow();
+        String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.discoveries, random, difficulty, Knowledge.MIN_LENGTH, Knowledge.MAX_LENGTH).orElseThrow();
 
-        Destination destination = new Destination(runes, location);
-        destination.setDifficulty(difficulty);
-        destination.setDecay(decay);
-        destination.setDimension(dimension);
+        Discovery discovery = new Discovery(runes, id);
+        discovery.setDifficulty(difficulty);
+        discovery.setDecay(decay);
+        discovery.setDimension(dimension);
 
-        knowledge.destinations.add(runes, destination);
+        knowledge.discoveries.add(runes, discovery);
         knowledge.setDirty();
 
-        return knowledge.destinations.get(runes);
+        return knowledge.discoveries.get(runes);
     }
 }

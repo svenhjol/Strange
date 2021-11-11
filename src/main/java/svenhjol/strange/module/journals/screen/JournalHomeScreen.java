@@ -18,7 +18,7 @@ public class JournalHomeScreen extends JournalScreen {
         super(JOURNAL);
 
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> locations(), LOCATIONS),
+            new GuiHelper.ButtonDefinition(b -> bookmarks(), BOOKMARKS),
             new GuiHelper.ButtonDefinition(b -> quests(), QUESTS),
             new GuiHelper.ButtonDefinition(b -> knowledge(), KNOWLEDGE)
         ));

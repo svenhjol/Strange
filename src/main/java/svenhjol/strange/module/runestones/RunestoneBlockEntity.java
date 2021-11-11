@@ -195,4 +195,8 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
         return new RunestoneMenu(syncId, playerInventory, this, this.data, ContainerLevelAccess.create(player.getLevel(), getBlockPos()));
     }
+
+    public String getRunes() {
+        return runes;
+    }
 }

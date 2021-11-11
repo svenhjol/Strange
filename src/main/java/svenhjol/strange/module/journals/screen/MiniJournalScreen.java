@@ -19,7 +19,7 @@ import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.data.JournalLocation;
+import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 
@@ -34,7 +34,7 @@ public class MiniJournalScreen {
     private final Screen screen;
 
     private JournalSection section;
-    private JournalLocation selectedLocation;
+    private JournalBookmark selectedBookmark;
     private ResourceLocation selectedBiome;
     private ResourceLocation selectedStructure;
     private ResourceLocation selectedDimension;
@@ -68,7 +68,7 @@ public class MiniJournalScreen {
         this.buttonHeight = 20;
 
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.LOCATIONS), JournalScreen.LOCATIONS),
+            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BOOKMARKS), JournalScreen.BOOKMARKS),
             new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), JournalScreen.LEARNED_BIOMES),
             new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
             new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
@@ -114,7 +114,7 @@ public class MiniJournalScreen {
 
         switch (section) {
             case HOME -> renderHome(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
-            case LOCATIONS -> renderLocations(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
+            case BOOKMARKS -> renderBookmarks(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
             case BIOMES -> renderBiomes(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
             case STRUCTURES -> renderStructures(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
             case DIMENSIONS -> renderDimensions(poseStack, journal, knowledge, minecraft, player, mouseX, mouseY);
@@ -194,44 +194,44 @@ public class MiniJournalScreen {
         }
     }
 
-    private void renderLocations(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
-        renderTitle(poseStack, JournalScreen.LOCATIONS, midY - 94);
+    private void renderBookmarks(PoseStack poseStack, JournalData journal, KnowledgeData knowledge, Minecraft minecraft, Player player, int mouseX, int mouseY) {
+        renderTitle(poseStack, JournalScreen.BOOKMARKS, midY - 94);
 
-        if (selectedLocation != null) {
-            if (!DimensionHelper.isDimension(player.level, selectedLocation.getDimension())) {
+        if (selectedBookmark != null) {
+            if (!DimensionHelper.isDimension(player.level, selectedBookmark.getDimension())) {
                 return;
             }
 
             renderBackButton(b -> {
-                selectedLocation = null;
-                changeJournalSection(JournalSection.LOCATIONS);
+                selectedBookmark = null;
+                changeJournalSection(JournalSection.BOOKMARKS);
             });
 
             int y = midY - 78;
-            Component component = new TextComponent(getTruncatedName(selectedLocation.getName(), 18));
-            itemRenderer.renderGuiItem(selectedLocation.getIcon(), journalMidX - 8, y);
+            Component component = new TextComponent(getTruncatedName(selectedBookmark.getName(), 18));
+            itemRenderer.renderGuiItem(selectedBookmark.getIcon(), journalMidX - 8, y);
             GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
-            KnowledgeClient.renderRunesString(minecraft, poseStack, selectedLocation.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
+            KnowledgeClient.renderRunesString(minecraft, poseStack, selectedBookmark.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
             AtomicInteger y = new AtomicInteger(midY - 78);
-            Consumer<JournalLocation> renderItem = location -> {
-                String name = getTruncatedName(location.getName(), 14);
-                itemRenderer.renderGuiItem(location.getIcon(), journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
+            Consumer<JournalBookmark> renderItem = bookmark -> {
+                String name = getTruncatedName(bookmark.getName(), 14);
+                itemRenderer.renderGuiItem(bookmark.getIcon(), journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
 
                 if (!hasRenderedButtons) {
                     Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), b -> {
-                        selectedLocation = location;
+                        selectedBookmark = bookmark;
                         redraw();
                     });
-                    if (!DimensionHelper.isDimension(player.level, location.getDimension())) {
+                    if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) {
                         button.active = false;
                     }
                     screen.addRenderableWidget(button);
                 }
                 y.addAndGet(21);
             };
-            paginator(poseStack, font, journal.getLocations(), renderItem, () -> JournalScreen.NO_LOCATIONS, !hasRenderedButtons);
+            paginator(poseStack, font, journal.getBookmarks(), renderItem, () -> JournalScreen.NO_BOOKMARKS, !hasRenderedButtons);
         }
     }
 
@@ -328,7 +328,7 @@ public class MiniJournalScreen {
 
     public enum JournalSection implements ICharmEnum {
         HOME,
-        LOCATIONS,
+        BOOKMARKS,
         BIOMES,
         STRUCTURES,
         DIMENSIONS

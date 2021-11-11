@@ -1,16 +1,15 @@
-package svenhjol.strange.module.runestones.location;
+package svenhjol.strange.module.teleport.location;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.border.WorldBorder;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.knowledge.Destination;
+import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
@@ -28,15 +27,23 @@ public abstract class BaseLocation {
         this.difficulty = difficulty;
     }
 
-    public ResourceLocation getLocation() {
+    public ResourceLocation getId() {
         return location;
+    }
+
+    public String getName() {
+        return location.getNamespace();
+    }
+
+    public String getPath() {
+        return location.getPath();
     }
 
     public float getDifficulty() {
         return difficulty;
     }
 
-    public abstract BlockPos getDestination(ServerLevel world, BlockPos startPos, int maxDistance, Random random, @Nullable ServerPlayer player);
+    public abstract BlockPos getTarget(ServerLevel level, BlockPos origin, Random random);
 
     protected BlockPos checkBounds(Level world, BlockPos pos) {
         WorldBorder border = world.getWorldBorder();
@@ -57,24 +64,24 @@ public abstract class BaseLocation {
     }
 
     @Nullable
-    protected BlockPos tryLoad(Level level, BlockPos runePos) {
-        BlockEntity blockEntity = level.getBlockEntity(runePos);
+    protected BlockPos tryLoad(Level level, BlockPos origin) {
+        BlockEntity blockEntity = level.getBlockEntity(origin);
         if (blockEntity instanceof RunestoneBlockEntity runestone) {
             String runes = runestone.runes;
 
             KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
-            Optional<Destination> optDest = knowledge.destinations.get(runes);
+            Optional<Discovery> optDest = knowledge.discoveries.get(runes);
             if (optDest.isEmpty()) return null;
 
-            Destination destination = optDest.get();
-            Optional<BlockPos> pos = destination.getPos();
+            Discovery discovery = optDest.get();
+            Optional<BlockPos> pos = discovery.getPos();
             if (pos.isEmpty()) {
                 return null;
             }
 
-            Optional<ResourceLocation> dimension = destination.getDimension();
+            Optional<ResourceLocation> dimension = discovery.getDimension();
             if (dimension.isPresent() && DimensionHelper.isDimension(level, dimension.get())) {
-                LogHelper.debug(this.getClass(), "Runestone has location " + destination.getLocation() + " with position " + pos.get());
+                LogHelper.debug(this.getClass(), "Runestone has location " + discovery.getId() + " with position " + pos.get());
                 return pos.get();
             }
         }
@@ -88,7 +95,7 @@ public abstract class BaseLocation {
             String runes = runestone.runes;
 
             KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
-            knowledge.destinations.get(runes).ifPresent(dest -> {
+            knowledge.discoveries.get(runes).ifPresent(dest -> {
                 dest.setPos(storePos);
                 if (player != null) {
                     dest.setPlayer(player.getName().getContents());

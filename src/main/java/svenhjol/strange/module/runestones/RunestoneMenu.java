@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.screen.CharmContainerMenu;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
+import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;
 
 public class RunestoneMenu extends CharmContainerMenu {
     private final Inventory playerInventory;
@@ -64,10 +65,11 @@ public class RunestoneMenu extends CharmContainerMenu {
     public boolean clickMenuButton(Player player, int i) {
         switch (i) {
             case 1 -> access.execute((level, pos) -> {
-                if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity rune) {
-                    // TODO: there's similarity with the runic lectern menu here so abstract out consume + teleport
-
+                if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone) {
+                    String runes = runestone.getRunes();
                     ItemStack sacrifice = slots.get(0).getItem();
+                    ActivateRunestoneCallback.EVENT.invoker().interact(player, runes, sacrifice.copy());
+
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);
                     }

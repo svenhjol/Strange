@@ -30,7 +30,7 @@ public abstract class JournalScreen extends Screen {
     public static final ResourceLocation OPEN_BACKGROUND;
     public static final ResourceLocation NAVIGATION;
 
-    public static final Component ADD_LOCATION;
+    public static final Component ADD_BOOKMARK;
     public static final Component CHOOSE_ICON;
     public static final Component CLOSE;
     public static final Component DELETE_TOOLTIP;
@@ -43,12 +43,12 @@ public abstract class JournalScreen extends Screen {
     public static final Component LEARNED_DIMENSIONS;
     public static final Component LEARNED_RUNES;
     public static final Component LEARNED_STRUCTURES;
-    public static final Component LOCATIONS;
-    public static final Component LOCATIONS_TOOLTIP;
+    public static final Component BOOKMARKS;
+    public static final Component BOOKMARKS_TOOLTIP;
     public static final Component MAKE_MAP;
     public static final Component NO_BIOMES;
     public static final Component NO_DIMENSIONS;
-    public static final Component NO_LOCATIONS;
+    public static final Component NO_BOOKMARKS;
     public static final Component NO_STRUCTURES;
     public static final Component QUESTS;
     public static final Component QUESTS_TOOLTIP;
@@ -120,7 +120,7 @@ public abstract class JournalScreen extends Screen {
 
         this.navigationButtons.addAll(Arrays.asList(
             new GuiHelper.ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18, HOME_TOOLTIP),
-            new GuiHelper.ImageButtonDefinition(b -> locations(), NAVIGATION, 60, 36, 18, LOCATIONS_TOOLTIP),
+            new GuiHelper.ImageButtonDefinition(b -> bookmarks(), NAVIGATION, 60, 36, 18, BOOKMARKS_TOOLTIP),
             new GuiHelper.ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18, QUESTS_TOOLTIP),
             new GuiHelper.ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18, KNOWLEDGE_TOOLTIP)
         ));
@@ -284,8 +284,8 @@ public abstract class JournalScreen extends Screen {
         ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalRunesScreen()));
     }
 
-    protected void locations() {
-        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalLocationsScreen()));
+    protected void bookmarks() {
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalBookmarksScreen()));
     }
 
     protected void structures() {
@@ -310,7 +310,7 @@ public abstract class JournalScreen extends Screen {
         OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
         NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
 
-        ADD_LOCATION = new TranslatableComponent("gui.strange.journal.add_location");
+        ADD_BOOKMARK = new TranslatableComponent("gui.strange.journal.add_bookmark");
         CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
         CLOSE = new TranslatableComponent("gui.strange.journal.close");
         DELETE_TOOLTIP = new TranslatableComponent("gui.strange.journal.delete");
@@ -323,12 +323,12 @@ public abstract class JournalScreen extends Screen {
         LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
         LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
         LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
-        LOCATIONS = new TranslatableComponent("gui.strange.journal.locations");
-        LOCATIONS_TOOLTIP = new TranslatableComponent("gui.strange.journal.locations_tooltip");
+        BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
+        BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
         MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
         NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
         NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
-        NO_LOCATIONS = new TranslatableComponent("gui.strange.journal.no_locations");
+        NO_BOOKMARKS = new TranslatableComponent("gui.strange.journal.no_bookmarks");
         NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
         QUESTS = new TranslatableComponent("gui.strange.journal.quests");
         QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");

@@ -5,6 +5,7 @@ import svenhjol.charm.Charm;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.init.StrangeCommands;
+import svenhjol.strange.init.StrangeLoot;
 import svenhjol.strange.init.StrangeParticles;
 import svenhjol.strange.init.StrangeSounds;
 

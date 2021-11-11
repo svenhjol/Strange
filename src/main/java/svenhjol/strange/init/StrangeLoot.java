@@ -1,7 +1,8 @@
-package svenhjol.strange;
+package svenhjol.strange.init;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LootHelper;
+import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
 import java.util.List;

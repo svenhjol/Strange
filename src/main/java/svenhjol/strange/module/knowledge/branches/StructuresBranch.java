@@ -42,7 +42,7 @@ public class StructuresBranch extends KnowledgeBranch<StructureFeature<?>, Resou
     }
 
     @Override
-    public Tag tagify(ResourceLocation value) {
+    protected Tag tagify(ResourceLocation value) {
         return StringTag.valueOf(value.toString());
     }
 
