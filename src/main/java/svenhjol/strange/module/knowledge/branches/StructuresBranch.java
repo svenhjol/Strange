@@ -14,7 +14,7 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public class StructuresBranch extends KnowledgeBranch<StructureFeature<?>, ResourceLocation> {
-    public static final String NAME = "Biomes";
+    public static final String NAME = "Structures";
 
     @Override
     public String getBranchName() {

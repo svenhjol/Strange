@@ -1,5 +1,6 @@
 package svenhjol.strange.module.runestones;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -68,7 +69,7 @@ public class RunestoneMenu extends CharmContainerMenu {
                 if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone) {
                     String runes = runestone.getRunes();
                     ItemStack sacrifice = slots.get(0).getItem();
-                    ActivateRunestoneCallback.EVENT.invoker().interact(player, runes, sacrifice);
+                    ActivateRunestoneCallback.EVENT.invoker().interact((ServerPlayer) player, pos, runes, sacrifice);
 
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);

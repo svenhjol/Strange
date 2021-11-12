@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
@@ -14,26 +12,28 @@ import svenhjol.strange.init.StrangeSounds;
 
 import java.util.function.Consumer;
 
-public class TeleportEntry {
+public class EntityTeleportTicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
     private boolean success;
     private final boolean exactPosition;
     private final boolean allowDimensionChange;
-    private final Consumer<TeleportEntry> onSuccess;
-    private final Consumer<TeleportEntry> onFail;
+    private final Consumer<EntityTeleportTicket> onSuccess;
+    private final Consumer<EntityTeleportTicket> onFail;
     private final LivingEntity entity;
+    private final ServerLevel level;
     private final ResourceLocation dimension;
     private final BlockPos from;
     private final BlockPos to;
 
-    public TeleportEntry(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange) {
+    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange) {
         this(entity, dimension, from, to, exactPosition, allowDimensionChange, t -> {}, t -> {});
     }
 
-    public TeleportEntry(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange, Consumer<TeleportEntry> onSuccess, Consumer<TeleportEntry> onFail) {
+    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange, Consumer<EntityTeleportTicket> onSuccess, Consumer<EntityTeleportTicket> onFail) {
         this.entity = entity;
+        this.level = (ServerLevel)entity.level;
         this.dimension = dimension;
         this.from = from;
         this.to = to;
@@ -48,8 +48,7 @@ public class TeleportEntry {
     }
 
     public void tick() {
-        ServerLevel level = (ServerLevel)entity.level;
-        boolean sameDimension = DimensionHelper.isDimension(entity.level, dimension);
+        boolean sameDimension = DimensionHelper.isDimension(level, dimension);
 
         if (!sameDimension) {
             if (allowDimensionChange) {
@@ -64,7 +63,7 @@ public class TeleportEntry {
         }
 
         if (!chunkLoaded) {
-            chunkLoaded = openChunk(level, to);
+            chunkLoaded = openChunk();
 
             if (!chunkLoaded) {
                 LogHelper.warn(this.getClass(), "Could not load destination chunk, giving up");
@@ -75,30 +74,23 @@ public class TeleportEntry {
             level.playSound(null, from, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
-        if (ticks++ == 20) {
+        if (ticks++ == Teleport.TELEPORT_TICKS) {
             BlockPos target;
 
             if (exactPosition) {
-                target = WorldHelper.getSurfacePos(level, to);
-            } else {
                 target = to;
+            } else {
+                target = WorldHelper.getSurfacePos(level, to);
             }
 
             if (target == null) {
-                closeChunk(level, to);
+                closeChunk();
                 valid = false;
                 return;
             }
 
-            // add protection to the entity that is teleporting
-            int duration = 10 * 20;
-            entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 2));
-            entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 2));
-            entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, duration, 2));
-
             entity.teleportToWithTicket(target.getX(), target.getY(), target.getZ());
-
-            closeChunk(level, to);
+            closeChunk();
             success = true;
         }
     }
@@ -119,11 +111,11 @@ public class TeleportEntry {
         this.onFail.accept(this);
     }
 
-    private boolean openChunk(ServerLevel level, BlockPos pos) {
+    private boolean openChunk() {
         return WorldHelper.addForcedChunk(level, to);
     }
 
-    private void closeChunk(ServerLevel level, BlockPos pos) {
+    private void closeChunk() {
         WorldHelper.removeForcedChunk(level, to);
     }
 }

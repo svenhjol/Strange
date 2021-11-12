@@ -1,5 +1,6 @@
 package svenhjol.strange.module.runic_tomes;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -85,7 +86,7 @@ public class RunicLecternMenu extends CharmContainerMenu {
                 if (level.getBlockEntity(pos) instanceof RunicLecternBlockEntity lectern) {
                     ItemStack tome = lectern.getTome();
                     ItemStack sacrifice = slots.get(0).getItem();
-                    ActivateRunicTomeCallback.EVENT.invoker().interact(player, tome, sacrifice);
+                    ActivateRunicTomeCallback.EVENT.invoker().interact((ServerPlayer) player, pos, tome, sacrifice);
 
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);

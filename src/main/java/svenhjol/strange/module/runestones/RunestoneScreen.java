@@ -160,8 +160,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         if (minecraft == null || minecraft.level == null) return;
         ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
-        Random random = new Random(discovery.getSeed());
-        List<Item> items = RunestoneHelper.getItems(dimension, discovery.getDifficulty(), random);
+        List<Item> items = RunestoneHelper.getItems(dimension, discovery.getRunes());
 
         int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(discovery.getRunes(), journal);
         if (numberOfUnknownRunes > items.size()) {

@@ -16,43 +16,69 @@ import java.util.stream.Collectors;
 public class RunestoneHelper {
     public static Item DEFAULT_ITEM = Items.ENDER_PEARL;
 
-    public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
+//    public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
+//        if (!Runestones.ITEMS.containsKey(dimension)) {
+//            return DEFAULT_ITEM;
+//        }
+//
+//        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
+//        int tier = Math.round(Runestones.TIERS * difficulty);
+//
+//        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
+//            List<Item> tierItems = items.get(tier);
+//
+//            tierItems.sort((i1, i2) -> {
+//                if (i1.hashCode() == i2.hashCode()) return 0;
+//                return i1.hashCode() < i2.hashCode() ? -1 : 1;
+//            });
+//
+//            return tierItems.get(random.nextInt(tierItems.size()));
+//        } else {
+//            return DEFAULT_ITEM;
+//        }
+//    }
+//
+//    public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
+//        if (!Runestones.ITEMS.containsKey(dimension)) {
+//            return List.of(Items.ENDER_PEARL);
+//        }
+//
+//        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
+//        int tier = Math.round(Runestones.TIERS * difficulty);
+//
+//        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
+//            List<Item> tierItems = new LinkedList<>(items.get(tier));
+//            Collections.shuffle(tierItems, random);
+//            return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
+//        } else {
+//            return List.of(Items.ENDER_PEARL);
+//        }
+//    }
+
+    public static List<Item> getItems(ResourceLocation dimension, String runes) {
         if (!Runestones.ITEMS.containsKey(dimension)) {
-            return DEFAULT_ITEM;
+            return List.of(DEFAULT_ITEM);
         }
 
+        long seed = KnowledgeHelper.generateSeedFromString(runes);
+        Random random = new Random(seed);
         Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
-        int tier = Math.round(Runestones.TIERS * difficulty);
 
-        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
-            List<Item> tierItems = items.get(tier);
-
-            tierItems.sort((i1, i2) -> {
-                if (i1.hashCode() == i2.hashCode()) return 0;
-                return i1.hashCode() < i2.hashCode() ? -1 : 1;
-            });
-
-            return tierItems.get(random.nextInt(tierItems.size()));
-        } else {
-            return DEFAULT_ITEM;
-        }
-    }
-
-    public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
-        if (!Runestones.ITEMS.containsKey(dimension)) {
-            return List.of(Items.ENDER_PEARL);
-        }
-
-        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
-        int tier = Math.round(Runestones.TIERS * difficulty);
+        int len = Math.min(Knowledge.NUM_RUNES, runes.length());
+        int tier = Math.round(Runestones.TIERS * (len / (float)Knowledge.NUM_RUNES));
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
             List<Item> tierItems = new LinkedList<>(items.get(tier));
             Collections.shuffle(tierItems, random);
             return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
         } else {
-            return List.of(Items.ENDER_PEARL);
+            return List.of(DEFAULT_ITEM);
         }
+    }
+
+    public static Item getItem(ResourceLocation dimension, String runes) {
+        List<Item> items = getItems(dimension, runes);
+        return items.get(0);
     }
 
     public static String getClue(ResourceLocation location, Random random) {

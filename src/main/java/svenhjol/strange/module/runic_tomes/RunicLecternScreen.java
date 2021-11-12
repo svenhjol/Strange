@@ -19,7 +19,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
+import svenhjol.strange.module.runestones.RunestoneHelper;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 
 import java.util.List;
@@ -43,6 +45,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     private String runes;
     private Item requiredItem;
     private boolean hasProvidedItem;
+    private ResourceLocation dimension;
 
     public RunicLecternScreen(RunicLecternMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -56,6 +59,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         this.knownColor = 0x997755;
         this.unknownColor = 0xC0B0A0;
+
+        // ask server to update the player journal
+        JournalsClient.sendSyncJournal();
     }
 
     @Override
@@ -66,6 +72,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         midY = height / 2;
 
         int buttonWidth = 90;
+        ClientHelper.getLevel().ifPresent(l -> dimension = l.dimension().location());
 
         doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> {
             onClose();
@@ -101,7 +108,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         if (tome == null) {
             tome = RunicTomesClient.tomeHolder.copy();
             RunicTomeItem.getRunes(tome).ifPresent(r -> runes = r);
-            RunicTomeItem.getItem(tome).ifPresent(i -> requiredItem = i);
+            requiredItem = RunestoneHelper.getItem(dimension, runes);
         }
 
         renderRunes(poseStack);

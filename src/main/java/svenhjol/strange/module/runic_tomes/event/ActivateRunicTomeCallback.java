@@ -2,15 +2,16 @@ package svenhjol.strange.module.runic_tomes.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public interface ActivateRunicTomeCallback {
-    Event<ActivateRunicTomeCallback> EVENT = EventFactory.createArrayBacked(ActivateRunicTomeCallback.class, listeners -> (player, tome, sacrifice) -> {
+    Event<ActivateRunicTomeCallback> EVENT = EventFactory.createArrayBacked(ActivateRunicTomeCallback.class, listeners -> (player, origin, tome, sacrifice) -> {
         for (ActivateRunicTomeCallback listener : listeners) {
-            listener.interact(player, tome, sacrifice);
+            listener.interact(player, origin, tome, sacrifice);
         }
     });
 
-    void interact(Player player, ItemStack tome, ItemStack sacrifice);
+    void interact(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice);
 }
