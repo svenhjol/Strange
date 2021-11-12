@@ -4,8 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,12 +17,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
+import svenhjol.strange.module.runestones.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.Teleport;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -35,6 +41,9 @@ public abstract class TeleportHandler<V> {
     protected KnowledgeBranch<?, V> branch;
     protected int maxDistance;
     protected V value;
+
+    protected static final List<MobEffect> POSITIVE_EFFECTS;
+    protected static final List<MobEffect> NEGATIVE_EFFECTS;
 
     public TeleportHandler(KnowledgeBranch<?, V> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos origin) {
         this.branch = branch;
@@ -58,20 +67,50 @@ public abstract class TeleportHandler<V> {
         Teleport.entityTickets.add(entry);
     }
 
-    protected boolean checkAndApplyEffects(List<Item> items) {
+    protected boolean checkAndApplyEffects() {
         if (target == null || dimension == null) {
+            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 1));
             return false;
         }
 
-        int duration = 10 * 20;
-        entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 2));
-        entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 2));
-        entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, duration, 2));
-        return true;
+        List<Item> items = RunestoneHelper.getItems(dimension, runes);
+        Item sacrificeItem = sacrifice.getItem();
+        Item mainItem = items.get(0);
+        Random random = new Random(sacrificeItem.hashCode());
+
+        if (sacrificeItem.equals(mainItem)) {
+            int duration = Teleport.protectionDuration * 20;
+            int amplifier = 2;
+            POSITIVE_EFFECTS.forEach(effect -> entity.addEffect(new MobEffectInstance(effect, duration, amplifier)));
+            return true;
+        } else if (items.contains(sacrificeItem)) {
+            applyNegativeEffect(random);
+            return true;
+        } else {
+            float f = random.nextFloat();
+            if (f < 0.1F) {
+                level.explode(null, origin.getX(), origin.getY(), origin.getZ(), 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
+            } else if (f < 0.4F) {
+                entity.setSecondsOnFire(5);
+            } else if (f < 0.8F) {
+                applyNegativeEffect(random);
+            } else {
+                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
+                if (lightning != null) {
+                    lightning.moveTo(Vec3.atBottomCenterOf(entity.blockPosition()));
+                    lightning.setVisualOnly(false);
+                    level.addFreshEntity(lightning);
+                }
+            }
+        }
+
+        return false;
     }
 
-    protected void badThings() {
-        level.explode(null, origin.getX(), origin.getY(), origin.getZ(), 4.0F, Explosion.BlockInteraction.BREAK);
+    private void applyNegativeEffect(Random random) {
+        int duration = Teleport.penaltyDuration * 20;
+        MobEffect effect = NEGATIVE_EFFECTS.get(random.nextInt(NEGATIVE_EFFECTS.size()));
+        entity.addEffect(new MobEffectInstance(effect, duration, 1));
     }
 
     protected BlockPos checkBounds(Level world, BlockPos pos) {
@@ -138,5 +177,10 @@ public abstract class TeleportHandler<V> {
         }
 
         return WorldHelper.addRandomOffset(foundPos, random, 6, 12);
+    }
+
+    static {
+        POSITIVE_EFFECTS = Arrays.asList(MobEffects.SLOW_FALLING, MobEffects.DAMAGE_RESISTANCE, MobEffects.FIRE_RESISTANCE, MobEffects.WATER_BREATHING);
+        NEGATIVE_EFFECTS = Arrays.asList(MobEffects.BLINDNESS, MobEffects.POISON, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.HUNGER, MobEffects.WITHER);
     }
 }

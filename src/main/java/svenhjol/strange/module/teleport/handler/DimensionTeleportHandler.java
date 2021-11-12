@@ -20,12 +20,9 @@ public class DimensionTeleportHandler extends TeleportHandler<ResourceLocation> 
     public void process() {
         target = origin;
         dimension = value;
-        List<Item> items = RunestoneHelper.getItems(dimension, runes);
 
-        if (checkAndApplyEffects(items)) {
+        if (checkAndApplyEffects()) {
             teleport(false, true);
-        } else {
-            badThings();
         }
     }
 }
