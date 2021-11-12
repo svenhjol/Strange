@@ -2,6 +2,7 @@ package svenhjol.strange.module.runic_tomes;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -29,6 +30,9 @@ public class RunicTomeItem extends CharmItem {
         ItemStack tome = new ItemStack(RunicTomes.RUNIC_TOME);
         setRunes(tome, runes);
         setAuthor(tome, player.getName().getString());
+
+        KnowledgeBranch.getByStartRune(runes.charAt(0))
+            .flatMap(branch -> branch.getPrettyName(runes)).ifPresent(name -> tome.setHoverName(new TextComponent(name)));
 
         if (!tome.hasCustomHoverName()) {
             tome.setHoverName(DEFAULT_NAME);
