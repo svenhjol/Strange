@@ -80,7 +80,11 @@ public class EntityTeleportTicket {
             if (exactPosition) {
                 target = to;
             } else {
-                target = WorldHelper.getSurfacePos(level, to);
+                if (level.dimensionType().hasCeiling()) {
+                    target = WorldHelper.getSurfacePos(level, to, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
+                } else {
+                    target = WorldHelper.getSurfacePos(level, to);
+                }
             }
 
             if (target == null) {
