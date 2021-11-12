@@ -42,7 +42,7 @@ public class Runestones extends CharmModule {
     public static RunestoneDustItem RUNESTONE_DUST;
     public static MenuType<RunestoneMenu> MENU;
 
-    public static Map<ResourceLocation, ArrayList<ResourceLocation>> DESTINATIONS = new HashMap<>();
+    public static Map<ResourceLocation, LinkedList<ResourceLocation>> DESTINATIONS = new HashMap<>();
     public static Map<ResourceLocation, Map<Integer, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
 

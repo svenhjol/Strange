@@ -3,6 +3,7 @@ package svenhjol.strange.module.runestones;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.StringHelper;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 
 import java.util.*;
@@ -21,14 +22,13 @@ public class RunestoneLocations {
 
             ResourceLocation dimensionId = new ResourceLocation(split.get(0));
             ResourceLocation destinationId = new ResourceLocation(split.get(1));
-            dimensionDestinations.computeIfAbsent(dimensionId, a -> new LinkedList<>()).add(destinationId);
-        }
 
-        dimensionDestinations.forEach((dimensionId, destinations) -> {
-            for (ResourceLocation destinationId : destinations) {
-                Runestones.DESTINATIONS.computeIfAbsent(dimensionId, a -> new ArrayList<>()).add(destinationId);
-                LogHelper.debug(RunestoneLocations.class, "Added " + destinationId + " to dimension " + dimensionId);
+            if (!WorldHelper.isStructure(destinationId) && !WorldHelper.isBiome(destinationId)) {
+                LogHelper.warn(RunestoneLocations.class, destinationId + " is not a registered structure or biome, skipping");
+                continue;
             }
-        });
+
+            Runestones.DESTINATIONS.computeIfAbsent(dimensionId, a -> new LinkedList<>()).add(destinationId);
+        }
     }
 }
