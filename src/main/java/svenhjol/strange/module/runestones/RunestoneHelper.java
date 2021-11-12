@@ -99,6 +99,9 @@ public class RunestoneHelper {
 
         List<ResourceLocation> dimensionDestinations = new ArrayList<>(Runestones.DESTINATIONS.get(dimension));
         int index = (int)Math.ceil(dimensionDestinations.size() * difficulty);
+        if (index == 1 && random.nextFloat() < 0.5F) {
+            index = 0;
+        }
         return Optional.of(dimensionDestinations.get(index));
     }
 
