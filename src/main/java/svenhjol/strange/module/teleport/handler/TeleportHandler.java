@@ -63,7 +63,7 @@ public abstract class TeleportHandler<V> {
             return;
         }
 
-        EntityTeleportTicket entry = new EntityTeleportTicket(entity, dimension, origin, target, exactPosition, allowDimensionChange);
+        EntityTeleportTicket entry = new EntityTeleportTicket(entity, dimension, origin, target, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
         Teleport.entityTickets.add(entry);
     }
 
@@ -105,6 +105,14 @@ public abstract class TeleportHandler<V> {
         }
 
         return false;
+    }
+
+    private void onSuccess(EntityTeleportTicket ticket) {
+        // no op
+    }
+
+    private void onFail(EntityTeleportTicket ticket) {
+        level.explode(null, origin.getX(), origin.getY(), origin.getZ(), 3.0F, Explosion.BlockInteraction.BREAK);
     }
 
     private void applyNegativeEffect(Random random) {
