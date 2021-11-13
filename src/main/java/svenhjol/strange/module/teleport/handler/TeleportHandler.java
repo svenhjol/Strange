@@ -89,7 +89,7 @@ public abstract class TeleportHandler<V> {
         } else {
             float f = random.nextFloat();
             if (f < 0.1F) {
-                level.explode(null, origin.getX(), origin.getY(), origin.getZ(), 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
+                level.explode(null, origin.getX() + 0.5D, origin.getY(), origin.getZ() + 0.5D, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
             } else if (f < 0.4F) {
                 entity.setSecondsOnFire(5);
             } else if (f < 0.8F) {
@@ -112,7 +112,7 @@ public abstract class TeleportHandler<V> {
     }
 
     private void onFail(EntityTeleportTicket ticket) {
-        level.explode(null, origin.getX(), origin.getY(), origin.getZ(), 3.0F, Explosion.BlockInteraction.BREAK);
+        level.explode(null, origin.getX() + 0.5D, origin.getY(), origin.getZ() + 0.5D, 2.0F, Explosion.BlockInteraction.BREAK);
     }
 
     private void applyNegativeEffect(Random random) {
