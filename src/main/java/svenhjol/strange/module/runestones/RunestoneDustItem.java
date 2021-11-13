@@ -12,7 +12,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
@@ -28,9 +27,6 @@ public class RunestoneDustItem extends CharmItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-
-        if (!DimensionHelper.isOverworld(level))
-            return InteractionResultHolder.fail(stack);
 
         if (!Strange.LOADER.isEnabled(StoneCircles.class))
             return InteractionResultHolder.fail(stack);
