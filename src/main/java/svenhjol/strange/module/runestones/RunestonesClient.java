@@ -1,6 +1,7 @@
 package svenhjol.strange.module.runestones;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ public class RunestonesClient extends CharmModule {
     @Override
     public void register() {
         ScreenRegistry.register(Runestones.MENU, RunestoneScreen::new);
+        EntityRendererRegistry.register(Runestones.RUNESTONE_DUST_ENTITY, RunestoneDustEntityRenderer::new);
     }
 
     @Override
