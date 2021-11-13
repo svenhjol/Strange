@@ -2,9 +2,7 @@ package svenhjol.strange.module.dimensions;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.DimensionHelper;
@@ -41,27 +38,10 @@ public class Dimensions extends CharmModule {
     public static final Map<ResourceLocation, Music> MUSIC = new HashMap<>();
     public static final Map<ResourceLocation, AmbientParticleSettings> AMBIENT_PARTICLE = new HashMap<>();
 
-//    private static final ResourceKey<LevelStem> DARKLAND_DIMENSION = ResourceKey.create(
-//        Registry.LEVEL_STEM_REGISTRY,
-//        DARKLAND_ID
-//    );
-//    private static final ResourceKey<DimensionType> DARKLAND_DIMENSION_TYPE = ResourceKey.create(
-//        Registry.DIMENSION_TYPE_REGISTRY,
-//        new ResourceLocation(Strange.MOD_ID, "darkland_type")
-//    );
-//    public static ResourceKey<Level> DARKLAND = ResourceKey.create(
-//        Registry.DIMENSION_REGISTRY,
-//        DARKLAND_DIMENSION.location()
-//    );
-
     @Override
     public void register() {
-//        Dimensions.DARKLAND = ResourceKey.create(Registry.DIMENSION_REGISTRY, Dimensions.DARKLAND_ID);
-//        Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Strange.MOD_ID, "darkland"), NoiseBasedChunkGenerator.CODEC);
-
-
         Dimensions.SKY_COLOR.put(Dimensions.DARKLAND_ID, 0x000000);
-        Dimensions.FOG_COLOR.put(Dimensions.DARKLAND_ID, 0x004434);
+        Dimensions.FOG_COLOR.put(Dimensions.DARKLAND_ID, 0x00443A);
         Dimensions.WATER_COLOR.put(Dimensions.DARKLAND_ID, 0x102020);
         Dimensions.WATER_FOG_COLOR.put(Dimensions.DARKLAND_ID, 0x102020);
         Dimensions.THUNDERING.put(Dimensions.DARKLAND_ID, true);
