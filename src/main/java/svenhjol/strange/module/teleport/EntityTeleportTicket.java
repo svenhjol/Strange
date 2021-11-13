@@ -1,10 +1,16 @@
 package svenhjol.strange.module.teleport;
 
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
@@ -17,6 +23,7 @@ public class EntityTeleportTicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
+    private boolean changedDimension;
     private boolean success;
     private final boolean exactPosition;
     private final boolean allowDimensionChange;
@@ -44,6 +51,7 @@ public class EntityTeleportTicket {
         this.onFail = onFail;
         this.valid = true;
         this.chunkLoaded = false;
+        this.changedDimension = false;
         this.success = false;
         this.ticks = 0;
     }
@@ -52,8 +60,21 @@ public class EntityTeleportTicket {
         boolean sameDimension = DimensionHelper.isDimension(level, dimension);
 
         if (!sameDimension) {
-            if (allowDimensionChange) {
-                // TODO: dimension change
+            if (allowDimensionChange && !changedDimension) {
+                MinecraftServer server = level.getServer();
+                for (ResourceKey<Level> levelKey : server.levelKeys()) {
+                    if (levelKey.location().equals(dimension)) {
+                        ServerLevel dest = server.levels.get(levelKey);
+                        Vec3 pos = new Vec3(entity.getX() + 0.5D, entity.getY(), entity.getZ() + 0.5D);
+                        Vec3 delta = entity.getDeltaMovement();
+                        float yRot = entity.getYRot();
+                        float xRot = entity.getXRot();
+                        PortalInfo portalInfo = new PortalInfo(pos, delta, yRot, xRot);
+                        FabricDimensions.teleport(entity, dest, portalInfo);
+                        changedDimension = true;
+                        break;
+                    }
+                }
             } else {
                 valid = false;
             }

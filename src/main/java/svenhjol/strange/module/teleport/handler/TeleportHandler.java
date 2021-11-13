@@ -35,9 +35,10 @@ public abstract class TeleportHandler<V> {
     protected ServerLevel level;
     protected ItemStack sacrifice;
     protected String runes;
-    protected BlockPos origin;
-    protected BlockPos target;
-    protected ResourceLocation dimension;
+    protected BlockPos originPos;
+    protected BlockPos targetPos;
+    protected ResourceLocation originDimension;
+    protected ResourceLocation targetDimension;
     protected KnowledgeBranch<?, V> branch;
     protected int maxDistance;
     protected V value;
@@ -45,35 +46,37 @@ public abstract class TeleportHandler<V> {
     protected static final List<MobEffect> POSITIVE_EFFECTS;
     protected static final List<MobEffect> NEGATIVE_EFFECTS;
 
-    public TeleportHandler(KnowledgeBranch<?, V> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos origin) {
+    public TeleportHandler(KnowledgeBranch<?, V> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
         this.branch = branch;
         this.entity = entity;
         this.sacrifice = sacrifice;
         this.runes = runes;
-        this.origin = origin;
+        this.originPos = originPos;
         this.level = level;
         this.value = branch.get(runes).orElseThrow();
         this.maxDistance = Teleport.maxDistance;
+        this.originDimension = this.entity.level.dimension().location();
     }
 
     public abstract void process();
 
-    protected void teleport(boolean exactPosition, boolean allowDimensionChange) {
-        if (target == null || dimension == null) {
-            return;
-        }
+    protected void tryTeleport(ResourceLocation targetDimension, BlockPos targetPos, boolean exactPosition, boolean allowDimensionChange) {
+        this.targetPos = targetPos;
+        this.targetDimension = targetDimension;
 
-        EntityTeleportTicket entry = new EntityTeleportTicket(entity, dimension, origin, target, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
-        Teleport.entityTickets.add(entry);
+        if (checkAndApplyEffects()) {
+            EntityTeleportTicket entry = new EntityTeleportTicket(entity, targetDimension, originPos, this.targetPos, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
+            Teleport.entityTickets.add(entry);
+        }
     }
 
     protected boolean checkAndApplyEffects() {
-        if (target == null || dimension == null) {
+        if (targetPos == null || targetDimension == null) {
             entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 1));
             return false;
         }
 
-        List<Item> items = RunestoneHelper.getItems(dimension, runes);
+        List<Item> items = RunestoneHelper.getItems(originDimension, runes);
         Item sacrificeItem = sacrifice.getItem();
         Item mainItem = items.get(0);
         Random random = new Random(sacrificeItem.hashCode());
@@ -87,9 +90,10 @@ public abstract class TeleportHandler<V> {
             applyNegativeEffect(random);
             return true;
         } else {
+            LogHelper.debug(this.getClass(), "Invalid sacrificial item, doing Bad Things");
             float f = random.nextFloat();
             if (f < 0.1F) {
-                level.explode(null, origin.getX() + 0.5D, origin.getY(), origin.getZ() + 0.5D, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
+                level.explode(null, originPos.getX() + 0.5D, originPos.getY(), originPos.getZ() + 0.5D, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
             } else if (f < 0.4F) {
                 entity.setSecondsOnFire(5);
             } else if (f < 0.8F) {
@@ -112,7 +116,8 @@ public abstract class TeleportHandler<V> {
     }
 
     private void onFail(EntityTeleportTicket ticket) {
-        level.explode(null, origin.getX() + 0.5D, origin.getY(), origin.getZ() + 0.5D, 2.0F, Explosion.BlockInteraction.BREAK);
+        LogHelper.warn(this.getClass(), "Teleport ticket failed, blowing up the origin");
+        level.explode(null, originPos.getX() + 0.5D, originPos.getY(), originPos.getZ() + 0.5D, 2.0F, Explosion.BlockInteraction.BREAK);
     }
 
     private void applyNegativeEffect(Random random) {

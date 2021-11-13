@@ -10,23 +10,24 @@ import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.types.Discovery;
 
 public class DiscoveryTeleportHandler extends TeleportHandler<Discovery> {
-    public DiscoveryTeleportHandler(KnowledgeBranch<?, Discovery> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos origin) {
-        super(branch, level, entity, sacrifice, runes, origin);
+    public DiscoveryTeleportHandler(KnowledgeBranch<?, Discovery> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
+        super(branch, level, entity, sacrifice, runes, originPos);
     }
 
     @Override
     public void process() {
         ResourceLocation id = value.getId();
-        dimension = value.getDimension().orElseThrow();
+        ResourceLocation dimension = value.getDimension().orElseThrow();
+        BlockPos target;
 
         if (WorldHelper.isStructure(id)) {
-            target = getStructureTarget(id, level, origin);
+            target = getStructureTarget(id, level, originPos);
         } else if (WorldHelper.isBiome(id)) {
-            target = getBiomeTarget(id, level, origin);
+            target = getBiomeTarget(id, level, originPos);
+        } else {
+            return;
         }
 
-        if (checkAndApplyEffects()) {
-            teleport(false, false);
-        }
+        tryTeleport(dimension, target, false, false);
     }
 }
