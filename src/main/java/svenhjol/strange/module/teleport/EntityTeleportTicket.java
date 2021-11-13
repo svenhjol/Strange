@@ -10,6 +10,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.init.StrangeSounds;
 
+import java.util.Random;
 import java.util.function.Consumer;
 
 public class EntityTeleportTicket {
@@ -75,25 +76,36 @@ public class EntityTeleportTicket {
         }
 
         if (ticks++ == Teleport.TELEPORT_TICKS) {
-            BlockPos target;
+            BlockPos found;
+            BlockPos target = to;
+            Random r = new Random();
 
             if (exactPosition) {
-                target = to;
+                found = target;
             } else {
-                if (level.dimensionType().hasCeiling()) {
-                    target = WorldHelper.getSurfacePos(level, to, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
-                } else {
-                    target = WorldHelper.getSurfacePos(level, to);
-                }
+                int tries = 0;
+                int maxTries = 5;
+                do {
+                    if (level.dimensionType().hasCeiling()) {
+                        found = WorldHelper.getSurfacePos(level, target, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
+                    } else {
+                        found = WorldHelper.getSurfacePos(level, target);
+                    }
+                    if (tries > 0) {
+                        int x = to.getX() + (r.nextInt(tries * 2) - tries * 2);
+                        int z = to.getZ() + (r.nextInt(tries * 2) - tries * 2);
+                        target = new BlockPos(x, 0, z);
+                    }
+                } while (found == null && tries++ < maxTries);
             }
 
-            if (target == null) {
+            if (found == null) {
                 closeChunk();
                 valid = false;
                 return;
             }
 
-            entity.teleportToWithTicket(target.getX(), target.getY(), target.getZ());
+            entity.teleportToWithTicket(found.getX(), found.getY(), found.getZ());
             closeChunk();
             success = true;
         }
