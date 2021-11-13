@@ -63,7 +63,7 @@ public class Teleport extends CharmModule {
     }
 
     private void handleActivateRunicTome(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice) {
-        String runes = RunicTomeItem.getRunes(tome).orElseThrow();
+        String runes = RunicTomeItem.getRunes(tome);
         tryGetHandler(player, runes, sacrifice, origin).ifPresent(TeleportHandler::process);
     }
 

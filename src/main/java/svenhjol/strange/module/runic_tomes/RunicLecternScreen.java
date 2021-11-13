@@ -107,7 +107,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         if (tome == null) {
             tome = RunicTomesClient.tomeHolder.copy();
-            RunicTomeItem.getRunes(tome).ifPresent(r -> runes = r);
+            runes = RunicTomeItem.getRunes(tome);
             requiredItem = RunestoneHelper.getItem(dimension, runes);
         }
 

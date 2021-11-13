@@ -11,8 +11,6 @@ import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 
-import java.util.Optional;
-
 public class RunicTomeItem extends CharmItem {
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_BRANCH = "Branch";
@@ -31,8 +29,10 @@ public class RunicTomeItem extends CharmItem {
         setRunes(tome, runes);
         setAuthor(tome, player.getName().getString());
 
-        KnowledgeBranch.getByStartRune(runes.charAt(0))
-            .flatMap(branch -> branch.getPrettyName(runes)).ifPresent(name -> tome.setHoverName(new TextComponent(name)));
+        KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
+            setBranch(tome, branch.getBranchName());
+            branch.getPrettyName(runes).ifPresent(name -> tome.setHoverName(new TextComponent(name)));
+        });
 
         if (!tome.hasCustomHoverName()) {
             tome.setHoverName(DEFAULT_NAME);
@@ -41,12 +41,16 @@ public class RunicTomeItem extends CharmItem {
         return tome;
     }
 
-    public static Optional<String> getRunes(ItemStack tome) {
-        return Optional.ofNullable(tome.getOrCreateTag().getString(TAG_RUNES));
+    public static String getRunes(ItemStack tome) {
+        return tome.getOrCreateTag().getString(TAG_RUNES);
     }
 
-    public static Optional<String> getAuthor(ItemStack tome) {
-        return Optional.ofNullable(tome.getOrCreateTag().getString(TAG_AUTHOR));
+    public static String getBranch(ItemStack tome) {
+        return tome.getOrCreateTag().getString(TAG_BRANCH);
+    }
+
+    public static String getAuthor(ItemStack tome) {
+        return tome.getOrCreateTag().getString(TAG_AUTHOR);
     }
 
     public static void setRunes(ItemStack tome, String runes) {
@@ -59,6 +63,10 @@ public class RunicTomeItem extends CharmItem {
 
     public static void setAuthor(ItemStack tome, String author) {
         tome.getOrCreateTag().putString(TAG_AUTHOR, author);
+    }
+
+    public static void setBranch(ItemStack tome, String branch) {
+        tome.getOrCreateTag().putString(TAG_BRANCH, branch);
     }
 
     static {
