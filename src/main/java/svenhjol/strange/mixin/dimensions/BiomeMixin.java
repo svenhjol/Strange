@@ -16,8 +16,6 @@ import java.util.Optional;
 
 @Mixin(Biome.class)
 public class BiomeMixin {
-    private final ThreadLocal<LevelReader> level = new ThreadLocal<>();
-
     @Inject(
         method = "getFogColor",
         at = @At("HEAD"),
@@ -55,6 +53,24 @@ public class BiomeMixin {
     }
 
     @Inject(
+        method = "getFoliageColor",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void hookGetFoliageColor(CallbackInfoReturnable<Integer> cir) {
+        DimensionsClient.getFoliageColor((Biome)(Object)this).ifPresent(cir::setReturnValue);
+    }
+
+    @Inject(
+        method = "getGrassColor",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void hookGetGrassColor(CallbackInfoReturnable<Integer> cir) {
+        DimensionsClient.getGrassColor((Biome)(Object)this).ifPresent(cir::setReturnValue);
+    }
+
+    @Inject(
         method = "getAmbientParticle",
         at = @At("HEAD"),
         cancellable = true
@@ -84,8 +100,8 @@ public class BiomeMixin {
     private void hookShouldFreeze(LevelReader levelReader, BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
         if (levelReader.isClientSide()) return;
 
-        level.remove();
-        level.set(levelReader);
+        Dimensions.LEVEL.remove();
+        Dimensions.LEVEL.set(levelReader);
     }
 
     @Inject(
@@ -94,6 +110,15 @@ public class BiomeMixin {
         cancellable = true
     )
     private void hookGetTemperature(CallbackInfoReturnable<Float> cir) {
-        Dimensions.getTemperature(level.get(), (Biome)(Object)this).ifPresent(cir::setReturnValue);
+        Dimensions.getTemperature(Dimensions.LEVEL.get(), (Biome)(Object)this).ifPresent(cir::setReturnValue);
+    }
+
+    @Inject(
+        method = "getPrecipitation",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void hookGetPrecipitation(CallbackInfoReturnable<Biome.Precipitation> cir) {
+        Dimensions.getPrecipitation(Dimensions.LEVEL.get()).ifPresent(cir::setReturnValue);
     }
 }
