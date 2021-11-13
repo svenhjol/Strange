@@ -14,7 +14,7 @@ public class DimensionTeleportHandler extends TeleportHandler<ResourceLocation> 
 
     @Override
     public void process() {
-        BlockPos target = originPos;
+        BlockPos target = entity.blockPosition();
         ResourceLocation dimension = value;
         tryTeleport(dimension, target, false, true);
     }

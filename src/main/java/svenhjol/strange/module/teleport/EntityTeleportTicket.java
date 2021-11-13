@@ -23,7 +23,6 @@ public class EntityTeleportTicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
-    private boolean changedDimension;
     private boolean success;
     private final boolean exactPosition;
     private final boolean allowDimensionChange;
@@ -51,7 +50,6 @@ public class EntityTeleportTicket {
         this.onFail = onFail;
         this.valid = true;
         this.chunkLoaded = false;
-        this.changedDimension = false;
         this.success = false;
         this.ticks = 0;
     }
@@ -59,32 +57,9 @@ public class EntityTeleportTicket {
     public void tick() {
         boolean sameDimension = DimensionHelper.isDimension(level, dimension);
 
-        if (!sameDimension) {
-            if (allowDimensionChange && !changedDimension) {
-                MinecraftServer server = level.getServer();
-                for (ResourceKey<Level> levelKey : server.levelKeys()) {
-                    if (levelKey.location().equals(dimension)) {
-                        ServerLevel dest = server.levels.get(levelKey);
-                        Vec3 pos = new Vec3(entity.getX() + 0.5D, entity.getY(), entity.getZ() + 0.5D);
-                        Vec3 delta = entity.getDeltaMovement();
-                        float yRot = entity.getYRot();
-                        float xRot = entity.getXRot();
-                        PortalInfo portalInfo = new PortalInfo(pos, delta, yRot, xRot);
-                        FabricDimensions.teleport(entity, dest, portalInfo);
-                        changedDimension = true;
-                        break;
-                    }
-                }
-            } else {
-                valid = false;
-            }
-        }
-
-        if (!valid) {
-            return;
-        }
-
-        if (!chunkLoaded) {
+        if (!sameDimension && !allowDimensionChange) {
+            valid = false;
+        } else if (sameDimension && !chunkLoaded) {
             chunkLoaded = openChunk();
 
             if (!chunkLoaded) {
@@ -96,10 +71,37 @@ public class EntityTeleportTicket {
             level.playSound(null, from, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
+        if (!valid) {
+            return;
+        }
+
         if (ticks++ == Teleport.TELEPORT_TICKS) {
             BlockPos found;
             BlockPos target = to;
             Random r = new Random();
+
+            if (!sameDimension) {
+                // on dimension change, let Fabric API handle it
+                MinecraftServer server = level.getServer();
+                for (ResourceKey<Level> levelKey : server.levelKeys()) {
+                    if (levelKey.location().equals(dimension)) {
+                        ServerLevel dest = server.levels.get(levelKey);
+                        Vec3 pos = new Vec3(to.getX() + 0.5D, to.getY(), to.getZ() + 0.5D);
+                        Vec3 delta = entity.getDeltaMovement();
+                        float yRot = entity.getYRot();
+                        float xRot = entity.getXRot();
+                        PortalInfo portalInfo = new PortalInfo(pos, delta, yRot, xRot);
+                        FabricDimensions.teleport(entity, dest, portalInfo);
+                        success = true;
+                        return;
+                    }
+                }
+            }
+
+            if (!chunkLoaded) {
+                valid = false;
+                return;
+            }
 
             if (exactPosition) {
                 found = target;
