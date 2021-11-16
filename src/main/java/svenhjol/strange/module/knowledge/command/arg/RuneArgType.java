@@ -1,10 +1,10 @@
-package svenhjol.strange.command.arg;
+package svenhjol.strange.module.knowledge.command.arg;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import svenhjol.strange.command.CommandHelper;
+import svenhjol.strange.helper.CommandHelper;
 
 import java.util.regex.Pattern;
 

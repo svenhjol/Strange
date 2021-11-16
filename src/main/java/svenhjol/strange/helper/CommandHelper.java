@@ -1,4 +1,4 @@
-package svenhjol.strange.command;
+package svenhjol.strange.helper;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;

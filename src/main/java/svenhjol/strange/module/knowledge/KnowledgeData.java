@@ -78,7 +78,7 @@ public class KnowledgeData extends SavedData {
     }
 
     public static String getFileId(DimensionType dimensionType) {
-        return "strange" + dimensionType.getFileSuffix();
+        return "strange_knowledge" + dimensionType.getFileSuffix();
     }
 
     public static void clearAllData() {

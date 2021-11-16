@@ -22,8 +22,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.command.CommandHelper;
-import svenhjol.strange.command.arg.RuneArgType;
+import svenhjol.strange.helper.CommandHelper;
+import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 
@@ -43,42 +43,42 @@ public class KnowledgeCommand {
     public static final Component LEARNED_ALL_RUNES = new TranslatableComponent("commands.strange.learned_all_runes");
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(Strange.MOD_ID)
-            // strange learn_all_runes
+        dispatcher.register(Commands.literal(Strange.MOD_ID + "_knowledge")
+            // learn_all_runes
             .then(Commands.literal("learn_all_biomes")
                 .requires(source -> source.hasPermission(2))
                 .executes(KnowledgeCommand::learnAllBiomes))
 
-            // strange learn_all_runes
+            // learn_all_runes
             .then(Commands.literal("learn_all_runes")
                 .requires(source -> source.hasPermission(2))
                 .executes(KnowledgeCommand::learnAllRunes))
 
-            // strange learn_all_structures
+            // learn_all_structures
             .then(Commands.literal("learn_all_structures")
                 .requires(source -> source.hasPermission(2))
                 .executes(KnowledgeCommand::learnAllStructures))
 
-            // strange learn_all_dimensions
+            // learn_all_dimensions
             .then(Commands.literal("learn_all_dimensions")
                 .requires(source -> source.hasPermission(2))
                 .executes(KnowledgeCommand::learnAllDimensions))
 
-            // strange learn_biome
+            // learn_biome
             .then(Commands.literal("learn_biome")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("biome", ResourceLocationArgument.id())
                     .suggests(SuggestionProviders.AVAILABLE_BIOMES)
                     .executes(context -> learnBiome(context.getSource(), context.getArgument("biome", ResourceLocation.class)))))
 
-            // strange learn_structure
+            // learn_structure
             .then(Commands.literal("learn_structure")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("structure", ResourceLocationArgument.id())
                     .suggests(AVAILABLE_STRUCTURES)
                     .executes(context -> learnStructure(context.getSource(), context.getArgument("structure", ResourceLocation.class)))))
 
-            // strange learn_dimension
+            // learn_dimension
             .then(Commands.literal("learn_dimension")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("dimension", ResourceLocationArgument.id())
@@ -89,7 +89,7 @@ public class KnowledgeCommand {
                     })
                     .executes(context -> learnDimension(context.getSource(), context.getArgument("dimension", ResourceLocation.class)))))
 
-            // strange learn_rune
+            // learn_rune
             .then(Commands.literal("learn_rune")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("letter", RuneArgType.letter())
