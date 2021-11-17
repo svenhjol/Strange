@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.knowledge;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;

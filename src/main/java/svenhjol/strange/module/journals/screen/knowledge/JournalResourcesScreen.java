@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.knowledge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

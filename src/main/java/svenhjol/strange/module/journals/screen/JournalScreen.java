@@ -16,6 +16,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.screen.knowledge.*;
+import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
+import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 import java.util.ArrayList;

@@ -1,9 +1,10 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.knowledge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class JournalRunesScreen extends JournalScreen {
     public static final Component RUNES_LOAD_ERROR = new TranslatableComponent("gui.strange.journal.runes_load_error");
-    protected JournalRunesScreen() {
+    public JournalRunesScreen() {
         super(LEARNED_RUNES);
 
         // add a back button at the bottom

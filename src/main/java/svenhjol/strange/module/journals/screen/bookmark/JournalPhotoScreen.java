@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.bookmark;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 
 import javax.annotation.Nullable;
 import java.io.File;

@@ -22,10 +22,10 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.journals.Journals.Page;
-import svenhjol.strange.module.journals.screen.JournalBookmarkScreen;
+import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
-import svenhjol.strange.module.journals.screen.JournalKnowledgeScreen;
-import svenhjol.strange.module.journals.screen.JournalBookmarksScreen;
+import svenhjol.strange.module.journals.screen.knowledge.JournalKnowledgeScreen;
+import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;

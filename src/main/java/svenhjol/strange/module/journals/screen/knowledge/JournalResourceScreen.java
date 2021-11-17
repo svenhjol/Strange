@@ -1,9 +1,10 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.knowledge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeData;

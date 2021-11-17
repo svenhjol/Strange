@@ -1,8 +1,9 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.knowledge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.bookmark;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -19,6 +19,7 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 

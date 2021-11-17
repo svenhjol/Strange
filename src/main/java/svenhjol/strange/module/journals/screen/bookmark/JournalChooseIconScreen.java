@@ -1,9 +1,10 @@
-package svenhjol.strange.module.journals.screen;
+package svenhjol.strange.module.journals.screen.bookmark;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.item.ItemStack;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 
 public class JournalChooseIconScreen extends JournalScreen {
     protected JournalBookmark bookmark;
