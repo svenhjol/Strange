@@ -39,7 +39,11 @@ public class QuestDefinitionHelper {
 
     public static final List<Enchantment> FIXED_ENCHANTS;
 
-    public static List<ItemStack> parseItems(ServerPlayer player, Map<String, Map<String, String>> definitionMap, int listLimit, boolean scale, float difficulty) {
+    public static List<ItemStack> parseItems(ServerPlayer player, Map<String, Map<String, String>> definitionMap, int listLimit) {
+        return parseItems(player, definitionMap, listLimit, 0.0F);
+    }
+
+    public static List<ItemStack> parseItems(ServerPlayer player, Map<String, Map<String, String>> definitionMap, int listLimit, float difficulty) {
         ServerLevel serverLevel = (ServerLevel)player.level;
         List<ItemStack> stacks = new ArrayList<>();
 
@@ -53,7 +57,7 @@ public class QuestDefinitionHelper {
             int count;
             int level;
 
-            if (scale) {
+            if (difficulty > 0.0F) {
                 count = getScaledCountFromValue(props.get(TAG_COUNT), 1, difficulty, random);
                 chance = getScaledChanceFromValue(props.get(TAG_CHANCE), 1.0F, difficulty);
                 level = getScaledCountFromValue(props.get(TAG_ENCHANTMENT_LEVEL), 5, difficulty, random);
@@ -124,7 +128,7 @@ public class QuestDefinitionHelper {
 
             // itemIds contains a list of all parseable items for this json entry
             for (String s : itemIds) {
-                String parseableItemId = splitOptionalRandomly(s, random);
+                String parseableItemId = splitOptional(s, random);
 
                 // try and parse a minecraft/modded item
                 Optional<Item> optItem = Registry.ITEM.getOptional(new ResourceLocation(parseableItemId));
@@ -192,9 +196,18 @@ public class QuestDefinitionHelper {
     }
 
     @Nullable
+    public static ResourceLocation getEntityIdFromKey(String key) {
+        return getEntityIdFromKey(key, new Random());
+    }
+
+    @Nullable
     public static ResourceLocation getEntityIdFromKey(String key, Random random) {
-        key = splitOptionalRandomly(key, random);
+        key = splitOptional(key, random);
         return ResourceLocation.tryParse(key);
+    }
+
+    public static int getCountFromValue(String value, int fallback) {
+        return getCountFromValue(value, fallback, new Random());
     }
 
     public static int getCountFromValue(String value, int fallback, Random random) {
@@ -249,12 +262,16 @@ public class QuestDefinitionHelper {
         return chance;
     }
 
-    public static float getScaledChanceFromValue(String value, float fallback, float rarity) {
+    public static float getScaledChanceFromValue(String value, float fallback, float difficulty) {
         float chance = getChanceFromValue(value, fallback);
-        return chance + 0.1F * rarity;
+        return chance + 0.1F * difficulty;
     }
 
-    public static String splitOptionalRandomly(String key, Random random) {
+    public static String splitOptional(String key) {
+        return splitOptional(key, new Random());
+    }
+
+    public static String splitOptional(String key, Random random) {
         if (key.contains("|")) {
             String[] split = key.split("\\|");
             key = split[random.nextInt(split.length)];
@@ -280,7 +297,7 @@ public class QuestDefinitionHelper {
         List<String> specificEnchantments = new ArrayList<>();
 
         if (!enchantments.isEmpty()) {
-            specificEnchantments = splitByComma(splitOptionalRandomly(enchantments, random));
+            specificEnchantments = splitByComma(splitOptional(enchantments, random));
         }
 
         if (!stack.isEnchanted()) {

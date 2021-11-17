@@ -9,6 +9,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -20,7 +21,7 @@ public class QuestData extends SavedData {
     private final Map<String, Quest> quests = new ConcurrentHashMap<>();
 
     public QuestData(@Nullable ServerLevel level) {
-        this.setDirty();
+        setDirty();
     }
 
     public static QuestData fromNbt(CompoundTag tag) {
@@ -89,5 +90,10 @@ public class QuestData extends SavedData {
 
     public static String getFileId(DimensionType dimensionType) {
         return "strange_quests" + dimensionType.getFileSuffix();
+    }
+
+    @Override
+    public void save(File file) {
+        super.save(file);
     }
 }

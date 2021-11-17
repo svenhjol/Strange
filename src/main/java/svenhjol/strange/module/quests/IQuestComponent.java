@@ -1,4 +1,4 @@
-package svenhjol.strange.module.quests.component;
+package svenhjol.strange.module.quests;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;

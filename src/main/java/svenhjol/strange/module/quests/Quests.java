@@ -3,16 +3,18 @@ package svenhjol.strange.module.quests;
 import com.mojang.brigadier.CommandDispatcher;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -44,6 +46,7 @@ public class Quests extends CharmModule {
         }
 
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
     }
 
     @Override
@@ -51,11 +54,11 @@ public class Quests extends CharmModule {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
     }
 
-    public static void sendToast(ServerPlayer player, QuestToastType type, int tier, Component title) {
+    public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, int tier) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeEnum(type);
+        buffer.writeUtf(definitionId);
         buffer.writeInt(tier);
-        buffer.writeComponent(title);
         ServerPlayNetworking.send(player, Quests.MSG_CLIENT_SHOW_QUEST_TOAST, buffer);
     }
 
@@ -96,23 +99,16 @@ public class Quests extends CharmModule {
         return 0;
     }
 
+    private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {
+        getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
+    }
+
     private void handleRegisterCommand(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
         QuestCommand.register(dispatcher);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
-            // setup the data storage
-            ServerLevel serverLevel = (ServerLevel)level;
-            DimensionDataStorage storage = serverLevel.getDataStorage();
-
-            quests = storage.computeIfAbsent(
-                nbt -> QuestData.fromNbt(serverLevel, nbt),
-                () -> new QuestData(serverLevel),
-                QuestData.getFileId(serverLevel.getLevel().dimensionType()));
-
-            LogHelper.info(this.getClass(), "Loaded quests saved data");
-
             // load all quest definitions
             ResourceManager manager = server.getResourceManager();
             Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
@@ -159,6 +155,17 @@ public class Quests extends CharmModule {
                     }
                 }
             }
+
+            // setup the data storage
+            ServerLevel serverLevel = (ServerLevel)level;
+            DimensionDataStorage storage = serverLevel.getDataStorage();
+
+            quests = storage.computeIfAbsent(
+                nbt -> QuestData.fromNbt(serverLevel, nbt),
+                () -> new QuestData(serverLevel),
+                QuestData.getFileId(serverLevel.getLevel().dimensionType()));
+
+            LogHelper.info(this.getClass(), "Loaded quests saved data");
         }
     }
 

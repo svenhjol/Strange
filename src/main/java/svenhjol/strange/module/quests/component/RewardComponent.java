@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.PlayerHelper;
+import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestDefinition;
 import svenhjol.strange.module.quests.QuestDefinitionHelper;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Reward implements IQuestComponent {
+public class RewardComponent implements IQuestComponent {
     public static final String TAG_COUNT = "count";
     public static final String TAG_ITEMS = "items";
     public static final String TAG_XP = "xp";
@@ -36,7 +37,7 @@ public class Reward implements IQuestComponent {
     private int playerXp;
     private int merchantXp;
 
-    public Reward(Quest quest) {
+    public RewardComponent(Quest quest) {
         this.quest = quest;
     }
 
@@ -67,14 +68,14 @@ public class Reward implements IQuestComponent {
     public boolean start(ServerPlayer player) {
         Random random = player.getRandom();
         QuestDefinition definition = quest.getDefinition();
-        Reward reward = quest.getReward();
+        RewardComponent reward = quest.getComponent(RewardComponent.class);
         float difficulty = quest.getDifficulty();
 
         Map<String, Map<String, String>> itemDefinition = definition.getReward().getOrDefault(TAG_ITEMS, null);
         Map<String, Map<String, String>> xpDefinition = definition.getReward().getOrDefault(TAG_XP, null);
 
         if (itemDefinition != null) {
-            List<ItemStack> items = QuestDefinitionHelper.parseItems(player, itemDefinition, MAX_ITEM_REWARDS, true, difficulty);
+            List<ItemStack> items = QuestDefinitionHelper.parseItems(player, itemDefinition, MAX_ITEM_REWARDS, difficulty);
             items.forEach(reward::addItem);
         }
 

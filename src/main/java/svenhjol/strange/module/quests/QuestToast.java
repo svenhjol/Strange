@@ -9,9 +9,10 @@ import net.minecraft.advancements.FrameType;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
@@ -29,9 +30,17 @@ public class QuestToast implements Toast {
     private final DisplayInfo displayInfo;
     private boolean playedSound;
 
-    public QuestToast(QuestToastType type, int tier, Component title) {
+    public QuestToast(QuestToastType type, String definitionId, int tier) {
         ItemStack stack = new ItemStack(Quests.SCROLLS.get(tier));
-        Component description = new TranslatableComponent("gui.strange.quests." + type.getSerializedName().toLowerCase(Locale.ROOT));
+        Component title;
+        Component description = new TextComponent(I18n.get("gui.strange.quests." + type.getSerializedName().toLowerCase(Locale.ROOT)));
+
+        if (Quests.DEFINITIONS.containsKey(tier) && Quests.DEFINITIONS.get(tier).containsKey(definitionId)) {
+            QuestDefinition definition = Quests.DEFINITIONS.get(tier).get(definitionId);
+            title = new TextComponent(QuestsClient.getTitle(definition));
+        } else {
+            title = new TextComponent(definitionId);
+        }
 
         this.type = type;
         this.displayInfo = new DisplayInfo(stack, title, description, BACKGROUND, FrameType.CHALLENGE, true, false, false);
@@ -75,7 +84,7 @@ public class QuestToast implements Toast {
     }
 
     public enum QuestToastType implements ICharmEnum {
-        STARTED(0xFFFFFF, 0xFF0000),
+        STARTED(0xFFFFFF, 0xFFFF00),
         ABANDONED(0xFFFFFF, 0x999999),
         COMPLETED(0xFFFFFF, 0xFF88FF);
 

@@ -1,18 +1,21 @@
 package svenhjol.strange.module.quests;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.strange.module.quests.component.IQuestComponent;
-import svenhjol.strange.module.quests.component.Reward;
+import svenhjol.strange.module.quests.component.GatherComponent;
+import svenhjol.strange.module.quests.component.HuntComponent;
+import svenhjol.strange.module.quests.component.RewardComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class Quest  implements IQuestComponent {
+@SuppressWarnings("unchecked")
+public class Quest implements IQuestComponent {
     public static final String TAG_ID = "id";
     public static final String TAG_DEFINITION = "definition";
     public static final String TAG_MERCHANT = "merchant";
@@ -34,7 +37,9 @@ public class Quest  implements IQuestComponent {
     private final List<IQuestComponent> components = new LinkedList<>();
 
     private Quest() {
-        components.add(new Reward(this));
+        components.add(new GatherComponent(this));
+        components.add(new HuntComponent(this));
+        components.add(new RewardComponent(this));
     }
 
     public Quest(CompoundTag tag) {
@@ -54,20 +59,131 @@ public class Quest  implements IQuestComponent {
         getQuests().add(this);
     }
 
+    public <T extends IQuestComponent> T getComponent(Class<? extends T> clazz) {
+        return (T)components.stream().filter(c -> c.getClass() == clazz).findFirst().orElseThrow();
+    }
+
+    public void pause() {
+        owner = QuestHelper.ANY_UUID;
+        state = State.PAUSED;
+        setDirty();
+    }
+
+    @Override
+    public boolean start(ServerPlayer player) {
+        if (state == State.CREATED) {
+
+            // do first-time population of each component
+            components.forEach(c -> {
+                if (!c.start(player)) {
+                    throw QuestHelper.makeException(this, "Could not initialise quest component: " + c.getId());
+                }
+            });
+
+        } else if (state != State.PAUSED) {
+            throw QuestHelper.makeException(this, "Quest should be in PAUSED or CREATED state, was in " + state.getSerializedName());
+        }
+
+        this.owner = player.getUUID();
+        state = State.STARTED;
+        Quests.sendToast(player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
+        setDirty();
+
+        return true;
+    }
+
+    @Override
+    public void abandon(ServerPlayer player) {
+        components.forEach(c -> c.abandon(player));
+        Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
+        getQuests().remove(this);
+    }
+
+    @Override
+    public void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
+        components.forEach(c -> c.complete(player, merchant));
+        Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
+        getQuests().remove(this);
+    }
+
+    @Override
+    public void playerTick(ServerPlayer player) {
+        components.forEach(c -> c.playerTick(player));
+        if (player.level != null && player.level.getGameTime() % 40 == 0) {
+            components.forEach(c -> c.update(player));
+        }
+    }
+
+    @Override
+    public void entityKilled(LivingEntity entity, Entity attacker) {
+        components.forEach(c -> c.entityKilled(entity, attacker));
+    }
+
+    /**
+     * Gives all quest component an opportunity to update their state.
+     * This could be for example building dynamic maps to check if a quest is satisfied.
+     * Dirty is not set here and should be set on a component level if state changes.
+     */
+    @Override
+    public void update(ServerPlayer player) {
+        components.forEach(c -> c.update(player));
+    }
+
+    @Override
+    public boolean isSatisfied(ServerPlayer player) {
+        update(player);
+        return components.stream().allMatch(q -> q.isSatisfied(player));
+    }
+
+    @Override
+    public CompoundTag toNbt() {
+        CompoundTag tag = new CompoundTag();
+
+        if (definition == null) {
+            return tag;
+        }
+
+        tag.putString(TAG_ID, id);
+        tag.putString(TAG_DEFINITION, getDefinitionId());
+        tag.putString(TAG_MERCHANT, merchant.toString());
+        tag.putString(TAG_PLAYER, owner.toString());
+        tag.putString(TAG_STATE, state.getSerializedName());
+        tag.putFloat(TAG_DIFFICULTY, difficulty);
+
+        components.forEach(c -> {
+            CompoundTag componentTag = c.toNbt();
+            if (componentTag != null) {
+                tag.put(c.getId(), componentTag);
+            }
+        });
+        return tag;
+    }
+
+    @Override
+    public void fromNbt(CompoundTag tag) {
+        id = tag.getString(TAG_ID);
+        definition = Quests.getDefinition(tag.getString(TAG_DEFINITION));
+        merchant = UUID.fromString(tag.getString(TAG_MERCHANT));
+        owner = UUID.fromString(tag.getString(TAG_PLAYER));
+        state = State.valueOf(tag.getString(TAG_STATE).toUpperCase(Locale.ROOT));
+        difficulty = tag.getFloat(TAG_DIFFICULTY);
+        random = new Random(id.hashCode());
+        components.forEach(c -> c.fromNbt(tag.getCompound(c.getId())));
+    }
+
+    public QuestDefinition getDefinition() {
+        if (definition == null) {
+            throw QuestHelper.makeException(this, "Definition is null for quest " + getId());
+        }
+        return definition;
+    }
+
     public String getId() {
         return id;
     }
 
-    public String getTitle() {
-        return definition.getTitle();
-    }
-
-    public String getDescription() {
-        return definition.getDescription();
-    }
-
-    public String getHint() {
-        return definition.getHint();
+    public String getDefinitionId() {
+        return definition.getId();
     }
 
     public Random getRandom() {
@@ -90,102 +206,9 @@ public class Quest  implements IQuestComponent {
         return difficulty;
     }
 
-    public Reward getReward() {
-        return (Reward)components.stream().filter(c -> c instanceof Reward).findFirst().orElseThrow();
-    }
-
-    public void playerTick(ServerPlayer player) {
-        components.forEach(c -> c.playerTick(player));
-    }
-
-    public boolean start(ServerPlayer player) {
-        if (state == State.CREATED) {
-
-            // do first-time population of each component
-            components.forEach(c -> {
-                if (!c.start(player)) {
-                    throw new IllegalStateException("Could not initialise quest component: " + c.getId());
-                }
-            });
-
-        } else if (state != State.PAUSED) {
-            throw new IllegalStateException("Quest should be in PAUSED or CREATED state, was in " + state.getSerializedName());
-        }
-
-        this.owner = player.getUUID();
-        state = State.STARTED;
-        Quests.sendToast(player, QuestToast.QuestToastType.STARTED, getTier(), new TextComponent(getTitle()));
-        setDirty();
-
-        return true;
-    }
-
-    public void abandon(ServerPlayer player) {
-        components.forEach(c -> c.abandon(player));
-        Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, getTier(), new TextComponent(getTitle()));
-        getQuests().remove(this);
-    }
-
-    public void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
-        components.forEach(c -> c.complete(player, merchant));
-        Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, getTier(), new TextComponent(getTitle()));
-        getQuests().remove(this);
-    }
-
-    public void pause() {
-        owner = QuestHelper.ANY_UUID;
-        state = State.PAUSED;
-        setDirty();
-    }
-
-    public void update(ServerPlayer player) {
-        components.forEach(c -> c.update(player));
-    }
-
-    public boolean isSatisfied(ServerPlayer player) {
-        update(player);
-        return components.stream().allMatch(q -> q.isSatisfied(player));
-    }
-
-    public QuestDefinition getDefinition() {
-        if (definition == null) {
-            throw new IllegalStateException("Definition is null for quest " + getId());
-        }
-        return definition;
-    }
-
     public void setDirty() {
         dirty = true;
-    }
-
-    @Override
-    public CompoundTag toNbt() {
-        CompoundTag tag = new CompoundTag();
-
-        if (definition == null) {
-            return tag;
-        }
-
-        tag.putString(TAG_ID, id);
-        tag.putString(TAG_DEFINITION, definition.getId());
-        tag.putString(TAG_MERCHANT, merchant.toString());
-        tag.putString(TAG_PLAYER, owner.toString());
-        tag.putString(TAG_STATE, state.getSerializedName());
-        tag.putFloat(TAG_DIFFICULTY, difficulty);
-
-        components.forEach(c -> tag.put(c.getId(), c.toNbt()));
-        return tag;
-    }
-
-    @Override
-    public void fromNbt(CompoundTag tag) {
-        id = tag.getString(TAG_ID);
-        definition = Quests.getDefinition(tag.getString(TAG_DEFINITION));
-        merchant = UUID.fromString(tag.getString(TAG_MERCHANT));
-        owner = UUID.fromString(tag.getString(TAG_PLAYER));
-        difficulty = tag.getFloat(TAG_DIFFICULTY);
-        random = new Random(id.hashCode());
-        components.forEach(c -> c.fromNbt(tag.getCompound(c.getId())));
+        getQuests().setDirty();
     }
 
     private QuestData getQuests() {
