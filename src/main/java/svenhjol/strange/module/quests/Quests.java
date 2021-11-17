@@ -5,9 +5,12 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
@@ -29,7 +33,9 @@ import java.util.*;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Quests extends CharmModule {
-    public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_shot_quest_toast");
+    public static final ResourceLocation MSG_SERVER_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_sync_player_quests");
+    public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast");
+    public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
 
     public static final int NUM_TIERS = 6;
     public static final String DEFINITION_FOLDER = "quest_definitions";
@@ -45,6 +51,7 @@ public class Quests extends CharmModule {
             SCROLLS.put(tier, new ScrollItem(this, tier));
         }
 
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
     }
@@ -167,6 +174,21 @@ public class Quests extends CharmModule {
 
             LogHelper.info(this.getClass(), "Loaded quests saved data");
         }
+    }
+
+    private void handleSyncPlayerQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+//        getQuestData().ifPresent(quests -> {
+//            CompoundTag tag = new CompoundTag();
+//            ListTag list = new ListTag();
+//            quests.eachPlayerQuest(player, q -> list.add(q.toNbt()));
+//            tag.put("quests", list);
+//            buffer.writeNbt(tag);
+//            server.execute(() -> ClientPlayNetworking.send(MSG_CLIENT_SYNC_PLAYER_QUESTS, buffer));
+//        });
+
+        CompoundTag tag = new CompoundTag();
+        quests.save(tag);
+        NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_PLAYER_QUESTS, buf -> buf.writeNbt(tag));
     }
 
     static {

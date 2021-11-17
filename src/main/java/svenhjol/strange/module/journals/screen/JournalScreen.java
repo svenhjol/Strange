@@ -16,10 +16,12 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
+import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.QuestsClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +55,7 @@ public abstract class JournalScreen extends Screen {
     public static final Component NO_DIMENSIONS;
     public static final Component NO_BOOKMARKS;
     public static final Component NO_STRUCTURES;
+    public static final Component NO_QUESTS;
     public static final Component QUESTS;
     public static final Component QUESTS_TOOLTIP;
     public static final Component SAVE;
@@ -88,6 +91,7 @@ public abstract class JournalScreen extends Screen {
 
     protected int lastPage;
     protected JournalData journal;
+    protected QuestData quests;
 
     protected List<GuiHelper.ButtonDefinition> bottomButtons = new ArrayList<>();
     protected List<GuiHelper.ImageButtonDefinition> navigationButtons = new ArrayList<>();
@@ -132,6 +136,9 @@ public abstract class JournalScreen extends Screen {
 
         // ask server to update knowledge on the client
         KnowledgeClient.sendSyncKnowledge();
+
+        // ask server to update quests on the client
+        QuestsClient.sendSyncQuests();
     }
 
     @Override
@@ -329,6 +336,7 @@ public abstract class JournalScreen extends Screen {
         BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
         BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
         MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
+        NO_QUESTS = new TranslatableComponent("gui.strange.journal.no_quests");
         NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
         NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
         NO_BOOKMARKS = new TranslatableComponent("gui.strange.journal.no_bookmarks");

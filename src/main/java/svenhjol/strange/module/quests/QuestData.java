@@ -3,14 +3,16 @@ package svenhjol.strange.module.quests;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -59,8 +61,8 @@ public class QuestData extends SavedData {
     }
 
     public List<Quest> getAll(Player player) {
-        return quests.values().stream()
-            .filter(q -> q.getOwner() == player.getUUID())
+        return this.quests.values().stream()
+            .filter(q -> q.getOwner().equals(player.getUUID()))
             .collect(Collectors.toList());
     }
 
@@ -84,7 +86,7 @@ public class QuestData extends SavedData {
         quests.values().forEach(callback);
     }
 
-    public void eachPlayerQuest(ServerPlayer player, Consumer<Quest> callback) {
+    public void eachPlayerQuest(Player player, Consumer<Quest> callback) {
         getAll(player).forEach(callback);
     }
 

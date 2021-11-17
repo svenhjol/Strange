@@ -43,6 +43,7 @@
   "gui.strange.journal.no_learned_biomes": "No biomes",
   "gui.strange.journal.no_learned_structures": "No structures",
   "gui.strange.journal.no_learned_dimensions": "No dimensions",
+  "gui.strange.journal.no_quests": "No quests",
   "gui.strange.journal.page": "Page %s",
   "gui.strange.journal.photo": "Photo",
   "gui.strange.journal.quests": "Quests",

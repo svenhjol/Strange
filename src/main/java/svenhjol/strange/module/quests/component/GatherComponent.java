@@ -42,20 +42,20 @@ public class GatherComponent implements IQuestComponent {
         CompoundTag dataTag = new CompoundTag();
         CompoundTag countTag = new CompoundTag();
 
-        if (!items.isEmpty()) {
-            int index = 0;
-            for (ItemStack stack : items.keySet()) {
-                String tagIndex = Integer.toString(index);
-                int itemCount = items.get(stack);
+        if (items.isEmpty()) return null;
 
-                // write the data to the tags at the specified index
-                CompoundTag itemTag = new CompoundTag();
-                stack.save(itemTag);
-                dataTag.put(tagIndex, itemTag);
-                countTag.putInt(tagIndex, itemCount);
+        int index = 0;
+        for (ItemStack stack : items.keySet()) {
+            String tagIndex = Integer.toString(index);
+            int itemCount = items.get(stack);
 
-                index++;
-            }
+            // write the data to the tags at the specified index
+            CompoundTag itemTag = new CompoundTag();
+            stack.save(itemTag);
+            dataTag.put(tagIndex, itemTag);
+            countTag.putInt(tagIndex, itemCount);
+
+            index++;
         }
 
         outTag.put(TAG_ITEM_DATA, dataTag);

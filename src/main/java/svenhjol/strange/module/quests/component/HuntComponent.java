@@ -40,20 +40,20 @@ public class HuntComponent implements IQuestComponent {
         CompoundTag countTag = new CompoundTag();
         CompoundTag killedTag = new CompoundTag();
 
-        if (!entities.isEmpty()) {
-            int index = 0;
-            for (ResourceLocation entityId : entities.keySet()) {
-                String entityIndex = Integer.toString(index);
-                int entityCount = entities.get(entityId);
-                int entityKilled = killed.getOrDefault(entityId, 0);
+        if (entities.isEmpty()) return null;
 
-                // write the data to the tags at the specified index
-                dataTag.putString(entityIndex, entityId.toString());
-                countTag.putInt(entityIndex, entityCount);
-                killedTag.putInt(entityIndex, entityKilled);
+        int index = 0;
+        for (ResourceLocation entityId : entities.keySet()) {
+            String entityIndex = Integer.toString(index);
+            int entityCount = entities.get(entityId);
+            int entityKilled = killed.getOrDefault(entityId, 0);
 
-                index++;
-            }
+            // write the data to the tags at the specified index
+            dataTag.putString(entityIndex, entityId.toString());
+            countTag.putInt(entityIndex, entityCount);
+            killedTag.putInt(entityIndex, entityKilled);
+
+            index++;
         }
 
         outTag.put(TAG_ENTITY_DATA, dataTag);
