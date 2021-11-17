@@ -1,5 +1,4 @@
 {
-  "pack": "strange",
   "lang": {
     "en": {
       "title": "Hunt Skeletons",
@@ -7,6 +6,7 @@
       "hint": "Multiline\nworks?"
     }
   },
+  "pack": "strange",
   "hunt": {
     "skeleton": "1-2"
   },
