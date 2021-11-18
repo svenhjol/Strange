@@ -95,5 +95,11 @@
   "item.strange.dimension_knowledge_stone": "Dimension Knowledge Stone",
   "item.strange.structure_knowledge_stone": "Structure Knowledge Stone",
   "item.strange.runestone_dust": "Runestone Dust",
-  "item.strange.runic_tome": "Runic Tome"
+  "item.strange.runic_tome": "Runic Tome",
+  "item.strange.test_scroll": "Test Scroll",
+  "item.strange.novice_scroll": "Novice Scroll",
+  "item.strange.apprentice_scroll": "Apprentice Scroll",
+  "item.strange.journeyman_scroll": "Journeyman Scroll",
+  "item.strange.expert_scroll": "Expert Scroll",
+  "item.strange.master_scroll": "Master Scroll"
 }

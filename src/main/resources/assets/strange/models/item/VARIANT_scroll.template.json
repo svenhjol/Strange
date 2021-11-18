@@ -1,0 +1,9 @@
+{
+  "template": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "strange:item/VARIANT_scroll"
+    }
+  },
+  "variants": "scrolls"
+}

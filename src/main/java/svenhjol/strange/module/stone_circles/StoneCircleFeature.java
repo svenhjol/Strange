@@ -11,41 +11,54 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import svenhjol.charm.enums.ICharmEnum;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguration> {
     public StoneCircleFeature(Codec<StoneCircleConfiguration> codec) {
-        super(codec, StoneCircleFeature::generatePieces);
+        super(codec, PieceGeneratorSupplier.simple(StoneCircleFeature::checkLocation, StoneCircleFeature::generatePieces));
     }
 
-    private static void generatePieces(StructurePiecesBuilder builder, StoneCircleConfiguration config, PieceGenerator.Context context) {
+    private static boolean checkLocation(PieceGeneratorSupplier.Context context) {
+        StoneCircleConfiguration config = (StoneCircleConfiguration) context.config();
+
         ChunkGenerator chunkGenerator = context.chunkGenerator();
-        WorldgenRandom random = context.random();
         LevelHeightAccessor height = context.heightAccessor();
         ChunkPos chunkPos = context.chunkPos();
 
         int x = chunkPos.getMinBlockX();
         int z = chunkPos.getMinBlockZ();
-        int y = findSuitableY(config, chunkGenerator, height, random, x, z);
+        Random random = new Random(x + z);
 
+        int y = findSuitableY(config, chunkGenerator, height, random, x, z);
         if (y == Integer.MIN_VALUE) {
-            return;
+            return false;
         }
 
         Biome biome = chunkGenerator.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
-        Objects.requireNonNull(builder);
+        return context.validBiome().test(biome);
+    }
 
-        if (context.validBiome().test(biome)) {
+    private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context context) {
+        StoneCircleConfiguration config = (StoneCircleConfiguration) context.config();
+        ChunkGenerator chunkGenerator = context.chunkGenerator();
+        LevelHeightAccessor height = context.heightAccessor();
+        ChunkPos chunkPos = context.chunkPos();
+
+        int x = chunkPos.getMinBlockX();
+        int z = chunkPos.getMinBlockZ();
+        Random random = new Random(x + z);
+
+        int y = findSuitableY(config, chunkGenerator, height, random, x, z);
+        if (y != Integer.MIN_VALUE) {
             builder.addPiece(new StoneCirclePiece(config.stoneCircleType, context, x, y, z));
         }
     }
