@@ -1,9 +1,13 @@
 package svenhjol.strange.module.quests;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.nbt.CompoundTag;
@@ -32,32 +36,22 @@ public class QuestsClient extends CharmModule {
         NetworkHelper.sendEmptyPacketToServer(Quests.MSG_SERVER_SYNC_PLAYER_QUESTS);
     }
 
-    private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        QuestToastType type = buffer.readEnum(QuestToastType.class);
-        String definitionId = buffer.readUtf();
-        int tier = buffer.readInt();
-
-        client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
+    public static void sendAbandonQuest(Quest quest) {
+        NetworkHelper.sendPacketToServer(Quests.MSG_SERVER_ABANDON_QUEST, buf -> buf.writeUtf(quest.getId()));
     }
 
-    private void handleSyncPlayerQuests(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-//        CompoundTag tag = buffer.readNbt();
-//
-//        client.execute(() -> {
-//            currentQuests.clear();
-//
-//            if (tag != null && tag.contains("quest")) {
-//                ListTag list = tag.getList("quest", 10);
-//                for (Tag el : list) {
-//                    Quest quest = new Quest((CompoundTag) el);
-//                    currentQuests.add(quest);
-//                }
-//            }
-//        });
-        CompoundTag tag = buffer.readNbt();
-        if (tag != null) {
-            quests = QuestData.fromNbt(tag);
-        }
+    public static void sendPauseQuest(Quest quest) {
+        NetworkHelper.sendPacketToServer(Quests.MSG_SERVER_PAUSE_QUEST, buf -> buf.writeUtf(quest.getId()));
+    }
+
+    public static void renderIcon(Screen screen, PoseStack poseStack, int[] icon, int x, int y) {
+        int w = QuestIcons.ICON_WIDTH;
+        int h = QuestIcons.ICON_HEIGHT;
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, QuestIcons.ICONS);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        screen.blit(poseStack, x, y, 256 - (icon[0] * w), icon[1] * h, w, h);
     }
 
     public static Optional<QuestData> getQuestData() {
@@ -95,5 +89,20 @@ public class QuestsClient extends CharmModule {
 
         String value = langDefinition.get(code).getOrDefault(key, definitionId);
         return I18n.get(value);
+    }
+
+    private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        QuestToastType type = buffer.readEnum(QuestToastType.class);
+        String definitionId = buffer.readUtf();
+        int tier = buffer.readInt();
+
+        client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
+    }
+
+    private void handleSyncPlayerQuests(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        CompoundTag tag = buffer.readNbt();
+        if (tag != null) {
+            quests = QuestData.fromNbt(tag);
+        }
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.strange.module.quests.component.GatherComponent;
@@ -23,7 +24,7 @@ public class Quest implements IQuestComponent {
     public static final String TAG_STATE = "state";
     public static final String TAG_DIFFICULTY = "difficulty";
 
-    public static final int ID_LENGTH = 4;
+    public static final int ID_LENGTH = 6;
 
     private State state = State.CREATED;
     private String id;
@@ -70,7 +71,7 @@ public class Quest implements IQuestComponent {
     }
 
     @Override
-    public boolean start(ServerPlayer player) {
+    public boolean start(Player player) {
         if (state == State.CREATED) {
 
             // do first-time population of each component
@@ -86,28 +87,39 @@ public class Quest implements IQuestComponent {
 
         this.owner = player.getUUID();
         state = State.STARTED;
-        Quests.sendToast(player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
-        setDirty();
 
+        if (!player.level.isClientSide) {
+            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
+        }
+
+        setDirty();
         return true;
     }
 
     @Override
-    public void abandon(ServerPlayer player) {
+    public void abandon(Player player) {
         components.forEach(c -> c.abandon(player));
-        Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
+
+        if (!player.level.isClientSide) {
+            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
+        }
+
         getQuests().remove(this);
     }
 
     @Override
-    public void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
+    public void complete(Player player, @Nullable AbstractVillager merchant) {
         components.forEach(c -> c.complete(player, merchant));
-        Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
+
+        if (!player.level.isClientSide) {
+            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
+        }
+
         getQuests().remove(this);
     }
 
     @Override
-    public void playerTick(ServerPlayer player) {
+    public void playerTick(Player player) {
         components.forEach(c -> c.playerTick(player));
         if (player.level != null && player.level.getGameTime() % 40 == 0) {
             components.forEach(c -> c.update(player));
@@ -123,14 +135,15 @@ public class Quest implements IQuestComponent {
      * Gives all quest component an opportunity to update their state.
      * This could be for example building dynamic maps to check if a quest is satisfied.
      * Dirty is not set here and should be set on a component level if state changes.
+     * @param player
      */
     @Override
-    public void update(ServerPlayer player) {
+    public void update(Player player) {
         components.forEach(c -> c.update(player));
     }
 
     @Override
-    public boolean isSatisfied(ServerPlayer player) {
+    public boolean isSatisfied(Player player) {
         update(player);
         return components.stream().allMatch(q -> q.isSatisfied(player));
     }

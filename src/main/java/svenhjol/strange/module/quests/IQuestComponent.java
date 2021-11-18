@@ -1,9 +1,9 @@
 package svenhjol.strange.module.quests;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.strange.iface.ISerializable;
 
 import javax.annotation.Nullable;
@@ -11,11 +11,11 @@ import javax.annotation.Nullable;
 public interface IQuestComponent extends ISerializable {
     String getId();
 
-    default void abandon(ServerPlayer player) {
+    default void abandon(Player player) {
         // no op
     }
 
-    default void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
+    default void complete(Player player, @Nullable AbstractVillager merchant) {
         // no op
     }
 
@@ -23,15 +23,15 @@ public interface IQuestComponent extends ISerializable {
         // no op
     }
 
-    default boolean isSatisfied(ServerPlayer player) {
+    default boolean isSatisfied(Player player) {
         return true;
     }
 
-    default void playerTick(ServerPlayer player) {
+    default void playerTick(Player player) {
         // no op
     }
 
-    boolean start(ServerPlayer player);
+    boolean start(Player player);
 
-    void update(ServerPlayer player);
+    void update(Player player);
 }

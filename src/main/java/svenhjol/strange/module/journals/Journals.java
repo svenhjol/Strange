@@ -145,6 +145,15 @@ public class Journals extends CharmModule {
             .ifPresent(m -> bookmarkIcons.addAll(m.get(0)));
     }
 
+    public static void sendOpenJournal(ServerPlayer player, Page page) {
+        getJournalData(player).ifPresent(journal -> {
+            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_JOURNAL, buf -> {
+                buf.writeNbt(journal.toNbt());
+                buf.writeEnum(page);
+            });
+        });
+    }
+
     public static Optional<JournalData> getJournalData(Player player) {
         return Optional.ofNullable(journal.get(player.getUUID()));
     }
@@ -152,6 +161,7 @@ public class Journals extends CharmModule {
     public enum Page {
         HOME,
         BOOKMARKS,
+        QUESTS,
         KNOWLEDGE
     }
 }

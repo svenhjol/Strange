@@ -6,9 +6,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestIcons;
 import svenhjol.strange.module.quests.QuestsClient;
 
 import java.util.ArrayList;
@@ -19,15 +19,27 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class JournalQuestsScreen extends JournalScreen {
+    private Player player;
+
     public JournalQuestsScreen() {
         super(QUESTS);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        player = ClientHelper.getPlayer().orElseThrow();
+        QuestsClient.getQuestData().ifPresent(quests -> {
+            quests.eachPlayerQuest(player, q -> q.update(player));
+        });
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
-        int buttonWidth = 140;
+        int buttonWidth = 180;
         int buttonHeight = 20;
         int yOffset = 21;
 
@@ -42,6 +54,11 @@ public class JournalQuestsScreen extends JournalScreen {
         AtomicInteger y = new AtomicInteger(40);
         Consumer<Quest> renderItem = quest -> {
             TextComponent title = new TextComponent(QuestsClient.getTitle(quest.getDefinition()));
+            if (quest.isSatisfied(player)) {
+                QuestsClient.renderIcon(this, poseStack, QuestIcons.ICON_TICK, midX - (buttonWidth / 2) - 12, y.get() + 5);
+            } else {
+                QuestsClient.renderIcon(this, poseStack, QuestIcons.ICON_CLOCK, midX - (buttonWidth / 2) - 12, y.get() + 5);
+            }
 
             if (!hasRenderedButtons) {
                 Button button = new Button(midX - (buttonWidth / 2), y.get(), buttonWidth, buttonHeight, title, b -> select(quest));
@@ -70,6 +87,6 @@ public class JournalQuestsScreen extends JournalScreen {
     }
 
     protected void select(Quest quest) {
-        LogHelper.info(this.getClass(), quest.getId());
+        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalQuestHomeScreen(quest)));
     }
 }

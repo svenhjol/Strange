@@ -14,19 +14,16 @@ public class QuestDefinition {
     private int tier;
     private String id;
     private String pack;
-    private String title;
-    private String description;
-    private String hint;
     private List<String> modules = new ArrayList<>();
     private List<String> dimensions = new ArrayList<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
 
     // TODO: why are you this
-    private Map<String, String> hunt = new HashMap<>();
-    private Map<String, Map<String, Map<String, String>>> gather = new HashMap<>();
-    private Map<String, Map<String, Map<String, String>>> explore = new HashMap<>();
-    private Map<String, Map<String, Map<String, String>>> boss = new HashMap<>();
-    private Map<String, Map<String, Map<String, String>>> reward = new HashMap<>();
+    private final Map<String, String> hunt = new HashMap<>();
+    private final Map<String, Map<String, Map<String, String>>> gather = new HashMap<>();
+    private final Map<String, Map<String, Map<String, String>>> explore = new HashMap<>();
+    private final Map<String, Map<String, Map<String, String>>> boss = new HashMap<>();
+    private final Map<String, Map<String, Map<String, String>>> reward = new HashMap<>();
 
     public static QuestDefinition deserialize(Resource resource) {
         Reader reader = new InputStreamReader(resource.getInputStream());
@@ -39,18 +36,6 @@ public class QuestDefinition {
 
     public int getTier() {
         return tier;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getHint() {
-        return hint;
     }
 
     public String getPack() {
@@ -91,10 +76,6 @@ public class QuestDefinition {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public void setTier(int tier) {

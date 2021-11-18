@@ -26,6 +26,7 @@ import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 import svenhjol.strange.module.journals.screen.knowledge.JournalKnowledgeScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
+import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -119,6 +120,7 @@ public class JournalsClient extends CharmModule {
         processPacketFromServer(client, mc -> {
             switch (page) {
                 case BOOKMARKS -> mc.setScreen(new JournalBookmarksScreen());
+                case QUESTS -> mc.setScreen(new JournalQuestsScreen());
                 case KNOWLEDGE -> mc.setScreen(new JournalKnowledgeScreen());
                 default -> mc.setScreen(new JournalHomeScreen());
             }

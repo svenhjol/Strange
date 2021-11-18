@@ -1,11 +1,14 @@
 package svenhjol.strange.helper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Transformation;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -35,11 +38,24 @@ public class GuiHelper {
     }
 
     /**
-     * Copy of Gui#drawCenteredString that draws font without shadow effect.
+     * Copy of {@link net.minecraft.client.gui.Gui#drawCenteredString} that draws font without shadow effect.
      */
     public static void drawCenteredString(PoseStack poseStack, Font font, Component component, int left, int top, int color) {
         FormattedCharSequence formattedCharSequence = component.getVisualOrderText();
         font.draw(poseStack, formattedCharSequence, (float)(left - font.width(formattedCharSequence) / 2), (float)top, color);
+    }
+
+    /**
+     * Copy of {@link Font#drawWordWrap} that returns the new vertical position after rendering multilines.
+     */
+    public static int drawWordWrap(Font font, FormattedText formattedText, int left, int top, int length, int color) {
+        Matrix4f matrix4f = Transformation.identity().getMatrix();
+        for (FormattedCharSequence formattedCharSequence : font.split(formattedText, length)) {
+            font.drawInternal(formattedCharSequence, left, top, color, matrix4f, false);
+            top += 9;
+        }
+
+        return top;
     }
 
     public static class ButtonDefinition {

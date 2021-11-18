@@ -86,8 +86,10 @@ public abstract class JournalScreen extends Screen {
     protected int secondaryColor;
     protected int titleColor;
     protected int errorColor;
-    protected int knownColor = 0x707070;
-    protected int unknownColor = 0xd0c0c0;
+    protected int subheadingColor;
+    protected int knownColor;
+    protected int unknownColor;
+    protected int completedColor;
 
     protected int lastPage;
     protected JournalData journal;
@@ -122,6 +124,10 @@ public abstract class JournalScreen extends Screen {
         this.secondaryColor = 0x908080;
         this.titleColor = 0x000000;
         this.errorColor = 0x770000;
+        this.subheadingColor = 0x887777;
+        this.unknownColor = 0xd0c0c0;
+        this.knownColor = 0x707070;
+        this.completedColor = 0x228822;
 
         this.bottomButtons.add(new GuiHelper.ButtonDefinition(b -> onClose(), CLOSE));
 

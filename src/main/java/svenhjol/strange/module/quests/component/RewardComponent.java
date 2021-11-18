@@ -5,6 +5,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.strange.module.quests.IQuestComponent;
@@ -46,7 +47,7 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
-    public void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
+    public void complete(Player player, @Nullable AbstractVillager merchant) {
         for (ItemStack stack : items.keySet()) {
             int count = items.get(stack);
             ItemStack stackToDrop = stack.copy();
@@ -65,7 +66,9 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean start(ServerPlayer player) {
+    public boolean start(Player player) {
+        if (player.level.isClientSide) return false;
+
         Random random = player.getRandom();
         QuestDefinition definition = quest.getDefinition();
         RewardComponent reward = quest.getComponent(RewardComponent.class);
@@ -75,7 +78,7 @@ public class RewardComponent implements IQuestComponent {
         Map<String, Map<String, String>> xpDefinition = definition.getReward().getOrDefault(TAG_XP, null);
 
         if (itemDefinition != null) {
-            List<ItemStack> items = QuestDefinitionHelper.parseItems(player, itemDefinition, MAX_ITEM_REWARDS, difficulty);
+            List<ItemStack> items = QuestDefinitionHelper.parseItems((ServerPlayer)player, itemDefinition, MAX_ITEM_REWARDS, difficulty);
             items.forEach(reward::addItem);
         }
 
@@ -105,7 +108,7 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
-    public void update(ServerPlayer player) {
+    public void update(Player player) {
         // no op
     }
 

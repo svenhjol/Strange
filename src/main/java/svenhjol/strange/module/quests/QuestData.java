@@ -56,6 +56,22 @@ public class QuestData extends SavedData {
         return tag;
     }
 
+    /**
+     * Serialize quests for a specific player.
+     * This is generally used for sending quests to the player client.
+     */
+    public CompoundTag saveForPlayer(Player player, CompoundTag tag) {
+        ListTag listTag = new ListTag();
+
+        eachPlayerQuest(player, quest -> {
+            CompoundTag questTag = quest.toNbt();
+            listTag.add(questTag);
+        });
+
+        tag.put(TAG_QUESTS, listTag);
+        return tag;
+    }
+
     public List<Quest> getAll() {
         return new ArrayList<>(quests.values());
     }

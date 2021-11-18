@@ -1,0 +1,46 @@
+{
+  "lang": {
+    "en": {
+      "title": "Hunter Gathered",
+      "description": "Blahh blah blah ablh arhah what blah even SPLIT OVER LINES DAMN YOU woqeoiwekrowekr",
+      "hint": "Multiline\nworks?"
+    }
+  },
+  "pack": "strange",
+  "hunt": {
+    "zombie": "1-2"
+  },
+  "gather": {
+    "items": {
+      "birch_log": {
+        "count": "1-4"
+      },
+      "oak_log": {
+        "count": "1-4"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-4"
+      },
+      "loot0": {
+        "table": "simple_dungeon",
+        "count": 5
+      },
+      "pool": {
+        "items": "iron_helmet,iron_chestplate,iron_leggings,iron_boots",
+        "enchanted": true,
+        "enchantment_treasure": true,
+        "enchantment_level": 15,
+        "chance": 0.75
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-4"
+      }
+    }
+  }
+}

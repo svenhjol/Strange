@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.quests.IQuestComponent;
@@ -84,13 +85,15 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean start(ServerPlayer player) {
+    public boolean start(Player player) {
+        if (player.level.isClientSide) return false;
+
         QuestDefinition definition = quest.getDefinition();
-        Map<String, Map<String, String>> itemDefinition = definition.getGather().getOrDefault(TAG_ITEMS, null);
-        if (itemDefinition == null) return true;
+        Map<String, Map<String, String>> gatherDefinition = definition.getGather().getOrDefault(TAG_ITEMS, null);
+        if (gatherDefinition == null || gatherDefinition.isEmpty()) return true;
 
         GatherComponent gather = quest.getComponent(GatherComponent.class);
-        List<ItemStack> items = QuestDefinitionHelper.parseItems(player, itemDefinition, MAX_ITEMS);
+        List<ItemStack> items = QuestDefinitionHelper.parseItems((ServerPlayer)player, gatherDefinition, MAX_ITEMS);
         if (items.isEmpty()) return false;
 
         items.forEach(gather::addItem);
@@ -98,7 +101,7 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isSatisfied(ServerPlayer player) {
+    public boolean isSatisfied(Player player) {
         if (items.isEmpty()) return true;
         var count = 0;
 
@@ -112,7 +115,7 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public void update(ServerPlayer player) {
+    public void update(Player player) {
         satisfied.clear();
 
         Map<ItemStack, Integer> itemsCopy = new HashMap<>(items);
@@ -128,6 +131,7 @@ public class GatherComponent implements IQuestComponent {
 
                 if (requiredStack.sameItem(invStack)) {
                     sum += invStack.getCount();
+                    satisfied.put(requiredStack, sum);
                     if (sum >= requiredCount) {
                         satisfied.put(requiredStack, requiredCount);
                         removeIndex = i;
@@ -143,7 +147,7 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public void complete(ServerPlayer player, @Nullable AbstractVillager merchant) {
+    public void complete(Player player, @Nullable AbstractVillager merchant) {
         if (items.isEmpty()) return;
 
         // remove the required items from the player's inventory

@@ -26,6 +26,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,8 @@ import java.util.*;
 @CommonModule(mod = Strange.MOD_ID)
 public class Quests extends CharmModule {
     public static final ResourceLocation MSG_SERVER_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_sync_player_quests");
+    public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest");
+    public static final ResourceLocation MSG_SERVER_PAUSE_QUEST = new ResourceLocation(Strange.MOD_ID, "server_pause_quest");
     public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast");
     public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
 
@@ -52,6 +55,9 @@ public class Quests extends CharmModule {
         }
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleAbandonQuest);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handlePauseQuest);
+
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
     }
@@ -152,7 +158,6 @@ public class Quests extends CharmModule {
                         }
 
                         definition.setId(id);
-                        definition.setTitle(id); // populated later in lang
                         definition.setTier(tier);
 
                         DEFINITIONS.computeIfAbsent(tier, a -> new HashMap<>()).put(id, definition);
@@ -177,17 +182,28 @@ public class Quests extends CharmModule {
     }
 
     private void handleSyncPlayerQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-//        getQuestData().ifPresent(quests -> {
-//            CompoundTag tag = new CompoundTag();
-//            ListTag list = new ListTag();
-//            quests.eachPlayerQuest(player, q -> list.add(q.toNbt()));
-//            tag.put("quests", list);
-//            buffer.writeNbt(tag);
-//            server.execute(() -> ClientPlayNetworking.send(MSG_CLIENT_SYNC_PLAYER_QUESTS, buffer));
-//        });
+        syncPlayerQuests(player);
+    }
 
+    private void handleAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        String questId = buffer.readUtf();
+        server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
+            quest.abandon(player);
+            Journals.sendOpenJournal(player, Journals.Page.QUESTS);
+        }));
+    }
+
+    private void handlePauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        String questId = buffer.readUtf();
+        server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
+            quest.pause();
+            Journals.sendOpenJournal(player, Journals.Page.QUESTS);
+        }));
+    }
+
+    private void syncPlayerQuests(ServerPlayer player) {
         CompoundTag tag = new CompoundTag();
-        quests.save(tag);
+        quests.saveForPlayer(player, tag);
         NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_PLAYER_QUESTS, buf -> buf.writeNbt(tag));
     }
 

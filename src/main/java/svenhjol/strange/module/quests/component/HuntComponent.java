@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestDefinition;
@@ -89,10 +90,12 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean start(ServerPlayer player) {
+    public boolean start(Player player) {
+        if (player.level.isClientSide) return false;
+
         QuestDefinition definition = quest.getDefinition();
         Map<String, String> huntDefinition = definition.getHunt();
-        if (huntDefinition == null) return true;
+        if (huntDefinition == null || huntDefinition.isEmpty()) return true;
 
         HuntComponent hunt = quest.getComponent(HuntComponent.class);
         Map<ResourceLocation, Integer> entities = new HashMap<>();
@@ -110,7 +113,7 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public void update(ServerPlayer player) {
+    public void update(Player player) {
         satisfied.clear();
 
         entities.forEach((id, count) -> {
@@ -120,7 +123,7 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isSatisfied(ServerPlayer player) {
+    public boolean isSatisfied(Player player) {
         if (entities.isEmpty()) return true;
         var count = 0;
 
@@ -141,8 +144,9 @@ public class HuntComponent implements IQuestComponent {
             ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
 
             if (entities.containsKey(id)) {
+                int max = entities.get(id);
                 int count = killed.getOrDefault(id, 0);
-                killed.put(id, count + 1);
+                killed.put(id, Math.min(max, count + 1));
 
                 quest.setDirty();
                 quest.update(player);
