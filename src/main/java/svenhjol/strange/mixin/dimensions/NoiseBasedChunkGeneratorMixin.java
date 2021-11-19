@@ -79,27 +79,9 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
         method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/SurfaceSystem;<init>(Lnet/minecraft/world/level/levelgen/NoiseSampler;Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/block/state/BlockState;IJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
+            target = "Lnet/minecraft/world/level/levelgen/SurfaceSystem;<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/block/state/BlockState;IJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
         ),
-        index = 4
-    )
-    private long hookSimpleRandomSource(long seed) {
-        if (seed == Dimensions.SeedSupplier.MARKER) {
-            return LAST_SEED;
-        } else {
-            LAST_SEED = seed;
-        }
-
-        return seed;
-    }
-
-    @ModifyArg(
-        method = "<init>(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/biome/BiomeSource;Lnet/minecraft/world/level/biome/BiomeSource;JLjava/util/function/Supplier;)V",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/SurfaceSystem;<init>(Lnet/minecraft/world/level/levelgen/NoiseSampler;Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/block/state/BlockState;IJLnet/minecraft/world/level/levelgen/WorldgenRandom$Algorithm;)V"
-        ),
-        index = 4
+        index = 3
     )
     private long hookSurfaceSytem(long seed) {
         if (seed == Dimensions.SeedSupplier.MARKER) {

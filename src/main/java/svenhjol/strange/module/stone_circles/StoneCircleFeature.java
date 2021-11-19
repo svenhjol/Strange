@@ -27,8 +27,8 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         super(codec, PieceGeneratorSupplier.simple(StoneCircleFeature::checkLocation, StoneCircleFeature::generatePieces));
     }
 
-    private static boolean checkLocation(PieceGeneratorSupplier.Context context) {
-        StoneCircleConfiguration config = (StoneCircleConfiguration) context.config();
+    private static boolean checkLocation(PieceGeneratorSupplier.Context<StoneCircleConfiguration> context) {
+        StoneCircleConfiguration config = context.config();
 
         ChunkGenerator chunkGenerator = context.chunkGenerator();
         LevelHeightAccessor height = context.heightAccessor();
@@ -47,8 +47,8 @@ public class StoneCircleFeature extends StructureFeature<StoneCircleConfiguratio
         return context.validBiome().test(biome);
     }
 
-    private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context context) {
-        StoneCircleConfiguration config = (StoneCircleConfiguration) context.config();
+    private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<StoneCircleConfiguration> context) {
+        StoneCircleConfiguration config = context.config();
         ChunkGenerator chunkGenerator = context.chunkGenerator();
         LevelHeightAccessor height = context.heightAccessor();
         ChunkPos chunkPos = context.chunkPos();
