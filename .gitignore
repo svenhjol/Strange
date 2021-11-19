@@ -19,8 +19,8 @@
 /*.iml
 /src/main/main.iml
 /heap
-/libs
-!/libs/.gitkeep
+/lib
+!/lib/.gitkeep
 /web/node_modules
 /web/vendor
 /backup
