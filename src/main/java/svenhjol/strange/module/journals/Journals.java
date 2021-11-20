@@ -154,6 +154,14 @@ public class Journals extends CharmModule {
         });
     }
 
+    public static void sendSyncJournal(ServerPlayer player) {
+        getJournalData(player).ifPresent(journal -> {
+            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> {
+                buf.writeNbt(journal.toNbt());
+            });
+        });
+    }
+
     public static Optional<JournalData> getJournalData(Player player) {
         return Optional.ofNullable(journal.get(player.getUUID()));
     }

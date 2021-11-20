@@ -11,26 +11,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeData;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.knowledge.KnowledgeHelper.LearnableKnowledgeType;
 
 public class KnowledgeStoneItem extends CharmItem {
-    private final Type type;
+    private final LearnableKnowledgeType type;
 
-    public KnowledgeStoneItem(CharmModule module, Type type) {
+    public KnowledgeStoneItem(CharmModule module, LearnableKnowledgeType type) {
         super(module, type.getSerializedName() + "_knowledge_stone", new FabricItemSettings()
             .tab(CreativeModeTab.TAB_MISC)
             .stacksTo(64));
@@ -53,19 +47,19 @@ public class KnowledgeStoneItem extends CharmItem {
             }
 
             boolean learnedThing = switch (stone.type) {
-                case BIOME -> tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
+                case BIOME -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
 
-                case STRUCTURE -> tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
+                case STRUCTURE -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
 
-                case DIMENSION -> tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
+                case DIMENSION -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
@@ -86,27 +80,8 @@ public class KnowledgeStoneItem extends CharmItem {
         return InteractionResultHolder.consume(held);
     }
 
-    private <T> boolean tryLearnFromBranch(List<T> playerKnowledge, KnowledgeBranch<?, T> branch, Function<T, Boolean> onLearn) {
-        if (playerKnowledge.size() < branch.size()) {
-            List<T> list = new ArrayList<>(branch.values());
-            Collections.shuffle(list, new Random());
-            for (T item : list) {
-                if (!playerKnowledge.contains(item)) {
-                    return onLearn.apply(item);
-                }
-            }
-        }
-        return false;
-    }
-
     private void sendClientMessage(ServerPlayer player, String type, String name) {
         Component component = new TranslatableComponent("gui.strange.knowledge_stones.learned_" + type, StringHelper.snakeToPretty(name, true));
         player.displayClientMessage(component, true);
-    }
-
-    public enum Type implements ICharmEnum {
-        BIOME,
-        STRUCTURE,
-        DIMENSION
     }
 }

@@ -1,12 +1,8 @@
 package svenhjol.strange.module.knowledge;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class KnowledgeBranch<R, V> {
@@ -79,9 +75,10 @@ public abstract class KnowledgeBranch<R, V> {
 
     public abstract char getStartRune();
 
-    public boolean travel(String runes, ItemStack sacrifice, LivingEntity entity, @Nullable BlockPos origin) {
-        return false;
-    }
+    /**
+     * If true, this branch contains entries that can be added to the player's journal.
+     */
+    public abstract boolean isLearnable();
 
     public static Optional<KnowledgeBranch<?, ?>> getByName(String name) {
         return getBranches().stream().filter(b -> b.getBranchName().equals(name)).findFirst();

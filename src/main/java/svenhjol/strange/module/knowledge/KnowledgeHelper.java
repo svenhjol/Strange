@@ -3,9 +3,12 @@ package svenhjol.strange.module.knowledge;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.LogHelper;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class KnowledgeHelper {
     public static final String UNKNOWN = "?";
@@ -193,5 +196,28 @@ public class KnowledgeHelper {
         }
 
         return Optional.of(branch.getStartRune() + runes);
+    }
+
+    public static <T> boolean tryLearnFromBranch(List<T> playerKnowledge, KnowledgeBranch<?, T> branch, Function<T, Boolean> onLearn) {
+        if (playerKnowledge.size() < branch.size()) {
+            List<T> list = new ArrayList<>(branch.values());
+            Collections.shuffle(list, new Random());
+            for (T item : list) {
+                if (!playerKnowledge.contains(item)) {
+                    return onLearn.apply(item);
+                }
+            }
+        }
+        return false;
+    }
+
+    public enum LearnableKnowledgeType implements ICharmEnum {
+        BIOME,
+        STRUCTURE,
+        DIMENSION;
+
+        public static List<String> getNames() {
+            return Arrays.stream(LearnableKnowledgeType.values()).map(ICharmEnum::getNameAsString).collect(Collectors.toList());
+        }
     }
 }

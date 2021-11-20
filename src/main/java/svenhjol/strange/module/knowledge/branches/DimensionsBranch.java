@@ -26,6 +26,11 @@ public class DimensionsBranch extends KnowledgeBranch<Level, ResourceLocation> {
     }
 
     @Override
+    public boolean isLearnable() {
+        return true;
+    }
+
+    @Override
     public void register(Level type) {
         Optional.ofNullable(type.dimension().location()).ifPresent(res -> {
             String runes = getStartRune() + KnowledgeHelper.generateRunesFromResource(res, Knowledge.MAX_LENGTH);

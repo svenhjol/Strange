@@ -27,6 +27,11 @@ public class BiomesBranch extends KnowledgeBranch<Biome, ResourceLocation> {
     }
 
     @Override
+    public boolean isLearnable() {
+        return true;
+    }
+
+    @Override
     public void register(Biome type) {
         Optional.ofNullable(BuiltinRegistries.BIOME.getKey(type)).ifPresent(res -> {
             String runes = getStartRune() + KnowledgeHelper.generateRunesFromResource(res, Knowledge.MAX_LENGTH);

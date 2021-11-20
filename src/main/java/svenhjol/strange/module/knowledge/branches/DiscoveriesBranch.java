@@ -24,6 +24,11 @@ public class DiscoveriesBranch extends KnowledgeBranch<Discovery, Discovery> {
     }
 
     @Override
+    public boolean isLearnable() {
+        return false;
+    }
+
+    @Override
     public void register(Discovery discovery) {
         String runes = discovery.getRunes();
         add(runes, discovery);

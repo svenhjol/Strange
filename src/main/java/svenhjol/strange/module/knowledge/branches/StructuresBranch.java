@@ -27,6 +27,11 @@ public class StructuresBranch extends KnowledgeBranch<StructureFeature<?>, Resou
     }
 
     @Override
+    public boolean isLearnable() {
+        return true;
+    }
+
+    @Override
     public void register(StructureFeature<?> type) {
         Optional.ofNullable(Registry.STRUCTURE_FEATURE.getKey(type)).ifPresent(res -> {
             String runes = getStartRune() + KnowledgeHelper.generateRunesFromResource(res, Knowledge.MAX_LENGTH);

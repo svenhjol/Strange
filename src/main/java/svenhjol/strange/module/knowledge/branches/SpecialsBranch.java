@@ -29,6 +29,11 @@ public class SpecialsBranch extends KnowledgeBranch<Discovery, Discovery> {
     }
 
     @Override
+    public boolean isLearnable() {
+        return false;
+    }
+
+    @Override
     public char getStartRune() {
         return KnowledgeHelper.getCharFromRange(Knowledge.NOVICE_RUNES, 0);
     }

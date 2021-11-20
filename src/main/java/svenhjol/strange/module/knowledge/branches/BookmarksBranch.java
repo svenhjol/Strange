@@ -23,6 +23,11 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
     }
 
     @Override
+    public boolean isLearnable() {
+        return false;
+    }
+
+    @Override
     public Optional<JournalBookmark> get(String runes) {
         return JournalData.getBookmarkByRunes(runes);
     }
