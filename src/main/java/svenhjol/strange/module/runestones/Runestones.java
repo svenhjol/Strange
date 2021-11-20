@@ -74,7 +74,7 @@ public class Runestones extends CharmModule {
         "overworld -> strange:deep_ruin",
         "overworld -> monument",
         "overworld -> mushroom_fields",
-        "overworld -> woodland_mansion",
+        "overworld -> mansion",
         "overworld -> stronghold",
         "the_nether -> strange:stone_circle",
         "the_nether -> crimson_forest",
