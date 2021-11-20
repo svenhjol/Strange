@@ -53,18 +53,28 @@ public class EntityRepositionTicket implements ITicket {
                 }
             }
 
-            // TODO: loop this to check for floor lower than immediately below
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+            mutable.set(pos.getX(), pos.getY(), pos.getZ());
+            boolean validFloor = false;
+            boolean validCurrent = false;
+            boolean validAbove = false;
 
-            BlockState above = level.getBlockState(pos.above());
-            BlockState current = level.getBlockState(pos);
-            BlockState below = level.getBlockState(pos.below());
+            // check 8 blocks below for solid ground or water
+            for (int tries = 0; tries < 8; tries++) {
+                mutable.move(Direction.DOWN);
 
-            boolean validFloor = below.isSolidRender(level, pos.below()) || level.isWaterAt(pos.below());
-            boolean validCurrent = current.isAir() || level.isWaterAt(pos);
-            boolean validAbove = above.isAir() || level.isWaterAt(pos.above());
-            if (validFloor && validCurrent && validAbove) {
-                success = true;
-                return;
+                BlockState above = level.getBlockState(mutable.above());
+                BlockState current = level.getBlockState(mutable);
+                BlockState below = level.getBlockState(mutable.below());
+
+                validFloor = below.isSolidRender(level, mutable.below()) || level.isWaterAt(mutable.below());
+                validCurrent = current.isAir() || level.isWaterAt(mutable);
+                validAbove = above.isAir() || level.isWaterAt(mutable.above());
+
+                if (validFloor && validCurrent && validAbove) {
+                    success = true;
+                    return;
+                }
             }
 
             if (!validFloor) {
@@ -130,7 +140,7 @@ public class EntityRepositionTicket implements ITicket {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        BlockPos.betweenClosed(x - 2, y, z - 2, x + 2, y, z + 2).forEach(p -> level.setBlockAndUpdate(p, solid));
+        BlockPos.betweenClosed(x - 1, y, z - 1, x + 1, y, z + 1).forEach(p -> level.setBlockAndUpdate(p, solid));
         LogHelper.info(this.getClass(), "Made platform at: " + pos);
     }
 
