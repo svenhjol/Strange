@@ -30,7 +30,6 @@ public class FloatingIslandsDimension implements IDimension {
     @Override
     public void handleWorldTick(Level level) {
         // not required yet
-
     }
 
     @Override
