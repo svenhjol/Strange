@@ -8,14 +8,15 @@
   },
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
+    "dimensions.PreventEntityCreatingPlatformMixin",
     "dimensions.BiomeMixin",
+    "dimensions.CaptureEntityCreatingPlatformMixin",
     "dimensions.LevelMixin",
     "dimensions.NoiseBasedChunkGeneratorMixin",
+    "dimensions.PreventPlayerCreatingPlatformMixin",
     "dimensions.WorldGenSettingsMixin"
   ],
   "client": [
-    "dimensions.ClientLevelMixin",
-    "dimensions.FogRendererMixin",
     "dimensions.LevelRendererMixin",
     "helper.DisableExperimentalDialogMixin"
   ]

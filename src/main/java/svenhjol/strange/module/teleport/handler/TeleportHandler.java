@@ -23,6 +23,7 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.runestones.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
+import svenhjol.strange.module.teleport.ITicket;
 import svenhjol.strange.module.teleport.Teleport;
 
 import java.util.Arrays;
@@ -66,7 +67,7 @@ public abstract class TeleportHandler<V> {
 
         if (checkAndApplyEffects()) {
             EntityTeleportTicket entry = new EntityTeleportTicket(entity, targetDimension, originPos, this.targetPos, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
-            Teleport.entityTickets.add(entry);
+            Teleport.teleportTickets.add(entry);
         }
     }
 
@@ -111,11 +112,11 @@ public abstract class TeleportHandler<V> {
         return false;
     }
 
-    private void onSuccess(EntityTeleportTicket ticket) {
+    private void onSuccess(ITicket ticket) {
         // no op
     }
 
-    private void onFail(EntityTeleportTicket ticket) {
+    private void onFail(ITicket ticket) {
         LogHelper.warn(this.getClass(), "Teleport ticket failed, blowing up the origin");
         level.explode(null, originPos.getX() + 0.5D, originPos.getY(), originPos.getZ() + 0.5D, 2.0F, Explosion.BlockInteraction.BREAK);
     }

@@ -17,17 +17,18 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.init.StrangeSounds;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
 
-public class EntityTeleportTicket {
+public class EntityTeleportTicket implements ITicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
     private boolean success;
     private final boolean exactPosition;
     private final boolean allowDimensionChange;
-    private final Consumer<EntityTeleportTicket> onSuccess;
-    private final Consumer<EntityTeleportTicket> onFail;
+    private final Consumer<ITicket> onSuccess;
+    private final Consumer<ITicket> onFail;
     private final LivingEntity entity;
     private final ServerLevel level;
     private final ResourceLocation dimension;
@@ -38,7 +39,7 @@ public class EntityTeleportTicket {
         this(entity, dimension, from, to, exactPosition, allowDimensionChange, t -> {}, t -> {});
     }
 
-    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange, Consumer<EntityTeleportTicket> onSuccess, Consumer<EntityTeleportTicket> onFail) {
+    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange, Consumer<ITicket> onSuccess, Consumer<ITicket> onFail) {
         this.entity = entity;
         this.level = (ServerLevel)entity.level;
         this.dimension = dimension;
@@ -81,17 +82,27 @@ public class EntityTeleportTicket {
             Random r = new Random();
 
             if (!sameDimension) {
-                // on dimension change, let Fabric API handle it
+                // dimension change
                 MinecraftServer server = level.getServer();
                 for (ResourceKey<Level> levelKey : server.levelKeys()) {
                     if (levelKey.location().equals(dimension)) {
                         ServerLevel dest = server.levels.get(levelKey);
+                        UUID uuid = entity.getUUID();
+                        Teleport.noEndPlatform.remove(uuid);
+                        Teleport.noEndPlatform.add(uuid);
+
                         Vec3 pos = new Vec3(to.getX() + 0.5D, to.getY(), to.getZ() + 0.5D);
                         Vec3 delta = entity.getDeltaMovement();
                         float yRot = entity.getYRot();
                         float xRot = entity.getXRot();
                         PortalInfo portalInfo = new PortalInfo(pos, delta, yRot, xRot);
-                        FabricDimensions.teleport(entity, dest, portalInfo);
+                        LivingEntity teleportedEntity = FabricDimensions.teleport(entity, dest, portalInfo);
+
+                        if (teleportedEntity == null) {
+                            teleportedEntity = entity;
+                        }
+
+                        Teleport.repositionTickets.add(new EntityRepositionTicket(teleportedEntity, t -> Teleport.noEndPlatform.remove(uuid)));
                         success = true;
                         return;
                     }

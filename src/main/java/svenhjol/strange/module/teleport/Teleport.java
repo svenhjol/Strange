@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
@@ -26,8 +27,13 @@ import java.util.stream.Collectors;
 @CommonModule(mod = Strange.MOD_ID)
 public class Teleport extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
+    public static final int REPOSITION_TICKS = 5;
 
-    public static List<EntityTeleportTicket> entityTickets = new ArrayList<>();
+    public static List<ITicket> teleportTickets = new ArrayList<>();
+    public static List<ITicket> repositionTickets = new ArrayList<>();
+    public static List<UUID> noEndPlatform = new ArrayList<>();
+    public static ThreadLocal<Entity> entityCreatingPlatform = new ThreadLocal<>();
+
     private static final Map<String, Class<? extends TeleportHandler<?>>> handlers = new HashMap<>();
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
@@ -88,9 +94,35 @@ public class Teleport extends CharmModule {
     }
 
     private void handleTick(MinecraftServer server) {
-        if (!entityTickets.isEmpty()) {
-            List<EntityTeleportTicket> toRemove = entityTickets.stream().filter(entry -> !entry.isValid()).collect(Collectors.toList());
-            entityTickets.forEach(entry -> {
+        tick(teleportTickets);
+        tick(repositionTickets);
+
+//        if (!teleportTickets.isEmpty()) {
+//            List<ITicket> toRemove = teleportTickets.stream().filter(entry -> !entry.isValid()).collect(Collectors.toList());
+//            teleportTickets.forEach(entry -> {
+//                entry.tick();
+//
+//                if (!entry.isValid()) {
+//                    entry.onFail();
+//                    toRemove.add(entry);
+//                }
+//
+//                if (entry.isSuccess()) {
+//                    entry.onSuccess();
+//                    toRemove.add(entry);
+//                }
+//            });
+//
+//            if (!toRemove.isEmpty()) {
+//                toRemove.forEach(e -> teleportTickets.remove(e));
+//            }
+//        }
+    }
+
+    private void tick(List<ITicket> tickets) {
+        if (!tickets.isEmpty()) {
+            List<ITicket> toRemove = tickets.stream().filter(entry -> !entry.isValid()).collect(Collectors.toList());
+            tickets.forEach(entry -> {
                 entry.tick();
 
                 if (!entry.isValid()) {
@@ -105,7 +137,7 @@ public class Teleport extends CharmModule {
             });
 
             if (!toRemove.isEmpty()) {
-                toRemove.forEach(e -> entityTickets.remove(e));
+                toRemove.forEach(tickets::remove);
             }
         }
     }
