@@ -7,7 +7,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -28,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.writing_desks.WritingDesks;
 
 public class RunicLecternBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
@@ -58,6 +59,26 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         }
 
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState state2, boolean bl) {
+        RunicLecternBlockEntity runicLectern = getBlockEntity(level, pos);
+        if (runicLectern != null) {
+            ItemStack tome = runicLectern.getTome();
+            ItemStack sacrifice = runicLectern.getItem(0);
+            Direction facing = state.getValue(FACING);
+
+            popItem(level, pos, tome, facing);
+            runicLectern.clearTome();
+
+            if (!sacrifice.isEmpty()) {
+                popItem(level, pos, sacrifice, facing);
+                runicLectern.clearContent();
+            }
+
+            level.removeBlockEntity(pos);
+        }
     }
 
     @Override
@@ -145,5 +166,14 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         lectern.getTome().save(tomeTag);
         NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
         return true;
+    }
+
+    protected void popItem(Level level, BlockPos pos, ItemStack stack, Direction facing) {
+        float fx = 0.25F * facing.getStepX();
+        float fz = 0.25F * facing.getStepZ();
+
+        ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5 + fx, pos.getY() + 1, pos.getZ() + 0.5 + fz, stack);
+        entity.setDefaultPickUpDelay();
+        level.addFreshEntity(entity);
     }
 }

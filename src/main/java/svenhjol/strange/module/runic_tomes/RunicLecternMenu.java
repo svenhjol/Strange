@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.screen.CharmContainerMenu;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 
@@ -65,19 +64,21 @@ public class RunicLecternMenu extends CharmContainerMenu {
         switch (i) {
             case 0 -> access.execute((level, pos) -> {
                 ItemStack sacrifice = slots.get(0).getItem();
+                Inventory inventory = player.getInventory();
+
                 if (!sacrifice.isEmpty()) {
-                    PlayerHelper.addOrDropStack(player, sacrifice);
+                    inventory.placeItemBackInInventory(sacrifice);
                 }
 
                 if (level.getBlockEntity(pos) instanceof RunicLecternBlockEntity lectern) {
                     ItemStack tome = lectern.getTome();
 
-                    Inventory inventory = player.getInventory();
                     inventory.placeItemBackInInventory(tome);
 
                     BlockState state = level.getBlockState(pos);
                     BlockState newState = Blocks.LECTERN.defaultBlockState();
                     newState = newState.setValue(LecternBlock.FACING, state.getValue(RunicLecternBlock.FACING));
+                    level.removeBlockEntity(pos);
                     level.setBlock(pos, newState, 2);
                 }
 

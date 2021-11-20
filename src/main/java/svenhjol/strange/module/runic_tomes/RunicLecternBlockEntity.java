@@ -87,8 +87,8 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
     }
 
     @Override
-    public ItemStack getItem(int i) {
-        return items.get(i);
+    public ItemStack getItem(int slotIndex) {
+        return items.get(slotIndex);
     }
 
     @Override
@@ -130,6 +130,10 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
 
     public ItemStack getTome() {
         return tome;
+    }
+
+    public void clearTome() {
+        tome = ItemStack.EMPTY;
     }
 
     @Override
