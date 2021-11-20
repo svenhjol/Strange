@@ -53,6 +53,8 @@ public class EntityRepositionTicket implements ITicket {
                 }
             }
 
+            // TODO: loop this to check for floor lower than immediately below
+
             BlockState above = level.getBlockState(pos.above());
             BlockState current = level.getBlockState(pos);
             BlockState below = level.getBlockState(pos.below());
