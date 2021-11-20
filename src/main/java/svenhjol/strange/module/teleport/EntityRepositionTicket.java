@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -37,8 +39,20 @@ public class EntityRepositionTicket implements ITicket {
         if (!valid) return;
 
         if (ticks++ == Teleport.TELEPORT_TICKS) {
-            BlockState surfaceBlock = getSurfaceBlockForDimension(level);
             BlockPos pos = entity.blockPosition();
+            BlockState surfaceBlock = getSurfaceBlockForDimension(level);
+
+            if (!level.dimensionType().hasCeiling()) {
+                BlockPos surfacePos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
+
+                if (level.getBlockState(surfacePos.below()).isSolidRender(level, surfacePos.below())) {
+                    entity.moveTo(surfacePos.getX() + 0.5D, surfacePos.getY() + 0.5D, surfacePos.getZ() + 0.5D);
+                    entity.teleportTo(surfacePos.getX() + 0.5D, surfacePos.getY() + 0.5D, surfacePos.getZ() + 0.5D);
+                    success = true;
+                    return;
+                }
+            }
+
             BlockState above = level.getBlockState(pos.above());
             BlockState current = level.getBlockState(pos);
             BlockState below = level.getBlockState(pos.below());
@@ -110,6 +124,7 @@ public class EntityRepositionTicket implements ITicket {
         int y = pos.getY();
         int z = pos.getZ();
         BlockPos.betweenClosed(x - 2, y, z - 2, x + 2, y, z + 2).forEach(p -> level.setBlockAndUpdate(p, solid));
+        LogHelper.info(this.getClass(), "Made platform at: " + pos);
     }
 
     private BlockState getSurfaceBlockForDimension(ServerLevel level) {

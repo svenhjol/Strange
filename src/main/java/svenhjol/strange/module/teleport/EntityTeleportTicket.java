@@ -91,7 +91,7 @@ public class EntityTeleportTicket implements ITicket {
                         Teleport.noEndPlatform.remove(uuid);
                         Teleport.noEndPlatform.add(uuid);
 
-                        Vec3 pos = new Vec3(to.getX() + 0.5D, to.getY(), to.getZ() + 0.5D);
+                        Vec3 pos = new Vec3(to.getX() + 0.5D, to.getY() + 0.5D, to.getZ() + 0.5D);
                         Vec3 delta = entity.getDeltaMovement();
                         float yRot = entity.getYRot();
                         float xRot = entity.getXRot();
