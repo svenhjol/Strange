@@ -96,27 +96,6 @@ public class Teleport extends CharmModule {
     private void handleTick(MinecraftServer server) {
         tick(teleportTickets);
         tick(repositionTickets);
-
-//        if (!teleportTickets.isEmpty()) {
-//            List<ITicket> toRemove = teleportTickets.stream().filter(entry -> !entry.isValid()).collect(Collectors.toList());
-//            teleportTickets.forEach(entry -> {
-//                entry.tick();
-//
-//                if (!entry.isValid()) {
-//                    entry.onFail();
-//                    toRemove.add(entry);
-//                }
-//
-//                if (entry.isSuccess()) {
-//                    entry.onSuccess();
-//                    toRemove.add(entry);
-//                }
-//            });
-//
-//            if (!toRemove.isEmpty()) {
-//                toRemove.forEach(e -> teleportTickets.remove(e));
-//            }
-//        }
     }
 
     private void tick(List<ITicket> tickets) {
