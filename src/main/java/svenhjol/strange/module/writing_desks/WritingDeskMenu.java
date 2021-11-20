@@ -14,6 +14,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
@@ -200,6 +202,12 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         boolean hasInk = !inputSlots.getItem(1).isEmpty();
 
         if (hasBook && hasInk && validRuneString) {
+            // try and learn this if not already known
+            Journals.getJournalData(player).ifPresent(journal -> {
+                JournalHelper.tryLearn(runes, journal);
+                Journals.sendSyncJournal(player);
+            });
+
             createResult(player, runes);
         } else {
             clearResult();
