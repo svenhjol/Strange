@@ -102,7 +102,9 @@ public class EntityTeleportTicket implements ITicket {
                             teleportedEntity = entity;
                         }
 
-                        Teleport.repositionTickets.add(new EntityRepositionTicket(teleportedEntity, t -> Teleport.noEndPlatform.remove(uuid)));
+                        if (!exactPosition) {
+                            Teleport.repositionTickets.add(new EntityRepositionTicket(teleportedEntity, t -> Teleport.noEndPlatform.remove(uuid)));
+                        }
                         success = true;
                         return;
                     }
