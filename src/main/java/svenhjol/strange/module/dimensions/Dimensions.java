@@ -5,16 +5,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.event.AddEntityCallback;
+import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.darkland.DarklandDimension;
+import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
 
 import java.util.*;
 
@@ -29,6 +32,7 @@ public class Dimensions extends CharmModule {
     public static final Map<ResourceLocation, Integer> WATER_FOG_COLOR = new HashMap<>();
     public static final Map<ResourceLocation, Float> RAIN_LEVEL = new HashMap<>();
     public static final Map<ResourceLocation, Float> TEMPERATURE = new HashMap<>();
+    public static final Map<ResourceLocation, Double> HORIZON_HEIGHT = new HashMap<>();
     public static final Map<ResourceLocation, Music> MUSIC = new HashMap<>();
     public static final Map<ResourceLocation, Boolean> RENDER_PRECIPITATION = new HashMap<>();
     public static final Map<ResourceLocation, AmbientParticleSettings> AMBIENT_PARTICLE = new HashMap<>();
@@ -39,30 +43,32 @@ public class Dimensions extends CharmModule {
 
     @Override
     public void register() {
-        // instantiate
+        // add new dimensions to this list
         DIMENSIONS.add(new DarklandDimension());
+        DIMENSIONS.add(new FloatingIslandsDimension());
 
-        // register
+        // register all dimensions
         DIMENSIONS.forEach(IDimension::register);
     }
 
     @Override
     public void runWhenEnabled() {
         ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
+        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         AddEntityCallback.EVENT.register(this::handleAddEntity);
     }
 
     public static Optional<Float> getTemperature(LevelReader level, Biome biome) {
-        if (level instanceof Level)
-            return Optional.ofNullable(TEMPERATURE.get(DimensionHelper.getDimension((Level)level)));
-
+        if (level instanceof Level) {
+            return Optional.ofNullable(TEMPERATURE.get(DimensionHelper.getDimension((Level) level)));
+        }
         return Optional.empty();
     }
 
     public static Optional<Biome.Precipitation> getPrecipitation(LevelReader level) {
-        if (level instanceof Level)
-            return Optional.ofNullable(PRECIPITATION.get(DimensionHelper.getDimension((Level)level)));
-
+        if (level instanceof Level) {
+            return Optional.ofNullable(PRECIPITATION.get(DimensionHelper.getDimension((Level) level)));
+        }
         return Optional.empty();
     }
 
@@ -85,6 +91,14 @@ public class Dimensions extends CharmModule {
             }
         });
         return InteractionResult.PASS;
+    }
+
+    private void handlePlayerTick(Player player) {
+        DIMENSIONS.forEach(d -> {
+            if (player.level.dimension().location().equals(d.getId())) {
+                d.handlePlayerTick(player);
+            }
+        });
     }
 
     public static final class SeedSupplier {

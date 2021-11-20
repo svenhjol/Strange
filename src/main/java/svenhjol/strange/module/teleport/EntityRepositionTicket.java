@@ -38,7 +38,7 @@ public class EntityRepositionTicket implements ITicket {
 
         if (!valid) return;
 
-        if (ticks++ == Teleport.TELEPORT_TICKS) {
+        if (ticks++ == Teleport.REPOSITION_TICKS) {
             BlockPos pos = entity.blockPosition();
             BlockState surfaceBlock = getSurfaceBlockForDimension(level);
 
@@ -112,6 +112,11 @@ public class EntityRepositionTicket implements ITicket {
     @Override
     public void onFail() {
         // no
+    }
+
+    @Override
+    public LivingEntity getEntity() {
+        return entity;
     }
 
     private void setSolidWall(BlockPos pos, BlockState state) {

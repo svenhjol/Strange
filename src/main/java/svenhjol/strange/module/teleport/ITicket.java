@@ -1,5 +1,7 @@
 package svenhjol.strange.module.teleport;
 
+import net.minecraft.world.entity.LivingEntity;
+
 public interface ITicket {
     void tick();
 
@@ -10,4 +12,6 @@ public interface ITicket {
     void onSuccess();
 
     void onFail();
+
+    LivingEntity getEntity();
 }

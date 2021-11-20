@@ -145,20 +145,29 @@ public class EntityTeleportTicket implements ITicket {
         }
     }
 
+    @Override
     public boolean isValid() {
         return valid;
     }
 
+    @Override
     public boolean isSuccess() {
         return success;
     }
 
+    @Override
     public void onSuccess() {
         this.onSuccess.accept(this);
     }
 
+    @Override
     public void onFail() {
         this.onFail.accept(this);
+    }
+
+    @Override
+    public LivingEntity getEntity() {
+        return entity;
     }
 
     private boolean openChunk() {
