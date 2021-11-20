@@ -17,7 +17,7 @@ public class FloatingIslandsEffects extends DimensionSpecialEffects {
      * - constant ambient light
      */
     public FloatingIslandsEffects() {
-        super(10, true, SkyType.NORMAL, false, false);
+        super(0, true, SkyType.NORMAL, false, false);
     }
 
     @Override
