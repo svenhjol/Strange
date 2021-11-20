@@ -1,9 +1,9 @@
 {
   "logical_height": 256,
   "infiniburn": "minecraft:infiniburn_overworld",
-  "effects": "minecraft:overworld",
+  "effects": "strange:floating_islands",
   "ambient_light": 0.0,
-  "respawn_anchor_works": false,
+  "respawn_anchor_works": true,
   "has_raids": true,
   "min_y": 0,
   "height": 256,

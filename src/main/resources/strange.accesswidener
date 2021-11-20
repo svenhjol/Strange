@@ -24,3 +24,6 @@ accessible field net/minecraft/world/level/chunk/ChunkGenerator strongholdSeed J
 accessible field net/minecraft/server/MinecraftServer levels Ljava/util/Map;
 mutable    field net/minecraft/world/level/chunk/ChunkGenerator strongholdSeed J
 mutable    field net/minecraft/client/gui/screens/Screen children Ljava/util/List;
+
+accessible field net/minecraft/client/renderer/DimensionSpecialEffects EFFECTS Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
+mutable    field net/minecraft/client/renderer/DimensionSpecialEffects EFFECTS Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
