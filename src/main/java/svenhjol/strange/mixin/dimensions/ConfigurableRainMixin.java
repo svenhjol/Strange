@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import svenhjol.strange.module.dimensions.Dimensions;
 
 @Mixin(Level.class)
-public class LevelMixin {
+public class ConfigurableRainMixin {
     @Inject(
         method = "isRainingAt",
         at = @At("HEAD")

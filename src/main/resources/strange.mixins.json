@@ -8,16 +8,17 @@
   },
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
-    "dimensions.PreventEntityCreatingPlatformMixin",
-    "dimensions.BiomeMixin",
+    "dimensions.ConfigurableBiomeEffectsMixin",
     "dimensions.CaptureEntityCreatingPlatformMixin",
-    "dimensions.LevelMixin",
+    "dimensions.ConfigurableRainMixin",
     "dimensions.NoiseBasedChunkGeneratorMixin",
+    "dimensions.PreventEntityCreatingPlatformMixin",
     "dimensions.PreventPlayerCreatingPlatformMixin",
     "dimensions.WorldGenSettingsMixin"
   ],
   "client": [
-    "dimensions.LevelRendererMixin",
+    "dimensions.ConfigurableHorizonHeightMixin",
+    "dimensions.ConfigurablePrecipitationRenderingMixin",
     "helper.DisableExperimentalDialogMixin"
   ]
 }

@@ -15,7 +15,7 @@ import svenhjol.strange.module.dimensions.DimensionsClient;
 import java.util.Optional;
 
 @Mixin(Biome.class)
-public class BiomeMixin {
+public class ConfigurableBiomeEffectsMixin {
     @Inject(
         method = "getFogColor",
         at = @At("HEAD"),

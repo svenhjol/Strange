@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
@@ -27,7 +28,7 @@ import svenhjol.strange.module.dimensions.IDimension;
 import java.util.*;
 
 public class DarklandDimension implements IDimension {
-    public static final ResourceLocation DARKLAND_ID = new ResourceLocation(Strange.MOD_ID, "darkland");
+    public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "darkland");
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
     public static final List<MobEffect> POSITIVE_MOB_EFFECTS;
     public static int snowTicks = 0;
@@ -37,23 +38,23 @@ public class DarklandDimension implements IDimension {
 
     @Override
     public ResourceLocation getId() {
-        return DARKLAND_ID;
+        return ID;
     }
 
     @Override
     public void register() {
-        Dimensions.SKY_COLOR.put(DARKLAND_ID, 0x000000);
-        Dimensions.FOG_COLOR.put(DARKLAND_ID, 0x004434);
-        Dimensions.GRASS_COLOR.put(DARKLAND_ID, 0x607265);
-        Dimensions.FOLIAGE_COLOR.put(DARKLAND_ID, 0x607265);
-        Dimensions.WATER_COLOR.put(DARKLAND_ID, 0x102020);
-        Dimensions.WATER_FOG_COLOR.put(DARKLAND_ID, 0x102020);
-        Dimensions.PRECIPITATION.put(DARKLAND_ID, Biome.Precipitation.SNOW);
-        Dimensions.RAIN_LEVEL.put(DARKLAND_ID, 0.0F);
-        Dimensions.TEMPERATURE.put(DARKLAND_ID, 0.0F);
-        Dimensions.RENDER_PRECIPITATION.put(DARKLAND_ID, false);
-        Dimensions.AMBIENT_PARTICLE.put(DARKLAND_ID, new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F));
-        Dimensions.MUSIC.put(DARKLAND_ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
+        Dimensions.SKY_COLOR.put(ID, 0x000000);
+        Dimensions.FOG_COLOR.put(ID, 0x004434);
+        Dimensions.GRASS_COLOR.put(ID, 0x607265);
+        Dimensions.FOLIAGE_COLOR.put(ID, 0x607265);
+        Dimensions.WATER_COLOR.put(ID, 0x102020);
+        Dimensions.WATER_FOG_COLOR.put(ID, 0x102020);
+        Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
+        Dimensions.RAIN_LEVEL.put(ID, 0.0F);
+        Dimensions.TEMPERATURE.put(ID, 0.0F);
+        Dimensions.RENDER_PRECIPITATION.put(ID, false);
+        Dimensions.AMBIENT_PARTICLE.put(ID, new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F));
+        Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
     }
 
     @Override
@@ -70,10 +71,10 @@ public class DarklandDimension implements IDimension {
 
             if (snowTicks >= 0 && snowTicks < halfSnowTicks) {
                 float rainLevel = (float) snowTicks / ((float) halfSnowTicks);
-                Dimensions.RAIN_LEVEL.put(DARKLAND_ID, rainLevel);
+                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
             } else if (snowTicks >= halfSnowTicks && snowTicks < maxSnowTicks) {
                 float rainLevel = 1.0F - (float) (snowTicks - halfSnowTicks) / halfSnowTicks;
-                Dimensions.RAIN_LEVEL.put(DARKLAND_ID, rainLevel);
+                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
             } else if (snowTicks >= maxSnowTicks) {
                 snowTicks = 0;
                 weatherTicks = 0;
@@ -119,14 +120,14 @@ public class DarklandDimension implements IDimension {
                 // passive mobs should be unwell
                 if (random.nextFloat() < 0.75F && livingEntity instanceof Animal && !(livingEntity instanceof NeutralMob)) {
                     MobEffect mobEffect = NEGATIVE_MOB_EFFECTS.get(random.nextInt(NEGATIVE_MOB_EFFECTS.size()));
-                    int duration = 999999;
+                    int duration = 3600;
                     int amplifier = 1;
                     livingEntity.addEffect(new MobEffectInstance(mobEffect, duration, amplifier));
                 }
 
                 // monsters have buffs
                 if (random.nextFloat() < 0.6F && livingEntity instanceof Monster) {
-                    int duration = 999999;
+                    int duration = 3600;
                     int amplifier = random.nextInt(3) + 1;
                     List<MobEffect> mobEffects = new ArrayList<>(POSITIVE_MOB_EFFECTS);
                     Collections.shuffle(mobEffects, random);
@@ -154,6 +155,11 @@ public class DarklandDimension implements IDimension {
                 }
             }
         }
+    }
+
+    @Override
+    public void handlePlayerTick(Player player) {
+        // not yet
     }
 
     static {

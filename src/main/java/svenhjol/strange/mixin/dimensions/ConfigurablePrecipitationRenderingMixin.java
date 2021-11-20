@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import svenhjol.strange.module.dimensions.DimensionsClient;
 
 @Mixin(LevelRenderer.class)
-public class LevelRendererMixin {
+public class ConfigurablePrecipitationRenderingMixin {
 
     @Inject(
         method = "renderSnowAndRain",
