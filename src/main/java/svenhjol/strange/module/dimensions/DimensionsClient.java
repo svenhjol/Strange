@@ -3,6 +3,7 @@ package svenhjol.strange.module.dimensions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import svenhjol.charm.annotation.ClientModule;
@@ -45,6 +46,10 @@ public class DimensionsClient extends CharmModule {
 
     public static Optional<Music> getMusic(Biome biome) {
         return Optional.ofNullable(Dimensions.MUSIC.get(getDimension()));
+    }
+
+    public static Optional<Double> getHorizonHeight(LevelHeightAccessor levelHeight) {
+        return Optional.ofNullable(Dimensions.HORIZON_HEIGHT.get(getDimension()));
     }
 
     public static Optional<Boolean> shouldRenderPrecipitation() {
