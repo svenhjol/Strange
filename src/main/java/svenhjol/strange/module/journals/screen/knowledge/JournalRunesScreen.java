@@ -29,28 +29,40 @@ public class JournalRunesScreen extends JournalScreen {
             return;
         }
 
-        int left = midX + 22;
-        int top = 46;
-        int xOffset = 22;
-        int yOffset = 18;
+        int page1Left = midX - 82;
+        int page2Left = midX + 33;
+        int top = 49;
+        int xOffset = 42;
+        int yOffset = 20;
 
         List<Integer> learnedRunes = journal.getLearnedRunes();
-        StringBuilder builder = new StringBuilder();
+        StringBuilder page1 = new StringBuilder();
+        StringBuilder page2 = new StringBuilder();
 
-        for (int i = 0; i < Knowledge.NUM_RUNES; i++) {
+        int perPage = Knowledge.NUM_RUNES / 2;
+
+        for (int i = 0; i < perPage; i++) {
             if (learnedRunes.contains(i)) {
-                builder.append((char)(i + 97));
+                page1.append((char)(i + 97));
             } else {
-                builder.append("?");
+                page1.append("?");
             }
         }
 
-        String knownRunes = builder.toString();
-        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 4, 8, knownColor, unknownColor, false);
+        for (int i = perPage; i < Knowledge.NUM_RUNES; i++) {
+            if (learnedRunes.contains(i)) {
+                page2.append((char)(i + 97));
+            } else {
+                page2.append("?");
+            }
+        }
+
+        KnowledgeClient.renderRunesString(minecraft, poseStack, page1.toString(), page1Left, top, xOffset, yOffset, 2, 8, knownColor, unknownColor, false);
+        KnowledgeClient.renderRunesString(minecraft, poseStack, page2.toString(), page2Left, top, xOffset, yOffset, 2, 8, knownColor, unknownColor, false);
     }
 
     @Override
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        super.renderTitle(poseStack, page1Center, titleY, titleColor);
+        super.renderTitle(poseStack, titleX, titleY, titleColor);
     }
 }

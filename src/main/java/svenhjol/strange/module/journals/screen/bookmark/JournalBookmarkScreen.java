@@ -57,7 +57,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         this.maxNameLength = 50;
         this.minPhotoDistance = 10;
 
-        this.navigationButtons.add(
+        this.bottomNavButtons.add(
             new GuiHelper.ImageButtonDefinition(b -> delete(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP)
         );
     }
@@ -89,11 +89,6 @@ public class JournalBookmarkScreen extends JournalScreen {
         if (!hasInitializedUpdateButtons) {
             // add a back button at the bottom
             bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
-
-            // if player has empty map, add button to make a map of this bookmark
-            if (playerHasEmptyMap()) {
-                updateButtons.add(new GuiHelper.ButtonDefinition(b -> makeMap(), MAKE_MAP));
-            }
 
             // if player is near the bookmark, add button to take a photo
             if (playerIsNearBookmark()) {
@@ -143,37 +138,24 @@ public class JournalBookmarkScreen extends JournalScreen {
         }
 
         // render coordinates and runes for this bookmark
-        ClientHelper.getPlayer().ifPresent(player -> {
-            renderRunes(poseStack, player);
-            renderCoordinates(poseStack, player);
-        });
+        ClientHelper.getPlayer().ifPresent(player -> renderRunes(poseStack, player));
 
         nameField.render(poseStack, mouseX, mouseY, delta);
     }
 
-    protected void renderCoordinates(PoseStack poseStack, Player player) {
-        if (!player.isCreative()) {
+    protected void renderRunes(PoseStack poseStack, Player player) {
+        // in creative mode just show the coordinates not the runes
+        if (player.isCreative()) {
+
+            BlockPos pos = bookmark.getBlockPos();
+            int x = pos.getX();
+            int y = pos.getY();
+            int z = pos.getZ();
+            int top = 158;
+
+            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, knownColor);
             return;
         }
-
-        BlockPos pos = bookmark.getBlockPos();
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-
-        String max = String.valueOf(Math.max(z, Math.max(x, y)));
-
-        int left = midX - 60 - (max.length() * 4);
-        int top = 130;
-        int yOffset = 14;
-
-        font.draw(poseStack, "X: " + x, left, top + yOffset, knownColor);
-        font.draw(poseStack, "Y: " + y, left, top + (yOffset * 2), knownColor);
-        font.draw(poseStack, "Z: " + z, left, top + (yOffset * 3), knownColor);
-    }
-
-    protected void renderRunes(PoseStack poseStack, Player player) {
-        boolean isCreative = player.isCreative();
 
         if (journal == null) {
             return;
@@ -186,12 +168,12 @@ public class JournalBookmarkScreen extends JournalScreen {
         String runes = bookmark.getRunes();
         String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
 
-        int left = isCreative ? midX + 9 : midX - 48;
-        int top = 150;
+        int left = midX - 61;
+        int top = 158;
         int xOffset = 13;
         int yOffset = 15;
 
-        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 8, 4, knownColor, unknownColor, false);
+        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 10, 4, knownColor, unknownColor, false);
     }
 
     protected void renderPhoto(PoseStack poseStack) {

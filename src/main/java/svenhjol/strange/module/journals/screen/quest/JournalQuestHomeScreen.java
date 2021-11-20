@@ -42,8 +42,11 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> quests(), GO_BACK));
         this.bottomButtons.add(1, new GuiHelper.ButtonDefinition(b -> objectives(), OBJECTIVES));
 
-        this.navigationButtons.addAll(Arrays.asList(
-            new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, ABANDON_TOOLTIP),
+        this.bottomNavButtons.addAll(Arrays.asList(
+            new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, ABANDON_TOOLTIP)
+        ));
+
+        this.rightNavButtons.addAll(Arrays.asList(
             new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP)
         ));
     }

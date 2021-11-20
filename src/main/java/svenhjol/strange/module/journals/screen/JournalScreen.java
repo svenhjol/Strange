@@ -68,9 +68,17 @@ public abstract class JournalScreen extends Screen {
     protected int backgroundWidth;
     protected int backgroundHeight;
 
-    protected int navigationX; // navigation left relative to center
-    protected int navigationY;
-    protected int navigationYOffset;
+    protected int leftNavX; // navigation left relative to center
+    protected int leftNavY;
+    protected int leftNavYOffset;
+
+    protected int rightNavX; // navigation right relative to center
+    protected int rightNavY;
+    protected int rightNavYOffset;
+
+    protected int bottomNavX;
+    protected int bottomNavY;
+    protected int bottomNavYOffset;
 
     protected int bottomButtonsY;
 
@@ -96,7 +104,9 @@ public abstract class JournalScreen extends Screen {
     protected QuestData quests;
 
     protected List<GuiHelper.ButtonDefinition> bottomButtons = new ArrayList<>();
-    protected List<GuiHelper.ImageButtonDefinition> navigationButtons = new ArrayList<>();
+    protected List<GuiHelper.ImageButtonDefinition> leftNavButtons = new ArrayList<>(); // for main journal sections
+    protected List<GuiHelper.ImageButtonDefinition> bottomNavButtons = new ArrayList<>(); // dynamic for delete etc
+    protected List<GuiHelper.ImageButtonDefinition> rightNavButtons = new ArrayList<>(); // dynamic for page options
 
     public JournalScreen(Component component) {
         super(component);
@@ -112,9 +122,20 @@ public abstract class JournalScreen extends Screen {
         this.titleX = 0;
         this.titleY = 22;
 
-        this.navigationX = -141;
-        this.navigationY = 18;
-        this.navigationYOffset = 18;
+        // left navigation renders downwards from leftNavY
+        this.leftNavX = -141;
+        this.leftNavY = 18;
+        this.leftNavYOffset = 18;
+
+        // bottom navigation renders upwards from bottomNavY
+        this.bottomNavX = -141;
+        this.bottomNavY = 180;
+        this.bottomNavYOffset = -18;
+
+        // right navigation renders downwards from rightNavY
+        this.rightNavX = 119;
+        this.rightNavY = 18;
+        this.rightNavYOffset = 18;
 
         this.page1Center = -56;
         this.page2Center = 56;
@@ -131,7 +152,7 @@ public abstract class JournalScreen extends Screen {
 
         this.bottomButtons.add(new GuiHelper.ButtonDefinition(b -> onClose(), CLOSE));
 
-        this.navigationButtons.addAll(Arrays.asList(
+        this.leftNavButtons.addAll(Arrays.asList(
             new GuiHelper.ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18, HOME_TOOLTIP),
             new GuiHelper.ImageButtonDefinition(b -> bookmarks(), NAVIGATION, 60, 36, 18, BOOKMARKS_TOOLTIP),
             new GuiHelper.ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18, QUESTS_TOOLTIP),
@@ -201,13 +222,27 @@ public abstract class JournalScreen extends Screen {
     }
 
     public void renderNavigation(PoseStack poseStack) {
-        int x = midX + navigationX;
-        int y = navigationY;
+        int x;
+        int y;
         int buttonWidth = 20;
         int buttonHeight = 18;
 
         if (!hasRenderedNavigation) {
-            GuiHelper.renderImageButtons(this, width, font, navigationButtons, x, y, 0, navigationYOffset, buttonWidth, buttonHeight);
+            // render left buttons
+            x = midX + leftNavX;
+            y = leftNavY;
+            GuiHelper.renderImageButtons(this, width, font, leftNavButtons, x, y, 0, leftNavYOffset, buttonWidth, buttonHeight);
+
+            // render bottom buttons
+            x = midX + bottomNavX;
+            y = bottomNavY;
+            GuiHelper.renderImageButtons(this, width, font, bottomNavButtons, x, y, 0, bottomNavYOffset, buttonWidth, buttonHeight);
+
+            // render right buttons
+            x = midX + rightNavX;
+            y = rightNavY;
+            GuiHelper.renderImageButtons(this, width, font, rightNavButtons, x, y, 0, rightNavYOffset, buttonWidth, buttonHeight);
+
             hasRenderedNavigation = true;
         }
     }
