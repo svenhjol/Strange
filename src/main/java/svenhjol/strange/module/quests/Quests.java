@@ -18,26 +18,32 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Quests extends CharmModule {
     public static final ResourceLocation MSG_SERVER_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_sync_player_quests");
     public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest");
     public static final ResourceLocation MSG_SERVER_PAUSE_QUEST = new ResourceLocation(Strange.MOD_ID, "server_pause_quest");
+    public static final ResourceLocation MSG_CLIENT_DESTROY_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_destroy_scroll");
+    public static final ResourceLocation MSG_CLIENT_OPEN_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_open_scroll");
     public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast");
     public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
 
@@ -46,6 +52,7 @@ public class Quests extends CharmModule {
     public static final Map<Integer, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<Integer, String> TIER_NAMES;
     public static final Map<Integer, ScrollItem> SCROLLS = new HashMap<>();
+    public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
 
     private static QuestData quests;
 
@@ -56,11 +63,13 @@ public class Quests extends CharmModule {
         }
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleAbandonQuest);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handlePauseQuest);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
+        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
 
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
+        QuestEvents.START.register(this::handleStartQuest);
+        QuestEvents.PAUSE.register(this::handlePauseQuest);
     }
 
     @Override
@@ -104,6 +113,84 @@ public class Quests extends CharmModule {
         return null;
     }
 
+    @Nullable
+    public static QuestDefinition getRandomDefinition(ServerPlayer player, int tier, Random random) {
+        UUID uuid = player.getUUID();
+
+        if (!DEFINITIONS.containsKey(tier)) {
+            LogHelper.warn(Quests.class, "No quest definitions available for this tier: " + tier);
+            return null;
+        }
+
+        Map<String, QuestDefinition> definitions = DEFINITIONS.get(tier);
+        if (definitions.isEmpty()) {
+            LogHelper.warn(Quests.class, "No quests definitions found in this tier: " + tier);
+            return null;
+        }
+
+        QuestData quests = getQuestData().orElseThrow();
+        List<Quest> allPlayerQuests = quests.getAll(player);
+        List<QuestDefinition> eligibleDefinitions = new ArrayList<>();
+        List<QuestDefinition> tierDefinitions = new ArrayList<>(definitions.values());
+        Collections.shuffle(tierDefinitions, random);
+        QuestDefinition found = null;
+
+        QUESTCHECK: for (QuestDefinition definition : tierDefinitions) {
+            List<String> dimensions = definition.getDimensions();
+            List<String> modules = definition.getModules();
+
+            if (!modules.isEmpty()) {
+                Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
+                for (String module : modules) {
+                    ResourceLocation moduleId = new ResourceLocation(module);
+                    if (!allModules.containsKey(moduleId) || !allModules.get(moduleId).isEnabled()) {
+                        LogHelper.debug(Quests.class, "Skipping definition " + definition.getId() + " because module dependency failed: " + moduleId);
+                        break QUESTCHECK;
+                    }
+                }
+            }
+
+            if (!dimensions.isEmpty()) {
+                ResourceLocation thisDimension = DimensionHelper.getDimension(player.level);
+                List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).collect(Collectors.toList());
+                if (!dimensionIds.contains(thisDimension)) {
+                    LogHelper.debug(Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
+                    break;
+                }
+            }
+
+            // if the player is already doing this quest, add to eligible and skip
+            if (allPlayerQuests.stream().anyMatch(q -> q.getDefinitionId().equals(definition.getId()))) {
+                eligibleDefinitions.add(definition);
+                continue;
+            }
+
+            // if the player has done this quest within the last 3 quests, add to eligible and skip
+            if (LAST_QUESTS.containsKey(uuid)) {
+                LinkedList<QuestDefinition> lastQuests = LAST_QUESTS.get(uuid);
+                if (lastQuests.contains(definition)) {
+                    eligibleDefinitions.add(definition);
+                    continue;
+                }
+            }
+
+            found = definition;
+            break;
+        }
+
+        if (found == null && !eligibleDefinitions.isEmpty()) {
+            LogHelper.debug(Quests.class, "No exact quest definition found. Trying to using an eligible one instead");
+            Collections.shuffle(eligibleDefinitions, random);
+            found = eligibleDefinitions.get(0);
+        }
+
+        if (found == null) {
+            LogHelper.debug(Quests.class, "Could not find any eligible quest definitions");
+        }
+
+        return found;
+    }
+
     public static int getTierByName(String name) {
         for (Map.Entry<Integer, String> tier : TIER_NAMES.entrySet()) {
             if (tier.getValue().equals(name)) {
@@ -123,7 +210,6 @@ public class Quests extends CharmModule {
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
-            // load all quest definitions
             ResourceManager manager = server.getResourceManager();
             Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
 
@@ -134,10 +220,10 @@ public class Quests extends CharmModule {
                         QuestDefinition definition = QuestDefinition.deserialize(manager.getResource(resource));
 
                         // check definition module requirements
-                        List<String> requiredModules = definition.getModules();
-                        if (!requiredModules.isEmpty()) {
+                        List<String> modules = definition.getModules();
+                        if (!modules.isEmpty()) {
                             boolean skip = false;
-                            for (String module : requiredModules) {
+                            for (String module : modules) {
                                 ResourceLocation modres = new ResourceLocation(module);
                                 if (!allModules.containsKey(modres)) {
                                     LogHelper.info(this.getClass(), "Quest definition " + definition.getId() + " requires module " + modres + ", skipping");
@@ -186,7 +272,32 @@ public class Quests extends CharmModule {
         syncPlayerQuests(player);
     }
 
-    private void handleAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+    /**
+     * When a quest is started, log it in the player's quest list.
+     * This helps to prevent the same quest being suggested again immediately.
+     */
+    private void handleStartQuest(Quest quest, ServerPlayer player) {
+        LinkedList<QuestDefinition> definitions = LAST_QUESTS.computeIfAbsent(player.getUUID(), a -> new LinkedList<>());
+        if (definitions.size() >= 3) {
+            definitions.pop();
+        }
+        definitions.push(quest.getDefinition());
+    }
+
+    /**
+     * When a quest is paused, give the player a scroll encoded with the quest's ID.
+     */
+    private void handlePauseQuest(Quest quest, ServerPlayer player) {
+        String id = quest.getId();
+        int tier = quest.getTier();
+
+        ItemStack scroll = new ItemStack(SCROLLS.get(tier));
+        ScrollItem.setScrollQuest(scroll, id);
+
+        player.getInventory().placeItemBackInInventory(scroll);
+    }
+
+    private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
         server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
             quest.abandon(player);
@@ -194,7 +305,7 @@ public class Quests extends CharmModule {
         }));
     }
 
-    private void handlePauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleServerPauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
         server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
             quest.pause(player);
