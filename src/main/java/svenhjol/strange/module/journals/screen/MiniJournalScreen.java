@@ -314,7 +314,6 @@ public class MiniJournalScreen {
     }
 
     private void renderTitle(PoseStack poseStack, Component title, int y) {
-        ((BaseComponent)title).setStyle(Style.EMPTY.withBold(true));
         GuiHelper.drawCenteredString(poseStack, font, title, journalMidX, y, textColor);
     }
 
