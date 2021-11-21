@@ -136,6 +136,10 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
         tome = ItemStack.EMPTY;
     }
 
+    public boolean hasTome() {
+        return tome != null && !tome.isEmpty();
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return true;

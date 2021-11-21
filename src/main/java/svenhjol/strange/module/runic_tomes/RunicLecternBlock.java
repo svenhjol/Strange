@@ -2,6 +2,7 @@ package svenhjol.strange.module.runic_tomes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,14 +10,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -152,6 +151,11 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
     }
 
     @Override
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
+        // no
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
@@ -159,6 +163,16 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
     protected boolean tryReadTome(ServerLevel level, BlockPos pos, ServerPlayer player) {
         RunicLecternBlockEntity lectern = getBlockEntity(level, pos);
         if (lectern == null) {
+            return false;
+        }
+
+        if (!lectern.hasTome()) {
+            BlockState currentState = level.getBlockState(pos);
+            BlockState newState = Blocks.LECTERN.defaultBlockState();
+
+            newState = newState.setValue(LecternBlock.FACING, currentState.getValue(RunicLecternBlock.FACING));
+            level.removeBlockEntity(pos);
+            level.setBlockAndUpdate(pos, newState);
             return false;
         }
 
