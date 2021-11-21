@@ -20,7 +20,6 @@ import java.util.*;
 public class Quest implements IQuestComponent {
     public static final String TAG_ID = "id";
     public static final String TAG_DEFINITION = "definition";
-    public static final String TAG_MERCHANT = "merchant";
     public static final String TAG_PLAYER = "player";
     public static final String TAG_STATE = "state";
     public static final String TAG_DIFFICULTY = "difficulty";
@@ -31,7 +30,6 @@ public class Quest implements IQuestComponent {
     private String id;
     private QuestDefinition definition;
     private UUID owner;
-    private UUID merchant;
     private Random random;
     private float difficulty;
     private boolean dirty;
@@ -49,12 +47,11 @@ public class Quest implements IQuestComponent {
         this.fromNbt(tag);
     }
 
-    public Quest(QuestDefinition definition, float difficulty, @Nullable AbstractVillager merchant) {
+    public Quest(QuestDefinition definition, float difficulty) {
         this();
         this.id = RandomStringUtils.randomAlphabetic(ID_LENGTH).toLowerCase(Locale.ROOT);
         this.definition = definition;
         this.difficulty = difficulty;
-        this.merchant = merchant != null ? merchant.getUUID() : QuestHelper.ANY_UUID;
         this.owner = QuestHelper.ANY_UUID;
         this.random = new Random(this.id.hashCode());
 
@@ -166,7 +163,6 @@ public class Quest implements IQuestComponent {
 
         tag.putString(TAG_ID, id);
         tag.putString(TAG_DEFINITION, getDefinitionId());
-        tag.putString(TAG_MERCHANT, merchant.toString());
         tag.putString(TAG_PLAYER, owner.toString());
         tag.putString(TAG_STATE, state.getSerializedName());
         tag.putFloat(TAG_DIFFICULTY, difficulty);
@@ -184,7 +180,6 @@ public class Quest implements IQuestComponent {
     public void fromNbt(CompoundTag tag) {
         id = tag.getString(TAG_ID);
         definition = Quests.getDefinition(tag.getString(TAG_DEFINITION));
-        merchant = UUID.fromString(tag.getString(TAG_MERCHANT));
         owner = UUID.fromString(tag.getString(TAG_PLAYER));
         state = State.valueOf(tag.getString(TAG_STATE).toUpperCase(Locale.ROOT));
         difficulty = tag.getFloat(TAG_DIFFICULTY);
@@ -217,10 +212,6 @@ public class Quest implements IQuestComponent {
 
     public UUID getOwner() {
         return owner;
-    }
-
-    public UUID getMerchant() {
-        return merchant;
     }
 
     public float getDifficulty() {

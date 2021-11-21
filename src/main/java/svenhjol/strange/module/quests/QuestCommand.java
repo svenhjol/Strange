@@ -79,7 +79,7 @@ public class QuestCommand {
             throw CommandHelper.makeException("Invalid definition", new TranslatableComponent("commands.strange.no_quest_definition").getString());
         }
 
-        Quest quest = new Quest(definition, 1.0F, null);
+        Quest quest = new Quest(definition, 1.0F);
         quest.start(player);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.started_quest", quest.getId()), false);
