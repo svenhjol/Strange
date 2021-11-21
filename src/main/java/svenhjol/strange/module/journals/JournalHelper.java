@@ -10,6 +10,10 @@ import svenhjol.strange.module.knowledge.branches.StructuresBranch;
 import java.util.List;
 
 public class JournalHelper {
+    public static boolean hasLearnedAnyRunes(JournalData journal) {
+        return !journal.getLearnedRunes().isEmpty();
+    }
+
     public static int getNumberOfUnknownRunes(String runes, JournalData journal) {
         int num = 0;
 

@@ -15,10 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.*;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalBookmark;
-import svenhjol.strange.module.journals.JournalViewer;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.*;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
@@ -70,9 +67,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     protected void init() {
         super.init();
 
-        if (minecraft == null) {
-            return;
-        }
+        if (minecraft == null) return;
 
         // set up the input field for editing the entry name
         nameField = new EditBox(font, (midX) - 65, 40, 130, 12, new TextComponent("NameField"));
@@ -171,6 +166,11 @@ public class JournalBookmarkScreen extends JournalScreen {
         }
 
         if (journal == null) return;
+
+        // don't show anything if the player has learned no runes
+        if (!JournalHelper.hasLearnedAnyRunes(journal)) return;
+
+        // must be in the same dimension as the bookmark
         if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) return;
 
         String runes = bookmark.getRunes();
