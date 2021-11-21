@@ -23,7 +23,6 @@ public class Quest implements IQuestComponent {
     public static final String TAG_PLAYER = "player";
     public static final String TAG_STATE = "state";
     public static final String TAG_DIFFICULTY = "difficulty";
-
     public static final int ID_LENGTH = 6;
 
     private State state = State.CREATED;
@@ -32,7 +31,6 @@ public class Quest implements IQuestComponent {
     private UUID owner;
     private Random random;
     private float difficulty;
-    private boolean dirty;
 
     private final List<IQuestComponent> components = new LinkedList<>();
 
@@ -81,7 +79,6 @@ public class Quest implements IQuestComponent {
         state = State.STARTED;
 
         if (!player.level.isClientSide) {
-            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
             QuestEvents.START.invoker().invoke(this, (ServerPlayer)player);
         }
 
@@ -104,7 +101,6 @@ public class Quest implements IQuestComponent {
         components.forEach(c -> c.abandon(player));
 
         if (!player.level.isClientSide) {
-            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
             QuestEvents.ABANDON.invoker().invoke(this, (ServerPlayer)player);
         }
 
@@ -116,7 +112,6 @@ public class Quest implements IQuestComponent {
         components.forEach(c -> c.complete(player, merchant));
 
         if (!player.level.isClientSide) {
-            Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
             QuestEvents.COMPLETE.invoker().invoke(this, (ServerPlayer)player);
         }
 
@@ -140,7 +135,6 @@ public class Quest implements IQuestComponent {
      * Gives all quest component an opportunity to update their state.
      * This could be for example building dynamic maps to check if a quest is satisfied.
      * Dirty is not set here and should be set on a component level if state changes.
-     * @param player
      */
     @Override
     public void update(Player player) {
@@ -219,7 +213,6 @@ public class Quest implements IQuestComponent {
     }
 
     public void setDirty() {
-        dirty = true;
         getQuests().setDirty();
     }
 
@@ -230,6 +223,6 @@ public class Quest implements IQuestComponent {
     private enum State implements ICharmEnum {
         CREATED,
         STARTED,
-        PAUSED;
+        PAUSED
     }
 }

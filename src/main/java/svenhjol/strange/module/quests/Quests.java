@@ -69,6 +69,8 @@ public class Quests extends CharmModule {
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
         QuestEvents.START.register(this::handleStartQuest);
+        QuestEvents.COMPLETE.register(this::handleCompleteQuest);
+        QuestEvents.ABANDON.register(this::handleAbandonQuest);
         QuestEvents.PAUSE.register(this::handlePauseQuest);
     }
 
@@ -273,8 +275,9 @@ public class Quests extends CharmModule {
     }
 
     /**
-     * When a quest is started, log it in the player's quest list.
-     * This helps to prevent the same quest being suggested again immediately.
+     * When a quest is started:
+     * - log to the last_quest list so that the same quest doesn't get recommended straight away
+     * - send toast to the player
      */
     private void handleStartQuest(Quest quest, ServerPlayer player) {
         LinkedList<QuestDefinition> definitions = LAST_QUESTS.computeIfAbsent(player.getUUID(), a -> new LinkedList<>());
@@ -282,10 +285,13 @@ public class Quests extends CharmModule {
             definitions.pop();
         }
         definitions.push(quest.getDefinition());
+
+        Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
     }
 
     /**
-     * When a quest is paused, give the player a scroll encoded with the quest's ID.
+     * When a quest is paused:
+     * - give the player a scroll encoded with the quest's ID.
      */
     private void handlePauseQuest(Quest quest, ServerPlayer player) {
         String id = quest.getId();
@@ -295,6 +301,22 @@ public class Quests extends CharmModule {
         ScrollItem.setScrollQuest(scroll, id);
 
         player.getInventory().placeItemBackInInventory(scroll);
+    }
+
+    /**
+     * When a quest is abandoned:
+     * - send toast to the player
+     */
+    private void handleAbandonQuest(Quest quest, ServerPlayer player) {
+        Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, quest.getDefinitionId(), quest.getTier());
+    }
+
+    /**
+     * When a quest is completed:
+     * - send toast to the player
+     */
+    private void handleCompleteQuest(Quest quest, ServerPlayer player) {
+        Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, quest.getDefinitionId(), quest.getTier());
     }
 
     private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
