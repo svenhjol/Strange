@@ -7,6 +7,8 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.journals.screen.JournalScreen;
@@ -26,6 +28,7 @@ public class JournalBookmarksScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
+        JournalViewer.viewedPage(Journals.Page.BOOKMARKS, lastPage);
 
         int buttonWidth = 140;
         int buttonHeight = 20;

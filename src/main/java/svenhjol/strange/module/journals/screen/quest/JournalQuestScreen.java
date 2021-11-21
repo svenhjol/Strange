@@ -6,6 +6,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestsClient;
@@ -37,6 +38,8 @@ public abstract class JournalQuestScreen extends JournalScreen {
         COMPLETED_HUNT_ICON.enchant(Enchantments.UNBREAKING, 1);
         COMPLETED_DISCOVER_ICON.enchant(Enchantments.UNBREAKING, 1);
         COMPLETED_DEFEAT_ICON.enchant(Enchantments.UNBREAKING, 1);
+
+        JournalViewer.viewedQuest(this.quest);
     }
 
     static {

@@ -222,7 +222,16 @@ public class Journals extends CharmModule {
     public enum Page {
         HOME,
         BOOKMARKS,
+        BOOKMARK,
         QUESTS,
-        KNOWLEDGE
+        QUEST,
+        KNOWLEDGE,
+        RUNES,
+        BIOMES,
+        BIOME,
+        DIMENSIONS,
+        DIMENSION,
+        STRUCTURES,
+        STRUCTURE
     }
 }

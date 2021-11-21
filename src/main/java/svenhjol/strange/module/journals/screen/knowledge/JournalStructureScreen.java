@@ -2,6 +2,8 @@ package svenhjol.strange.module.journals.screen.knowledge;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 
@@ -16,5 +18,10 @@ public class JournalStructureScreen extends JournalResourceScreen {
     @Override
     public KnowledgeBranch<?, ResourceLocation> getBranch(KnowledgeData knowledge) {
         return knowledge.structures;
+    }
+
+    @Override
+    protected void setViewedPage() {
+        JournalViewer.viewedResource(Journals.Page.STRUCTURE, resource);
     }
 }

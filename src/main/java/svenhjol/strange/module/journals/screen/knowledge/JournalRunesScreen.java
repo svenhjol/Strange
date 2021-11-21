@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
@@ -22,6 +24,7 @@ public class JournalRunesScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
+        JournalViewer.viewedPage(Journals.Page.RUNES);
 
         if (journal == null) {
             // show an error if the runes can't be loaded

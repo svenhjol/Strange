@@ -261,6 +261,10 @@ public abstract class JournalScreen extends Screen {
         }
     }
 
+    public void setLastPageOffset(int offset) {
+        this.lastPage = offset;
+    }
+
     protected <T> void paginator(PoseStack poseStack, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
         int perPage = 6;
         int paginationY = 180;

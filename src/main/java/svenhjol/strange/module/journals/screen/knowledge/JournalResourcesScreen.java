@@ -26,6 +26,7 @@ public abstract class JournalResourcesScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
+        setViewedPage();
 
         int buttonWidth = 180;
         int buttonHeight = 20;
@@ -50,6 +51,10 @@ public abstract class JournalResourcesScreen extends JournalScreen {
 
         paginator(poseStack, getResources(journal), renderItem, getLabelForNoItem(), !hasRenderedButtons);
         hasRenderedButtons = true;
+    }
+
+    protected void setViewedPage() {
+        // no op
     }
 
     @Override

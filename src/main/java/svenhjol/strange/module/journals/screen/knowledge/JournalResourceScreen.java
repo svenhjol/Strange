@@ -13,7 +13,7 @@ import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import java.util.Optional;
 
 public abstract class JournalResourceScreen extends JournalScreen {
-    private final ResourceLocation resource;
+    protected final ResourceLocation resource;
 
     public JournalResourceScreen(ResourceLocation resource) {
         super(new TextComponent(StringHelper.snakeToPretty(resource.getPath(), true)));
@@ -23,6 +23,7 @@ public abstract class JournalResourceScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
+        setViewedPage();
 
         if (journal == null) {
             return;
@@ -43,4 +44,8 @@ public abstract class JournalResourceScreen extends JournalScreen {
     }
 
     public abstract KnowledgeBranch<?, ResourceLocation> getBranch(KnowledgeData knowledge);
+
+    protected void setViewedPage() {
+        // no op
+    }
 }

@@ -22,11 +22,8 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.journals.Journals.Page;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
-import svenhjol.strange.module.journals.screen.JournalHomeScreen;
-import svenhjol.strange.module.journals.screen.knowledge.JournalKnowledgeScreen;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
-import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -116,15 +113,8 @@ public class JournalsClient extends CharmModule {
     private void handleOpenJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         updateJournal(buffer.readNbt());
         Page page = buffer.readEnum(Page.class);
-
-        processPacketFromServer(client, mc -> {
-            switch (page) {
-                case BOOKMARKS -> mc.setScreen(new JournalBookmarksScreen());
-                case QUESTS -> mc.setScreen(new JournalQuestsScreen());
-                case KNOWLEDGE -> mc.setScreen(new JournalKnowledgeScreen());
-                default -> mc.setScreen(new JournalHomeScreen());
-            }
-        });
+        JournalScreen screen = JournalViewer.getScreen(page);
+        processPacketFromServer(client, mc -> mc.setScreen(screen));
     }
 
     private void handleOpenBookmark(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
@@ -175,5 +165,4 @@ public class JournalsClient extends CharmModule {
             clientCallback.accept(client);
         });
     }
-
 }

@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestIcons;
@@ -38,6 +40,7 @@ public class JournalQuestsScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
+        JournalViewer.viewedPage(Journals.Page.QUESTS, lastPage);
 
         int buttonWidth = 180;
         int buttonHeight = 20;

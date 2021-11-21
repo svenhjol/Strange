@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import svenhjol.charm.helper.*;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.screen.JournalScreen;
@@ -61,6 +62,8 @@ public class JournalBookmarkScreen extends JournalScreen {
         );
 
         this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
+
+        JournalViewer.viewedBookmark(this.bookmark);
     }
 
     @Override

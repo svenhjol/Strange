@@ -5,6 +5,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +46,7 @@ public class JournalHomeScreen extends JournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
         renderButtons(poseStack);
+        JournalViewer.viewedPage(Journals.Page.HOME);
     }
 
     public void renderButtons(PoseStack poseStack) {

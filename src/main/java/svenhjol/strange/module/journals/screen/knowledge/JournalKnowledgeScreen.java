@@ -3,6 +3,8 @@ package svenhjol.strange.module.journals.screen.knowledge;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 
 import java.util.Arrays;
@@ -31,6 +33,7 @@ public class JournalKnowledgeScreen extends JournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
         renderKnowledgeButtons(poseStack);
+        JournalViewer.viewedPage(Journals.Page.KNOWLEDGE);
     }
 
     public void renderKnowledgeButtons(PoseStack poseStack) {
