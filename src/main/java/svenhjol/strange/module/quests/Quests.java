@@ -1,13 +1,10 @@
 package svenhjol.strange.module.quests;
 
-import com.mojang.brigadier.CommandDispatcher;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
@@ -58,12 +55,13 @@ public class Quests extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
 
-        CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
         QuestEvents.START.register(this::handleStartQuest);
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
+
+        QuestCommand.init();
     }
 
     public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, int tier) {
@@ -191,10 +189,6 @@ public class Quests extends CharmModule {
 
     private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {
         getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
-    }
-
-    private void handleRegisterCommand(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
-        QuestCommand.register(dispatcher);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {

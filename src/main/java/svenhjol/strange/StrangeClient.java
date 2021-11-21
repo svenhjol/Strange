@@ -13,7 +13,6 @@ public class StrangeClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         StrangeClientParticles.init();
-
         LOADER.init();
     }
 }

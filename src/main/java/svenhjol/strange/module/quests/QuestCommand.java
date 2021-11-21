@@ -1,7 +1,6 @@
 package svenhjol.strange.module.quests;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -11,40 +10,38 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.Strange;
 import svenhjol.strange.helper.CommandHelper;
-import svenhjol.strange.module.knowledge.KnowledgeCommand;
+import svenhjol.strange.init.StrangeCommands;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class QuestCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(Strange.MOD_ID + "_quests")
-            .then(Commands.literal("start")
+    public static void init() {
+        StrangeCommands.SUBCOMMANDS.addAll(Arrays.asList(
+            Commands.literal("start_quest")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("definition", QuestDefinitionArgType.definition())
                     .suggests(QuestCommand::getQuestDefinitions)
-                    .executes(QuestCommand::start)))
+                    .executes(QuestCommand::start)),
 
-            .then(Commands.literal("abandon")
+            Commands.literal("abandon_quest")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", QuestIdArgType.id())
                     .suggests(QuestCommand::getQuestIds)
-                    .executes(QuestCommand::abandon)))
+                    .executes(QuestCommand::abandon)),
 
-            .then(Commands.literal("complete")
+            Commands.literal("complete_quest")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", QuestIdArgType.id())
                     .suggests(QuestCommand::getQuestIds)
-                    .executes(QuestCommand::complete))));
-
-        LogHelper.debug(KnowledgeCommand.class, "Registered QuestCommand");
+                    .executes(QuestCommand::complete))
+        ));
     }
 
     private static int abandon(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

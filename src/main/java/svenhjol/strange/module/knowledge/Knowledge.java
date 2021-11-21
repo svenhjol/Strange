@@ -1,11 +1,8 @@
 package svenhjol.strange.module.knowledge;
 
-import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +47,7 @@ public class Knowledge extends CharmModule {
         TIER_RUNE_SETS.put(Tier.EXPERT, "stuv");
         TIER_RUNE_SETS.put(Tier.MASTER, "wxyz");
 
-        CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
+        KnowledgeCommand.init();
     }
 
     @Override
@@ -92,10 +89,6 @@ public class Knowledge extends CharmModule {
                 data.setDirty();
             });
         }
-    }
-
-    private void handleRegisterCommand(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
-        KnowledgeCommand.register(dispatcher);
     }
 
     public enum Tier implements ICharmEnum {
