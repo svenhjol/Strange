@@ -61,8 +61,6 @@ public class EntityRepositionTicket implements ITicket {
 
             // check 8 blocks below for solid ground or water
             for (int tries = 0; tries < 8; tries++) {
-                mutable.move(Direction.DOWN);
-
                 BlockState above = level.getBlockState(mutable.above());
                 BlockState current = level.getBlockState(mutable);
                 BlockState below = level.getBlockState(mutable.below());
@@ -75,6 +73,8 @@ public class EntityRepositionTicket implements ITicket {
                     success = true;
                     return;
                 }
+
+                mutable.move(Direction.DOWN);
             }
 
             if (!validFloor) {
