@@ -27,6 +27,7 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 
 import javax.annotation.Nullable;
@@ -209,11 +210,11 @@ public class Quests extends CharmModule {
 
     static {
         TIER_NAMES = new HashMap<>();
-        TIER_NAMES.put(0, "test");
-        TIER_NAMES.put(1, "novice");
-        TIER_NAMES.put(2, "apprentice");
-        TIER_NAMES.put(3, "journeyman");
-        TIER_NAMES.put(4, "expert");
-        TIER_NAMES.put(5, "master");
+        TIER_NAMES.put(0, Tier.TEST.getSerializedName());
+        TIER_NAMES.put(1, Tier.NOVICE.getSerializedName());
+        TIER_NAMES.put(2, Tier.APPRENTICE.getSerializedName());
+        TIER_NAMES.put(3, Tier.JOURNEYMAN.getSerializedName());
+        TIER_NAMES.put(4, Tier.EXPERT.getSerializedName());
+        TIER_NAMES.put(5, Tier.MASTER.getSerializedName());
     }
 }
