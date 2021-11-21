@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
@@ -87,6 +88,7 @@ public class Teleport extends CharmModule {
             Constructor<? extends TeleportHandler<?>> constructor = clazz.getDeclaredConstructor(KnowledgeBranch.class, ServerLevel.class, LivingEntity.class, ItemStack.class, String.class, BlockPos.class);
             handler = constructor.newInstance(branch, level, player, sacrifice, runes, origin);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            LogHelper.warn(this.getClass(), "Could not instantiate teleport handler: " + e.getMessage());
             return Optional.empty();
         }
 
