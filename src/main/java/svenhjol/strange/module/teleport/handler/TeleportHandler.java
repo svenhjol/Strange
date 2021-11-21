@@ -47,8 +47,11 @@ public abstract class TeleportHandler<V> {
     protected static final List<MobEffect> POSITIVE_EFFECTS;
     protected static final List<MobEffect> NEGATIVE_EFFECTS;
 
-    public TeleportHandler(KnowledgeBranch<?, V> branch, ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
+    public TeleportHandler(KnowledgeBranch<?, V> branch) {
         this.branch = branch;
+    }
+
+    public void setup(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
         this.entity = entity;
         this.sacrifice = sacrifice;
         this.runes = runes;

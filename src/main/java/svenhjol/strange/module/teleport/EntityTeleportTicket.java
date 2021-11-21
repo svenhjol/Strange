@@ -118,30 +118,34 @@ public class EntityTeleportTicket implements ITicket {
 
             if (exactPosition) {
                 found = target;
+                LogHelper.debug(this.getClass(), "Using exactPosition in current dimension: " + found);
             } else {
-                int tries = 0;
-                int maxTries = 5;
-                do {
-                    if (level.dimensionType().hasCeiling()) {
-                        found = WorldHelper.getSurfacePos(level, target, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
-                    } else {
-                        found = WorldHelper.getSurfacePos(level, target);
-                    }
-                    if (tries > 0) {
-                        int x = to.getX() + (r.nextInt(tries * 2) - tries * 2);
-                        int z = to.getZ() + (r.nextInt(tries * 2) - tries * 2);
-                        target = new BlockPos(x, 0, z);
-                    }
-                } while (found == null && tries++ < maxTries);
-            }
+                if (level.dimensionType().hasCeiling()) {
+                    found = WorldHelper.getSurfacePos(level, target, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
+                    LogHelper.debug(this.getClass(), "Dimension has ceiling, using limited surfacePos: " + found);
+                } else {
+                    found = WorldHelper.getSurfacePos(level, target);
+                    LogHelper.debug(this.getClass(), "Dimension has no ceiling, using surfacePos: " + found);
+                }
 
-            if (found == null) {
-                closeChunk();
-                valid = false;
-                return;
+                if (found == null) {
+                    found = target;
+                    LogHelper.debug(this.getClass(), "Could not find a target, using original: " + found);
+                }
+//                int tries = 0;
+//                int maxTries = 5;
+//                do {
+
+//                    if (tries > 0) {
+//                        int x = to.getX() + (r.nextInt(tries * 2) - tries * 2);
+//                        int z = to.getZ() + (r.nextInt(tries * 2) - tries * 2);
+//                        target = new BlockPos(x, 0, z);
+//                    }
+//                } while (found == null && tries++ < maxTries);
             }
 
             entity.teleportToWithTicket(found.getX(), found.getY(), found.getZ());
+            Teleport.repositionTickets.add(new EntityRepositionTicket(entity, t -> {}));
             closeChunk();
             success = true;
         }

@@ -6,7 +6,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
@@ -20,9 +19,9 @@ import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.handler.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -35,8 +34,6 @@ public class Teleport extends CharmModule {
     public static List<UUID> noEndPlatform = new ArrayList<>();
     public static ThreadLocal<Entity> entityCreatingPlatform = new ThreadLocal<>();
 
-    private static final Map<String, Class<? extends TeleportHandler<?>>> handlers = new HashMap<>();
-
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
     public static int maxDistance = 5000;
 
@@ -45,16 +42,6 @@ public class Teleport extends CharmModule {
 
     @Config(name = "Travel penalty time", description = "Number of seconds of poison, wither, burning, slowness or weakness after teleporting without the correct item.")
     public static int penaltyDuration = 10;
-
-    @Override
-    public void register() {
-        handlers.put(DiscoveriesBranch.NAME, DiscoveryTeleportHandler.class);
-        handlers.put(SpecialsBranch.NAME, SpecialTeleportHandler.class);
-        handlers.put(BiomesBranch.NAME, BiomeTeleportHandler.class);
-        handlers.put(StructuresBranch.NAME, StructureTeleportHandler.class);
-        handlers.put(DimensionsBranch.NAME, DimensionTeleportHandler.class);
-        handlers.put(BookmarksBranch.NAME, BookmarkTeleportHandler.class);
-    }
 
     @Override
     public void runWhenEnabled() {
@@ -66,33 +53,37 @@ public class Teleport extends CharmModule {
     }
 
     private void handleActivateRunestone(ServerPlayer player, BlockPos origin, String runes, ItemStack sacrifice) {
-        tryGetHandler(player, runes, sacrifice, origin).ifPresent(TeleportHandler::process);
+        tryTeleport(player, runes, sacrifice, origin);
     }
 
     private void handleActivateRunicTome(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice) {
         String runes = RunicTomeItem.getRunes(tome);
-        tryGetHandler(player, runes, sacrifice, origin).ifPresent(TeleportHandler::process);
+        tryTeleport(player, runes, sacrifice, origin);
     }
 
-    private Optional<TeleportHandler<?>> tryGetHandler(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {
+    private boolean tryTeleport(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {
         TeleportHandler<?> handler;
         ServerLevel level = (ServerLevel)player.level;
         KnowledgeBranch<?, ?> branch = KnowledgeBranch.getByStartRune(runes.charAt(0)).orElseThrow();
 
-        Class<? extends TeleportHandler<?>> clazz = handlers.getOrDefault(branch.getBranchName(), null);
-        if (clazz == null) {
-            return Optional.empty();
+        handler = switch (branch.getBranchName()) {
+            case BiomesBranch.NAME -> new BiomeTeleportHandler((BiomesBranch)branch);
+            case BookmarksBranch.NAME -> new BookmarkTeleportHandler((BookmarksBranch)branch);
+            case DimensionsBranch.NAME -> new DimensionTeleportHandler((DimensionsBranch)branch);
+            case DiscoveriesBranch.NAME -> new DiscoveryTeleportHandler((DiscoveriesBranch)branch);
+            case SpecialsBranch.NAME -> new SpecialTeleportHandler((SpecialsBranch)branch);
+            case StructuresBranch.NAME -> new StructureTeleportHandler((StructuresBranch)branch);
+            default -> null;
+        };
+
+        if (handler == null) {
+            LogHelper.warn(this.getClass(), "No teleport handler for branch: " + branch.getBranchName());
+            return false;
         }
 
-        try {
-            Constructor<? extends TeleportHandler<?>> constructor = clazz.getDeclaredConstructor(KnowledgeBranch.class, ServerLevel.class, LivingEntity.class, ItemStack.class, String.class, BlockPos.class);
-            handler = constructor.newInstance(branch, level, player, sacrifice, runes, origin);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            LogHelper.warn(this.getClass(), "Could not instantiate teleport handler: " + e.getMessage());
-            return Optional.empty();
-        }
-
-        return Optional.of(handler);
+        handler.setup(level, player, sacrifice, runes, origin);
+        handler.process();
+        return true;
     }
 
     private void handleTick(MinecraftServer server) {
@@ -118,6 +109,8 @@ public class Teleport extends CharmModule {
             });
 
             if (!toRemove.isEmpty()) {
+                int size = toRemove.size();
+                toRemove.stream().findFirst().ifPresent(first -> LogHelper.debug(this.getClass(), "Removing " + size + " tickets of class " + first.getClass().getSimpleName()));
                 toRemove.forEach(tickets::remove);
             }
         }

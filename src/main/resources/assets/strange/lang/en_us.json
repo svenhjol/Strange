@@ -24,7 +24,7 @@
   "gui.strange.journal.abandon_tooltip": "Abandon this quest",
   "gui.strange.journal.pause_tooltip": "Write quest back to a scroll",
   "gui.strange.journal.add_bookmark": "Add bookmark",
-  "gui.strange.journal.bookmark": "A saved bookmark",
+  "gui.strange.journal.bookmark": "Visited Location",
   "gui.strange.journal.back": "Back",
   "gui.strange.journal.choose_icon": "Choose icon",
   "gui.strange.journal.close": "Close",

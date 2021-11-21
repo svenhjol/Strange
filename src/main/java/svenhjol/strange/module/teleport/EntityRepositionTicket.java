@@ -33,12 +33,14 @@ public class EntityRepositionTicket implements ITicket {
     @Override
     public void tick() {
         if (entity.isRemoved()) {
+            LogHelper.debug(this.getClass(), "Reposition ticket is no longer valid as the entity has been removed");
             valid = false;
         }
 
         if (!valid) return;
 
         if (ticks++ == Teleport.REPOSITION_TICKS) {
+            LogHelper.debug(this.getClass(), "Processing reposition ticket");
             BlockPos pos = entity.blockPosition();
             BlockState surfaceBlock = getSurfaceBlockForDimension(level);
 
@@ -48,6 +50,7 @@ public class EntityRepositionTicket implements ITicket {
                 if (level.getBlockState(surfacePos.below()).isSolidRender(level, surfacePos.below())) {
                     entity.moveTo(surfacePos.getX() + 0.5D, surfacePos.getY() + 0.5D, surfacePos.getZ() + 0.5D);
                     entity.teleportTo(surfacePos.getX() + 0.5D, surfacePos.getY() + 0.5D, surfacePos.getZ() + 0.5D);
+                    LogHelper.debug(this.getClass(), "Found a valid surface position, moving entity to it: " + surfacePos);
                     success = true;
                     return;
                 }
@@ -70,6 +73,7 @@ public class EntityRepositionTicket implements ITicket {
                 validAbove = above.isAir() || level.isWaterAt(mutable.above());
 
                 if (validFloor && validCurrent && validAbove) {
+                    LogHelper.debug(this.getClass(), "Found a valid calculated position after " + tries + " tries: " + mutable);
                     success = true;
                     return;
                 }
@@ -82,6 +86,7 @@ public class EntityRepositionTicket implements ITicket {
             }
             if (!validCurrent) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
+                LogHelper.debug(this.getClass(), "Made air space at " + pos);
 
                 // check each cardinal point for lava
                 for (Direction direction : Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
@@ -93,6 +98,7 @@ public class EntityRepositionTicket implements ITicket {
                 }
             }
             if (!validAbove) {
+                LogHelper.debug(this.getClass(), "Made air space at " + pos);
                 level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 2);
             }
 
@@ -134,6 +140,7 @@ public class EntityRepositionTicket implements ITicket {
     private void setSolidWall(BlockPos pos, BlockState state) {
         level.setBlock(pos, state, 2);
         level.setBlock(pos.above(), state, 2);
+        LogHelper.debug(this.getClass(), "Made wall at: " + pos);
     }
 
     private void makePlatform(BlockPos pos, BlockState solid) {
@@ -141,7 +148,7 @@ public class EntityRepositionTicket implements ITicket {
         int y = pos.getY();
         int z = pos.getZ();
         BlockPos.betweenClosed(x - 1, y, z - 1, x + 1, y, z + 1).forEach(p -> level.setBlockAndUpdate(p, solid));
-        LogHelper.info(this.getClass(), "Made platform at: " + pos);
+        LogHelper.debug(this.getClass(), "Made platform at: " + pos);
     }
 
     private BlockState getSurfaceBlockForDimension(ServerLevel level) {
