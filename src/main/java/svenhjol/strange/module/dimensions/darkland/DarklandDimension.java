@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -126,7 +127,7 @@ public class DarklandDimension implements IDimension {
                 }
 
                 // monsters have buffs
-                if (random.nextFloat() < 0.6F && livingEntity instanceof Monster) {
+                if (random.nextFloat() < 0.6F && livingEntity instanceof Monster && !(livingEntity instanceof Creeper)) {
                     int duration = 3600;
                     int amplifier = random.nextInt(3) + 1;
                     List<MobEffect> mobEffects = new ArrayList<>(POSITIVE_MOB_EFFECTS);
