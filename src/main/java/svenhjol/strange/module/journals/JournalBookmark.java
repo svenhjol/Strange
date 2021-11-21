@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
@@ -16,8 +17,17 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class JournalBookmark {
-    public static final ResourceLocation DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
-    public static final ResourceLocation DEFAULT_DEATH_ICON = new ResourceLocation("minecraft", "skeleton_skull");
+    public static final ResourceLocation DEFAULT_ICON;
+    public static final ResourceLocation DEFAULT_NETHER_ICON;
+    public static final ResourceLocation DEFAULT_END_ICON;
+    public static final ResourceLocation DEFAULT_DEATH_ICON;
+
+    static {
+        DEFAULT_ICON = new ResourceLocation("minecraft", "grass_block");
+        DEFAULT_NETHER_ICON = new ResourceLocation("minecraft", "netherrack");
+        DEFAULT_END_ICON = new ResourceLocation("minecraft", "end_stone");
+        DEFAULT_DEATH_ICON = new ResourceLocation("minecraft", "skeleton_skull");
+    }
 
     private static final String TAG_ID = "Id";
     private static final String TAG_POS = "Pos";
@@ -33,7 +43,8 @@ public class JournalBookmark {
     private ResourceLocation icon;
 
     public JournalBookmark(BlockPos pos, ResourceLocation dim) {
-        this(StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.somewhere").orElse("Somewhere"), pos, dim, DEFAULT_ICON);
+        this(StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.bookmark").orElse("Bookmark"), pos, dim, DEFAULT_ICON);
+        setIcon(getIconForDimension(dim));
     }
 
     public JournalBookmark(String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon) {
@@ -130,5 +141,15 @@ public class JournalBookmark {
         setIcon(bookmark.getIcon());
         setBlockPos(bookmark.getBlockPos());
         setDimension(bookmark.getDimension());
+    }
+
+    private ResourceLocation getIconForDimension(ResourceLocation dimension) {
+        if (Level.NETHER.location().equals(dimension)) {
+            return DEFAULT_NETHER_ICON;
+        } else if (Level.END.location().equals(dimension)) {
+            return DEFAULT_END_ICON;
+        } else {
+            return DEFAULT_ICON;
+        }
     }
 }
