@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +24,9 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.helper.LootHelper;
+import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.Quests;
 
 import java.io.File;
 import java.util.*;
@@ -52,6 +55,7 @@ public class Journals extends CharmModule {
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
         PlayerDieCallback.EVENT.register(this::handlePlayerDeath);
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        QuestEvents.COMPLETE.register(this::handleQuestComplete);
 
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_OPEN_JOURNAL, this::handleOpenJournal);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_JOURNAL, this::handleSyncJournal);
@@ -121,6 +125,20 @@ public class Journals extends CharmModule {
             JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
             data.deleteBookmark(bookmark);
         });
+    }
+
+    private void handleQuestComplete(Quest quest, ServerPlayer player) {
+        if (!Strange.LOADER.isEnabled(Quests.class) || !Strange.LOADER.isEnabled(Knowledge.class)) {
+            return; // don't handle if quests and knowledge are unavailable
+        }
+
+        int tier = quest.getTier();
+        JournalData journal = Journals.getJournalData(player).orElseThrow();
+        boolean learned = JournalHelper.learnNextLearnableRune(tier, journal);
+
+        if (learned) {
+            player.displayClientMessage(new TranslatableComponent("gui.strange.journal.learned_rune"), true);
+        }
     }
 
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {

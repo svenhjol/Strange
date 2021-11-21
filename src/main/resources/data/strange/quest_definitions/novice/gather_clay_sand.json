@@ -1,0 +1,42 @@
+{
+  "pack": "strange",
+  "lang": {
+    "en": {
+      "title": "Gather Materials",
+      "description": "Find the materials to complete this quest.",
+      "hint": "Clay and sand appear near or in bodies of water.\nUse a shovel to obtain them."
+    }
+  },
+  "gather": {
+    "items": {
+      "clay_ball": {
+        "count": "12-16"
+      },
+      "sand": {
+        "count": "12-16"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-2"
+      },
+      "loot": {
+        "table": "village_weaponsmith",
+        "limit": 1
+      },
+      "pool": {
+        "items": "stone_shovel,iron_shovel",
+        "limit": 1,
+        "enchanted": true,
+        "chance": 0.6
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

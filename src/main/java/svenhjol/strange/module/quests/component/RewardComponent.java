@@ -30,7 +30,7 @@ public class RewardComponent implements IQuestComponent {
     public static final String TAG_PLAYER_XP = "player_xp";
     public static final String TAG_MERCHANT_XP = "merchant_xp";
 
-    public static final int MAX_ITEM_REWARDS = 3;
+    public static final int MAX_ITEM_REWARDS = 2;
 
     private final Quest quest;
 

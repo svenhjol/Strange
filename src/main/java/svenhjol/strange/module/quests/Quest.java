@@ -85,17 +85,20 @@ public class Quest implements IQuestComponent {
 
         if (!player.level.isClientSide) {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
+            QuestEvents.START.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        QuestEvents.START.invoker().invoke(this);
         setDirty();
         return true;
     }
 
-    public void pause() {
+    public void pause(Player player) {
         owner = QuestHelper.ANY_UUID;
         state = State.PAUSED;
-        QuestEvents.PAUSE.invoker().invoke(this);
+
+        if (!player.level.isClientSide) {
+            QuestEvents.PAUSE.invoker().invoke(this, (ServerPlayer) player);
+        }
         setDirty();
     }
 
@@ -105,9 +108,9 @@ public class Quest implements IQuestComponent {
 
         if (!player.level.isClientSide) {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
+            QuestEvents.ABANDON.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        QuestEvents.ABANDON.invoker().invoke(this);
         getQuests().remove(this);
     }
 
@@ -117,9 +120,9 @@ public class Quest implements IQuestComponent {
 
         if (!player.level.isClientSide) {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
+            QuestEvents.COMPLETE.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        QuestEvents.COMPLETE.invoker().invoke(this);
         getQuests().remove(this);
     }
 

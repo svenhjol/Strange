@@ -22,27 +22,37 @@ public class JournalHelper {
         return num;
     }
 
-    public static boolean hasLearnedAllTierRunes(int tier, JournalData journal) {
-        int learnable = getNextLearnableRune(tier, journal);
-        return learnable == Integer.MIN_VALUE;
-    }
-
     public static int getNextLearnableRune(int tier, JournalData journal) {
         List<Integer> learnedRunes = journal.getLearnedRunes();
-        Knowledge.Tier knowledgeTier = Knowledge.Tier.getByOrdinal(tier);
-        if (knowledgeTier != null) {
-            String runeset = Knowledge.TIER_RUNE_SETS.get(knowledgeTier);
 
-            for (int i = 0; i < runeset.length(); i++) {
-                char c = runeset.charAt(0);
-                int intval = (int) c - 97;
-                if (!learnedRunes.contains(intval)) {
-                    return intval;
+        for (int t = 1; t <= tier; t++) {
+            Knowledge.Tier knowledgeTier = Knowledge.Tier.getByOrdinal(t);
+
+            if (knowledgeTier != null) {
+                String runeset = Knowledge.TIER_RUNE_SETS.get(knowledgeTier);
+
+                for (int i = 0; i < runeset.length(); i++) {
+                    char c = runeset.charAt(i);
+                    int intval = (int) c - 97;
+                    if (!learnedRunes.contains(intval)) {
+                        return intval;
+                    }
                 }
             }
         }
 
         return Integer.MIN_VALUE;
+    }
+
+    public static boolean learnNextLearnableRune(int tier, JournalData journal) {
+        int learnable = getNextLearnableRune(tier, journal);
+
+        if (learnable >= 0) {
+            journal.learnRune(learnable);
+            return true;
+        }
+
+        return false;
     }
 
     public static void tryLearnPhrase(String runes, JournalData journal) {

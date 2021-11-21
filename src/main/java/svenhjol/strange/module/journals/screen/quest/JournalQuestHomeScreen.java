@@ -1,6 +1,7 @@
 package svenhjol.strange.module.journals.screen.quest;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -13,8 +14,6 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
@@ -26,10 +25,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JournalQuestHomeScreen extends JournalQuestScreen {
-    private static ItemStack RUNE_ICON;
-    private static Component RUNE_LABEL;
+    private static final ItemStack RUNE_ICON;
+    private static final Component RUNE_LABEL;
 
     private Map<ItemStack, Integer> items;
     private int playerXp;
@@ -41,7 +41,7 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     private HuntComponent hunt;
     private Player player;
 
-    private final boolean showRuneReward;
+    private boolean showRuneReward;
     private final int rowHeight;
 
     public JournalQuestHomeScreen(Quest quest) {
@@ -60,7 +60,7 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
             new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP)
         ));
 
-        showRuneReward = Strange.LOADER.isEnabled(Knowledge.class);
+        showRuneReward = Strange.LOADER.isEnabled("knowledge");
     }
 
     @Override
@@ -101,7 +101,6 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         top += 10;
         top = renderCompletion(poseStack, top, left, mouseX, mouseY);
         top = renderRewards(poseStack, top, left, mouseX, mouseY);
-        top = renderRuneReward(poseStack, top, left, mouseX, mouseY);
     }
 
     private int renderCompletion(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
@@ -194,16 +193,25 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
             }
         }
 
+        top = renderRuneReward(poseStack, top, left, mouseX, mouseY);
         return top + 8;
     }
 
     private int renderRuneReward(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
         if (!showRuneReward) return top;
-        if (KnowledgeClient.getKnowledgeData().isEmpty()) return top;
 
-        if (!JournalHelper.hasLearnedAllTierRunes(quest.getTier(), journal)) {
-            itemRenderer.renderGuiItem(RUNE_ICON, left, top - 5);
-            font.draw(poseStack, RUNE_LABEL, left + 19, top, textColor);
+        if (JournalHelper.getNextLearnableRune(quest.getTier(), journal) < 0) {
+            showRuneReward = false;
+            return top;
+        }
+
+        itemRenderer.renderGuiItem(RUNE_ICON, left, top - 5);
+        font.draw(poseStack, RUNE_LABEL, left + 19, top, textColor);
+
+        if (mouseX > left && mouseX < left + 19 + (RUNE_LABEL.getString().length() * 6) && mouseY > top - 5 && mouseY < top + 10) {
+            String s = I18n.get("gui.strange.journal.reward_rune_tooltip");
+            List<Component> lines = Arrays.stream(s.split("\n")).map(TextComponent::new).collect(Collectors.toList());
+            renderComponentTooltip(poseStack, lines, mouseX, mouseY);
         }
 
         return top;
