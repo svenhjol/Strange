@@ -1,6 +1,7 @@
 package svenhjol.strange.module.journals;
 
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.branches.BiomesBranch;
 import svenhjol.strange.module.knowledge.branches.DimensionsBranch;
@@ -22,11 +23,15 @@ public class JournalHelper {
         return num;
     }
 
+    public static int getNextLearnableRune(JournalData journal) {
+        return getNextLearnableRune(Tier.MASTER.ordinal(), journal);
+    }
+
     public static int getNextLearnableRune(int tier, JournalData journal) {
         List<Integer> learnedRunes = journal.getLearnedRunes();
 
         for (int t = 1; t <= tier; t++) {
-            Knowledge.Tier knowledgeTier = Knowledge.Tier.getByOrdinal(t);
+            Tier knowledgeTier = Tier.getByOrdinal(t);
 
             if (knowledgeTier != null) {
                 String runeset = Knowledge.TIER_RUNE_SETS.get(knowledgeTier);
@@ -42,6 +47,10 @@ public class JournalHelper {
         }
 
         return Integer.MIN_VALUE;
+    }
+
+    public static boolean learnNextLearnableRune(JournalData journal) {
+        return learnNextLearnableRune(Tier.MASTER.ordinal(), journal);
     }
 
     public static boolean learnNextLearnableRune(int tier, JournalData journal) {

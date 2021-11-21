@@ -212,6 +212,7 @@ public class KnowledgeHelper {
     }
 
     public enum LearnableKnowledgeType implements ICharmEnum {
+        RUNE,
         BIOME,
         STRUCTURE,
         DIMENSION;

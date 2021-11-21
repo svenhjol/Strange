@@ -15,6 +15,7 @@ import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.journals.JournalData;
+import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
@@ -46,25 +47,31 @@ public class KnowledgeStoneItem extends CharmItem {
                 return InteractionResultHolder.fail(held);
             }
 
-            boolean learnedThing = switch (stone.type) {
-                case BIOME -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
+            boolean learnedThing = false;
+
+            switch (stone.type) {
+                case RUNE -> {
+                    learnedThing = JournalHelper.learnNextLearnableRune(journal);
+                    if (learnedThing) {
+                        sendClientMessage(serverPlayer, "rune", "");
+                    }
+                }
+                case BIOME -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
-
-                case STRUCTURE -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
+                case STRUCTURE -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
-
-                case DIMENSION -> KnowledgeHelper.tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
+                case DIMENSION -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
                 });
-            };
+            }
 
             if (learnedThing) {
                 // TODO: rune glyph effect and sound effect
