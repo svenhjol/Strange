@@ -82,7 +82,8 @@ public class EntityTeleportTicket implements ITicket {
             Random r = new Random();
 
             if (!sameDimension) {
-                // dimension change
+                // dimension change is handled by Fabric API.
+                // We create a reposition ticket to safely place the player after teleport.
                 MinecraftServer server = level.getServer();
                 for (ResourceKey<Level> levelKey : server.levelKeys()) {
                     if (levelKey.location().equals(dimension)) {
@@ -132,20 +133,15 @@ public class EntityTeleportTicket implements ITicket {
                     found = target;
                     LogHelper.debug(this.getClass(), "Could not find a target, using original: " + found);
                 }
-//                int tries = 0;
-//                int maxTries = 5;
-//                do {
-
-//                    if (tries > 0) {
-//                        int x = to.getX() + (r.nextInt(tries * 2) - tries * 2);
-//                        int z = to.getZ() + (r.nextInt(tries * 2) - tries * 2);
-//                        target = new BlockPos(x, 0, z);
-//                    }
-//                } while (found == null && tries++ < maxTries);
             }
 
             entity.teleportToWithTicket(found.getX(), found.getY(), found.getZ());
-            Teleport.repositionTickets.add(new EntityRepositionTicket(entity, t -> {}));
+
+            if (!exactPosition) {
+                // create a reposition ticket to safely land the player after teleport
+                Teleport.repositionTickets.add(new EntityRepositionTicket(entity, t -> {}));
+            }
+
             closeChunk();
             success = true;
         }
