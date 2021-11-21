@@ -18,7 +18,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -42,8 +41,6 @@ public class Quests extends CharmModule {
     public static final ResourceLocation MSG_SERVER_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_sync_player_quests");
     public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest");
     public static final ResourceLocation MSG_SERVER_PAUSE_QUEST = new ResourceLocation(Strange.MOD_ID, "server_pause_quest");
-    public static final ResourceLocation MSG_CLIENT_DESTROY_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_destroy_scroll");
-    public static final ResourceLocation MSG_CLIENT_OPEN_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_open_scroll");
     public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast");
     public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
 
@@ -51,32 +48,22 @@ public class Quests extends CharmModule {
     public static final String DEFINITION_FOLDER = "quest_definitions";
     public static final Map<Integer, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<Integer, String> TIER_NAMES;
-    public static final Map<Integer, ScrollItem> SCROLLS = new HashMap<>();
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
 
     private static QuestData quests;
 
     @Override
-    public void register() {
-        for (int tier = 0; tier < NUM_TIERS; tier++) {
-            SCROLLS.put(tier, new ScrollItem(this, tier));
-        }
-
+    public void runWhenEnabled() {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
 
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
         QuestEvents.START.register(this::handleStartQuest);
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
-        QuestEvents.PAUSE.register(this::handlePauseQuest);
-    }
-
-    @Override
-    public void runWhenEnabled() {
-        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
     }
 
     public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, int tier) {
@@ -287,20 +274,6 @@ public class Quests extends CharmModule {
         definitions.push(quest.getDefinition());
 
         Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
-    }
-
-    /**
-     * When a quest is paused:
-     * - give the player a scroll encoded with the quest's ID.
-     */
-    private void handlePauseQuest(Quest quest, ServerPlayer player) {
-        String id = quest.getId();
-        int tier = quest.getTier();
-
-        ItemStack scroll = new ItemStack(SCROLLS.get(tier));
-        ScrollItem.setScrollQuest(scroll, id);
-
-        player.getInventory().placeItemBackInInventory(scroll);
     }
 
     /**

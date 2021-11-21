@@ -18,7 +18,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.strange.Strange;
+import svenhjol.strange.module.scrolls.Scrolls;
 
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +34,14 @@ public class QuestToast implements Toast {
     private boolean playedSound;
 
     public QuestToast(QuestToastType type, String definitionId, int tier) {
-        ItemStack stack = new ItemStack(Quests.SCROLLS.get(tier));
+        ItemStack stack;
+
+        if (Strange.LOADER.isEnabled("scrolls")) {
+            stack = new ItemStack(Scrolls.SCROLLS.get(tier));
+        } else {
+            stack = new ItemStack(Items.PAPER);
+        }
+
         Component title;
         Component description = new TextComponent(I18n.get("gui.strange.quests." + type.getSerializedName().toLowerCase(Locale.ROOT)));
 

@@ -10,10 +10,8 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.language.LanguageInfo;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
@@ -22,7 +20,6 @@ import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @ClientModule(module = Quests.class)
 public class QuestsClient extends CharmModule {
@@ -30,11 +27,9 @@ public class QuestsClient extends CharmModule {
     public static QuestData quests;
 
     @Override
-    public void register() {
+    public void runWhenEnabled() {
         ClientPlayNetworking.registerGlobalReceiver(Quests.MSG_CLIENT_SHOW_QUEST_TOAST, this::handleShowQuestToast);
         ClientPlayNetworking.registerGlobalReceiver(Quests.MSG_CLIENT_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
-        ClientPlayNetworking.registerGlobalReceiver(Quests.MSG_CLIENT_DESTROY_SCROLL, this::handleDestroyScroll);
-        ClientPlayNetworking.registerGlobalReceiver(Quests.MSG_CLIENT_OPEN_SCROLL, this::handleOpenScroll);
     }
 
     public static void sendSyncQuests() {
@@ -109,37 +104,5 @@ public class QuestsClient extends CharmModule {
         if (tag != null) {
             quests = QuestData.fromNbt(tag);
         }
-    }
-
-    private void handleDestroyScroll(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        client.execute(() -> {
-            Player player = client.player;
-            if (player == null) return;
-
-            double spread = 1.1D;
-            Random random = player.level.random;
-            for (int i = 0; i < 40; i++) {
-                double px = player.blockPosition().getX() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                double py = player.blockPosition().getY() + 0.5D;
-                double pz = player.blockPosition().getZ() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                player.level.addParticle(ParticleTypes.SMOKE, px, py, pz, 0.0D, 0.0D, 0.0D);
-            }
-        });
-    }
-
-    private void handleOpenScroll(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        client.execute(() -> {
-            Player player = client.player;
-            if (player == null) return;
-
-            double spread = 1.1D;
-            Random random = player.level.random;
-            for (int i = 0; i < 40; i++) {
-                double px = player.blockPosition().getX() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                double py = player.blockPosition().getY() + 0.5D;
-                double pz = player.blockPosition().getZ() + ((random.nextFloat()*2) - (random.nextFloat()*2)) * spread;
-                player.level.addParticle(ParticleTypes.ENCHANT, px, py, pz, 0.0D, 0.0D, 0.0D);
-            }
-        });
     }
 }

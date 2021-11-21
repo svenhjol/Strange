@@ -1,4 +1,4 @@
-package svenhjol.strange.module.quests;
+package svenhjol.strange.module.scrolls;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -14,6 +14,10 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.QuestDefinition;
+import svenhjol.strange.module.quests.Quests;
 
 import java.util.Optional;
 import java.util.Random;
@@ -69,13 +73,13 @@ public class ScrollItem extends CharmItem {
         }
 
         scroll.shrink(1);
-        NetworkHelper.sendEmptyPacketToClient(serverPlayer, Quests.MSG_CLIENT_OPEN_SCROLL);
+        NetworkHelper.sendEmptyPacketToClient(serverPlayer, Scrolls.MSG_CLIENT_OPEN_SCROLL);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, scroll);
     }
 
     private InteractionResultHolder<ItemStack> destroy(ServerPlayer player, ItemStack scroll) {
         scroll.shrink(1);
-        NetworkHelper.sendEmptyPacketToClient(player, Quests.MSG_CLIENT_DESTROY_SCROLL);
+        NetworkHelper.sendEmptyPacketToClient(player, Scrolls.MSG_CLIENT_DESTROY_SCROLL);
         return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
     }
 

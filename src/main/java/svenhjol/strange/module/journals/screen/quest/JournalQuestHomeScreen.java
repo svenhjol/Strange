@@ -14,6 +14,8 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
 import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
@@ -28,8 +30,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JournalQuestHomeScreen extends JournalQuestScreen {
-    private static final ItemStack RUNE_ICON;
     private static final Component RUNE_LABEL;
+    private static ItemStack RUNE_ICON;
 
     private Map<ItemStack, Integer> items;
     private int playerXp;
@@ -61,6 +63,12 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         ));
 
         showRuneReward = Strange.LOADER.isEnabled("knowledge");
+
+        if (Strange.LOADER.isEnabled("knowledge_stones")) {
+            RUNE_ICON = new ItemStack(KnowledgeStones.KNOWLEDGE_STONES.get(KnowledgeHelper.LearnableKnowledgeType.RUNE));
+        } else {
+            RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
+        }
     }
 
     @Override
@@ -251,7 +259,6 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     }
 
     static {
-        RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
         RUNE_LABEL = new TranslatableComponent("gui.strange.journal.reward_rune");
     }
 }
