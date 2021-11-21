@@ -158,6 +158,10 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_BOOKMARK, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
     }
 
+    public static void sendMakeMap(JournalBookmark bookmark) {
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
+    }
+
     private void updateJournal(@Nullable CompoundTag tag) {
         if (tag != null) {
             ClientHelper.getPlayer().ifPresent(player -> journal = JournalData.fromNbt(player, tag));

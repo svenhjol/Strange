@@ -48,7 +48,7 @@ public abstract class JournalScreen extends Screen {
     public static final Component LEARNED_STRUCTURES;
     public static final Component BOOKMARKS;
     public static final Component BOOKMARKS_TOOLTIP;
-    public static final Component MAKE_MAP;
+    public static final Component MAKE_MAP_TOOLTIP;
     public static final Component NO_BIOMES;
     public static final Component NO_DIMENSIONS;
     public static final Component NO_BOOKMARKS;
@@ -58,6 +58,7 @@ public abstract class JournalScreen extends Screen {
     public static final Component QUESTS_TOOLTIP;
     public static final Component SAVE;
     public static final Component TAKE_PHOTO;
+    public static final Component TAKE_PHOTO_TOOLTIP;
 
     protected boolean hasRenderedBottomButtons;
     protected boolean hasRenderedNavigation;
@@ -373,7 +374,7 @@ public abstract class JournalScreen extends Screen {
         LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
         BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
         BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
-        MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
+        MAKE_MAP_TOOLTIP = new TranslatableComponent("gui.strange.journal.make_map_tooltip");
         NO_QUESTS = new TranslatableComponent("gui.strange.journal.no_quests");
         NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
         NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
@@ -383,5 +384,6 @@ public abstract class JournalScreen extends Screen {
         QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");
         SAVE = new TranslatableComponent("gui.strange.journal.save");
         TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
+        TAKE_PHOTO_TOOLTIP = new TranslatableComponent("gui.strange.journal.take_photo_tooltip");
     }
 }

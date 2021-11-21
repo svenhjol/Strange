@@ -6,19 +6,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.helper.*;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
@@ -34,6 +33,7 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 public class JournalBookmarkScreen extends JournalScreen {
     protected String name;
+    protected Component dimensionName;
     protected EditBox nameField;
     protected JournalBookmark bookmark;
     protected DynamicTexture photoTexture = null;
@@ -42,9 +42,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     protected int maxNameLength;
     protected int minPhotoDistance;
     protected boolean hasInitializedUpdateButtons = false;
-    protected boolean hasInitializedPhotoButtons = false;
     protected boolean hasRenderedUpdateButtons = false;
-    protected boolean hasRenderedPhotoButtons = false;
     protected boolean hasPhoto = false;
     protected List<GuiHelper.ButtonDefinition> updateButtons = new ArrayList<>();
 
@@ -56,10 +54,13 @@ public class JournalBookmarkScreen extends JournalScreen {
         this.photoFailureRetries = 0;
         this.maxNameLength = 50;
         this.minPhotoDistance = 10;
+        this.dimensionName = new TranslatableComponent("gui.strange.journal.dimension", StringHelper.snakeToPretty(this.bookmark.getDimension().getPath(), true));
 
         this.bottomNavButtons.add(
             new GuiHelper.ImageButtonDefinition(b -> delete(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP)
         );
+
+        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
     }
 
     @Override
@@ -86,30 +87,32 @@ public class JournalBookmarkScreen extends JournalScreen {
         this.children.add(nameField);
         setFocused(nameField);
 
-        if (!hasInitializedUpdateButtons) {
-            // add a back button at the bottom
-            bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
+        ClientHelper.getPlayer().ifPresent(player -> {
+            // add map icon if player has an empty map
+            if (playerCanMakeMap()) {
+                this.rightNavButtons.add(
+                    new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, MAKE_MAP_TOOLTIP)
+                );
+            }
 
-            // if player is near the bookmark, add button to take a photo
+            // add take picture icon if player is near the location
+            if (playerIsNearBookmark()) {
+                this.rightNavButtons.add(
+                    new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, TAKE_PHOTO_TOOLTIP)
+                );
+            }
+        });
+
+        if (!hasInitializedUpdateButtons) {
             if (playerIsNearBookmark()) {
                 updateButtons.add(new GuiHelper.ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
             }
-
-            // always add an icon button
             updateButtons.add(new GuiHelper.ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
-
-            // always add a save button
             updateButtons.add(new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), SAVE));
-
             hasInitializedUpdateButtons = true;
         }
 
-        if (!hasInitializedPhotoButtons) {
-            hasInitializedPhotoButtons = true;
-        }
-
         hasRenderedUpdateButtons = false;
-        hasRenderedPhotoButtons = false;
         hasPhoto = hasPhoto();
     }
 
@@ -137,16 +140,23 @@ public class JournalBookmarkScreen extends JournalScreen {
             hasRenderedUpdateButtons = true;
         }
 
+        // render dimension name for this bookmark
+        renderDimensionName(poseStack);
+
         // render coordinates and runes for this bookmark
         ClientHelper.getPlayer().ifPresent(player -> renderRunes(poseStack, player));
 
         nameField.render(poseStack, mouseX, mouseY, delta);
     }
 
+    protected void renderDimensionName(PoseStack poseStack) {
+        int top = 137;
+        GuiHelper.drawCenteredString(poseStack, font, dimensionName, midX, top, secondaryColor);
+    }
+
     protected void renderRunes(PoseStack poseStack, Player player) {
         // in creative mode just show the coordinates not the runes
         if (player.isCreative()) {
-
             BlockPos pos = bookmark.getBlockPos();
             int x = pos.getX();
             int y = pos.getY();
@@ -157,13 +167,8 @@ public class JournalBookmarkScreen extends JournalScreen {
             return;
         }
 
-        if (journal == null) {
-            return;
-        }
-
-        if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) {
-            return;
-        }
+        if (journal == null) return;
+        if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) return;
 
         String runes = bookmark.getRunes();
         String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
@@ -177,9 +182,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void renderPhoto(PoseStack poseStack) {
-        if (minecraft == null) {
-            return;
-        }
+        if (minecraft == null) return;
 
         if (photoTexture == null) {
             try {
@@ -262,12 +265,16 @@ public class JournalBookmarkScreen extends JournalScreen {
 
     protected void chooseIcon() {
         save(); // save progress before changing screen
-        if (minecraft != null)
+        if (minecraft != null) {
             minecraft.setScreen(new JournalChooseIconScreen(bookmark));
+        }
     }
 
     protected void makeMap() {
-
+        JournalsClient.sendMakeMap(bookmark);
+        if (minecraft != null) {
+            minecraft.setScreen(null);
+        }
     }
 
     protected void takePhoto() {
@@ -294,9 +301,11 @@ public class JournalBookmarkScreen extends JournalScreen {
         return photo != null && photo.exists();
     }
 
-    protected boolean playerHasEmptyMap() {
+    protected boolean playerCanMakeMap() {
         if (minecraft != null && minecraft.player != null) {
-            return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
+            if (DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
+                return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
+            }
         }
 
         return false;
@@ -304,7 +313,9 @@ public class JournalBookmarkScreen extends JournalScreen {
 
     protected boolean playerIsNearBookmark() {
         if (minecraft != null && minecraft.player != null) {
-            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
+            if (DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
+                return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
+            }
         }
 
         return false;
