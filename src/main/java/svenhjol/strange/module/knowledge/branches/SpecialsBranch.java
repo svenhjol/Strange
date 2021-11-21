@@ -3,6 +3,7 @@ package svenhjol.strange.module.knowledge.branches;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import svenhjol.charm.helper.StringHelper;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
@@ -35,7 +36,7 @@ public class SpecialsBranch extends KnowledgeBranch<Discovery, Discovery> {
 
     @Override
     public char getStartRune() {
-        return KnowledgeHelper.getCharFromRange(Knowledge.NOVICE_RUNES, 0);
+        return KnowledgeHelper.getCharFromRange(Knowledge.TIER_RUNE_SETS.get(Tier.NOVICE), 0);
     }
 
     public static SpecialsBranch load(CompoundTag tag) {

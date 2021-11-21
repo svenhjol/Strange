@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.knowledge.types.Discovery;
@@ -20,7 +21,7 @@ public class DiscoveriesBranch extends KnowledgeBranch<Discovery, Discovery> {
 
     @Override
     public char getStartRune() {
-        return KnowledgeHelper.getCharFromRange(Knowledge.NOVICE_RUNES, 2);
+        return KnowledgeHelper.getCharFromRange(Knowledge.TIER_RUNE_SETS.get(Tier.NOVICE), 2);
     }
 
     @Override

@@ -26,6 +26,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 
@@ -60,6 +61,7 @@ public class Quests extends CharmModule {
 
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
+        QuestEvents.COMPLETE.register(this::handleQuestComplete);
     }
 
     @Override
@@ -114,6 +116,10 @@ public class Quests extends CharmModule {
 
     private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {
         getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
+    }
+
+    private void handleQuestComplete(Quest quest) {
+        // TODO: rune reward here
     }
 
     private void handleRegisterCommand(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {

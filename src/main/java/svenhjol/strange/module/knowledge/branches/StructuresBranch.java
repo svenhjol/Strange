@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -23,7 +24,7 @@ public class StructuresBranch extends KnowledgeBranch<StructureFeature<?>, Resou
 
     @Override
     public char getStartRune() {
-        return KnowledgeHelper.getCharFromRange(Knowledge.APPRENTICE_RUNES, 1);
+        return KnowledgeHelper.getCharFromRange(Knowledge.TIER_RUNE_SETS.get(Tier.APPRENTICE), 1);
     }
 
     @Override

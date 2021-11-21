@@ -16,11 +16,15 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -33,16 +37,19 @@ public class Knowledge extends CharmModule {
     public static final int MAX_LENGTH = 23;
     public static final int ALPHABET_START = 97;
     public static final int ALPHABET_END = 122;
-    public static final String NOVICE_RUNES = "abcdef";
-    public static final String APPRENTICE_RUNES = "ghijkl";
-    public static final String JOURNEYMAN_RUNES = "mnopqr";
-    public static final String EXPERT_RUNES = "stuv";
-    public static final String MASTER_RUNES = "wxyz";
+    public static final Map<Tier, String> TIER_RUNE_SETS = new HashMap<>();
+
     public static long seed;
     public static KnowledgeData knowledge;
 
     @Override
     public void register() {
+        TIER_RUNE_SETS.put(Tier.NOVICE, "abcdef");
+        TIER_RUNE_SETS.put(Tier.APPRENTICE, "ghijkl");
+        TIER_RUNE_SETS.put(Tier.JOURNEYMAN, "mnopqr");
+        TIER_RUNE_SETS.put(Tier.EXPERT, "stuv");
+        TIER_RUNE_SETS.put(Tier.MASTER, "wxyz");
+
         CommandRegistrationCallback.EVENT.register(this::handleRegisterCommand);
     }
 
@@ -89,5 +96,24 @@ public class Knowledge extends CharmModule {
 
     private void handleRegisterCommand(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
         KnowledgeCommand.register(dispatcher);
+    }
+
+    public enum Tier implements ICharmEnum {
+        TEST,
+        NOVICE,
+        APPRENTICE,
+        JOURNEYMAN,
+        EXPERT,
+        MASTER;
+
+        @Nullable
+        public static Tier getByOrdinal(int o) {
+            for (Tier value : values()) {
+                if (value.ordinal() == o) {
+                    return value;
+                }
+            }
+            return null;
+        }
     }
 }

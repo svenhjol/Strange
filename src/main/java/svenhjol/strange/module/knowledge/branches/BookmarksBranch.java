@@ -4,6 +4,7 @@ import net.minecraft.nbt.Tag;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -54,6 +55,6 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
 
     @Override
     public char getStartRune() {
-        return KnowledgeHelper.getCharFromRange(Knowledge.NOVICE_RUNES, 1);
+        return KnowledgeHelper.getCharFromRange(Knowledge.TIER_RUNE_SETS.get(Tier.NOVICE), 1);
     }
 }

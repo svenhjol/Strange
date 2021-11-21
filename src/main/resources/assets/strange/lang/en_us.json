@@ -47,6 +47,7 @@
   "gui.strange.journal.no_learned_dimensions": "No dimensions",
   "gui.strange.journal.no_quests": "No quests",
   "gui.strange.journal.no_rewards": "No rewards :(",
+  "gui.strange.journal.reward_rune": "New rune",
   "gui.strange.journal.reward_item": "%s: %s",
   "gui.strange.journal.reward_levels": "Experience levels: %s",
   "gui.strange.journal.quest_satisfied": "You have completed all quest objectives!",

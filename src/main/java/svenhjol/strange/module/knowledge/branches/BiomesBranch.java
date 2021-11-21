@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 
@@ -23,7 +24,7 @@ public class BiomesBranch extends KnowledgeBranch<Biome, ResourceLocation> {
 
     @Override
     public char getStartRune() {
-        return KnowledgeHelper.getCharFromRange(Knowledge.APPRENTICE_RUNES, 0);
+        return KnowledgeHelper.getCharFromRange(Knowledge.TIER_RUNE_SETS.get(Tier.APPRENTICE), 0);
     }
 
     @Override

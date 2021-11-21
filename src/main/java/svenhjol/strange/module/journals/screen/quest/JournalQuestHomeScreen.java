@@ -10,11 +10,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.runestones.Runestones;
+import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 public class JournalQuestHomeScreen extends JournalQuestScreen {
+    private static ItemStack RUNE_ICON;
+    private static Component RUNE_LABEL;
+
     private Map<ItemStack, Integer> items;
     private int playerXp;
     private int merchantXp;
@@ -32,6 +41,7 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     private HuntComponent hunt;
     private Player player;
 
+    private final boolean showRuneReward;
     private final int rowHeight;
 
     public JournalQuestHomeScreen(Quest quest) {
@@ -49,6 +59,8 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         this.rightNavButtons.addAll(Arrays.asList(
             new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP)
         ));
+
+        showRuneReward = Strange.LOADER.isEnabled(Knowledge.class);
     }
 
     @Override
@@ -89,6 +101,7 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         top += 10;
         top = renderCompletion(poseStack, top, left, mouseX, mouseY);
         top = renderRewards(poseStack, top, left, mouseX, mouseY);
+        top = renderRuneReward(poseStack, top, left, mouseX, mouseY);
     }
 
     private int renderCompletion(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
@@ -184,6 +197,18 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         return top + 8;
     }
 
+    private int renderRuneReward(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
+        if (!showRuneReward) return top;
+        if (KnowledgeClient.getKnowledgeData().isEmpty()) return top;
+
+        if (!JournalHelper.hasLearnedAllTierRunes(quest.getTier(), journal)) {
+            itemRenderer.renderGuiItem(RUNE_ICON, left, top - 5);
+            font.draw(poseStack, RUNE_LABEL, left + 19, top, textColor);
+        }
+
+        return top;
+    }
+
     private void renderCompletionTextAndHover(PoseStack poseStack, IQuestComponent component, Component label, List<Component> hover, int left, int top, int mouseX, int mouseY) {
         font.draw(poseStack, label, left + 19, top, component.isSatisfied(player) ? completedColor : textColor);
         if (mouseX > left && mouseX < left + 19 + (label.getString().length() * 6) && mouseY > top - 5 && mouseY < top + 10) {
@@ -215,5 +240,10 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
 
     protected void pause() {
         QuestsClient.sendPauseQuest(quest);
+    }
+
+    static {
+        RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
+        RUNE_LABEL = new TranslatableComponent("gui.strange.journal.reward_rune");
     }
 }

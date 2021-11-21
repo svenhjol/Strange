@@ -21,7 +21,9 @@ import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.helper.LootHelper;
+import svenhjol.strange.module.quests.Quest;
 
 import java.io.File;
 import java.util.*;

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
@@ -64,12 +65,6 @@ public class Quest implements IQuestComponent {
         return (T)components.stream().filter(c -> c.getClass() == clazz).findFirst().orElseThrow();
     }
 
-    public void pause() {
-        owner = QuestHelper.ANY_UUID;
-        state = State.PAUSED;
-        setDirty();
-    }
-
     @Override
     public boolean start(Player player) {
         if (state == State.CREATED) {
@@ -92,8 +87,16 @@ public class Quest implements IQuestComponent {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.STARTED, getDefinitionId(), getTier());
         }
 
+        QuestEvents.START.invoker().invoke(this);
         setDirty();
         return true;
+    }
+
+    public void pause() {
+        owner = QuestHelper.ANY_UUID;
+        state = State.PAUSED;
+        QuestEvents.PAUSE.invoker().invoke(this);
+        setDirty();
     }
 
     @Override
@@ -104,6 +107,7 @@ public class Quest implements IQuestComponent {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.ABANDONED, getDefinitionId(), getTier());
         }
 
+        QuestEvents.ABANDON.invoker().invoke(this);
         getQuests().remove(this);
     }
 
@@ -115,6 +119,7 @@ public class Quest implements IQuestComponent {
             Quests.sendToast((ServerPlayer)player, QuestToast.QuestToastType.COMPLETED, getDefinitionId(), getTier());
         }
 
+        QuestEvents.COMPLETE.invoker().invoke(this);
         getQuests().remove(this);
     }
 

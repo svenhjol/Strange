@@ -204,7 +204,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         if (hasBook && hasInk && validRuneString) {
             // try and learn this if not already known
             Journals.getJournalData(player).ifPresent(journal -> {
-                JournalHelper.tryLearn(runes, journal);
+                JournalHelper.tryLearnPhrase(runes, journal);
                 Journals.sendSyncJournal(player);
             });
 
