@@ -8,7 +8,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.strange.event.QuestEvents;
+import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
@@ -115,7 +115,7 @@ public class Quest implements IQuestComponent {
             QuestEvents.COMPLETE.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        getQuests().remove(this);
+        remove(player);
     }
 
     @Override
@@ -218,6 +218,14 @@ public class Quest implements IQuestComponent {
 
     private QuestData getQuests() {
         return Quests.getQuestData().orElseThrow();
+    }
+
+    private void remove(Player player) {
+        getQuests().remove(this);
+
+        if (!player.level.isClientSide) {
+            QuestEvents.REMOVE.invoker().invoke(this, (ServerPlayer)player);
+        }
     }
 
     private enum State implements ICharmEnum {

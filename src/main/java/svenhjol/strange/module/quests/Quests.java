@@ -24,7 +24,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
-import svenhjol.strange.event.QuestEvents;
+import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
@@ -60,6 +60,7 @@ public class Quests extends CharmModule {
         QuestEvents.START.register(this::handleStartQuest);
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
+        QuestEvents.REMOVE.register(this::handleRemoveQuest);
 
         QuestCommand.init();
     }
@@ -256,9 +257,18 @@ public class Quests extends CharmModule {
     }
 
     /**
+     * When a quest is removed (from the master quest data state):
+     * - synchronise all player quest state back to the client
+     */
+    private void handleRemoveQuest(Quest quest, ServerPlayer player) {
+        syncPlayerQuests(player);
+    }
+
+    /**
      * When a quest is started:
      * - log to the last_quest list so that the same quest doesn't get recommended straight away
      * - send toast to the player
+     * - synchronise all player quest state back to the client
      */
     private void handleStartQuest(Quest quest, ServerPlayer player) {
         LinkedList<QuestDefinition> definitions = LAST_QUESTS.computeIfAbsent(player.getUUID(), a -> new LinkedList<>());
@@ -266,8 +276,8 @@ public class Quests extends CharmModule {
             definitions.pop();
         }
         definitions.push(quest.getDefinition());
-
         Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
+        syncPlayerQuests(player);
     }
 
     /**

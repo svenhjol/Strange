@@ -31,7 +31,7 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.event.QuestEvents;
+import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.helper.LootHelper;
 import svenhjol.strange.helper.MapHelper;
 import svenhjol.strange.module.knowledge.Knowledge;

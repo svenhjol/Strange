@@ -10,6 +10,10 @@ import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestHomeScreen;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.QuestsClient;
+
+import java.util.Optional;
 
 public class JournalViewer {
     private static Page lastPage;
@@ -31,7 +35,14 @@ public class JournalViewer {
             // if previous page recorded, redirect to it here
             switch (lastPage) {
                 case BOOKMARK -> screen = new JournalBookmarkScreen(lastBookmark);
-                case QUEST -> screen = new JournalQuestHomeScreen(lastQuest);
+                case QUEST -> {
+                    Optional<QuestData> quests = QuestsClient.getQuestData();
+                    if (quests.isPresent() && quests.get().has(lastQuest.getId())) {
+                        screen = new JournalQuestHomeScreen(lastQuest);
+                    } else {
+                        screen = new JournalQuestsScreen();
+                    }
+                }
                 case BIOME -> screen = new JournalBiomeScreen(lastResource);
                 case DIMENSION -> screen = new JournalDimensionScreen(lastResource);
                 case STRUCTURE -> screen = new JournalStructureScreen(lastResource);

@@ -87,6 +87,10 @@ public class QuestData extends SavedData {
         return Optional.ofNullable(quest);
     }
 
+    public boolean has(String id) {
+        return quests.containsKey(id);
+    }
+
     public void remove(Quest quest) {
         String id = quest.getId();
         quests.remove(id);
