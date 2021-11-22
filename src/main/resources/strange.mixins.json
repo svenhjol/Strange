@@ -8,13 +8,14 @@
   },
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
-    "dimensions.ConfigurableBiomeEffectsMixin",
     "dimensions.CaptureEntityCreatingPlatformMixin",
+    "dimensions.ConfigurableBiomeEffectsMixin",
     "dimensions.ConfigurableRainMixin",
     "dimensions.NoiseBasedChunkGeneratorMixin",
     "dimensions.PreventEntityCreatingPlatformMixin",
     "dimensions.PreventPlayerCreatingPlatformMixin",
-    "dimensions.WorldGenSettingsMixin"
+    "dimensions.WorldGenSettingsMixin",
+    "scrollkeepers.InteractWithVillagerMixin"
   ],
   "client": [
     "dimensions.ConfigurableHorizonHeightMixin",

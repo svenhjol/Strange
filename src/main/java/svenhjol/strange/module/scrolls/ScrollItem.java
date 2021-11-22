@@ -1,5 +1,6 @@
 package svenhjol.strange.module.scrolls;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,10 +15,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestData;
-import svenhjol.strange.module.quests.QuestDefinition;
-import svenhjol.strange.module.quests.Quests;
+import svenhjol.strange.module.quests.*;
 
 import java.util.Optional;
 import java.util.Random;
@@ -45,6 +43,12 @@ public class ScrollItem extends CharmItem {
         }
 
         ServerPlayer serverPlayer = (ServerPlayer) player;
+        QuestData quests = Quests.getQuestData().orElseThrow();
+        if (quests.getAll(serverPlayer).size() >= QuestHelper.MAX_QUESTS) {
+            player.displayClientMessage(new TranslatableComponent("gui.strange.quests.max_reached"), true);
+            return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
+        }
+
         String questId = getScrollQuest(scroll);
         float difficulty = getScrollDifficulty(scroll);
 
@@ -61,7 +65,6 @@ public class ScrollItem extends CharmItem {
             quest.start(player);
 
         } else {
-            QuestData quests = Quests.getQuestData().orElseThrow();
             Optional<Quest> quest = quests.get(questId);
 
             if (quest.isEmpty()) {

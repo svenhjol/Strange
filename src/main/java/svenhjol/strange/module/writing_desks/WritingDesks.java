@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, priority = 10)
 public class WritingDesks extends CharmModule {
     public static final ResourceLocation WRITING_DESK_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "writing_desk");
 
