@@ -143,6 +143,7 @@ public class RunestoneHelper {
         discovery.setDecay(decay);
         discovery.setDimension(dimension);
 
+        LogHelper.debug(RunestoneHelper.class, "Adding discovery to server knowledge.  Runes = " + runes + ", Location = " + id);
         knowledge.discoveries.add(runes, discovery);
         knowledge.setDirty();
 
