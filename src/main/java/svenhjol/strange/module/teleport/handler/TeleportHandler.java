@@ -25,6 +25,7 @@ import svenhjol.strange.module.runestones.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.ITicket;
 import svenhjol.strange.module.teleport.Teleport;
+import svenhjol.strange.module.teleport.helper.TeleportHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +52,11 @@ public abstract class TeleportHandler<V> {
         this.branch = branch;
     }
 
-    public void setup(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
+    public boolean setup(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
+        if (!branch.has(runes)) {
+            return false;
+        }
+
         this.entity = entity;
         this.sacrifice = sacrifice;
         this.runes = runes;
@@ -60,6 +65,8 @@ public abstract class TeleportHandler<V> {
         this.value = branch.get(runes).orElseThrow();
         this.maxDistance = Teleport.maxDistance;
         this.originDimension = this.entity.level.dimension().location();
+
+        return true;
     }
 
     public abstract void process();
@@ -97,7 +104,7 @@ public abstract class TeleportHandler<V> {
             LogHelper.debug(this.getClass(), "Invalid sacrificial item, doing Bad Things");
             float f = random.nextFloat();
             if (f < 0.1F) {
-                level.explode(null, originPos.getX() + 0.5D, originPos.getY(), originPos.getZ() + 0.5D, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
+                TeleportHelper.explode(level, originPos, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
             } else if (f < 0.4F) {
                 entity.setSecondsOnFire(5);
             } else if (f < 0.8F) {
@@ -121,7 +128,7 @@ public abstract class TeleportHandler<V> {
 
     private void onFail(ITicket ticket) {
         LogHelper.warn(this.getClass(), "Teleport ticket failed, blowing up the origin");
-        level.explode(null, originPos.getX() + 0.5D, originPos.getY(), originPos.getZ() + 0.5D, 2.0F, Explosion.BlockInteraction.BREAK);
+        TeleportHelper.explode(level, originPos, 2.0F, Explosion.BlockInteraction.BREAK);
     }
 
     private void applyNegativeEffect(Random random) {

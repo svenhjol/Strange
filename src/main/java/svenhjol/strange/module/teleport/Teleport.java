@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
@@ -18,6 +19,7 @@ import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.handler.*;
+import svenhjol.strange.module.teleport.helper.TeleportHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +55,18 @@ public class Teleport extends CharmModule {
     }
 
     private void handleActivateRunestone(ServerPlayer player, BlockPos origin, String runes, ItemStack sacrifice) {
-        tryTeleport(player, runes, sacrifice, origin);
+        if (!tryTeleport(player, runes, sacrifice, origin)) {
+            LogHelper.warn(this.getClass(), "Runestone activation failed");
+            TeleportHelper.explode((ServerLevel)player.level, origin, 2.0F, Explosion.BlockInteraction.BREAK);
+        }
     }
 
     private void handleActivateRunicTome(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice) {
         String runes = RunicTomeItem.getRunes(tome);
-        tryTeleport(player, runes, sacrifice, origin);
+        if (!tryTeleport(player, runes, sacrifice, origin)) {
+            LogHelper.warn(this.getClass(), "Runic tome activation failed");
+            TeleportHelper.explode((ServerLevel)player.level, origin, 2.0F, Explosion.BlockInteraction.BREAK);
+        }
     }
 
     private boolean tryTeleport(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {
@@ -81,7 +89,9 @@ public class Teleport extends CharmModule {
             return false;
         }
 
-        handler.setup(level, player, sacrifice, runes, origin);
+        boolean result = handler.setup(level, player, sacrifice, runes, origin);
+        if (!result) return false;
+
         handler.process();
         return true;
     }
