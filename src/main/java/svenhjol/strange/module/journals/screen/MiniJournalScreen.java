@@ -9,7 +9,9 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.enums.ICharmEnum;
@@ -18,12 +20,14 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -55,6 +59,7 @@ public class MiniJournalScreen {
 
     public static final ResourceLocation CLOSED = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal.png");
     public static final ResourceLocation OPEN = new ResourceLocation(Strange.MOD_ID, "textures/gui/mini_journal_open.png");
+    public static final Component INCORRECT_DIMENSION;
 
     public MiniJournalScreen(Screen screen) {
         this.screen = screen;
@@ -198,9 +203,7 @@ public class MiniJournalScreen {
         renderTitle(poseStack, JournalScreen.BOOKMARKS, midY - 94);
 
         if (selectedBookmark != null) {
-            if (!DimensionHelper.isDimension(player.level, selectedBookmark.getDimension())) {
-                return;
-            }
+            if (!DimensionHelper.isDimension(player.level, selectedBookmark.getDimension())) return;
 
             renderBackButton(b -> {
                 selectedBookmark = null;
@@ -214,17 +217,25 @@ public class MiniJournalScreen {
             KnowledgeClient.renderRunesString(minecraft, poseStack, selectedBookmark.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
+
             AtomicInteger y = new AtomicInteger(midY - 78);
             Consumer<JournalBookmark> renderItem = bookmark -> {
+                TextComponent bookmarkName = new TextComponent(bookmark.getName());
                 String name = getTruncatedName(bookmark.getName(), 14);
                 itemRenderer.renderGuiItem(bookmark.getIcon(), journalMidX - (buttonWidth / 2) - 12, y.get() + 2);
 
                 if (!hasRenderedButtons) {
-                    Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), b -> {
+                    boolean correctDimension = DimensionHelper.isDimension(player.level, bookmark.getDimension());
+
+                    // generate the button
+                    Button.OnTooltip tooltip = (b, p, i, j) -> screen.renderTooltip(p, correctDimension ? bookmarkName : INCORRECT_DIMENSION, i, j);
+                    Button.OnPress press = b -> {
                         selectedBookmark = bookmark;
                         redraw();
-                    });
-                    if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) {
+                    };
+                    Button button = new Button(midX - (buttonWidth / 2) - 82, y.get(), buttonWidth, buttonHeight, new TextComponent(name), press, tooltip);
+
+                    if (!correctDimension) {
                         button.active = false;
                     }
                     screen.addRenderableWidget(button);
@@ -331,5 +342,9 @@ public class MiniJournalScreen {
         BIOMES,
         STRUCTURES,
         DIMENSIONS
+    }
+
+    static {
+        INCORRECT_DIMENSION = new TranslatableComponent("gui.strange.journal.incorrect_dimension");
     }
 }
