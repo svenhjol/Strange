@@ -199,6 +199,7 @@ public class Quests extends CharmModule {
 
             for (int tier = 0; tier < NUM_TIERS; tier++) {
                 Collection<ResourceLocation> definitions = manager.listResources(DEFINITION_FOLDER + "/" + TIER_NAMES.get(tier), file -> file.endsWith(".json"));
+                LogHelper.debug(this.getClass(), "Tier " + tier + " has " + definitions.size());
                 for (ResourceLocation resource : definitions) {
                     try {
                         QuestDefinition definition = QuestDefinition.deserialize(manager.getResource(resource));
@@ -232,7 +233,7 @@ public class Quests extends CharmModule {
                         definition.setTier(tier);
 
                         DEFINITIONS.computeIfAbsent(tier, a -> new HashMap<>()).put(id, definition);
-                        LogHelper.debug(this.getClass(), "Loaded quest definition " + resource + " for tier " + tier);
+                        LogHelper.debug(this.getClass(), "Loaded definition " + resource);
                     } catch (Exception e) {
                         LogHelper.warn(this.getClass(), "Could not load quest definition for " + resource.toString() + ": " + e.getMessage());
                     }
