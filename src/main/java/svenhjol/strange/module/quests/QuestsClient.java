@@ -13,7 +13,6 @@ import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
@@ -104,7 +103,6 @@ public class QuestsClient extends CharmModule {
         CompoundTag tag = buffer.readNbt();
         if (tag != null) {
             quests = QuestData.fromNbt(tag);
-            LogHelper.debug(this.getClass(), "Updated all client quest data");
         }
     }
 }

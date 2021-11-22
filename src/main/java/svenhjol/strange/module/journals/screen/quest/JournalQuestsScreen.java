@@ -25,6 +25,9 @@ public class JournalQuestsScreen extends JournalScreen {
 
     public JournalQuestsScreen() {
         super(QUESTS);
+
+        // ask server to update quests on the client
+        QuestsClient.sendSyncQuests();
     }
 
     @Override

@@ -39,6 +39,9 @@ public abstract class JournalQuestScreen extends JournalScreen {
         COMPLETED_DISCOVER_ICON.enchant(Enchantments.UNBREAKING, 1);
         COMPLETED_DEFEAT_ICON.enchant(Enchantments.UNBREAKING, 1);
 
+        // ask server to update quests on the client
+        QuestsClient.sendSyncQuests();
+
         JournalViewer.viewedQuest(this.quest);
     }
 

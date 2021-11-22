@@ -19,7 +19,6 @@ import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.quests.QuestData;
-import svenhjol.strange.module.quests.QuestsClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,9 +161,6 @@ public abstract class JournalScreen extends Screen {
 
         // ask server to update knowledge on the client
         KnowledgeClient.sendSyncKnowledge();
-
-        // ask server to update quests on the client
-        QuestsClient.sendSyncQuests();
     }
 
     @Override
