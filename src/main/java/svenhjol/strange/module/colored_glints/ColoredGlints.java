@@ -57,6 +57,10 @@ public class ColoredGlints extends CharmModule {
         return glintColor;
     }
 
+    public static DyeColor getDefaultGlintColor() {
+        return DyeColor.valueOf(glintColor.toUpperCase(Locale.ROOT));
+    }
+
     public static boolean enabled() {
         return enabled;
     }
