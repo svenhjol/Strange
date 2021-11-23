@@ -1,5 +1,7 @@
 package svenhjol.strange.module.experience_bottles;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -12,16 +14,17 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-public class ExperienceBottleProjectile extends ThrowableItemProjectile {
-    public ExperienceBottleProjectile(EntityType<? extends ExperienceBottleProjectile> entityType, Level level) {
+public class ExperienceBottleEntity extends ThrowableItemProjectile {
+    public ExperienceBottleEntity(EntityType<? extends ExperienceBottleEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public ExperienceBottleProjectile(Level level, LivingEntity livingEntity) {
+    public ExperienceBottleEntity(Level level, LivingEntity livingEntity) {
         super(ExperienceBottles.EXPERIENCE_BOTTLE, livingEntity, level);
     }
 
-    public ExperienceBottleProjectile(Level level, double d, double e, double f) {
+    @Environment(EnvType.CLIENT)
+    public ExperienceBottleEntity(Level level, double d, double e, double f) {
         super(ExperienceBottles.EXPERIENCE_BOTTLE, d, e, f, level);
     }
 

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": { "model": "strange:block/glowball_blob"},
+    "facing=down": { "model": "strange:block/glowball_blob", "x": 180 },
+    "facing=north": { "model": "strange:block/glowball_blob", "x": 90, "y": 0, "uvlock": true },
+    "facing=east": { "model": "strange:block/glowball_blob", "x": 90, "y": 90, "uvlock": true },
+    "facing=south": { "model": "strange:block/glowball_blob", "x": 90, "y": 180, "uvlock": true },
+    "facing=west": { "model": "strange:block/glowball_blob", "x": 90, "y": 270, "uvlock": true }
+  }
+}

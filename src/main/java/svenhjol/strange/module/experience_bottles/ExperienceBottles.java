@@ -41,7 +41,7 @@ public class ExperienceBottles extends CharmModule {
     public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottles_loot");
     public static final Map<Type, ExperienceBottleItem> EXPERIENCE_BOTTLES = new HashMap<>();
 
-    public static EntityType<ExperienceBottleProjectile> EXPERIENCE_BOTTLE;
+    public static EntityType<ExperienceBottleEntity> EXPERIENCE_BOTTLE;
     public static LootItemFunctionType LOOT_FUNCTION;
 
     private final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ExperienceBottles extends CharmModule {
 
         // create and register the entity
         EXPERIENCE_BOTTLE = RegistryHelper.entity(ENTITY_ID, FabricEntityTypeBuilder
-            .<ExperienceBottleProjectile>create(MobCategory.MISC, ExperienceBottleProjectile::new)
+            .<ExperienceBottleEntity>create(MobCategory.MISC, ExperienceBottleEntity::new)
             .trackRangeChunks(4)
             .trackedUpdateRate(10)
             .dimensions(EntityDimensions.fixed(0.25F, 0.25F)));
@@ -68,7 +68,7 @@ public class ExperienceBottles extends CharmModule {
             DispenserBlock.registerBehavior(bottle, new AbstractProjectileDispenseBehavior() {
                 @Override
                 protected Projectile getProjectile(Level level, Position pos, ItemStack itemStack) {
-                    return Util.make(new ExperienceBottleProjectile(level, pos.x(), pos.y(), pos.z()), e -> e.setItem(itemStack));
+                    return Util.make(new ExperienceBottleEntity(level, pos.x(), pos.y(), pos.z()), e -> e.setItem(itemStack));
                 }
             });
         }

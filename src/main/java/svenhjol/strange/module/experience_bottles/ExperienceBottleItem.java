@@ -48,7 +48,7 @@ public class ExperienceBottleItem extends CharmItem {
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_BOTTLE_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
         if (!level.isClientSide) {
-            ExperienceBottleProjectile bottle = new ExperienceBottleProjectile(level, player);
+            ExperienceBottleEntity bottle = new ExperienceBottleEntity(level, player);
             bottle.setItem(held);
             bottle.shootFromRotation(player, player.getXRot(), player.getYRot(), -20F, 0.7F, 1.0F);
             level.addFreshEntity(bottle);
