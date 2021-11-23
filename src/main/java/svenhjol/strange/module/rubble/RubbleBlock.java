@@ -119,7 +119,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
                 rubble.setChanged();
                 WorldHelper.syncBlockEntityToClient((ServerLevel)level, pos);
 
-                if (random.nextFloat() < 0.85F) return InteractionResult.PASS;
+                if (random.nextFloat() < 0.8F) return InteractionResult.PASS;
                 return layer(serverLevel, pos, state, layer);
             }
 
