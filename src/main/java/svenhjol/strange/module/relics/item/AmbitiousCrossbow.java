@@ -12,16 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unused")
-public class AngeryPotato implements IRelicItem {
+public class AmbitiousCrossbow implements IRelicItem {
     @Override
     public DyeColor getColor() {
-        return DyeColor.ORANGE;
+        return DyeColor.BLACK;
     }
 
     @Override
-    public boolean isDamaged() {
-        return false;
+    public Map<Enchantment, Integer> getEnchantments() {
+        HashMap<Enchantment, Integer> map = new HashMap<>();
+        map.put(Enchantments.MULTISHOT, 1);
+        map.put(Enchantments.PIERCING, 1);
+        return map;
     }
 
     @Override
@@ -30,21 +32,13 @@ public class AngeryPotato implements IRelicItem {
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments() {
-        HashMap<Enchantment, Integer> map = new HashMap<>();
-        map.put(Enchantments.KNOCKBACK, 1);
-        map.put(Enchantments.FIRE_ASPECT, 1);
-        return map;
-    }
-
-    @Override
     public TranslatableComponent getName(ItemStack itemStack) {
-        return new TranslatableComponent("item.strange.relics.angery_potato");
+        return new TranslatableComponent("item.strange.relics.ambitious_crossbow");
     }
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.POTATO);
+        return new ItemStack(Items.CROSSBOW);
     }
 
     @Override

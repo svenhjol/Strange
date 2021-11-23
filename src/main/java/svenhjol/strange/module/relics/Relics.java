@@ -38,10 +38,26 @@ public class Relics extends CharmModule {
         "Enchantment levels are capped at level 10.")
     public static int extraLevels = 5;
 
-    @Config(name = "Items", description = "List of relic items that will be loaded. Items at the top of the list are more common.")
+    @Config(name = "Items", description = "List of relic items that will be loaded.")
     public static List<String> configItems = Arrays.asList(
+        "ambitious_crossbow",
         "angery_potato",
-        "pickaxe_relic"
+        "axe",
+        "boots",
+        "bow",
+        "chestplate",
+        "crossbow",
+        "eldritch_bow",
+        "fishing_rod",
+        "helmet",
+        "leggings",
+        "needle_sword",
+        "pickaxe",
+        "shield",
+        "shovel",
+        "sword",
+        "trident",
+        "wyvern_axe"
     );
 
     @Override

@@ -19,7 +19,7 @@ public interface IRelicItem {
 
     ItemStack getItemStack();
 
-    int getMaxAdditionalLevels();
+    int getMaxAdditionalLevels(Enchantment enchantment);
 
     default boolean isDamaged() {
         return true;
@@ -53,7 +53,14 @@ public interface IRelicItem {
 
         Enchantment enchantment = optionalEnchantment.get();
 
-        int newLevel = Math.min(MAX_ENCHANT_LEVEL, enchantment.getMaxLevel() + random.nextInt(getMaxAdditionalLevels()) + 1);
+        int newLevel;
+        int maxAdditionalLevels = getMaxAdditionalLevels(enchantment);
+        if (maxAdditionalLevels > 0) {
+            newLevel = Math.min(MAX_ENCHANT_LEVEL, enchantment.getMaxLevel() + random.nextInt(maxAdditionalLevels) + 1);
+        } else {
+            newLevel = enchantment.getMaxLevel();
+        }
+
         map.put(enchantment, newLevel);
         return map;
     }
