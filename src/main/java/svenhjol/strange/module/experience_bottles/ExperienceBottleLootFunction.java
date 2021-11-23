@@ -33,6 +33,8 @@ public class ExperienceBottleLootFunction extends LootItemConditionalFunction {
         ExperienceBottles.Type type;
         Random random = context.getRandom();
 
+        if (ExperienceBottles.EXPERIENCE_BOTTLES.isEmpty()) return stack;
+
         if (random.nextFloat() < 0.1F) {
             type = ExperienceBottles.Type.GREATEST;
         } else {

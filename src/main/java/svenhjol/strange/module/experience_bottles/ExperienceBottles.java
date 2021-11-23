@@ -29,7 +29,6 @@ import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.rubble.Rubble;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,10 +37,11 @@ import java.util.Map;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class ExperienceBottles extends CharmModule {
-    public static Map<Type, ExperienceBottleItem> EXPERIENCE_BOTTLES = new HashMap<>();
+    public static final ResourceLocation ENTITY_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottle");
+    public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottles_loot");
+    public static final Map<Type, ExperienceBottleItem> EXPERIENCE_BOTTLES = new HashMap<>();
+
     public static EntityType<ExperienceBottleProjectile> EXPERIENCE_BOTTLE;
-    public static ResourceLocation ENTITY_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottle");
-    public static ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottles_loot");
     public static LootItemFunctionType LOOT_FUNCTION;
 
     private final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
@@ -77,7 +77,7 @@ public class ExperienceBottles extends CharmModule {
     @Override
     public void runWhenEnabled() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
-        VALID_LOOT_TABLES.add(Rubble.LOOT);
+//        VALID_LOOT_TABLES.add(Rubble.LOOT);
     }
 
     private void handleLootTables(ResourceManager manager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
