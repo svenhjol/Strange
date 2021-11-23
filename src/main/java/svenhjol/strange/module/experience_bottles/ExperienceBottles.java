@@ -93,7 +93,7 @@ public class ExperienceBottles extends CharmModule {
     }
 
     public enum Type implements ICharmEnum {
-        GREATER(12000, Rarity.UNCOMMON, DyeColor.LIME),
+        GREATER(1200, Rarity.UNCOMMON, DyeColor.LIME),
         GREATEST(12000, Rarity.RARE, DyeColor.BLUE);
 
         private final int orbs;
