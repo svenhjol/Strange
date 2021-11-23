@@ -110,7 +110,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
                 // test to see if it can be levelled
                 long levelTicks = rubble.getLayerTicks();
                 boolean shovel = held.getItem() instanceof ShovelItem;
-                boolean waited = levelTicks > 0 && serverLevel.getGameTime() - levelTicks > 10;
+                boolean waited = levelTicks > 0 && serverLevel.getGameTime() - levelTicks > 200;
 
                 if (waited || !shovel) {
                     return fail(serverLevel, pos);
@@ -160,7 +160,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
         if (list.isEmpty()) return false;
 
         ItemStack stack;
-        if (list.size() == 1 || random.nextFloat() < 0.5F) {
+        if (list.size() == 1 || random.nextFloat() < 0.33F) {
             // fetch from the default loot table
             stack = list.get(0);
         } else {
@@ -186,9 +186,8 @@ public class RubbleBlock extends CharmBlockWithEntity {
 
     private InteractionResult fail(ServerLevel level, BlockPos pos) {
         level.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 0.9F, 0.9F);
-        level.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.65F, 1.17F);
+        level.playSound(null, pos, SoundEvents.CORAL_BLOCK_BREAK, SoundSource.BLOCKS, 0.75F, 1.17F);
 
-        dropItem(level, pos, new ItemStack(Blocks.GRAVEL));
         level.removeBlockEntity(pos);
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 
