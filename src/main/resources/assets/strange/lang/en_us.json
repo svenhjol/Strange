@@ -24,6 +24,8 @@
   "container.strange.writing_desk": "Writing Desk",
   "entity.minecraft.villager.strange_scrollkeeper": "Scrollkeeper",
   "entity.strange.villager.strange_scrollkeeper": "Scrollkeeper",
+  "entity.strange.greater_experience_bottle": "Thrown Bottle o' Greater Enchanting",
+  "entity.strange.greatest_experience_bottle": "Thrown Bottle o' Greatest Enchanting",
   "gui.strange.journal.abandon_tooltip": "Abandon this quest",
   "gui.strange.journal.pause_tooltip": "Write quest back to a scroll",
   "gui.strange.journal.add_bookmark": "Add bookmark",
@@ -115,5 +117,7 @@
   "item.strange.apprentice_scroll": "Apprentice Scroll",
   "item.strange.journeyman_scroll": "Journeyman Scroll",
   "item.strange.expert_scroll": "Expert Scroll",
-  "item.strange.master_scroll": "Master Scroll"
+  "item.strange.master_scroll": "Master Scroll",
+  "item.strange.greater_experience_bottle": "Bottle o' Greater Enchanting",
+  "item.strange.greatest_experience_bottle": "Bottle o' Greatest Enchanting"
 }
