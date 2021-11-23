@@ -6,6 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.potent_potions.IPotionItem;
+import svenhjol.strange.module.potion_of_spelunking.PotionOfSpelunking;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +24,8 @@ public class MinersDelight implements IPotionItem {
     public List<MobEffectInstance> getEffects() {
         List<MobEffectInstance> effects = IPotionItem.super.getEffects();
 
-        if (Strange.LOADER.isEnabled("strange:potion_of_spelunking")) {
-            // TODO: add spelunking effect here
+        if (Strange.LOADER.isEnabled(PotionOfSpelunking.class)) {
+            effects.add(new MobEffectInstance(PotionOfSpelunking.SPELUNKING_EFFECT, (getMinDuration() / 5) * 20));
         }
 
         return effects;
