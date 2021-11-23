@@ -13,52 +13,38 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.helper.ClassHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.RegistryHelper;
-import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.rubble.Rubble;
 
-import java.lang.reflect.Constructor;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Relics extends CharmModule {
+    public static final String ITEM_NAMESPACE = "svenhjol.strange.module.relics.item";
     public static final List<IRelicItem> RELICS = new ArrayList<>();
+    public static final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
     public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "relics_loot");
     public static LootItemFunctionType LOOT_FUNCTION;
-
-    private final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
 
     @Config(name = "Additional levels", description = "Number of levels above the enchantment maximum level that can be applied to relics.\n" +
         "Enchantment levels are capped at level 10.")
     public static int extraLevels = 5;
 
-    @Config(name = "Items", description = "List of relic items that will be loaded.")
-    public static List<String> configItems = Arrays.asList(
-        "ambitious_crossbow",
-        "angery_potato",
-        "axe",
-        "boots",
-        "bow",
-        "chestplate",
-        "crossbow",
-        "eldritch_bow",
-        "fishing_rod",
-        "helmet",
-        "leggings",
-        "needle_sword",
-        "pickaxe",
-        "shield",
-        "shovel",
-        "sword",
-        "trident",
-        "wyvern_axe"
+    @Config(name = "Loot tables", description = "List of loot tables to add Relics to.")
+    public static List<String> configLootTables = Arrays.asList(
+        "strange:gameplay/rubble" // TODO: temporary
     );
+
+    @Config(name = "Blacklist", description = "List of relic items that will not be loaded. See wiki for details.")
+    public static List<String> configBlacklist = new ArrayList<>();
 
     @Override
     public void register() {
@@ -68,21 +54,28 @@ public class Relics extends CharmModule {
     @Override
     public void runWhenEnabled() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
-        VALID_LOOT_TABLES.add(Rubble.LOOT);
 
-        String namespace = "svenhjol.strange.module.relics.item.";
+        try {
+            List<String> classes = ClassHelper.getClassesInPackage(ITEM_NAMESPACE);
+            for (String className : classes) {
+                String simpleClassName = className.substring(className.lastIndexOf(".") + 1);
+                try {
+                    Class<?> clazz = Class.forName(className);
+                    if (configBlacklist.contains(simpleClassName)) continue;
 
-        for (String itemName : configItems) {
-            try {
-                String className = StringHelper.snakeToUpperCamel(itemName);
-                Class<?> clazz = Class.forName(namespace + className);
-                Constructor<?> constructor = clazz.getDeclaredConstructor();
-                IRelicItem item = (IRelicItem)constructor.newInstance();
-                RELICS.add(item);
-                LogHelper.debug(getClass(), "Loaded relic: " + itemName);
-            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                LogHelper.warn(getClass(), "Relic `" + itemName + "` failed to load: " + e.getMessage());
+                    IRelicItem item = (IRelicItem) clazz.getDeclaredConstructor().newInstance();
+                    RELICS.add(item);
+                    LogHelper.debug(getClass(), "Loaded relic: " + simpleClassName);
+                } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                    LogHelper.warn(getClass(), "Relic `" + simpleClassName + "` failed to load: " + e.getMessage());
+                }
             }
+        } catch (IOException | URISyntaxException e) {
+            LogHelper.error(getClass(), "Failed to load classes from namespace: " + e.getMessage());
+        }
+
+        for (String lootTable : configLootTables) {
+            VALID_LOOT_TABLES.add(new ResourceLocation(lootTable));
         }
     }
 
@@ -90,7 +83,7 @@ public class Relics extends CharmModule {
         if (VALID_LOOT_TABLES.contains(id)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantValue.exactly(1))
-                .with(LootItem.lootTableItem(Items.AIR)
+                .with(LootItem.lootTableItem(Items.DIAMOND_SWORD)
                     .setWeight(1)
                     .apply(() -> new RelicsLootFunction(new LootItemCondition[0])));
 
