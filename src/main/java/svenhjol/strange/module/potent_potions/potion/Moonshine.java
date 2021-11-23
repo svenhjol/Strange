@@ -21,8 +21,8 @@ public class Moonshine implements IPotionItem {
     @Override
     public List<MobEffectInstance> getEffects() {
         List<MobEffectInstance> effects = IPotionItem.super.getEffects();
-        effects.add(new MobEffectInstance(MobEffects.BLINDNESS, (getMinDuration() / 3) * 20, 0));
-        effects.add(new MobEffectInstance(MobEffects.CONFUSION, (getMinDuration() / 3) * 20, 0));
+        effects.add(new MobEffectInstance(MobEffects.BLINDNESS, (getMinDuration() / 4) * 20, 0));
+        effects.add(new MobEffectInstance(MobEffects.CONFUSION, (getMinDuration() / 4) * 20, 0));
         return effects;
     }
 
