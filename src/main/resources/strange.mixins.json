@@ -18,6 +18,10 @@
     "scrollkeepers.InteractWithVillagerMixin"
   ],
   "client": [
+    "colored_glints.GetArmorStackMixin",
+    "colored_glints.GetCustomRenderLayersMixin",
+    "colored_glints.GetElytraMixin",
+    "colored_glints.GetItemMixin",
     "dimensions.ConfigurableHorizonHeightMixin",
     "dimensions.ConfigurablePrecipitationRenderingMixin",
     "helper.DisableExperimentalDialogMixin"
