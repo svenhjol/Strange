@@ -34,7 +34,7 @@ public class ExperienceBottleItem extends CharmItem {
 
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (enabled()) {
+        if (enabled() && allowdedIn(group)) {
             ItemStack stack = new ItemStack(this);
             ColoredGlints.applyColoredGlint(stack, type.getColor().getSerializedName());
             items.add(stack);
