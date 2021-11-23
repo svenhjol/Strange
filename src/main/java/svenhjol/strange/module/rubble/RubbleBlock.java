@@ -119,7 +119,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
                 rubble.setChanged();
                 WorldHelper.syncBlockEntityToClient((ServerLevel)level, pos);
 
-                if (random.nextFloat() < 0.9F) return InteractionResult.PASS;
+                if (random.nextFloat() < 0.85F) return InteractionResult.PASS;
                 return layer(serverLevel, pos, state, layer);
             }
 
@@ -160,7 +160,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
         if (list.isEmpty()) return false;
 
         ItemStack stack;
-        if (list.size() == 1 || random.nextFloat() < 0.44F) {
+        if (list.size() == 1 || random.nextFloat() < 0.5F) {
             // fetch from the default loot table
             stack = list.get(0);
         } else {
