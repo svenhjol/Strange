@@ -15,6 +15,8 @@
     "dimensions.PreventEntityCreatingPlatformMixin",
     "dimensions.PreventPlayerCreatingPlatformMixin",
     "dimensions.WorldGenSettingsMixin",
+    "potion_of_hogsbane.PreventAttackingAiMixin",
+    "potion_of_hogsbane.PreventAttackingHoglinMixin",
     "scrollkeepers.InteractWithVillagerMixin"
   ],
   "client": [
