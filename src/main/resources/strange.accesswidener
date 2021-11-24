@@ -19,6 +19,7 @@ accessible  method net/minecraft/client/gui/Font drawInternal (Lnet/minecraft/ut
 accessible  method net/minecraft/world/entity/npc/Villager shouldIncreaseLevel ()Z
 accessible  method net/minecraft/world/entity/npc/Villager increaseMerchantCareer ()V
 accessible  method net/minecraft/world/entity/monster/hoglin/HoglinAi setAvoidTarget (Lnet/minecraft/world/entity/monster/hoglin/Hoglin;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible  method net/minecraft/world/item/BundleItem getContents (Lnet/minecraft/world/item/ItemStack;)Ljava/util/stream/Stream;
 
 # Inaccessible fields
 accessible  field net/minecraft/client/renderer/RenderBuffers fixedBuffers Ljava/util/SortedMap;
