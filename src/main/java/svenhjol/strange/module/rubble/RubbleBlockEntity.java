@@ -3,18 +3,11 @@ package svenhjol.strange.module.rubble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
-import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.block.CharmSyncedBlockEntity;
 
-public class RubbleBlockEntity extends BlockEntity {
+public class RubbleBlockEntity extends CharmSyncedBlockEntity {
     public static final String TAG_ITEM = "item";
     public static final String TAG_LAYERTICKS = "layerticks";
 
@@ -64,28 +57,5 @@ public class RubbleBlockEntity extends BlockEntity {
         }
 
         tag.putLong(TAG_LAYERTICKS, layerTicks);
-    }
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
-        Level level = getLevel();
-
-        if (level != null && !level.isClientSide) {
-            WorldHelper.syncBlockEntityToClient((ServerLevel)level, getBlockPos());
-        }
-    }
-
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, BlockEntity::getUpdateTag);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag updateTag = new CompoundTag();
-        this.saveAdditional(updateTag);
-        return updateTag;
     }
 }

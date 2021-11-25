@@ -1,4 +1,13 @@
 {
+  "cask": {
+    "category": "blocks",
+    "sounds": [
+      "strange:cask1",
+      "strange:cask2",
+      "strange:cask3",
+      "strange:cask4"
+    ]
+  },
   "runestone_travel": {
     "category": "players",
     "sounds": [
