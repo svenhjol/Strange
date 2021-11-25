@@ -265,6 +265,7 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
                     player.connection.send(updatePacket);
                 }
             }
+            // TODO: is this needed now?
 //            BlockState state = level.getBlockState(worldPosition);
 //            level.sendBlockUpdated(worldPosition, state, state, 1);
         }
