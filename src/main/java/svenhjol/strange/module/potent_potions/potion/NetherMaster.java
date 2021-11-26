@@ -26,7 +26,7 @@ public class NetherMaster implements IPotionItem {
         List<MobEffectInstance> effects = IPotionItem.super.getEffects();
 
         if (Strange.LOADER.isEnabled(PotionOfHogsbane.class)) {
-            effects.add(new MobEffectInstance(PotionOfHogsbane.HOGSBANE_EFFECT, getMaxDuration(), 0));
+            effects.add(new MobEffectInstance(PotionOfHogsbane.HOGSBANE_EFFECT, getMaxDuration() * 20, 0));
         }
 
         return effects;
