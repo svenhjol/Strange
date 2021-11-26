@@ -7,6 +7,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -91,13 +92,30 @@ public class MixedStewItem extends CharmItem {
         stack.getOrCreateTag().putFloat(TAG_SATURATION, saturation);
     }
 
+    public static int getQuality(ItemStack stack) {
+        float quality = getSaturation(stack);
+        if (quality > 0) {
+            quality /= 2.0F;
+        }
+
+        if (quality % 2 == 1) {
+            quality -= 1;
+        }
+
+        return (int)Mth.clamp(quality, 0, 8);
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag context) {
+        int quality = getQuality(stack);
+        tooltip.add(new TranslatableComponent("item.strange.mixed_stew.quality" + quality).withStyle(ChatFormatting.GOLD));
+
         ClientHelper.getClient().ifPresent(client -> {
             if (client.options.advancedItemTooltips) {
                 tooltip.add(new TranslatableComponent("item.strange.mixed_stew.saturation", getSaturation(stack)).withStyle(ChatFormatting.GOLD));
             }
         });
+
         PotionUtils.addPotionTooltip(stack, tooltip, 0.25F);
     }
 }

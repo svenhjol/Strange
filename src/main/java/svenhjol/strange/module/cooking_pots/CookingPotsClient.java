@@ -4,13 +4,13 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,20 +18,22 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.loader.CharmModule;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.WeakHashMap;
 
 @ClientModule(module = CookingPots.class)
 public class CookingPotsClient extends CharmModule {
-    private final Map<List<ResourceLocation>, List<Item>> cachedItems = new WeakHashMap<>();
+    public static final ResourceLocation MIXED_STEW_QUALITY = new ResourceLocation("mixed_stew_quality");
 
     @Override
     public void register() {
         ColorProviderRegistry.BLOCK.register(this::handleColorProvider, CookingPots.COOKING_POT);
         BlockEntityRendererRegistry.register(CookingPots.BLOCK_ENTITY, CookingPotBlockEntityRenderer::new);
         ClientPlayNetworking.registerGlobalReceiver(CookingPots.MSG_CLIENT_ADDED_TO_POT, this::handleClientAddedToPot);
+
+        ModelPredicateProviderRegistryAccessor.callRegister(MIXED_STEW_QUALITY, ((stack, level, entity, i) -> {
+            int quality = MixedStewItem.getQuality(stack);
+            return quality / 10.0F;
+        }));
     }
 
     private int handleColorProvider(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {

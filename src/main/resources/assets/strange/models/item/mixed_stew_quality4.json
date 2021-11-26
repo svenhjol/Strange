@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "strange:item/mixed_stew/mixed_stew_quality4"
+  }
+}

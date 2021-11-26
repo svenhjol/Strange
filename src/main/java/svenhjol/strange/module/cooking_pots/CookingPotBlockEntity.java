@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.init.StrangeSounds;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -181,7 +183,7 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
             float sr = saturation * hr;
             int newHunger = hunger - CookingPots.hungerRestored;
             float newSaturation = Math.round((saturation - sr) * 10.0) / 10.0F;
-            float stewSaturation = Math.max(2F, 2 * (Math.round(sr/2)));
+            float stewSaturation = Math.min(20, Math.max(0F, 2 * (Math.round(sr/2))));
 
             LogHelper.debug(this.getClass(), "Set pot hunger from " + hunger + " to " + newHunger + " (hr = " + hr + ")");
             LogHelper.debug(this.getClass(), "Set pot saturation from " + saturation + " to " + newSaturation + " (sr = " + sr + ")");
@@ -218,9 +220,10 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
         return (int)Math.floor(hunger / (float) CookingPots.hungerRestored);
     }
 
-    public static <T extends CookingPotBlockEntity> void tick(Level level, BlockPos pos, BlockState state, T cookingPot) {
+    public static <T extends CookingPotBlockEntity> void tick(Level level, BlockPos pos, BlockState state, T pot) {
         if (level == null || level.getGameTime() % 20 == 0) return;
 
+        Random random = level.getRandom();
         BlockState belowState = level.getBlockState(pos.below());
         Block belowBlock = belowState.getBlock();
 
@@ -238,6 +241,17 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
             if (state.getValue(CookingPotBlock.HAS_FIRE)) {
                 level.setBlock(pos, state.setValue(CookingPotBlock.HAS_FIRE, false), 3);
             }
+        }
+
+        if (random.nextInt(1000) == 0) {
+            pot.removeRandomEffect(random);
+            level.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, StrangeSounds.FERMENT, SoundSource.BLOCKS, 0.3F + (0.1F * random.nextFloat()), random.nextFloat() * 0.7F + 0.6F);
+        }
+    }
+
+    public void removeRandomEffect(Random random) {
+        if (!effects.isEmpty()) {
+            effects.remove(random.nextInt(effects.size()));
         }
     }
 

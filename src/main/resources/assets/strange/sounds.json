@@ -1,11 +1,11 @@
 {
-  "cask": {
+  "ferment": {
     "category": "blocks",
     "sounds": [
-      "strange:cask1",
-      "strange:cask2",
-      "strange:cask3",
-      "strange:cask4"
+      "strange:ferment1",
+      "strange:ferment2",
+      "strange:ferment3",
+      "strange:ferment4"
     ]
   },
   "cooking_pot": {

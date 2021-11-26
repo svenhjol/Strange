@@ -2,5 +2,37 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "strange:item/mixed_stew"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "mixed_stew_quality": 0
+      },
+      "model": "strange:item/mixed_stew_quality0"
+    },
+    {
+      "predicate": {
+        "mixed_stew_quality": 0.2
+      },
+      "model": "strange:item/mixed_stew_quality2"
+    },
+    {
+      "predicate": {
+        "mixed_stew_quality": 0.4
+      },
+      "model": "strange:item/mixed_stew_quality4"
+    },
+    {
+      "predicate": {
+        "mixed_stew_quality": 0.6
+      },
+      "model": "strange:item/mixed_stew_quality6"
+    },
+    {
+      "predicate": {
+        "mixed_stew_quality": 0.8
+      },
+      "model": "strange:item/mixed_stew_quality8"
+    }
+  ]
 }

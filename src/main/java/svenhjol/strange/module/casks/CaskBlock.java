@@ -236,12 +236,13 @@ public class CaskBlock extends CharmBlockWithEntity {
     }
 
     @Override
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
-        super.tick(blockState, serverLevel, blockPos, random);
-        CaskBlockEntity cask = getBlockEntity(serverLevel, blockPos);
+    public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {
+        super.tick(blockState, level, blockPos, random);
+        CaskBlockEntity cask = getBlockEntity(level, blockPos);
+
         if (cask != null && random.nextInt(1000) == 0) {
             cask.ferment();
-            serverLevel.playSound(null, blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D, StrangeSounds.CASK, SoundSource.BLOCKS, 0.3F + (0.1F * random.nextFloat()), random.nextFloat() * 0.7F + 0.6F);
+            level.playSound(null, blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D, StrangeSounds.FERMENT, SoundSource.BLOCKS, 0.3F + (0.1F * random.nextFloat()), random.nextFloat() * 0.7F + 0.6F);
         }
     }
 

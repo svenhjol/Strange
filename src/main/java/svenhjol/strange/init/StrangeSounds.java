@@ -11,7 +11,7 @@ import java.util.Map;
 public class StrangeSounds {
     public static Map<ResourceLocation, SoundEvent> REGISTER = new HashMap<>();
 
-    public static final SoundEvent CASK = createSound("cask");
+    public static final SoundEvent FERMENT = createSound("ferment");
     public static final SoundEvent COOKING_POT = createSound("cooking_pot");
     public static final SoundEvent RUNESTONE_TRAVEL = createSound("runestone_travel");
     public static final SoundEvent SCREENSHOT = createSound("screenshot");
