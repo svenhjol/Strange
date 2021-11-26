@@ -57,6 +57,7 @@ public class RunestoneHelper {
 
     public static List<Item> getItems(ResourceLocation dimension, String runes) {
         if (!Runestones.ITEMS.containsKey(dimension)) {
+            LogHelper.debug(RunestoneHelper.class, "Could not find items for dimension `" + dimension + "`, defaulting.");
             return List.of(DEFAULT_ITEM);
         }
 
@@ -65,13 +66,14 @@ public class RunestoneHelper {
         Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
 
         int len = Math.min(Knowledge.NUM_RUNES, runes.length());
-        int tier = Math.round(Runestones.TIERS * (len / (float)Knowledge.NUM_RUNES));
+        int tier = Math.min(Runestones.TIERS - 1, Math.round(Runestones.TIERS * (len / (float)Knowledge.NUM_RUNES)));
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
             List<Item> tierItems = new LinkedList<>(items.get(tier));
             Collections.shuffle(tierItems, random);
             return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
         } else {
+            LogHelper.debug(RunestoneHelper.class, "No item tier `" + tier + "` for dimension `" + dimension + "`, defaulting.");
             return List.of(DEFAULT_ITEM);
         }
     }
