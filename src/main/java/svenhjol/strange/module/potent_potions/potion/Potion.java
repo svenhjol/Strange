@@ -52,6 +52,6 @@ public class Potion implements IPotionItem {
 
     @Override
     public int getMaxAmplifier() {
-        return 3;
+        return 5;
     }
 }
