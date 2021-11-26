@@ -36,7 +36,7 @@ public class EnderBundlesClient extends CharmModule {
     @Override
     public void register() {
         // set up item predicate so the icon changes when full
-        ModelPredicateProviderRegistryAccessor.callRegister(ENDER_BUNDLE_FILLED, (stack, world, entity, i)
+        ModelPredicateProviderRegistryAccessor.callRegister(ENDER_BUNDLE_FILLED, (stack, level, entity, i)
             -> EnderBundleItem.getAmountFilled());
 
         // register callbacks
