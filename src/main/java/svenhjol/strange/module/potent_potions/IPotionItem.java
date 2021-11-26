@@ -43,8 +43,12 @@ public interface IPotionItem {
         int maxAmplifier = getMaxAmplifier();
 
         statusEffects.forEach(effect -> {
-            int duration = (random.nextInt(maxDuration - minDuration) + minDuration) * 20; // in ticks
-            int amplifier = random.nextInt(maxAmplifier - minAmplifier) + minAmplifier;
+            int durationBound = Math.max(1, maxDuration - minDuration);
+            int amplifierBound = Math.max(1, maxAmplifier - minAmplifier);
+
+            int duration = Math.max(1, random.nextInt(durationBound) + minDuration) * 20; // in ticks
+            int amplifier = random.nextInt(amplifierBound) + minAmplifier;
+
             instances.add(new MobEffectInstance(effect, duration, amplifier));
         });
 
