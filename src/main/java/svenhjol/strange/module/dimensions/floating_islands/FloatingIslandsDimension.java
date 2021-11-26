@@ -39,7 +39,7 @@ public class FloatingIslandsDimension implements IDimension {
 
     @Override
     public void handlePlayerTick(Player player) {
-        if (!player.level.isClientSide && player.level.getGameTime() % 5 == 0 && player.getY() < 0.1D) {
+        if (!player.level.isClientSide && player.level.getGameTime() % 5 == 0 && player.getY() < -16D) {
             // don't keep adding teleport tickets for this player
             if (Teleport.teleportTickets.stream().anyMatch(t -> t.getEntity() == player)) {
                 return;
