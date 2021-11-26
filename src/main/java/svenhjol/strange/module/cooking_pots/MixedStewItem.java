@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.module.stackable_stews.StackableStews;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class MixedStewItem extends CharmItem {
 
     public MixedStewItem(CharmModule module) {
         super(module, "mixed_stew", (new Properties())
-            .stacksTo(64)
+            .stacksTo(StackableStews.stackSize)
             .tab(CreativeModeTab.TAB_FOOD));
     }
 
