@@ -14,10 +14,12 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SuspiciousStewItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,9 +29,7 @@ import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
@@ -106,7 +106,6 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
 
         if (portions < CookingPots.maxPortions) {
             int foodHunger = foodComponent.getNutrition();
-            List<Pair<MobEffectInstance, Float>> effects = foodComponent.getEffects();
 
             float foodSaturationRatio = foodComponent.getSaturationModifier();
             float foodSaturation = Math.min((float)foodHunger * foodSaturationRatio * 2.0f, CookingPots.hungerRestored);
@@ -123,20 +122,31 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
 
             // roll for each effect
             if (CookingPots.addFoodEffects) {
+                List<Pair<MobEffectInstance, Float>> effects = foodComponent.getEffects();
+                Map<MobEffectInstance, Float> map = new WeakHashMap<>();
+
+                // try and get effects from sus stew
+                if (food.getItem() instanceof SuspiciousStewItem) {
+                    getSuspiciousStewEffects(food).forEach(instance -> map.put(instance, 1.0F));
+                }
+
+                // get effects from the food
                 Random random = new Random();
                 for (Pair<MobEffectInstance, Float> pair : effects) {
-                    MobEffectInstance effect = pair.getFirst();
+                    MobEffectInstance instance = pair.getFirst();
                     float chance = pair.getSecond();
-
-                    if (this.effects.stream().anyMatch(e -> e.getEffect() == effect.getEffect())) {
-                        // don't double up on effects
-                        continue;
-                    }
-
-                    if (!this.effects.contains(effect) && random.nextFloat() < chance) {
-                        this.effects.add(effect);
-                    }
+                    map.put(instance, chance);
                 }
+
+                // try and add each effect according to its chance
+                map.forEach((instance, chance) -> {
+                    // don't double up on effects
+                    if (this.effects.stream().anyMatch(e -> e.getEffect() == instance.getEffect())) return;
+
+                    if (!this.effects.contains(instance) && random.nextFloat() < chance) {
+                        this.effects.add(instance);
+                    }
+                });
             }
 
             hunger += foodHunger;
@@ -254,5 +264,27 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
                 }
             }
         }
+    }
+
+    private List<MobEffectInstance> getSuspiciousStewEffects(ItemStack stew) {
+        List<MobEffectInstance> effects = new ArrayList<>();
+
+        // some copypasta from SuspiciousStew#finishUsingItem
+        CompoundTag tag = stew.getTag();
+        if (tag != null && tag.contains(SuspiciousStewItem.EFFECTS_TAG, 9)) {
+            ListTag listTag = tag.getList(SuspiciousStewItem.EFFECTS_TAG, 10);
+            for (int i = 0; i < listTag.size(); ++i) {
+                MobEffect mobEffect;
+                int duration = 160;
+                CompoundTag effectTag = listTag.getCompound(i);
+                if (effectTag.contains(SuspiciousStewItem.EFFECT_DURATION_TAG, 3)) {
+                    duration = effectTag.getInt(SuspiciousStewItem.EFFECT_DURATION_TAG);
+                }
+                if ((mobEffect = MobEffect.byId(effectTag.getByte(SuspiciousStewItem.EFFECT_ID_TAG))) == null) continue;
+                effects.add(new MobEffectInstance(mobEffect, duration, 0));
+            }
+        }
+
+        return effects;
     }
 }

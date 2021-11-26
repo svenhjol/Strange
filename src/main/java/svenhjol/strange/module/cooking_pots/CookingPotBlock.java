@@ -244,7 +244,7 @@ public class CookingPotBlock extends CharmBlockWithEntity {
                 level.playLocalSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, StrangeSounds.COOKING_POT, SoundSource.BLOCKS, 0.25F + (0.25F * random.nextFloat()), random.nextFloat() * 0.7F + 0.4F, false);
             }
 
-            if (random.nextInt(3) == 0) {
+            if (random.nextInt(2) == 0) {
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof CookingPotBlockEntity pot) {
                     List<MobEffect> effects = pot.effects
@@ -258,7 +258,7 @@ public class CookingPotBlock extends CharmBlockWithEntity {
                         double r = (double) (color >> 16 & 255) / 255.0D;
                         double g = (double) (color >> 8 & 255) / 255.0D;
                         double b = (double) (color & 255) / 255.0D;
-                        level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, (double) pos.getX() + 0.13D + (0.7D * random.nextDouble()), (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.13D + (0.7D * random.nextDouble()), r, g, b);
+                        level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, (double) pos.getX() + 0.25D + (0.5D * random.nextDouble()), (double) pos.getY() + 0.65D, (double) pos.getZ() + 0.25D + (0.5D * random.nextDouble()), r, g, b);
                     });
                 }
             }
