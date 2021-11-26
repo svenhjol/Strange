@@ -29,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.journals.Journals;
 
 public class RunicLecternBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
@@ -178,6 +180,16 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
 
         CompoundTag tomeTag = new CompoundTag();
         lectern.getTome().save(tomeTag);
+
+        // try and learn this if not already known
+        Journals.getJournalData(player).ifPresent(journal -> {
+            String runes = RunicTomeItem.getRunes(lectern.getTome());
+            if (!runes.isEmpty()) {
+                JournalHelper.tryLearnPhrase(runes, journal);
+                Journals.sendSyncJournal(player);
+            }
+        });
+
         NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
         return true;
     }

@@ -69,6 +69,10 @@ public class JournalHelper {
     }
 
     public static void tryLearnPhrase(String runes, JournalData journal) {
+        if (JournalHelper.getNumberOfUnknownRunes(runes, journal) > 0) {
+            return;
+        }
+
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
             if (branch.isLearnable()) {
                 switch (branch.getBranchName()) {
