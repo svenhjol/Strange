@@ -8,7 +8,9 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.potent_potions.potion.Potion;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class PotentPotionsLootFunction extends LootItemConditionalFunction {
@@ -27,6 +29,12 @@ public class PotentPotionsLootFunction extends LootItemConditionalFunction {
         Random random = context.getRandom();
 
         if (PotentPotions.POTIONS.isEmpty()) return stack;
+
+        // prefer the generic potions
+        Optional<IPotionItem> genericPotion = PotentPotions.POTIONS.stream().filter(p -> p.getClass() == Potion.class).findFirst();
+        if (genericPotion.isPresent() && random.nextFloat() < 0.75F) {
+            return genericPotion.get().getPotionItem();
+        }
 
         IPotionItem potion = PotentPotions.POTIONS.get(random.nextInt(PotentPotions.POTIONS.size()));
         return potion.getPotionItem();
