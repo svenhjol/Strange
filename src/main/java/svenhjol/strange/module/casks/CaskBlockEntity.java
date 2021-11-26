@@ -240,8 +240,9 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
     }
 
     public void ferment() {
-        if (this.portions > 0 && this.fermentation < 5)
+        if (this.portions > 0 && this.fermentation < 5) {
             this.fermentation++;
+        }
     }
 
     private void flush(Level level, BlockPos pos, BlockState state) {
@@ -265,9 +266,6 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
                     player.connection.send(updatePacket);
                 }
             }
-            // TODO: is this needed now?
-//            BlockState state = level.getBlockState(worldPosition);
-//            level.sendBlockUpdated(worldPosition, state, state, 1);
         }
     }
 }
