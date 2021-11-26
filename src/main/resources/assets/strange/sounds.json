@@ -8,6 +8,13 @@
       "strange:cask4"
     ]
   },
+  "cooking_pot": {
+    "category": "blocks",
+    "sounds": [
+      "strange:cooking_pot1",
+      "strange:cooking_pot2"
+    ]
+  },
   "runestone_travel": {
     "category": "players",
     "sounds": [
