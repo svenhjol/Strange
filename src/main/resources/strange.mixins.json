@@ -17,6 +17,7 @@
     "dimensions.WorldGenSettingsMixin",
     "potion_of_hogsbane.PreventAttackingAiMixin",
     "potion_of_hogsbane.PreventAttackingHoglinMixin",
+    "relics.PreserveHighestLevelEnchantmentsMixin",
     "scrollkeepers.InteractWithVillagerMixin"
   ],
   "client": [

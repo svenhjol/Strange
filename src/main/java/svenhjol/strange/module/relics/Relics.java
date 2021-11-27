@@ -5,7 +5,11 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -22,9 +26,7 @@ import svenhjol.strange.Strange;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Relics extends CharmModule {
@@ -77,6 +79,29 @@ public class Relics extends CharmModule {
         for (String lootTable : configLootTables) {
             VALID_LOOT_TABLES.add(new ResourceLocation(lootTable));
         }
+    }
+
+    public static void preserveHighestLevelEnchantment(Map<Enchantment, Integer> enchantments, ItemStack book, ItemStack output) {
+        if (book.isEmpty() || output.isEmpty()) return;
+
+        if (book.getItem() instanceof EnchantedBookItem) {
+            Map<Enchantment, Integer> reset = new HashMap<>();
+            Map<Enchantment, Integer> bookEnchants = EnchantmentHelper.getEnchantments(book);
+
+            bookEnchants.forEach((e, l) -> {
+                if (l > e.getMaxLevel()) {
+                    reset.put(e, l);
+                }
+            });
+
+            reset.forEach((e, l) -> {
+                if (enchantments.containsKey(e)) {
+                    enchantments.put(e, l);
+                }
+            });
+        }
+
+        EnchantmentHelper.setEnchantments(enchantments, output);
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
