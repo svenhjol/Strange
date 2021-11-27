@@ -11,8 +11,8 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.init.CharmParticles;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.init.StrangeParticles;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class PotionOfSpelunkingClient extends CharmModule {
                     if (!world.getBlockState(to).isCollisionShapeFullBlock(world, to) && world.getBlockState(to.below()).isCollisionShapeFullBlock(world, to.below())) {
                         for (int k = 0; k < 2; k++) {
                             int y = to.getY() + k;
-                            world.addParticle(StrangeParticles.ORE_GLOW_PARTICLE, test.getX() + 0.5D, y - (k * 0.7D), foundPos.getZ() + 0.5D, col[0], col[1], col[2]);
+                            world.addParticle(CharmParticles.ORE_GLOW_PARTICLE, test.getX() + 0.5D, y - (k * 0.7D), foundPos.getZ() + 0.5D, col[0], col[1], col[2]);
                         }
                     }
                 }
