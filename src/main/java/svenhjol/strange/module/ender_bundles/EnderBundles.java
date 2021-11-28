@@ -14,8 +14,8 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.charm.module.bundle_sorting.BundleSorting;
-import svenhjol.charm.module.bundle_sorting.event.SortBundleItemsCallback;
+import svenhjol.charm.module.hover_sorting.HoverSorting;
+import svenhjol.charm.module.hover_sorting.event.HoverSortItemsCallback;
 import svenhjol.strange.Strange;
 
 import java.util.LinkedList;
@@ -34,16 +34,16 @@ public class EnderBundles extends CharmModule {
     @Override
     public void register() {
         ENDER_BUNDLE = new EnderBundleItem(this);
-        BundleSorting.SORTABLE.add(ENDER_BUNDLE);
+        HoverSorting.SORTABLE.add(ENDER_BUNDLE);
     }
 
     @Override
     public void runWhenEnabled() {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_ENDER_INVENTORY, this::handleUpdateEnderInventory);
-        SortBundleItemsCallback.EVENT.register(this::handleCycleBundleContents);
+        HoverSortItemsCallback.EVENT.register(this::handleSortItems);
     }
 
-    private void handleCycleBundleContents(ServerPlayer player, ItemStack stack, boolean direction) {
+    private void handleSortItems(ServerPlayer player, ItemStack stack, boolean direction) {
         if (stack.getItem() == EnderBundles.ENDER_BUNDLE) {
             PlayerEnderChestContainer enderChestInventory = player.getEnderChestInventory();
             List<ItemStack> contents = new LinkedList<>();
@@ -54,7 +54,7 @@ public class EnderBundles extends CharmModule {
                     contents.add(s);
             }
 
-            SortBundleItemsCallback.sortByScrollDirection(contents, direction);
+            HoverSortItemsCallback.sortByScrollDirection(contents, direction);
             enderChestInventory.clearContent();
             contents.forEach(enderChestInventory::addItem);
         }

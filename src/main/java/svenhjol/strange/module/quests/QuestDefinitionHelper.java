@@ -173,7 +173,7 @@ public class QuestDefinitionHelper {
         }
 
         // if any stacks can be combined, do that here
-        InventoryTidyingHandler.mergeInventory(stacks);
+        InventoryTidyingHandler.mergeStacks(stacks);
 
         // filter out dupe items
         List<Item> uniqueItems = new ArrayList<>();
