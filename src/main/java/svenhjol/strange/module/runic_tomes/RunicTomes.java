@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -35,8 +35,8 @@ public class RunicTomes extends CharmModule {
     public void register() {
         RUNIC_TOME = new RunicTomeItem(this);
         RUNIC_LECTERN = new RunicLecternBlock(this);
-        RUNIC_LECTERN_MENU = RegistryHelper.screenHandler(RUNIC_LECTERN_BLOCK_ID, RunicLecternMenu::new);
-        RUNIC_LECTERN_BLOCK_ENTITY = RegistryHelper.blockEntity(RUNIC_LECTERN_BLOCK_ID, RunicLecternBlockEntity::new, RUNIC_LECTERN);
+        RUNIC_LECTERN_MENU = CommonRegistry.menu(RUNIC_LECTERN_BLOCK_ID, RunicLecternMenu::new);
+        RUNIC_LECTERN_BLOCK_ENTITY = CommonRegistry.blockEntity(RUNIC_LECTERN_BLOCK_ID, RunicLecternBlockEntity::new, RUNIC_LECTERN);
     }
 
     @Override

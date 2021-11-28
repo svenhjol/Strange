@@ -26,8 +26,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
@@ -54,14 +54,14 @@ public class ExperienceBottles extends CharmModule {
         }
 
         // create and register the entity
-        EXPERIENCE_BOTTLE = RegistryHelper.entity(ENTITY_ID, FabricEntityTypeBuilder
+        EXPERIENCE_BOTTLE = CommonRegistry.entity(ENTITY_ID, FabricEntityTypeBuilder
             .<ExperienceBottleEntity>create(MobCategory.MISC, ExperienceBottleEntity::new)
             .trackRangeChunks(4)
             .trackedUpdateRate(10)
             .dimensions(EntityDimensions.fixed(0.25F, 0.25F)));
 
         // register loot function
-        LOOT_FUNCTION = RegistryHelper.lootFunctionType(LOOT_ID, new LootItemFunctionType(new ExperienceBottleLootFunction.Serializer()));
+        LOOT_FUNCTION = CommonRegistry.lootFunctionType(LOOT_ID, new LootItemFunctionType(new ExperienceBottleLootFunction.Serializer()));
 
         // register dispenser behavior
         for (ExperienceBottleItem bottle : EXPERIENCE_BOTTLES.values()) {

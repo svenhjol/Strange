@@ -11,8 +11,8 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.BiomeHelper;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.Runestones;
 
@@ -47,7 +47,7 @@ public class StoneCircles extends CharmModule {
     @Override
     public void register() {
         // register the stone circle structure piece with Charm
-        STONE_CIRCLE_PIECE = RegistryHelper.structurePiece(PIECE_ID, StoneCirclePiece::new);
+        STONE_CIRCLE_PIECE = CommonRegistry.structurePiece(PIECE_ID, StoneCirclePiece::new);
 
         // init raw structure feature
         STONE_CIRCLE_STRUCTURE = new StoneCircleFeature(StoneCircleConfiguration.CODEC);
@@ -59,9 +59,9 @@ public class StoneCircles extends CharmModule {
             .register();
 
         // register each structure feature type with Charm
-        STONE_CIRCLE_OVERWORLD = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_overworld"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.OVERWORLD)));
-        STONE_CIRCLE_NETHER = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER)));
-        STONE_CIRCLE_END = RegistryHelper.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END)));
+        STONE_CIRCLE_OVERWORLD = CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_overworld"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.OVERWORLD)));
+        STONE_CIRCLE_NETHER = CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_nether"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.NETHER)));
+        STONE_CIRCLE_END = CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_circle_end"), STONE_CIRCLE_STRUCTURE.configured(new StoneCircleConfiguration(StoneCircleFeature.Type.END)));
 
         // disable further processing if runestones module is not enabled
         this.addDependencyCheck(m -> Strange.LOADER.isEnabled(Runestones.class));

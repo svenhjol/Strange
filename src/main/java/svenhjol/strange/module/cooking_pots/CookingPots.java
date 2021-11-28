@@ -7,9 +7,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class CookingPots extends CharmModule {
     @Override
     public void register() {
         COOKING_POT = new CookingPotBlock(this);
-        BLOCK_ENTITY = RegistryHelper.blockEntity(ID, CookingPotBlockEntity::new, COOKING_POT);
+        BLOCK_ENTITY = CommonRegistry.blockEntity(ID, CookingPotBlockEntity::new, COOKING_POT);
         MIXED_STEW = new MixedStewItem(this);
     }
 

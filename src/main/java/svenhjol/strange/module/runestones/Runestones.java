@@ -13,8 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
@@ -103,12 +103,12 @@ public class Runestones extends CharmModule {
 
         // TODO: Dispenser behavior. See Strange16 RunicAltars
 
-        BLOCK_ENTITY = RegistryHelper.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
-        MENU = RegistryHelper.screenHandler(BLOCK_ID, RunestoneMenu::new);
+        BLOCK_ENTITY = CommonRegistry.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
+        MENU = CommonRegistry.menu(BLOCK_ID, RunestoneMenu::new);
 
         // setup runestone dust item and entity
         RUNESTONE_DUST = new RunestoneDustItem(this);
-        RUNESTONE_DUST_ENTITY = RegistryHelper.entity(RUNESTONE_DUST_ID, FabricEntityTypeBuilder
+        RUNESTONE_DUST_ENTITY = CommonRegistry.entity(RUNESTONE_DUST_ID, FabricEntityTypeBuilder
             .<RunestoneDustEntity>create(MobCategory.MISC, RunestoneDustEntity::new)
             .trackRangeBlocks(80)
             .trackedUpdateRate(10)

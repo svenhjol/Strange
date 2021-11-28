@@ -19,8 +19,8 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.ClassHelper;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class Relics extends CharmModule {
 
     @Override
     public void register() {
-        LOOT_FUNCTION = RegistryHelper.lootFunctionType(LOOT_ID, new LootItemFunctionType(new RelicsLootFunction.Serializer()));
+        LOOT_FUNCTION = CommonRegistry.lootFunctionType(LOOT_ID, new LootItemFunctionType(new RelicsLootFunction.Serializer()));
     }
 
     @Override

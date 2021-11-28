@@ -2,7 +2,7 @@ package svenhjol.strange.init;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import svenhjol.charm.helper.RegistryHelper;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class StrangeSounds {
     public static final SoundEvent SCREENSHOT = createSound("screenshot");
 
     public static void init() {
-        REGISTER.forEach(RegistryHelper::sound);
+        REGISTER.forEach(CommonRegistry::sound);
     }
 
     public static SoundEvent createSound(String name) {

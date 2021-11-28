@@ -4,9 +4,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeLoot;
 
@@ -23,7 +23,7 @@ public class Rubble extends CharmModule {
     public void register() {
         LOOT = StrangeLoot.createLootTable("gameplay/rubble");
         RUBBLE = new RubbleBlock(this);
-        BLOCK_ENTITY = RegistryHelper.blockEntity(BLOCK_ID, RubbleBlockEntity::new, RUBBLE);
+        BLOCK_ENTITY = CommonRegistry.blockEntity(BLOCK_ID, RubbleBlockEntity::new, RUBBLE);
     }
 
     public static void triggerHarvestedRubble(ServerPlayer player) {

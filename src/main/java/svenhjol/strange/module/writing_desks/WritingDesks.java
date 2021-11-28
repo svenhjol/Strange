@@ -3,8 +3,8 @@ package svenhjol.strange.module.writing_desks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import java.util.Map;
@@ -23,6 +23,6 @@ public class WritingDesks extends CharmModule {
     @Override
     public void register() {
         WRITING_DESK = new WritingDeskBlock(this);
-        WRITING_DESK_MENU = RegistryHelper.screenHandler(WRITING_DESK_BLOCK_ID, WritingDeskMenu::new);
+        WRITING_DESK_MENU = CommonRegistry.menu(WRITING_DESK_BLOCK_ID, WritingDeskMenu::new);
     }
 }

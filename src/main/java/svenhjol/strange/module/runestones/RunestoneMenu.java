@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import svenhjol.charm.screen.CharmContainerMenu;
+import svenhjol.charm.menu.CharmContainerMenu;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;

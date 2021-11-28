@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Glowballs can be thrown to produce a light source where they impact.")
@@ -37,7 +37,7 @@ public class Glowballs extends CharmModule {
         GLOWBALL_BLOCK = new GlowballBlobBlock(this);
         GLOWBALL_ITEM = new GlowballItem(this);
 
-        GLOWBALL = RegistryHelper.entity(ID, FabricEntityTypeBuilder
+        GLOWBALL = CommonRegistry.entity(ID, FabricEntityTypeBuilder
             .<GlowballEntity>create(MobCategory.MISC, GlowballEntity::new)
             .trackRangeBlocks(4)
             .trackedUpdateRate(10)

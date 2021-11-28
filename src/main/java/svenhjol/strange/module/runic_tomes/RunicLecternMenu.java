@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.charm.screen.CharmContainerMenu;
+import svenhjol.charm.menu.CharmContainerMenu;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 
 public class RunicLecternMenu extends CharmContainerMenu {

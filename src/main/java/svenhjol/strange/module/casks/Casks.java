@@ -15,9 +15,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
-import svenhjol.charm.helper.RegistryHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ public class Casks extends CharmModule {
     @Override
     public void register() {
         CASK = new CaskBlock(this);
-        BLOCK_ENTITY = RegistryHelper.blockEntity(ID, CaskBlockEntity::new, CASK);
+        BLOCK_ENTITY = CommonRegistry.blockEntity(ID, CaskBlockEntity::new, CASK);
     }
 
     @Override
