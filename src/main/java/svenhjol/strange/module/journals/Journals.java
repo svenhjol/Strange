@@ -28,15 +28,15 @@ import svenhjol.charm.event.PlayerDieCallback;
 import svenhjol.charm.event.PlayerLoadDataCallback;
 import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.helper.LootHelper;
-import svenhjol.strange.helper.MapHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
+import svenhjol.strange.module.quests.event.QuestEvents;
 
 import java.io.File;
 import java.util.*;
