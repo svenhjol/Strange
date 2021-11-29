@@ -3,7 +3,9 @@ package svenhjol.strange.module.ender_bundles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.module.inventory_tidying.InventoryTidyingHandler;
 
 import java.util.Optional;
 
@@ -63,10 +66,16 @@ public class EnderBundleItem extends CharmItem {
             ItemStack itemStack = slot.getItem();
             if (itemStack.isEmpty()) {
                 Optional<ItemStack> out = removeFirstStack(player);
-                out.ifPresent(slot::safeInsert);
+                out.ifPresent(i -> {
+                    slot.safeInsert(i);
+                    playRemoveOneSound(player);
+                });
             } else if (itemStack.getItem().canFitInsideContainerItems()) {
                 ItemStack out = addToBundle(player, itemStack);
                 itemStack.setCount(out.getCount());
+                if (out.getCount() == 0) {
+                    playInsertSound(player);
+                }
             }
             player.containerMenu.broadcastChanges();
         }
@@ -112,23 +121,41 @@ public class EnderBundleItem extends CharmItem {
     }
 
     private static Optional<ItemStack> removeFirstStack(Player player) {
-        PlayerEnderChestContainer inventory = player.getEnderChestInventory();
+        PlayerEnderChestContainer container = player.getEnderChestInventory();
         int index = 0;
-        int size = inventory.getContainerSize();
+        int size = container.getContainerSize();
         for (int i = size - 1; i >= 0; i--) {
-            if (!inventory.getItem(i).isEmpty()) {
+            if (!container.getItem(i).isEmpty()) {
                 index = i;
             }
         }
-        ItemStack stack = inventory.getItem(index);
+        ItemStack stack = container.getItem(index);
         if (stack.isEmpty()) {
             return Optional.empty();
         }
 
         ItemStack out = stack.copy();
         stack.setCount(0);
-        inventory.setChanged();
+
+        InventoryTidyingHandler.mergeStacks(container);
+        container.setChanged();
 
         return Optional.of(out);
+    }
+
+    /**
+     * Copypasta from {@link net.minecraft.world.item.BundleItem}
+     */
+    private void playRemoveOneSound(Entity entity) {
+        entity.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 0.8f, 0.8f + entity.getLevel().getRandom().nextFloat() * 0.4f);
+        entity.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 0.1f, 0.9f + entity.getLevel().getRandom().nextFloat() * 0.1f);
+    }
+
+    /**
+     * Copypasta from {@link net.minecraft.world.item.BundleItem}
+     */
+    private void playInsertSound(Entity entity) {
+        entity.playSound(SoundEvents.BUNDLE_INSERT, 0.8f, 0.8f + entity.getLevel().getRandom().nextFloat() * 0.4f);
+        entity.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 0.1f, 0.9f + entity.getLevel().getRandom().nextFloat() * 0.1f);
     }
 }
