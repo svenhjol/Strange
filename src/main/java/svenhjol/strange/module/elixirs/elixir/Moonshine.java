@@ -1,49 +1,44 @@
-package svenhjol.strange.module.potent_potions.potion;
+package svenhjol.strange.module.elixirs.elixir;
 
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import svenhjol.strange.Strange;
-import svenhjol.strange.module.potent_potions.IPotionItem;
-import svenhjol.strange.module.potion_of_spelunking.PotionOfSpelunking;
+import svenhjol.strange.module.elixirs.IElixir;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MinersDelight implements IPotionItem {
+public class Moonshine implements IElixir {
     @Override
     public List<MobEffect> getValidStatusEffects() {
         return Arrays.asList(
-            MobEffects.NIGHT_VISION,
-            MobEffects.DIG_SPEED
+            MobEffects.REGENERATION,
+            MobEffects.HEALTH_BOOST
         );
     }
 
     @Override
     public List<MobEffectInstance> getEffects() {
-        List<MobEffectInstance> effects = IPotionItem.super.getEffects();
-
-        if (Strange.LOADER.isEnabled(PotionOfSpelunking.class)) {
-            effects.add(new MobEffectInstance(PotionOfSpelunking.SPELUNKING_EFFECT, (getMinDuration() / 5) * 20));
-        }
-
+        List<MobEffectInstance> effects = IElixir.super.getEffects();
+        effects.add(new MobEffectInstance(MobEffects.BLINDNESS, (getMinDuration() / 4) * 20, 0));
+        effects.add(new MobEffectInstance(MobEffects.CONFUSION, (getMinDuration() / 4) * 20, 0));
         return effects;
     }
 
     @Override
     public TranslatableComponent getName() {
-        return new TranslatableComponent("item.strange.potent_potions.miners_delight");
+        return new TranslatableComponent("item.strange.elixirs.moonshine");
     }
 
     @Override
     public int getMinDuration() {
-        return 480;
+        return 100;
     }
 
     @Override
     public int getMaxDuration() {
-        return 960;
+        return 200;
     }
 
     @Override

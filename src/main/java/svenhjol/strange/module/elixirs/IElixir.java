@@ -1,4 +1,4 @@
-package svenhjol.strange.module.potent_potions;
+package svenhjol.strange.module.elixirs;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public interface IPotionItem {
+public interface IElixir {
     List<MobEffect> getValidStatusEffects();
 
     // in seconds
@@ -27,8 +27,8 @@ public interface IPotionItem {
 
     default TranslatableComponent getName() {
         int i = new Random().nextInt(16) + 1;
-        Component word = new TranslatableComponent("item.strange.potent_potions.adjective" + i);
-        return new TranslatableComponent("item.strange.potent_potions.itemname", word);
+        Component word = new TranslatableComponent("item.strange.elixirs.adjective" + i);
+        return new TranslatableComponent("item.strange.elixirs.itemname", word);
     }
 
     default List<MobEffectInstance> getEffects() {

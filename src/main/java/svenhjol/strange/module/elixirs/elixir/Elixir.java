@@ -1,15 +1,15 @@
-package svenhjol.strange.module.potent_potions.potion;
+package svenhjol.strange.module.elixirs.elixir;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
-import svenhjol.strange.module.potent_potions.IPotionItem;
+import svenhjol.strange.module.elixirs.IElixir;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Potion implements IPotionItem {
+public class Elixir implements IElixir {
     @Override
     public List<MobEffect> getValidStatusEffects() {
         List<MobEffect> possibleEffects = new ArrayList<>(Arrays.asList(
