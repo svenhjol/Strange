@@ -10,7 +10,6 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import svenhjol.charm.enums.IWoodMaterial;
 import svenhjol.charm.enums.VanillaWoodMaterial;
 import svenhjol.charm.helper.LootHelper;
-import svenhjol.charm.init.CharmLoot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +85,7 @@ public class StrangeDecorations {
         ));
 
         BOOKCASE_LOOT_TABLES.addAll(Arrays.asList(
-            CharmLoot.VILLAGE_LIBRARIAN
+//            CharmLoot.VILLAGE_LIBRARIAN
         ));
 
         RARE_BOOKCASE_LOOT_TABLES.addAll(Arrays.asList(
