@@ -16,11 +16,14 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.dimensions.darkland.DarklandDimension;
 import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
+import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
 
 import java.util.*;
 
+/**
+ * @see {https://misode.github.io/worldgen/}
+ */
 @SuppressWarnings("unused")
 @CommonModule(mod = Strange.MOD_ID)
 public class Dimensions extends CharmModule {
@@ -44,7 +47,7 @@ public class Dimensions extends CharmModule {
     @Override
     public void register() {
         // add new dimensions to this list
-        DIMENSIONS.add(new DarklandDimension());
+        DIMENSIONS.add(new MirrorDimension());
         DIMENSIONS.add(new FloatingIslandsDimension());
 
         // register all dimensions

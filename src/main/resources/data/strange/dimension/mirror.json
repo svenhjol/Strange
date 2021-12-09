@@ -1,5 +1,5 @@
 {
-  "type": "strange:darkland_type",
+  "type": "strange:mirror_type",
   "generator": {
     "type": "minecraft:noise",
     "settings": "minecraft:overworld",

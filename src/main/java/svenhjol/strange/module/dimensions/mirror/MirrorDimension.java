@@ -1,5 +1,6 @@
-package svenhjol.strange.module.dimensions.darkland;
+package svenhjol.strange.module.dimensions.mirror;
 
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +29,8 @@ import svenhjol.strange.module.dimensions.IDimension;
 
 import java.util.*;
 
-public class DarklandDimension implements IDimension {
-    public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "darkland");
+public class MirrorDimension implements IDimension {
+    public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
     public static final List<MobEffect> POSITIVE_MOB_EFFECTS;
     public static int snowTicks = 0;
@@ -44,6 +45,8 @@ public class DarklandDimension implements IDimension {
 
     @Override
     public void register() {
+        DimensionSpecialEffects.EFFECTS.put(ID, new MirrorEffects());
+
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, 0x004434);
         Dimensions.GRASS_COLOR.put(ID, 0x607265);

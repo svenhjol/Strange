@@ -85,11 +85,7 @@ public class Runestones extends CharmModule {
         "the_end -> small_end_islands",
         "the_end -> endcity",
         "the_end -> strange:end_ruin",
-        "strange:darkland -> strange:stone_circle",
-        "strange:darkland -> strange:surface_ruin",
-        "strange:darkland -> strange:cave_ruin",
-        "strange:darkland -> strange:deep_ruin",
-        "strange:floating_islands -> strange:stone_circle",
+        "strange:mirror -> strange:stone_circle",
         "strange:floating_islands -> village",
         "strange:floating_islands -> pillager_outpost",
         "strange:floating_islands -> desert_pyramid"
