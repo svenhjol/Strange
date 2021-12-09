@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true)
 public class Knowledge extends CharmModule {
     public static final ResourceLocation MSG_SERVER_SYNC_KNOWLEDGE = new ResourceLocation(Strange.MOD_ID, "server_sync_knowledge");
     public static final ResourceLocation MSG_CLIENT_SYNC_KNOWLEDGE = new ResourceLocation(Strange.MOD_ID, "client_sync_knowledge");

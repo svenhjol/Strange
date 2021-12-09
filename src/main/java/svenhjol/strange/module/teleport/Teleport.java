@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true)
 public class Teleport extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
     public static final int REPOSITION_TICKS = 5;
