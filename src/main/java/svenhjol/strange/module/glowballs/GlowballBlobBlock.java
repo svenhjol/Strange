@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -111,7 +112,7 @@ public class GlowballBlobBlock extends CharmBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void createBlockItem(ResourceLocation id) {
+    public void createBlockItem(ResourceLocation id, Item.Properties properties) {
         // don't
     }
 
