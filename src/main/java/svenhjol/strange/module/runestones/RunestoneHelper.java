@@ -16,45 +16,6 @@ import java.util.stream.Collectors;
 public class RunestoneHelper {
     public static Item DEFAULT_ITEM = Items.ENDER_PEARL;
 
-//    public static Item getItem(ResourceLocation dimension, float difficulty, Random random) {
-//        if (!Runestones.ITEMS.containsKey(dimension)) {
-//            return DEFAULT_ITEM;
-//        }
-//
-//        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
-//        int tier = Math.round(Runestones.TIERS * difficulty);
-//
-//        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
-//            List<Item> tierItems = items.get(tier);
-//
-//            tierItems.sort((i1, i2) -> {
-//                if (i1.hashCode() == i2.hashCode()) return 0;
-//                return i1.hashCode() < i2.hashCode() ? -1 : 1;
-//            });
-//
-//            return tierItems.get(random.nextInt(tierItems.size()));
-//        } else {
-//            return DEFAULT_ITEM;
-//        }
-//    }
-//
-//    public static List<Item> getItems(ResourceLocation dimension, float difficulty, Random random) {
-//        if (!Runestones.ITEMS.containsKey(dimension)) {
-//            return List.of(Items.ENDER_PEARL);
-//        }
-//
-//        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
-//        int tier = Math.round(Runestones.TIERS * difficulty);
-//
-//        if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
-//            List<Item> tierItems = new LinkedList<>(items.get(tier));
-//            Collections.shuffle(tierItems, random);
-//            return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
-//        } else {
-//            return List.of(Items.ENDER_PEARL);
-//        }
-//    }
-
     public static List<Item> getItems(ResourceLocation dimension, String runes) {
         if (!Runestones.ITEMS.containsKey(dimension)) {
             LogHelper.debug(RunestoneHelper.class, "Could not find items for dimension `" + dimension + "`, defaulting.");
