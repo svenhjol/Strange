@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import svenhjol.strange.module.dimensions.Dimensions;
 
+@SuppressWarnings({"target"})
 @Mixin(WorldGenSettings.class)
 public class WorldGenSettingsMixin {
     @Redirect(
