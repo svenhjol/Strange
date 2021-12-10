@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "strange:block/data_block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "strange:block/data_block"
+    },
+    "facing=south": {
+      "model": "strange:block/data_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "strange:block/data_block",
+      "y": 270
+    }
+  }
+}

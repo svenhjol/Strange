@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "strange:block/ignore_block"
+    }
+  }
+}
