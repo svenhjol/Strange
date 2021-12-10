@@ -79,9 +79,9 @@ public class StoneCircles extends CharmModule {
             }
 
             switch (category) {
-                case NETHER -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_NETHER, category);
-                case THEEND -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_END, category);
-                default -> BiomeHelper.addStructureToBiomeCategories(STONE_CIRCLE_OVERWORLD, category);
+                case NETHER -> BiomeHelper.addStructureToBiomeCategory(STONE_CIRCLE_NETHER, category);
+                case THEEND -> BiomeHelper.addStructureToBiomeCategory(STONE_CIRCLE_END, category);
+                default -> BiomeHelper.addStructureToBiomeCategory(STONE_CIRCLE_OVERWORLD, category);
             }
         });
     }

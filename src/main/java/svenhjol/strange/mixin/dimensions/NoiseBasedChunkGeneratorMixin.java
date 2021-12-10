@@ -29,7 +29,7 @@ public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
     }
 
     @Redirect(
-        method = "lambda$static$4",
+        method = "lambda$static$4(Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;",
         at = @At(
             value = "INVOKE",
             target = "Lcom/mojang/serialization/codecs/PrimitiveCodec;fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;",
