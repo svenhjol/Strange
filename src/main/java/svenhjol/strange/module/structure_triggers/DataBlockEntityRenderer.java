@@ -47,8 +47,8 @@ public class DataBlockEntityRenderer<T extends DataBlockEntity> implements Block
         }
 
         poseStack.pushPose();
-        poseStack.scale(1.5F, 1.5F, 1.5F);
-        poseStack.translate(0.325F, 0.325F, 0.325F);
+        poseStack.scale(1F, 1F, 1F);
+        poseStack.translate(0.5F, 0.5F, 0.5F);
 
         poseStack.mulPose(Vector3f.XP.rotationDegrees(rx));
         poseStack.mulPose(Vector3f.YP.rotationDegrees(ry));

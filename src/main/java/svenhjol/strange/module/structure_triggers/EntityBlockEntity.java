@@ -54,6 +54,8 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     private String armor = "";
     private String meta = "";
 
+    public float rotateTicks = 0F;
+
     public EntityBlockEntity(BlockPos pos, BlockState state) {
         super(StructureTriggers.ENTITY_BLOCK_ENTITY, pos, state);
     }

@@ -72,6 +72,6 @@ public class EntityBlock extends CharmBlockWithEntity {
     }
 
     static {
-        SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+        SHAPE = Block.box(2, 2, 2, 14, 14, 14);
     }
 }

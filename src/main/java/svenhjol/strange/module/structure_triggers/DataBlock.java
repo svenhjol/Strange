@@ -117,6 +117,6 @@ public class DataBlock extends CharmBlockWithEntity {
 
     static {
         FACING = HorizontalDirectionalBlock.FACING;
-        SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+        SHAPE = Block.box(2, 2, 2, 14, 14, 14);
     }
 }

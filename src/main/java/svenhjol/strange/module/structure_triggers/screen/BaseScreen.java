@@ -43,7 +43,7 @@ public abstract class BaseScreen <T extends BlockEntity> extends Screen {
             int buttonWidth = 100;
             int buttonHeight = 20;
             int x = midX - (buttonWidth / 2);
-            int y = 130;
+            int y = 170;
 
             addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.save_changes"), b -> save()));
             hasRenderedBottomButtons = true;
@@ -51,17 +51,18 @@ public abstract class BaseScreen <T extends BlockEntity> extends Screen {
     }
 
     protected EditBox setupInputBox(String id, int x, int y, int length, String value, Consumer<String> onInput) {
-        EditBox input = new EditBox(font, x, y, 200, 12, new TextComponent(id));
+        EditBox input = new EditBox(font, x, y, length, 12, new TextComponent(id));
 
-        input.changeFocus(true);
-        input.setCanLoseFocus(false);
+        input.changeFocus(false);
+        input.setCanLoseFocus(true);
         input.setTextColor(-1);
         input.setTextColorUneditable(-1);
         input.setBordered(true);
-        input.setMaxLength(length);
+        input.setMaxLength(256);
         input.setResponder(onInput);
         input.setValue(value);
         input.setEditable(true);
+        input.setFocus(false);
 
         return input;
     }

@@ -3,5 +3,19 @@
   "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "minecraft:block/orange_stained_glass"
-  }
+  },
+  "elements": [
+    {
+      "from": [ 2, 2, 2 ],
+      "to": [ 14, 14, 14 ],
+      "faces": {
+        "north": { "texture": "#all" },
+        "east": { "texture": "#all" },
+        "south": { "texture": "#all" },
+        "west": { "texture": "#all" },
+        "up": { "texture": "#all" },
+        "down": { "texture": "#all" }
+      }
+    }
+  ]
 }

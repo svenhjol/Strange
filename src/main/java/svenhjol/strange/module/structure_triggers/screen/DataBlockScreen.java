@@ -21,7 +21,7 @@ public class DataBlockScreen extends BaseScreen<DataBlockEntity> {
         if (minecraft == null) return;
         midX = width / 2;
 
-        metadataEditBox = setupInputBox("MetadataEditBox", 100, 55, 200, blockEntity.getMetadata(), t -> blockEntity.setMetadata(t));
+        metadataEditBox = setupInputBox("MetadataEditBox", midX - 100, 55, 200, blockEntity.getMetadata(), t -> blockEntity.setMetadata(t));
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
         children.add(metadataEditBox);
         setFocused(metadataEditBox);

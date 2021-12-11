@@ -1,10 +1,21 @@
 {
   "ambientocclusion": false,
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "top": "minecraft:block/white_stained_glass",
-    "front": "minecraft:block/lime_stained_glass",
-    "side": "minecraft:block/white_stained_glass",
-    "bottom": "minecraft:block/white_stained_glass"
-  }
+    "all": "minecraft:block/white_stained_glass"
+  },
+  "elements": [
+    {
+      "from": [ 2, 2, 2 ],
+      "to": [ 14, 14, 14 ],
+      "faces": {
+        "north": { "texture": "#all" },
+        "east": { "texture": "#all" },
+        "south": { "texture": "#all" },
+        "west": { "texture": "#all" },
+        "up": { "texture": "#all" },
+        "down": { "texture": "#all" }
+      }
+    }
+  ]
 }

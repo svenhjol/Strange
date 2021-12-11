@@ -1,6 +1,7 @@
 package svenhjol.strange.module.structure_triggers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -29,11 +30,16 @@ public class EntityBlockEntityRenderer<T extends EntityBlockEntity> implements B
 //        int ry = 0;
 
         poseStack.pushPose();
-        poseStack.scale(1.5F, 1.5F, 1.5F);
-        poseStack.translate(0.325F, 0.325F, 0.325F);
+        poseStack.scale(1F, 1F, 1F);
+        poseStack.translate(0.5F, 0.5F, 0.5F);
+
+        entity.rotateTicks += 0.25F;
+        if (entity.rotateTicks >= 360F) {
+            entity.rotateTicks = 0F;
+        }
 //
 //        poseStack.mulPose(Vector3f.XP.rotationDegrees(rx));
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(ry));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.rotateTicks));
 
         Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, 255, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.hashCode());
         poseStack.popPose();
