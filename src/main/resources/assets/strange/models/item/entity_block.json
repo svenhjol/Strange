@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "strange:block/ignore_block"
+    "layer0": "strange:block/entity_block"
   }
 }

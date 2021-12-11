@@ -1,3 +1,6 @@
 {
-  "parent": "strange:block/data_block"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "strange:block/data_block"
+  }
 }

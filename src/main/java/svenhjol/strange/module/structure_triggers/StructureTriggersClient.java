@@ -14,15 +14,21 @@ import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.structure_triggers.screen.DataBlockScreen;
+import svenhjol.strange.module.structure_triggers.screen.EntityBlockScreen;
 
 @ClientModule(module = StructureTriggers.class)
 public class StructureTriggersClient extends CharmModule {
     @Override
     public void register() {
         ClientPlayNetworking.registerGlobalReceiver(StructureTriggers.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, this::handleOpenDataBlockScreen);
+        ClientPlayNetworking.registerGlobalReceiver(StructureTriggers.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, this::handleOpenEntityBlockScreen);
+
         BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.DATA_BLOCK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.ENTITY_BLOCK, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.IGNORE_BLOCK, RenderType.translucent());
+
         BlockEntityRendererRegistry.register(StructureTriggers.DATA_BLOCK_ENTITY, DataBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(StructureTriggers.ENTITY_BLOCK_ENTITY, EntityBlockEntityRenderer::new);
     }
 
     private void handleOpenDataBlockScreen(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
@@ -34,6 +40,19 @@ public class StructureTriggersClient extends CharmModule {
 
             if (level.getBlockEntity(blockPos) instanceof DataBlockEntity data) {
                 client.setScreen(new DataBlockScreen(blockPos, data));
+            }
+        });
+    }
+
+    private void handleOpenEntityBlockScreen(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        BlockPos blockPos = buffer.readBlockPos();
+        client.execute(() -> {
+            if (client.player == null || client.player.level == null) return;
+            Player player = client.player;
+            Level level = player.level;
+
+            if (level.getBlockEntity(blockPos) instanceof EntityBlockEntity blockEntity) {
+                client.setScreen(new EntityBlockScreen(blockPos, blockEntity));
             }
         });
     }

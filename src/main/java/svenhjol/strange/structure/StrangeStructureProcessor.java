@@ -46,7 +46,7 @@ public class StrangeStructureProcessor extends StructureProcessor {
         return StrangeStructures.STRUCTURE_PROCESSOR_TYPE;
     }
 
-    public static class StrangeDataResolver extends BaseDataResolver {
+    public static class StrangeDataResolver extends DataResolver {
         private String data;
         private Rotation rotation;
         private BlockState state;
