@@ -2,12 +2,17 @@ package svenhjol.strange.module.structure_triggers;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.module.raid_horns.RaidHorns;
 
 public class DataBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
@@ -39,7 +45,7 @@ public class DataBlock extends CharmBlockWithEntity {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return Shapes.empty();
     }
 
     @Override
@@ -84,13 +90,20 @@ public class DataBlock extends CharmBlockWithEntity {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
-            if (level.getBlockEntity(blockPos) instanceof DataBlockEntity data) {
+            if (level.getBlockEntity(pos) instanceof DataBlockEntity data) {
+                if (player.getMainHandItem().getItem() == Items.REDSTONE) {
+                    boolean result = StructureTriggers.converterator((ServerLevel) level, pos, data.getMetadata());
+                    SoundEvent sound = result ? SoundEvents.PLAYER_LEVELUP : RaidHorns.SQUEAK_SOUND;
+                    level.playSound(null, player.blockPosition(), sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                } else {
+                    NetworkHelper.sendPacketToClient((ServerPlayer) player, StructureTriggers.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, buf -> {
+                        buf.writeBlockPos(pos);
+                    });
+                }
+
                 data.syncToClient();
-                NetworkHelper.sendPacketToClient((ServerPlayer) player, StructureTriggers.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, buf -> {
-                    buf.writeBlockPos(blockPos);
-                });
             }
         }
 

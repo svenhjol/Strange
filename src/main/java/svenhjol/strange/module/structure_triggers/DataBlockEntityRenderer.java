@@ -25,9 +25,11 @@ public class DataBlockEntityRenderer<T extends DataBlockEntity> implements Block
     }
 
     @Override
-    public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource bufferSource, int light, int overlay) {
+    public void render(T entity, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
         ItemStack stack = entity.getItem();
         if (stack == null || stack.isEmpty()) return;
+        String metadata = entity.getMetadata();
+        boolean valid = metadata.startsWith("mob") || metadata.startsWith("chest") || metadata.startsWith("barrel");
 
         int rx = 0;
         int ry = 0;
@@ -44,14 +46,14 @@ public class DataBlockEntityRenderer<T extends DataBlockEntity> implements Block
             }
         }
 
-        matrices.pushPose();
-        matrices.scale(1.5F, 1.5F, 1.5F);
-        matrices.translate(0.325F, 0.325F, 0.325F);
+        poseStack.pushPose();
+        poseStack.scale(1.5F, 1.5F, 1.5F);
+        poseStack.translate(0.325F, 0.325F, 0.325F);
 
-        matrices.mulPose(Vector3f.XP.rotationDegrees(rx));
-        matrices.mulPose(Vector3f.YP.rotationDegrees(ry));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(rx));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(ry));
 
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, 255, OverlayTexture.NO_OVERLAY, matrices, bufferSource, entity.hashCode());
-        matrices.popPose();
+        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, 255, valid ? OverlayTexture.NO_OVERLAY : OverlayTexture.RED_OVERLAY_V, poseStack, bufferSource, entity.hashCode());
+        poseStack.popPose();
     }
 }

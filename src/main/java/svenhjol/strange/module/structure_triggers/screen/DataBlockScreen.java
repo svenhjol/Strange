@@ -11,12 +11,13 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.strange.module.structure_triggers.DataBlockEntity;
 import svenhjol.strange.module.structure_triggers.StructureTriggers;
 
+import java.util.function.Consumer;
+
 public class DataBlockScreen extends Screen {
     private BlockPos pos;
     private DataBlockEntity data;
-    private EditBox editBox;
+    private EditBox metadataBox;
     private int midX;
-    private String metadata;
     private boolean hasRenderedBottomButtons;
 
     public DataBlockScreen(BlockPos pos, DataBlockEntity data) {
@@ -29,23 +30,12 @@ public class DataBlockScreen extends Screen {
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        metadata = data.getMetadata();
         midX = width / 2;
-        editBox = new EditBox(font, midX - 150, 40, 300, 12, new TextComponent("EditBox"));
-        editBox.changeFocus(true);
-        editBox.setCanLoseFocus(false);
-        editBox.setTextColor(-1);
-        editBox.setTextColorUneditable(-1);
-        editBox.setBordered(true);
-        editBox.setMaxLength(256);
-        editBox.setResponder(t -> metadata = t);
-        editBox.setValue(metadata);
-        editBox.setEditable(true);
 
+        metadataBox = setupInputBox("MetadataBox", 100, 55, 200, data.getMetadata(), t -> data.setMetadata(t));
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        children.add(editBox);
-        setFocused(editBox);
+        children.add(metadataBox);
+        setFocused(metadataBox);
     }
 
     @Override
@@ -53,7 +43,9 @@ public class DataBlockScreen extends Screen {
         renderBackground(poseStack);
         renderBottomButtons(poseStack);
         super.render(poseStack, mouseX, mouseY, delta);
-        editBox.render(poseStack, mouseX, mouseY, delta);
+
+        font.draw(poseStack, "Metadata", midX - 100, 40, 0xffffff);
+        metadataBox.render(poseStack, mouseX, mouseY, delta);
     }
 
     private void renderBottomButtons(PoseStack poseStack) {
@@ -61,20 +53,33 @@ public class DataBlockScreen extends Screen {
             int buttonWidth = 100;
             int buttonHeight = 20;
             int x = midX - (buttonWidth / 2);
-            int y = 80;
+            int y = 130;
 
             addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.data_block.save"), b -> save()));
             hasRenderedBottomButtons = true;
         }
     }
 
+    private EditBox setupInputBox(String id, int x, int y, int length, String value, Consumer<String> onInput) {
+        EditBox input = new EditBox(font, midX - 100, y, 200, 12, new TextComponent(id));
+
+        input.changeFocus(true);
+        input.setCanLoseFocus(false);
+        input.setTextColor(-1);
+        input.setTextColorUneditable(-1);
+        input.setBordered(true);
+        input.setMaxLength(128);
+        input.setResponder(onInput);
+        input.setValue(value);
+        input.setEditable(true);
+
+        return input;
+    }
+
     private void save() {
         if (minecraft != null) {
             NetworkHelper.sendPacketToServer(StructureTriggers.MSG_SERVER_UPDATE_DATA_BLOCK, buf -> {
-                data.setMetadata(metadata);
                 data.setChanged();
-//                Objects.requireNonNull(minecraft.level).getBlockEntity(pos).setChanged();
-
                 buf.writeBlockPos(pos);
                 buf.writeNbt(data.saveWithoutMetadata());
             });
