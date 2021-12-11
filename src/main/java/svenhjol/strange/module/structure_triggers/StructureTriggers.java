@@ -67,11 +67,11 @@ public class StructureTriggers extends CharmModule {
         StructureTriggers.DECORATION_ITEM_MAP.put("anvil", Blocks.ANVIL);
         StructureTriggers.DECORATION_ITEM_MAP.put("carpet", Blocks.RED_CARPET);
         StructureTriggers.DECORATION_ITEM_MAP.put("cauldron", Blocks.CAULDRON);
-        StructureTriggers.DECORATION_ITEM_MAP.put("entity", Blocks.SPAWNER);
+        StructureTriggers.DECORATION_ITEM_MAP.put("entity", Blocks.PLAYER_HEAD);
         StructureTriggers.DECORATION_ITEM_MAP.put("flower", Blocks.DANDELION);
         StructureTriggers.DECORATION_ITEM_MAP.put("lantern", Blocks.LANTERN);
         StructureTriggers.DECORATION_ITEM_MAP.put("lava", Blocks.MAGMA_BLOCK);
-        StructureTriggers.DECORATION_ITEM_MAP.put("mob", Blocks.SKELETON_SKULL);
+        StructureTriggers.DECORATION_ITEM_MAP.put("mob", Blocks.CREEPER_HEAD);
         StructureTriggers.DECORATION_ITEM_MAP.put("ore", Blocks.IRON_ORE);
         StructureTriggers.DECORATION_ITEM_MAP.put("flowerpot", Blocks.POTTED_DANDELION);
         StructureTriggers.DECORATION_ITEM_MAP.put("sapling", Blocks.OAK_SAPLING);
