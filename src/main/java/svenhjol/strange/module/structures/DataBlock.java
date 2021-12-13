@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -94,11 +94,11 @@ public class DataBlock extends CharmBlockWithEntity {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof DataBlockEntity data) {
                 if (player.getMainHandItem().getItem() == Items.REDSTONE) {
-                    boolean result = StructureTriggers.converterator((ServerLevel) level, pos, data.getMetadata());
+                    boolean result = Structures.converterator((ServerLevel) level, pos, data.getMetadata());
                     SoundEvent sound = result ? SoundEvents.PLAYER_LEVELUP : RaidHorns.SQUEAK_SOUND;
                     level.playSound(null, player.blockPosition(), sound, SoundSource.BLOCKS, 1.0F, 1.0F);
                 } else {
-                    NetworkHelper.sendPacketToClient((ServerPlayer) player, StructureTriggers.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, buf -> {
+                    NetworkHelper.sendPacketToClient((ServerPlayer) player, Structures.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, buf -> {
                         buf.writeBlockPos(pos);
                     });
                 }

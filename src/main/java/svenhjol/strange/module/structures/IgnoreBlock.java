@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;

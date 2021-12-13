@@ -1,4 +1,4 @@
-package svenhjol.strange.structure;
+package svenhjol.strange.module.structures.legacy;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class DataResolver {
+public abstract class LegacyDataResolver {
     public static Direction getFacing(String direction) {
         if (direction.equals("east")) return Direction.EAST;
         if (direction.equals("south")) return Direction.SOUTH;

@@ -1,4 +1,4 @@
-package svenhjol.strange.structure;
+package svenhjol.strange.module.structures;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 @SuppressWarnings({"SameParameterValue", "unused"})
-public abstract class StrangeStructure {
+public abstract class BaseStructure {
     private final String modId;
     private final String mainFolder;
     private final String structureName;
     private final List<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>> starts = new ArrayList<>();
 
-    public StrangeStructure(String modId, String mainFolder, String structureName) {
+    public BaseStructure(String modId, String mainFolder, String structureName) {
         this.modId = modId;
         this.mainFolder = mainFolder;
         this.structureName = structureName;

@@ -1,12 +1,12 @@
-package svenhjol.strange.module.structure_triggers.screen;
+package svenhjol.strange.module.structures.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.charm.helper.NetworkHelper;
-import svenhjol.strange.module.structure_triggers.DataBlockEntity;
-import svenhjol.strange.module.structure_triggers.StructureTriggers;
+import svenhjol.strange.module.structures.DataBlockEntity;
+import svenhjol.strange.module.structures.Structures;
 
 public class DataBlockScreen extends BaseScreen<DataBlockEntity> {
     private EditBox metadataEditBox;
@@ -29,17 +29,14 @@ public class DataBlockScreen extends BaseScreen<DataBlockEntity> {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        renderBackground(poseStack);
-        renderBottomButtons(poseStack);
         super.render(poseStack, mouseX, mouseY, delta);
-
         font.draw(poseStack, "Metadata", midX - 100, 40, 0xffffff);
         metadataEditBox.render(poseStack, mouseX, mouseY, delta);
     }
 
     protected void save() {
         if (minecraft != null) {
-            NetworkHelper.sendPacketToServer(StructureTriggers.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
+            NetworkHelper.sendPacketToServer(Structures.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
                 blockEntity.setChanged();
                 buf.writeBlockPos(pos);
                 buf.writeNbt(blockEntity.saveWithoutMetadata());

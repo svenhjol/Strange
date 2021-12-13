@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;

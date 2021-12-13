@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +29,7 @@ import net.minecraft.world.phys.AABB;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.LootHelper;
-import svenhjol.strange.structure.DataResolver;
+import svenhjol.strange.module.structures.legacy.LegacyDataResolver;
 
 import java.util.*;
 
@@ -46,9 +46,9 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
 
     private ResourceLocation entity = new ResourceLocation("minecraft:sheep");
     private Rotation rotation = Rotation.NONE;
-    private boolean persistent = false;
+    private boolean persistent = true;
     private boolean primed = false;
-    private double health = 0;
+    private double health = 20;
     private int count = 1;
     private String effects = "";
     private String armor = "";
@@ -57,7 +57,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public float rotateTicks = 0F;
 
     public EntityBlockEntity(BlockPos pos, BlockState state) {
-        super(StructureTriggers.ENTITY_BLOCK_ENTITY, pos, state);
+        super(Structures.ENTITY_BLOCK_ENTITY, pos, state);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public static <T extends EntityBlockEntity> void tick(Level world, BlockPos pos, BlockState state, T spawner) {
         if (world == null || world.getGameTime() % 10 == 0 || world.getDifficulty() == Difficulty.PEACEFUL || !spawner.isPrimed()) return;
 
-        List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(pos).inflate(StructureTriggers.entityTriggerDistance));
+        List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(pos).inflate(Structures.entityTriggerDistance));
         if (players.size() == 0) return;
 
         // remove the spawner, create the entity
@@ -244,7 +244,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         if (type == EntityType.CHEST_MINECART) {
             minecart = new MinecartChest(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
 
-            String loot = DataResolver.getValue("loot", spawner.meta, "");
+            String loot = LegacyDataResolver.getValue("loot", spawner.meta, "");
             ResourceLocation lootTable = LootHelper.getLootTable(loot, BuiltInLootTables.ABANDONED_MINESHAFT);
             ((MinecartChest)minecart).setLootTable(lootTable, world.random.nextLong());
         } else if (type == EntityType.MINECART) {
@@ -268,9 +268,9 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         if (stand == null)
             return false;
 
-        Direction face = DataResolver.getFacing(DataResolver.getValue("facing", spawner.meta, "north"));
+        Direction face = LegacyDataResolver.getFacing(LegacyDataResolver.getValue("facing", spawner.meta, "north"));
         Direction facing = spawner.rotation.rotate(face);
-        String type = DataResolver.getValue("type", spawner.meta, "");
+        String type = LegacyDataResolver.getValue("type", spawner.meta, "");
 
         tryEquip(stand, type, random);
 

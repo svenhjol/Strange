@@ -1,4 +1,4 @@
-package svenhjol.strange.structure;
+package svenhjol.strange.module.structures;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;

@@ -1,5 +1,6 @@
-package svenhjol.strange.structure;
+package svenhjol.strange.module.structures.legacy;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LevelReader;
@@ -14,11 +15,13 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.init.StrangeStructures;
+import svenhjol.strange.module.structures.Structures;
 
 import java.util.Random;
 
-public class StrangeStructureProcessor extends StructureProcessor {
+public class LegacyDataProcessor extends StructureProcessor {
+    public static final LegacyDataProcessor INSTANCE = new LegacyDataProcessor();
+    public static final Codec<LegacyDataProcessor> CODEC = Codec.unit(() -> INSTANCE);
     public final StrangeDataResolver RESOLVER = new StrangeDataResolver();
 
     @Nullable
@@ -43,10 +46,10 @@ public class StrangeStructureProcessor extends StructureProcessor {
 
     @Override
     protected StructureProcessorType<?> getType() {
-        return StrangeStructures.STRUCTURE_PROCESSOR_TYPE;
+        return Structures.LEGACY;
     }
 
-    public static class StrangeDataResolver extends DataResolver {
+    public static class StrangeDataResolver extends LegacyDataResolver {
         private String data;
         private Rotation rotation;
         private BlockState state;

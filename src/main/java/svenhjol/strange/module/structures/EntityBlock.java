@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -60,7 +60,7 @@ public class EntityBlock extends CharmBlockWithEntity {
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof EntityBlockEntity blockEntity) {
-                NetworkHelper.sendPacketToClient((ServerPlayer) player, StructureTriggers.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, buf -> {
+                NetworkHelper.sendPacketToClient((ServerPlayer) player, Structures.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, buf -> {
                     buf.writeBlockPos(pos);
                 });
 

@@ -1,11 +1,11 @@
-package svenhjol.strange.module.overworld_ruins.feature;
+package svenhjol.strange.module.ruins.feature;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
-import svenhjol.strange.structure.RandomHeightJigsawFeature;
+import svenhjol.strange.module.structures.RandomHeightJigsawFeature;
 
 public class OverworldRuinFeature extends RandomHeightJigsawFeature {
     public OverworldRuinFeature(Codec<JigsawConfiguration> codec) {

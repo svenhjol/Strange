@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers.screen;
+package svenhjol.strange.module.structures.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Checkbox;
@@ -8,8 +8,8 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.NetworkHelper;
-import svenhjol.strange.module.structure_triggers.EntityBlockEntity;
-import svenhjol.strange.module.structure_triggers.StructureTriggers;
+import svenhjol.strange.module.structures.EntityBlockEntity;
+import svenhjol.strange.module.structures.Structures;
 
 public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
     private EditBox entityEditBox;
@@ -38,22 +38,26 @@ public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
         health = String.valueOf(blockEntity.getHealth());
 
         entityEditBox = setupInputBox("EntityEditBox", midX - 100, 50, 200, blockEntity.getEntity().toString(), t -> blockEntity.setEntity(new ResourceLocation(t)));
-        children.add(entityEditBox);
+        addRenderableWidget(entityEditBox);
 
         healthEditBox = setupInputBox("HealthEditBox", midX - 100, 75, 200, health, t -> health = t);
-        children.add(healthEditBox);
+        addRenderableWidget(healthEditBox);
 
         countEditBox = setupInputBox("CountEditBox", midX - 100, 100, 200, count, t -> count = t);
-        children.add(countEditBox);
+        addRenderableWidget(countEditBox);
 
         effectsEditBox = setupInputBox("EffectsEditBox", midX - 100, 125, 200, blockEntity.getEffects(), t -> blockEntity.setEffects(t));
-        children.add(effectsEditBox);
+        addRenderableWidget(effectsEditBox);
 
         armorEditBox = setupInputBox("ArmorEditBox", midX - 100, 150, 200, blockEntity.getArmor(), t -> blockEntity.setArmor(t));
-        children.add(armorEditBox);
+        addRenderableWidget(armorEditBox);
 
-        persistentCheckbox = new Checkbox(midX - 50, 160, 150, 20, new TextComponent("Persistent?"), true);
-        primedCheckbox = new Checkbox(midX - 50, 180, 150, 20, new TextComponent("Primed?"), false);
+        persistentCheckbox = new Checkbox(midX - 100, 166, 150, 20, new TextComponent("Persistent"), blockEntity.isPersistent());
+        addRenderableWidget(persistentCheckbox);
+
+        primedCheckbox = new Checkbox(midX - 100, 188, 150, 20, new TextComponent("Primed"), blockEntity.isPrimed());
+        addRenderableWidget(primedCheckbox);
+
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 //        setFocused(entityEditBox);
@@ -77,12 +81,15 @@ public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
 
         font.draw(poseStack, "Armor", midX - 100, 140, 0xffffff);
         armorEditBox.render(poseStack, mouseX, mouseY, delta);
+
+        persistentCheckbox.render(poseStack, mouseX, mouseY, delta);
+        primedCheckbox.render(poseStack, mouseX, mouseY, delta);
     }
 
     @Override
     protected void save() {
         if (minecraft != null) {
-            NetworkHelper.sendPacketToServer(StructureTriggers.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
+            NetworkHelper.sendPacketToServer(Structures.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
                 blockEntity.setCount(Integer.parseInt(count));
                 blockEntity.setHealth(Double.parseDouble(health));
                 blockEntity.setPersistent(persistentCheckbox.selected());

@@ -1,4 +1,4 @@
-package svenhjol.strange.structure;
+package svenhjol.strange.module.structures;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class StrangeGenerator {
+public abstract class BaseGenerator {
     @Nullable
-    protected static StructureTemplatePool registerPool(ResourceLocation startPool, List<StrangeStructure> structures, StructureTemplatePool.Projection projection) {
+    protected static StructureTemplatePool registerPool(ResourceLocation startPool, List<BaseStructure> structures, StructureTemplatePool.Projection projection) {
         if (structures.isEmpty()) {
             return emptyPool(startPool);
         }
@@ -37,7 +37,7 @@ public abstract class StrangeGenerator {
     }
 
     @Nullable
-    protected static StructureTemplatePool registerPool(ResourceLocation startPool, List<StrangeStructure> structures) {
+    protected static StructureTemplatePool registerPool(ResourceLocation startPool, List<BaseStructure> structures) {
         return registerPool(startPool, structures, StructureTemplatePool.Projection.RIGID);
     }
 

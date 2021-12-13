@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers.screen;
+package svenhjol.strange.module.structures.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
@@ -29,25 +29,19 @@ public abstract class BaseScreen <T extends BlockEntity> extends Screen {
         super.init();
         if (minecraft == null) return;
         midX = width / 2;
+
+        int buttonWidth = 100;
+        int buttonHeight = 20;
+        int x = midX - (buttonWidth / 2);
+        int y = 220;
+
+        addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.save_changes"), b -> save()));
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         renderBackground(poseStack);
-        renderBottomButtons(poseStack);
         super.render(poseStack, mouseX, mouseY, delta);
-    }
-
-    protected void renderBottomButtons(PoseStack poseStack) {
-        if (!hasRenderedBottomButtons) {
-            int buttonWidth = 100;
-            int buttonHeight = 20;
-            int x = midX - (buttonWidth / 2);
-            int y = 170;
-
-            addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, new TranslatableComponent("gui.strange.save_changes"), b -> save()));
-            hasRenderedBottomButtons = true;
-        }
     }
 
     protected EditBox setupInputBox(String id, int x, int y, int length, String value, Consumer<String> onInput) {

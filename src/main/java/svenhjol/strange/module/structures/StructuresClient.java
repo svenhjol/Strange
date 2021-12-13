@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -13,22 +13,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.structure_triggers.screen.DataBlockScreen;
-import svenhjol.strange.module.structure_triggers.screen.EntityBlockScreen;
+import svenhjol.strange.module.structures.screen.DataBlockScreen;
+import svenhjol.strange.module.structures.screen.EntityBlockScreen;
 
-@ClientModule(module = StructureTriggers.class)
-public class StructureTriggersClient extends CharmModule {
+@ClientModule(module = Structures.class)
+public class StructuresClient extends CharmModule {
     @Override
     public void register() {
-        ClientPlayNetworking.registerGlobalReceiver(StructureTriggers.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, this::handleOpenDataBlockScreen);
-        ClientPlayNetworking.registerGlobalReceiver(StructureTriggers.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, this::handleOpenEntityBlockScreen);
+        ClientPlayNetworking.registerGlobalReceiver(Structures.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, this::handleOpenDataBlockScreen);
+        ClientPlayNetworking.registerGlobalReceiver(Structures.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, this::handleOpenEntityBlockScreen);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.DATA_BLOCK, RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.ENTITY_BLOCK, RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(StructureTriggers.IGNORE_BLOCK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(Structures.DATA_BLOCK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(Structures.ENTITY_BLOCK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(Structures.IGNORE_BLOCK, RenderType.translucent());
 
-        BlockEntityRendererRegistry.register(StructureTriggers.DATA_BLOCK_ENTITY, DataBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(StructureTriggers.ENTITY_BLOCK_ENTITY, EntityBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(Structures.DATA_BLOCK_ENTITY, DataBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(Structures.ENTITY_BLOCK_ENTITY, EntityBlockEntityRenderer::new);
     }
 
     private void handleOpenDataBlockScreen(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

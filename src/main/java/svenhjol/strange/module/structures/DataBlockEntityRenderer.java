@@ -1,4 +1,4 @@
-package svenhjol.strange.module.structure_triggers;
+package svenhjol.strange.module.structures;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -29,7 +29,7 @@ public class DataBlockEntityRenderer<T extends DataBlockEntity> implements Block
         ItemStack stack = entity.getItem();
         if (stack == null || stack.isEmpty()) return;
         String metadata = entity.getMetadata();
-        boolean valid = metadata.startsWith("entity") || metadata.startsWith("chest") || metadata.startsWith("barrel");
+        boolean valid = metadata.startsWith("decoration") || metadata.startsWith("chest") || metadata.startsWith("barrel");
 
         int rx = 0;
         int ry = 0;
