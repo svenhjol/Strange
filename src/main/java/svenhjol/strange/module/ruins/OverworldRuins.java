@@ -1,5 +1,6 @@
 package svenhjol.strange.module.ruins;
 
+import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceLocation;
@@ -8,10 +9,14 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import svenhjol.charm.helper.BiomeHelper;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.ruins.feature.OverworldRuinFeature;
+import svenhjol.strange.module.structures.Processors;
+import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
+import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
 
 /**
  * With special thanks to TG.
@@ -23,6 +28,8 @@ public class OverworldRuins implements IRuinsTheme {
 
     public static StructureFeature<JigsawConfiguration> OVERWORLD_RUIN_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
+
+    public static StructureProcessorList OVERWORLD_RUINS;
 
     public void register() {
         int size = Math.max(0, Math.min(10, Ruins.overworldRuinSize));
@@ -46,6 +53,12 @@ public class OverworldRuins implements IRuinsTheme {
 
         // register the configured structure feature with minecraft
         CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "overworld_ruin"), CONFIGURED_FEATURE);
+
+        OVERWORLD_RUINS = CommonRegistry.processorList(new ResourceLocation(Strange.MOD_ID, "overworld_ruins"), ImmutableList.of(
+            Processors.IGNORE,
+            StoneBricksDecayProcessor.INSTANCE,
+            AnvilDamageProcessor.INSTANCE
+        ));
     }
 
     public void runWhenEnabled() {
