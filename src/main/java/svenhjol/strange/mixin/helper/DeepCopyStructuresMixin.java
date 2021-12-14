@@ -18,6 +18,10 @@ import java.util.Optional;
 
 /**
  * This mixin is already implemented by RS.
+ *
+ * Note: due to a quirk with how Noise Settings are shared between dimensions, you need this mixin to make a
+ * deep copy of the noise setting per dimension for your dimension whitelisting/blacklisting to work properly:
+ * @see {https://github.com/TelepathicGrunt/RepurposedStructures-Fabric/blob/1.18/src/main/java/com/telepathicgrunt/repurposedstructures/mixin/world/ChunkGeneratorMixin.java}
  */
 @CharmMixin(disableIfModsPresent = {"repurposed_structures"})
 @Mixin(ChunkGenerator.class)
