@@ -1,0 +1,15 @@
+{
+  "name": "strange:ruins/test/corridors",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:ruins/test/test_corridor1",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

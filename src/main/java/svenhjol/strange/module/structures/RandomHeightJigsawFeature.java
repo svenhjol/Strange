@@ -2,13 +2,18 @@ package svenhjol.strange.module.structures;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.NoiseAffectingStructureFeature;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import svenhjol.charm.helper.LogHelper;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -16,10 +21,10 @@ import java.util.function.Predicate;
 /**
  * @see {{@link net.minecraft.world.level.levelgen.feature.JigsawFeature}}
  */
-public class RandomHeightJigsawFeature extends NoiseAffectingStructureFeature<JigsawConfiguration> {
-    public RandomHeightJigsawFeature(Codec<JigsawConfiguration> codec, int structureStartY, int variation, boolean relativeToBottom, Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> predicate) {
+public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureFeature<JigsawConfiguration> {
+    public RandomHeightJigsawFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation, boolean relativeToBottom, Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> checkLocation) {
         super(codec, context -> {
-            if (!predicate.test(context)) {
+            if (!checkLocation.test(context)) {
                 return Optional.empty();
             }
 
@@ -29,13 +34,36 @@ public class RandomHeightJigsawFeature extends NoiseAffectingStructureFeature<Ji
             int y;
 
             if (relativeToBottom) {
-                y = context.chunkGenerator().getMinY() + structureStartY + (variation - r);
+                y = context.chunkGenerator().getMinY() + startY + (variation - r);
             } else {
-                y = structureStartY + (variation - r);
+                y = startY + (variation - r);
             }
 
             BlockPos blockPos = new BlockPos(context.chunkPos().getMinBlockX(), y, context.chunkPos().getMinBlockZ());
-            return JigsawPlacement.addPieces(context, PoolElementStructurePiece::new, blockPos, false, false);
-        });
+
+            JigsawConfiguration newConfig = new JigsawConfiguration(
+                () -> context.registryAccess().registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
+                    .get(starts), size);
+
+            PieceGeneratorSupplier.Context<JigsawConfiguration> newContext = new PieceGeneratorSupplier.Context<>(
+                context.chunkGenerator(),
+                context.biomeSource(),
+                context.seed(),
+                context.chunkPos(),
+                newConfig,
+                context.heightAccessor(),
+                context.validBiome(),
+                context.structureManager(),
+                context.registryAccess()
+            );
+
+            Optional<PieceGenerator<JigsawConfiguration>> generator = JigsawPlacement.addPieces(newContext, PoolElementStructurePiece::new, blockPos, false, false);
+
+            if (generator.isPresent()) {
+                LogHelper.debug(RandomHeightJigsawFeature.class, "Generated structure at " + blockPos);
+            }
+
+            return generator;
+        }, PostPlacementProcessor.NONE);
     }
 }

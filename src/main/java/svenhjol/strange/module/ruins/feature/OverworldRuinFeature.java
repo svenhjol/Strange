@@ -1,6 +1,7 @@
 package svenhjol.strange.module.ruins.feature;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
@@ -8,8 +9,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplie
 import svenhjol.strange.module.structures.RandomHeightJigsawFeature;
 
 public class OverworldRuinFeature extends RandomHeightJigsawFeature {
-    public OverworldRuinFeature(Codec<JigsawConfiguration> codec) {
-        super(codec, 8, 16, false, OverworldRuinFeature::checkLocation);
+    public OverworldRuinFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation) {
+        super(codec, starts, size, startY, variation, false, OverworldRuinFeature::checkLocation);
     }
 
     private static boolean checkLocation(PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
