@@ -5,12 +5,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
@@ -18,9 +17,7 @@ import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.Teleport;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FloatingIslandsDimension implements IDimension {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "floating_islands");
@@ -44,14 +41,7 @@ public class FloatingIslandsDimension implements IDimension {
         // Ruined portals don't allow you into the nether when built.
         // Shipwrecks, ocean ruins and monuments sometimes generate floating at Y=0 which looks very odd.
         // Woodland mansions sometimes generate over an open space, creating a huge cobblestone pillar to Y=0.
-        StructureSettings settings = level.getChunkSource().getGenerator().getSettings();
-        Map<StructureFeature<?>, StructureFeatureConfiguration> structureConfig = new HashMap<>(settings.structureConfig());
-
-        for (StructureFeature<?> structureFeature : STRUCTURES_TO_REMOVE) {
-            structureConfig.remove(structureFeature);
-        }
-
-        settings.structureConfig = structureConfig;
+        removestructures(level, STRUCTURES_TO_REMOVE);
     }
 
     @Override
@@ -60,8 +50,8 @@ public class FloatingIslandsDimension implements IDimension {
     }
 
     @Override
-    public void handleAddEntity(Entity entity) {
-        // not required yet
+    public InteractionResult handleAddEntity(Entity entity) {
+        return InteractionResult.PASS;
     }
 
     @Override

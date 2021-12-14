@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Musics;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -21,10 +22,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
@@ -34,6 +37,7 @@ import java.util.*;
 
 public class MirrorDimension implements IDimension {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
+    public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
     public static final List<MobEffect> POSITIVE_MOB_EFFECTS;
     public static final List<AmbientParticleSettings> AMBIENT_PARTICLES;
@@ -66,9 +70,9 @@ public class MirrorDimension implements IDimension {
 
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, 0x004434);
-        Dimensions.GRASS_COLOR.put(ID, 0x607265);
-        Dimensions.FOLIAGE_COLOR.put(ID, 0x607265);
-        Dimensions.WATER_COLOR.put(ID, 0x102020);
+        Dimensions.GRASS_COLOR.put(ID, 0x607065);
+        Dimensions.FOLIAGE_COLOR.put(ID, 0x506055);
+        Dimensions.WATER_COLOR.put(ID, 0x107070);
         Dimensions.WATER_FOG_COLOR.put(ID, 0x102020);
         Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
@@ -79,7 +83,8 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-        // no
+        // Remove structures that are not valid in this dimension.
+        removestructures(level, STRUCTURES_TO_REMOVE);
     }
 
     @Override
@@ -94,47 +99,67 @@ public class MirrorDimension implements IDimension {
     }
 
     @Override
-    public void handleAddEntity(Entity entity) {
+    public InteractionResult handleAddEntity(Entity entity) {
         Level level = entity.level;
         if (!level.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel)level;
             Random random = new Random(entity.hashCode());
+            boolean result;
 
             if (entity instanceof LivingEntity livingEntity) {
-                // monsters have buffs
-                if (random.nextFloat() < 0.6F && livingEntity instanceof Monster && !(livingEntity instanceof Creeper)) {
-                    int duration = 3600;
-                    int amplifier = random.nextInt(3) + 1;
-                    List<MobEffect> mobEffects = new ArrayList<>(POSITIVE_MOB_EFFECTS);
-                    Collections.shuffle(mobEffects, random);
-                    List<MobEffect> toApply;
+                result = handleMonsterBuffs(livingEntity, random);
+                if (!result) return InteractionResult.FAIL;
 
-                    // try increase health
-                    AttributeMap attributes = livingEntity.getAttributes();
-                    AttributeInstance healthInstance = attributes.getInstance(Attributes.MAX_HEALTH);
-
-                    if (healthInstance != null) {
-                        double defaultValue = healthInstance.getBaseValue();
-                        double newValue = defaultValue * (1 + random.nextFloat());
-                        healthInstance.setBaseValue(newValue);
-                        livingEntity.setHealth((float)newValue);
-                    }
-
-                    // chance of applying more than one buff
-                    if (random.nextFloat() < 0.25F) {
-                        toApply = mobEffects.subList(0, random.nextInt(Math.min(3, mobEffects.size() - 1)) + 1);
-                    } else {
-                        toApply = List.of(mobEffects.get(0));
-                    }
-
-                    toApply.forEach(e -> livingEntity.addEffect(new MobEffectInstance(e, duration, amplifier)));
-                }
+                result = handleVillagerRemoval(livingEntity);
+                if (!result) return InteractionResult.FAIL;
             }
         }
+
+        return InteractionResult.PASS;
     }
 
     @Override
     public void handlePlayerTick(Player player) {
         // not yet
+    }
+
+    private boolean handleVillagerRemoval(LivingEntity livingEntity) {
+        if (livingEntity instanceof Villager villager) {
+            villager.discard();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean handleMonsterBuffs(LivingEntity livingEntity, Random random) {
+        if (random.nextFloat() < 0.6F && livingEntity instanceof Monster && !(livingEntity instanceof Creeper)) {
+            int duration = 3600;
+            int amplifier = random.nextInt(3) + 1;
+            List<MobEffect> mobEffects = new ArrayList<>(POSITIVE_MOB_EFFECTS);
+            Collections.shuffle(mobEffects, random);
+            List<MobEffect> toApply;
+
+            // try increase health
+            AttributeMap attributes = livingEntity.getAttributes();
+            AttributeInstance healthInstance = attributes.getInstance(Attributes.MAX_HEALTH);
+
+            if (healthInstance != null) {
+                double defaultValue = healthInstance.getBaseValue();
+                double newValue = defaultValue * (1 + random.nextFloat());
+                healthInstance.setBaseValue(newValue);
+                livingEntity.setHealth((float)newValue);
+            }
+
+            // chance of applying more than one buff
+            if (random.nextFloat() < 0.25F) {
+                toApply = mobEffects.subList(0, random.nextInt(Math.min(3, mobEffects.size() - 1)) + 1);
+            } else {
+                toApply = List.of(mobEffects.get(0));
+            }
+
+            toApply.forEach(e -> livingEntity.addEffect(new MobEffectInstance(e, duration, amplifier)));
+        }
+        return true;
     }
 
     private void handleParticles(Random random) {
@@ -221,6 +246,10 @@ public class MirrorDimension implements IDimension {
 
         AMBIENT_PARTICLES = Arrays.asList(
             WARPED_SPORE, SPORE_BLOSSOM
+        );
+
+        STRUCTURES_TO_REMOVE = List.of(
+            StructureFeature.RUINED_PORTAL
         );
     }
 }

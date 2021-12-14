@@ -100,11 +100,14 @@ public class Dimensions extends CharmModule {
     }
 
     private InteractionResult handleAddEntity(Entity entity) {
-        DIMENSIONS.forEach(d -> {
-            if (entity.level.dimension().location().equals(d.getId())) {
-                d.handleAddEntity(entity);
+        for (IDimension dimension : DIMENSIONS) {
+            if (entity.level.dimension().location().equals(dimension.getId())) {
+                InteractionResult result = dimension.handleAddEntity(entity);
+                if (result == InteractionResult.FAIL) {
+                    return InteractionResult.FAIL;
+                }
             }
-        });
+        }
         return InteractionResult.PASS;
     }
 
