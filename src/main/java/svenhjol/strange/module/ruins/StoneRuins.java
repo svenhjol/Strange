@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import svenhjol.charm.helper.BiomeHelper;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.ruins.feature.StoneRuinFeature;
 import svenhjol.strange.module.structures.Processors;
 import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
 import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;

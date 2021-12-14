@@ -1,4 +1,4 @@
-package svenhjol.strange.module.ruins.feature;
+package svenhjol.strange.module.ruins;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
