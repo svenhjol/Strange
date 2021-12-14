@@ -29,6 +29,7 @@ import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
@@ -84,7 +85,7 @@ public class MirrorDimension implements IDimension {
     @Override
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
         // Remove structures that are not valid in this dimension.
-        removestructures(level, STRUCTURES_TO_REMOVE);
+        WorldHelper.removeStructures(level, STRUCTURES_TO_REMOVE);
     }
 
     @Override
