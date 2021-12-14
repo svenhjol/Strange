@@ -1,0 +1,123 @@
+{
+  "name": "strange:vaults/corridors",
+  "fallback": "strange:vaults/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stairs",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_arches",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_broken1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_broken2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_corner1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_corner2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_stone_gap",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_corner1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_corner2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_gap",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_meeting",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_plain",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/corridor_wood_windows",
+        "processors": "strange:vaults"
+      }
+    }
+  ]
+}

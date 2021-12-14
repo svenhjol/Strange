@@ -1,0 +1,213 @@
+{
+  "name": "strange:vaults/rooms",
+  "fallback": "strange:vaults/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_crypt",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_dungeon",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_forge",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_library",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_portal",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_portal",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_runes",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_staircase",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_big_waterfall",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_small_dungeon1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_small_dungeon2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_small_lava",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_stone_corner",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_stone_junction",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_stone_pillars",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_stone_storage",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_tall_gangway1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_tall_gangway2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_tall_ladder1",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_tall_ladder2",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_wood_booknook",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_wood_drop",
+        "processors": "strange:vaults"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:vaults/room_wood_evoker",
+        "processors": "strange:vaults"
+      }
+    }
+  ]
+}
