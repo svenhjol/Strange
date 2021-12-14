@@ -31,9 +31,9 @@ public class DataBlockEntity extends CharmSyncedBlockEntity {
 
     public ItemStack getItem() {
         if (cachedItem == null) {
-            for (String s : Structures.DECORATION_ITEM_MAP.keySet()) {
+            for (String s : Processors.LEGACY_DATA_MAP.keySet()) {
                 if (metadata.startsWith(s)) {
-                    cachedItem = new ItemStack(Structures.DECORATION_ITEM_MAP.get(s));
+                    cachedItem = new ItemStack(Processors.LEGACY_DATA_MAP.get(s));
                 }
             }
 

@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.structures.Structures;
+import svenhjol.strange.module.structures.Processors;
 
 import java.util.Random;
 
@@ -46,7 +46,7 @@ public class LegacyDataProcessor extends StructureProcessor {
 
     @Override
     protected StructureProcessorType<?> getType() {
-        return Structures.LEGACY;
+        return Processors.LEGACY;
     }
 
     public static class StrangeDataResolver extends LegacyDataResolver {

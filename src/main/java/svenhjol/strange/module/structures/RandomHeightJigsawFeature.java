@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
@@ -38,6 +40,17 @@ public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureF
             } else {
                 y = startY + (variation - r);
             }
+
+            // adjust for air/water
+            BlockPos middle = context.chunkPos().getMiddleBlockPosition(0);
+            NoiseColumn noiseColumn = context.chunkGenerator().getBaseColumn(middle.getX(), middle.getZ(), context.heightAccessor());
+
+            int tries = 0;
+            do {
+                BlockState block = noiseColumn.getBlock(y - tries);
+                if (block.getFluidState().isEmpty() && !block.isAir()) break;
+            } while (tries++ < variation);
+            if (tries == 10) return Optional.empty();
 
             BlockPos blockPos = new BlockPos(context.chunkPos().getMinBlockX(), y, context.chunkPos().getMinBlockZ());
 

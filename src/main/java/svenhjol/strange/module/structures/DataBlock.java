@@ -94,7 +94,7 @@ public class DataBlock extends CharmBlockWithEntity {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof DataBlockEntity data) {
                 if (player.getMainHandItem().getItem() == Items.REDSTONE) {
-                    boolean result = Structures.converterator((ServerLevel) level, pos, data.getMetadata());
+                    boolean result = Processors.converterator((ServerLevel) level, pos, data.getMetadata());
                     SoundEvent sound = result ? SoundEvents.PLAYER_LEVELUP : RaidHorns.SQUEAK_SOUND;
                     level.playSound(null, player.blockPosition(), sound, SoundSource.BLOCKS, 1.0F, 1.0F);
                 } else {
