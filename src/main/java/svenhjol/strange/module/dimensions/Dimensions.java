@@ -1,7 +1,10 @@
 package svenhjol.strange.module.dimensions;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.Music;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -56,9 +59,18 @@ public class Dimensions extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         AddEntityCallback.EVENT.register(this::handleAddEntity);
+    }
+
+    private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
+        DIMENSIONS.forEach(d -> {
+            if (level.dimension().location().equals(d.getId())) {
+                d.handleWorldLoad(server, level);
+            }
+        });
     }
 
     public static Optional<Float> getTemperature(LevelReader level, Biome biome) {

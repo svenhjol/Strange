@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Musics;
@@ -59,6 +60,11 @@ public class MirrorDimension implements IDimension {
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
         Dimensions.AMBIENT_PARTICLE.put(ID, new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F));
         Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
+    }
+
+    @Override
+    public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
+
     }
 
     @Override

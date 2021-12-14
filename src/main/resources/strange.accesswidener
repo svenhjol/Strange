@@ -51,6 +51,7 @@ accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GLINT
 accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_GLINT_DIRECT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 accessible field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool rawTemplates Ljava/util/List;
 accessible field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
+accessible field net/minecraft/world/level/levelgen/StructureSettings structureConfig Ljava/util/Map;
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_ENTITY_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType GLINT_DIRECT Lnet/minecraft/client/renderer/RenderType;
@@ -76,3 +77,4 @@ mutable    field net/minecraft/client/gui/screens/Screen children Ljava/util/Lis
 mutable    field net/minecraft/client/renderer/DimensionSpecialEffects EFFECTS Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
 mutable    field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool rawTemplates Ljava/util/List;
 mutable    field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
+mutable    field net/minecraft/world/level/levelgen/StructureSettings structureConfig Ljava/util/Map;
