@@ -8,9 +8,9 @@ import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfigura
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import svenhjol.strange.module.structures.RandomHeightJigsawFeature;
 
-public class OverworldRuinFeature extends RandomHeightJigsawFeature {
-    public OverworldRuinFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation) {
-        super(codec, starts, size, startY, variation, false, OverworldRuinFeature::checkLocation);
+public class StoneRuinFeature extends RandomHeightJigsawFeature {
+    public StoneRuinFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation) {
+        super(codec, starts, size, startY, variation, false, StoneRuinFeature::checkLocation);
     }
 
     private static boolean checkLocation(PieceGeneratorSupplier.Context<JigsawConfiguration> context) {

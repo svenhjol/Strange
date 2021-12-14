@@ -1,12 +1,12 @@
 {
-  "name": "strange:ruins/overworld_starts",
+  "name": "strange:ruins/stone_starts",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
         "location": "strange:ruins/test/test_start1",
-        "processors": "strange:overworld_ruins",
+        "processors": "strange:stone_ruins",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
