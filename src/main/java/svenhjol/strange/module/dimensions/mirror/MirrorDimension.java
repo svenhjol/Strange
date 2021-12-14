@@ -12,11 +12,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -95,18 +97,9 @@ public class MirrorDimension implements IDimension {
     public void handleAddEntity(Entity entity) {
         Level level = entity.level;
         if (!level.isClientSide) {
-            ServerLevel serverLevel = (ServerLevel) level;
             Random random = new Random(entity.hashCode());
 
             if (entity instanceof LivingEntity livingEntity) {
-                // passive mobs should be unwell
-                if (random.nextFloat() < 0.75F && livingEntity instanceof Animal && !(livingEntity instanceof NeutralMob)) {
-                    MobEffect mobEffect = NEGATIVE_MOB_EFFECTS.get(random.nextInt(NEGATIVE_MOB_EFFECTS.size()));
-                    int duration = 3600;
-                    int amplifier = 1;
-                    livingEntity.addEffect(new MobEffectInstance(mobEffect, duration, amplifier));
-                }
-
                 // monsters have buffs
                 if (random.nextFloat() < 0.6F && livingEntity instanceof Monster && !(livingEntity instanceof Creeper)) {
                     int duration = 3600;
