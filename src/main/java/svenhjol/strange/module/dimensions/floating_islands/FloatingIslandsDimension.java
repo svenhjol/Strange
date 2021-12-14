@@ -66,18 +66,14 @@ public class FloatingIslandsDimension implements IDimension {
 
     @Override
     public void handlePlayerTick(Player player) {
+        // When the player falls out of the world (lower than Y=-16) then teleport them back to the overworld.
         if (!player.level.isClientSide && player.level.getGameTime() % 5 == 0 && player.getY() < -16D) {
             // don't keep adding teleport tickets for this player
-            if (Teleport.teleportTickets.stream().anyMatch(t -> t.getEntity() == player)) {
-                return;
-            }
+            if (Teleport.teleportTickets.stream().anyMatch(t -> t.getEntity() == player)) return;
 
             ServerLevel serverLevel = (ServerLevel)player.level;
             ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
-
-            if (overworld == null) {
-                return;
-            }
+            if (overworld == null) return;
 
             int height = overworld.getLogicalHeight();
             BlockPos source = player.blockPosition();

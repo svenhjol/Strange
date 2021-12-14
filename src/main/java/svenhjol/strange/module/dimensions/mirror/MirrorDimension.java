@@ -34,10 +34,24 @@ public class MirrorDimension implements IDimension {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
     public static final List<MobEffect> POSITIVE_MOB_EFFECTS;
+    public static final List<AmbientParticleSettings> AMBIENT_PARTICLES;
+
+    public static final AmbientParticleSettings ASH;
+    public static final AmbientParticleSettings WARPED_SPORE;
+    public static final AmbientParticleSettings SPORE_BLOSSOM;
+
+    public static final int startSnowingAt = 20000; // number of ticks between snowfall
+    public static final int maxSnowTicks = 10000; // number of ticks that snowfall will last
+    public static final int startParticlesAt = 1000; // number of ticks between particle effects
+    public static final int maxParticleTicks = 500; // number of ticks that particle effects will occur
+    public static final int lightningDistanceFromPlayer = 140; // maximum distance from a random player that a lightning strike can occur
+    public static final int minLightningTicks = 200; // minimum number of ticks before another lightning strike occurs
+
     public static int snowTicks = 0;
     public static int weatherTicks = 0;
     public static int lightningTicks = 0;
     public static int nextLightningAt = 0;
+    public static int particleTicks = 0;
 
     @Override
     public ResourceLocation getId() {
@@ -58,13 +72,12 @@ public class MirrorDimension implements IDimension {
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
         Dimensions.TEMPERATURE.put(ID, 0.0F);
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
-        Dimensions.AMBIENT_PARTICLE.put(ID, new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F));
         Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
     }
 
     @Override
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-
+        // no
     }
 
     @Override
@@ -73,50 +86,9 @@ public class MirrorDimension implements IDimension {
         ServerLevel serverLevel = (ServerLevel) level;
         Random random = serverLevel.getRandom();
 
-        int startSnowingAt = 20000;
-
-        if (weatherTicks++ > startSnowingAt) {
-            int maxSnowTicks = 10000;
-            int halfSnowTicks = maxSnowTicks / 2;
-
-            if (snowTicks >= 0 && snowTicks < halfSnowTicks) {
-                float rainLevel = (float) snowTicks / ((float) halfSnowTicks);
-                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
-            } else if (snowTicks >= halfSnowTicks && snowTicks < maxSnowTicks) {
-                float rainLevel = 1.0F - (float) (snowTicks - halfSnowTicks) / halfSnowTicks;
-                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
-            } else if (snowTicks >= maxSnowTicks) {
-                snowTicks = 0;
-                weatherTicks = 0;
-            }
-
-            snowTicks++;
-        }
-
-        if (lightningTicks == 0) {
-            nextLightningAt = random.nextInt(400) + 200;
-        }
-
-        if (lightningTicks++ >= nextLightningAt) {
-            ServerPlayer player = ((ServerLevel) level).getRandomPlayer();
-            if (player == null) return;
-
-            int dist = 140;
-            BlockPos pos = player.blockPosition();
-            int x = level.random.nextInt(dist);
-            int z = level.random.nextInt(dist);
-            BlockPos lightningPos = serverLevel.findLightningTargetAround(new BlockPos(pos.getX() + (dist/2) - x, pos.getY(), pos.getZ() + (dist/2) - z));
-            if (!level.isLoaded(lightningPos)) return;
-
-            /** @see ServerLevel#tickChunk */
-            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(serverLevel);
-            if (lightningBolt == null) return;
-
-            lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
-            lightningBolt.setVisualOnly(false);
-            serverLevel.addFreshEntity(lightningBolt);
-            lightningTicks = 0;
-        }
+        handleSnow();
+        handleParticles(random);
+        handleLightning(serverLevel, random);
     }
 
     @Override
@@ -172,6 +144,69 @@ public class MirrorDimension implements IDimension {
         // not yet
     }
 
+    private void handleParticles(Random random) {
+        if (weatherTicks++ > startSnowingAt) {
+            if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
+                Dimensions.AMBIENT_PARTICLE.put(ID, ASH);
+            }
+        } else if (particleTicks++ > startParticlesAt) {
+            if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
+                Dimensions.AMBIENT_PARTICLE.put(ID, AMBIENT_PARTICLES.get(random.nextInt(AMBIENT_PARTICLES.size())));
+            }
+
+            if (particleTicks > startParticlesAt + maxParticleTicks) {
+                Dimensions.AMBIENT_PARTICLE.remove(ID);
+                particleTicks = 0;
+            }
+        }
+    }
+
+    private void handleSnow() {
+        if (weatherTicks++ > startSnowingAt) {
+            int halfSnowTicks = maxSnowTicks / 2;
+
+            if (snowTicks >= 0 && snowTicks < halfSnowTicks) {
+                float rainLevel = (float) snowTicks / ((float) halfSnowTicks);
+                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+            } else if (snowTicks >= halfSnowTicks && snowTicks < maxSnowTicks) {
+                float rainLevel = 1.0F - (float) (snowTicks - halfSnowTicks) / halfSnowTicks;
+                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+            } else if (snowTicks >= maxSnowTicks) {
+                snowTicks = 0;
+                weatherTicks = 0;
+            }
+
+            snowTicks++;
+        }
+    }
+
+    private void handleLightning(ServerLevel level, Random random) {
+        if (lightningTicks == 0) {
+            nextLightningAt = random.nextInt(400) + minLightningTicks;
+        }
+
+        if (lightningTicks++ >= nextLightningAt) {
+            ServerPlayer player = level.getRandomPlayer();
+            if (player == null) return;
+            int dist = lightningDistanceFromPlayer;
+            BlockPos pos = player.blockPosition();
+            int x = level.random.nextInt(dist);
+            int z = level.random.nextInt(dist);
+
+            BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist/2) - x, pos.getY(), pos.getZ() + (dist/2) - z));
+            if (!level.isLoaded(lightningPos)) return;
+
+            /** @see ServerLevel#tickChunk */
+            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+            if (lightningBolt == null) return;
+
+            lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
+            lightningBolt.setVisualOnly(false);
+            level.addFreshEntity(lightningBolt);
+            lightningTicks = 0;
+        }
+    }
+
     static {
         NEGATIVE_MOB_EFFECTS = Arrays.asList(
             MobEffects.POISON,
@@ -185,6 +220,14 @@ public class MirrorDimension implements IDimension {
             MobEffects.DAMAGE_BOOST,
             MobEffects.HEALTH_BOOST,
             MobEffects.INVISIBILITY
+        );
+
+        ASH = new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.148F);
+        WARPED_SPORE = new AmbientParticleSettings(ParticleTypes.WARPED_SPORE, 0.0245F);
+        SPORE_BLOSSOM = new AmbientParticleSettings(ParticleTypes.SPORE_BLOSSOM_AIR, 0.0245F);
+
+        AMBIENT_PARTICLES = Arrays.asList(
+            WARPED_SPORE, SPORE_BLOSSOM
         );
     }
 }
