@@ -15,6 +15,7 @@
     "dimensions.PreventEntityCreatingPlatformMixin",
     "dimensions.PreventPlayerCreatingPlatformMixin",
     "dimensions.WorldGenSettingsMixin",
+    "helper.DeepCopyStructuresMixin",
     "potion_of_hogsbane.PreventAttackingAiMixin",
     "potion_of_hogsbane.PreventAttackingHoglinMixin",
     "relics.PreserveHighestLevelEnchantmentsMixin",
