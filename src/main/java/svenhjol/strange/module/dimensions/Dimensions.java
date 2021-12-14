@@ -47,11 +47,14 @@ public class Dimensions extends CharmModule {
     public static final List<IDimension> DIMENSIONS = new ArrayList<>();
     public static final ThreadLocal<LevelReader> LEVEL = new ThreadLocal<>();
 
+    public static boolean loadMirrorDimension = true;
+    public static boolean loadFloatingIslandsDimension = true;
+
     @Override
     public void register() {
         // add new dimensions to this list
-        DIMENSIONS.add(new MirrorDimension());
-        DIMENSIONS.add(new FloatingIslandsDimension());
+        if (loadMirrorDimension) DIMENSIONS.add(new MirrorDimension());
+        if (loadFloatingIslandsDimension) DIMENSIONS.add(new FloatingIslandsDimension());
 
         // register all dimensions
         DIMENSIONS.forEach(IDimension::register);
