@@ -60,15 +60,9 @@ public class Vaults extends CharmModule {
     @Override
     public void register() {
         int size = Math.max(0, Math.min(10, vaultsSize));
+        ResourceLocation starts = new ResourceLocation(Strange.MOD_ID, "vaults/starts");
 
-        VAULTS_FEATURE = new VaultsFeature(
-            JigsawConfiguration.CODEC,
-            new ResourceLocation(Strange.MOD_ID, "vaults/starts"),
-            size,
-            8,
-            16
-        );
-
+        VAULTS_FEATURE = new VaultsFeature(JigsawConfiguration.CODEC, starts, size, 8, 16);
         CONFIGURED_FEATURE = VAULTS_FEATURE.configured(new JigsawConfiguration(() -> PlainVillagePools.START, 0));
 
         FabricStructureBuilder.create(VAULTS_ID, VAULTS_FEATURE)

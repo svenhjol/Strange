@@ -15,6 +15,7 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.Processors;
 import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
+import svenhjol.strange.module.structures.processor.ChestProcessor;
 import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
 
 /**
@@ -31,14 +32,9 @@ public class StoneRuins implements IRuinsTheme {
 
     public void register() {
         int size = Math.max(0, Math.min(10, Ruins.stoneRuinSize));
+        ResourceLocation starts = new ResourceLocation(Strange.MOD_ID, "ruins/stone_starts");
 
-        STONE_RUIN_FEATURE = new StoneRuinFeature(
-            JigsawConfiguration.CODEC,
-            new ResourceLocation(Strange.MOD_ID, "ruins/stone_starts"),
-            size,
-            8,
-            16
-        );
+        STONE_RUIN_FEATURE = new StoneRuinFeature(JigsawConfiguration.CODEC, starts, size, 8, 16);
 
         // use a dummy configuration as a placeholder. Starts and pools will be generated using json template_pools.
         CONFIGURED_FEATURE = STONE_RUIN_FEATURE.configured(new JigsawConfiguration(() -> PlainVillagePools.START, 0));
@@ -55,7 +51,8 @@ public class StoneRuins implements IRuinsTheme {
         STONE_RUINS = CommonRegistry.processorList(new ResourceLocation(Strange.MOD_ID, "stone_ruins"), ImmutableList.of(
             Processors.IGNORE,
             StoneBricksDecayProcessor.INSTANCE,
-            AnvilDamageProcessor.INSTANCE
+            AnvilDamageProcessor.INSTANCE,
+            new ChestProcessor(0.5F)
         ));
     }
 

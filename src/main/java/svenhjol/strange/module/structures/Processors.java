@@ -16,6 +16,7 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.legacy.LegacyDataProcessor;
 import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
+import svenhjol.strange.module.structures.processor.ChestProcessor;
 import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
 
 import java.util.HashMap;
@@ -23,11 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Processors {
     public static BlockIgnoreProcessor IGNORE;
     public static StructureProcessorType<AnvilDamageProcessor> ANVIL_DAMAGE;
     public static StructureProcessorType<StoneBricksDecayProcessor> STONE_BRICKS_DECAY;
+    public static StructureProcessorType<ChestProcessor> CHEST;
 
     public static Map<String, Block> LEGACY_DATA_MAP = new HashMap<>();
     public static StructureProcessorList LEGACY_DATA_BLOCKS;
@@ -39,6 +43,7 @@ public class Processors {
         IGNORE = new BlockIgnoreProcessor(ImmutableList.of(Structures.IGNORE_BLOCK));
         ANVIL_DAMAGE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "anvil_damage"), () -> AnvilDamageProcessor.CODEC);
         STONE_BRICKS_DECAY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "stone_bricks_decay"), () -> StoneBricksDecayProcessor.CODEC);
+        CHEST = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "chest"), () -> ChestProcessor.CODEC);
 
         // register legacy stuff
         LEGACY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "legacy"), () -> LegacyDataProcessor.CODEC);
@@ -50,6 +55,18 @@ public class Processors {
         ));
 
         setupLegacyNonsense();
+    }
+
+    public static String getMetadataValue(String metadata, String key, String fallback) {
+        String lookFor = key.endsWith("=") ? key : key + "=";
+
+        if (metadata.contains(lookFor)) {
+            Pattern p = Pattern.compile(lookFor + "([a-zA-Z0-9_:/\\-]+)");
+            Matcher m = p.matcher(metadata);
+            if (m.find()) return m.group(1);
+        }
+
+        return fallback;
     }
 
     private static void setupLegacyNonsense() {
