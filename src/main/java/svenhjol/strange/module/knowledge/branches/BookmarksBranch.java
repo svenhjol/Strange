@@ -1,8 +1,10 @@
 package svenhjol.strange.module.knowledge.branches;
 
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
@@ -33,9 +35,12 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
         return JournalData.getBookmarkByRunes(runes);
     }
 
+    /**
+     * Any sequence of bookmark runes are valid, so return true as long as the string length is within bounds.
+     */
     @Override
     public boolean has(String runes) {
-        return get(runes).isPresent();
+        return !runes.isEmpty() && runes.length() < Knowledge.MAX_LENGTH;
     }
 
     @Override
@@ -51,6 +56,11 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
     @Override
     public Optional<String> getPrettyName(String runes) {
         return JournalData.getBookmarkByRunes(runes).map(JournalBookmark::getName);
+    }
+
+    public Optional<String> getPrettyName(String runes, Player player) {
+        return Journals.getJournalData(player)
+            .flatMap(journal -> journal.getBookmark(runes).map(JournalBookmark::getName));
     }
 
     @Override
