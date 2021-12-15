@@ -8,12 +8,18 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -25,9 +31,16 @@ import svenhjol.charm.loader.CharmModule;
 
 public class EntityBlock extends CharmBlockWithEntity {
     public static final VoxelShape SHAPE;
+    public static final BooleanProperty HIDDEN = BooleanProperty.create("hidden");
 
     protected EntityBlock(CharmModule module) {
         super(module, "entity_block", Properties.copy(Blocks.GLASS).noOcclusion());
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(HIDDEN, false);
     }
 
     @Nullable
@@ -52,8 +65,18 @@ public class EntityBlock extends CharmBlockWithEntity {
     }
 
     @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return state.getValue(HIDDEN) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
+
+    @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
         // no
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, Structures.ENTITY_BLOCK_ENTITY, EntityBlockEntity::tick);
     }
 
     @Override
@@ -69,6 +92,11 @@ public class EntityBlock extends CharmBlockWithEntity {
         }
 
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(HIDDEN);
     }
 
     static {

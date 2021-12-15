@@ -22,6 +22,11 @@
     ]
   },
   {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.9
+  },
+  {
     "comment": "// Replace anvils with blocks from the anvil table",
     "processor_type": "strange:decoration_replacement",
     "block": "anvil",

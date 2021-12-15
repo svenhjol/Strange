@@ -84,7 +84,7 @@ public class ChestLootProcessor extends StructureProcessor {
             .setValue(ChestBlock.FACING, state.getValue(DataBlock.FACING));
 
         String metadata = blockInfo.nbt.getString("metadata");
-        String loot = Processors.getMetadataValue(metadata, "loot", FALLBACK_LOOT_TABLE);
+        String loot = Processors.getValue(metadata, "loot", FALLBACK_LOOT_TABLE);
 
         return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
     }

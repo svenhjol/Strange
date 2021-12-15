@@ -41,7 +41,8 @@ public class DataBlock extends CharmBlockWithEntity {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());    }
+        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {

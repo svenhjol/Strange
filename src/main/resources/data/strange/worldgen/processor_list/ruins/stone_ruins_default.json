@@ -78,6 +78,11 @@
     "chance": 0.75
   },
   {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.8
+  },
+  {
     "comment": "// Replace some stone-type blocks with gravel",
     "processor_type": "strange:gravelify",
     "amount": 0.1

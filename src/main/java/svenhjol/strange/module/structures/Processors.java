@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 public class Processors {
     public static BlockIgnoreProcessor IGNORE;
+    public static StructureProcessorType<EntityBlockProcessor> ENTITY;
     public static StructureProcessorType<DecorationReplacementProcessor> DECORATION_REPLACEMENT;
     public static StructureProcessorType<AnvilDamageProcessor> ANVIL_DAMAGE;
     public static StructureProcessorType<StoneBricksDecayProcessor> STONE_BRICKS_DECAY;
@@ -47,6 +48,7 @@ public class Processors {
     public static void init() {
         // register custom processors
         IGNORE = new BlockIgnoreProcessor(ImmutableList.of(Structures.IGNORE_BLOCK));
+        ENTITY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "entity"), () -> EntityBlockProcessor.CODEC);
         DECORATION_REPLACEMENT = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "decoration_replacement"), () -> DecorationReplacementProcessor.CODEC);
         ANVIL_DAMAGE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "anvil_damage"), () -> AnvilDamageProcessor.CODEC);
         STONE_BRICKS_DECAY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "stone_bricks_decay"), () -> StoneBricksDecayProcessor.CODEC);
@@ -71,12 +73,12 @@ public class Processors {
         setupLegacyNonsense();
     }
 
-    public static String getMetadataValue(String metadata, String key, String fallback) {
+    public static String getValue(String pair, String key, String fallback) {
         String lookFor = key.endsWith("=") ? key : key + "=";
 
-        if (metadata.contains(lookFor)) {
+        if (pair.contains(lookFor)) {
             Pattern p = Pattern.compile(lookFor + "([a-zA-Z0-9_:/\\-]+)");
-            Matcher m = p.matcher(metadata);
+            Matcher m = p.matcher(pair);
             if (m.find()) return m.group(1);
         }
 

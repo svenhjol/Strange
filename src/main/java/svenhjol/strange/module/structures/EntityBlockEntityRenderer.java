@@ -26,8 +26,8 @@ public class EntityBlockEntityRenderer<T extends EntityBlockEntity> implements B
 
     @Override
     public void render(T entity, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
-//        int rx = 0;
-//        int ry = 0;
+        // don't render the entity decoration if primed (available to trigger)
+        if (entity.isPrimed()) return;
 
         poseStack.pushPose();
         poseStack.scale(1F, 1F, 1F);
@@ -37,10 +37,8 @@ public class EntityBlockEntityRenderer<T extends EntityBlockEntity> implements B
         if (entity.rotateTicks >= 360F) {
             entity.rotateTicks = 0F;
         }
-//
-//        poseStack.mulPose(Vector3f.XP.rotationDegrees(rx));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.rotateTicks));
 
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.rotateTicks));
         Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, 255, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.hashCode());
         poseStack.popPose();
     }

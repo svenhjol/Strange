@@ -28,10 +28,9 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.LootHelper;
-import svenhjol.strange.module.structures.legacy.LegacyDataResolver;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public static final String ENTITY_TAG = "entity";
@@ -44,7 +43,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public static final String ROTATION_TAG = "rotation";
     public static final String PRIMED_TAG = "primed";
 
-    private ResourceLocation entity = new ResourceLocation("minecraft:sheep");
+    private ResourceLocation entity = new ResourceLocation("minecraft:pig");
     private Rotation rotation = Rotation.NONE;
     private boolean persistent = true;
     private boolean primed = false;
@@ -65,7 +64,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         super.load(tag);
 
         ResourceLocation entity = ResourceLocation.tryParse(tag.getString(ENTITY_TAG));
-        this.entity = entity != null ? entity : new ResourceLocation("minecraft:sheep");
+        this.entity = entity != null ? entity : new ResourceLocation("minecraft:pig");
 
         this.persistent = tag.getBoolean(PERSISTENT_TAG);
         this.health = tag.getDouble(HEALTH_TAG);
@@ -150,45 +149,46 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         return armor;
     }
 
-    public static <T extends EntityBlockEntity> void tick(Level world, BlockPos pos, BlockState state, T spawner) {
-        if (world == null || world.getGameTime() % 10 == 0 || world.getDifficulty() == Difficulty.PEACEFUL || !spawner.isPrimed()) return;
+    public static <T extends EntityBlockEntity> void tick(Level level, BlockPos pos, BlockState state, T entityBlock) {
+        if (level == null || level.getGameTime() % 10 == 0 || level.getDifficulty() == Difficulty.PEACEFUL || !entityBlock.isPrimed()) return;
 
-        List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(pos).inflate(Structures.entityTriggerDistance));
+        // fetch all survival players nearby
+        List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(Structures.entityTriggerDistance))
+            .stream().filter(p -> (!p.getAbilities().instabuild && !p.isSpectator())).collect(Collectors.toList());
+
         if (players.size() == 0) return;
 
-        // remove the spawner, create the entity
-        world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
-        boolean result = trySpawn(world, spawner.worldPosition, spawner);
+        // remove the entityBlock, create the entity
+        level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+        boolean result = trySpawn(level, entityBlock.worldPosition, entityBlock);
 
         if (result) {
-            LogHelper.debug(EntityBlockEntity.class, "EntitySpawner spawned entity " + spawner.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(EntityBlockEntity.class, "EntityBlock spawned entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
         } else {
-            LogHelper.debug(EntityBlockEntity.class, "EntitySpawner failed to spawn entity " + spawner.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(EntityBlockEntity.class, "EntityBlock failed to spawn entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
         }
     }
 
-    public static boolean trySpawn(Level world, BlockPos pos, EntityBlockEntity spawner) {
+    public static boolean trySpawn(Level level, BlockPos pos, EntityBlockEntity spawner) {
         Entity spawned;
-        if (world == null)
-            return false;
+        if (level == null) return false;
 
-        Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOptional(spawner.entity);
-        if (optionalEntityType.isEmpty())
-            return false;
+        Optional<EntityType<?>> opt = Registry.ENTITY_TYPE.getOptional(spawner.entity);
+        if (opt.isEmpty()) return false;
 
-        EntityType<?> type = optionalEntityType.get();
+        EntityType<?> type = opt.get();
 
-        if (type == EntityType.MINECART || type == EntityType.CHEST_MINECART)
-            return tryCreateMinecart(world, pos, type, spawner);
+        if (type == EntityType.MINECART || type == EntityType.CHEST_MINECART) {
+            return tryCreateMinecart(level, pos, type, spawner);
+        }
 
-        if (type == EntityType.ARMOR_STAND)
-            return tryCreateArmorStand(world, pos, spawner);
+        if (type == EntityType.ARMOR_STAND) {
+            return tryCreateArmorStand(level, pos, spawner);
+        }
 
         for (int i = 0; i < spawner.count; i++) {
-            spawned = type.create(world);
-            if (spawned == null)
-                return false;
-
+            spawned = type.create(level);
+            if (spawned == null) return false;
             spawned.moveTo(pos, 0.0F, 0.0F);
 
             if (spawned instanceof Mob mob) {
@@ -198,20 +198,20 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
                 if (spawner.health > 0) {
                     // need to override this attribute on the entity to allow health values greater than maxhealth
                     AttributeInstance healthAttribute = mob.getAttribute(Attributes.MAX_HEALTH);
-                    if (healthAttribute != null)
+                    if (healthAttribute != null) {
                         healthAttribute.setBaseValue(spawner.health);
+                    }
 
                     mob.setHealth((float) spawner.health);
                 }
 
                 // add armor to the mob
                 if (!spawner.armor.isEmpty()) {
-                    Random random = world.random;
+                    Random random = level.random;
                     tryEquip(mob, spawner.armor, random);
                 }
 
                 // apply status effects to the mob
-                // TODO: make this a helper so that Strange can use it too
                 final List<String> effectsList = new ArrayList<>();
                 if (spawner.effects.length() > 0) {
                     if (spawner.effects.contains(",")) {
@@ -229,54 +229,56 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
                     }
                 }
 
-                mob.finalizeSpawn((ServerLevelAccessor)world, world.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null, null);
+                mob.finalizeSpawn((ServerLevelAccessor)level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null, null);
             }
 
-            world.addFreshEntity(spawned);
+            level.addFreshEntity(spawned);
         }
         return true;
     }
 
-    public static boolean tryCreateMinecart(Level world, BlockPos pos, EntityType<?> type, EntityBlockEntity spawner) {
+    public static boolean tryCreateMinecart(Level level, BlockPos pos, EntityType<?> type, EntityBlockEntity spawner) {
         AbstractMinecart minecart = null;
-        if (world == null) return false;
+        if (level == null) return false;
 
         if (type == EntityType.CHEST_MINECART) {
-            minecart = new MinecartChest(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            minecart = new MinecartChest(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            String loot = Processors.getValue(spawner.meta, "loot", "");
+            ResourceLocation lootTable;
 
-            String loot = LegacyDataResolver.getValue("loot", spawner.meta, "");
-            ResourceLocation lootTable = LootHelper.getLootTable(loot, BuiltInLootTables.ABANDONED_MINESHAFT);
-            ((MinecartChest)minecart).setLootTable(lootTable, world.random.nextLong());
+            if (loot.isEmpty()) {
+                lootTable = BuiltInLootTables.ABANDONED_MINESHAFT;
+            } else {
+                lootTable = new ResourceLocation(loot);
+            }
+
+            ((MinecartChest)minecart).setLootTable(lootTable, level.random.nextLong());
         } else if (type == EntityType.MINECART) {
-            minecart = new Minecart(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            minecart = new Minecart(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
         }
 
-        if (minecart == null)
-            return false;
-
-        world.addFreshEntity(minecart);
-
+        if (minecart == null) return false;
+        level.addFreshEntity(minecart);
         return true;
     }
 
-    public static boolean tryCreateArmorStand(Level world, BlockPos pos, EntityBlockEntity spawner) {
-        if (world == null)
-            return false;
+    public static boolean tryCreateArmorStand(Level level, BlockPos pos, EntityBlockEntity spawner) {
+        if (level == null) return false;
 
-        Random random = world.random;
-        ArmorStand stand = EntityType.ARMOR_STAND.create(world);
-        if (stand == null)
-            return false;
+        Random random = level.random;
+        ArmorStand stand = EntityType.ARMOR_STAND.create(level);
+        if (stand == null) return false;
 
-        Direction face = LegacyDataResolver.getFacing(LegacyDataResolver.getValue("facing", spawner.meta, "north"));
+        Direction face = Direction.byName(Processors.getValue(spawner.meta, "facing", "north"));
+        if (face == null) face = Direction.NORTH;
+
         Direction facing = spawner.rotation.rotate(face);
-        String type = LegacyDataResolver.getValue("type", spawner.meta, "");
+        String type = Processors.getValue(spawner.meta, "type", "");
 
         tryEquip(stand, type, random);
-
         float yaw = facing.get2DDataValue();
         stand.moveTo(pos, yaw, 0.0F);
-        world.addFreshEntity(stand);
+        level.addFreshEntity(stand);
 
         return true;
     }
