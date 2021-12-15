@@ -11,7 +11,7 @@
   "fixed_time": 7000,
   "coordinate_scale": 1.0,
   "piglin_safe": false,
-  "bed_works": true,
+  "bed_works": false,
   "has_skylight": false,
   "has_ceiling": false,
   "ultrawarm": false
