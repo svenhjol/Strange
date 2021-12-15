@@ -74,12 +74,10 @@ public class JournalHelper {
         }
 
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
-            if (branch.isLearnable()) {
-                switch (branch.getBranchName()) {
-                    case BiomesBranch.NAME -> ((BiomesBranch) branch).get(runes).ifPresent(journal::learnBiome);
-                    case DimensionsBranch.NAME -> ((DimensionsBranch) branch).get(runes).ifPresent(journal::learnDimension);
-                    case StructuresBranch.NAME -> ((StructuresBranch) branch).get(runes).ifPresent(journal::learnStructure);
-                }
+            switch (branch.getBranchName()) {
+                case BiomesBranch.NAME -> ((BiomesBranch) branch).get(runes).ifPresent(journal::learnBiome);
+                case DimensionsBranch.NAME -> ((DimensionsBranch) branch).get(runes).ifPresent(journal::learnDimension);
+                case StructuresBranch.NAME -> ((StructuresBranch) branch).get(runes).ifPresent(journal::learnStructure);
             }
         });
     }
