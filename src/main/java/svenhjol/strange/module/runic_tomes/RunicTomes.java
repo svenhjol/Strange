@@ -44,29 +44,34 @@ public class RunicTomes extends CharmModule {
         UseBlockCallback.EVENT.register(this::handleUseBlock);
     }
 
+    /**
+     * We need to be able to handle converting a vanilla lectern into a "runic" lectern.
+     * This custom version of the lectern holds a runic tome and the sacrifice stack used to activate it.
+     * When a tome is removed, the runic lectern should turn back into a vanilla one.
+     */
     private InteractionResult handleUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
-            BlockPos hitPos = hitResult.getBlockPos();
-            BlockState state = level.getBlockState(hitPos);
-            Block block = state.getBlock();
+        if (level.isClientSide) return InteractionResult.PASS;
 
-            if (block instanceof LecternBlock
-                && level.getBlockEntity(hitPos) instanceof LecternBlockEntity lectern
-                && !lectern.hasBook()
-                && player.getItemInHand(hand).getItem() instanceof RunicTomeItem
-            ) {
-                Direction facing = state.getValue(LecternBlock.FACING);
-                BlockState newState = RUNIC_LECTERN.defaultBlockState();
-                newState = newState.setValue(RunicLecternBlock.FACING, facing);
-                level.setBlock(hitPos, newState, 2);
-                if (level.getBlockEntity(hitPos) instanceof RunicLecternBlockEntity runicLectern) {
-                    ItemStack held = player.getItemInHand(hand);
-                    ItemStack tome = held.copy();
-                    held.shrink(1);
-                    runicLectern.setTome(tome);
+        BlockPos hitPos = hitResult.getBlockPos();
+        BlockState state = level.getBlockState(hitPos);
+        Block block = state.getBlock();
 
-                    return InteractionResult.SUCCESS;
-                }
+        if (block instanceof LecternBlock
+            && level.getBlockEntity(hitPos) instanceof LecternBlockEntity lectern
+            && !lectern.hasBook()
+            && player.getItemInHand(hand).getItem() instanceof RunicTomeItem
+        ) {
+            Direction facing = state.getValue(LecternBlock.FACING);
+            BlockState newState = RUNIC_LECTERN.defaultBlockState();
+            newState = newState.setValue(RunicLecternBlock.FACING, facing);
+            level.setBlock(hitPos, newState, 2);
+            if (level.getBlockEntity(hitPos) instanceof RunicLecternBlockEntity runicLectern) {
+                ItemStack held = player.getItemInHand(hand);
+                ItemStack tome = held.copy();
+                held.shrink(1);
+                runicLectern.setTome(tome);
+
+                return InteractionResult.SUCCESS;
             }
         }
 
