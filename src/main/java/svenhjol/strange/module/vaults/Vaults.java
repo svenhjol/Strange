@@ -12,7 +12,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.BiomeHelper;
 import svenhjol.charm.helper.DimensionHelper;
@@ -43,7 +42,6 @@ public class Vaults extends CharmModule {
 
     public static StructureFeature<JigsawConfiguration> VAULTS_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
-    public static StructureProcessorList VAULTS;
 
     public static int vaultsSize = 7;
 

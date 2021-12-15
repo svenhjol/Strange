@@ -8,7 +8,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import svenhjol.charm.helper.BiomeHelper;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -23,7 +22,6 @@ public class StoneRuins implements IRuinsTheme {
 
     public static StructureFeature<JigsawConfiguration> STONE_RUIN_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
-    public static StructureProcessorList STONE_RUINS;
 
     public void register() {
         int size = Math.max(0, Math.min(10, Ruins.stoneRuinSize));
