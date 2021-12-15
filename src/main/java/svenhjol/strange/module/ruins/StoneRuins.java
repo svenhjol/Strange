@@ -1,6 +1,5 @@
 package svenhjol.strange.module.ruins;
 
-import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceLocation;
@@ -13,10 +12,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import svenhjol.charm.helper.BiomeHelper;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.structures.Processors;
-import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
-import svenhjol.strange.module.structures.processor.ChestProcessor;
-import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
 
 /**
  * With special thanks to TG.
@@ -47,13 +42,6 @@ public class StoneRuins implements IRuinsTheme {
 
         // register the configured structure feature with minecraft
         CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "stone_ruin"), CONFIGURED_FEATURE);
-
-        STONE_RUINS = CommonRegistry.processorList(new ResourceLocation(Strange.MOD_ID, "stone_ruins"), ImmutableList.of(
-            Processors.IGNORE,
-            StoneBricksDecayProcessor.INSTANCE,
-            AnvilDamageProcessor.INSTANCE,
-            new ChestProcessor(0.5F)
-        ));
     }
 
     public void runWhenEnabled() {

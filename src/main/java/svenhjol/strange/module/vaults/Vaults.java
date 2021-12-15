@@ -1,6 +1,5 @@
 package svenhjol.strange.module.vaults;
 
-import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
@@ -23,9 +22,6 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
-import svenhjol.strange.module.structures.Processors;
-import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
-import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,12 +67,6 @@ public class Vaults extends CharmModule {
             .register();
 
         CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "vaults"), CONFIGURED_FEATURE);
-
-        VAULTS = CommonRegistry.processorList(new ResourceLocation(Strange.MOD_ID, "vaults"), ImmutableList.of(
-            Processors.IGNORE,
-            StoneBricksDecayProcessor.INSTANCE,
-            AnvilDamageProcessor.INSTANCE
-        ));
     }
 
     @Override
