@@ -23,7 +23,6 @@ public class JournalData {
     private static final String TAG_BIOMES = "Biomes";
     private static final String TAG_DIMENSIONS = "Dimensions";
 
-    private final UUID uuid;
     private List<Integer> runes = new ArrayList<>();
 
     private final List<JournalBookmark> bookmarks = new ArrayList<>();
@@ -31,10 +30,14 @@ public class JournalData {
     private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
 
-    private static final Map<String, JournalBookmark> mappedByRuneString = new HashMap<>();
+    // This map is not stored in the world data.
+    // It is updated with a player's bookmarks when they login.
+    // Therefore, two players with the same bookmark can collide.
+    // We don't care about this because the runes will always map to the same blockpos.
+    private static final Map<String, JournalBookmark> RUNES_BOOKMARK_MAP = new HashMap<>();
 
     private JournalData(Player player) {
-        this.uuid = player.getUUID();
+        UUID uuid = player.getUUID();
     }
 
     public static JournalData fromNbt(Player player, CompoundTag tag) {
@@ -164,11 +167,11 @@ public class JournalData {
     private void addBookmark(JournalBookmark bookmark) {
         if (bookmarks.size() < MAX_BOOKMARKS) {
             bookmarks.add(0, bookmark);
-            mappedByRuneString.put(bookmark.getRunes(), bookmark);
+            RUNES_BOOKMARK_MAP.put(bookmark.getRunes(), bookmark);
         }
     }
 
     public static Optional<JournalBookmark> getBookmarkByRunes(String runes) {
-        return Optional.ofNullable(mappedByRuneString.get(runes));
+        return Optional.ofNullable(RUNES_BOOKMARK_MAP.get(runes));
     }
 }

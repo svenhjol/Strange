@@ -40,7 +40,7 @@ public class BookmarksBranch extends KnowledgeBranch<String, JournalBookmark> {
      */
     @Override
     public boolean has(String runes) {
-        return !runes.isEmpty() && runes.length() < Knowledge.MAX_LENGTH;
+        return get(runes).isPresent();
     }
 
     @Override
