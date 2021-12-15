@@ -25,7 +25,6 @@ import java.util.UUID;
 public class WritingDeskMenu extends AbstractContainerMenu {
     public static final int DELETE = -1;
 
-    private final Inventory playerInventory;
     private final Player player;
     private final ContainerLevelAccess access;
     private final Container inputSlots = new SimpleContainer(2) {
@@ -42,7 +41,6 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
         this.access = access;
         this.player = playerInventory.player;
-        this.playerInventory = playerInventory;
 
         // book slot
         this.addSlot(new Slot(inputSlots, 0, 134, 35) {
@@ -85,6 +83,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             }
         });
 
+        // output tome slot
         this.addSlot(new Slot(resultSlots, 2, 275, 45) {
             @Override
             public boolean mayPlace(ItemStack itemStack) {
@@ -118,9 +117,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return this.access.evaluate((level, pos) -> {
-            if (!this.isValidBlock(level.getBlockState(pos))) {
-                return false;
-            }
+            if (!this.isValidBlock(level.getBlockState(pos))) return false;
             return player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
         }, true);
     }
@@ -150,13 +147,9 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         clearWrittenRunes(player);
 
         this.access.execute((level, pos) -> {
+            // TODO: this needs to be a custom sound effect
             level.playSound(null, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
         });
-    }
-
-    private void createResult(ServerPlayer player, String runes) {
-        ItemStack tome = RunicTomeItem.create(player, runes);
-        resultSlots.setItem(0, tome);
     }
 
     private void clearResult() {
@@ -167,8 +160,13 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         return state.getBlock() == WritingDesks.WRITING_DESK;
     }
 
+    /**
+     * A single int is passed from the screen to the menu.
+     * The int represents the clicked/typed rune (0-25).
+     * -1 represents the "delete rune" click or backspace.
+     */
     @Override
-    public boolean clickMenuButton(Player player, int r) {
+    public boolean clickMenuButton(Player player, int i) {
         if (player.level.isClientSide) {
             return false;
         }
@@ -183,10 +181,10 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             return false;
         }
 
-        if (r == DELETE) {
+        if (i == DELETE) {
             runes = runes.substring(0, runes.length() - 1);
         } else if (runes.length() <= Knowledge.MAX_LENGTH) {
-            runes += String.valueOf((char)(r + Knowledge.ALPHABET_START));
+            runes += String.valueOf((char)(i + Knowledge.ALPHABET_START));
         }
 
         WritingDesks.writtenRunes.put(uuid, runes);
@@ -208,7 +206,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
                 Journals.sendSyncJournal(player);
             });
 
-            createResult(player, runes);
+            ItemStack tome = RunicTomeItem.create(player, runes);
+            resultSlots.setItem(0, tome);
         } else {
             clearResult();
         }
@@ -219,6 +218,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     }
 
     public ItemStack quickMoveStack(Player player, int index) {
+        // copypasta. Can this be abstracted?
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
