@@ -10,6 +10,9 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
+import svenhjol.strange.module.knowledge.branches.BookmarksBranch;
+
+import java.util.Optional;
 
 public class RunicTomeItem extends CharmItem {
     private static final String TAG_RUNES = "Runes";
@@ -31,7 +34,13 @@ public class RunicTomeItem extends CharmItem {
 
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
             setBranch(tome, branch.getBranchName());
-            branch.getPrettyName(runes).ifPresent(name -> tome.setHoverName(new TextComponent(name)));
+            Optional<String> prettyName;
+            if (branch instanceof BookmarksBranch) {
+                prettyName = ((BookmarksBranch)branch).getPrettyName(runes, player);
+            } else {
+                prettyName = branch.getPrettyName(runes);
+            }
+            prettyName.ifPresent(name -> tome.setHoverName(new TextComponent(name)));
         });
 
         if (!tome.hasCustomHoverName()) {

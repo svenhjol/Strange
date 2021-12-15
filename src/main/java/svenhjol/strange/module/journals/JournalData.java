@@ -113,6 +113,10 @@ public class JournalData {
         addBookmark(bookmark);
     }
 
+    public Optional<JournalBookmark> getBookmark(String runes) {
+        return getBookmarks().stream().filter(b -> b.getRunes().equals(runes)).findFirst();
+    }
+
     public List<Integer> getLearnedRunes() {
         return runes;
     }
