@@ -1,0 +1,95 @@
+[
+  {
+    "comment": "// Bypass strange's ignore_blocks",
+    "processor_type": "minecraft:block_ignore",
+    "blocks": [{"Name": "strange:ignore_block"}]
+  },
+  {
+    "processor_type": "minecraft:rule",
+    "rules": [
+      {
+        "comment": "// Remove some lanterns",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "minecraft:lantern", "probability": 0.1, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:air"}
+      },
+      {
+        "comment": "// Make some holes",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "stone_bricks", "probability": 0.1, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:air"}
+      },
+      {
+        "comment": "// Trash some bricks",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "bricks", "probability": 0.3, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:granite"}
+      }
+    ]
+  },
+  {
+    "comment": "// Replace anvils with blocks from the anvil table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "anvil",
+    "type": "anvil",
+    "chance": 0.5
+  },
+  {
+    "comment": "// Replace some stone_bricks with blocks from the stone_bricks_decay table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "stone_bricks",
+    "type": "stone_bricks_decay",
+    "chance": 0.7,
+    "remove": false
+  },
+  {
+    "comment": "// Replace iron_ore with blocks from the common_stone_ore table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "iron_ore",
+    "type": "common_stone_ore",
+    "chance": 0.75
+  },
+  {
+    "comment": "// Replace diamond_ore with blocks from the precious_stone_ore table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "diamond_ore",
+    "type": "precious_stone_ore",
+    "chance": 0.75
+  },
+  {
+    "comment": "// Replace furnaces with blocks from the furnace table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "furnace",
+    "type": "furnace",
+    "chance": 0.75
+  },
+  {
+    "comment": "// Replace looms with blocks from the loom table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "loom",
+    "type": "loom",
+    "chance": 0.75
+  },
+  {
+    "comment": "// Replace spawners with blocks from the spawner table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "spawner",
+    "type": "spawner",
+    "chance": 0.75
+  },
+  {
+    "comment": "// Replace some stone-type blocks with gravel",
+    "processor_type": "strange:gravelify",
+    "amount": 0.1
+  },
+  {
+    "comment": "// Add loot tables to chests",
+    "processor_type": "strange:chest_loot",
+    "chance": 0.5
+  },
+  {
+    "comment": "// Add loot tables to barrels",
+    "processor_type": "strange:barrel_loot",
+    "chance": 0.75
+  }
+]
