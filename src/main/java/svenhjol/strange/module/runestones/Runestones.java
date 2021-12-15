@@ -63,8 +63,7 @@ public class Runestones extends CharmModule {
         "overworld -> dripstone_caves",
         "overworld -> jagged_peaks",
         "overworld -> shipwreck",
-        "overworld -> strange:ruin",
-        "overworld -> strange:deep_ruin",
+        "overworld -> strange:stone_ruin",
         "overworld -> monument",
         "overworld -> mushroom_fields",
         "overworld -> mansion",
@@ -77,8 +76,6 @@ public class Runestones extends CharmModule {
         "the_nether -> basalt_deltas",
         "the_nether -> bastion_remnant",
         "the_nether -> fortress",
-        "the_nether -> strange:nether_ruin",
-        "the_nether -> strange:citadel",
         "the_end -> strange:stone_circle",
         "the_end -> end_highlands",
         "the_end -> end_midlands",
@@ -86,9 +83,12 @@ public class Runestones extends CharmModule {
         "the_end -> endcity",
         "the_end -> strange:end_ruin",
         "strange:mirror -> strange:stone_circle",
+        "strange:mirror -> strange:vaults",
+        "strange:floating_islands -> strange:stone_circle",
         "strange:floating_islands -> village",
         "strange:floating_islands -> pillager_outpost",
-        "strange:floating_islands -> desert_pyramid"
+        "strange:floating_islands -> desert_pyramid",
+        "strange:floating_islands -> jungle_pyramid"
     ));
 
     @Override
