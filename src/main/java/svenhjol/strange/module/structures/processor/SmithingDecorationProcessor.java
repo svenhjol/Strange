@@ -18,11 +18,11 @@ import svenhjol.strange.module.structures.Processors;
 
 import java.util.Random;
 
-public class AnvilDamageProcessor extends StructureProcessor {
-    public static final Codec<AnvilDamageProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(AnvilDamageProcessor::new, p -> p.chance).codec();
+public class SmithingDecorationProcessor extends StructureProcessor {
+    public static final Codec<SmithingDecorationProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(SmithingDecorationProcessor::new, p -> p.chance).codec();
     private final float chance;
 
-    public AnvilDamageProcessor(float chance) {
+    public SmithingDecorationProcessor(float chance) {
         this.chance = chance;
     }
 

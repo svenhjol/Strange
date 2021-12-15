@@ -18,9 +18,13 @@ import java.util.List;
 import java.util.Random;
 
 public class StoneBricksDecayProcessor extends StructureProcessor {
-    public static final StoneBricksDecayProcessor INSTANCE = new StoneBricksDecayProcessor();
-    public static final Codec<StoneBricksDecayProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final Codec<StoneBricksDecayProcessor> CODEC = Codec.FLOAT.fieldOf("decay").orElse(1.0F).xmap(StoneBricksDecayProcessor::new, p -> p.decay).codec();
     public static List<BlockState> REPLACEMENTS;
+    private final float decay;
+
+    public StoneBricksDecayProcessor(float decay) {
+        this.decay = decay;
+    }
 
     @Nullable
     @Override
@@ -30,7 +34,7 @@ public class StoneBricksDecayProcessor extends StructureProcessor {
         BlockState state = structureBlockInfo2.state;
         CompoundTag nbt = structureBlockInfo2.nbt;
 
-        if (!(state.getBlock() == Blocks.STONE_BRICKS)) {
+        if (!(state.getBlock() == Blocks.STONE_BRICKS) || random.nextFloat() > decay) {
             return structureBlockInfo2;
         }
 
@@ -45,7 +49,6 @@ public class StoneBricksDecayProcessor extends StructureProcessor {
 
     static {
         REPLACEMENTS = Arrays.asList(
-            Blocks.STONE_BRICKS.defaultBlockState(),
             Blocks.CRACKED_STONE_BRICKS.defaultBlockState(),
             Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),
             Blocks.ANDESITE.defaultBlockState(),

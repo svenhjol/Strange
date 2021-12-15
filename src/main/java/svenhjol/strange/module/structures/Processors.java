@@ -15,9 +15,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.legacy.LegacyDataProcessor;
-import svenhjol.strange.module.structures.processor.AnvilDamageProcessor;
-import svenhjol.strange.module.structures.processor.ChestProcessor;
-import svenhjol.strange.module.structures.processor.StoneBricksDecayProcessor;
+import svenhjol.strange.module.structures.processor.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +27,17 @@ import java.util.regex.Pattern;
 
 public class Processors {
     public static BlockIgnoreProcessor IGNORE;
+    public static StructureProcessorType<DecorationReplacementProcessor> DECORATION_REPLACEMENT;
     public static StructureProcessorType<AnvilDamageProcessor> ANVIL_DAMAGE;
     public static StructureProcessorType<StoneBricksDecayProcessor> STONE_BRICKS_DECAY;
-    public static StructureProcessorType<ChestProcessor> CHEST;
+    public static StructureProcessorType<GravelifyProcessor> GRAVELIFY;
+    public static StructureProcessorType<SpawnerProcessor> SPAWNER;
+    public static StructureProcessorType<ChestLootProcessor> CHEST_LOOT;
+    public static StructureProcessorType<BarrelLootProcessor> BARREL_LOOT;
+    public static StructureProcessorType<CommonStoneOreProcessor> COMMON_STONE_ORE;
+    public static StructureProcessorType<CommonDeepslateOreProcessor> COMMON_DEEPSLATE_ORE;
+    public static StructureProcessorType<PreciousStoneOreProcessor> PRECIOUS_STONE_ORE;
+    public static StructureProcessorType<PreciousDeepslateOreProcessor> PRECIOUS_DEEPSLATE_ORE;
 
     public static Map<String, Block> LEGACY_DATA_MAP = new HashMap<>();
     public static StructureProcessorList LEGACY_DATA_BLOCKS;
@@ -41,9 +47,17 @@ public class Processors {
     public static void init() {
         // register custom processors
         IGNORE = new BlockIgnoreProcessor(ImmutableList.of(Structures.IGNORE_BLOCK));
+        DECORATION_REPLACEMENT = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "decoration_replacement"), () -> DecorationReplacementProcessor.CODEC);
         ANVIL_DAMAGE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "anvil_damage"), () -> AnvilDamageProcessor.CODEC);
         STONE_BRICKS_DECAY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "stone_bricks_decay"), () -> StoneBricksDecayProcessor.CODEC);
-        CHEST = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "chest"), () -> ChestProcessor.CODEC);
+        GRAVELIFY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "gravelify"), () -> GravelifyProcessor.CODEC);
+        SPAWNER = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "spawner"), () -> SpawnerProcessor.CODEC);
+        COMMON_STONE_ORE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "common_stone_ore"), () -> CommonStoneOreProcessor.CODEC);
+        COMMON_DEEPSLATE_ORE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "common_deepslate_ore"), () -> CommonDeepslateOreProcessor.CODEC);
+        PRECIOUS_STONE_ORE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "precious_stone_ore"), () -> PreciousStoneOreProcessor.CODEC);
+        PRECIOUS_DEEPSLATE_ORE = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "precious_deepslate_ore"), () -> PreciousDeepslateOreProcessor.CODEC);
+        CHEST_LOOT = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "chest_loot"), () -> ChestLootProcessor.CODEC);
+        BARREL_LOOT = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "barrel_loot"), () -> BarrelLootProcessor.CODEC);
 
         // register legacy stuff
         LEGACY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "legacy"), () -> LegacyDataProcessor.CODEC);

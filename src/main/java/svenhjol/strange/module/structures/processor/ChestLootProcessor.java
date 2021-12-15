@@ -22,14 +22,14 @@ import svenhjol.strange.module.structures.Processors;
 
 import java.util.Random;
 
-public class ChestProcessor extends StructureProcessor {
-    public static final Codec<ChestProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(ChestProcessor::new, p -> p.chance).codec();
-    public static final String DEFAULT_LOOT_TABLE = "chests/simple_dungeon";
+public class ChestLootProcessor extends StructureProcessor {
+    public static final Codec<ChestLootProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(ChestLootProcessor::new, p -> p.chance).codec();
+    public static final String FALLBACK_LOOT_TABLE = "chests/simple_dungeon";
 
     private final float chance;
     private Random random;
 
-    public ChestProcessor(float chance) {
+    public ChestLootProcessor(float chance) {
         this.chance = chance;
     }
 
@@ -38,17 +38,22 @@ public class ChestProcessor extends StructureProcessor {
     public StructureBlockInfo processBlock(LevelReader levelReader, BlockPos blockPos, BlockPos blockPos2, StructureBlockInfo OMGNO, StructureBlockInfo structureBlockInfo2, StructurePlaceSettings structurePlaceSettings) {
         random = structurePlaceSettings.getRandom(structureBlockInfo2.pos);
         BlockState state = structureBlockInfo2.state;
+        BlockPos pos = structureBlockInfo2.pos;
         Block block = state.getBlock();
+        StructureBlockInfo out;
 
         if (block instanceof ChestBlock) {
-            return processChest(structureBlockInfo2);
+            out = processChest(structureBlockInfo2);
         } else if (block instanceof DataBlock) {
-            return processDataBlock(structureBlockInfo2);
+            out = processDataBlock(structureBlockInfo2);
         } else {
             return structureBlockInfo2;
         }
+
+        return out == null ? new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null) : out;
     }
 
+    @Nullable
     private StructureBlockInfo processChest(StructureBlockInfo blockInfo) {
         if (random.nextFloat() < chance) return null;
 
@@ -60,36 +65,37 @@ public class ChestProcessor extends StructureProcessor {
         if (blockInfo.nbt != null) {
             loot = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
         } else {
-            loot = DEFAULT_LOOT_TABLE;
+            loot = FALLBACK_LOOT_TABLE;
         }
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createChestNbt(new ResourceLocation(loot)));
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
     }
 
+    @Nullable
     private StructureBlockInfo processDataBlock(StructureBlockInfo blockInfo) {
         if (blockInfo.nbt == null || !blockInfo.nbt.getString("metadata").startsWith("chest")) {
             return blockInfo;
         }
 
-        if (random.nextFloat() < chance) return null;
+        if (random.nextFloat() > chance) return null;
 
         BlockState state = blockInfo.state;
         BlockState newState = Blocks.CHEST.defaultBlockState()
             .setValue(ChestBlock.FACING, state.getValue(DataBlock.FACING));
 
         String metadata = blockInfo.nbt.getString("metadata");
-        String loot = Processors.getMetadataValue(metadata, "loot", "chests/simple_dungeon");
+        String loot = Processors.getMetadataValue(metadata, "loot", FALLBACK_LOOT_TABLE);
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createChestNbt(new ResourceLocation(loot)));
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
     }
 
-    private CompoundTag createChestNbt(ResourceLocation lootTable) {
+    private CompoundTag createContainerNbt(ResourceLocation lootTable) {
         CompoundTag nbt = new CompoundTag();
 
-        ChestBlockEntity chest = BlockEntityType.CHEST.create(BlockPos.ZERO, Blocks.CHEST.defaultBlockState());
-        if (chest != null) {
-            chest.setLootTable(lootTable, random.nextLong());
-            nbt = chest.saveWithFullMetadata();
+        ChestBlockEntity container = BlockEntityType.CHEST.create(BlockPos.ZERO, Blocks.CHEST.defaultBlockState());
+        if (container != null) {
+            container.setLootTable(lootTable, random.nextLong());
+            nbt = container.saveWithFullMetadata();
         }
 
         return nbt;
@@ -97,6 +103,6 @@ public class ChestProcessor extends StructureProcessor {
 
     @Override
     protected StructureProcessorType<?> getType() {
-        return Processors.CHEST;
+        return Processors.CHEST_LOOT;
     }
 }
