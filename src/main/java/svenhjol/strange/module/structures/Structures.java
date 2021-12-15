@@ -1,5 +1,6 @@
 package svenhjol.strange.module.structures;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -10,12 +11,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true, priority = 10)
 public class Structures extends CharmModule {
@@ -32,6 +43,8 @@ public class Structures extends CharmModule {
     public static BlockEntityType<DataBlockEntity> DATA_BLOCK_ENTITY;
     public static BlockEntityType<EntityBlockEntity> ENTITY_BLOCK_ENTITY;
 
+    public static final Map<ResourceLocation, List<ItemStack>> DECORATIONS = new HashMap<>();
+
     public static int entityTriggerDistance = 16;
 
     @Override
@@ -43,8 +56,28 @@ public class Structures extends CharmModule {
         DATA_BLOCK_ENTITY = CommonRegistry.blockEntity(DATA_BLOCK_ID, DataBlockEntity::new, DATA_BLOCK);
 
         Processors.init();
+    }
 
+    @Override
+    public void runWhenEnabled() {
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_BLOCK_ENTITY, this::handleUpdateBlockEntity);
+    }
+
+    private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
+        if (DimensionHelper.isOverworld(level)) {
+            LootContext.Builder builder = new LootContext.Builder(level);
+            List<ResourceLocation> ids = new ArrayList<>(server.getLootTables().getIds());
+
+            List<ResourceLocation> decorations = ids.stream()
+                .filter(id -> id.getNamespace().equals(Strange.MOD_ID) && id.getPath().startsWith("decorations/"))
+                .collect(Collectors.toList());
+
+            decorations.forEach(table -> {
+                List<ItemStack> itemStacks = loadLootTable(server, builder, table);
+                Structures.DECORATIONS.put(table, itemStacks);
+            });
+        }
     }
 
     private void handleUpdateBlockEntity(MinecraftServer server, ServerPlayer player, ServerGamePacketListener serverGamePacketListener, FriendlyByteBuf buffer, PacketSender sender) {
@@ -61,5 +94,9 @@ public class Structures extends CharmModule {
                 blockEntity.setChanged();
             }
         });
+    }
+
+    private static List<ItemStack> loadLootTable(MinecraftServer server, LootContext.Builder builder, ResourceLocation lootTable) {
+        return server.getLootTables().get(lootTable).getRandomItems(builder.create(LootContextParamSets.EMPTY));
     }
 }
