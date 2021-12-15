@@ -7,7 +7,7 @@
   "has_raids": true,
   "min_y": -64,
   "height": 384,
-  "natural": false,
+  "natural": true,
   "fixed_time": 7000,
   "coordinate_scale": 1.0,
   "piglin_safe": false,
