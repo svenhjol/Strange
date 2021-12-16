@@ -21,7 +21,7 @@ import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
-import svenhjol.strange.module.runestones.RunestoneHelper;
+import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 
 import java.util.List;

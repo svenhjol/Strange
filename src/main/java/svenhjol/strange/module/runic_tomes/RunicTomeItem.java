@@ -7,6 +7,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
@@ -27,19 +28,28 @@ public class RunicTomeItem extends CharmItem {
             .stacksTo(16));
     }
 
-    public static ItemStack create(Player player, String runes) {
+    public static ItemStack create(String runes) {
+        return create(runes, null);
+    }
+
+    public static ItemStack create(String runes, @Nullable Player player) {
         ItemStack tome = new ItemStack(RunicTomes.RUNIC_TOME);
         setRunes(tome, runes);
-        setAuthor(tome, player.getName().getString());
+
+        if (player != null) {
+            setAuthor(tome, player.getName().getString());
+        }
 
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
             setBranch(tome, branch.getBranchName());
             Optional<String> prettyName;
-            if (branch instanceof BookmarksBranch) {
+
+            if (branch instanceof BookmarksBranch && player != null) {
                 prettyName = ((BookmarksBranch)branch).getPrettyName(runes, player);
             } else {
                 prettyName = branch.getPrettyName(runes);
             }
+
             prettyName.ifPresent(name -> tome.setHoverName(new TextComponent(name)));
         });
 

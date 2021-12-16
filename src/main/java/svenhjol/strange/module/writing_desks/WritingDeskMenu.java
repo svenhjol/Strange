@@ -206,7 +206,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
                 Journals.sendSyncJournal(player);
             });
 
-            ItemStack tome = RunicTomeItem.create(player, runes);
+            ItemStack tome = RunicTomeItem.create(runes, player);
             resultSlots.setItem(0, tome);
         } else {
             clearResult();
