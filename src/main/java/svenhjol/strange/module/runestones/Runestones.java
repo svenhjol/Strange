@@ -3,6 +3,7 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -19,12 +20,13 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.runestones.definition.CluesDefinition;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
 import svenhjol.strange.module.runestones.definition.ItemDefinition;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
-import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +36,7 @@ public class Runestones extends CharmModule {
     public static final int MAX_ITEMS = 3; // number of item possibilities
     public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
 
+    public static final String RUNESTONES_FOLDER = "runestones";
     public static final String DESTINATIONS_DEFINITION_FOLDER = "runestones/destinations";
     public static final String ITEMS_DEFINITION_FOLDER = "runestones/items";
 
@@ -80,14 +83,13 @@ public class Runestones extends CharmModule {
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
-        if (level.dimension() == Level.OVERWORLD) {
-            RunestoneClues.init(server);
-        }
-
         ResourceManager manager = server.getResourceManager();
-
         setupItems(manager, level);
         setupDestinations(manager, level);
+
+        if (level.dimension() == Level.OVERWORLD) {
+            setupClues(manager);
+        }
     }
 
     private void setupItems(ResourceManager manager, Level level) {
@@ -115,6 +117,40 @@ public class Runestones extends CharmModule {
                 } catch (Exception e) {
                     LogHelper.warn(getClass(), "Could not load runestone destinations definition from " + resource + ": " + e.getMessage());
                 }
+            }
+        }
+    }
+
+    private void setupClues(ResourceManager manager) {
+        Collection<ResourceLocation> resources = manager.listResources(RUNESTONES_FOLDER, f -> f.endsWith(".json"));
+        ResourceLocation resource = null;
+        CLUES.clear();
+
+        BuiltinRegistries.BIOME.keySet().forEach(r -> CLUES.computeIfAbsent(r, a -> new ArrayList<>()).add("biome"));
+        Registry.STRUCTURE_FEATURE.keySet().forEach(r -> CLUES.computeIfAbsent(r, a -> new ArrayList<>()).add("structure"));
+
+        for (ResourceLocation r : resources) {
+            if (r.getPath().endsWith("clues.json")) {
+                resource = r;
+                break;
+            }
+        }
+
+        if (resource != null) {
+            try {
+                CluesDefinition definition = CluesDefinition.deserialize(manager.getResource(resource));
+                Map<ResourceLocation, List<String>> clues = definition.getAllClues();
+                for (Map.Entry<ResourceLocation, List<String>> entry : clues.entrySet()) {
+                    ResourceLocation key = entry.getKey();
+                    List<String> value = entry.getValue();
+                    if (CLUES.containsKey(key)) {
+                        CLUES.get(key).addAll(value);
+                    } else {
+                        CLUES.put(key, value);
+                    }
+                }
+            } catch (Exception e) {
+                LogHelper.warn(getClass(), "Could not load runestone clues definition from " + resource + ": " + e.getMessage());
             }
         }
     }
