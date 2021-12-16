@@ -17,7 +17,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
-import svenhjol.strange.module.runestones.RunestoneLocations;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
@@ -127,7 +126,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                         // always try and generate a spawn rune first
                         if (!generatedSpawnRune) {
                             state = Runestones.RUNESTONE_BLOCKS.get(material).defaultBlockState();
-                            location = RunestoneLocations.SPAWN;
+                            location = Runestones.SPAWN;
                             generatedSpawnRune = true;
 
                         } else if (numberOfRunestonesGenerated < maxRunestones && random.nextFloat() < 0.75F) {

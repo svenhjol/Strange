@@ -16,7 +16,7 @@ public class RunestoneClues {
         Runestones.CLUES = new HashMap<>();
         Runestones.ITEMS = new TreeMap<>();
 
-        Runestones.CLUES.put(RunestoneLocations.SPAWN, getCluesForLocation(RunestoneLocations.SPAWN));
+        Runestones.CLUES.put(Runestones.SPAWN, getCluesForLocation(Runestones.SPAWN));
 
         Runestones.DESTINATIONS.forEach((dimension, locations) -> {
             for (ResourceLocation location : locations) {

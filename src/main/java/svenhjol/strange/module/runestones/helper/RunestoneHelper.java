@@ -1,4 +1,4 @@
-package svenhjol.strange.module.runestones;
+package svenhjol.strange.module.runestones.helper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -8,6 +8,7 @@ import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.knowledge.types.Discovery;
+import svenhjol.strange.module.runestones.Runestones;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -50,7 +51,7 @@ public class RunestoneHelper {
             return clues.get(random.nextInt(clues.size()));
         }
 
-        return RunestoneLocations.UNKNOWN_CLUE;
+        return Runestones.UNKNOWN_CLUE;
     }
 
     public static Optional<ResourceLocation> tryFetchDestinationByDifficulty(ResourceLocation dimension, Random random, float difficulty) {
@@ -72,9 +73,9 @@ public class RunestoneHelper {
         KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
 
         if (id != null) {
-            if (id.equals(RunestoneLocations.SPAWN)) {
+            if (id.equals(Runestones.SPAWN)) {
                 // does it exist?
-                Optional<Discovery> optSpawn = knowledge.specials.values().stream().filter(d -> d.getId().equals(RunestoneLocations.SPAWN)).findFirst();
+                Optional<Discovery> optSpawn = knowledge.specials.values().stream().filter(d -> d.getId().equals(Runestones.SPAWN)).findFirst();
                 if (optSpawn.isPresent()) {
                     // generate items for it
                     Discovery spawn = optSpawn.get();
@@ -84,7 +85,7 @@ public class RunestoneHelper {
                 // generate a new set of runes for it, check if they already exist
                 String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.specials, random, difficulty, 1, 1).orElseThrow();
 
-                Discovery discovery = new Discovery(runes, RunestoneLocations.SPAWN);
+                Discovery discovery = new Discovery(runes, Runestones.SPAWN);
 
                 knowledge.specials.add(runes, discovery);
                 knowledge.setDirty();

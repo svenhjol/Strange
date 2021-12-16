@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -12,24 +13,31 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.annotation.Config;
+import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.runestones.definition.DestinationDefinition;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
+import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, priority = 5)
 public class Runestones extends CharmModule {
     public static final int TIERS = 5;
     public static final int MAX_ITEMS = 3; // number of item possibilities
     public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
+    public static final String DESTINATIONS_DEFINITION_FOLDER = "runestones/destinations";
 
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
     public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
+    public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
+    public static final String UNKNOWN_CLUE = "unknown";
 
     public static Map<IRunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
@@ -40,55 +48,6 @@ public class Runestones extends CharmModule {
     public static Map<ResourceLocation, LinkedList<ResourceLocation>> DESTINATIONS = new HashMap<>();
     public static Map<ResourceLocation, Map<Integer, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
-
-    @Config(name = "Destinations", description = "Destinations that runestones may teleport you to.  Format: [dimension -> id]\nDestinations are ordered by rune difficulty. Missing structures will be skipped.")
-    public static List<String> configDestinations = new ArrayList<>(Arrays.asList(
-        "overworld -> strange:stone_circle",
-        "overworld -> village",
-        "overworld -> pillager_outpost",
-        "overworld -> mineshaft",
-        "overworld -> desert_pyramid",
-        "overworld -> jungle_pyramid",
-        "overworld -> swamp_hut",
-        "overworld -> flower_forest",
-        "overworld -> savanna",
-        "overworld -> windswept_savanna",
-        "overworld -> ice_spikes",
-        "overworld -> snowy_slopes",
-        "overworld -> igloo",
-        "overworld -> ocean_ruin",
-        "overworld -> meadow",
-        "overworld -> ruined_portal",
-        "overworld -> lush_caves",
-        "overworld -> dripstone_caves",
-        "overworld -> jagged_peaks",
-        "overworld -> shipwreck",
-        "overworld -> strange:stone_ruin",
-        "overworld -> monument",
-        "overworld -> mushroom_fields",
-        "overworld -> mansion",
-        "overworld -> stronghold",
-        "the_nether -> strange:stone_circle",
-        "the_nether -> crimson_forest",
-        "the_nether -> ruined_portal",
-        "the_nether -> soul_sand_valley",
-        "the_nether -> warped_forest",
-        "the_nether -> basalt_deltas",
-        "the_nether -> bastion_remnant",
-        "the_nether -> fortress",
-        "the_end -> strange:stone_circle",
-        "the_end -> end_highlands",
-        "the_end -> end_midlands",
-        "the_end -> small_end_islands",
-        "the_end -> endcity",
-        "strange:mirror -> strange:stone_circle",
-        "strange:mirror -> strange:vaults",
-        "strange:floating_islands -> strange:stone_circle",
-        "strange:floating_islands -> village",
-        "strange:floating_islands -> pillager_outpost",
-        "strange:floating_islands -> desert_pyramid",
-        "strange:floating_islands -> jungle_pyramid"
-    ));
 
     @Override
     public void register() {
@@ -113,12 +72,53 @@ public class Runestones extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
-        RunestoneLocations.init();
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
+
             RunestoneClues.init(server);
         }
+
+        setupDestinations(server, level);
+    }
+
+    private void setupDestinations(MinecraftServer server, Level level) {
+        ResourceLocation dimension = level.dimension().location();
+        ResourceManager manager = server.getResourceManager();
+        Collection<ResourceLocation> resources = manager.listResources(DESTINATIONS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
+        DESTINATIONS.computeIfAbsent(dimension, a -> new LinkedList<>());
+
+        for (ResourceLocation resource : resources) {
+            String path = resource.getPath();
+
+            if (path.endsWith(dimension.getNamespace() + "/" + dimension.getPath() + ".json")) {
+                try {
+                    DestinationDefinition definition = DestinationDefinition.deserialize(manager.getResource(resource));
+                    List<ResourceLocation> destinations = definition.getDestinations().stream()
+                        .map(ResourceLocation::new)
+                        .filter(r -> WorldHelper.isStructure(r) || WorldHelper.isBiome(r))
+                        .collect(Collectors.toList());
+
+                    LinkedList<ResourceLocation> entries = DESTINATIONS.get(dimension);
+                    for (int i = 0; i < destinations.size(); i++) {
+                        ResourceLocation destination = destinations.get(i);
+                        if (entries.contains(destination)) continue;
+                        int ii = i * 2;
+                        if (ii < entries.size()) {
+                            entries.add(ii, destination);
+                        } else {
+                            entries.add(destination);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    LogHelper.warn(getClass(), "Could not load runestone destinations definition for " + resource + ": " + e.getMessage());
+                }
+            }
+        }
+
+        // Allow other modules to add their custom destinations
+        AddRunestoneDestinationCallback.EVENT.invoker().interact(level, DESTINATIONS.get(dimension));
     }
 }

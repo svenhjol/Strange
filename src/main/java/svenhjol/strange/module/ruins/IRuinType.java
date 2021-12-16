@@ -1,6 +1,6 @@
 package svenhjol.strange.module.ruins;
 
-public interface IRuinsTheme {
+public interface IRuinType {
     void register();
 
     void runWhenEnabled();

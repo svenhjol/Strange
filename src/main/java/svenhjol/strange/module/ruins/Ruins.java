@@ -5,7 +5,6 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -14,23 +13,25 @@ public class Ruins extends CharmModule {
 
     public static int stoneRuinSize = 5;
 
-    public static List<String> stoneRuinBiomeCategories = Arrays.asList(
+    public static List<String> stoneRuinBiomeCategories = List.of(
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
     );
 
-    public static final List<IRuinsTheme> THEMES = new ArrayList<>();
+    public static List<String> stoneRuinDimensionBlacklist = List.of();
+
+    public static final List<IRuinType> TYPES = new ArrayList<>();
 
     @Override
     public void register() {
         if (stoneRuins) {
-            THEMES.add(new StoneRuins());
+            TYPES.add(new StoneRuins());
         }
 
-        THEMES.forEach(IRuinsTheme::register);
+        TYPES.forEach(IRuinType::register);
     }
 
     @Override
     public void runWhenEnabled() {
-        THEMES.forEach(IRuinsTheme::runWhenEnabled);
+        TYPES.forEach(IRuinType::runWhenEnabled);
     }
 }

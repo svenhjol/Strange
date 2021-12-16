@@ -1,12 +1,12 @@
 package svenhjol.strange.module.vaults;
 
-import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
@@ -14,15 +14,14 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.BiomeHelper;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
+import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
+import svenhjol.strange.init.StrangeEvents;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,40 +36,41 @@ import java.util.List;
  */
 @CommonModule(mod = Strange.MOD_ID)
 public class Vaults extends CharmModule {
-    public static final ResourceLocation VAULTS_ID = new ResourceLocation(Strange.MOD_ID, "vaults");
-    public static final ResourceLocation WORLD_LOAD_PHASE = new ResourceLocation(Strange.MOD_ID, "world_load_phase");
+    public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "vaults");
+    public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "vaults/starts");
 
     public static StructureFeature<JigsawConfiguration> VAULTS_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
 
     public static int vaultsSize = 7;
 
-    public static boolean onlyInMirrorDimension = true;
+    public static List<String> dimensionWhitelist = List.of(
+        "strange:mirror"
+    );
 
-    public static List<String> biomeCategories = Arrays.asList(
+    public static List<String> biomeCategories = List.of(
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
     );
 
     @Override
     public void register() {
         int size = Math.max(0, Math.min(10, vaultsSize));
-        ResourceLocation starts = new ResourceLocation(Strange.MOD_ID, "vaults/starts");
 
-        VAULTS_FEATURE = new VaultsFeature(JigsawConfiguration.CODEC, starts, size, 8, 16);
+        VAULTS_FEATURE = new VaultsFeature(JigsawConfiguration.CODEC, STARTS, size, 8, 16);
         CONFIGURED_FEATURE = VAULTS_FEATURE.configured(new JigsawConfiguration(() -> PlainVillagePools.START, 0));
 
-        FabricStructureBuilder.create(VAULTS_ID, VAULTS_FEATURE)
+        FabricStructureBuilder.create(STRUCTURE_ID, VAULTS_FEATURE)
             .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(32, 18,334020111)
+            .defaultConfig(32, 28,334020111)
             .register();
 
-        CommonRegistry.configuredStructureFeature(new ResourceLocation(Strange.MOD_ID, "vaults"), CONFIGURED_FEATURE);
+        CommonRegistry.configuredStructureFeature(STRUCTURE_ID, CONFIGURED_FEATURE);
     }
 
     @Override
     public void runWhenEnabled() {
-        ServerWorldEvents.LOAD.addPhaseOrdering(Event.DEFAULT_PHASE, WORLD_LOAD_PHASE);
-        ServerWorldEvents.LOAD.register(WORLD_LOAD_PHASE, this::handleWorldLoad);
+        ServerWorldEvents.LOAD.register(StrangeEvents.WORLD_LOAD_PHASE, this::handleWorldLoad);
+        AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
 
         for (String configCategory : biomeCategories) {
             Biome.BiomeCategory category = BiomeHelper.getBiomeCategoryByName(configCategory);
@@ -80,12 +80,17 @@ public class Vaults extends CharmModule {
         }
     }
 
+    private void handleAddRunestoneDestination(Level level, LinkedList<ResourceLocation> destinations) {
+        if (dimensionWhitelist.contains(level.dimension().location().toString())) {
+            if (!destinations.contains(STRUCTURE_ID)) {
+                int size = destinations.size();
+                destinations.add(size, STRUCTURE_ID);
+            }
+        }
+    }
+
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-        if (Strange.LOADER.isEnabled(Dimensions.class)
-            && Dimensions.loadMirrorDimension
-            && onlyInMirrorDimension
-            && !DimensionHelper.isDimension(level, MirrorDimension.ID)
-        ) {
+        if (!dimensionWhitelist.contains(level.dimension().location().toString())) {
             WorldHelper.removeStructures(level, List.of(VAULTS_FEATURE));
         }
     }

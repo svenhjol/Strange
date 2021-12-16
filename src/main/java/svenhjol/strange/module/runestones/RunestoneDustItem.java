@@ -50,7 +50,7 @@ public class RunestoneDustItem extends CharmItem {
         if (!level.isClientSide) {
             ServerLevel serverWorld = (ServerLevel)level;
 
-            BlockPos pos = serverWorld.findNearestMapFeature(StoneCircles.STONE_CIRCLE_STRUCTURE, player.blockPosition(), 1500, false);
+            BlockPos pos = serverWorld.findNearestMapFeature(StoneCircles.STONE_CIRCLE_FEATURE, player.blockPosition(), 1500, false);
             if (pos != null) {
                 RunestoneDustEntity entity = new RunestoneDustEntity(level, pos.getX(), pos.getZ());
                 Vec3 look = player.getLookAngle();

@@ -1,4 +1,4 @@
-package svenhjol.strange.module.runestones.event;
+package svenhjol.strange.api.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

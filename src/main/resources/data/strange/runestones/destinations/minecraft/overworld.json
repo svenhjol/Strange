@@ -1,0 +1,27 @@
+{
+  "destinations": [
+    "village",
+    "pillager_outpost",
+    "mineshaft",
+    "desert_pyramid",
+    "jungle_pyramid",
+    "swamp_hut",
+    "flower_forest",
+    "savanna",
+    "windswept_savanna",
+    "ice_spikes",
+    "snowy_slopes",
+    "igloo",
+    "ocean_ruin",
+    "meadow",
+    "ruined_portal",
+    "lush_caves",
+    "dripstone_caves",
+    "jagged_peaks",
+    "shipwreck",
+    "monument",
+    "mushroom_fields",
+    "mansion",
+    "stronghold"
+  ]
+}

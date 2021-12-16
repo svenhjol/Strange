@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.menu.CharmContainerMenu;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
-import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;
+import svenhjol.strange.api.event.ActivateRunestoneCallback;
 
 public class RunestoneMenu extends CharmContainerMenu {
     private final Inventory playerInventory;

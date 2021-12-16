@@ -25,6 +25,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
+import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
 import java.util.Collections;
 import java.util.List;
