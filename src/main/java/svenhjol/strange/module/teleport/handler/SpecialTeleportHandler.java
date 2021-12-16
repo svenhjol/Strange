@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.types.Discovery;
-import svenhjol.strange.module.runestones.RunestoneLocations;
+import svenhjol.strange.module.runestones.Runestones;
 
 public class SpecialTeleportHandler extends TeleportHandler<Discovery> {
     public SpecialTeleportHandler(KnowledgeBranch<?, Discovery> branch) {
@@ -18,7 +18,7 @@ public class SpecialTeleportHandler extends TeleportHandler<Discovery> {
         ResourceLocation dimension = null;
         BlockPos target = null;
 
-        if (id.equals(RunestoneLocations.SPAWN)) {
+        if (id.equals(Runestones.SPAWN)) {
             target = level.getSharedSpawnPos();
             dimension = ServerLevel.OVERWORLD.location();
         }

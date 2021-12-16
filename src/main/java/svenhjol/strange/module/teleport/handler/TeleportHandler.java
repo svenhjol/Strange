@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.runestones.RunestoneHelper;
+import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.ITicket;
 import svenhjol.strange.module.teleport.Teleport;

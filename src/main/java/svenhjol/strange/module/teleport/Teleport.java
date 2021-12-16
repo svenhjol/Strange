@@ -15,7 +15,7 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.branches.*;
-import svenhjol.strange.module.runestones.event.ActivateRunestoneCallback;
+import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.handler.*;
