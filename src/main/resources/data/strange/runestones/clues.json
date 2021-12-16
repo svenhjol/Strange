@@ -1,0 +1,62 @@
+{
+  "safe": [
+    "strange:spawn_point",
+    "village",
+    "buried_treasure",
+    "igloo"
+  ],
+  "underground": [
+    "strange:vaults",
+    "strange:ruins",
+    "stronghold",
+    "mineshaft",
+    "buried_treasure",
+    "dripstone_caves",
+    "lush_caves"
+  ],
+  "underwater": [
+    "ocean_ruin",
+    "monument",
+    "warm_ocean",
+    "deep_warm_ocean"
+  ],
+  "surface": [
+    "village",
+    "endcity",
+    "jungle_pyramid",
+    "desert_pyramid",
+    "mansion",
+    "igloo",
+    "swamp_hut",
+    "pillager_outpost"
+  ],
+  "ancient": [
+    "strange:stone_circle",
+    "strange:vaults",
+    "strange:ruins",
+    "stronghold",
+    "ocean_ruin",
+    "bastion_remnant"
+  ],
+  "dangerous": [
+    "strange:vaults",
+    "pillager_outpost",
+    "mansion",
+    "fortress",
+    "basalt_deltas"
+  ],
+  "lucrative": [
+    "strange:vaults",
+    "desert_pyramid",
+    "jungle_pyramid",
+    "shipwreck",
+    "monument",
+    "mansion",
+    "ocean_ruin",
+    "fortress",
+    "endcity",
+    "ruined_portal",
+    "buried_treasure",
+    "bastion_remnant"
+  ]
+}
