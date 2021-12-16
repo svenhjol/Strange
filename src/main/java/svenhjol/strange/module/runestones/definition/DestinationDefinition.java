@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a JSON file in the form of data/strange/runestones/destinations/(namespace)(dimension).json.
+ * Represents a JSON file from data/(mod_id)/runestones/destinations/(namespace)(dimension).json.
  * It contains the IDs of the structure and biomes that runestones should teleport to within the dimension.
  * Items at the top of the list will appear more commonly on runestones and consist of shorter and easier rune strings.
  */
