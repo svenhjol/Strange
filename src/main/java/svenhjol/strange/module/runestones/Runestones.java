@@ -76,7 +76,6 @@ public class Runestones extends CharmModule {
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
-
             RunestoneClues.init(server);
         }
 
@@ -88,6 +87,7 @@ public class Runestones extends CharmModule {
         ResourceManager manager = server.getResourceManager();
         Collection<ResourceLocation> resources = manager.listResources(DESTINATIONS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
         DESTINATIONS.computeIfAbsent(dimension, a -> new LinkedList<>());
+        DESTINATIONS.get(dimension).clear();
 
         for (ResourceLocation resource : resources) {
             String path = resource.getPath();
@@ -113,7 +113,7 @@ public class Runestones extends CharmModule {
                     }
 
                 } catch (Exception e) {
-                    LogHelper.warn(getClass(), "Could not load runestone destinations definition for " + resource + ": " + e.getMessage());
+                    LogHelper.warn(getClass(), "Could not load runestone destinations definition from " + resource + ": " + e.getMessage());
                 }
             }
         }
