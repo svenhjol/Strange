@@ -210,8 +210,9 @@ public class Journals extends CharmModule {
         try {
             BookmarkIconsDefinition definition = BookmarkIconsDefinition.deserialize(manager.getResource(resource.get()));
             List<Item> items = definition.getIcons().stream()
-                .map(i -> Registry.ITEM.get(new ResourceLocation(i)))
-                .filter(i -> !BOOKMARK_ICONS.contains(i))
+                .map(ResourceLocation::new)
+                .map(Registry.ITEM::get)
+                .dropWhile(BOOKMARK_ICONS::contains)
                 .collect(Collectors.toList());
 
             BOOKMARK_ICONS.addAll(items);
