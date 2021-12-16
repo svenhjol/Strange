@@ -31,6 +31,8 @@ public class GlowballItem extends EnderpearlItem implements ICharmItem {
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
+
+        // TODO: needs custom sound effect
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 
         if (!level.isClientSide) {
