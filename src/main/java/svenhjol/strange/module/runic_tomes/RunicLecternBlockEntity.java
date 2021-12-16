@@ -21,12 +21,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class RunicLecternBlockEntity extends BlockEntity implements Container, MenuProvider {
-    public static final String TAG_TOME = "Tome";
+    public static final String TOME_TAG = "Tome";
+    public static final String ACTIVATED_TIME_TAG = "ActivatedTime";
 
     public static final int SIZE = 1;
 
     protected final NonNullList<ItemStack> items;
     protected ItemStack tome;
+    protected long activatedTicks = 0;
 
     public RunicLecternBlockEntity(BlockPos pos, BlockState state) {
         super(RunicTomes.RUNIC_LECTERN_BLOCK_ENTITY, pos, state);
@@ -39,8 +41,9 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
         super.load(tag);
         ContainerHelper.loadAllItems(tag, items);
 
-        CompoundTag tomeTag = tag.getCompound(TAG_TOME);
+        CompoundTag tomeTag = tag.getCompound(TOME_TAG);
         tome = ItemStack.of(tomeTag);
+        activatedTicks = tag.getLong(ACTIVATED_TIME_TAG);
     }
 
     @Override
@@ -51,7 +54,8 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
         CompoundTag tomeTag = new CompoundTag();
         tome.save(tomeTag);
 
-        tag.put(TAG_TOME, tomeTag);
+        tag.put(TOME_TAG, tomeTag);
+        tag.putLong(ACTIVATED_TIME_TAG, activatedTicks);
     }
 
     @Nullable
@@ -115,6 +119,14 @@ public class RunicLecternBlockEntity extends BlockEntity implements Container, M
         }
 
         setChanged();
+    }
+
+    public void setActivatedTicks(long activatedTicks) {
+        this.activatedTicks = activatedTicks;
+    }
+
+    public long getActivatedTicks() {
+        return activatedTicks;
     }
 
     public void setTome(ItemStack stack) {

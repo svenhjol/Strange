@@ -92,6 +92,11 @@ public class RunicLecternMenu extends CharmContainerMenu {
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);
                     }
+
+                    // Update the lectern's time of activation and the state of the item it holds.
+                    lectern.setActivatedTicks(level.getGameTime());
+                    lectern.setItem(0, sacrifice);
+                    lectern.setChanged();
                 }
 
                 broadcastChanges();

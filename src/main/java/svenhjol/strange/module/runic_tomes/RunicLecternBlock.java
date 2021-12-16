@@ -54,7 +54,7 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         if (!level.isClientSide) {
             boolean result = tryReadTome((ServerLevel) level, pos, (ServerPlayer) player);
             if (!result) {
-                return InteractionResult.FAIL;
+                return InteractionResult.CONSUME;
             }
             player.openMenu(state.getMenuProvider(level, pos));
         }
@@ -124,19 +124,6 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    static {
-        FACING = HorizontalDirectionalBlock.FACING;
-        SHAPE_BASE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
-        SHAPE_POST = Block.box(4.0D, 2.0D, 4.0D, 12.0D, 14.0D, 12.0D);
-        SHAPE_COMMON = Shapes.or(SHAPE_BASE, SHAPE_POST);
-        SHAPE_TOP_PLATE = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 15.0D, 16.0D);
-        SHAPE_COLLISION = Shapes.or(SHAPE_COMMON, SHAPE_TOP_PLATE);
-        SHAPE_WEST = Shapes.or(Block.box(1.0D, 10.0D, 0.0D, 5.333333D, 14.0D, 16.0D), Block.box(5.333333D, 12.0D, 0.0D, 9.666667D, 16.0D, 16.0D), Block.box(9.666667D, 14.0D, 0.0D, 14.0D, 18.0D, 16.0D), SHAPE_COMMON);
-        SHAPE_NORTH = Shapes.or(Block.box(0.0D, 10.0D, 1.0D, 16.0D, 14.0D, 5.333333D), Block.box(0.0D, 12.0D, 5.333333D, 16.0D, 16.0D, 9.666667D), Block.box(0.0D, 14.0D, 9.666667D, 16.0D, 18.0D, 14.0D), SHAPE_COMMON);
-        SHAPE_EAST = Shapes.or(Block.box(10.666667D, 10.0D, 0.0D, 15.0D, 14.0D, 16.0D), Block.box(6.333333D, 12.0D, 0.0D, 10.666667D, 16.0D, 16.0D), Block.box(2.0D, 14.0D, 0.0D, 6.333333D, 18.0D, 16.0D), SHAPE_COMMON);
-        SHAPE_SOUTH = Shapes.or(Block.box(0.0D, 10.0D, 10.666667D, 16.0D, 14.0D, 15.0D), Block.box(0.0D, 12.0D, 6.333333D, 16.0D, 16.0D, 10.666667D), Block.box(0.0D, 14.0D, 2.0D, 16.0D, 18.0D, 6.333333D), SHAPE_COMMON);
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -164,10 +151,17 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
 
     protected boolean tryReadTome(ServerLevel level, BlockPos pos, ServerPlayer player) {
         RunicLecternBlockEntity lectern = getBlockEntity(level, pos);
-        if (lectern == null) {
+        if (lectern == null) return false;
+
+        // Prevent spam activation or cheesing the tome from the lectern.
+        // ActivatedTicks is set to the current gametime when a tome is activated.
+        long activatedTicks = lectern.getActivatedTicks();
+        long gameTime = level.getGameTime();
+        if (activatedTicks > 0 && gameTime - activatedTicks < 100) {
             return false;
         }
 
+        // Convert the runic lectern back to a vanilla lectern if there's no tome.
         if (!lectern.hasTome()) {
             BlockState currentState = level.getBlockState(pos);
             BlockState newState = Blocks.LECTERN.defaultBlockState();
@@ -201,5 +195,18 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5 + fx, pos.getY() + 1, pos.getZ() + 0.5 + fz, stack);
         entity.setDefaultPickUpDelay();
         level.addFreshEntity(entity);
+    }
+
+    static {
+        FACING = HorizontalDirectionalBlock.FACING;
+        SHAPE_BASE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+        SHAPE_POST = Block.box(4.0D, 2.0D, 4.0D, 12.0D, 14.0D, 12.0D);
+        SHAPE_COMMON = Shapes.or(SHAPE_BASE, SHAPE_POST);
+        SHAPE_TOP_PLATE = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 15.0D, 16.0D);
+        SHAPE_COLLISION = Shapes.or(SHAPE_COMMON, SHAPE_TOP_PLATE);
+        SHAPE_WEST = Shapes.or(Block.box(1.0D, 10.0D, 0.0D, 5.333333D, 14.0D, 16.0D), Block.box(5.333333D, 12.0D, 0.0D, 9.666667D, 16.0D, 16.0D), Block.box(9.666667D, 14.0D, 0.0D, 14.0D, 18.0D, 16.0D), SHAPE_COMMON);
+        SHAPE_NORTH = Shapes.or(Block.box(0.0D, 10.0D, 1.0D, 16.0D, 14.0D, 5.333333D), Block.box(0.0D, 12.0D, 5.333333D, 16.0D, 16.0D, 9.666667D), Block.box(0.0D, 14.0D, 9.666667D, 16.0D, 18.0D, 14.0D), SHAPE_COMMON);
+        SHAPE_EAST = Shapes.or(Block.box(10.666667D, 10.0D, 0.0D, 15.0D, 14.0D, 16.0D), Block.box(6.333333D, 12.0D, 0.0D, 10.666667D, 16.0D, 16.0D), Block.box(2.0D, 14.0D, 0.0D, 6.333333D, 18.0D, 16.0D), SHAPE_COMMON);
+        SHAPE_SOUTH = Shapes.or(Block.box(0.0D, 10.0D, 10.666667D, 16.0D, 14.0D, 15.0D), Block.box(0.0D, 12.0D, 6.333333D, 16.0D, 16.0D, 10.666667D), Block.box(0.0D, 14.0D, 2.0D, 16.0D, 18.0D, 6.333333D), SHAPE_COMMON);
     }
 }
