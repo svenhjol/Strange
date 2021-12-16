@@ -9,8 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestDefinition;
-import svenhjol.strange.module.quests.QuestDefinitionHelper;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

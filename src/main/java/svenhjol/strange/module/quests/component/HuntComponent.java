@@ -9,8 +9,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestDefinition;
-import svenhjol.strange.module.quests.QuestDefinitionHelper;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
 
 import java.util.HashMap;
 import java.util.Map;

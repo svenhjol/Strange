@@ -1,6 +1,9 @@
-package svenhjol.strange.module.quests;
+package svenhjol.strange.module.quests.helper;
 
 import net.minecraft.world.entity.player.Player;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.exception.QuestException;
 
 import java.util.List;

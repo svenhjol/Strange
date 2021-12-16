@@ -8,10 +8,12 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;

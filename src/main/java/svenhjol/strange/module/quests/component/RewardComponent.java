@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestDefinition;
-import svenhjol.strange.module.quests.QuestDefinitionHelper;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

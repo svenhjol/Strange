@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.scrolls.Scrolls;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package svenhjol.strange.module.quests;
+package svenhjol.strange.module.quests.helper;
 
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;

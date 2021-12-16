@@ -1,4 +1,4 @@
-package svenhjol.strange.module.quests;
+package svenhjol.strange.module.quests.definition;
 
 import com.google.gson.Gson;
 import net.minecraft.server.packs.resources.Resource;

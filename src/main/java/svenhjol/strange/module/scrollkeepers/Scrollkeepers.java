@@ -26,7 +26,7 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestHelper;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.component.RewardComponent;
 import svenhjol.strange.module.scrollkeepers.ScrollkeeperTradeOffers.ScrollForEmeralds;

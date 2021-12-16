@@ -20,6 +20,7 @@ import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 

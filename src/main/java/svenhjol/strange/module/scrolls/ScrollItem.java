@@ -16,6 +16,8 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.*;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 
 import java.util.Optional;
 import java.util.Random;

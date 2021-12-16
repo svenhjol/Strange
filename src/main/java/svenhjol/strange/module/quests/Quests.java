@@ -24,6 +24,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.knowledge.Knowledge.Tier;
@@ -42,7 +43,7 @@ public class Quests extends CharmModule {
     public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
 
     public static final int NUM_TIERS = 6;
-    public static final String DEFINITION_FOLDER = "quest_definitions";
+    public static final String DEFINITION_FOLDER = "quests";
     public static final Map<Integer, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<Integer, String> TIER_NAMES;
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();

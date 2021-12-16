@@ -14,6 +14,7 @@ import svenhjol.strange.helper.CommandHelper;
 import svenhjol.strange.init.StrangeCommands;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 
 import java.util.Arrays;
 import java.util.LinkedList;

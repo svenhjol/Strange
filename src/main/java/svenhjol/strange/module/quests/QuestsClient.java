@@ -16,6 +16,7 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
 
 import java.util.Locale;
 import java.util.Map;
