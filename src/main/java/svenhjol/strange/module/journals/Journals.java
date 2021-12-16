@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
@@ -13,10 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -28,11 +31,12 @@ import svenhjol.charm.event.PlayerDieCallback;
 import svenhjol.charm.event.PlayerLoadDataCallback;
 import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.helper.LootHelper;
+import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
@@ -41,6 +45,7 @@ import svenhjol.strange.module.quests.event.QuestEvents;
 import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Journals extends CharmModule {
@@ -54,7 +59,10 @@ public class Journals extends CharmModule {
     public static final ResourceLocation MSG_CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal");
     public static final ResourceLocation MSG_CLIENT_OPEN_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "client_open_bookmark");
 
-    public static final List<ItemLike> bookmarkIcons = new LinkedList<>();
+    public static final String BOOKMARK_ICONS_DEFINITION_FOLDER = "journals";
+    public static final String BOOKMARK_ICONS_DEFINITION_FILE = "bookmark_icons.json";
+
+    public static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
     private static final Map<UUID, JournalData> journal = new HashMap<>();
 
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
@@ -179,12 +187,36 @@ public class Journals extends CharmModule {
     }
 
     /**
-     * On world load initialize things such as the bookmark icons (generated from loot table).
+     * On world load initialize things such as the bookmark icons (generated from json).
      */
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
-            bookmarkIcons.clear();
-            LootHelper.fetchItems(server, JournalLoot.BOOKMARK_ICONS).ifPresent(m -> bookmarkIcons.addAll(m.get(0)));
+            setupBookmarkIcons(server);
+        }
+    }
+
+    private void setupBookmarkIcons(MinecraftServer server) {
+        BOOKMARK_ICONS.clear();
+        ResourceManager manager = server.getResourceManager();
+
+        Optional<ResourceLocation> resource = manager
+            .listResources(BOOKMARK_ICONS_DEFINITION_FOLDER, f -> f.endsWith(".json"))
+            .stream()
+            .filter(r -> r.getPath().contains(BOOKMARK_ICONS_DEFINITION_FILE))
+            .findFirst();
+
+        if (resource.isEmpty()) return;
+
+        try {
+            BookmarkIconsDefinition definition = BookmarkIconsDefinition.deserialize(manager.getResource(resource.get()));
+            List<Item> items = definition.getIcons().stream()
+                .map(i -> Registry.ITEM.get(new ResourceLocation(i)))
+                .filter(i -> !BOOKMARK_ICONS.contains(i))
+                .collect(Collectors.toList());
+
+            BOOKMARK_ICONS.addAll(items);
+        } catch (Exception e) {
+            LogHelper.warn(getClass(), "Could not load bookmark icons definition from " + resource + ": " + e.getMessage());
         }
     }
 
