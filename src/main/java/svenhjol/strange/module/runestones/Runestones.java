@@ -2,6 +2,7 @@ package svenhjol.strange.module.runestones;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -18,7 +19,9 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
+import svenhjol.strange.module.runestones.definition.ItemDefinition;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
@@ -28,16 +31,18 @@ import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID, priority = 5)
 public class Runestones extends CharmModule {
-    public static final int TIERS = 5;
     public static final int MAX_ITEMS = 3; // number of item possibilities
     public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
+
     public static final String DESTINATIONS_DEFINITION_FOLDER = "runestones/destinations";
+    public static final String ITEMS_DEFINITION_FOLDER = "runestones/items";
 
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
-    public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
     public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
     public static final String UNKNOWN_CLUE = "unknown";
+
+    public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
 
     public static Map<IRunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
@@ -46,7 +51,7 @@ public class Runestones extends CharmModule {
     public static MenuType<RunestoneMenu> MENU;
 
     public static Map<ResourceLocation, LinkedList<ResourceLocation>> DESTINATIONS = new HashMap<>();
-    public static Map<ResourceLocation, Map<Integer, List<Item>>> ITEMS = new TreeMap<>();
+    public static Map<ResourceLocation, Map<Knowledge.Tier, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
 
     @Override
@@ -79,19 +84,49 @@ public class Runestones extends CharmModule {
             RunestoneClues.init(server);
         }
 
-        setupDestinations(server, level);
+        ResourceManager manager = server.getResourceManager();
+
+        setupItems(manager, level);
+        setupDestinations(manager, level);
     }
 
-    private void setupDestinations(MinecraftServer server, Level level) {
+    private void setupItems(ResourceManager manager, Level level) {
         ResourceLocation dimension = level.dimension().location();
-        ResourceManager manager = server.getResourceManager();
+        Collection<ResourceLocation> resources = manager.listResources(ITEMS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
+        ITEMS.computeIfAbsent(dimension, m -> new HashMap<>());
+        ITEMS.get(dimension).clear();
+
+        for (ResourceLocation resource : resources) {
+            String path = resource.getPath();
+            if (path.endsWith(dimension.getNamespace() + "/" + dimension.getPath() + ".json")) {
+                try {
+                    ItemDefinition definition = ItemDefinition.deserialize(manager.getResource(resource));
+
+                    for (Knowledge.Tier tier : Knowledge.Tier.values()) {
+                        List<Item> items = definition.get(tier).stream()
+                            .map(ResourceLocation::new)
+                            .map(Registry.ITEM::get)
+                            .collect(Collectors.toList());
+
+                        List<Item> entries = ITEMS.get(dimension).computeIfAbsent(tier, a -> new ArrayList<>());
+                        entries.addAll(items);
+                    }
+
+                } catch (Exception e) {
+                    LogHelper.warn(getClass(), "Could not load runestone destinations definition from " + resource + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void setupDestinations(ResourceManager manager, Level level) {
+        ResourceLocation dimension = level.dimension().location();
         Collection<ResourceLocation> resources = manager.listResources(DESTINATIONS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
         DESTINATIONS.computeIfAbsent(dimension, a -> new LinkedList<>());
         DESTINATIONS.get(dimension).clear();
 
         for (ResourceLocation resource : resources) {
             String path = resource.getPath();
-
             if (path.endsWith(dimension.getNamespace() + "/" + dimension.getPath() + ".json")) {
                 try {
                     DestinationDefinition definition = DestinationDefinition.deserialize(manager.getResource(resource));

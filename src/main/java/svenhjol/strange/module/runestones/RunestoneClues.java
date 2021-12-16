@@ -2,19 +2,15 @@ package svenhjol.strange.module.runestones;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import svenhjol.charm.helper.WorldHelper;
-import svenhjol.strange.helper.LootHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 public class RunestoneClues {
     public static void init(MinecraftServer server) {
         Runestones.CLUES = new HashMap<>();
-        Runestones.ITEMS = new TreeMap<>();
 
         Runestones.CLUES.put(Runestones.SPAWN, getCluesForLocation(Runestones.SPAWN));
 
@@ -23,15 +19,6 @@ public class RunestoneClues {
                 Runestones.CLUES.put(location, getCluesForLocation(location));
             }
         });
-
-        LootHelper.fetchItems(server, RunestoneLoot.OVERWORLD_ITEMS)
-            .ifPresent(m -> Runestones.ITEMS.put(ServerLevel.OVERWORLD.location(), m));
-
-        LootHelper.fetchItems(server, RunestoneLoot.NETHER_ITEMS)
-            .ifPresent(m -> Runestones.ITEMS.put(ServerLevel.NETHER.location(), m));
-
-        LootHelper.fetchItems(server, RunestoneLoot.END_ITEMS)
-            .ifPresent(m -> Runestones.ITEMS.put(ServerLevel.END.location(), m));
     }
 
     private static List<String> getCluesForLocation(ResourceLocation res) {

@@ -25,10 +25,11 @@ public class RunestoneHelper {
 
         long seed = KnowledgeHelper.generateSeedFromString(runes);
         Random random = new Random(seed);
-        Map<Integer, List<Item>> items = Runestones.ITEMS.get(dimension);
+        Map<Knowledge.Tier, List<Item>> items = Runestones.ITEMS.get(dimension);
 
         int len = Math.min(Knowledge.NUM_RUNES, runes.length());
-        int tier = Math.min(Runestones.TIERS - 1, Math.round(Runestones.TIERS * (len / (float)Knowledge.NUM_RUNES)));
+        int val = Math.max(1, Math.min(Knowledge.TIERS, Math.round(Knowledge.TIERS * (len / (float)Knowledge.NUM_RUNES))));
+        Knowledge.Tier tier = Knowledge.Tier.getByOrdinal(val);
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
             List<Item> tierItems = new LinkedList<>(items.get(tier));

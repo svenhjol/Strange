@@ -1,0 +1,40 @@
+{
+  "novice": [
+    "end_stone",
+    "chorus_fruit",
+    "gold_ingot",
+    "iron_ingot",
+    "end_stone_bricks"
+  ],
+  "apprentice": [
+    "chorus_flower",
+    "chorus_fruit",
+    "end_stone_bricks",
+    "end_stone",
+    "ender_pearl"
+  ],
+  "journeyman": [
+    "ender_pearl",
+    "chorus_flower",
+    "popped_chorus_fruit",
+    "purpur_block",
+    "purpur_slab",
+    "purpur_pillar"
+  ],
+  "expert": [
+    "diamond",
+    "gold_ingot",
+    "iron_ingot",
+    "ender_pearl",
+    "gold_block",
+    "iron_block",
+    "ender_pearl"
+  ],
+  "master": [
+    "crying_obsidian",
+    "shulker_shell",
+    "end_rod",
+    "diamond_block",
+    "gold_block"
+  ]
+}

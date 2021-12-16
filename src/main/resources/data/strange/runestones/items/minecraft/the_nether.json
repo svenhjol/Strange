@@ -1,0 +1,47 @@
+{
+  "novice": [
+    "netherrack",
+    "gravel",
+    "brown_mushroom",
+    "quartz",
+    "gold_nugget"
+  ],
+  "apprentice": [
+    "soul_sand",
+    "blackstone",
+    "crimson_stem",
+    "warped_stem",
+    "gold_ingot",
+    "glowstone_dust",
+    "magma_block"
+  ],
+  "journeyman": [
+    "glowstone",
+    "soul_soil",
+    "nether_brick",
+    "polished_blackstone_bricks",
+    "crimson_fungus",
+    "warped_fungus",
+    "crimson_roots",
+    "warped_roots"
+  ],
+  "expert": [
+    "basalt",
+    "nether_bricks",
+    "nether_wart_block",
+    "warped_wart_block",
+    "bone",
+    "rotten_flesh",
+    "bone_block"
+  ],
+  "master": [
+    "obsidian",
+    "crying_obsidian",
+    "iron_nugget",
+    "iron_ingot",
+    "blaze_powder",
+    "nether_wart",
+    "magma_cream",
+    "ender_pearl"
+  ]
+}

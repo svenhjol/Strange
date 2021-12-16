@@ -34,6 +34,7 @@ public class Knowledge extends CharmModule {
     public static final int MAX_LENGTH = 23;
     public static final int ALPHABET_START = 97;
     public static final int ALPHABET_END = 122;
+    public static final int TIERS = 5;
     public static final Map<Tier, String> TIER_RUNE_SETS = new HashMap<>();
 
     public static long seed;
