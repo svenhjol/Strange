@@ -70,6 +70,10 @@ public class JournalBookmarksScreen extends JournalScreen {
     }
 
     protected void add() {
-        JournalsClient.sendAddBookmark();
+        if (journal != null && journal.getBookmarks().size() >= Journals.maxBookmarksPerPlayer) {
+            // TODO: some kind of message saying you've reached your limit!
+        } else {
+            JournalsClient.sendAddBookmark();
+        }
     }
 }

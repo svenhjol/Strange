@@ -122,7 +122,7 @@ public class JournalsClient extends CharmModule {
         if (bookmarkNbt == null)
             return;
 
-        JournalBookmark newBookmark = JournalBookmark.fromNbt(bookmarkNbt);
+        JournalBookmark newBookmark = JournalBookmark.fromTag(bookmarkNbt);
         processPacketFromServer(client, mc -> mc.setScreen(new JournalBookmarkScreen(newBookmark)));
     }
 
@@ -139,17 +139,17 @@ public class JournalsClient extends CharmModule {
     }
 
     public static void sendUpdateBookmark(JournalBookmark bookmark) {
-        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_BOOKMARK, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_UPDATE_BOOKMARK, data -> data.writeNbt(bookmark.toTag()));
     }
 
     public static void sendDeleteBookmark(JournalBookmark bookmark) {
         // delete on client then sync with server via a packet
         journal.getBookmarks().remove(bookmark);
-        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_BOOKMARK, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_DELETE_BOOKMARK, data -> data.writeNbt(bookmark.toTag()));
     }
 
     public static void sendMakeMap(JournalBookmark bookmark) {
-        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.toNbt(new CompoundTag())));
+        NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.toTag()));
     }
 
     private void updateJournal(@Nullable CompoundTag tag) {

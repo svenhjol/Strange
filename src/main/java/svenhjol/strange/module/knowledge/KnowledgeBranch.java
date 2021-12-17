@@ -33,6 +33,7 @@ public abstract class KnowledgeBranch<R, V> {
 
     public void add(String runes, V value) {
         data.put(runes, value);
+        setChanged();
     }
 
     public Optional<V> get(String runes) {
@@ -52,7 +53,9 @@ public abstract class KnowledgeBranch<R, V> {
     }
 
     public V remove(String runes) {
-        return data.remove(runes);
+        V removed = data.remove(runes);
+        setChanged();
+        return removed;
     }
 
     public void clear() {
@@ -63,6 +66,11 @@ public abstract class KnowledgeBranch<R, V> {
         CompoundTag tag = new CompoundTag();
         data.forEach((runes, value) -> tag.put(runes, tagify(value)));
         masterTag.put(getBranchName(), tag);
+        setChanged();
+    }
+
+    public void setChanged() {
+        Knowledge.getKnowledgeData().ifPresent(KnowledgeData::setDirty);
     }
 
     public abstract void register(R type);

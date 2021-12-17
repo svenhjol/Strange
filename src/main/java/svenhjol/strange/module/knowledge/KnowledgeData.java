@@ -45,7 +45,7 @@ public class KnowledgeData extends SavedData {
         data.biomes = BiomesBranch.load(tag);
         data.dimensions = DimensionsBranch.load(tag);
         data.structures = StructuresBranch.load(tag);
-        data.bookmarks = new BookmarksBranch(); // not saved to disk
+        data.bookmarks = BookmarksBranch.load(tag);
 
         return data;
     }
@@ -58,6 +58,7 @@ public class KnowledgeData extends SavedData {
         discoveries.save(tag);
         dimensions.save(tag);
         structures.save(tag);
+        bookmarks.save(tag);
 
         return tag;
     }

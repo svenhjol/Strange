@@ -68,6 +68,8 @@ public class Journals extends CharmModule {
     @Config(name = "Enable keybind", description = "If true, you can use a key to open the journal (defaults to 'J').")
     public static boolean enableKeybind = true;
 
+    public static int maxBookmarksPerPlayer = 50;
+
     @Override
     public void runWhenEnabled() {
         PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
@@ -116,8 +118,8 @@ public class Journals extends CharmModule {
 
     private void handleAddBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         processPacketFromClient(server, player, data -> {
-            JournalBookmark newBookmark = data.addBookmark(player.level, player.blockPosition());
-            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_BOOKMARK, buf -> buf.writeNbt(newBookmark.toNbt(new CompoundTag())));
+            JournalBookmark newBookmark = data.addBookmark(player);
+            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_BOOKMARK, buf -> buf.writeNbt(newBookmark.toTag()));
         });
     }
 
@@ -126,7 +128,7 @@ public class Journals extends CharmModule {
         if (tag == null) return; // don't handle
 
         processPacketFromClient(server, player, data -> {
-            JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
+            JournalBookmark bookmark = JournalBookmark.fromTag(tag);
             data.updateBookmark(bookmark);
         });
     }
@@ -136,7 +138,7 @@ public class Journals extends CharmModule {
         if (tag == null) return; // don't handle
 
         processPacketFromClient(server, player, data -> {
-            JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
+            JournalBookmark bookmark = JournalBookmark.fromTag(tag);
             data.deleteBookmark(bookmark);
         });
     }
@@ -146,7 +148,7 @@ public class Journals extends CharmModule {
         if (tag == null) return;
 
         processPacketFromClient(server, player, data -> {
-            JournalBookmark bookmark = JournalBookmark.fromNbt(tag);
+            JournalBookmark bookmark = JournalBookmark.fromTag(tag);
             if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) return;
 
             Inventory inventory = player.getInventory();
@@ -183,7 +185,7 @@ public class Journals extends CharmModule {
      * Write a death entry to the bookmarks if the player dies.
      */
     private void handlePlayerDeath(ServerPlayer player, DamageSource source) {
-        getJournalData(player).ifPresent(data -> data.addDeathBookmark(player.level, player.blockPosition()));
+        getJournalData(player).ifPresent(data -> data.addDeathBookmark(player));
     }
 
     /**

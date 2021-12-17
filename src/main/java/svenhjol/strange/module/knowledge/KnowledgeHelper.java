@@ -186,7 +186,8 @@ public class KnowledgeHelper {
         // keep trying to find a unique rune string
         while (!foundUniqueRunes && tries < maxTries) {
             runes = generateRandomRunesString(random, difficulty + (tries * 0.05F), minLength, maxLength);
-            foundUniqueRunes = !branch.has(runes);
+            random = new Random();
+            foundUniqueRunes = !branch.has(branch.getStartRune() + runes);
             ++tries;
         }
 

@@ -86,9 +86,7 @@ public class RunestoneHelper {
                 String runes = KnowledgeHelper.tryGenerateUniqueId(knowledge.specials, random, difficulty, 1, 1).orElseThrow();
 
                 Discovery discovery = new Discovery(runes, Runestones.SPAWN);
-
-                knowledge.specials.add(runes, discovery);
-                knowledge.setDirty();
+                knowledge.specials.register(discovery);
                 return Optional.of(discovery);
             }
         } else {
@@ -108,9 +106,7 @@ public class RunestoneHelper {
         discovery.setDimension(dimension);
 
         LogHelper.debug(RunestoneHelper.class, "Adding discovery to server knowledge.  Runes = " + runes + ", Location = " + id);
-        knowledge.discoveries.add(runes, discovery);
-        knowledge.setDirty();
-
+        knowledge.discoveries.register(discovery);
         return knowledge.discoveries.get(runes);
     }
 }

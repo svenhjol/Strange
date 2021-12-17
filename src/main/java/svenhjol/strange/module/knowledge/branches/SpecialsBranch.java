@@ -3,11 +3,11 @@ package svenhjol.strange.module.knowledge.branches;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import svenhjol.charm.helper.StringHelper;
-import svenhjol.strange.module.knowledge.Knowledge.Tier;
-import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.knowledge.types.Discovery;
 
 import java.util.Optional;
 

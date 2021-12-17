@@ -1,6 +1,5 @@
 package svenhjol.strange.module.journals;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -8,15 +7,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeData;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class JournalData {
-    public static final int MAX_BOOKMARKS = 128;
-
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_BOOKMARKS = "Bookmarks";
     private static final String TAG_STRUCTURES = "Structures";
@@ -25,31 +23,24 @@ public class JournalData {
 
     private List<Integer> runes = new ArrayList<>();
 
-    private final List<JournalBookmark> bookmarks = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
     private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
 
-    // This map is not stored in the world data.
-    // It is updated with a player's bookmarks when they login.
-    // Therefore, two players with the same bookmark can collide.
-    // We don't care about this because the runes will always map to the same blockpos.
-    private static final Map<String, JournalBookmark> RUNES_BOOKMARK_MAP = new HashMap<>();
+    private final UUID uuid;
 
     private JournalData(Player player) {
-        UUID uuid = player.getUUID();
+        this.uuid = player.getUUID();
     }
 
     public static JournalData fromNbt(Player player, CompoundTag tag) {
         JournalData data = new JournalData(player);
 
-        ListTag bookmarksNbt = tag.getList(TAG_BOOKMARKS, 10);
         ListTag structuresNbt = tag.getList(TAG_STRUCTURES, 8);
         ListTag biomesNbt = tag.getList(TAG_BIOMES, 8);
         ListTag dimensionsNbt = tag.getList(TAG_DIMENSIONS, 8);
 
         data.runes = Arrays.stream(tag.getIntArray(TAG_RUNES)).boxed().collect(Collectors.toList());
-        bookmarksNbt.forEach(compound -> data.bookmarks.add(JournalBookmark.fromNbt((CompoundTag)compound)));
 
         structuresNbt.stream().map(Tag::getAsString).map(i -> i.replace("\"", "")).forEach(
             key -> data.structures.add(new ResourceLocation(key)));
@@ -76,7 +67,6 @@ public class JournalData {
         ListTag biomesNbt = new ListTag();
         ListTag dimensionsNbt = new ListTag();
 
-        bookmarks.forEach(bookmark -> bookmarksNbt.add(bookmark.toNbt(new CompoundTag())));
         structures.forEach(structure -> structuresNbt.add(StringTag.valueOf(structure.toString())));
         biomes.forEach(biome -> biomesNbt.add(StringTag.valueOf(biome.toString())));
         dimensions.forEach(dimension -> dimensionsNbt.add(StringTag.valueOf(dimension.toString())));
@@ -90,27 +80,33 @@ public class JournalData {
         return nbt;
     }
 
-    public JournalBookmark addBookmark(Level level, BlockPos pos) {
-        JournalBookmark bookmark = new JournalBookmark(pos, DimensionHelper.getDimension(level));
+    public JournalBookmark addBookmark(Player player) {
+        JournalBookmark bookmark = new JournalBookmark(player.getUUID(), player.blockPosition(), DimensionHelper.getDimension(player.level));
         addBookmark(bookmark);
         return bookmark;
     }
 
     public void updateBookmark(JournalBookmark bookmark) {
-        Optional<JournalBookmark> opt = bookmarks.stream().filter(l -> l.getId().equals(bookmark.getId())).findFirst();
-        opt.ifPresent(l -> l.populate(bookmark));
+        Knowledge.getKnowledgeData().ifPresent(knowledge -> {
+            Optional<JournalBookmark> opt = knowledge.bookmarks.values().stream().filter(b -> b.getId().equals(bookmark.getId())).findFirst();
+            opt.ifPresent(b -> b.populate(bookmark));
+            knowledge.setDirty();
+        });
     }
 
     public void deleteBookmark(JournalBookmark bookmark) {
-        Optional<JournalBookmark> opt = bookmarks.stream().filter(l -> l.getId().equals(bookmark.getId())).findFirst();
-        opt.ifPresent(bookmarks::remove);
+        Knowledge.getKnowledgeData().ifPresent(knowledge -> {
+            Optional<JournalBookmark> opt = knowledge.bookmarks.values().stream().filter(b -> b.getId().equals(bookmark.getId())).findFirst();
+            opt.ifPresent(b -> knowledge.bookmarks.remove(b.getRunes()));
+        });
     }
 
-    public void addDeathBookmark(Level level, BlockPos pos) {
+    public void addDeathBookmark(Player player) {
         JournalBookmark bookmark = new JournalBookmark(
             new TranslatableComponent("gui.strange.journal.death_bookmark").getString(),
-            pos,
-            DimensionHelper.getDimension(level),
+            player.getUUID(),
+            player.blockPosition(),
+            DimensionHelper.getDimension(player.getLevel()),
             JournalBookmark.DEFAULT_DEATH_ICON
         );
         addBookmark(bookmark);
@@ -125,7 +121,8 @@ public class JournalData {
     }
 
     public List<JournalBookmark> getBookmarks() {
-        return bookmarks;
+        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
+        return knowledge.bookmarks.values().stream().filter(b -> b.getUuid().equals(uuid) || !b.isPrivate()).collect(Collectors.toList());
     }
 
     public List<ResourceLocation> getLearnedBiomes() {
@@ -165,13 +162,6 @@ public class JournalData {
     }
 
     private void addBookmark(JournalBookmark bookmark) {
-        if (bookmarks.size() < MAX_BOOKMARKS) {
-            bookmarks.add(0, bookmark);
-            RUNES_BOOKMARK_MAP.put(bookmark.getRunes(), bookmark);
-        }
-    }
-
-    public static Optional<JournalBookmark> getBookmarkByRunes(String runes) {
-        return Optional.ofNullable(RUNES_BOOKMARK_MAP.get(runes));
+        Knowledge.getKnowledgeData().ifPresent(knowledge -> knowledge.bookmarks.register(bookmark));
     }
 }

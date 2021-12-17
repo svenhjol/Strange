@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.knowledge.branches.BookmarksBranch;
 
 import java.util.Optional;
 
@@ -44,12 +43,7 @@ public class RunicTomeItem extends CharmItem {
             setBranch(tome, branch.getBranchName());
             Optional<String> prettyName;
 
-            if (branch instanceof BookmarksBranch && player != null) {
-                prettyName = ((BookmarksBranch)branch).getPrettyName(runes, player);
-            } else {
-                prettyName = branch.getPrettyName(runes);
-            }
-
+            prettyName = branch.getPrettyName(runes);
             prettyName.ifPresent(name -> tome.setHoverName(new TextComponent(name)));
         });
 
