@@ -69,41 +69,13 @@ public class JournalsClient extends CharmModule {
     }
 
     private void handleWorldTick(Level level) {
-        if (keyBinding == null || level == null)
-            return;
+        if (keyBinding == null || level == null) return;
 
         while (keyBinding.consumeClick()) {
             handleKeyPressed();
         }
 
-        ClientHelper.getPlayer().ifPresent(player -> {
-            if (photoTicks > 0) {
-
-                if (bookmarkBeingPhotographed == null) {
-                    // reset photo timer
-                    photoTicks = 0;
-                } else if (++photoTicks > MAX_PHOTO_TICKS) {
-                    Minecraft client = Minecraft.getInstance();
-                    Screenshot.grab(
-                        client.gameDirectory,
-                        bookmarkBeingPhotographed.getId() + ".png",
-                        client.getMainRenderTarget(),
-                        component -> {
-                            if (client.player != null)
-                                client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
-
-                            client.options.hideGui = false;
-                            client.execute(() -> {
-                                client.setScreen(new JournalBookmarkScreen(bookmarkBeingPhotographed));
-                                bookmarkBeingPhotographed = null;
-                            });
-                            LogHelper.debug(this.getClass(), "Screenshot taken");
-                        }
-                    );
-                    photoTicks = 0;
-                }
-            }
-        });
+        ClientHelper.getClient().ifPresent(this::handleTakingPhoto);
     }
 
     private void handleSyncJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
@@ -152,6 +124,14 @@ public class JournalsClient extends CharmModule {
         NetworkHelper.sendPacketToServer(Journals.MSG_SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.toTag()));
     }
 
+    public static boolean isTakingPhoto() {
+        return photoTicks > 0;
+    }
+
+    public static void forcePhotoTicks() {
+        photoTicks = MAX_PHOTO_TICKS;
+    }
+
     private void updateJournal(@Nullable CompoundTag tag) {
         if (tag != null) {
             ClientHelper.getPlayer().ifPresent(player -> journal = JournalData.fromNbt(player, tag));
@@ -164,5 +144,45 @@ public class JournalsClient extends CharmModule {
             if (player == null) return;
             clientCallback.accept(client);
         });
+    }
+
+    private void handleTakingPhoto(Minecraft client) {
+        if (isTakingPhoto() && client.options.keyAttack.isDown()) {
+            forcePhotoTicks();
+        }
+
+        if (photoTicks > 0) {
+            if (bookmarkBeingPhotographed == null) {
+
+                // if there's no bookmark then the ticks are stale, reset them
+                photoTicks = 0;
+
+            } else if (++photoTicks > MAX_PHOTO_TICKS) {
+                String filename = bookmarkBeingPhotographed.getId() + ".png";
+
+                Screenshot.grab(
+                    client.gameDirectory,
+                    filename,
+                    client.getMainRenderTarget(),
+                    component -> {
+                        if (client.player != null) {
+                            client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+                        }
+
+                        // restore the GUI
+                        client.options.hideGui = false;
+
+                        // open the journal at the bookmark page
+                        client.execute(() -> {
+                            client.setScreen(new JournalBookmarkScreen(bookmarkBeingPhotographed));
+                            bookmarkBeingPhotographed = null;
+                        });
+                        LogHelper.debug(this.getClass(), "Screenshot taken");
+                    }
+                );
+
+                photoTicks = 0;
+            }
+        }
     }
 }

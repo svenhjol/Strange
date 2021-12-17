@@ -229,7 +229,8 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     /**
-     * Add an area of the page that allows photo to be clicked.
+     * Handle mouse clicked on this screen.
+     * Add an area of the page that allows the photo to be clicked.
      */
     @Override
     public boolean mouseClicked(double x, double y, int button) {
@@ -238,9 +239,15 @@ public class JournalBookmarkScreen extends JournalScreen {
         int height = 64;
         int width = 109;
 
+        // If the player clicks the mouse while waiting for photo, force the photo to be taken.
+        if (JournalsClient.isTakingPhoto()) {
+            JournalsClient.forcePhotoTicks();
+            return true;
+        }
+
+        // This adds a trigger area around the photo that allows the player to click and show a bigger version.
         if (hasPhoto && registeredPhotoTexture != null) {
-            if (x > (midX - left) && x < midX - left + width
-                && y > top && y < top + height) {
+            if (x > (midX - left) && x < midX - left + width && y > top && y < top + height) {
                 minecraft.setScreen(new JournalPhotoScreen(bookmark));
                 return true;
             }
@@ -291,9 +298,7 @@ public class JournalBookmarkScreen extends JournalScreen {
 
     @Nullable
     protected File getPhoto() {
-        if (minecraft == null) {
-            return null;
-        }
+        if (minecraft == null) return null;
 
         File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
         return new File(screenshotsDirectory, bookmark.getId() + ".png");
@@ -305,20 +310,16 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected boolean playerCanMakeMap() {
-        if (minecraft != null && minecraft.player != null) {
-            if (DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
-                return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
-            }
+        if (minecraft != null && minecraft.player != null && DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
+            return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
         }
 
         return false;
     }
 
     protected boolean playerIsNearBookmark() {
-        if (minecraft != null && minecraft.player != null) {
-            if (DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
-                return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
-            }
+        if (minecraft != null && minecraft.player != null && DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
+            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
         }
 
         return false;
