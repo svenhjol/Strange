@@ -11,9 +11,9 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.menu.CharmContainerMenu;
+import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
-import svenhjol.strange.api.event.ActivateRunestoneCallback;
 
 public class RunestoneMenu extends CharmContainerMenu {
     private final Inventory playerInventory;
@@ -74,6 +74,9 @@ public class RunestoneMenu extends CharmContainerMenu {
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);
                     }
+
+                    runestone.setItem(0, sacrifice);
+                    runestone.setChanged();
                 }
                 broadcastChanges();
             });

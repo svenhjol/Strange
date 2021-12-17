@@ -19,9 +19,9 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 

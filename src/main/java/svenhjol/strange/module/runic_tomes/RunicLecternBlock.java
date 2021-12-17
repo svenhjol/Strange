@@ -29,8 +29,11 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.init.StrangeParticles;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
+
+import java.util.Random;
 
 public class RunicLecternBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
@@ -195,6 +198,11 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5 + fx, pos.getY() + 1, pos.getZ() + 0.5 + fz, stack);
         entity.setDefaultPickUpDelay();
         level.addFreshEntity(entity);
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
+        level.addParticle(StrangeParticles.ILLAGERALT, pos.getX() + 0.5, pos.getY() + 1.15, pos.getZ() + 0.5, random.nextFloat() - 0.5F, random.nextFloat() + 0.05f, random.nextFloat() - 0.5F);
     }
 
     static {

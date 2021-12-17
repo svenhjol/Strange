@@ -21,13 +21,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import svenhjol.charm.block.CharmSyncedBlockEntity;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
-public class RunestoneBlockEntity extends BlockEntity implements Container, WorldlyContainer, MenuProvider {
+public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Container, WorldlyContainer, MenuProvider {
     public static final String TAG_MATERIAL = "Material";
     public static final String TAG_RUNES = "Runes";
     public static final String TAG_LOCATION = "Location";
@@ -93,19 +93,19 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt(TAG_MATERIAL, this.material);
-        tag.putFloat(TAG_DIFFICULTY, this.difficulty);
-        tag.putFloat(TAG_DECAY, this.decay);
+        tag.putInt(TAG_MATERIAL, material);
+        tag.putFloat(TAG_DIFFICULTY, difficulty);
+        tag.putFloat(TAG_DECAY, decay);
 
-        if (this.runes != null) {
-            tag.putString(TAG_RUNES, this.runes);
+        if (runes != null) {
+            tag.putString(TAG_RUNES, runes);
         }
 
-        if (this.location != null && !this.location.toString().isEmpty()) {
-            tag.putString(TAG_LOCATION, this.location.toString());
+        if (location != null && !location.toString().isEmpty()) {
+            tag.putString(TAG_LOCATION, location.toString());
         }
 
-        ContainerHelper.saveAllItems(tag, this.items, false);
+        ContainerHelper.saveAllItems(tag, items, false);
     }
 
     @Nullable
@@ -136,19 +136,19 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
 
     @Override
     public boolean isEmpty() {
-        return this.items.isEmpty();
+        return items.isEmpty();
     }
 
     @Override
     public ItemStack getItem(int slotId) {
-        return this.items.get(slotId);
+        return items.get(slotId);
     }
 
     @Override
     public ItemStack removeItem(int slotId, int amount) {
-        ItemStack stack = ContainerHelper.removeItem(this.items, slotId, amount);
+        ItemStack stack = ContainerHelper.removeItem(items, slotId, amount);
         if (!stack.isEmpty()) {
-            this.setChanged();
+            setChanged();
         }
 
         return stack;
@@ -161,10 +161,10 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
 
     @Override
     public void setItem(int slotId, ItemStack stack) {
-        this.items.set(slotId, stack);
+        items.set(slotId, stack);
 
-        if (stack.getCount() > this.getMaxStackSize()) {
-            stack.setCount(this.getMaxStackSize());
+        if (stack.getCount() > getMaxStackSize()) {
+            stack.setCount(getMaxStackSize());
         }
 
         if (level != null && level.isClientSide) {
@@ -172,7 +172,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
             level.playSound(null, getBlockPos(), SoundEvents.LODESTONE_COMPASS_LOCK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
-        this.setChanged();
+        setChanged();
     }
 
     @Override
@@ -193,7 +193,7 @@ public class RunestoneBlockEntity extends BlockEntity implements Container, Worl
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
-        return new RunestoneMenu(syncId, playerInventory, this, this.data, ContainerLevelAccess.create(player.getLevel(), getBlockPos()));
+        return new RunestoneMenu(syncId, playerInventory, this, data, ContainerLevelAccess.create(player.getLevel(), getBlockPos()));
     }
 
     public String getRunes() {

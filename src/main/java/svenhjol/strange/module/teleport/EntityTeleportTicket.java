@@ -6,8 +6,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
@@ -53,6 +57,12 @@ public class EntityTeleportTicket implements ITicket {
         this.chunkLoaded = false;
         this.success = false;
         this.ticks = 0;
+
+        // Inform the client that we have started a teleport ticket. Allows for client effects.
+        if (entity instanceof Player && !entity.level.isClientSide) {
+            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));
+            Teleport.sendClientTeleportEffect((ServerPlayer)entity, from, Teleport.Type.RUNIC_TOME);
+        }
     }
 
     public void tick() {

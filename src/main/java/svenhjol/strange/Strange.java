@@ -4,10 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import svenhjol.charm.Charm;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
-import svenhjol.strange.init.StrangeCommands;
-import svenhjol.strange.init.StrangeEvents;
-import svenhjol.strange.init.StrangeLoot;
-import svenhjol.strange.init.StrangeSounds;
+import svenhjol.strange.init.*;
 
 public class Strange implements ModInitializer {
     public static final String MOD_ID = "strange";
@@ -23,6 +20,7 @@ public class Strange implements ModInitializer {
         StrangeSounds.init();
         StrangeLoot.init();
         StrangeEvents.init();
+        StrangeParticles.init();
 
         LOADER.init();
     }

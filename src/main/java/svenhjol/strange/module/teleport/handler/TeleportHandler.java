@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -75,9 +76,16 @@ public abstract class TeleportHandler<V> {
         this.targetPos = targetPos;
         this.targetDimension = targetDimension;
 
-        if (checkAndApplyEffects()) {
+        boolean isPlayer = entity instanceof ServerPlayer;
+        boolean valid = checkAndApplyEffects();
+
+        if (valid) {
             EntityTeleportTicket entry = new EntityTeleportTicket(entity, targetDimension, originPos, this.targetPos, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
             Teleport.teleportTickets.add(entry);
+        }
+
+        if (isPlayer) {
+            Teleport.sendClientTeleportEffect((ServerPlayer) entity, originPos, valid ? Teleport.Type.RUNESTONE : Teleport.Type.FAIL);
         }
     }
 
@@ -96,6 +104,7 @@ public abstract class TeleportHandler<V> {
             int duration = Teleport.protectionDuration * 20;
             int amplifier = 2;
             POSITIVE_EFFECTS.forEach(effect -> entity.addEffect(new MobEffectInstance(effect, duration, amplifier)));
+
             return true;
         } else if (items.contains(sacrificeItem)) {
             applyNegativeEffect(random);

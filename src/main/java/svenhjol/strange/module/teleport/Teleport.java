@@ -2,6 +2,9 @@ package svenhjol.strange.module.teleport;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,11 +14,13 @@ import net.minecraft.world.level.Explosion;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.ActivateRunestoneCallback;
+import svenhjol.strange.init.StrangeParticles;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.branches.*;
-import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.handler.*;
@@ -26,10 +31,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 @CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true)
 public class Teleport extends CharmModule {
     public static final int TELEPORT_TICKS = 10;
     public static final int REPOSITION_TICKS = 5;
+
+    public static final ResourceLocation MSG_CLIENT_TELEPORT_EFFECT = new ResourceLocation(Strange.MOD_ID, "client_teleport_effect");
 
     public static List<ITicket> teleportTickets = new ArrayList<>();
     public static List<ITicket> repositionTickets = new ArrayList<>();
@@ -123,6 +131,32 @@ public class Teleport extends CharmModule {
                 toRemove.stream().findFirst().ifPresent(first -> LogHelper.debug(this.getClass(), "Removing " + size + " tickets of class " + first.getClass().getSimpleName()));
                 toRemove.forEach(tickets::remove);
             }
+        }
+    }
+    /**
+     * Inform the client that we have started a teleport ticket. Allows for client effects.
+     */
+    public static void sendClientTeleportEffect(ServerPlayer player, BlockPos origin, Type type) {
+        NetworkHelper.sendPacketToClient(player, MSG_CLIENT_TELEPORT_EFFECT, buf -> {
+            buf.writeEnum(type);
+            buf.writeBlockPos(origin);
+        });
+    }
+
+    public enum Type {
+        GENERIC(ParticleTypes.PORTAL),
+        RUNESTONE(StrangeParticles.ILLAGERALT),
+        RUNIC_TOME(StrangeParticles.ILLAGERALT),
+        FAIL(ParticleTypes.SMOKE);
+
+        private final ParticleOptions particle;
+
+        Type(ParticleOptions particle) {
+            this.particle = particle;
+        }
+
+        public ParticleOptions getParticle() {
+            return particle;
         }
     }
 }
