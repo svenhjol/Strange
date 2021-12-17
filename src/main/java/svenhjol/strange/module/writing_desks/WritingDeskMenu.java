@@ -200,7 +200,10 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         boolean hasInk = !inputSlots.getItem(1).isEmpty();
 
         if (hasBook && hasInk && validRuneString) {
-            // try and learn this if not already known
+
+            // It's possible that the player found out these runes through other means.
+            // If it's a valid string, then add this to the player's journal so
+            // that it's available to them next time they want to write a tome.
             Journals.getJournalData(player).ifPresent(journal -> {
                 JournalHelper.tryLearnPhrase(runes, journal);
                 Journals.sendSyncJournal(player);
