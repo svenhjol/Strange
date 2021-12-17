@@ -1,6 +1,5 @@
 package svenhjol.strange.module.dimensions.mirror;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -67,7 +66,6 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void register() {
-        DimensionSpecialEffects.EFFECTS.put(ID, new MirrorEffects());
 
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, 0x004434);

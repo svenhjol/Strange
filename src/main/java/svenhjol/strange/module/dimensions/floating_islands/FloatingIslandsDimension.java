@@ -31,7 +31,6 @@ public class FloatingIslandsDimension implements IDimension {
 
     @Override
     public void register() {
-        DimensionSpecialEffects.EFFECTS.put(ID, new FloatingIslandsEffects());
         Dimensions.HORIZON_HEIGHT.put(ID, -64.0D);
     }
 

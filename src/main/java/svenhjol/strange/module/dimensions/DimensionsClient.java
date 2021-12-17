@@ -10,12 +10,28 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimensionClient;
+import svenhjol.strange.module.dimensions.mirror.MirrorDimensionClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
 @ClientModule(module = Dimensions.class)
 public class DimensionsClient extends CharmModule {
+    public static final List<IDimensionClient> DIMENSION_CLIENTS = new ArrayList<>();
+
+    @Override
+    public void register() {
+        // add new dimension clients to this list
+        if (Dimensions.loadMirrorDimension) DIMENSION_CLIENTS.add(new MirrorDimensionClient());
+        if (Dimensions.loadFloatingIslandsDimension) DIMENSION_CLIENTS.add(new FloatingIslandsDimensionClient());
+
+        // register all dimension clients
+        DIMENSION_CLIENTS.forEach(IDimensionClient::register);
+    }
+
     public static Optional<Integer> getSkyColor(Biome biome) {
         return Optional.ofNullable(Dimensions.SKY_COLOR.get(getDimension()));
     }
