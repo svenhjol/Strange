@@ -36,7 +36,6 @@ public class RunestoneHelper {
             Collections.shuffle(tierItems, random);
             return tierItems.subList(0, Math.min(tierItems.size(), Runestones.MAX_ITEMS)).stream().distinct().collect(Collectors.toList());
         } else {
-            LogHelper.debug(RunestoneHelper.class, "No item tier `" + tier + "` for dimension `" + dimension + "`, defaulting.");
             return List.of(DEFAULT_ITEM);
         }
     }
