@@ -26,6 +26,7 @@ public class JournalData {
     private final List<ResourceLocation> structures = new ArrayList<>();
     private final List<ResourceLocation> biomes = new LinkedList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
+    private final List<JournalBookmark> bookmarks = new ArrayList<>(); // transient
 
     private final UUID uuid;
 
@@ -62,7 +63,6 @@ public class JournalData {
     }
 
     public CompoundTag toNbt(CompoundTag nbt) {
-        ListTag bookmarksNbt = new ListTag();
         ListTag structuresNbt = new ListTag();
         ListTag biomesNbt = new ListTag();
         ListTag dimensionsNbt = new ListTag();
@@ -72,7 +72,6 @@ public class JournalData {
         dimensions.forEach(dimension -> dimensionsNbt.add(StringTag.valueOf(dimension.toString())));
 
         nbt.putIntArray(TAG_RUNES, runes);
-        nbt.put(TAG_BOOKMARKS, bookmarksNbt);
         nbt.put(TAG_STRUCTURES, structuresNbt);
         nbt.put(TAG_BIOMES, biomesNbt);
         nbt.put(TAG_DIMENSIONS, dimensionsNbt);
@@ -82,7 +81,7 @@ public class JournalData {
 
     public JournalBookmark addBookmark(Player player) {
         JournalBookmark bookmark = new JournalBookmark(player.getUUID(), player.blockPosition(), DimensionHelper.getDimension(player.level));
-        addBookmark(bookmark);
+        Knowledge.getKnowledgeData().ifPresent(knowledge -> knowledge.bookmarks.register(bookmark));
         return bookmark;
     }
 
@@ -109,7 +108,7 @@ public class JournalData {
             DimensionHelper.getDimension(player.getLevel()),
             JournalBookmark.DEFAULT_DEATH_ICON
         );
-        addBookmark(bookmark);
+        Knowledge.getKnowledgeData().ifPresent(knowledge -> knowledge.bookmarks.register(bookmark));
     }
 
     public Optional<JournalBookmark> getBookmark(String runes) {
@@ -159,9 +158,5 @@ public class JournalData {
         if (!dimensions.contains(dimension)) {
             dimensions.add(dimension);
         }
-    }
-
-    private void addBookmark(JournalBookmark bookmark) {
-        Knowledge.getKnowledgeData().ifPresent(knowledge -> knowledge.bookmarks.register(bookmark));
     }
 }

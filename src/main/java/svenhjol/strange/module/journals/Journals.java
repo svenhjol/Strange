@@ -105,20 +105,20 @@ public class Journals extends CharmModule {
         Page page = buffer.readEnum(Page.class);
 
         processPacketFromClient(server, player,
-            data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_JOURNAL, buf -> {
-                buf.writeNbt(data.toNbt());
+            journal -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_JOURNAL, buf -> {
+                buf.writeNbt(journal.toNbt());
                 buf.writeEnum(page);
             }));
     }
 
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
         processPacketFromClient(server, player,
-            data -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(data.toNbt())));
+            journal -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(journal.toNbt())));
     }
 
     private void handleAddBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        processPacketFromClient(server, player, data -> {
-            JournalBookmark newBookmark = data.addBookmark(player);
+        processPacketFromClient(server, player, journal -> {
+            JournalBookmark newBookmark = journal.addBookmark(player);
             NetworkHelper.sendPacketToClient(player, MSG_CLIENT_OPEN_BOOKMARK, buf -> buf.writeNbt(newBookmark.toTag()));
         });
     }
@@ -127,9 +127,9 @@ public class Journals extends CharmModule {
         CompoundTag tag = buffer.readNbt();
         if (tag == null) return; // don't handle
 
-        processPacketFromClient(server, player, data -> {
+        processPacketFromClient(server, player, journal -> {
             JournalBookmark bookmark = JournalBookmark.fromTag(tag);
-            data.updateBookmark(bookmark);
+            journal.updateBookmark(bookmark);
         });
     }
 
@@ -137,9 +137,9 @@ public class Journals extends CharmModule {
         CompoundTag tag = buffer.readNbt();
         if (tag == null) return; // don't handle
 
-        processPacketFromClient(server, player, data -> {
+        processPacketFromClient(server, player, journal -> {
             JournalBookmark bookmark = JournalBookmark.fromTag(tag);
-            data.deleteBookmark(bookmark);
+            journal.deleteBookmark(bookmark);
         });
     }
 
@@ -147,7 +147,7 @@ public class Journals extends CharmModule {
         CompoundTag tag = buffer.readNbt();
         if (tag == null) return;
 
-        processPacketFromClient(server, player, data -> {
+        processPacketFromClient(server, player, journal -> {
             JournalBookmark bookmark = JournalBookmark.fromTag(tag);
             if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) return;
 

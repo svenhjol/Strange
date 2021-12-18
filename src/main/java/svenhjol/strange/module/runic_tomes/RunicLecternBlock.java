@@ -164,8 +164,8 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
             return false;
         }
 
-        // Convert the runic lectern back to a vanilla lectern if there's no tome.
-        if (!lectern.hasTome()) {
+        // Convert the runic lectern back to a vanilla lectern if there isn't a tome or the tome is invalid.
+        if (!lectern.hasTome() || RunicTomeItem.getRunes(lectern.getTome()).isEmpty()) {
             BlockState currentState = level.getBlockState(pos);
             BlockState newState = Blocks.LECTERN.defaultBlockState();
 
