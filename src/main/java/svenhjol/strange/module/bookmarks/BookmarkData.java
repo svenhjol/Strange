@@ -8,8 +8,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.strange.module.bookmarks.branch.BookmarkBranch;
-import svenhjol.strange.module.bookmarks.exception.BookmarkException;
 
 public class BookmarkData extends SavedData {
     public BookmarkBranch bookmarks;

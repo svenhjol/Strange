@@ -17,7 +17,6 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.BookmarkMessages;
-import svenhjol.strange.module.bookmarks.exception.BookmarkException;
 
 import java.util.Optional;
 

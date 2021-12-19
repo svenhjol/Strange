@@ -16,7 +16,6 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.BookmarkMessages;
-import svenhjol.strange.module.bookmarks.branch.BookmarkBranch;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 

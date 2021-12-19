@@ -1,4 +1,4 @@
-package svenhjol.strange.module.bookmarks.exception;
+package svenhjol.strange.module.bookmarks;
 
 import svenhjol.charm.helper.LogHelper;
 

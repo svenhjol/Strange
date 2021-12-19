@@ -1,11 +1,8 @@
-package svenhjol.strange.module.bookmarks.branch;
+package svenhjol.strange.module.bookmarks;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
-import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.module.bookmarks.Bookmarks;
-import svenhjol.strange.module.bookmarks.exception.BookmarkException;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Tier;
