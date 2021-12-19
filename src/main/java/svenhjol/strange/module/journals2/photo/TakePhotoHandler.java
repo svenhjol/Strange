@@ -1,4 +1,4 @@
-package svenhjol.strange.module.journals2;
+package svenhjol.strange.module.journals2.photo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,7 +13,7 @@ import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import javax.annotation.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class PhotoHandler {
+public class TakePhotoHandler {
     private static final int MAX_TICKS = 30;
 
     private @Nullable Bookmark bookmark;
