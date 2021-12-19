@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +23,13 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.network.QuestMessages;
+import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.PageTracker;
+import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.event.QuestEvents;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.Knowledge.Tier;
-import svenhjol.strange.module.quests.QuestToast.QuestToastType;
+import svenhjol.strange.module.runes.Tier;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -36,28 +37,21 @@ import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Quests extends CharmModule {
-    public static final ResourceLocation MSG_SERVER_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "server_sync_player_quests");
-    public static final ResourceLocation MSG_SERVER_ABANDON_QUEST = new ResourceLocation(Strange.MOD_ID, "server_abandon_quest");
-    public static final ResourceLocation MSG_SERVER_PAUSE_QUEST = new ResourceLocation(Strange.MOD_ID, "server_pause_quest");
-    public static final ResourceLocation MSG_CLIENT_SHOW_QUEST_TOAST = new ResourceLocation(Strange.MOD_ID, "client_show_quest_toast");
-    public static final ResourceLocation MSG_CLIENT_SYNC_PLAYER_QUESTS = new ResourceLocation(Strange.MOD_ID, "client_sync_player_quests");
-
-    public static final int NUM_TIERS = 6;
     public static final String DEFINITION_FOLDER = "quests";
-    public static final Map<Integer, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
-    public static final Map<Integer, String> TIER_NAMES;
+    public static final Map<Tier, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
 
     private static QuestData quests;
 
     @Override
     public void runWhenEnabled() {
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_SYNC_PLAYER_QUESTS, this::handleSyncPlayerQuests);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_SYNC_QUESTS, this::handleSyncPlayerQuests);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
 
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
+
         QuestEvents.START.register(this::handleStartQuest);
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
@@ -66,12 +60,12 @@ public class Quests extends CharmModule {
         QuestCommand.init();
     }
 
-    public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, int tier) {
+    public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, Tier tier) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeEnum(type);
         buffer.writeUtf(definitionId);
-        buffer.writeInt(tier);
-        ServerPlayNetworking.send(player, Quests.MSG_CLIENT_SHOW_QUEST_TOAST, buffer);
+        buffer.writeInt(tier.ordinal());
+        ServerPlayNetworking.send(player, QuestMessages.CLIENT_SHOW_QUEST_TOAST, buffer);
     }
 
     public static Optional<QuestData> getQuestData() {
@@ -93,7 +87,9 @@ public class Quests extends CharmModule {
 
         split = id.split("\\.");
         tierName = split[0];
-        int tier = getTierByName(tierName);
+
+        var tier = Tier.byName(tierName);
+        if (tier == null) return null;
 
         if (DEFINITIONS.containsKey(tier) && DEFINITIONS.get(tier).containsKey(id)) {
             return DEFINITIONS.get(tier).get(id);
@@ -103,7 +99,7 @@ public class Quests extends CharmModule {
     }
 
     @Nullable
-    public static QuestDefinition getRandomDefinition(ServerPlayer player, int tier, Random random) {
+    public static QuestDefinition getRandomDefinition(ServerPlayer player, Tier tier, Random random) {
         UUID uuid = player.getUUID();
 
         if (!DEFINITIONS.containsKey(tier)) {
@@ -118,7 +114,7 @@ public class Quests extends CharmModule {
         }
 
         QuestData quests = getQuestData().orElseThrow();
-        List<Quest> allPlayerQuests = quests.getAll(player);
+        List<Quest> allPlayerQuests = quests.all(player);
         List<QuestDefinition> eligibleDefinitions = new ArrayList<>();
         List<QuestDefinition> tierDefinitions = new ArrayList<>(definitions.values());
         Collections.shuffle(tierDefinitions, random);
@@ -180,15 +176,6 @@ public class Quests extends CharmModule {
         return found;
     }
 
-    public static int getTierByName(String name) {
-        for (Map.Entry<Integer, String> tier : TIER_NAMES.entrySet()) {
-            if (tier.getValue().equals(name)) {
-                return tier.getKey();
-            }
-        }
-        return 0;
-    }
-
     private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {
         getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
     }
@@ -198,8 +185,8 @@ public class Quests extends CharmModule {
             ResourceManager manager = server.getResourceManager();
             Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
 
-            for (int tier = 0; tier < NUM_TIERS; tier++) {
-                Collection<ResourceLocation> definitions = manager.listResources(DEFINITION_FOLDER + "/" + TIER_NAMES.get(tier), file -> file.endsWith(".json"));
+            for (Tier tier : Tier.values()) {
+                Collection<ResourceLocation> definitions = manager.listResources(DEFINITION_FOLDER + "/" + tier.getSerializedName(), file -> file.endsWith(".json"));
                 LogHelper.debug(this.getClass(), "Tier " + tier + " has " + definitions.size() + " definitions");
                 for (ResourceLocation resource : definitions) {
                     try {
@@ -244,20 +231,20 @@ public class Quests extends CharmModule {
             }
 
             // setup the data storage
-            ServerLevel serverLevel = (ServerLevel)level;
-            DimensionDataStorage storage = serverLevel.getDataStorage();
+            ServerLevel overworld = (ServerLevel)level;
+            DimensionDataStorage storage = overworld.getDataStorage();
 
             quests = storage.computeIfAbsent(
-                nbt -> QuestData.fromNbt(serverLevel, nbt),
-                () -> new QuestData(serverLevel),
-                QuestData.getFileId(serverLevel.getLevel().dimensionType()));
+                tag -> QuestData.load(overworld, tag),
+                () -> new QuestData(overworld),
+                QuestData.getFileId(overworld.getLevel().dimensionType()));
 
             LogHelper.info(this.getClass(), "Loaded quests saved data");
         }
     }
 
     private void handleSyncPlayerQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        syncPlayerQuests(player);
+        syncQuests(player);
     }
 
     /**
@@ -265,7 +252,7 @@ public class Quests extends CharmModule {
      * - synchronise all player quest state back to the client
      */
     private void handleRemoveQuest(Quest quest, ServerPlayer player) {
-        syncPlayerQuests(player);
+        syncQuests(player);
     }
 
     /**
@@ -279,9 +266,11 @@ public class Quests extends CharmModule {
         if (definitions.size() >= 3) {
             definitions.pop();
         }
+
         definitions.push(quest.getDefinition());
+
         Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
-        syncPlayerQuests(player);
+        syncQuests(player);
     }
 
     /**
@@ -290,6 +279,7 @@ public class Quests extends CharmModule {
      */
     private void handleAbandonQuest(Quest quest, ServerPlayer player) {
         Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, quest.getDefinitionId(), quest.getTier());
+        syncQuests(player);
     }
 
     /**
@@ -298,37 +288,37 @@ public class Quests extends CharmModule {
      */
     private void handleCompleteQuest(Quest quest, ServerPlayer player) {
         Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, quest.getDefinitionId(), quest.getTier());
+        syncQuests(player);
     }
 
     private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
-        server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
-            quest.abandon(player);
-            Journals.sendOpenJournal(player, Journals.Page.QUESTS);
-        }));
+        var quests = Quests.getQuestData().orElseThrow();
+
+        server.execute(() -> {
+            var quest = quests.get(questId);
+            if (quest != null) {
+                quest.abandon(player);
+                Journals.sendOpenJournal(player, PageTracker.Page.QUESTS);
+            }
+        });
     }
 
     private void handleServerPauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
-        server.execute(() -> Quests.getQuestData().flatMap(quests -> quests.get(questId)).ifPresent(quest -> {
-            quest.pause(player);
-            Journals.sendOpenJournal(player, Journals.Page.QUESTS);
-        }));
+        var quests = Quests.getQuestData().orElseThrow();
+
+        server.execute(() -> {
+            var quest = quests.get(questId);
+            if (quest != null) {
+                quest.pause(player);
+                Journals.sendOpenJournal(player, PageTracker.Page.QUESTS);
+            }
+        });
     }
 
-    private void syncPlayerQuests(ServerPlayer player) {
-        CompoundTag tag = new CompoundTag();
-        quests.saveForPlayer(player, tag);
-        NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SYNC_PLAYER_QUESTS, buf -> buf.writeNbt(tag));
-    }
-
-    static {
-        TIER_NAMES = new HashMap<>();
-        TIER_NAMES.put(0, Tier.TEST.getSerializedName());
-        TIER_NAMES.put(1, Tier.NOVICE.getSerializedName());
-        TIER_NAMES.put(2, Tier.APPRENTICE.getSerializedName());
-        TIER_NAMES.put(3, Tier.JOURNEYMAN.getSerializedName());
-        TIER_NAMES.put(4, Tier.EXPERT.getSerializedName());
-        TIER_NAMES.put(5, Tier.MASTER.getSerializedName());
+    private void syncQuests(ServerPlayer player) {
+        var tag = quests.save(player);
+        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUESTS, buf -> buf.writeNbt(tag));
     }
 }

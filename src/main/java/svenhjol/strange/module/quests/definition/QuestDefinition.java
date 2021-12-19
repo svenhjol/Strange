@@ -2,6 +2,7 @@ package svenhjol.strange.module.quests.definition;
 
 import com.google.gson.Gson;
 import net.minecraft.server.packs.resources.Resource;
+import svenhjol.strange.module.runes.Tier;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -34,8 +35,8 @@ public class QuestDefinition {
         return id;
     }
 
-    public int getTier() {
-        return tier;
+    public Tier getTier() {
+        return Tier.byOrdinal(tier);
     }
 
     public String getPack() {
@@ -78,7 +79,7 @@ public class QuestDefinition {
         this.id = id;
     }
 
-    public void setTier(int tier) {
-        this.tier = tier;
+    public void setTier(Tier tier) {
+        this.tier = tier.ordinal();
     }
 }

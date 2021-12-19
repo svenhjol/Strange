@@ -3,6 +3,7 @@ package svenhjol.strange.module.runes;
 import svenhjol.charm.enums.ICharmEnum;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public enum Tier implements ICharmEnum {
@@ -24,12 +25,14 @@ public enum Tier implements ICharmEnum {
     }
 
     @Nullable
-    public static Tier getByOrdinal(int o) {
-        for (Tier value : values()) {
-            if (value.ordinal() == o) {
-                return value;
-            }
-        }
-        return null;
+    public static Tier byName(String name) {
+        var first = Arrays.stream(values()).filter(t -> t.getSerializedName().equals(name)).findFirst();
+        return first.orElse(null);
+    }
+
+    @Nullable
+    public static Tier byOrdinal(int o) {
+        var first = Arrays.stream(values()).filter(t -> t.ordinal() == o).findFirst();
+        return first.orElse(null);
     }
 }

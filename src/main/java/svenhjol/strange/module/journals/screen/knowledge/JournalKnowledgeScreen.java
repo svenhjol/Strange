@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ public class JournalKnowledgeScreen extends JournalScreen {
             new ButtonDefinition(b -> dimensions(), LEARNED_DIMENSIONS)
         );
 
-        Journals2Client.tracker.setPage(Journals.Page.KNOWLEDGE);
+        Journals2Client.tracker.setPage(PageTracker.Page.KNOWLEDGE);
     }
 
     @Override

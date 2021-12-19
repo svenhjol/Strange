@@ -38,7 +38,12 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public CompoundTag toNbt() {
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
+    public CompoundTag save() {
         CompoundTag outTag = new CompoundTag();
         CompoundTag dataTag = new CompoundTag();
         CompoundTag countTag = new CompoundTag();
@@ -65,7 +70,7 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public void fromNbt(CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         CompoundTag dataTag = (CompoundTag) nbt.get(TAG_ITEM_DATA);
         CompoundTag countTag = (CompoundTag) nbt.get(TAG_ITEM_COUNT);
 

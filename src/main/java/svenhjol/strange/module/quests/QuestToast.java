@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.scrolls.Scrolls;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class QuestToast implements Toast {
     private final DisplayInfo displayInfo;
     private boolean playedSound;
 
-    public QuestToast(QuestToastType type, String definitionId, int tier) {
+    public QuestToast(QuestToastType type, String definitionId, Tier tier) {
         ItemStack stack;
 
         if (Strange.LOADER.isEnabled("scrolls")) {

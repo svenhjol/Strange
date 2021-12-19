@@ -8,23 +8,25 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.module.quests.event.QuestEvents;
+import svenhjol.strange.iface.ISerializable;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.quests.helper.QuestHelper;
+import svenhjol.strange.module.runes.Tier;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
-public class Quest implements IQuestComponent {
-    public static final String TAG_ID = "id";
-    public static final String TAG_DEFINITION = "definition";
-    public static final String TAG_PLAYER = "player";
-    public static final String TAG_STATE = "state";
-    public static final String TAG_DIFFICULTY = "difficulty";
+public class Quest implements ISerializable {
+    public static final String ID_TAG = "id";
+    public static final String DEFINITION_TAG = "definition";
+    public static final String PLAYER_TAG = "player";
+    public static final String STATE_TAG = "state";
+    public static final String DIFFICULTY_TAG = "difficulty";
     public static final int ID_LENGTH = 6;
 
     private State state = State.CREATED;
@@ -44,7 +46,7 @@ public class Quest implements IQuestComponent {
 
     public Quest(CompoundTag tag) {
         this();
-        this.fromNbt(tag);
+        this.load(tag);
     }
 
     public Quest(QuestDefinition definition, float difficulty) {
@@ -62,7 +64,6 @@ public class Quest implements IQuestComponent {
         return (T)components.stream().filter(c -> c.getClass() == clazz).findFirst().orElseThrow();
     }
 
-    @Override
     public boolean start(Player player) {
         if (state == State.CREATED) {
 
@@ -98,7 +99,6 @@ public class Quest implements IQuestComponent {
         setDirty();
     }
 
-    @Override
     public void abandon(Player player) {
         components.forEach(c -> c.abandon(player));
 
@@ -109,7 +109,6 @@ public class Quest implements IQuestComponent {
         getQuests().remove(this);
     }
 
-    @Override
     public void complete(Player player, @Nullable AbstractVillager merchant) {
         components.forEach(c -> c.complete(player, merchant));
 
@@ -120,7 +119,6 @@ public class Quest implements IQuestComponent {
         remove(player);
     }
 
-    @Override
     public void playerTick(Player player) {
         components.forEach(c -> c.playerTick(player));
         if (player.level != null && player.level.getGameTime() % 40 == 0) {
@@ -128,7 +126,6 @@ public class Quest implements IQuestComponent {
         }
     }
 
-    @Override
     public void entityKilled(LivingEntity entity, Entity attacker) {
         components.forEach(c -> c.entityKilled(entity, attacker));
     }
@@ -138,49 +135,48 @@ public class Quest implements IQuestComponent {
      * This could be for example building dynamic maps to check if a quest is satisfied.
      * Dirty is not set here and should be set on a component level if state changes.
      */
-    @Override
     public void update(Player player) {
         components.forEach(c -> c.update(player));
     }
 
-    @Override
     public boolean isSatisfied(Player player) {
         update(player);
         return components.stream().allMatch(q -> q.isSatisfied(player));
     }
 
     @Override
-    public CompoundTag toNbt() {
+    public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
 
         if (definition == null) {
             return tag;
         }
 
-        tag.putString(TAG_ID, id);
-        tag.putString(TAG_DEFINITION, getDefinitionId());
-        tag.putString(TAG_PLAYER, owner.toString());
-        tag.putString(TAG_STATE, state.getSerializedName());
-        tag.putFloat(TAG_DIFFICULTY, difficulty);
+        tag.putString(ID_TAG, id);
+        tag.putString(DEFINITION_TAG, getDefinitionId());
+        tag.putString(PLAYER_TAG, owner.toString());
+        tag.putString(STATE_TAG, state.getSerializedName());
+        tag.putFloat(DIFFICULTY_TAG, difficulty);
 
         components.forEach(c -> {
-            CompoundTag componentTag = c.toNbt();
+            CompoundTag componentTag = c.save();
             if (componentTag != null) {
                 tag.put(c.getId(), componentTag);
             }
         });
+
         return tag;
     }
 
     @Override
-    public void fromNbt(CompoundTag tag) {
-        id = tag.getString(TAG_ID);
-        definition = Quests.getDefinition(tag.getString(TAG_DEFINITION));
-        owner = UUID.fromString(tag.getString(TAG_PLAYER));
-        state = State.valueOf(tag.getString(TAG_STATE).toUpperCase(Locale.ROOT));
-        difficulty = tag.getFloat(TAG_DIFFICULTY);
+    public void load(CompoundTag tag) {
+        id = tag.getString(ID_TAG);
+        definition = Quests.getDefinition(tag.getString(DEFINITION_TAG));
+        owner = UUID.fromString(tag.getString(PLAYER_TAG));
+        state = State.valueOf(tag.getString(STATE_TAG).toUpperCase(Locale.ROOT));
+        difficulty = tag.getFloat(DIFFICULTY_TAG);
         random = new Random(id.hashCode());
-        components.forEach(c -> c.fromNbt(tag.getCompound(c.getId())));
+        components.forEach(c -> c.load(tag.getCompound(c.getId())));
     }
 
     public QuestDefinition getDefinition() {
@@ -202,7 +198,7 @@ public class Quest implements IQuestComponent {
         return random;
     }
 
-    public int getTier() {
+    public Tier getTier() {
         return definition.getTier();
     }
 

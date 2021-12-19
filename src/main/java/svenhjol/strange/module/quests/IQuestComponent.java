@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 public interface IQuestComponent extends ISerializable {
     String getId();
 
+    boolean isEmpty();
+
     default void abandon(Player player) {
         // no op
     }

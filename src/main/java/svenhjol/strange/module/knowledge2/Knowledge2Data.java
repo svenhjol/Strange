@@ -4,10 +4,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
 import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
 import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+
+import javax.annotation.Nullable;
 
 public class Knowledge2Data extends SavedData {
     public static final String SEED_TAG = "Seed";

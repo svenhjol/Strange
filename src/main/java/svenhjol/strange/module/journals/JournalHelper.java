@@ -1,13 +1,9 @@
 package svenhjol.strange.module.journals;
 
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.Knowledge.Tier;
 import svenhjol.strange.module.knowledge.KnowledgeBranch;
 import svenhjol.strange.module.knowledge.branches.BiomesBranch;
 import svenhjol.strange.module.knowledge.branches.DimensionsBranch;
 import svenhjol.strange.module.knowledge.branches.StructuresBranch;
-
-import java.util.List;
 
 public class JournalHelper {
     public static boolean hasLearnedAnyRunes(JournalData journal) {
@@ -27,52 +23,7 @@ public class JournalHelper {
         return num;
     }
 
-    public static int getNextLearnableRune(JournalData journal) {
-        return getNextLearnableRune(Tier.MASTER.ordinal(), journal);
-    }
-
-    public static int getNextLearnableRune(int tier, JournalData journal) {
-        List<Integer> learnedRunes = journal.getLearnedRunes();
-
-        for (int t = 1; t <= tier; t++) {
-            Tier knowledgeTier = Tier.getByOrdinal(t);
-
-            if (knowledgeTier != null) {
-                String runeset = Knowledge.TIER_RUNE_SETS.get(knowledgeTier);
-
-                for (int i = 0; i < runeset.length(); i++) {
-                    char c = runeset.charAt(i);
-                    int intval = (int) c - 97;
-                    if (!learnedRunes.contains(intval)) {
-                        return intval;
-                    }
-                }
-            }
-        }
-
-        return Integer.MIN_VALUE;
-    }
-
-    public static boolean learnNextLearnableRune(JournalData journal) {
-        return learnNextLearnableRune(Tier.MASTER.ordinal(), journal);
-    }
-
-    public static boolean learnNextLearnableRune(int tier, JournalData journal) {
-        int learnable = getNextLearnableRune(tier, journal);
-
-        if (learnable >= 0) {
-            journal.learnRune(learnable);
-            return true;
-        }
-
-        return false;
-    }
-
     public static void tryLearnPhrase(String runes, JournalData journal) {
-        if (JournalHelper.getNumberOfUnknownRunes(runes, journal) > 0) {
-            return;
-        }
-
         KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
             switch (branch.getBranchName()) {
                 case BiomesBranch.NAME -> ((BiomesBranch) branch).get(runes).ifPresent(journal::learnBiome);

@@ -1,7 +1,7 @@
 package svenhjol.strange.module.journals.screen.knowledge;
 
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
 import svenhjol.strange.module.journals2.paginator.StructurePaginator;
 
@@ -20,6 +20,6 @@ public class JournalStructuresScreen extends JournalResourcesScreen {
 
     @Override
     protected void setViewedPage() {
-        Journals2Client.tracker.setPage(Journals.Page.STRUCTURES, offset);
+        Journals2Client.tracker.setPage(PageTracker.Page.STRUCTURES, offset);
     }
 }

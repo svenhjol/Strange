@@ -29,6 +29,7 @@ import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.scrollkeepers.ScrollkeeperTradeOffers.ScrollForEmeralds;
 import svenhjol.strange.module.writing_desks.WritingDesks;
 
@@ -62,7 +63,7 @@ public class Scrollkeepers extends CharmModule {
     public void runWhenEnabled() {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_CHECK_HAS_SATISFIED, this::handleCheckHasSatisfied);
 
-        for (int i = 1; i < Quests.NUM_TIERS; i++) {
+        for (int i = 1; i < Tier.values().length; i++) {
             VillagerHelper.addTrade(SCROLLKEEPER, i, new ScrollForEmeralds(i));
         }
     }
@@ -94,11 +95,11 @@ public class Scrollkeepers extends CharmModule {
         // handle villager xp increase and levelup
         int villagerXp = villager.getVillagerXp();
         int villagerLevel = villagerData.getLevel();
-        int tier = quest.getTier();
+        int tier = quest.getTier().ordinal();
         int rewardXp = quest.getComponent(RewardComponent.class).getMerchantXp();
 
         if (tier >= villagerLevel) {
-            int tierXp = QUEST_XP[Math.max(0, Math.min(Quests.NUM_TIERS, tier) - 1)];
+            int tierXp = QUEST_XP[Math.max(0, Math.min(Tier.values().length, tier) - 1)];
             if (tier > villagerLevel) {
                 // scale down the bonus for completing a quest tier higher than the villager's level
                 tierXp = Math.max(1, tierXp / 2);

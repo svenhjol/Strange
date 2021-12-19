@@ -1,20 +1,15 @@
 package svenhjol.strange.module.journals;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.journals.Journals.Page;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.PageTracker.Page;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -29,64 +24,12 @@ public class JournalsClient extends CharmModule {
     public static JournalBookmark bookmarkBeingPhotographed;
     public static int photoTicks = 0;
 
-    @Override
-    public void runWhenEnabled() {
-//        if (Journals.enableKeybind) {
-//            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-//                "key.charm.openJournal",
-//                InputConstants.Type.KEYSYM,
-//                GLFW.GLFW_KEY_J,
-//                "key.categories.inventory"
-//            ));
-//
-//            ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
-//        }
-//
-//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_JOURNAL, this::handleOpenJournal);
-//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
-//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_BOOKMARK, this::handleOpenBookmark);
-    }
-
     /**
      * Always use this method to reference the current player's journal data on the client.
      * If you need to synchronise it, call sendSyncJournal() or sendOpenJournal() to sync and open
      */
     public static Optional<JournalData> getJournalData() {
         return Optional.ofNullable(journal);
-    }
-
-    private void handleKeyPressed() {
-        sendOpenJournal(Page.HOME);
-    }
-
-    private void handleWorldTick(Level level) {
-        if (keyBinding == null || level == null) return;
-
-        while (keyBinding.consumeClick()) {
-            handleKeyPressed();
-        }
-
-        ClientHelper.getClient().ifPresent(this::handleTakingPhoto);
-    }
-
-    private void handleSyncJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        updateJournal(buffer.readNbt());
-    }
-
-    private void handleOpenJournal(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        updateJournal(buffer.readNbt());
-        Page page = buffer.readEnum(Page.class);
-        JournalScreen screen = JournalViewer.getScreen(page);
-        processPacketFromServer(client, mc -> mc.setScreen(screen));
-    }
-
-    private void handleOpenBookmark(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag bookmarkNbt = buffer.readNbt();
-        if (bookmarkNbt == null)
-            return;
-
-        JournalBookmark newBookmark = JournalBookmark.fromTag(bookmarkNbt);
-//        processPacketFromServer(client, mc -> mc.setScreen(new JournalBookmarkScreen(newBookmark)));
     }
 
     public static void sendSyncJournal() {

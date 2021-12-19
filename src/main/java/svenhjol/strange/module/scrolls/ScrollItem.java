@@ -15,21 +15,23 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.quests.*;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.helper.QuestHelper;
+import svenhjol.strange.module.runes.Tier;
 
-import java.util.Optional;
 import java.util.Random;
 
 public class ScrollItem extends CharmItem {
-    private static final String TAG_QUEST = "quest";
-    private static final String TAG_DIFFICULTY = "difficulty";
+    private static final String QUEST_TAG = "quest";
+    private static final String DIFFICULTY_TAG = "difficulty";
 
-    private final int tier;
+    private final Tier tier;
 
-    public ScrollItem(CharmModule module, int tier) {
-        super(module, Quests.TIER_NAMES.get(tier) + "_scroll", new Item.Properties()
+    public ScrollItem(CharmModule module, Tier tier) {
+        super(module, tier.getSerializedName() + "_scroll", new Item.Properties()
             .tab(CreativeModeTab.TAB_MISC)
             .rarity(Rarity.COMMON)
             .stacksTo(1));
@@ -46,7 +48,7 @@ public class ScrollItem extends CharmItem {
 
         ServerPlayer serverPlayer = (ServerPlayer) player;
         QuestData quests = Quests.getQuestData().orElseThrow();
-        if (quests.getAll(serverPlayer).size() >= QuestHelper.MAX_QUESTS) {
+        if (quests.all(serverPlayer).size() >= QuestHelper.MAX_QUESTS) {
             player.displayClientMessage(new TranslatableComponent("gui.strange.quests.max_reached"), true);
             return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
         }
@@ -67,14 +69,13 @@ public class ScrollItem extends CharmItem {
             quest.start(player);
 
         } else {
-            Optional<Quest> quest = quests.get(questId);
-
-            if (quest.isEmpty()) {
+            var quest = quests.get(questId);
+            if (quest == null) {
                 LogHelper.warn(this.getClass(), "No matching quest with id " + questId + ", giving up");
                 return destroy(serverPlayer, scroll);
             }
 
-            quest.get().start(player);
+            quest.start(player);
         }
 
         scroll.shrink(1);
@@ -89,19 +90,19 @@ public class ScrollItem extends CharmItem {
     }
 
     public static void setScrollQuest(ItemStack scroll, String quest) {
-        scroll.getOrCreateTag().putString(TAG_QUEST, quest);
+        scroll.getOrCreateTag().putString(QUEST_TAG, quest);
     }
 
     public static void setScrollDifficulty(ItemStack scroll, float difficulty) {
-        scroll.getOrCreateTag().putFloat(TAG_DIFFICULTY, difficulty);
+        scroll.getOrCreateTag().putFloat(DIFFICULTY_TAG, difficulty);
     }
 
     public static String getScrollQuest(ItemStack scroll) {
-        return scroll.getOrCreateTag().getString(TAG_QUEST);
+        return scroll.getOrCreateTag().getString(QUEST_TAG);
     }
 
     public static float getScrollDifficulty(ItemStack scroll) {
-        float difficulty = scroll.getOrCreateTag().getFloat(TAG_DIFFICULTY);
+        float difficulty = scroll.getOrCreateTag().getFloat(DIFFICULTY_TAG);
         return difficulty == 0 ? 1.0F : difficulty;
     }
 }

@@ -21,7 +21,7 @@ public class QuestHelper {
 
     public static Optional<Quest> getFirstSatisfiedQuest(Player player) {
         QuestData quests = Quests.getQuestData().orElseThrow();
-        List<Quest> playerQuests = quests.getAll(player);
+        List<Quest> playerQuests = quests.all(player);
         return playerQuests.stream().filter(q -> q.isSatisfied(player)).findFirst();
     }
 }

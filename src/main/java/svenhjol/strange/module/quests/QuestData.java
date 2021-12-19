@@ -8,32 +8,31 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class QuestData extends SavedData {
-    public static final String TAG_QUESTS = "quests";
+    public static final String QUESTS_TAG = "quests";
 
     private final Map<String, Quest> quests = new ConcurrentHashMap<>();
 
     public QuestData(@Nullable ServerLevel level) {
-        setDirty();
+        this.setDirty();
     }
 
-    public static QuestData fromNbt(CompoundTag tag) {
-        return fromNbt(null, tag);
+    public static QuestData load(CompoundTag tag) {
+        return load(null, tag);
     }
 
-    public static QuestData fromNbt(@Nullable ServerLevel level, CompoundTag tag) {
+    public static QuestData load(@Nullable ServerLevel level, CompoundTag tag) {
         QuestData data = new QuestData(level);
 
-        ListTag listTag = tag.getList(TAG_QUESTS, 10);
+        ListTag listTag = tag.getList(QUESTS_TAG, 10);
+
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
             Quest quest = new Quest(questTag);
@@ -48,11 +47,11 @@ public class QuestData extends SavedData {
         ListTag listTag = new ListTag();
 
         eachQuest(quest -> {
-            CompoundTag questTag = quest.toNbt();
+            CompoundTag questTag = quest.save();
             listTag.add(questTag);
         });
 
-        tag.put(TAG_QUESTS, listTag);
+        tag.put(QUESTS_TAG, listTag);
         return tag;
     }
 
@@ -60,31 +59,32 @@ public class QuestData extends SavedData {
      * Serialize quests for a specific player.
      * This is generally used for sending quests to the player client.
      */
-    public CompoundTag saveForPlayer(Player player, CompoundTag tag) {
-        ListTag listTag = new ListTag();
+    public CompoundTag save(Player player) {
+        var tag = new CompoundTag();
+        var listTag = new ListTag();
 
         eachPlayerQuest(player, quest -> {
-            CompoundTag questTag = quest.toNbt();
+            CompoundTag questTag = quest.save();
             listTag.add(questTag);
         });
 
-        tag.put(TAG_QUESTS, listTag);
+        tag.put(QUESTS_TAG, listTag);
         return tag;
     }
 
-    public List<Quest> getAll() {
+    public List<Quest> all() {
         return new ArrayList<>(quests.values());
     }
 
-    public List<Quest> getAll(Player player) {
-        return this.quests.values().stream()
+    public List<Quest> all(Player player) {
+        return quests.values().stream()
             .filter(q -> q.getOwner().equals(player.getUUID()))
             .collect(Collectors.toList());
     }
 
-    public Optional<Quest> get(String id) {
-        Quest quest = quests.getOrDefault(id, null);
-        return Optional.ofNullable(quest);
+    @Nullable
+    public Quest get(String id) {
+        return quests.getOrDefault(id, null);
     }
 
     public boolean has(String id) {
@@ -107,15 +107,10 @@ public class QuestData extends SavedData {
     }
 
     public void eachPlayerQuest(Player player, Consumer<Quest> callback) {
-        getAll(player).forEach(callback);
+        all(player).forEach(callback);
     }
 
     public static String getFileId(DimensionType dimensionType) {
         return "strange_quests" + dimensionType.getFileSuffix();
-    }
-
-    @Override
-    public void save(File file) {
-        super.save(file);
     }
 }

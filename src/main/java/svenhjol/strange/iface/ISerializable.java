@@ -3,7 +3,7 @@ package svenhjol.strange.iface;
 import net.minecraft.nbt.CompoundTag;
 
 public interface ISerializable {
-    CompoundTag toNbt();
+    CompoundTag save();
 
-    void fromNbt(CompoundTag tag);
+    void load(CompoundTag tag);
 }

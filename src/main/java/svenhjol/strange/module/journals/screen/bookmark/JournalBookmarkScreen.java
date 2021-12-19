@@ -16,9 +16,9 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.photo.BookmarkPhoto;
 import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
@@ -52,7 +52,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         this.buttonWidth = 105;
         this.buttonHeight = 20;
 
-        Journals2Client.tracker.setBookmark(Journals.Page.BOOKMARK, bookmark);
+        Journals2Client.tracker.setBookmark(bookmark);
     }
 
     @Override
@@ -178,12 +178,12 @@ public class JournalBookmarkScreen extends JournalScreen {
      */
     protected void saveAndGoBack() {
         save(); // save progress before changing screen
-        JournalsClient.sendOpenJournal(Journals.Page.BOOKMARKS);
+        JournalsClient.sendOpenJournal(PageTracker.Page.BOOKMARKS);
     }
 
     @Override
     public void onClose() {
-        Journals2Client.tracker.setPage(Journals.Page.BOOKMARKS);
+        Journals2Client.tracker.setPage(PageTracker.Page.BOOKMARKS);
         super.onClose();
     }
 

@@ -4,20 +4,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.module.journals.Journals.Page;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 import svenhjol.strange.module.journals.screen.knowledge.*;
-import svenhjol.strange.module.journals.screen.quest.JournalQuestHomeScreen;
+import svenhjol.strange.module.journals.screen.quest.JournalQuestScreen;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.quests.QuestsClient;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class PageTracker {
@@ -36,8 +33,8 @@ public class PageTracker {
         this.offset = offset;
     }
 
-    public void setBookmark(Page page, Bookmark bookmark) {
-        this.page = page;
+    public void setBookmark(Bookmark bookmark) {
+        this.page = Page.BOOKMARK;
         this.bookmark = bookmark.copy();
         this.offset = 0;
     }
@@ -71,9 +68,8 @@ public class PageTracker {
             switch (page) {
                 case BOOKMARK -> screen = new JournalBookmarkScreen(bookmark);
                 case QUEST -> {
-                    Optional<QuestData> quests = QuestsClient.getQuestData();
-                    if (quests.isPresent() && quests.get().has(quest.getId())) {
-                        screen = new JournalQuestHomeScreen(quest);
+                    if (QuestsClient.quests.stream().anyMatch(q -> q.getId().equals(quest.getId()))) {
+                        screen = new JournalQuestScreen(quest);
                     } else {
                         screen = new JournalQuestsScreen();
                     }
@@ -105,5 +101,21 @@ public class PageTracker {
         }
 
         return screen;
+    }
+
+    public enum Page {
+        HOME,
+        BOOKMARKS,
+        BOOKMARK,
+        QUESTS,
+        QUEST,
+        KNOWLEDGE,
+        RUNES,
+        BIOMES,
+        BIOME,
+        DIMENSIONS,
+        DIMENSION,
+        STRUCTURES,
+        STRUCTURE
     }
 }

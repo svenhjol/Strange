@@ -35,7 +35,12 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public CompoundTag toNbt() {
+    public boolean isEmpty() {
+        return entities.isEmpty();
+    }
+
+    @Override
+    public CompoundTag save() {
         CompoundTag outTag = new CompoundTag();
         CompoundTag dataTag = new CompoundTag();
         CompoundTag countTag = new CompoundTag();
@@ -65,7 +70,7 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public void fromNbt(CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         CompoundTag dataTag = (CompoundTag) nbt.get(TAG_ENTITY_DATA);
         CompoundTag countTag = (CompoundTag) nbt.get(TAG_ENTITY_COUNT);
         CompoundTag killedTag = (CompoundTag) nbt.get(TAG_ENTITY_KILLED);

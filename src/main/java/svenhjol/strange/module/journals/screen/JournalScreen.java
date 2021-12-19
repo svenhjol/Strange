@@ -21,7 +21,6 @@ import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestsScreen;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
-import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.runes.RuneHelper;
 
 import java.util.ArrayList;
@@ -102,7 +101,6 @@ public abstract class JournalScreen extends Screen {
     protected boolean hasFirstRendered = false;
 
     protected int offset;
-    protected QuestData quests;
 
     protected List<ImageButtonDefinition> leftNavButtons = new ArrayList<>();
     protected List<ImageButtonDefinition> rightNavButtons = new ArrayList<>();

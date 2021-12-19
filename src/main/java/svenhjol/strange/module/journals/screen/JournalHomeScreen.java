@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public class JournalHomeScreen extends JournalScreen {
 
     public JournalHomeScreen() {
         super(JOURNAL);
-        Journals2Client.tracker.setPage(Journals.Page.HOME);
+        Journals2Client.tracker.setPage(PageTracker.Page.HOME);
     }
 
     @Override

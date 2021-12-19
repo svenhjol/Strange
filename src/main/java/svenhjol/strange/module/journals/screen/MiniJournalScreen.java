@@ -83,8 +83,6 @@ public class MiniJournalScreen {
             new ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
             new ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
         ));
-
-        KnowledgeClient.sendSyncKnowledge();
     }
 
     public void init() {

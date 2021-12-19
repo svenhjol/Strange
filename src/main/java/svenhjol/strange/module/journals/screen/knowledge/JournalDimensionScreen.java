@@ -2,8 +2,8 @@ package svenhjol.strange.module.journals.screen.knowledge;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.knowledge2.Knowledge2Client;
 import svenhjol.strange.module.runes.RuneBranch;
 
@@ -28,6 +28,6 @@ public class JournalDimensionScreen extends JournalResourceScreen {
 
     @Override
     protected void setViewedPage() {
-        Journals2Client.tracker.setResource(Journals.Page.DIMENSION, resource);
+        Journals2Client.tracker.setResource(PageTracker.Page.DIMENSION, resource);
     }
 }

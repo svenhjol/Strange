@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.Knowledge;
 
@@ -16,7 +16,7 @@ public class JournalRunesScreen extends JournalScreen {
     public static final Component RUNES_LOAD_ERROR = new TranslatableComponent("gui.strange.journal.runes_load_error");
     public JournalRunesScreen() {
         super(LEARNED_RUNES);
-        Journals2Client.tracker.setPage(Journals.Page.RUNES);
+        Journals2Client.tracker.setPage(PageTracker.Page.RUNES);
     }
 
     @Override

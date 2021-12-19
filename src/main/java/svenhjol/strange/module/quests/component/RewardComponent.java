@@ -47,6 +47,11 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
     public void complete(Player player, @Nullable AbstractVillager merchant) {
         for (ItemStack stack : items.keySet()) {
             int count = items.get(stack);
@@ -113,7 +118,7 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
-    public CompoundTag toNbt() {
+    public CompoundTag save() {
         CompoundTag outNbt = new CompoundTag();
         CompoundTag dataNbt = new CompoundTag();
         CompoundTag countNbt = new CompoundTag();
@@ -140,7 +145,7 @@ public class RewardComponent implements IQuestComponent {
     }
 
     @Override
-    public void fromNbt(CompoundTag tag) {
+    public void load(CompoundTag tag) {
         playerXp = tag.getInt(TAG_PLAYER_XP);
         merchantXp = tag.getInt(TAG_MERCHANT_XP);
         CompoundTag dataTag = (CompoundTag) tag.get(TAG_ITEM_DATA);

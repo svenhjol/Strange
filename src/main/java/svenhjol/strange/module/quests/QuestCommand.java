@@ -50,7 +50,12 @@ public class QuestCommand {
         QuestData quests = getQuestData();
 
         String id = QuestIdArgType.getId(context, "id");
-        Quest quest = quests.get(id).orElseThrow();
+        Quest quest = quests.get(id);
+
+        if (quest == null) {
+            throw CommandHelper.makeException("Invalid quest", new TranslatableComponent("commands.strange.no_quest_found", id).getString());
+        }
+
         quest.abandon(player);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.abandoned_quest", id), false);
@@ -62,7 +67,12 @@ public class QuestCommand {
         QuestData quests = getQuestData();
 
         String id = QuestIdArgType.getId(context, "id");
-        Quest quest = quests.get(id).orElseThrow();
+        Quest quest = quests.get(id);
+
+        if (quest == null) {
+            throw CommandHelper.makeException("Invalid quest", new TranslatableComponent("commands.strange.no_quest_found", id).getString());
+        }
+
         quest.complete(player, null);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.completed_quest", id), false);
@@ -100,7 +110,7 @@ public class QuestCommand {
     private static CompletableFuture<Suggestions> getQuestIds(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         List<String> ids = new LinkedList<>();
         Quests.getQuestData().ifPresent(quests -> {
-            List<Quest> all = quests.getAll();
+            List<Quest> all = quests.all();
             all.forEach(q -> ids.add(q.getId()));
         });
         return SharedSuggestionProvider.suggest(ids, builder);

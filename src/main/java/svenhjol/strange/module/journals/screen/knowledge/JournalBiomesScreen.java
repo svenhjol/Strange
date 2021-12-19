@@ -1,7 +1,7 @@
 package svenhjol.strange.module.journals.screen.knowledge;
 
-import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.paginator.BiomePaginator;
 import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
 
@@ -20,6 +20,6 @@ public class JournalBiomesScreen extends JournalResourcesScreen {
 
     @Override
     protected void setViewedPage() {
-        Journals2Client.tracker.setPage(Journals.Page.BIOMES, offset);
+        Journals2Client.tracker.setPage(PageTracker.Page.BIOMES, offset);
     }
 }

@@ -8,6 +8,7 @@ import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.paginator.BookmarkPaginator;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class JournalBookmarksScreen extends JournalScreen {
 
     public JournalBookmarksScreen() {
         super(BOOKMARKS);
-        Journals2Client.tracker.setPage(Journals.Page.BOOKMARKS);
+        Journals2Client.tracker.setPage(PageTracker.Page.BOOKMARKS);
     }
 
     @Override

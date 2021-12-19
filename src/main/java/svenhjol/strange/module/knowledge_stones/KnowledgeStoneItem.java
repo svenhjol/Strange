@@ -14,13 +14,13 @@ import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.journals2.Journal2Data;
+import svenhjol.strange.module.journals2.Journals2;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper.LearnableKnowledgeType;
+import svenhjol.strange.module.knowledge2.Knowledge2;
+import svenhjol.strange.module.knowledge2.Knowledge2Data;
+import svenhjol.strange.module.runes.Tier;
 
 public class KnowledgeStoneItem extends CharmItem {
     private final LearnableKnowledgeType type;
@@ -37,8 +37,9 @@ public class KnowledgeStoneItem extends CharmItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
         KnowledgeStoneItem stone = (KnowledgeStoneItem)held.getItem();
-        JournalData journal = Journals.getJournalData(player).orElseThrow();
-        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
+
+        Journal2Data journal = Journals2.getJournal(player).orElseThrow();
+        Knowledge2Data knowledge = Knowledge2.getKnowledge().orElseThrow();
 
         if (!level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
@@ -47,33 +48,34 @@ public class KnowledgeStoneItem extends CharmItem {
                 return InteractionResultHolder.fail(held);
             }
 
-            boolean learnedThing = false;
+            boolean learned = false;
 
             switch (stone.type) {
                 case RUNE -> {
-                    learnedThing = JournalHelper.learnNextLearnableRune(journal);
-                    if (learnedThing) {
-                        sendClientMessage(serverPlayer, "rune", "");
+                    int runeval = Journal2Helper.nextLearnableRune(Tier.MASTER, journal);
+                    if (runeval > 0) {
+                        sendClientMessage(serverPlayer, "rune", String.valueOf((char)(runeval + 96)));
                     }
+                    learned = true;
                 }
-                case BIOME -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedBiomes(), knowledge.biomes, b -> {
+                case BIOME -> learned = Journal2Helper.learnFromBranch(knowledge.biomes, journal.getLearnedBiomes(), b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
-                case STRUCTURE -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedStructures(), knowledge.structures, s -> {
+                case STRUCTURE -> learned = Journal2Helper.learnFromBranch(knowledge.structures, journal.getLearnedStructures(), s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
-                case DIMENSION -> learnedThing = KnowledgeHelper.tryLearnFromBranch(journal.getLearnedDimensions(), knowledge.dimensions, d -> {
+                case DIMENSION -> learned = Journal2Helper.learnFromBranch(knowledge.dimensions, journal.getLearnedDimensions(), d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
                 });
             }
 
-            if (learnedThing) {
+            if (learned) {
                 // TODO: rune glyph effect and sound effect
             } else {
                 player.giveExperienceLevels(10);
