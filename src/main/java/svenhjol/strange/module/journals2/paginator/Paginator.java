@@ -67,7 +67,8 @@ public abstract class Paginator<T> {
             T item = sublist.get(i);
             var name = getItemName(item);
             var action = getItemClickAction(item);
-            var button = new Button(x - (buttonWidth / 2) + 6, y + (i * yOffset), buttonWidth, buttonHeight, name, b -> action.accept(item));
+            var hasIcon = getItemIcon(item) != null;
+            var button = new Button(x - (buttonWidth / 2) + (hasIcon ? 6 : 0), y + (i * yOffset), buttonWidth, buttonHeight, name, b -> action.accept(item));
 
             screen.addRenderableWidget(button);
         }
