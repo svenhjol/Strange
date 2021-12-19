@@ -48,10 +48,7 @@ public class Journals2 extends CharmModule {
     }
 
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        getJournal(player).ifPresent(journal -> {
-            CompoundTag tag = journal.save();
-            NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(tag));
-        });
+        syncJournal(player);
     }
 
     private File getDataFile(File playerDataDir, UUID uuid) {
@@ -60,5 +57,12 @@ public class Journals2 extends CharmModule {
 
     public static Optional<Journal2Data> getJournal(Player player) {
         return Optional.ofNullable(playerJournals.get(player.getUUID()));
+    }
+
+    public static void syncJournal(ServerPlayer player) {
+        getJournal(player).ifPresent(journal -> {
+            CompoundTag tag = journal.save();
+            NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(tag));
+        });
     }
 }
