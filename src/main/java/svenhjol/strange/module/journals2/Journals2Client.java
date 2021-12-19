@@ -23,6 +23,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.JournalMessages;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.journals2.photo.TakePhotoHandler;
 
 import java.util.Optional;
 
@@ -30,14 +31,14 @@ import java.util.Optional;
 public class Journals2Client extends CharmModule {
     public static @Nullable Journal2Data journal;
     public static PageTracker tracker;
-    public static PhotoHandler photo;
+    public static TakePhotoHandler photo;
 
     private KeyMapping keyBinding;
 
     @Override
     public void register() {
         tracker = new PageTracker();
-        photo = new PhotoHandler();
+        photo = new TakePhotoHandler();
     }
 
     @Override
