@@ -1,4 +1,4 @@
-package svenhjol.strange.module.quests;
+package svenhjol.strange.module.quests.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,6 +12,9 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import svenhjol.strange.helper.CommandHelper;
 import svenhjol.strange.init.StrangeCommands;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestData;
+import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;

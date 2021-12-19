@@ -27,6 +27,7 @@ import svenhjol.strange.api.network.QuestMessages;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
+import svenhjol.strange.module.quests.command.QuestCommand;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.runes.Tier;
