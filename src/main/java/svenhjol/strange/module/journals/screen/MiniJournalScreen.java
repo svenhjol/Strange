@@ -20,10 +20,15 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
+import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
+import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalBookmark;
 import svenhjol.strange.module.journals.JournalData;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.runes.RuneHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +39,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class MiniJournalScreen {
-    private final List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
+    private final List<ButtonDefinition> homeButtons = new ArrayList<>();
     private final Screen screen;
 
     private JournalSection section;
@@ -73,10 +78,10 @@ public class MiniJournalScreen {
         this.buttonHeight = 20;
 
         this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BOOKMARKS), JournalScreen.BOOKMARKS),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), JournalScreen.LEARNED_BIOMES),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
-            new GuiHelper.ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
+            new ButtonDefinition(b -> changeJournalSection(JournalSection.BOOKMARKS), JournalScreen.BOOKMARKS),
+            new ButtonDefinition(b -> changeJournalSection(JournalSection.BIOMES), JournalScreen.LEARNED_BIOMES),
+            new ButtonDefinition(b -> changeJournalSection(JournalSection.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
+            new ButtonDefinition(b -> changeJournalSection(JournalSection.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
         ));
 
         KnowledgeClient.sendSyncKnowledge();
@@ -195,7 +200,8 @@ public class MiniJournalScreen {
             int y = midY - 60; // start rendering buttons from here
             int xOffset = 0;
             int yOffset = 24;
-            JournalHomeScreen.renderHome(screen, screen.font, screen.width, poseStack, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
+
+            GuiHelper.addButtons(screen, screen.width, screen.font, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
         }
     }
 
@@ -214,7 +220,7 @@ public class MiniJournalScreen {
             Component component = new TextComponent(getTruncatedName(selectedBookmark.getName(), 18));
             itemRenderer.renderGuiItem(selectedBookmark.getIcon(), journalMidX - 8, y);
             GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
-            KnowledgeClient.renderRunesString(minecraft, poseStack, selectedBookmark.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
+            renderRunesString(poseStack, selectedBookmark.getRunes(), journalMidX - 46, midY - 8, 9, 14, 10, 4, false);
         } else {
             renderBackButton(b -> changeJournalSection(JournalSection.HOME));
 
@@ -307,7 +313,7 @@ public class MiniJournalScreen {
         int y = midY - 78;
         Component component = new TextComponent(getTruncatedName(StringHelper.snakeToPretty(resource.getPath(), true), 18));
         GuiHelper.drawCenteredString(poseStack, font, component, journalMidX, y + 20, textColor);
-        KnowledgeClient.renderRunesString(minecraft, poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, textColor, secondaryColor, false);
+        renderRunesString(poseStack, runes, journalMidX - 46, midY - 8, 9, 14, 10, 4, false);
     }
 
     private void renderResourceLocations(PoseStack poseStack, List<ResourceLocation> resources, Supplier<Component> labelForNoItem, Consumer<ResourceLocation> onPress) {
@@ -334,6 +340,44 @@ public class MiniJournalScreen {
 
     private String getTruncatedName(String name, int length) {
         return name.substring(0, Math.min(name.length(), length));
+    }
+
+    private void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
+        var client = ClientHelper.getClient().orElse(null);
+        if (client == null) return;
+
+        // Convert the input string according to the runes that the player knows.
+        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
+
+        int index = 0;
+
+        for (int y = 0; y < yMax; y++) {
+            for (int x = 0; x < xMax; x++) {
+                if (index < revealed.length()) {
+                    Component rune;
+                    int color;
+
+                    String s = String.valueOf(revealed.charAt(index));
+                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
+                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                        color = textColor;
+                    } else {
+                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
+                        color = secondaryColor;
+                    }
+
+                    int xo = left + (x * xOffset);
+                    int yo = top + (y * yOffset);
+
+                    if (withShadow) {
+                        client.font.drawShadow(poseStack, rune, xo, yo, color);
+                    } else {
+                        client.font.draw(poseStack, rune, xo, yo, color);
+                    }
+                }
+                index++;
+            }
+        }
     }
 
     public enum JournalSection implements ICharmEnum {

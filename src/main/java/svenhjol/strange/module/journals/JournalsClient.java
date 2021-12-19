@@ -1,29 +1,20 @@
 package svenhjol.strange.module.journals;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Screenshot;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.journals.Journals.Page;
 import svenhjol.strange.module.journals.screen.JournalScreen;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -40,20 +31,20 @@ public class JournalsClient extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        if (Journals.enableKeybind) {
-            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.charm.openJournal",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_J,
-                "key.categories.inventory"
-            ));
-
-            ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
-        }
-
-        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_JOURNAL, this::handleOpenJournal);
-        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
-        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_BOOKMARK, this::handleOpenBookmark);
+//        if (Journals.enableKeybind) {
+//            keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+//                "key.charm.openJournal",
+//                InputConstants.Type.KEYSYM,
+//                GLFW.GLFW_KEY_J,
+//                "key.categories.inventory"
+//            ));
+//
+//            ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
+//        }
+//
+//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_JOURNAL, this::handleOpenJournal);
+//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
+//        ClientPlayNetworking.registerGlobalReceiver(Journals.MSG_CLIENT_OPEN_BOOKMARK, this::handleOpenBookmark);
     }
 
     /**
@@ -95,7 +86,7 @@ public class JournalsClient extends CharmModule {
             return;
 
         JournalBookmark newBookmark = JournalBookmark.fromTag(bookmarkNbt);
-        processPacketFromServer(client, mc -> mc.setScreen(new JournalBookmarkScreen(newBookmark)));
+//        processPacketFromServer(client, mc -> mc.setScreen(new JournalBookmarkScreen(newBookmark)));
     }
 
     public static void sendSyncJournal() {
@@ -147,42 +138,42 @@ public class JournalsClient extends CharmModule {
     }
 
     private void handleTakingPhoto(Minecraft client) {
-        if (isTakingPhoto() && client.options.keyAttack.isDown()) {
-            forcePhotoTicks();
-        }
-
-        if (photoTicks > 0) {
-            if (bookmarkBeingPhotographed == null) {
-
-                // if there's no bookmark then the ticks are stale, reset them
-                photoTicks = 0;
-
-            } else if (++photoTicks > MAX_PHOTO_TICKS) {
-                String filename = bookmarkBeingPhotographed.getId() + ".png";
-
-                Screenshot.grab(
-                    client.gameDirectory,
-                    filename,
-                    client.getMainRenderTarget(),
-                    component -> {
-                        if (client.player != null) {
-                            client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
-                        }
-
-                        // restore the GUI
-                        client.options.hideGui = false;
-
-                        // open the journal at the bookmark page
-                        client.execute(() -> {
-                            client.setScreen(new JournalBookmarkScreen(bookmarkBeingPhotographed));
-                            bookmarkBeingPhotographed = null;
-                        });
-                        LogHelper.debug(this.getClass(), "Screenshot taken");
-                    }
-                );
-
-                photoTicks = 0;
-            }
-        }
+//        if (isTakingPhoto() && client.options.keyAttack.isDown()) {
+//            forcePhotoTicks();
+//        }
+//
+//        if (photoTicks > 0) {
+//            if (bookmarkBeingPhotographed == null) {
+//
+//                // if there's no bookmark then the ticks are stale, reset them
+//                photoTicks = 0;
+//
+//            } else if (++photoTicks > MAX_PHOTO_TICKS) {
+//                String filename = bookmarkBeingPhotographed.getId() + ".png";
+//
+//                Screenshot.grab(
+//                    client.gameDirectory,
+//                    filename,
+//                    client.getMainRenderTarget(),
+//                    component -> {
+//                        if (client.player != null) {
+//                            client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+//                        }
+//
+//                        // restore the GUI
+//                        client.options.hideGui = false;
+//
+//                        // open the journal at the bookmark page
+//                        client.execute(() -> {
+//                            client.setScreen(new JournalBookmarkScreen(bookmarkBeingPhotographed));
+//                            bookmarkBeingPhotographed = null;
+//                        });
+//                        LogHelper.debug(this.getClass(), "Screenshot taken");
+//                    }
+//                );
+//
+//                photoTicks = 0;
+//            }
+//        }
     }
 }

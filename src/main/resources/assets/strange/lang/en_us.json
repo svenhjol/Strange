@@ -61,6 +61,7 @@
   "gui.strange.journal.bookmarks": "Bookmarks",
   "gui.strange.journal.bookmarks_tooltip": "Bookmarks",
   "gui.strange.journal.make_map_tooltip": "Make a map to this bookmark",
+  "gui.strange.journal.nothing": "Nothing here",
   "gui.strange.journal.no_bookmarks": "No bookmarks",
   "gui.strange.journal.no_learned_biomes": "No biomes",
   "gui.strange.journal.no_learned_structures": "No structures",

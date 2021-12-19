@@ -21,25 +21,27 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import svenhjol.strange.helper.CommandHelper;
 import svenhjol.strange.init.StrangeCommands;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journal2Data;
+import svenhjol.strange.module.journals2.Journals2;
 import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
+import svenhjol.strange.module.knowledge2.Knowledge2;
+import svenhjol.strange.module.knowledge2.Knowledge2Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class KnowledgeCommand {
-    // from LocateBiomeCommand
     public static final DynamicCommandExceptionType ERROR_INVALID_BIOME;
     public static final DynamicCommandExceptionType ERROR_INVALID_STRUCTURE;
 
+    // Inspired by LocateCommand
     public static final SuggestionProvider<CommandSourceStack> AVAILABLE_STRUCTURES;
 
-    public static final Component LEARNED_ALL_STRUCTURES = new TranslatableComponent("commands.strange.learned_all_structures");
+    public static final Component LEARNED_ALL_RUNES = new TranslatableComponent("commands.strange.learned_all_runes");
     public static final Component LEARNED_ALL_DIMENSIONS = new TranslatableComponent("commands.strange.learned_all_dimensions");
     public static final Component LEARNED_ALL_BIOMES = new TranslatableComponent("commands.strange.learned_all_biomes");
-    public static final Component LEARNED_ALL_RUNES = new TranslatableComponent("commands.strange.learned_all_runes");
+    public static final Component LEARNED_ALL_STRUCTURES = new TranslatableComponent("commands.strange.learned_all_structures");
 
     public static void init() {
         StrangeCommands.SUBCOMMANDS.addAll(Arrays.asList(
@@ -98,18 +100,17 @@ public class KnowledgeCommand {
 
     public static int learnAllBiomes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalData journal = getJournal(player);
-        KnowledgeData knowledge = getKnowledge();
+        Journal2Data journal = getJournal(player);
+        Knowledge2Data knowledge = getKnowledge();
 
         knowledge.biomes.values().forEach(journal::learnBiome);
-
         context.getSource().sendSuccess(LEARNED_ALL_BIOMES, false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int learnAllRunes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalData journal = getJournal(player);
+        Journal2Data journal = getJournal(player);
 
         for (int i = 0; i < Knowledge.NUM_RUNES; i++) {
             journal.learnRune(i);
@@ -121,22 +122,20 @@ public class KnowledgeCommand {
 
     private static int learnAllStructures(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalData journal = getJournal(player);
-        KnowledgeData knowledge = getKnowledge();
+        Journal2Data journal = getJournal(player);
+        Knowledge2Data knowledge = getKnowledge();
 
         knowledge.structures.values().forEach(journal::learnStructure);
-
         context.getSource().sendSuccess(LEARNED_ALL_STRUCTURES, false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int learnAllDimensions(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        JournalData journal = getJournal(player);
-        KnowledgeData knowledge = getKnowledge();
+        Journal2Data journal = getJournal(player);
+        Knowledge2Data knowledge = getKnowledge();
 
         knowledge.dimensions.values().forEach(journal::learnDimension);
-
         context.getSource().sendSuccess(LEARNED_ALL_DIMENSIONS, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -207,12 +206,12 @@ public class KnowledgeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static JournalData getJournal(ServerPlayer player) throws CommandSyntaxException {
-        return Journals.getJournalData(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
+    private static Journal2Data getJournal(ServerPlayer player) throws CommandSyntaxException {
+        return Journals2.getJournal(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
     }
 
-    private static KnowledgeData getKnowledge() throws CommandSyntaxException {
-        return Knowledge.getKnowledgeData().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
+    private static Knowledge2Data getKnowledge() throws CommandSyntaxException {
+        return Knowledge2.getKnowledge().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
     }
 
     static {

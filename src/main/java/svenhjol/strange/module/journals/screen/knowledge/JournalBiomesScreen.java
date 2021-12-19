@@ -1,14 +1,11 @@
 package svenhjol.strange.module.journals.screen.knowledge;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import svenhjol.charm.helper.ClientHelper;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.paginator.BiomePaginator;
+import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class JournalBiomesScreen extends JournalResourcesScreen {
     public JournalBiomesScreen() {
@@ -16,22 +13,13 @@ public class JournalBiomesScreen extends JournalResourcesScreen {
     }
 
     @Override
-    protected List<ResourceLocation> getResources(JournalData journal) {
-        return journal.getLearnedBiomes();
-    }
-
-    @Override
-    protected Supplier<Component> getLabelForNoItem() {
-        return () -> NO_BIOMES;
-    }
-
-    @Override
-    protected void select(ResourceLocation biome) {
-        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalBiomeScreen(biome)));
+    protected ResourcePaginator getPaginator() {
+        var journal = Journals2Client.journal;
+        return new BiomePaginator(journal != null ? journal.getLearnedBiomes() : List.of());
     }
 
     @Override
     protected void setViewedPage() {
-        JournalViewer.viewedPage(Journals.Page.BIOMES, lastPage);
+        Journals2Client.tracker.setPage(Journals.Page.BIOMES, offset);
     }
 }

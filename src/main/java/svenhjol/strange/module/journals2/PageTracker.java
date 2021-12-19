@@ -1,9 +1,14 @@
-package svenhjol.strange.module.journals;
+package svenhjol.strange.module.journals2;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.Journals.Page;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 import svenhjol.strange.module.journals.screen.knowledge.*;
 import svenhjol.strange.module.journals.screen.quest.JournalQuestHomeScreen;
@@ -14,36 +19,68 @@ import svenhjol.strange.module.quests.QuestsClient;
 
 import java.util.Optional;
 
-public class JournalViewer {
-    private static Page lastPage;
-    private static JournalBookmark lastBookmark;
-    private static ResourceLocation lastResource;
-    private static Quest lastQuest;
+@Environment(EnvType.CLIENT)
+public class PageTracker {
+    private Page page;
+    private Bookmark bookmark;
+    private Quest quest;
+    private ResourceLocation resource;
+    private int offset;
 
-    public static JournalScreen getScreen(Page page) {
+    public void setPage(Page page) {
+        setPage(page, 0);
+    }
+
+    public void setPage(Page page, int offset) {
+        this.page = page;
+        this.offset = offset;
+    }
+
+    public void setBookmark(Page page, Bookmark bookmark) {
+        this.page = page;
+        this.bookmark = bookmark.copy();
+        this.offset = 0;
+    }
+
+    public void setQuest(Quest quest) {
+        this.quest = quest;
+        this.offset = 0;
+    }
+
+    public void setResource(Page page, ResourceLocation resource) {
+        this.page = page;
+        this.resource = resource;
+        this.offset = 0;
+    }
+
+    public JournalScreen getScreen() {
+        return getScreen(null);
+    }
+
+    public JournalScreen getScreen(@Nullable Page wantsPage) {
         JournalScreen screen;
 
-        if (page.equals(Page.HOME) && lastPage == null) {
+        if (page == null) {
 
             // we specifically want the home page here
             screen = new JournalHomeScreen();
 
-        } else if (page.equals(Page.HOME)) {
+        } else if (wantsPage == null) {
 
             // if previous page recorded, redirect to it here
-            switch (lastPage) {
-//                case BOOKMARK -> screen = new JournalBookmarkScreen(lastBookmark);
+            switch (page) {
+                case BOOKMARK -> screen = new JournalBookmarkScreen(bookmark);
                 case QUEST -> {
                     Optional<QuestData> quests = QuestsClient.getQuestData();
-                    if (quests.isPresent() && quests.get().has(lastQuest.getId())) {
-                        screen = new JournalQuestHomeScreen(lastQuest);
+                    if (quests.isPresent() && quests.get().has(quest.getId())) {
+                        screen = new JournalQuestHomeScreen(quest);
                     } else {
                         screen = new JournalQuestsScreen();
                     }
                 }
-                case BIOME -> screen = new JournalBiomeScreen(lastResource);
-                case DIMENSION -> screen = new JournalDimensionScreen(lastResource);
-                case STRUCTURE -> screen = new JournalStructureScreen(lastResource);
+                case BIOME -> screen = new JournalBiomeScreen(resource);
+                case DIMENSION -> screen = new JournalDimensionScreen(resource);
+                case STRUCTURE -> screen = new JournalStructureScreen(resource);
                 case BOOKMARKS -> screen = new JournalBookmarksScreen();
                 case BIOMES -> screen = new JournalBiomesScreen();
                 case DIMENSIONS -> screen = new JournalDimensionsScreen();
@@ -53,10 +90,12 @@ public class JournalViewer {
                 default -> screen = new JournalHomeScreen();
             }
 
+            screen.setOffset(offset);
+
         } else {
 
             // we want to set the screen to the network packet
-            switch (page) {
+            switch (wantsPage) {
                 case BOOKMARKS -> screen = new JournalBookmarksScreen();
                 case QUESTS -> screen = new JournalQuestsScreen();
                 case KNOWLEDGE -> screen = new JournalKnowledgeScreen();
@@ -65,28 +104,5 @@ public class JournalViewer {
         }
 
         return screen;
-    }
-
-    public static void viewedPage(Page page) {
-        viewedPage(page, 0);
-    }
-
-    public static void viewedPage(Page page, int pageOffset) {
-        lastPage = page;
-    }
-
-    public static void viewedBookmark(JournalBookmark bookmark) {
-        lastPage = Page.BOOKMARK;
-        lastBookmark = bookmark;
-    }
-
-    public static void viewedQuest(Quest quest) {
-        lastPage = Page.QUEST;
-        lastQuest = quest;
-    }
-
-    public static void viewedResource(Page page, ResourceLocation res) {
-        lastPage = page;
-        lastResource = res;
     }
 }

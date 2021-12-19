@@ -1,12 +1,11 @@
 package svenhjol.strange.module.journals.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalViewer;
+import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2Client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,15 +13,21 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class JournalHomeScreen extends JournalScreen {
-    protected List<GuiHelper.ButtonDefinition> homeButtons = new ArrayList<>();
+    protected List<ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
         super(JOURNAL);
+        Journals2Client.tracker.setPage(Journals.Page.HOME);
+    }
 
-        this.homeButtons.addAll(Arrays.asList(
-            new GuiHelper.ButtonDefinition(b -> bookmarks(), BOOKMARKS),
-            new GuiHelper.ButtonDefinition(b -> quests(), QUESTS),
-            new GuiHelper.ButtonDefinition(b -> knowledge(), KNOWLEDGE)
+    @Override
+    protected void init() {
+        super.init();
+
+        homeButtons = new ArrayList<>(Arrays.asList(
+            new ButtonDefinition(b -> bookmarks(), BOOKMARKS),
+            new ButtonDefinition(b -> quests(), QUESTS),
+            new ButtonDefinition(b -> knowledge(), KNOWLEDGE)
         ));
     }
 
@@ -33,36 +38,26 @@ public class JournalHomeScreen extends JournalScreen {
 
     @Override
     public void renderTitle(PoseStack poseStack, int titleX, int titleY, int titleColor) {
-        // center the title for the home screen
+        // The homescreen requires the title's height to be customized.
         super.renderTitle(poseStack, titleX, 25, titleColor);
     }
 
     @Override
-    public void renderNavigation(PoseStack poseStack) {
-        // don't render navigation on home screen
+    public void renderNavigation() {
+        // Don't add the navigation buttons on the homescreen.
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        super.render(poseStack, mouseX, mouseY, delta);
-        renderButtons(poseStack);
-        JournalViewer.viewedPage(Journals.Page.HOME);
-    }
+    protected void firstRender(PoseStack poseStack) {
+        super.firstRender(poseStack);
 
-    public void renderButtons(PoseStack poseStack) {
-        if (!hasRenderedButtons) {
-            int buttonWidth = 100;
-            int buttonHeight = 20;
-            int x = midX - (buttonWidth / 2);
-            int y = 48;
-            int xOffset = 0;
-            int yOffset = 24;
-            renderHome(this, font, width, poseStack, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
-            hasRenderedButtons = true;
-        }
-    }
+        int buttonWidth = 100;
+        int buttonHeight = 20;
+        int x = midX - (buttonWidth / 2);
+        int y = 48;
+        int xOffset = 0;
+        int yOffset = 24;
 
-    public static void renderHome(Screen screen, Font font, int width, PoseStack poseStack, List<GuiHelper.ButtonDefinition> homeButtons, int buttonWidth, int buttonHeight, int x, int y, int xOffset, int yOffset) {
-        GuiHelper.renderButtons(screen, width, font, homeButtons, x, y, xOffset, yOffset, buttonWidth, buttonHeight);
+        GuiHelper.addButtons(this, width, font, homeButtons, x, y, xOffset, yOffset, buttonWidth, buttonHeight);
     }
 }

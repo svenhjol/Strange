@@ -10,17 +10,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalHelper;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
-import svenhjol.strange.module.quests.*;
+import svenhjol.strange.module.quests.IQuestComponent;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.QuestIcons;
+import svenhjol.strange.module.quests.QuestsClient;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 
@@ -50,19 +54,7 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     public JournalQuestHomeScreen(Quest quest) {
         super(quest);
 
-        this.rowHeight = 15;
-
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> quests(), GO_BACK));
-        this.bottomButtons.add(1, new GuiHelper.ButtonDefinition(b -> objectives(), OBJECTIVES));
-
-        this.bottomNavButtons.addAll(Arrays.asList(
-            new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, ABANDON_TOOLTIP)
-        ));
-
-        this.rightNavButtons.addAll(Arrays.asList(
-            new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP)
-        ));
-
+        rowHeight = 15;
         showRuneReward = Strange.LOADER.isEnabled("knowledge");
 
         if (Strange.LOADER.isEnabled("knowledge_stones")) {
@@ -76,7 +68,6 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     protected void init() {
         super.init();
 
-        player = ClientHelper.getPlayer().orElseThrow();
         quest.update(player);
 
         definition = quest.getDefinition();
@@ -89,6 +80,13 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
         items = reward.getItems();
         playerXp = reward.getPlayerXp();
         merchantXp = reward.getMerchantXp();
+
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> quests(), GO_BACK));
+        bottomButtons.add(1, new GuiHelper.ButtonDefinition(b -> objectives(), OBJECTIVES));
+
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, ABANDON_TOOLTIP));
+
+        rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP));
     }
 
     @Override
@@ -209,7 +207,16 @@ public class JournalQuestHomeScreen extends JournalQuestScreen {
     private int renderRuneReward(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
         if (!showRuneReward) return top;
 
-        if (JournalHelper.getNextLearnableRune(quest.getTier(), journal) < 0) {
+        var journal = Journals2Client.journal;
+        if (journal == null) return top;
+
+        // TODO: quests should store rune tier
+        var tierVal = quest.getTier();
+        var tier = Tier.getByOrdinal(tierVal);
+        if (tier == null) return top;
+
+        var rune = Journal2Helper.nextLearnableRune(tier, journal);
+        if (rune < 0) {
             showRuneReward = false;
             return top;
         }

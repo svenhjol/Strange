@@ -4,11 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeClient;
+import svenhjol.strange.module.runes.Runes;
 
 import java.util.List;
 
@@ -16,21 +17,18 @@ public class JournalRunesScreen extends JournalScreen {
     public static final Component RUNES_LOAD_ERROR = new TranslatableComponent("gui.strange.journal.runes_load_error");
     public JournalRunesScreen() {
         super(LEARNED_RUNES);
+        Journals2Client.tracker.setPage(Journals.Page.RUNES);
+    }
 
-        // add a back button at the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
+    @Override
+    protected void init() {
+        super.init();
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
-        JournalViewer.viewedPage(Journals.Page.RUNES);
-
-        if (journal == null) {
-            // show an error if the runes can't be loaded
-            centeredText(poseStack, font, RUNES_LOAD_ERROR, midX, titleY + 14, errorColor);
-            return;
-        }
 
         int page1Left = midX - 82;
         int page2Left = midX + 33;
@@ -38,11 +36,11 @@ public class JournalRunesScreen extends JournalScreen {
         int xOffset = 42;
         int yOffset = 20;
 
-        List<Integer> learnedRunes = journal.getLearnedRunes();
+        List<Integer> learnedRunes = Journal2Helper.getLearnedRunes();
         StringBuilder page1 = new StringBuilder();
         StringBuilder page2 = new StringBuilder();
 
-        int perPage = Knowledge.NUM_RUNES / 2;
+        int perPage = Runes.NUM_RUNES / 2;
 
         for (int i = 0; i < perPage; i++) {
             if (learnedRunes.contains(i)) {
@@ -60,8 +58,8 @@ public class JournalRunesScreen extends JournalScreen {
             }
         }
 
-        KnowledgeClient.renderRunesString(minecraft, poseStack, page1.toString(), page1Left, top, xOffset, yOffset, 2, 8, knownColor, unknownColor, false);
-        KnowledgeClient.renderRunesString(minecraft, poseStack, page2.toString(), page2Left, top, xOffset, yOffset, 2, 8, knownColor, unknownColor, false);
+        renderRunesString(poseStack, page1.toString(), page1Left, top, xOffset, yOffset, 4, 4, false);
+        renderRunesString(poseStack, page2.toString(), page2Left, top, xOffset, yOffset, 4, 4, false);
     }
 
     @Override

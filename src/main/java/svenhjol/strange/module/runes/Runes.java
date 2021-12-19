@@ -4,7 +4,7 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true)
 public class Runes extends CharmModule {
     public static final int NUM_RUNES = 26;
 

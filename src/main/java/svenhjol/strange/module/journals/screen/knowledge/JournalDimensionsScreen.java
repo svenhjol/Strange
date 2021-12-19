@@ -1,14 +1,11 @@
 package svenhjol.strange.module.journals.screen.knowledge;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import svenhjol.charm.helper.ClientHelper;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.paginator.DimensionPaginator;
+import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class JournalDimensionsScreen extends JournalResourcesScreen {
     public JournalDimensionsScreen() {
@@ -16,22 +13,13 @@ public class JournalDimensionsScreen extends JournalResourcesScreen {
     }
 
     @Override
-    protected List<ResourceLocation> getResources(JournalData journal) {
-        return journal.getLearnedDimensions();
-    }
-
-    @Override
-    protected Supplier<Component> getLabelForNoItem() {
-        return () -> NO_DIMENSIONS;
-    }
-
-    @Override
-    protected void select(ResourceLocation dimension) {
-        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalDimensionScreen(dimension)));
+    protected ResourcePaginator getPaginator() {
+        var journal = Journals2Client.journal;
+        return new DimensionPaginator(journal != null ? journal.getLearnedDimensions() : List.of());
     }
 
     @Override
     protected void setViewedPage() {
-        JournalViewer.viewedPage(Journals.Page.DIMENSIONS, lastPage);
+        Journals2Client.tracker.setPage(Journals.Page.DIMENSIONS, offset);
     }
 }

@@ -17,7 +17,7 @@ public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
     public static final String NAME = "Dimensions";
 
     @Override
-    public void register(Level level) {
+    public ResourceLocation register(Level level) {
         ResourceLocation id = level.dimension().location();
 
         if (id == null) {
@@ -26,6 +26,8 @@ public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
         add(runes, id);
+
+        return id;
     }
 
     @Override

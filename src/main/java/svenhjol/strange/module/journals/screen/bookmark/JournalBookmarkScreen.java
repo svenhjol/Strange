@@ -1,150 +1,115 @@
 package svenhjol.strange.module.journals.screen.bookmark;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import svenhjol.charm.helper.*;
+import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.StringHelper;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.*;
-import svenhjol.strange.module.journals.screen.JournalScreen;
-import svenhjol.strange.module.knowledge.KnowledgeClient;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
+import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.bookmarks.BookmarksClient;
+import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalBookmarkScreen extends JournalScreen {
+public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
     protected String name;
     protected Component dimensionName;
-    protected EditBox nameField;
-    protected JournalBookmark bookmark;
-    protected DynamicTexture photoTexture = null;
-    protected ResourceLocation registeredPhotoTexture = null;
-    protected int photoFailureRetries;
+    protected EditBox nameEditBox;
+    protected Bookmark bookmark;
     protected int maxNameLength;
     protected int minPhotoDistance;
+    protected int buttonWidth;
+    protected int buttonHeight;
     protected boolean hasInitializedUpdateButtons = false;
     protected boolean hasRenderedUpdateButtons = false;
-    protected boolean hasPhoto = false;
-    protected List<GuiHelper.ButtonDefinition> updateButtons = new ArrayList<>();
+    protected List<ButtonDefinition> pageButtons = new ArrayList<>();
 
-    public JournalBookmarkScreen(JournalBookmark bookmark) {
+    public JournalBookmarkScreen(@Nonnull Bookmark bookmark) {
         super(new TextComponent(bookmark.getName()));
 
         this.name = bookmark.getName();
         this.bookmark = bookmark.copy();
-        this.photoFailureRetries = 0;
         this.maxNameLength = 50;
         this.minPhotoDistance = 10;
         this.dimensionName = new TranslatableComponent("gui.strange.journal.dimension", StringHelper.snakeToPretty(this.bookmark.getDimension().getPath(), true));
 
-        this.bottomNavButtons.add(
-            new GuiHelper.ImageButtonDefinition(b -> delete(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP)
-        );
+        this.buttonWidth = 105;
+        this.buttonHeight = 20;
 
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
-
-        JournalViewer.viewedBookmark(this.bookmark);
+        Journals2Client.tracker.setBookmark(Journals.Page.BOOKMARK, bookmark);
     }
 
     @Override
     protected void init() {
         super.init();
 
-        if (minecraft == null) return;
+        initEditBox();
+        initPhoto();
 
-        // set up the input field for editing the entry name
-        nameField = new EditBox(font, (midX) - 65, 40, 130, 12, new TextComponent("NameField"));
-        nameField.changeFocus(true);
-        nameField.setCanLoseFocus(false);
-        nameField.setTextColor(-1);
-        nameField.setTextColorUneditable(-1);
-        nameField.setBordered(true);
-        nameField.setMaxLength(maxNameLength);
-        nameField.setResponder(this::nameFieldResponder);
-        nameField.setValue(name);
-        nameField.setEditable(true);
+        pageButtons = new ArrayList<>();
 
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        this.children.add(nameField);
-        setFocused(nameField);
-
-        ClientHelper.getPlayer().ifPresent(player -> {
-            // add map icon if player has an empty map
-            if (playerCanMakeMap()) {
-                this.rightNavButtons.add(
-                    new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, MAKE_MAP_TOOLTIP)
-                );
-            }
-
-            // add take picture icon if player is near the location
-            if (playerIsNearBookmark()) {
-                this.rightNavButtons.add(
-                    new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, TAKE_PHOTO_TOOLTIP)
-                );
-            }
-        });
-
-        if (!hasInitializedUpdateButtons) {
-            if (playerIsNearBookmark()) {
-                updateButtons.add(new GuiHelper.ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
-            }
-            updateButtons.add(new GuiHelper.ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
-            updateButtons.add(new GuiHelper.ButtonDefinition(b -> saveAndGoBack(), SAVE));
-            hasInitializedUpdateButtons = true;
+        if (playerIsNearBookmark()) {
+            pageButtons.add(new ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
         }
 
-        hasRenderedUpdateButtons = false;
-        hasPhoto = hasPhoto();
+        pageButtons.add(new ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
+        pageButtons.add(new ButtonDefinition(b -> saveAndGoBack(), SAVE));
+
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP));
+        bottomButtons.add(0, new ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
+
+        // add map icon if player has an empty map
+        if (playerCanMakeMap()) {
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, MAKE_MAP_TOOLTIP));
+        }
+
+        // add take picture icon if player is near the location
+        if (playerIsNearBookmark()) {
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, TAKE_PHOTO_TOOLTIP));
+        }
+    }
+
+    @Override
+    protected String getPhotoFilename() {
+        return "strange_" + bookmark.getRunes() + ".png";
+    }
+
+    @Override
+    protected void firstRender(PoseStack poseStack) {
+        super.firstRender(poseStack);
+
+        int left = hasPhoto() ? midX + 5 : midX - 50;
+        int top = 60;
+        int yOffset = 22;
+
+        GuiHelper.addButtons(this, width, font, pageButtons, left, top, 0, yOffset, buttonWidth, buttonHeight);
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
-        int buttonWidth = 105;
-        int buttonHeight = 20;
 
-        // render icon next to title
-        renderTitleIcon(bookmark.getIcon());
-
-        // render photo and buttons
-        if (hasPhoto) {
-            renderPhoto(poseStack);
-        }
-
-        // render update buttons
-        if (!hasRenderedUpdateButtons) {
-            int left = hasPhoto ? midX + 5 : midX - 50;
-            int top = 60;
-            int yOffset = 22;
-
-            GuiHelper.renderButtons(this, width, font, updateButtons, left, top, 0, yOffset, buttonWidth, buttonHeight);
-            hasRenderedUpdateButtons = true;
-        }
-
-        // render dimension name for this bookmark
+        renderTitleIcon(getBookmarkIconItem(bookmark));
+        renderPhoto(poseStack);
         renderDimensionName(poseStack);
+        renderRunes(poseStack);
 
-        // render coordinates and runes for this bookmark
-        ClientHelper.getPlayer().ifPresent(player -> renderRunes(poseStack, player));
-
-        nameField.render(poseStack, mouseX, mouseY, delta);
+        nameEditBox.render(poseStack, mouseX, mouseY, delta);
     }
 
     protected void renderDimensionName(PoseStack poseStack) {
@@ -152,9 +117,9 @@ public class JournalBookmarkScreen extends JournalScreen {
         GuiHelper.drawCenteredString(poseStack, font, dimensionName, midX, top, secondaryColor);
     }
 
-    protected void renderRunes(PoseStack poseStack, Player player) {
-        // in creative mode just show the coordinates not the runes
-        if (player.isCreative()) {
+    protected void renderRunes(PoseStack poseStack) {
+        // When in creative mode just show the XYZ coordinates rather than the runes.
+        if (minecraft.player.isCreative()) {
             BlockPos pos = bookmark.getBlockPos();
             int x = pos.getX();
             int y = pos.getY();
@@ -165,65 +130,26 @@ public class JournalBookmarkScreen extends JournalScreen {
             return;
         }
 
-        if (journal == null) return;
+        // Don't show anything if the player hasn't learned any runes.
+        if (Journal2Helper.getLearnedRunes().isEmpty()) return;
 
-        // don't show anything if the player has learned no runes
-        if (!JournalHelper.hasLearnedAnyRunes(journal)) return;
-
-        // must be in the same dimension as the bookmark
-        if (!DimensionHelper.isDimension(player.level, bookmark.getDimension())) return;
-
-        String runes = bookmark.getRunes();
-        String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes, journal.getLearnedRunes());
+        // The player must be in the same dimension as the bookmark.
+        if (!DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) return;
 
         int left = midX - 61;
         int top = 158;
         int xOffset = 13;
         int yOffset = 15;
 
-        KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 10, 4, knownColor, unknownColor, false);
+        renderRunesString(poseStack, bookmark.getRunes(), left, top, xOffset, yOffset, 10, 4, false);
     }
 
     protected void renderPhoto(PoseStack poseStack) {
-        if (minecraft == null) return;
-
-        if (photoTexture == null) {
-            try {
-                File photoFile = getPhoto();
-                if (photoFile == null)
-                    throw new Exception("Null problems with file");
-
-                RandomAccessFile raf = new RandomAccessFile(photoFile, "r");
-                if (raf != null)
-                    raf.close();
-
-                InputStream stream = new FileInputStream(photoFile);
-                NativeImage photo = NativeImage.read(stream);
-                photoTexture = new DynamicTexture(photo);
-                registeredPhotoTexture = minecraft.getTextureManager().register("photo", photoTexture);
-                stream.close();
-
-                if (photoTexture == null || registeredPhotoTexture == null)
-                    throw new Exception("Null problems with texture / registered texture");
-
-            } catch (Exception e) {
-                LogHelper.warn(this.getClass(), "Error loading photo: " + e);
-                photoFailureRetries++;
-
-                if (photoFailureRetries > 2) {
-                    LogHelper.error(getClass(), "Failure loading photo, aborting retries");
-                    hasPhoto = false;
-                    registeredPhotoTexture = null;
-                    photoTexture = null;
-                }
-            }
-        }
-
         if (registeredPhotoTexture != null) {
             RenderSystem.setShaderTexture(0, registeredPhotoTexture);
             poseStack.pushPose();
             poseStack.scale(0.425F, 0.32F, 0.425F);
-            blit(poseStack, ((int)((midX) / 0.425F) - 265), 187, 0, 0, 256, 200);
+            blit(poseStack, ((int)(midX / 0.425F) - 265), 187, 0, 0, 256, 200);
             poseStack.popPose();
         }
     }
@@ -239,14 +165,8 @@ public class JournalBookmarkScreen extends JournalScreen {
         int height = 64;
         int width = 109;
 
-        // If the player clicks the mouse while waiting for photo, force the photo to be taken.
-        if (JournalsClient.isTakingPhoto()) {
-            JournalsClient.forcePhotoTicks();
-            return true;
-        }
-
         // This adds a trigger area around the photo that allows the player to click and show a bigger version.
-        if (hasPhoto && registeredPhotoTexture != null) {
+        if (registeredPhotoTexture != null) {
             if (x > (midX - left) && x < midX - left + width && y > top && y < top + height) {
                 minecraft.setScreen(new JournalPhotoScreen(bookmark));
                 return true;
@@ -264,68 +184,58 @@ public class JournalBookmarkScreen extends JournalScreen {
         JournalsClient.sendOpenJournal(Journals.Page.BOOKMARKS);
     }
 
-    protected void save() {
-        JournalsClient.sendUpdateBookmark(bookmark);
+    @Override
+    public void onClose() {
+        Journals2Client.tracker.setPage(Journals.Page.BOOKMARKS);
+        super.onClose();
     }
 
-    protected void delete() {
-        JournalsClient.sendDeleteBookmark(bookmark);
-        JournalsClient.sendOpenJournal(Journals.Page.BOOKMARKS);
+    protected void save() {
+        BookmarksClient.sendUpdateBookmark(bookmark);
+    }
+
+    protected void remove() {
+        BookmarksClient.sendRemoveBookmark(bookmark);
     }
 
     protected void chooseIcon() {
-        save(); // save progress before changing screen
-        if (minecraft != null) {
-            minecraft.setScreen(new JournalChooseIconScreen(bookmark));
-        }
+        minecraft.setScreen(new JournalChooseIconScreen(bookmark));
     }
 
     protected void makeMap() {
-        JournalsClient.sendMakeMap(bookmark);
-        if (minecraft != null) {
-            minecraft.setScreen(null);
-        }
+        save();
+        Journals2Client.sendMakeMap(bookmark);
+        minecraft.setScreen(null);
     }
 
     protected void takePhoto() {
-        if (minecraft != null && minecraft.player != null) {
-            minecraft.setScreen(null);
-            minecraft.options.hideGui = true;
-            JournalsClient.bookmarkBeingPhotographed = bookmark;
-            JournalsClient.photoTicks = 1;
-        }
-    }
-
-    @Nullable
-    protected File getPhoto() {
-        if (minecraft == null) return null;
-
-        File screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
-        return new File(screenshotsDirectory, bookmark.getId() + ".png");
-    }
-
-    private boolean hasPhoto() {
-        File photo = getPhoto();
-        return photo != null && photo.exists();
+        Journals2Client.photo.setBookmark(bookmark);
     }
 
     protected boolean playerCanMakeMap() {
-        if (minecraft != null && minecraft.player != null && DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
-            return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
-        }
-
-        return false;
+        return DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())
+            && minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
     }
 
     protected boolean playerIsNearBookmark() {
-        if (minecraft != null && minecraft.player != null && DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) {
-            return WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
-        }
-
-        return false;
+        return DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())
+            && WorldHelper.getDistanceSquared(minecraft.player.blockPosition(), bookmark.getBlockPos()) < minPhotoDistance;
     }
 
-    private void nameFieldResponder(String text) {
-        bookmark.setName(text);
+    private void initEditBox() {
+        nameEditBox = new EditBox(font, midX - 65, 40, 130, 12, new TextComponent("NameField"));
+        nameEditBox.changeFocus(true);
+        nameEditBox.setCanLoseFocus(false);
+        nameEditBox.setTextColor(-1);
+        nameEditBox.setTextColorUneditable(-1);
+        nameEditBox.setBordered(true);
+        nameEditBox.setMaxLength(maxNameLength);
+        nameEditBox.setResponder(text -> bookmark.setName(text));
+        nameEditBox.setValue(name);
+        nameEditBox.setEditable(true);
+
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        children.add(nameEditBox);
+        setFocused(nameEditBox);
     }
 }

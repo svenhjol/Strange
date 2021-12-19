@@ -10,6 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
@@ -21,10 +22,9 @@ import svenhjol.strange.module.knowledge2.branch.StructureBranch;
 
 @ClientModule(module = Knowledge2.class)
 public class Knowledge2Client extends CharmModule {
-    public static long SEED;
-    public static BiomeBranch biomes;
-    public static DimensionBranch dimensions;
-    public static StructureBranch structures;
+    public static @Nullable BiomeBranch biomes;
+    public static @Nullable DimensionBranch dimensions;
+    public static @Nullable StructureBranch structures;
 
     @Override
     public void runWhenEnabled() {
@@ -38,8 +38,8 @@ public class Knowledge2Client extends CharmModule {
     private void handleSyncSeed(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         long seed = buffer.readLong();
         client.execute(() -> {
-            SEED = seed;
-            LogHelper.debug(getClass(), "Received seed " + SEED + " from server.");
+            Knowledge2.SEED = seed;
+            LogHelper.debug(getClass(), "Received seed " + seed + " from server.");
         });
     }
 

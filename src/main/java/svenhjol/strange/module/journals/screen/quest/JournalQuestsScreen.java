@@ -34,7 +34,6 @@ public class JournalQuestsScreen extends JournalScreen {
     protected void init() {
         super.init();
 
-        player = ClientHelper.getPlayer().orElseThrow();
         QuestsClient.getQuestData().ifPresent(quests -> {
             quests.eachPlayerQuest(player, q -> q.update(player));
         });
@@ -43,7 +42,7 @@ public class JournalQuestsScreen extends JournalScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
-        JournalViewer.viewedPage(Journals.Page.QUESTS, lastPage);
+        JournalViewer.viewedPage(Journals.Page.QUESTS, offset);
 
         int buttonWidth = 180;
         int buttonHeight = 20;
@@ -78,14 +77,8 @@ public class JournalQuestsScreen extends JournalScreen {
             quests.eachPlayerQuest(player, questList::add);
         });
 
-        paginator(poseStack, questList, renderItem, getLabelForNoItem(), !hasRenderedButtons);
+//        renderPaginator(poseStack, questList, renderItem, getLabelForNoItem(), !hasRenderedButtons);
         hasRenderedButtons = true;
-    }
-
-    @Override
-    protected void redraw() {
-        super.redraw();
-        hasRenderedButtons = false;
     }
 
     protected Supplier<Component> getLabelForNoItem() {

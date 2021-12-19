@@ -8,6 +8,8 @@ import svenhjol.strange.module.runes.exception.RuneStringException;
 import java.util.*;
 
 public class RuneHelper {
+    public static final char UNKNOWN_CHAR = '?';
+
     /**
      * Fetches an RNG based on the seed of the loaded overworld or a fresh one if the seed isn't set.
      */
@@ -46,18 +48,19 @@ public class RuneHelper {
     /**
      * Generate a set of unique runes within a given branch.
      * The branch's start rune will be prepended to the string.
-     * There is a tiiiiiny and unrealistic chance that this method produces a non-unique set of runes.
+     * There is a tiny and unrealistic chance that this method produces a non-unique set of runes.
      */
     public static String uniqueRunes(RuneBranch<?, ?> branch, Random random, float difficulty, int minLength, int maxLength) {
         boolean hasUnique = false;
         String runes = "";
 
         for (int tries = 0; tries < 20; tries++) {
-            random = new Random();
             runes = randomRunes(random, difficulty + (tries * 0.05F), minLength, maxLength);
 
             hasUnique = !branch.contains(branch.getStartRune() + runes);
             if (hasUnique) break;
+
+            random = new Random();
         }
 
         if (!hasUnique || runes.isEmpty()) {
@@ -65,6 +68,26 @@ public class RuneHelper {
         }
 
         return branch.getStartRune() + runes;
+    }
+
+    /**
+     * Converts each character of an input string according to a list of known char ints.
+     * If the character is known, it is unmodified.  If not known, it is converted to a "?".
+     * Example: an input of "abcdef" with a known list of (0, 2, 3) would output "a?cd??".
+     */
+    public static String revealRunes(String input, List<Integer> known) {
+        StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            int chr = input.charAt(i) - Runes.FIRST_RUNE;
+            if (known.contains(chr)) {
+                out.append(input.charAt(i));
+            } else {
+                out.append(UNKNOWN_CHAR);
+            }
+        }
+
+        return out.toString();
     }
 
     /**

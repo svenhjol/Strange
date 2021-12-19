@@ -2,26 +2,32 @@ package svenhjol.strange.module.journals.screen.knowledge;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.knowledge2.Knowledge2Client;
+import svenhjol.strange.module.runes.RuneBranch;
+
+import javax.annotation.Nullable;
 
 public class JournalStructureScreen extends JournalResourceScreen {
     public JournalStructureScreen(ResourceLocation structure) {
         super(structure);
-
-        // add a back button at the bottom
-        this.bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> structures(), GO_BACK));
     }
 
     @Override
-    public KnowledgeBranch<?, ResourceLocation> getBranch(KnowledgeData knowledge) {
-        return knowledge.structures;
+    protected void init() {
+        super.init();
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> structures(), GO_BACK));
+    }
+
+    @Nullable
+    @Override
+    public RuneBranch<?, ResourceLocation> getBranch() {
+        return Knowledge2Client.structures;
     }
 
     @Override
     protected void setViewedPage() {
-        JournalViewer.viewedResource(Journals.Page.STRUCTURE, resource);
+        Journals2Client.tracker.setResource(Journals.Page.STRUCTURE, resource);
     }
 }

@@ -1,13 +1,13 @@
 package svenhjol.strange.module.journals.screen.bookmark;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.world.item.ItemStack;
-import svenhjol.strange.module.journals.JournalBookmark;
+import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.screen.JournalScreen;
 
-public class JournalChooseIconScreen extends JournalScreen {
-    protected JournalBookmark bookmark;
+public class JournalChooseIconScreen extends JournalBaseBookmarkScreen {
+    protected Bookmark bookmark;
     protected ItemStack selected;
 
     protected int perRow;
@@ -17,7 +17,7 @@ public class JournalChooseIconScreen extends JournalScreen {
     protected int left;
     protected int top;
 
-    public JournalChooseIconScreen(JournalBookmark bookmark) {
+    public JournalChooseIconScreen(Bookmark bookmark) {
         super(CHOOSE_ICON);
 
         this.bookmark = bookmark;
@@ -40,8 +40,9 @@ public class JournalChooseIconScreen extends JournalScreen {
                 if (index >= Journals.BOOKMARK_ICONS.size()) continue;
                 ItemStack stack = new ItemStack(Journals.BOOKMARK_ICONS.get(index));
 
-                if (ItemStack.isSame(bookmark.getIcon(), stack))
+                if (ItemStack.isSame(getBookmarkIconItem(bookmark), stack)) {
                     fill(poseStack, midX + left + (x * xOffset), top + (y * yOffset), midX + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
+                }
 
                 itemRenderer.renderGuiItem(stack, midX + left + (x * xOffset), top + (y * yOffset));
                 index++;
@@ -66,21 +67,27 @@ public class JournalChooseIconScreen extends JournalScreen {
         }
 
         if (selected != null) {
-            saveAndGoBack();
+            back();
             return true;
         }
 
         return super.mouseClicked(x, y, button);
     }
 
-    protected void saveAndGoBack() {
-        // TODO: save here
-        if (selected != null) {
-            bookmark.setIcon(selected);
-        }
+    protected void back() {
+        if (minecraft == null || selected == null) return;
 
-        if (minecraft != null) {
-            minecraft.setScreen(new JournalBookmarkScreen(bookmark));
-        }
+        bookmark.setIcon(DefaultedRegistry.ITEM.getKey(selected.getItem()));
+        minecraft.setScreen(new JournalBookmarkScreen(bookmark));
+    }
+
+    /**
+     * We have to override this so that clicking close goes back to the bookmark screen, otherwise state could be lost.
+     */
+    @Override
+    public void onClose() {
+        if (minecraft == null) return;
+
+        minecraft.setScreen(new JournalBookmarkScreen(bookmark));
     }
 }

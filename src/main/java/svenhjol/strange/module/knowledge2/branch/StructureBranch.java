@@ -18,7 +18,7 @@ public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLoc
     public static final String NAME = "Structures";
 
     @Override
-    public void register(StructureFeature<?> structureFeature) {
+    public ResourceLocation register(StructureFeature<?> structureFeature) {
         ResourceLocation id = Registry.STRUCTURE_FEATURE.getKey(structureFeature);
 
         if (id == null) {
@@ -27,6 +27,8 @@ public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLoc
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
         add(runes, id);
+
+        return id;
     }
 
     @Override

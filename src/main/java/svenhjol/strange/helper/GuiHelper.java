@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class GuiHelper {
-    public static void renderButtons(Screen screen, int screenWidth, Font font, List<ButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
+    public static void addButtons(Screen screen, int screenWidth, Font font, List<ButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
         for (GuiHelper.ButtonDefinition b : buttons) {
             Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> screen.renderTooltip(p, font.split(b.tooltip, Math.max(screenWidth / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
             screen.addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, b.name, b.action, tooltip));
@@ -27,7 +27,7 @@ public class GuiHelper {
         }
     }
 
-    public static void renderImageButtons(Screen screen, int screenWidth, Font font, List<ImageButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
+    public static void addImageButtons(Screen screen, int screenWidth, Font font, List<ImageButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
         for (GuiHelper.ImageButtonDefinition b : buttons) {
             Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> screen.renderTooltip(p, font.split(b.tooltip, Math.max(screenWidth / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
             screen.addRenderableWidget(new ImageButton(x, y, buttonWidth, buttonHeight, b.texX, b.texY, b.texHoverOffset, b.texture, 256, 256, b.action, tooltip, TextComponent.EMPTY));

@@ -53,6 +53,7 @@ accessible field net/minecraft/world/level/levelgen/feature/structures/Structure
 accessible field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
 accessible field net/minecraft/world/level/levelgen/StructureSettings structureConfig Ljava/util/Map;
 accessible field net/minecraft/world/level/levelgen/StructureSettings configuredStructures Lcom/google/common/collect/ImmutableMap;
+accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_ENTITY_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType GLINT_DIRECT Lnet/minecraft/client/renderer/RenderType;
@@ -80,3 +81,4 @@ mutable    field net/minecraft/world/level/levelgen/feature/structures/Structure
 mutable    field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
 mutable    field net/minecraft/world/level/levelgen/StructureSettings structureConfig Ljava/util/Map;
 mutable    field net/minecraft/world/level/levelgen/StructureSettings configuredStructures Lcom/google/common/collect/ImmutableMap;
+mutable    field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;

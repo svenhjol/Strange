@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,13 +17,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalHelper;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.knowledge.KnowledgeClient;
-import svenhjol.strange.module.runestones.helper.RunestoneHelper;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
+import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -166,8 +170,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     }
 
     protected void renderRunes(PoseStack poseStack) {
-        KnowledgeClient.renderRunesString(
-            minecraft,
+        renderRunesString(
             poseStack,
             runes,
             midX - 48,
@@ -176,8 +179,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
             13,
             10,
             4,
-            knownColor,
-            unknownColor,
             false
         );
     }
@@ -190,5 +191,42 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     private void syncClickedButton(int r) {
         ClientHelper.getClient().ifPresent(mc -> mc.gameMode.handleInventoryButtonClick((this.menu).containerId, r));
+    }
+
+    private void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
+        if (minecraft == null) return;
+
+        // Convert the input string according to the runes that the player knows.
+        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
+
+        int index = 0;
+
+        for (int y = 0; y < yMax; y++) {
+            for (int x = 0; x < xMax; x++) {
+                if (index < revealed.length()) {
+                    Component rune;
+                    int color;
+
+                    String s = String.valueOf(revealed.charAt(index));
+                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
+                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                        color = unknownColor;
+                    } else {
+                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
+                        color = knownColor;
+                    }
+
+                    int xo = left + (x * xOffset);
+                    int yo = top + (y * yOffset);
+
+                    if (withShadow) {
+                        minecraft.font.drawShadow(poseStack, rune, xo, yo, color);
+                    } else {
+                        minecraft.font.draw(poseStack, rune, xo, yo, color);
+                    }
+                }
+                index++;
+            }
+        }
     }
 }

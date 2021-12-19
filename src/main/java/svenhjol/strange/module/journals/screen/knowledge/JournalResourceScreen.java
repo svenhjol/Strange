@@ -5,12 +5,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.journals.screen.JournalScreen;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.knowledge.KnowledgeClient;
-import svenhjol.strange.module.knowledge.KnowledgeData;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.runes.RuneBranch;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 public abstract class JournalResourceScreen extends JournalScreen {
     protected final ResourceLocation resource;
@@ -18,32 +15,28 @@ public abstract class JournalResourceScreen extends JournalScreen {
     public JournalResourceScreen(ResourceLocation resource) {
         super(new TextComponent(StringHelper.snakeToPretty(resource.getPath(), true)));
         this.resource = resource;
+        setViewedPage();
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
-        setViewedPage();
 
-        if (journal == null) {
-            return;
-        }
+        RuneBranch<?, ResourceLocation> branch = getBranch();
+        if (branch == null) return;
 
-        KnowledgeClient.getKnowledgeData().ifPresent(knowledge -> {
-            Optional<String> runes = getBranch(knowledge).get(resource);
-            if (runes.isEmpty()) return;
-            String knownRunes = KnowledgeHelper.convertRunesWithLearnedRunes(runes.get(), journal.getLearnedRunes());
+        var runes = branch.get(resource);
 
-            int left = midX - 74;
-            int top = 80;
-            int xOffset = 13;
-            int yOffset = 15;
+        int left = midX - 74;
+        int top = 80;
+        int xOffset = 13;
+        int yOffset = 15;
 
-            KnowledgeClient.renderRunesString(minecraft, poseStack, knownRunes, left, top, xOffset, yOffset, 12, 3, knownColor, unknownColor, false);
-        });
+        renderRunesString(poseStack, runes, left, top, xOffset, yOffset, 12, 3, false);
     }
 
-    public abstract KnowledgeBranch<?, ResourceLocation> getBranch(KnowledgeData knowledge);
+    @Nullable
+    public abstract RuneBranch<?, ResourceLocation> getBranch();
 
     protected void setViewedPage() {
         // no op

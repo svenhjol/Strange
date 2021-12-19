@@ -1,14 +1,11 @@
 package svenhjol.strange.module.journals.screen.knowledge;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import svenhjol.charm.helper.ClientHelper;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalViewer;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2Client;
+import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
+import svenhjol.strange.module.journals2.paginator.StructurePaginator;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class JournalStructuresScreen extends JournalResourcesScreen {
     public JournalStructuresScreen() {
@@ -16,22 +13,13 @@ public class JournalStructuresScreen extends JournalResourcesScreen {
     }
 
     @Override
-    protected List<ResourceLocation> getResources(JournalData journal) {
-        return journal.getLearnedStructures();
-    }
-
-    @Override
-    protected Supplier<Component> getLabelForNoItem() {
-        return () -> NO_STRUCTURES;
-    }
-
-    @Override
-    protected void select(ResourceLocation structure) {
-        ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalStructureScreen(structure)));
+    protected ResourcePaginator getPaginator() {
+        var journal = Journals2Client.journal;
+        return new StructurePaginator(journal != null ? journal.getLearnedStructures() : List.of());
     }
 
     @Override
     protected void setViewedPage() {
-        JournalViewer.viewedPage(Journals.Page.STRUCTURES, lastPage);
+        Journals2Client.tracker.setPage(Journals.Page.STRUCTURES, offset);
     }
 }

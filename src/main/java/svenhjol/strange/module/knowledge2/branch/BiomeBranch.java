@@ -19,7 +19,7 @@ public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
 
 
     @Override
-    public void register(Biome biome) {
+    public ResourceLocation register(Biome biome) {
         ResourceLocation id = BuiltinRegistries.BIOME.getKey(biome);
 
         if (id == null) {
@@ -28,6 +28,8 @@ public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
         add(runes, id);
+
+        return id;
     }
 
     @Override

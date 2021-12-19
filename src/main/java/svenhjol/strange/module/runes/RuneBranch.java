@@ -66,7 +66,7 @@ public abstract class RuneBranch<R, V> {
         mainTag.put(getBranchName(), tag);
     }
 
-    public abstract void register(R type);
+    public abstract V register(R type);
 
     public abstract Tag getValueTag(V value);
 

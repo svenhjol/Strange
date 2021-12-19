@@ -67,6 +67,14 @@ public class Bookmark {
         return tag;
     }
 
+    /**
+     * Required when editing so we don't change an existing bookmark by reference.
+     */
+    public Bookmark copy() {
+        var tag = save();
+        return load(tag);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -114,7 +122,7 @@ public class Bookmark {
     private void setRunesFromBlockPos() {
         Bookmarks.getBookmarks().ifPresent(bookmarks -> {
             Random random = new Random(pos.asLong());
-            runes = RuneHelper.uniqueRunes(bookmarks.bookmarks, random, 0.75F, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
+            runes = RuneHelper.uniqueRunes(bookmarks.bookmarks, random, 0.5F, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
         });
     }
 
