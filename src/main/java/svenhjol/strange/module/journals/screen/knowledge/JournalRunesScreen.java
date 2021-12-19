@@ -9,7 +9,6 @@ import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.runes.Runes;
 
 import java.util.List;
 
@@ -37,29 +36,28 @@ public class JournalRunesScreen extends JournalScreen {
         int yOffset = 20;
 
         List<Integer> learnedRunes = Journal2Helper.getLearnedRunes();
-        StringBuilder page1 = new StringBuilder();
-        StringBuilder page2 = new StringBuilder();
+        List<StringBuilder> pages = List.of(
+            new StringBuilder(),
+            new StringBuilder()
+        );
 
-        int perPage = Runes.NUM_RUNES / 2;
+        boolean render = false;
+        for (StringBuilder page : pages) {
+            for (int i = 0; i < Knowledge.NUM_RUNES; i++) {
+                if (i % 2 == 0) render = !render;
 
-        for (int i = 0; i < perPage; i++) {
-            if (learnedRunes.contains(i)) {
-                page1.append((char)(i + 97));
-            } else {
-                page1.append("?");
+                if (render) {
+                    if (learnedRunes.contains(i)) {
+                        page.append((char) (i + 97));
+                    } else {
+                        page.append("?");
+                    }
+                }
             }
         }
 
-        for (int i = perPage; i < Knowledge.NUM_RUNES; i++) {
-            if (learnedRunes.contains(i)) {
-                page2.append((char)(i + 97));
-            } else {
-                page2.append("?");
-            }
-        }
-
-        renderRunesString(poseStack, page1.toString(), page1Left, top, xOffset, yOffset, 4, 4, false);
-        renderRunesString(poseStack, page2.toString(), page2Left, top, xOffset, yOffset, 4, 4, false);
+        renderRunesString(poseStack, pages.get(0).toString(), page1Left, top, xOffset, yOffset, 2, 7, false);
+        renderRunesString(poseStack, pages.get(1).toString(), page2Left, top, xOffset, yOffset, 2, 7, false);
     }
 
     @Override
