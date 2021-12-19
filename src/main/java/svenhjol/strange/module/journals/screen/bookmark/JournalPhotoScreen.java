@@ -5,10 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TextComponent;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.photo.BookmarkPhoto;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalPhotoScreen extends JournalBaseBookmarkScreen {
+public class JournalPhotoScreen extends JournalScreen {
     protected Bookmark bookmark;
+    protected BookmarkPhoto photo;
 
     public JournalPhotoScreen(Bookmark bookmark) {
         super(new TextComponent(bookmark.getName()));
@@ -18,20 +21,17 @@ public class JournalPhotoScreen extends JournalBaseBookmarkScreen {
     @Override
     protected void init() {
         super.init();
-        initPhoto();
+        photo = new BookmarkPhoto(minecraft, bookmark);
 
         bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(), GO_BACK));
     }
 
     @Override
-    protected String getPhotoFilename() {
-        return "strange_" + bookmark.getRunes() + ".png";
-    }
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        super.render(poseStack, mouseX, mouseY, delta);
 
-    @Override
-    protected void renderPhoto(PoseStack poseStack) {
-        if (registeredPhotoTexture != null) {
-            RenderSystem.setShaderTexture(0, registeredPhotoTexture);
+        if (photo.isValid()) {
+            RenderSystem.setShaderTexture(0, photo.getTexture());
             poseStack.pushPose();
             poseStack.scale(0.825F, 0.66F, 0.825F);
             blit(poseStack, ((int)(midX / 0.825F) - 128), 65, 0, 0, 256, 200);
@@ -45,7 +45,7 @@ public class JournalPhotoScreen extends JournalBaseBookmarkScreen {
      */
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (hasPhoto() && registeredPhotoTexture != null) {
+        if (photo.isValid()) {
             if (x > (midX - 107) && x < midX + 107
                 && y > 42 && y < 175) {
                 minecraft.setScreen(new JournalBookmarkScreen(bookmark));

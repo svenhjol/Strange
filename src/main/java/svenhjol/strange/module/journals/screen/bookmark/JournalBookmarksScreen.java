@@ -43,7 +43,7 @@ public class JournalBookmarksScreen extends JournalScreen {
             init(minecraft, width, height);
         });
 
-        bottomButtons.add(new ButtonDefinition(b -> add(), ADD_BOOKMARK));
+        bottomButtons.add(0, new ButtonDefinition(b -> add(), ADD_BOOKMARK));
     }
 
     @Override

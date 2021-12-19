@@ -5,8 +5,9 @@ import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 
-public class JournalChooseIconScreen extends JournalBaseBookmarkScreen {
+public class JournalChooseIconScreen extends JournalScreen {
     protected Bookmark bookmark;
     protected ItemStack selected;
 

@@ -18,6 +18,8 @@ import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.photo.BookmarkPhoto;
 import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
 
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
+public class JournalBookmarkScreen extends JournalScreen {
     protected String name;
     protected Component dimensionName;
     protected EditBox nameEditBox;
@@ -35,9 +37,8 @@ public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
     protected int minPhotoDistance;
     protected int buttonWidth;
     protected int buttonHeight;
-    protected boolean hasInitializedUpdateButtons = false;
-    protected boolean hasRenderedUpdateButtons = false;
     protected List<ButtonDefinition> pageButtons = new ArrayList<>();
+    protected BookmarkPhoto photo;
 
     public JournalBookmarkScreen(@Nonnull Bookmark bookmark) {
         super(new TextComponent(bookmark.getName()));
@@ -59,7 +60,8 @@ public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
         super.init();
 
         initEditBox();
-        initPhoto();
+
+        photo = new BookmarkPhoto(minecraft, bookmark);
 
         pageButtons = new ArrayList<>();
 
@@ -85,15 +87,10 @@ public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
     }
 
     @Override
-    protected String getPhotoFilename() {
-        return "strange_" + bookmark.getRunes() + ".png";
-    }
-
-    @Override
     protected void firstRender(PoseStack poseStack) {
         super.firstRender(poseStack);
 
-        int left = hasPhoto() ? midX + 5 : midX - 50;
+        int left = photo.isValid() ? midX + 5 : midX - 50;
         int top = 60;
         int yOffset = 22;
 
@@ -145,8 +142,8 @@ public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
     }
 
     protected void renderPhoto(PoseStack poseStack) {
-        if (registeredPhotoTexture != null) {
-            RenderSystem.setShaderTexture(0, registeredPhotoTexture);
+        if (photo.isValid()) {
+            RenderSystem.setShaderTexture(0, photo.getTexture());
             poseStack.pushPose();
             poseStack.scale(0.425F, 0.32F, 0.425F);
             blit(poseStack, ((int)(midX / 0.425F) - 265), 187, 0, 0, 256, 200);
@@ -166,7 +163,7 @@ public class JournalBookmarkScreen extends JournalBaseBookmarkScreen {
         int width = 109;
 
         // This adds a trigger area around the photo that allows the player to click and show a bigger version.
-        if (registeredPhotoTexture != null) {
+        if (photo.isValid()) {
             if (x > (midX - left) && x < midX - left + width && y > top && y < top + height) {
                 minecraft.setScreen(new JournalPhotoScreen(bookmark));
                 return true;
