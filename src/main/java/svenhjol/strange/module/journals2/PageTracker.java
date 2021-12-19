@@ -3,7 +3,6 @@ package svenhjol.strange.module.journals2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.Journals.Page;
 import svenhjol.strange.module.journals.screen.JournalHomeScreen;
@@ -17,6 +16,7 @@ import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.quests.QuestsClient;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
@@ -87,6 +87,7 @@ public class PageTracker {
                 case STRUCTURES -> screen = new JournalStructuresScreen();
                 case QUESTS -> screen = new JournalQuestsScreen();
                 case KNOWLEDGE -> screen = new JournalKnowledgeScreen();
+                case RUNES -> screen = new JournalRunesScreen();
                 default -> screen = new JournalHomeScreen();
             }
 
