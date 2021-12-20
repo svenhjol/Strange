@@ -15,11 +15,9 @@ import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
 import svenhjol.strange.module.runestones.Runestones;
-import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
-import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
+import svenhjol.strange.module.runestones.RunestoneMaterial;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,13 +54,8 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         int radius = random.nextInt(maxRadius - minRadius) + minRadius;
-        IRunestoneMaterial material = null;
+        RunestoneMaterial material = null;
         List<BlockState> blocks = new ArrayList<>();
-
-        if (Knowledge.getKnowledgeData().isEmpty()) {
-            LogHelper.warn(this.getClass(), "Could not load KnowledgeData, giving up");
-            return;
-        }
 
         switch (stoneCircleType) {
             case OVERWORLD -> {

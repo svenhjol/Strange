@@ -30,8 +30,9 @@ import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeParticles;
-import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2;
+import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runes.RuneHelper;
 
 import java.util.Random;
 
@@ -179,11 +180,14 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         lectern.getTome().save(tomeTag);
 
         // try and learn this if not already known
-        Journals.getJournalData(player).ifPresent(journal -> {
+        Journals2.getJournal(player).ifPresent(journal -> {
             String runes = RunicTomeItem.getRunes(lectern.getTome());
             if (!runes.isEmpty()) {
-                JournalHelper.tryLearnPhrase(runes, journal);
-                Journals.sendSyncJournal(player);
+                RuneBranch<?, ?> branch = RuneHelper.branch(runes);
+                if (branch == null) return;
+
+                journal.learn(branch, runes);
+                Journals2.sendSyncJournal(player);
             }
         });
 

@@ -73,7 +73,7 @@ public abstract class RuneBranch<R, V> {
     public abstract char getStartRune();
 
     @Nullable
-    public abstract String getValueName(V value);
+    public abstract String getValueName(String runes);
 
     public abstract String getBranchName();
 }

@@ -122,7 +122,7 @@ public class Bookmark {
     private void setRunesFromBlockPos() {
         Bookmarks.getBookmarks().ifPresent(bookmarks -> {
             Random random = new Random(pos.asLong());
-            runes = RuneHelper.uniqueRunes(bookmarks.bookmarks, random, 0.5F, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
+            runes = RuneHelper.uniqueRunes(bookmarks.branch, random, 0.5F, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
         });
     }
 

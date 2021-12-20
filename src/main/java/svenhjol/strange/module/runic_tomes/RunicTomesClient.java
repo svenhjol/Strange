@@ -16,7 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.branches.*;
+import svenhjol.strange.module.bookmarks.BookmarkBranch;
+import svenhjol.strange.module.discoveries.DiscoveryBranch;
+import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge2.branch.StructureBranch;
 
 @ClientModule(module = RunicTomes.class)
 public class RunicTomesClient extends CharmModule {
@@ -37,12 +41,11 @@ public class RunicTomesClient extends CharmModule {
     private float handleItemPredicate(ItemStack stack, ClientLevel level, LivingEntity entity, int i) {
         String tomeBranchName = RunicTomeItem.getBranch(stack);
         return switch (tomeBranchName) {
-            case BiomesBranch.NAME -> 0.1F;
-            case BookmarksBranch.NAME -> 0.2F;
-            case DimensionsBranch.NAME -> 0.3F;
-            case DiscoveriesBranch.NAME -> 0.4F;
-            case SpecialsBranch.NAME -> 0.5F;
-            case StructuresBranch.NAME -> 0.6F;
+            case BiomeBranch.NAME -> 0.1F;
+            case BookmarkBranch.NAME -> 0.2F;
+            case DimensionBranch.NAME -> 0.3F;
+            case DiscoveryBranch.NAME -> 0.4F;
+            case StructureBranch.NAME -> 0.5F;
             default -> 0.0F;
         };
     }

@@ -14,10 +14,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.journals2.Journals2;
+import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runes.RuneHelper;
+import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 
 import java.util.UUID;
@@ -183,8 +183,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
         if (i == DELETE) {
             runes = runes.substring(0, runes.length() - 1);
-        } else if (runes.length() <= Knowledge.MAX_LENGTH) {
-            runes += String.valueOf((char)(i + Knowledge.ALPHABET_START));
+        } else if (runes.length() <= Runes.MAX_PHRASE_LENGTH) {
+            runes += String.valueOf((char)(i + Runes.FIRST_RUNE));
         }
 
         WritingDesks.writtenRunes.put(uuid, runes);
@@ -195,7 +195,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
     public void checkAndUpdateResult(ServerPlayer player) {
         String runes = WritingDesks.writtenRunes.get(player.getUUID());
-        boolean validRuneString = KnowledgeHelper.isValidRuneString(runes);
+        boolean validRuneString = RuneHelper.valid(runes);
         boolean hasBook = !inputSlots.getItem(0).isEmpty();
         boolean hasInk = !inputSlots.getItem(1).isEmpty();
 
@@ -204,9 +204,12 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             // It's possible that the player found out these runes through other means.
             // If it's a valid string, then add this to the player's journal so
             // that it's available to them next time they want to write a tome.
-            Journals.getJournalData(player).ifPresent(journal -> {
-                JournalHelper.tryLearnPhrase(runes, journal);
-                Journals.sendSyncJournal(player);
+            Journals2.getJournal(player).ifPresent(journal -> {
+                RuneBranch<?, ?> branch = RuneHelper.branch(runes);
+                if (branch == null) return;
+
+                journal.learn(branch, runes);
+                Journals2.sendSyncJournal(player);
             });
 
             ItemStack tome = RunicTomeItem.create(runes, player);

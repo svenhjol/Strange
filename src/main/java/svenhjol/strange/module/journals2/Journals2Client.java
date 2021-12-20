@@ -64,7 +64,11 @@ public class Journals2Client extends CharmModule {
     }
 
     private void handleOpenPage(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        // TODO
+        var page = buffer.readEnum(PageTracker.Page.class);
+
+        client.execute(() -> {
+            client.setScreen(tracker.getScreen(page));
+        });
     }
 
     private void handlePlayerJoin(Entity entity, ClientLevel level) {
@@ -99,6 +103,6 @@ public class Journals2Client extends CharmModule {
     }
 
     public static void sendMakeMap(Bookmark bookmark) {
-        // TODO
+        NetworkHelper.sendPacketToServer(JournalMessages.SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.save()));
     }
 }

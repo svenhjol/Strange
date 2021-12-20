@@ -10,9 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
-
-import java.util.Optional;
+import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runes.RuneHelper;
 
 public class RunicTomeItem extends CharmItem {
     private static final String TAG_RUNES = "Runes";
@@ -39,13 +38,21 @@ public class RunicTomeItem extends CharmItem {
             setAuthor(tome, player.getName().getString());
         }
 
-        KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
-            setBranch(tome, branch.getBranchName());
-            Optional<String> prettyName;
+        RuneBranch<?, ?> branch = RuneHelper.branch(runes);
+        if (branch != null) {
 
-            prettyName = branch.getPrettyName(runes);
-            prettyName.ifPresent(name -> tome.setHoverName(new TextComponent(name)));
-        });
+            // Set the branch name of this tome. Helps with item icon coloring.
+            tome.getOrCreateTag().putString(TAG_BRANCH, branch.getBranchName());
+
+            // Try and fetch the nice name of the location this tome points to.
+            // If found, set it as the title of the tome.
+            setBranch(tome, branch.getBranchName());
+            String prettyName = branch.getValueName(runes);
+
+            if (prettyName != null) {
+                tome.setHoverName(new TextComponent(prettyName));
+            }
+        }
 
         if (!tome.hasCustomHoverName()) {
             tome.setHoverName(DEFAULT_NAME);
@@ -68,10 +75,6 @@ public class RunicTomeItem extends CharmItem {
 
     public static void setRunes(ItemStack tome, String runes) {
         tome.getOrCreateTag().putString(TAG_RUNES, runes);
-
-        KnowledgeBranch.getByStartRune(runes.charAt(0)).ifPresent(branch -> {
-            tome.getOrCreateTag().putString(TAG_BRANCH, branch.getBranchName());
-        });
     }
 
     public static void setAuthor(ItemStack tome, String author) {

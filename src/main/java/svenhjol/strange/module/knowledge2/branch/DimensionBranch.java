@@ -41,8 +41,9 @@ public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
     }
 
     @Override
-    public @Nullable String getValueName(ResourceLocation value) {
-        return StringHelper.snakeToPretty(value.getPath());
+    public @Nullable String getValueName(String runes) {
+        var dimension = get(runes);
+        return dimension != null ? StringHelper.snakeToPretty(dimension.getPath()) : null;
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
@@ -21,12 +22,10 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
-import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
 import svenhjol.strange.module.runestones.definition.ItemDefinition;
-import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
-import svenhjol.strange.module.runestones.enums.RunestoneMaterial;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,21 +44,20 @@ public class Runestones extends CharmModule {
     public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
     public static final String UNKNOWN_CLUE = "unknown";
 
-    public static final ResourceLocation MSG_CLIENT_SET_DESTINATION = new ResourceLocation(Strange.MOD_ID, "client_set_destination");
-
-    public static Map<IRunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
+    public static Map<RunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
     public static RunestoneDustItem RUNESTONE_DUST;
     public static MenuType<RunestoneMenu> MENU;
 
     public static Map<ResourceLocation, LinkedList<ResourceLocation>> DESTINATIONS = new HashMap<>();
-    public static Map<ResourceLocation, Map<Knowledge.Tier, List<Item>>> ITEMS = new TreeMap<>();
+    public static Map<ResourceLocation, Map<Tier, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
+    public static List<Item> DEFAULT_ITEMS;
 
     @Override
     public void register() {
-        for (IRunestoneMaterial material : RunestoneMaterial.getTypes()) {
+        for (var material : RunestoneMaterial.getTypes()) {
             RUNESTONE_BLOCKS.put(material, new RunestoneBlock(this, material));
         }
 
@@ -104,7 +102,7 @@ public class Runestones extends CharmModule {
                 try {
                     ItemDefinition definition = ItemDefinition.deserialize(manager.getResource(resource));
 
-                    for (Knowledge.Tier tier : Knowledge.Tier.values()) {
+                    for (Tier tier : Tier.values()) {
                         List<Item> items = definition.get(tier).stream()
                             .map(ResourceLocation::new)
                             .map(Registry.ITEM::get)
@@ -191,5 +189,17 @@ public class Runestones extends CharmModule {
 
         // Allow other modules to add their custom destinations
         AddRunestoneDestinationCallback.EVENT.invoker().interact(level, DESTINATIONS.get(dimension));
+    }
+
+    static {
+        DEFAULT_ITEMS = List.of(
+            Items.ENDER_PEARL,
+            Items.OBSIDIAN,
+            Items.IRON_BLOCK,
+            Items.GOLD_BLOCK,
+            Items.DIAMOND,
+            Items.GOLD_INGOT,
+            Items.IRON_INGOT
+        );
     }
 }

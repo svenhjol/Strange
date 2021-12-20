@@ -1,6 +1,5 @@
 package svenhjol.strange.module.runestones;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
@@ -20,21 +19,16 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.discoveries.DiscoveriesClient;
+import svenhjol.strange.module.discoveries.Discovery;
+import svenhjol.strange.module.journals2.Journal2Data;
+import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
-import svenhjol.strange.module.knowledge.types.Discovery;
 import svenhjol.strange.module.runes.RuneHelper;
-import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
+import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
@@ -47,7 +41,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private final int WRAP_AT = 14;
 
     private Random random;
-    private IRunestoneMaterial material;
+    private RunestoneMaterial material;
     private ResourceLocation texture;
     private NonNullList<ItemStack> items;
     private int itemRandomTicks = 0;
@@ -60,9 +54,6 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         super(menu, inventory, component);
         this.passEvents = false;
         this.random = new Random(menu.containerId);
-
-        // ask server to update the player journal
-        JournalsClient.sendSyncJournal();
     }
 
     @Override
@@ -72,10 +63,19 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         midX = width / 2;
         midY = height / 2;
 
-        activateButton = addRenderableWidget(new Button(midX - 45, midY + 94, 90, 20, ACTIVATE, b -> {
+        var button = new Button(midX - 45, midY + 94, 90, 20, ACTIVATE, b -> {
             syncClickedButton(1);
             onClose();
-        }));
+        });
+
+        // We need a reference to this Activate button so we can enable or
+        // disable it according to whether the menu slot has an item in it.
+        activateButton = addRenderableWidget(button);
+        activateButton.active = false;
+
+        if (material == null) {
+            material = menu.getMaterial();
+        }
     }
 
     @Override
@@ -83,30 +83,26 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
 
-        activateButton.active = menu.slots.get(0).hasItem();
-
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 
-        if (material == null) {
-            material = menu.getMaterial();
-        }
+        // Need an updated journal for the client. Until it's synchronised from the server just return early.
+        var journal = Journals2Client.journal;
+        if (journal == null) return;
 
-        getDestination().ifPresent(destination -> {
-            ClientHelper.getPlayer().flatMap(Journals::getJournalData).ifPresent(journal -> {
-                renderRunes(poseStack, destination);
-                renderLocationClue(poseStack, destination, journal);
-                renderItemClue(poseStack, mouseX, mouseY, destination, journal);
-            });
-        });
+        // Need to have a synchronised discovery for the runestone block that the player is looking at.
+        var discovery = DiscoveriesClient.interactedWithDiscovery;
+        if (discovery == null) return;
+
+        renderRunes(poseStack, discovery);
+        renderLocationClue(poseStack, discovery, journal);
+        renderItemClue(poseStack, mouseX, mouseY, discovery, journal);
+
+        activateButton.active = menu.slots.get(0).hasItem();
     }
 
     @Override
     protected void renderBg(PoseStack poseStack, float delta, int mouseX, int mouseY) {
-        if (minecraft == null || minecraft.player == null) {
-            return;
-        }
-
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, getBackgroundTexture());
         int x = (width - imageWidth) / 2;
@@ -133,75 +129,94 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         );
     }
 
-    protected void renderLocationClue(PoseStack poseStack, Discovery discovery, JournalData journal) {
+    protected void renderLocationClue(PoseStack poseStack, Discovery discovery, Journal2Data journal) {
         String name;
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(discovery.getRunes(), journal);
+        int left = midX - 76;
+        int top = midY - discovery.getRunes().length() > WRAP_AT ? 44 : 54;
+        var unknown = Journal2Helper.countUnknownRunes(discovery.getRunes(), journal);
 
-        if (numberOfUnknownRunes > 0 && numberOfUnknownRunes < Runestones.SHOW_TEXT_CLUE) {
-            String clue = RunestoneHelper.getClue(discovery.getId(), new Random(discovery.getSeed()));
+        if (unknown > 0 && unknown < Runestones.SHOW_TEXT_CLUE) {
+
+            // When the number of unknown runes is within a tolerance (SHOW_TEXT_CLUE) then
+            // show the player a clue about the location that the runestone links to.
+            String clue = RunestoneHelper.getClue(discovery.getLocation(), new Random(discovery.getSeed()));
             name = I18n.get("gui.strange.clues." + clue) + "...";
-        } else if (numberOfUnknownRunes == 0) {
-            name = StringHelper.snakeToPretty(discovery.getId().getPath());
-        } else {
-            return;
-        }
 
-        int mid = width / 2;
-        int left = mid - 76;
-        int top = (height / 2) - (discovery.getRunes().length() > WRAP_AT ? 44 : 54);
+        } else if (unknown == 0) {
+
+            // The player knows all the runes, there are no unknown. Show the full name of the location.
+            name = StringHelper.snakeToPretty(discovery.getLocation().getPath());
+
+        } else {
+
+            // Don't show anything, the player hasn't learned enough runes yet.
+            return;
+
+        }
 
         font.drawShadow(poseStack, name, left, top, KNOWN_COLOR);
     }
 
-    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery, JournalData journal) {
-        List<Component> text = Lists.newArrayList();
-        Slot slot = menu.getSlot(0);
-        if (slot.hasItem()) {
-            return;
-        }
-
-        if (minecraft == null || minecraft.level == null) return;
-        ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
-        List<Item> items = RunestoneHelper.getItems(dimension, discovery.getRunes());
-
-        int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(discovery.getRunes(), journal);
-        if (numberOfUnknownRunes > items.size()) {
-            return;
-        }
-
-        if (this.items == null || itemRandomTicks++ >= 100) {
-            this.items = NonNullList.create();
-            NonNullList<ItemStack> sublist = NonNullList.create();
-            items.forEach(item -> this.items.add(new ItemStack(item)));
-
-            if (numberOfUnknownRunes > 0) {
-                sublist.addAll(this.items.subList(0, Math.min(this.items.size(), numberOfUnknownRunes + 1)));
-                Collections.shuffle(sublist, new Random());
-            } else {
-                sublist.addAll(this.items.subList(0, 1));
-            }
-
-            this.items = sublist;
-            itemRandomTicks = 0;
-        }
-
-        if (numberOfUnknownRunes > 0) {
-            text.add(POSSIBLE_ITEMS);
-            for (ItemStack item : this.items) {
-                text.add(item.getHoverName());
-            }
-        } else {
-            text.add(REQUIRED_ITEM);
-            text.add(this.items.get(0).getHoverName());
-        }
-
+    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery, Journal2Data journal) {
         int top = midY - 28;
         int left = midX - 8;
         int bottom = midY - 12;
         int right = midX + 8;
+        List<Component> text = new ArrayList<>();
+        Slot slot = menu.getSlot(0);
 
+        // Don't render a hover tooltip if the slot is occupied.
+        if (slot.hasItem()) return;
+
+        ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
+        List<Item> potentialItems = RunestoneHelper.getItems(dimension, discovery.getRunes());
+
+        // If the player hasn't learned enough runes then exit early.
+        int unknown = Journal2Helper.countUnknownRunes(discovery.getRunes(), journal);
+        if (unknown > potentialItems.size()) return;
+
+        if (items == null || itemRandomTicks++ >= 100) {
+
+            // After 5 seconds delay, recreate the potential items list to be rendered in the tooltip.
+            items = NonNullList.create();
+            NonNullList<ItemStack> sublist = NonNullList.create();
+            potentialItems.forEach(item -> items.add(new ItemStack(item)));
+
+            if (unknown > 0) {
+
+                // Increase the number of potential items shown according to the number of unknown runes.
+                sublist.addAll(items.subList(0, Math.min(items.size(), unknown + 1)));
+                Collections.shuffle(sublist, new Random());
+
+            } else {
+
+                // If player knows all the runes then only show the required item.
+                sublist.addAll(items.subList(0, 1));
+            }
+
+            items = sublist;
+            itemRandomTicks = 0;
+        }
+
+        if (unknown > 0) {
+
+            // Create the tooltip showing multiple potential items.
+            text.add(POSSIBLE_ITEMS);
+            for (ItemStack item : items) {
+                text.add(item.getHoverName());
+            }
+
+        } else {
+
+            // Create tooltip for a single required item.
+            text.add(REQUIRED_ITEM);
+            text.add(items.get(0).getHoverName());
+
+        }
+
+        // Render out the tooltip when the player is hovering over the slot.
         if (mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
-            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(this.items)), mouseX, mouseY);
+            renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
         }
     }
 
@@ -212,10 +227,6 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         }
 
         return texture;
-    }
-
-    private Optional<Discovery> getDestination() {
-        return Optional.ofNullable(RunestonesClient.discoveryHolder);
     }
 
     private void syncClickedButton(int r) {
@@ -236,9 +247,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
                     Component rune;
                     int color;
 
+                    var unknown = String.valueOf(Runes.UNKNOWN_RUNE);
                     String s = String.valueOf(revealed.charAt(index));
-                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                    if (s.equals(unknown)) {
+                        rune = new TextComponent(unknown);
                         color = UNKNOWN_COLOR;
                     } else {
                         rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
@@ -261,7 +273,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
     @Override
     public void onClose() {
-        RunestonesClient.discoveryHolder = null;
+        DiscoveriesClient.interactedWithDiscovery = null;
         super.onClose();
     }
 

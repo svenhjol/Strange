@@ -1,48 +1,68 @@
 package svenhjol.strange.module.journals2;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.event.PlayerLoadDataCallback;
 import svenhjol.charm.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.JournalMessages;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.journals2.PageTracker.Page;
+import svenhjol.strange.module.journals2.definition.BookmarkIconsDefinition;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Journals2 extends CharmModule {
+    public static final String BOOKMARK_ICONS_DEFINITION_FOLDER = "journals";
+    public static final String BOOKMARK_ICONS_DEFINITION_FILE = "bookmark_icons.json";
+    public static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
+
     private static final String FILENAME = "strange_journal2.dat";
     private static final Map<UUID, Journal2Data> playerJournals = new HashMap<>();
 
     @Override
     public void runWhenEnabled() {
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
         ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_SYNC_JOURNAL, this::handleSyncJournal);
+        ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_MAKE_MAP, this::handleMakeMap);
+    }
+
+    private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
+        if (level.dimension() == Level.OVERWORLD) {
+            setupBookmarkIcons(server);
+        }
     }
 
     private void handlePlayerLoadData(Player player, File playerDataDir) {
@@ -59,7 +79,7 @@ public class Journals2 extends CharmModule {
     }
 
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> syncJournal(player));
+        server.execute(() -> sendSyncJournal(player));
     }
 
     private void handleMakeMap(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
@@ -85,6 +105,32 @@ public class Journals2 extends CharmModule {
         });
     }
 
+    private void setupBookmarkIcons(MinecraftServer server) {
+        BOOKMARK_ICONS.clear();
+        ResourceManager manager = server.getResourceManager();
+
+        Optional<ResourceLocation> resource = manager
+            .listResources(BOOKMARK_ICONS_DEFINITION_FOLDER, f -> f.endsWith(".json"))
+            .stream()
+            .filter(r -> r.getPath().contains(BOOKMARK_ICONS_DEFINITION_FILE))
+            .findFirst();
+
+        if (resource.isEmpty()) return;
+
+        try {
+            BookmarkIconsDefinition definition = BookmarkIconsDefinition.deserialize(manager.getResource(resource.get()));
+            List<Item> items = definition.getIcons().stream()
+                .map(ResourceLocation::new)
+                .map(Registry.ITEM::get)
+                .dropWhile(BOOKMARK_ICONS::contains)
+                .collect(Collectors.toList());
+
+            BOOKMARK_ICONS.addAll(items);
+        } catch (Exception e) {
+            LogHelper.warn(getClass(), "Could not load bookmark icons definition from " + resource + ": " + e.getMessage());
+        }
+    }
+
     private File getDataFile(File playerDataDir, UUID uuid) {
         return new File(playerDataDir + "/" + uuid.toString() + "_" + FILENAME);
     }
@@ -93,10 +139,15 @@ public class Journals2 extends CharmModule {
         return Optional.ofNullable(playerJournals.get(player.getUUID()));
     }
 
-    public static void syncJournal(ServerPlayer player) {
+    public static void sendSyncJournal(ServerPlayer player) {
         getJournal(player).ifPresent(journal -> {
             CompoundTag tag = journal.save();
             NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(tag));
         });
+    }
+
+    public static void sendOpenPage(ServerPlayer player, Page page) {
+        getJournal(player).ifPresent(journal
+            -> NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_OPEN_PAGE, buf -> buf.writeEnum(page)));
     }
 }

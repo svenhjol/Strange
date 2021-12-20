@@ -5,6 +5,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+import svenhjol.strange.module.runes.RuneBranch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +27,6 @@ public class Journal2Data {
     private final List<ResourceLocation> structures = new ArrayList<>();
 
     private List<Integer> runes = new ArrayList<>();
-
-    private Journal2Data() {}
 
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
@@ -64,6 +66,14 @@ public class Journal2Data {
     public void learnRune(int val) {
         if (!runes.contains(val)) {
             runes.add(val);
+        }
+    }
+
+    public void learn(RuneBranch<?, ?> branch, Object id) {
+        switch (branch.getBranchName()) {
+            case BiomeBranch.NAME -> learnBiome((ResourceLocation) id);
+            case DimensionBranch.NAME -> learnDimension((ResourceLocation) id);
+            case StructureBranch.NAME -> learnStructure((ResourceLocation) id);
         }
     }
 

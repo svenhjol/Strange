@@ -6,20 +6,21 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.DimensionHelper;
 
+import javax.annotation.Nullable;
+
 public class BookmarkData extends SavedData {
-    public BookmarkBranch bookmarks;
+    public BookmarkBranch branch;
 
     public BookmarkData(@Nullable ServerLevel level) {
         this.setDirty();
-        bookmarks = new BookmarkBranch();
+        branch = new BookmarkBranch();
     }
 
     public Bookmark add(Player player) throws BookmarkException {
         var bookmark = new Bookmark(player.getUUID(), player.blockPosition(), DimensionHelper.getDimension(player.level));
-        bookmarks.register(bookmark);
+        branch.register(bookmark);
 
         this.setDirty();
         return bookmark;
@@ -33,7 +34,7 @@ public class BookmarkData extends SavedData {
             DimensionHelper.getDimension(player.getLevel()),
             DefaultIcon.DEATH.getId()
         );
-        bookmarks.register(bookmark);
+        branch.register(bookmark);
 
         this.setDirty();
         return bookmark;
@@ -41,7 +42,7 @@ public class BookmarkData extends SavedData {
 
     public Bookmark update(Bookmark bookmark) throws BookmarkException {
         var runes = bookmark.getRunes();
-        var existing = bookmarks.get(runes);
+        var existing = branch.get(runes);
         if (existing == null) {
             throw new BookmarkException("Could not find bookmark matching runes `" + runes + "`");
         }
@@ -55,19 +56,19 @@ public class BookmarkData extends SavedData {
 
     public void remove(Bookmark bookmark) throws BookmarkException {
         var runes = bookmark.getRunes();
-        var existing = bookmarks.get(runes);
+        var existing = branch.get(runes);
 
         if (existing == null) {
             throw new BookmarkException("Could not find bookmark matching runes `" + runes + "`");
         }
 
-        bookmarks.remove(runes);
+        branch.remove(runes);
         this.setDirty();
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        bookmarks.save(tag);
+        branch.save(tag);
         return tag;
     }
 
@@ -77,7 +78,7 @@ public class BookmarkData extends SavedData {
 
     public static BookmarkData load(@Nullable ServerLevel level, CompoundTag tag) {
         BookmarkData bookmarks = new BookmarkData(level);
-        bookmarks.bookmarks = BookmarkBranch.load(tag);
+        bookmarks.branch = BookmarkBranch.load(tag);
         return bookmarks;
     }
 

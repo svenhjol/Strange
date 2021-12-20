@@ -18,6 +18,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.KnowledgeMessages;
+import svenhjol.strange.module.runes.Runes;
 
 import java.util.Optional;
 
@@ -60,16 +61,20 @@ public class Knowledge2 extends CharmModule {
                 Knowledge2Data.getFileId(level.dimensionType())
             );
 
-            Registry.STRUCTURE_FEATURE.forEach(structure -> knowledgeData.structures.register(structure));
-            BuiltinRegistries.BIOME.entrySet().forEach(entry -> knowledgeData.biomes.register(entry.getValue()));
-            knowledgeData.dimensions.register(level);
+            Runes.addBranch(knowledgeData.biomeBranch);
+            Runes.addBranch(knowledgeData.dimensionBranch);
+            Runes.addBranch(knowledgeData.structureBranch);
+
+            Registry.STRUCTURE_FEATURE.forEach(structure -> knowledgeData.structureBranch.register(structure));
+            BuiltinRegistries.BIOME.entrySet().forEach(entry -> knowledgeData.biomeBranch.register(entry.getValue()));
+            knowledgeData.dimensionBranch.register(level);
             knowledgeData.setDirty();
 
         } else {
 
             // Register the dimension that just loaded.
             getKnowledge().ifPresent(knowledge -> {
-                knowledge.dimensions.register(level);
+                knowledge.dimensionBranch.register(level);
                 knowledge.setDirty();
             });
 
@@ -83,7 +88,7 @@ public class Knowledge2 extends CharmModule {
     private void handleSyncBiomes(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         getKnowledge().ifPresent(knowledge -> {
             CompoundTag tag = new CompoundTag();
-            knowledge.biomes.save(tag);
+            knowledge.biomeBranch.save(tag);
             NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_BIOMES, buf -> buf.writeNbt(tag));
         });
     }
@@ -91,7 +96,7 @@ public class Knowledge2 extends CharmModule {
     private void handleSyncDimensions(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         getKnowledge().ifPresent(knowledge -> {
             CompoundTag tag = new CompoundTag();
-            knowledge.dimensions.save(tag);
+            knowledge.dimensionBranch.save(tag);
             NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, buf -> buf.writeNbt(tag));
         });
     }
@@ -99,7 +104,7 @@ public class Knowledge2 extends CharmModule {
     private void handleSyncStructures(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         getKnowledge().ifPresent(knowledge -> {
             CompoundTag tag = new CompoundTag();
-            knowledge.structures.save(tag);
+            knowledge.structureBranch.save(tag);
             NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_STRUCTURES, buf -> buf.writeNbt(tag));
         });
     }

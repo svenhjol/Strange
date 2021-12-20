@@ -36,8 +36,9 @@ public class BookmarkBranch extends RuneBranch<Bookmark, Bookmark> {
     }
 
     @Override
-    public @Nullable String getValueName(Bookmark value) {
-        return value.getName();
+    public @Nullable String getValueName(String runes) {
+        var bookmark = get(runes);
+        return bookmark != null ? bookmark.getName() : null;
     }
 
     @Override

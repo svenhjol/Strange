@@ -17,15 +17,15 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.journals2.Journal2Data;
 import svenhjol.strange.module.journals2.Journals2;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.knowledge.KnowledgeHelper.LearnableKnowledgeType;
 import svenhjol.strange.module.knowledge2.Knowledge2;
 import svenhjol.strange.module.knowledge2.Knowledge2Data;
+import svenhjol.strange.module.knowledge2.Learnable;
 import svenhjol.strange.module.runes.Tier;
 
 public class KnowledgeStoneItem extends CharmItem {
-    private final LearnableKnowledgeType type;
+    private final Learnable type;
 
-    public KnowledgeStoneItem(CharmModule module, LearnableKnowledgeType type) {
+    public KnowledgeStoneItem(CharmModule module, Learnable type) {
         super(module, type.getSerializedName() + "_knowledge_stone", new FabricItemSettings()
             .tab(CreativeModeTab.TAB_MISC)
             .stacksTo(64));
@@ -58,17 +58,17 @@ public class KnowledgeStoneItem extends CharmItem {
                     }
                     learned = true;
                 }
-                case BIOME -> learned = Journal2Helper.learnFromBranch(knowledge.biomes, journal.getLearnedBiomes(), b -> {
+                case BIOME -> learned = Journal2Helper.learn(knowledge.biomeBranch, journal.getLearnedBiomes(), b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
-                case STRUCTURE -> learned = Journal2Helper.learnFromBranch(knowledge.structures, journal.getLearnedStructures(), s -> {
+                case STRUCTURE -> learned = Journal2Helper.learn(knowledge.structureBranch, journal.getLearnedStructures(), s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
-                case DIMENSION -> learned = Journal2Helper.learnFromBranch(knowledge.dimensions, journal.getLearnedDimensions(), d -> {
+                case DIMENSION -> learned = Journal2Helper.learn(knowledge.dimensionBranch, journal.getLearnedDimensions(), d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;

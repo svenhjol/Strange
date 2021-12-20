@@ -27,20 +27,18 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Container, WorldlyContainer, MenuProvider {
-    public static final String TAG_MATERIAL = "Material";
-    public static final String TAG_RUNES = "Runes";
-    public static final String TAG_LOCATION = "Location";
-    public static final String TAG_DIFFICULTY = "Difficulty";
-    public static final String TAG_DECAY = "Decay";
+    public static final String MATERIAL_TAG = "Material";
+    public static final String RUNES_TAG = "Runes";
+    public static final String LOCATION_TAG = "Location";
+    public static final String DIFFICULTY_TAG = "Difficulty";
 
     public static final int SIZE = 1;
     public static final int[] SLOTS = IntStream.range(0, SIZE).toArray();
 
-    public ResourceLocation location;
+    public @Nullable ResourceLocation location;
     public String runes;
     public int material;
     public float difficulty;
-    public float decay;
 
     private final NonNullList<ItemStack> items;
     private final ContainerData data;
@@ -52,7 +50,7 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Cont
 
         Block block = state.getBlock();
         if (block instanceof RunestoneBlock) {
-            this.material = ((RunestoneBlock) block).getMaterial().getId();
+            this.material = ((RunestoneBlock) block).getMaterial().ordinal();
         }
 
         this.data = new ContainerData() {
@@ -76,14 +74,13 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Cont
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.material = tag.getInt(TAG_MATERIAL);
-        this.difficulty = tag.getFloat(TAG_DIFFICULTY);
-        this.decay = tag.getFloat(TAG_DECAY);
+        this.material = tag.getInt(MATERIAL_TAG);
+        this.difficulty = tag.getFloat(DIFFICULTY_TAG);
 
-        String runes = tag.getString(TAG_RUNES);
+        String runes = tag.getString(RUNES_TAG);
         this.runes = !runes.isEmpty() ? runes : null;
 
-        String location = tag.getString(TAG_LOCATION);
+        String location = tag.getString(LOCATION_TAG);
         this.location = !runes.isEmpty() && !location.isEmpty() ? new ResourceLocation(location) : null;
 
         ContainerHelper.loadAllItems(tag, this.items);
@@ -92,16 +89,15 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Cont
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt(TAG_MATERIAL, material);
-        tag.putFloat(TAG_DIFFICULTY, difficulty);
-        tag.putFloat(TAG_DECAY, decay);
+        tag.putInt(MATERIAL_TAG, material);
+        tag.putFloat(DIFFICULTY_TAG, difficulty);
 
         if (runes != null) {
-            tag.putString(TAG_RUNES, runes);
+            tag.putString(RUNES_TAG, runes);
         }
 
         if (location != null && !location.toString().isEmpty()) {
-            tag.putString(TAG_LOCATION, location.toString());
+            tag.putString(LOCATION_TAG, location.toString());
         }
 
         ContainerHelper.saveAllItems(tag, items, false);
@@ -140,6 +136,7 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity implements Cont
     @Override
     public ItemStack removeItem(int slotId, int amount) {
         ItemStack stack = ContainerHelper.removeItem(items, slotId, amount);
+
         if (!stack.isEmpty()) {
             setChanged();
         }

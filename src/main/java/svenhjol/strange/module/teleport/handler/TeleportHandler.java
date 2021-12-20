@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
+import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.ITicket;
@@ -42,19 +42,19 @@ public abstract class TeleportHandler<V> {
     protected BlockPos targetPos;
     protected ResourceLocation originDimension;
     protected ResourceLocation targetDimension;
-    protected KnowledgeBranch<?, V> branch;
+    protected RuneBranch<?, V> branch;
     protected int maxDistance;
     protected V value;
 
     protected static final List<MobEffect> POSITIVE_EFFECTS;
     protected static final List<MobEffect> NEGATIVE_EFFECTS;
 
-    public TeleportHandler(KnowledgeBranch<?, V> branch) {
+    public TeleportHandler(RuneBranch<?, V> branch) {
         this.branch = branch;
     }
 
     public boolean setup(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
-        if (!branch.has(runes)) {
+        if (!branch.contains(runes)) {
             return false;
         }
 
@@ -63,11 +63,11 @@ public abstract class TeleportHandler<V> {
         this.runes = runes;
         this.originPos = originPos;
         this.level = level;
-        this.value = branch.get(runes).orElseThrow();
+        this.value = branch.get(runes);
         this.maxDistance = Teleport.maxDistance;
         this.originDimension = this.entity.level.dimension().location();
 
-        return true;
+        return value != null;
     }
 
     public abstract void process();

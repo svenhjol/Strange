@@ -8,7 +8,7 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
+import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarkScreen;
 
 import javax.annotation.Nullable;
 

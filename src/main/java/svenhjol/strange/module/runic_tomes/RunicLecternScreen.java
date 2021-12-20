@@ -18,13 +18,10 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalHelper;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
 import svenhjol.strange.module.runes.RuneHelper;
+import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
@@ -63,9 +60,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         this.knownColor = 0x997755;
         this.unknownColor = 0xC0B0A0;
-
-        // ask server to update the player journal
-        JournalsClient.sendSyncJournal();
     }
 
     @Override
@@ -142,17 +136,14 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         int right = midX + 8;
 
         if (!hasProvidedItem && mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
-            if (minecraft.player == null) return;
             if (requiredItem == null) return;
 
-            Optional<JournalData> optJournal = Journals.getJournalData(minecraft.player);
-            if (optJournal.isEmpty()) return;
+            var journal = Journals2Client.journal;
+            if (journal == null) return;
 
-            JournalData journal = optJournal.get();
-            int numberOfUnknownRunes = JournalHelper.getNumberOfUnknownRunes(runes, journal);
-            if (numberOfUnknownRunes > 0) {
-                return;
-            }
+            // If player hasn't learned enough runes then exit early.
+            int unknown = Journal2Helper.countUnknownRunes(runes, journal);
+            if (unknown > 0) return;
 
             List<Component> text = Lists.newArrayList();
             NonNullList<ItemStack> items = NonNullList.create();
@@ -207,9 +198,10 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
                     Component rune;
                     int color;
 
+                    var unknown = String.valueOf(Runes.UNKNOWN_RUNE);
                     String s = String.valueOf(revealed.charAt(index));
-                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                    if (s.equals(unknown)) {
+                        rune = new TextComponent(unknown);
                         color = unknownColor;
                     } else {
                         rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);

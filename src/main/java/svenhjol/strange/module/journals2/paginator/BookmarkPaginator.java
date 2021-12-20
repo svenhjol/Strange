@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
+import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarkScreen;
 
 import java.util.List;
 import java.util.function.Consumer;

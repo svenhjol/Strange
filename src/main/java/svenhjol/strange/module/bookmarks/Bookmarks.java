@@ -17,6 +17,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.BookmarkMessages;
+import svenhjol.strange.module.runes.Runes;
 
 import java.util.Optional;
 
@@ -47,6 +48,8 @@ public class Bookmarks extends CharmModule {
                 () -> new BookmarkData(overworld),
                 BookmarkData.getFileId(level.dimensionType())
             );
+
+            Runes.addBranch(bookmarkData.branch);
         }
     }
 
@@ -55,7 +58,7 @@ public class Bookmarks extends CharmModule {
 
         server.execute(() -> {
             CompoundTag tag = new CompoundTag();
-            bookmarks.bookmarks.save(tag);
+            bookmarks.branch.save(tag);
             NetworkHelper.sendPacketToClient(player, BookmarkMessages.CLIENT_SYNC_BOOKMARKS, buf -> buf.writeNbt(tag));
         });
     }

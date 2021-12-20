@@ -17,7 +17,6 @@ import svenhjol.strange.module.runes.Tier;
 public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
     public static final String NAME = "Biomes";
 
-
     @Override
     public ResourceLocation register(Biome biome) {
         ResourceLocation id = BuiltinRegistries.BIOME.getKey(biome);
@@ -43,8 +42,9 @@ public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
     }
 
     @Override
-    public @Nullable String getValueName(ResourceLocation value) {
-        return StringHelper.snakeToPretty(value.getPath());
+    public @Nullable String getValueName(String runes) {
+        var biome = get(runes);
+        return biome != null ? StringHelper.snakeToPretty(biome.getPath()) : null;
     }
 
     @Override

@@ -24,6 +24,10 @@ public enum Tier implements ICharmEnum {
         return chars;
     }
 
+    public static int size() {
+        return Tier.values().length;
+    }
+
     @Nullable
     public static Tier byName(String name) {
         var first = Arrays.stream(values()).filter(t -> t.getSerializedName().equals(name)).findFirst();

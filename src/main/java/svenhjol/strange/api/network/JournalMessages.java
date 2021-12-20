@@ -7,6 +7,9 @@ public class JournalMessages {
     // Client asks the server to send the player's journal data.
     public static final ResourceLocation SERVER_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "server_sync_journal2");
 
+    // Client asks the server to make a map for the bookmark.
+    public static final ResourceLocation SERVER_MAKE_MAP = new ResourceLocation(Strange.MOD_ID, "server_make_map");
+
     // Server sends all server-side journal data to a client.
     public static final ResourceLocation CLIENT_SYNC_JOURNAL = new ResourceLocation(Strange.MOD_ID, "client_sync_journal2");
 

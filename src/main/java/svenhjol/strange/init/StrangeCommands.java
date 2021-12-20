@@ -9,7 +9,7 @@ import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
+import svenhjol.strange.module.knowledge2.command.arg.RuneArgType;
 
 import java.util.ArrayList;
 import java.util.List;

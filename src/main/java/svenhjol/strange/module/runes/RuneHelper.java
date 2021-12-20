@@ -5,16 +5,31 @@ import net.minecraft.util.Mth;
 import svenhjol.strange.module.knowledge2.Knowledge2;
 import svenhjol.strange.module.runes.exception.RuneStringException;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class RuneHelper {
-    public static final char UNKNOWN_CHAR = '?';
 
     /**
      * Fetches an RNG based on the seed of the loaded overworld or a fresh one if the seed isn't set.
      */
     public static Random getRandom() {
         return Knowledge2.SEED == Long.MIN_VALUE ? new Random() : new Random(Knowledge2.SEED);
+    }
+
+    /**
+     * Create an RNG from a given string.
+     * This RNG can be used to guarantee the same randomness when dealing with a specific runic phrase.
+     */
+    public static long seed(String string) {
+        int s = 0;
+
+        for (int i = 0; i < string.length(); i++) {
+            s += string.charAt(i);
+        }
+
+        Random random = new Random(s);
+        return random.nextLong();
     }
 
     /**
@@ -83,7 +98,7 @@ public class RuneHelper {
             if (known.contains(chr)) {
                 out.append(input.charAt(i));
             } else {
-                out.append(UNKNOWN_CHAR);
+                out.append(Runes.UNKNOWN_RUNE);
             }
         }
 
@@ -164,5 +179,18 @@ public class RuneHelper {
         }
 
         throw new RuneStringException("Maximum loops reached when checking string length");
+    }
+
+    @Nullable
+    public static RuneBranch<?, ?> branch(String runes) {
+        return Runes.getBranches().values()
+            .stream()
+            .filter(b -> b.getStartRune() == runes.charAt(0))
+            .findFirst()
+            .orElse(null);
+    }
+
+    public static boolean valid(String runes) {
+        return branch(runes) != null;
     }
 }

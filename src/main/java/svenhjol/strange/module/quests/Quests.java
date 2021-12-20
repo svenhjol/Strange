@@ -24,7 +24,7 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.QuestMessages;
-import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals2.Journals2;
 import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.command.QuestCommand;
@@ -300,7 +300,7 @@ public class Quests extends CharmModule {
             var quest = quests.get(questId);
             if (quest != null) {
                 quest.abandon(player);
-                Journals.sendOpenJournal(player, PageTracker.Page.QUESTS);
+                Journals2.sendOpenPage(player, PageTracker.Page.QUESTS);
             }
         });
     }
@@ -313,7 +313,7 @@ public class Quests extends CharmModule {
             var quest = quests.get(questId);
             if (quest != null) {
                 quest.pause(player);
-                Journals.sendOpenJournal(player, PageTracker.Page.QUESTS);
+                Journals2.sendOpenPage(player, PageTracker.Page.QUESTS);
             }
         });
     }

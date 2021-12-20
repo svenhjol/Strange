@@ -7,17 +7,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.BookmarkMessages;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
-import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
+import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarkScreen;
+import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarksScreen;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -25,7 +27,7 @@ import java.util.function.Consumer;
 
 @ClientModule(module = Bookmarks.class)
 public class BookmarksClient extends CharmModule {
-    public static @Nullable BookmarkBranch bookmarks;
+    public static @Nullable BookmarkBranch branch;
 
     @Override
     public void runWhenEnabled() {
@@ -46,8 +48,8 @@ public class BookmarksClient extends CharmModule {
     private void handleSyncBookmarks(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
         client.execute(() -> {
-            bookmarks = BookmarkBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + bookmarks.size() + " bookmarks from server.");
+            branch = BookmarkBranch.load(tag);
+            LogHelper.debug(getClass(), "Received " + branch.size() + " bookmarks from server.");
         });
     }
 
@@ -56,13 +58,13 @@ public class BookmarksClient extends CharmModule {
      * If the current player is the one who created the bookmark, open the journal bookmark page so they can view it.
      */
     private void handleAddBookmark(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        processBookmark(client, buffer.readNbt(), ((branch, bookmark) -> {
+        processBookmark(client, buffer.readNbt(), (branch, bookmark) -> {
 
             // Add the new bookmark to the local branch.
             branch.add(bookmark.getRunes(), bookmark);
             LogHelper.debug(getClass(), "Received new bookmark `" + bookmark.getName() + "` from server.");
 
-        }), bookmark -> client.setScreen(new JournalBookmarkScreen(bookmark)));
+        }, bookmark -> client.setScreen(new JournalBookmarkScreen(bookmark)));
     }
 
     /**
@@ -70,13 +72,13 @@ public class BookmarksClient extends CharmModule {
      * If the current player is the one who modified the bookmark, open the journal's bookmarks page.
      */
     private void handleUpdateBookmark(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        processBookmark(client, buffer.readNbt(), ((branch, bookmark) -> {
+        processBookmark(client, buffer.readNbt(), (branch, bookmark) -> {
 
             // We can use add() to update the existing bookmark because the runes remain the same.
             branch.add(bookmark.getRunes(), bookmark);
             LogHelper.debug(getClass(), "Received request to update bookmark with runes `" + bookmark.getRunes() + "` from server.");
 
-        }), bookmark -> client.setScreen(new JournalBookmarksScreen()));
+        }, bookmark -> client.setScreen(new JournalBookmarksScreen()));
     }
 
     /**
@@ -84,13 +86,13 @@ public class BookmarksClient extends CharmModule {
      * If the current player is the one who deleted it, open the journal's bookmarks page.
      */
     private void handleRemoveBookmark(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        processBookmark(client, buffer.readNbt(), ((branch, bookmark) -> {
+        processBookmark(client, buffer.readNbt(), (branch, bookmark) -> {
 
             // Remove the local copy.
             branch.remove(bookmark.getRunes());
             LogHelper.debug(getClass(), "Received request to remove bookmark with runes `" + bookmark.getRunes() + "` from server.");
 
-        }), bookmark -> client.setScreen(new JournalBookmarksScreen()));
+        }, bookmark -> client.setScreen(new JournalBookmarksScreen()));
     }
 
     /**
@@ -100,7 +102,7 @@ public class BookmarksClient extends CharmModule {
     private void processBookmark(Minecraft client, @Nullable CompoundTag nbt, BiConsumer<BookmarkBranch, Bookmark> onBranch, Consumer<Bookmark> onCurrentPlayer) {
         if (client.player == null) return;
         var tag = Optional.ofNullable(nbt).orElseThrow();
-        var bookmarks = Optional.ofNullable(BookmarksClient.bookmarks).orElseThrow();
+        var bookmarks = Optional.ofNullable(BookmarksClient.branch).orElseThrow();
 
         client.execute(() -> {
             // deserialize the bookmark tag and run the consumer
@@ -133,5 +135,10 @@ public class BookmarksClient extends CharmModule {
      */
     public static void sendRemoveBookmark(Bookmark bookmark) {
         NetworkHelper.sendPacketToServer(BookmarkMessages.SERVER_REMOVE_BOOKMARK, buf -> buf.writeNbt(bookmark.save()));
+    }
+
+    public static ItemStack getBookmarkIconItem(Bookmark bookmark) {
+        var icon = bookmark.getIcon();
+        return new ItemStack(Registry.ITEM.get(icon));
     }
 }

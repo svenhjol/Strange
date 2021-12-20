@@ -19,8 +19,13 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.init.StrangeParticles;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
-import svenhjol.strange.module.knowledge.branches.*;
+import svenhjol.strange.module.bookmarks.BookmarkBranch;
+import svenhjol.strange.module.discoveries.DiscoveryBranch;
+import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.handler.*;
@@ -80,15 +85,15 @@ public class Teleport extends CharmModule {
     private boolean tryTeleport(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {
         TeleportHandler<?> handler;
         ServerLevel level = (ServerLevel)player.level;
-        KnowledgeBranch<?, ?> branch = KnowledgeBranch.getByStartRune(runes.charAt(0)).orElseThrow();
+        RuneBranch<?, ?> branch = RuneHelper.branch(runes);
+        if (branch == null) return false;
 
         handler = switch (branch.getBranchName()) {
-            case BiomesBranch.NAME -> new BiomeTeleportHandler((BiomesBranch)branch);
-            case BookmarksBranch.NAME -> new BookmarkTeleportHandler((BookmarksBranch)branch);
-            case DimensionsBranch.NAME -> new DimensionTeleportHandler((DimensionsBranch)branch);
-            case DiscoveriesBranch.NAME -> new DiscoveryTeleportHandler((DiscoveriesBranch)branch);
-            case SpecialsBranch.NAME -> new SpecialTeleportHandler((SpecialsBranch)branch);
-            case StructuresBranch.NAME -> new StructureTeleportHandler((StructuresBranch)branch);
+            case BiomeBranch.NAME -> new BiomeTeleportHandler((BiomeBranch)branch);
+            case BookmarkBranch.NAME -> new BookmarkTeleportHandler((BookmarkBranch)branch);
+            case DimensionBranch.NAME -> new DimensionTeleportHandler((DimensionBranch)branch);
+            case DiscoveryBranch.NAME -> new DiscoveryTeleportHandler((DiscoveryBranch)branch);
+            case StructureBranch.NAME -> new StructureTeleportHandler((StructureBranch)branch);
             default -> null;
         };
 

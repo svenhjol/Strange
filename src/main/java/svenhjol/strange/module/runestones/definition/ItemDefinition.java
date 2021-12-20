@@ -2,7 +2,7 @@ package svenhjol.strange.module.runestones.definition;
 
 import com.google.gson.Gson;
 import net.minecraft.server.packs.resources.Resource;
-import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.runes.Tier;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -25,7 +25,7 @@ public class ItemDefinition {
         return new Gson().fromJson(reader, ItemDefinition.class);
     }
 
-    public List<String> get(Knowledge.Tier tier) {
+    public List<String> get(Tier tier) {
         return switch (tier) {
             case TEST -> List.of();
             case NOVICE -> novice;

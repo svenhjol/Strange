@@ -42,8 +42,9 @@ public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLoc
     }
 
     @Override
-    public @Nullable String getValueName(ResourceLocation value) {
-        return StringHelper.snakeToPretty(value.getPath());
+    public @Nullable String getValueName(String runes) {
+        var structure = get(runes);
+        return structure != null ? StringHelper.snakeToPretty(structure.getPath()) : null;
     }
 
     @Override

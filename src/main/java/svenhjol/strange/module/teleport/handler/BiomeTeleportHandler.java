@@ -2,10 +2,10 @@ package svenhjol.strange.module.teleport.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import svenhjol.strange.module.knowledge.KnowledgeBranch;
+import svenhjol.strange.module.runes.RuneBranch;
 
 public class BiomeTeleportHandler extends TeleportHandler<ResourceLocation> {
-    public BiomeTeleportHandler(KnowledgeBranch<?, ResourceLocation> branch) {
+    public BiomeTeleportHandler(RuneBranch<?, ResourceLocation> branch) {
         super(branch);
     }
 

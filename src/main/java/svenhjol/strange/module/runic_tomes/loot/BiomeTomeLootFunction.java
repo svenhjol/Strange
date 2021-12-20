@@ -8,8 +8,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge2.Knowledge2;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 
@@ -25,7 +24,7 @@ public class BiomeTomeLootFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         if (!Strange.LOADER.isEnabled(RunicTomes.class)) return stack;
         Random random = context.getRandom();
-        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElse(null);
+        var knowledge = Knowledge2.getKnowledge().orElse(null);
 
         if (knowledge == null) {
             return stack;
@@ -35,7 +34,7 @@ public class BiomeTomeLootFunction extends LootItemConditionalFunction {
             return stack;
         }
 
-        List<String> keys = knowledge.biomes.keys();
+        List<String> keys = knowledge.biomeBranch.keys();
         if (!keys.isEmpty()) {
             String runes = keys.get(random.nextInt(keys.size()));
             return RunicTomeItem.create(runes);

@@ -17,6 +17,19 @@ public class Journal2Helper {
         return Journals2Client.journal.getLearnedRunes();
     }
 
+    public static int countUnknownRunes(String runes, Journal2Data journal) {
+        int num = 0;
+
+        for (int i = 0; i < runes.length(); i++) {
+            int chr = runes.charAt(i) - 97;
+            if (!journal.getLearnedRunes().contains(chr)) {
+                num++;
+            }
+        }
+
+        return num;
+    }
+
     public static int nextLearnableRune(Tier currentTier, Journal2Data journal) {
         var learnedRunes = journal.getLearnedRunes();
 
@@ -36,14 +49,14 @@ public class Journal2Helper {
         return Integer.MIN_VALUE;
     }
 
-    public static <T> boolean learnFromBranch(RuneBranch<?, T> branch, List<T> knowledge, Function<T, Boolean> onLearn) {
+    public static <T> boolean learn(RuneBranch<?, T> branch, List<T> existingKnowledge, Function<T, Boolean> onLearn) {
         // If the current knowledge is less than the knowledge in the branch then there's something to be learned.
-        if (knowledge.size() < branch.size()) {
+        if (existingKnowledge.size() < branch.size()) {
             var list = new ArrayList<T>(branch.values());
             Collections.shuffle(list, new Random());
 
             for (T item : list) {
-                if (!knowledge.contains(item)) {
+                if (!existingKnowledge.contains(item)) {
                     return onLearn.apply(item);
                 }
             }

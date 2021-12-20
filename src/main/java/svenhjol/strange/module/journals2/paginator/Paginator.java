@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals2.screen.JournalScreen;
 
 import javax.annotation.Nullable;
 import java.util.List;

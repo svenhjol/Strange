@@ -16,8 +16,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
 import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge2.Knowledge2;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 
@@ -33,14 +32,15 @@ public class DimensionTomeLootFunction extends LootItemConditionalFunction {
         if (!Strange.LOADER.isEnabled(RunicTomes.class)) return stack;
         ServerLevel level = context.getLevel();
         Random random = context.getRandom();
-        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElse(null);
         ResourceLocation dimension = null;
 
-        if (random.nextFloat() > 0.66F) {
+        var knowledge = Knowledge2.getKnowledge().orElse(null);
+
+        if (knowledge == null) {
             return stack;
         }
 
-        if (knowledge == null) {
+        if (random.nextFloat() > 0.66F) {
             return stack;
         }
 
@@ -71,7 +71,7 @@ public class DimensionTomeLootFunction extends LootItemConditionalFunction {
             }
         }
 
-        String runes = knowledge.dimensions.get(dimension).orElse(null);
+        String runes = knowledge.dimensionBranch.get(dimension);
         return runes != null ? RunicTomeItem.create(runes) : stack;
     }
 

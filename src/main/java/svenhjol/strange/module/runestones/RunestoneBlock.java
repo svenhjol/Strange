@@ -1,7 +1,6 @@
 package svenhjol.strange.module.runestones;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,25 +18,23 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeData;
-import svenhjol.strange.module.knowledge.types.Discovery;
-import svenhjol.strange.module.runestones.enums.IRunestoneMaterial;
-import svenhjol.strange.module.runestones.helper.RunestoneHelper;
+import svenhjol.strange.api.network.DiscoveryMessages;
+import svenhjol.strange.module.discoveries.Discoveries;
+import svenhjol.strange.module.discoveries.Discovery;
+import svenhjol.strange.module.discoveries.DiscoveryHelper;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.Random;
 
 public class RunestoneBlock extends CharmBlockWithEntity {
-    private final IRunestoneMaterial material;
+    private final RunestoneMaterial material;
 
-    public RunestoneBlock(CharmModule module, IRunestoneMaterial material) {
+    public RunestoneBlock(CharmModule module, RunestoneMaterial material) {
         super(module, material.getSerializedName() + "_runestone", material.getProperties());
         this.material = material;
     }
 
-    public IRunestoneMaterial getMaterial() {
+    public RunestoneMaterial getMaterial() {
         return material;
     }
 
@@ -61,11 +58,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             boolean result = tryReadRunestone((ServerLevel)level, pos, (ServerPlayer) player);
-
-            if (!result) {
-                return InteractionResult.FAIL;
-            }
-
+            if (!result) return InteractionResult.FAIL;
             player.openMenu(state.getMenuProvider(level, pos));
         }
 
@@ -97,51 +90,57 @@ public class RunestoneBlock extends CharmBlockWithEntity {
      */
     private boolean tryReadRunestone(ServerLevel level, BlockPos pos, ServerPlayer player) {
         RunestoneBlockEntity runestone = getBlockEntity(level, pos);
-        if (runestone == null) {
-            return false;
-        }
+        if (runestone == null) return false;
 
-        KnowledgeData knowledge = Knowledge.getKnowledgeData().orElseThrow();
-        Discovery discovery;
+        var discoveries = Discoveries.getDiscoveries().orElse(null);
+        if (discoveries == null) return false;
+
         boolean generate = false;
 
         if (runestone.runes == null || runestone.runes.isEmpty()) {
+
+            // The runestone has no runes. We generate a new discovery and store its runes within this runestone.
+            // Next time a player activates this runestone we can lookup the discovery from its runes.
             generate = true;
-        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.discoveries.has(runestone.runes)) {
-            LogHelper.warn(this.getClass(), "Runestone data was erased for this runestone, regenerating it");
-            generate = true; // the knowledgedata was erased for this runestone - regenerate it
+
+        } else if (!discoveries.branch.contains(runestone.runes)) {
+
+            // The runestone has runes that do not exist in the saved discoveries.
+            // This means that we need to regenerate this location and store it back into the discoveries.
+//        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.discoveries.has(runestone.runes)) {
+            LogHelper.warn(getClass(), "Runestone data was erased for this runestone, regenerating it.");
+            generate = true;
+
         }
 
         if (generate) {
+            Random random = new Random(pos.asLong());
             ResourceLocation location = runestone.location;
             ResourceLocation dimension = DimensionHelper.getDimension(level);
-            Random random = new Random(pos.asLong());
-            float difficulty = runestone.difficulty;
-            float decay = runestone.decay;
 
-            // If runestone.location is null, a location will be generated from the difficulty.
-            discovery = RunestoneHelper.getOrCreateDestination(dimension, random, difficulty, decay, location).orElseThrow();
+            float difficulty = runestone.difficulty;
+
+            // Try and generate a discovery from this location and difficulty, then update the runestone's runes to match it.
+            Discovery discovery = DiscoveryHelper.getOrCreate(dimension, random, difficulty, location);
+            if (discovery == null) return false;
 
             runestone.runes = discovery.getRunes();
             runestone.setChanged();
+
+            // Send the destination to all connected players to keep their copies in sync.
+            NetworkHelper.sendPacketToAllClients(level.getServer(), DiscoveryMessages.CLIENT_ADD_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
         }
 
-        Optional<Discovery> optSpawn = knowledge.specials.get(runestone.runes);
-        Optional<Discovery> optDest = knowledge.discoveries.get(runestone.runes);
+        // At this point we should be able to fetch the discovery that matches the runestone's runes.
+        Discovery discovery = discoveries.branch.get(runestone.runes);
 
-        if (optSpawn.isPresent()) {
-            discovery = optSpawn.get();
-        } else if (optDest.isPresent()) {
-            discovery = optDest.get();
-        } else {
-            LogHelper.error(this.getClass(), "The runestone doesn't refer to spawn or a destination, giving up");
+        if (discovery == null) {
+            LogHelper.warn(getClass(), "The runestone doesn't refer to a valid destination, giving up.");
             return false;
         }
 
-        // send the destination tag to the player who looked at the runestone
-        CompoundTag tag = discovery.toTag();
-        NetworkHelper.sendPacketToClient(player, Runestones.MSG_CLIENT_SET_DESTINATION, buf -> buf.writeNbt(tag));
-
+        // Inform the player's client that they looked at this specific runestone.
+        NetworkHelper.sendPacketToClient(player, DiscoveryMessages.CLIENT_INTERACT_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
         return true;
     }
 }

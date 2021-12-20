@@ -13,25 +13,25 @@ import javax.annotation.Nullable;
 public class Knowledge2Data extends SavedData {
     public static final String SEED_TAG = "Seed";
 
-    public BiomeBranch biomes;
-    public DimensionBranch dimensions;
-    public StructureBranch structures;
+    public BiomeBranch biomeBranch;
+    public DimensionBranch dimensionBranch;
+    public StructureBranch structureBranch;
 
     public Knowledge2Data(@Nullable ServerLevel level) {
         this.setDirty();
 
-        biomes = new BiomeBranch();
-        dimensions = new DimensionBranch();
-        structures = new StructureBranch();
+        biomeBranch = new BiomeBranch();
+        dimensionBranch = new DimensionBranch();
+        structureBranch = new StructureBranch();
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.putLong(SEED_TAG, Knowledge2.SEED);
 
-        biomes.save(tag);
-        dimensions.save(tag);
-        structures.save(tag);
+        biomeBranch.save(tag);
+        dimensionBranch.save(tag);
+        structureBranch.save(tag);
 
         return tag;
     }
@@ -43,9 +43,9 @@ public class Knowledge2Data extends SavedData {
     public static Knowledge2Data load(@Nullable ServerLevel level, CompoundTag tag) {
         Knowledge2Data knowledge = new Knowledge2Data(level);
 
-        knowledge.biomes = BiomeBranch.load(tag);
-        knowledge.dimensions = DimensionBranch.load(tag);
-        knowledge.structures = StructureBranch.load(tag);
+        knowledge.biomeBranch = BiomeBranch.load(tag);
+        knowledge.dimensionBranch = DimensionBranch.load(tag);
+        knowledge.structureBranch = StructureBranch.load(tag);
 
         return knowledge;
     }

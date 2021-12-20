@@ -9,22 +9,18 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.journals.JournalData;
-import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.screen.MiniJournalScreen;
+import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.module.knowledge.KnowledgeHelper;
+import svenhjol.strange.module.journals2.screen.MiniJournalScreen;
 import svenhjol.strange.module.runes.RuneHelper;
+import svenhjol.strange.module.runes.Runes;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 @SuppressWarnings("ConstantConditions")
 public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> {
@@ -48,12 +44,12 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private final int deleteButtonYOffset;
     private boolean hasInk = false;
     private boolean hasBook = false;
-    private final MiniJournalScreen journalClient;
 
     private String runes = "";
     private int midX;
     private int midY;
 
+    private MiniJournalScreen miniJournal;
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -77,16 +73,14 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.deleteButtonYOffset = 69;
         this.midX = 0;
         this.midY = 0;
-        this.journalClient = new MiniJournalScreen(this);
-
-        // ask server to update the player journal
-        JournalsClient.sendSyncJournal();
     }
 
     @Override
     protected void init() {
         super.init();
-        journalClient.init();
+
+        miniJournal = new MiniJournalScreen(minecraft, this);
+        miniJournal.init();
     }
 
     @Override
@@ -112,14 +106,12 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
             runes = "";
         }
 
-        runForValidPlayer((player, journal) -> {
-            renderBookBg(poseStack);
-            renderInputRunes(poseStack, journal);
-            renderDeleteButton(poseStack, mouseX, mouseY);
-            renderWrittenRunes(poseStack);
-            renderTooltip(poseStack, mouseX, mouseY);
-            journalClient.render(poseStack, mouseX, mouseY, journal);
-        });
+        renderBookBg(poseStack);
+        renderInputRunes(poseStack);
+        renderDeleteButton(poseStack, mouseX, mouseY);
+        renderWrittenRunes(poseStack);
+        renderTooltip(poseStack, mouseX, mouseY);
+        miniJournal.render(poseStack, mouseX, mouseY);
     }
 
     @Override
@@ -133,7 +125,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         int y = (height - imageHeight) / 2;
         blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 256);
 
-        journalClient.renderBg(poseStack, delta, mouseX, mouseY);
+        miniJournal.renderBg(poseStack, delta, mouseX, mouseY);
     }
 
     private void renderBookBg(PoseStack poseStack) {
@@ -143,7 +135,10 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         }
     }
 
-    private void renderInputRunes(PoseStack poseStack, JournalData journal) {
+    private void renderInputRunes(PoseStack poseStack) {
+        var journal = Journals2Client.journal;
+        if (journal == null) return;
+
         List<Integer> learnedRunes = journal.getLearnedRunes();
         int left = midX + inputRunesLeft;
         int top = midY + inputRunesTop;
@@ -151,20 +146,20 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         int ix = 0;
         int iy = 0;
 
-        for (int r = 0; r < Knowledge.NUM_RUNES; r++) {
-            Component rune;
+        for (int rune = 0; rune < Runes.NUM_RUNES; rune++) {
+            Component runeText;
             int color;
 
-            if (learnedRunes.contains(r)) {
-                String s = String.valueOf((char)(r + Knowledge.ALPHABET_START));
-                rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
+            if (learnedRunes.contains(rune)) {
+                String s = String.valueOf((char)(rune + Runes.FIRST_RUNE));
+                runeText = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
                 color = hasInk ? knownColor : uninkedColor;
             } else {
-                rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                runeText = new TextComponent(String.valueOf(Runes.UNKNOWN_RUNE));
                 color = unknownColor;
             }
 
-            font.draw(poseStack, rune, left + (ix * inputRunesXOffset), top + (iy * inputRunesYOffset), color);
+            font.draw(poseStack, runeText, left + (ix * inputRunesXOffset), top + (iy * inputRunesYOffset), color);
             ix++;
             if (ix == inputRunesWrapAt) {
                 ix = 0;
@@ -209,12 +204,12 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         int ix = 0;
         int iy = 0;
 
-        for (int r = 0; r < Knowledge.NUM_RUNES; r++) {
+        for (int rune = 0; rune < Runes.NUM_RUNES; rune++) {
             int sx = left + (ix * inputRunesXOffset);
             int sy = top + (iy * inputRunesYOffset);
 
             if (hasBook && hasInk && x > sx && x < sx + inputRunesXOffset && y > sy && y < sy + inputRunesYOffset) {
-                runeClicked(r);
+                runeClicked(rune);
                 return true;
             }
 
@@ -257,12 +252,13 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void runeClicked(int rune) {
-        runForValidPlayer((player, journal) -> {
-            if (journal.getLearnedRunes().contains(rune) && runes.length() <= Knowledge.MAX_LENGTH) {
-                runes += String.valueOf((char)(rune + Knowledge.ALPHABET_START));
-                syncClickedButton(rune);
-            }
-        });
+        var journal = Journals2Client.journal;
+        if (journal == null) return;
+
+        if (journal.getLearnedRunes().contains(rune) && runes.length() <= Runes.MAX_PHRASE_LENGTH) {
+            runes += String.valueOf((char)(rune + Runes.FIRST_RUNE));
+            syncClickedButton(rune);
+        }
     }
 
     private void deleteClicked() {
@@ -276,11 +272,6 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-    }
-
-    private void runForValidPlayer(BiConsumer<Player, JournalData> run) {
-        ClientHelper.getPlayer().ifPresent(player -> JournalsClient.getJournalData().ifPresent(journal
-            -> run.accept(player, journal)));
     }
 
     private void syncClickedButton(int r) {
@@ -301,9 +292,10 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
                     Component rune;
                     int color;
 
+                    var unknown = String.valueOf(Runes.UNKNOWN_RUNE);
                     String s = String.valueOf(revealed.charAt(index));
-                    if (s.equals(KnowledgeHelper.UNKNOWN)) {
-                        rune = new TextComponent(KnowledgeHelper.UNKNOWN);
+                    if (s.equals(unknown)) {
+                        rune = new TextComponent(unknown);
                         color = unknownColor;
                     } else {
                         rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);

@@ -2,7 +2,7 @@ package svenhjol.strange.module.journals2.paginator;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.strange.module.journals.screen.knowledge.JournalStructureScreen;
+import svenhjol.strange.module.journals2.screen.knowledge.JournalStructureScreen;
 
 import java.util.List;
 import java.util.function.Consumer;
