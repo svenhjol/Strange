@@ -21,7 +21,6 @@ import svenhjol.strange.api.network.BookmarkMessages;
 import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarksScreen;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -46,7 +45,9 @@ public class BookmarksClient extends CharmModule {
     }
 
     private void handleSyncBookmarks(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        var tag = buffer.readNbt();
+        if (tag == null) return;
+
         client.execute(() -> {
             branch = BookmarkBranch.load(tag);
             LogHelper.debug(getClass(), "Received " + branch.size() + " bookmarks from server.");
@@ -99,10 +100,12 @@ public class BookmarksClient extends CharmModule {
      * Convenience method to fetch local bookmarks, unserialize the bookmark from the server, and run a consumer using the branch and bookmark.
      * If the current player created/updated the bookmark then the onCurrentPlayer consumer will be run.
      */
-    private void processBookmark(Minecraft client, @Nullable CompoundTag nbt, BiConsumer<BookmarkBranch, Bookmark> onBranch, Consumer<Bookmark> onCurrentPlayer) {
+    private void processBookmark(Minecraft client, @Nullable CompoundTag tag, BiConsumer<BookmarkBranch, Bookmark> onBranch, Consumer<Bookmark> onCurrentPlayer) {
         if (client.player == null) return;
-        var tag = Optional.ofNullable(nbt).orElseThrow();
-        var bookmarks = Optional.ofNullable(BookmarksClient.branch).orElseThrow();
+        if (tag == null) return;
+
+        var bookmarks = BookmarksClient.branch;
+        if (bookmarks == null) return;
 
         client.execute(() -> {
             // deserialize the bookmark tag and run the consumer

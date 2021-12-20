@@ -16,9 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.api.network.DiscoveryMessages;
 import svenhjol.strange.module.discoveries.Discoveries;
 import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.discoveries.DiscoveryHelper;
@@ -57,7 +55,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
-            boolean result = tryReadRunestone((ServerLevel)level, pos, (ServerPlayer) player);
+            boolean result = tryReadRunestone((ServerPlayer) player, pos);
             if (!result) return InteractionResult.FAIL;
             player.openMenu(state.getMenuProvider(level, pos));
         }
@@ -88,7 +86,8 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     /**
      * Fetch or generate a destination when a player looks at a runestone.
      */
-    private boolean tryReadRunestone(ServerLevel level, BlockPos pos, ServerPlayer player) {
+    private boolean tryReadRunestone(ServerPlayer player, BlockPos pos) {
+        var level = (ServerLevel) player.level;
         RunestoneBlockEntity runestone = getBlockEntity(level, pos);
         if (runestone == null) return false;
 
@@ -103,7 +102,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             // Next time a player activates this runestone we can lookup the discovery from its runes.
             generate = true;
 
-        } else if (!discoveries.branch.contains(runestone.runes)) {
+        } else if (!discoveries.contains(runestone.runes)) {
 
             // The runestone has runes that do not exist in the saved discoveries.
             // This means that we need to regenerate this location and store it back into the discoveries.
@@ -121,18 +120,18 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             float difficulty = runestone.difficulty;
 
             // Try and generate a discovery from this location and difficulty, then update the runestone's runes to match it.
-            Discovery discovery = DiscoveryHelper.getOrCreate(dimension, random, difficulty, location);
+            Discovery discovery = DiscoveryHelper.getOrCreate(player.getUUID(), dimension, random, difficulty, location);
             if (discovery == null) return false;
 
             runestone.runes = discovery.getRunes();
             runestone.setChanged();
 
             // Send the destination to all connected players to keep their copies in sync.
-            NetworkHelper.sendPacketToAllClients(level.getServer(), DiscoveryMessages.CLIENT_ADD_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
+            Discoveries.sendAddDiscovery(level.getServer(), discovery);
         }
 
         // At this point we should be able to fetch the discovery that matches the runestone's runes.
-        Discovery discovery = discoveries.branch.get(runestone.runes);
+        Discovery discovery = discoveries.get(runestone.runes);
 
         if (discovery == null) {
             LogHelper.warn(getClass(), "The runestone doesn't refer to a valid destination, giving up.");
@@ -140,7 +139,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         // Inform the player's client that they looked at this specific runestone.
-        NetworkHelper.sendPacketToClient(player, DiscoveryMessages.CLIENT_INTERACT_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
+        Discoveries.sendInteractDiscovery(player, discovery);
         return true;
     }
 }

@@ -9,6 +9,7 @@ import svenhjol.strange.module.runestones.Runestones;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 public class DiscoveryHelper {
     /**
@@ -16,14 +17,14 @@ public class DiscoveryHelper {
      * If the location is the spawn point then an existing discovery will try to be returned.
      */
     @Nullable
-    public static Discovery getOrCreate(ResourceLocation dimension, Random random, float difficulty, @Nullable ResourceLocation location) {
+    public static Discovery getOrCreate(UUID discoverer, ResourceLocation dimension, Random random, float difficulty, @Nullable ResourceLocation location) {
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return null;
 
         if (location != null && location.equals(Runestones.SPAWN)) {
 
             // Try and re-use an existing spawn point discovery.
-            var first = discoveries.branch.values().stream().filter(d -> d.getLocation().equals(Runestones.SPAWN)).findFirst();
+            var first = discoveries.all().stream().filter(d -> d.getLocation().equals(Runestones.SPAWN)).findFirst();
             if (first.isPresent()) {
                 return first.get();
             }
@@ -32,7 +33,7 @@ public class DiscoveryHelper {
             var runes = RuneHelper.uniqueRunes(discoveries.branch, random, difficulty, 1, 1);
             var discovery = new Discovery(runes, Runestones.SPAWN);
 
-            discoveries.branch.register(discovery);
+            discoveries.add(discovery);
             LogHelper.debug(DiscoveryHelper.class, "Registered spawn point discovery `" + discovery.getRunes() + "`.");
             return discovery;
 
@@ -47,10 +48,12 @@ public class DiscoveryHelper {
         // Generate a discovery for the calculated location and provided difficulty.
         var runes = RuneHelper.uniqueRunes(discoveries.branch, random, difficulty, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
         var discovery = new Discovery(runes, location);
+
         discovery.setDifficulty(difficulty);
         discovery.setDimension(dimension);
+        discovery.setPlayer(discoverer);
 
-        discoveries.branch.register(discovery);
+        discoveries.add(discovery);
         LogHelper.debug(DiscoveryHelper.class, "Registered discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
 
         return discovery;

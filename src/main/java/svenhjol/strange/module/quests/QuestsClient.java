@@ -25,6 +25,7 @@ import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.runes.Tier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +33,7 @@ import java.util.Map;
 @ClientModule(module = Quests.class)
 public class QuestsClient extends CharmModule {
     public static final String DEFAULT_LOCALE = "en";
-    public static List<Quest> quests = List.of();
+    public static List<Quest> quests = new ArrayList<>();
 
     @Override
     public void runWhenEnabled() {

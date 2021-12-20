@@ -25,8 +25,6 @@ import svenhjol.strange.api.network.JournalMessages;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals2.photo.TakePhotoHandler;
 
-import java.util.Optional;
-
 @ClientModule(module = Journals2.class)
 public class Journals2Client extends CharmModule {
     public static @Nullable Journal2Data journal;
@@ -52,7 +50,9 @@ public class Journals2Client extends CharmModule {
     }
 
     private void handleSyncJournal(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        CompoundTag tag = buffer.readNbt();
+        if (tag == null) return;
+
         client.execute(() -> {
             journal = Journal2Data.load(tag);
             LogHelper.debug(getClass(), "Received journal. " +
@@ -68,6 +68,7 @@ public class Journals2Client extends CharmModule {
 
         client.execute(() -> {
             client.setScreen(tracker.getScreen(page));
+            LogHelper.debug(getClass(), "Received request to open journal page `" + page + "` from server.");
         });
     }
 

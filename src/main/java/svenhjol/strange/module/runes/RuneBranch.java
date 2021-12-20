@@ -7,6 +7,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public abstract class RuneBranch<R, V> {
+    public RuneBranch() {
+        Runes.addBranch(this);
+    }
+
     protected final Map<String, V> data = new HashMap<>();
 
     public Map<String, V> all() {

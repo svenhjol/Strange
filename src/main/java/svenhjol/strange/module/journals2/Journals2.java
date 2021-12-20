@@ -83,7 +83,8 @@ public class Journals2 extends CharmModule {
     }
 
     private void handleMakeMap(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        var tag = buffer.readNbt();
+        if (tag == null) return;
 
         server.execute(() -> {
             var bookmark = Bookmark.load(tag);

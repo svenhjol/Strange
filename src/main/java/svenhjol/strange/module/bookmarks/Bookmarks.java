@@ -17,7 +17,6 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.BookmarkMessages;
-import svenhjol.strange.module.runes.Runes;
 
 import java.util.Optional;
 
@@ -36,6 +35,10 @@ public class Bookmarks extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_REMOVE_BOOKMARK, this::handleRemoveBookmark);
     }
 
+    public static Optional<BookmarkData> getBookmarks() {
+        return Optional.ofNullable(bookmarkData);
+    }
+
     private void handleWorldLoad(MinecraftServer server, Level level) {
 
         // Overworld is loaded first. We set up the bookmarks storage at this point.
@@ -48,13 +51,12 @@ public class Bookmarks extends CharmModule {
                 () -> new BookmarkData(overworld),
                 BookmarkData.getFileId(level.dimensionType())
             );
-
-            Runes.addBranch(bookmarkData.branch);
         }
     }
 
     private void handleSyncBookmarks(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var bookmarks = getBookmarks().orElseThrow();
+        var bookmarks = getBookmarks().orElse(null);
+        if (bookmarks == null) return;
 
         server.execute(() -> {
             CompoundTag tag = new CompoundTag();
@@ -64,7 +66,8 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleAddBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var bookmarks = getBookmarks().orElseThrow();
+        var bookmarks = getBookmarks().orElse(null);
+        if (bookmarks == null) return;
 
         server.execute(() -> {
             try {
@@ -77,8 +80,11 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleUpdateBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var bookmarks = getBookmarks().orElseThrow();
-        var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        var bookmarks = getBookmarks().orElse(null);
+        if (bookmarks == null) return;
+
+        var tag = buffer.readNbt();
+        if (tag == null) return;
 
         server.execute(() -> {
             var bookmark = Bookmark.load(tag);
@@ -93,8 +99,11 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleRemoveBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var bookmarks = getBookmarks().orElseThrow();
-        var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        var bookmarks = getBookmarks().orElse(null);
+        if (bookmarks == null) return;
+
+        var tag = buffer.readNbt();
+        if (tag == null) return;
 
         server.execute(() -> {
             var bookmark = Bookmark.load(tag);
@@ -106,9 +115,5 @@ public class Bookmarks extends CharmModule {
                 LogHelper.warn(getClass(), "Failed to remove bookmark: " + e.getMessage());
             }
         });
-    }
-
-    public static Optional<BookmarkData> getBookmarks() {
-        return Optional.ofNullable(bookmarkData);
     }
 }

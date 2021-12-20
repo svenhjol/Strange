@@ -1,6 +1,7 @@
 package svenhjol.strange.module.runes;
 
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 
@@ -22,6 +23,7 @@ public class Runes extends CharmModule {
 
     public static void addBranch(RuneBranch<?, ?> branch) {
         BRANCHES.put(branch.getBranchName(), branch);
+        LogHelper.debug(Runes.class, "Added branch `" + branch.getBranchName() + "`.");
     }
 
     public static Map<String, RuneBranch<?, ?>> getBranches() {
