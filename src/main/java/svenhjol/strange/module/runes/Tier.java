@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum Tier implements ICharmEnum {
-    TEST(List.of()),
     NOVICE(List.of('a', 'b', 'c', 'd', 'e', 'f')),
     APPRENTICE(List.of('g', 'h', 'i', 'j', 'k', 'l')),
     JOURNEYMAN(List.of('m', 'n', 'o', 'p', 'q', 'r')),
@@ -24,6 +23,10 @@ public enum Tier implements ICharmEnum {
         return chars;
     }
 
+    public int getLevel() {
+        return ordinal() + 1;
+    }
+
     public static int size() {
         return Tier.values().length;
     }
@@ -34,6 +37,18 @@ public enum Tier implements ICharmEnum {
         return first.orElse(null);
     }
 
+    /**
+     * Use this method to get the mapping of num -> tier where NOVICE starts at 1.
+     */
+    @Nullable
+    public static Tier byLevel(int l) {
+        var first = Arrays.stream(values()).filter(t -> l == t.ordinal() + 1).findFirst();
+        return first.orElse(null);
+    }
+
+    /**
+     * Use this method to get the index of the tier where NOVICE starts at 0.
+     */
     @Nullable
     public static Tier byOrdinal(int o) {
         var first = Arrays.stream(values()).filter(t -> t.ordinal() == o).findFirst();

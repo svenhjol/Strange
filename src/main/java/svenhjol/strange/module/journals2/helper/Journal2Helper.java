@@ -33,8 +33,8 @@ public class Journal2Helper {
     public static int nextLearnableRune(Tier currentTier, Journal2Data journal) {
         var learnedRunes = journal.getLearnedRunes();
 
-        for (int t = 1; t <= currentTier.ordinal(); t++) {
-            var tier = Tier.byOrdinal(t);
+        for (int t = 1; t <= currentTier.getLevel(); t++) {
+            var tier = Tier.byLevel(t);
             if (tier == null) continue;
             var chars = tier.getChars();
 

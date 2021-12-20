@@ -52,7 +52,7 @@ public class QuestsClient extends CharmModule {
     private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         var type = buffer.readEnum(QuestToastType.class);
         var definitionId = buffer.readUtf();
-        var tier = Tier.byOrdinal(buffer.readInt());
+        var tier = Tier.byLevel(buffer.readInt());
 
         client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
     }

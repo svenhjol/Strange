@@ -27,7 +27,6 @@ public class ItemDefinition {
 
     public List<String> get(Tier tier) {
         return switch (tier) {
-            case TEST -> List.of();
             case NOVICE -> novice;
             case APPRENTICE -> apprentice;
             case JOURNEYMAN -> journeyman;

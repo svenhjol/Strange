@@ -30,7 +30,7 @@ public class RunestoneHelper {
         // This is determined by the length of the rune phrase.
         int len = Math.min(Runes.NUM_RUNES, runes.length());
         int val = Math.max(1, Math.min(Tier.size(), Math.round(Tier.size() * (len / (float)Runes.NUM_RUNES))));
-        Tier tier = Tier.byOrdinal(val);
+        Tier tier = Tier.byLevel(val);
 
         if (items.containsKey(tier) && !items.get(tier).isEmpty()) {
 

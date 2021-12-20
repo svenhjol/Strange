@@ -63,8 +63,8 @@ public class Scrollkeepers extends CharmModule {
     public void runWhenEnabled() {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_CHECK_HAS_SATISFIED, this::handleCheckHasSatisfied);
 
-        for (int i = 1; i < Tier.values().length; i++) {
-            VillagerHelper.addTrade(SCROLLKEEPER, i, new ScrollForEmeralds(i));
+        for (Tier tier : Tier.values()) {
+            VillagerHelper.addTrade(SCROLLKEEPER, tier.getLevel(), new ScrollForEmeralds(tier));
         }
     }
 
@@ -95,7 +95,7 @@ public class Scrollkeepers extends CharmModule {
         // handle villager xp increase and levelup
         int villagerXp = villager.getVillagerXp();
         int villagerLevel = villagerData.getLevel();
-        int tier = quest.getTier().ordinal();
+        int tier = quest.getTier().getLevel();
         int rewardXp = quest.getComponent(RewardComponent.class).getMerchantXp();
 
         if (tier >= villagerLevel) {
