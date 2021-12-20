@@ -183,6 +183,8 @@ public class RuneHelper {
 
     @Nullable
     public static RuneBranch<?, ?> branch(String runes) {
+        if (runes.length() == 0) return null;
+
         return Runes.getBranches().values()
             .stream()
             .filter(b -> b.getStartRune() == runes.charAt(0))
@@ -191,6 +193,7 @@ public class RuneHelper {
     }
 
     public static boolean valid(String runes) {
-        return branch(runes) != null;
+        RuneBranch<?, ?> branch = branch(runes);
+        return branch != null && branch.contains(runes);
     }
 }
