@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,14 +17,10 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.Discovery;
-import svenhjol.strange.module.journals2.Journal2Data;
-import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.runes.RuneHelper;
-import svenhjol.strange.module.runes.Runes;
+import svenhjol.strange.module.runes.client.RuneStringRenderer;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
 import java.util.*;
@@ -36,11 +31,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     public static final Component REQUIRED_ITEM;
     public static final Component ACTIVATE;
 
-    private final int UNKNOWN_COLOR = 0xDDCCBB;
-    private final int KNOWN_COLOR = 0xFFFFFF;
-    private final int WRAP_AT = 14;
+    private final int wrapAt = 14;
+    private final int knownColor = 0x997755;
+    private final Random random;
 
-    private Random random;
     private RunestoneMaterial material;
     private ResourceLocation texture;
     private NonNullList<ItemStack> items;
@@ -49,6 +43,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private int midY;
 
     private Button activateButton;
+    private RuneStringRenderer runeStringRenderer;
 
     public RunestoneScreen(RunestoneMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -76,6 +71,9 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         if (material == null) {
             material = menu.getMaterial();
         }
+
+        runeStringRenderer = new RuneStringRenderer(midX - 76, midY - 70, 11, 14, 14, 4);
+        runeStringRenderer.setWithShadow(true);
     }
 
     @Override
@@ -86,19 +84,15 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 
-        // Need an updated journal for the client. Until it's synchronised from the server just return early.
-        var journal = Journals2Client.journal;
-        if (journal == null) return;
-
         // Need to have a synchronised discovery for the runestone block that the player is looking at.
         var discovery = DiscoveriesClient.interactedWithDiscovery;
         if (discovery == null) return;
 
-        renderRunes(poseStack, discovery);
-        renderLocationClue(poseStack, discovery, journal);
-        renderItemClue(poseStack, mouseX, mouseY, discovery, journal);
-
         activateButton.active = menu.slots.get(0).hasItem();
+        runeStringRenderer.render(poseStack, font, discovery.getRunes());
+
+        renderLocationClue(poseStack, discovery);
+        renderItemClue(poseStack, mouseX, mouseY, discovery);
     }
 
     @Override
@@ -115,25 +109,11 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         // nah
     }
 
-    protected void renderRunes(PoseStack poseStack, Discovery discovery) {
-        renderRunesString(
-            poseStack,
-            discovery.getRunes(),
-            midX - 76,
-            midY - 70,
-            11,
-            14,
-            14,
-            4,
-            true
-        );
-    }
-
-    protected void renderLocationClue(PoseStack poseStack, Discovery discovery, Journal2Data journal) {
+    protected void renderLocationClue(PoseStack poseStack, Discovery discovery) {
         String name;
         int left = midX - 76;
-        int top = midY - (discovery.getRunes().length() > WRAP_AT ? 44 : 54);
-        var unknown = Journal2Helper.countUnknownRunes(discovery.getRunes(), journal);
+        int top = midY - (discovery.getRunes().length() > wrapAt ? 44 : 54);
+        var unknown = Journal2Helper.countUnknownRunes(discovery.getRunes());
 
         if (unknown > 0 && unknown < Runestones.SHOW_TEXT_CLUE) {
 
@@ -154,10 +134,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         }
 
-        font.drawShadow(poseStack, name, left, top, KNOWN_COLOR);
+        font.drawShadow(poseStack, name, left, top, knownColor);
     }
 
-    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery, Journal2Data journal) {
+    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery) {
         int top = midY - 28;
         int left = midX - 8;
         int bottom = midY - 12;
@@ -172,7 +152,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         List<Item> potentialItems = RunestoneHelper.getItems(dimension, discovery.getRunes());
 
         // If the player hasn't learned enough runes then exit early.
-        int unknown = Journal2Helper.countUnknownRunes(discovery.getRunes(), journal);
+        int unknown = Journal2Helper.countUnknownRunes(discovery.getRunes());
         if (unknown > potentialItems.size()) return;
 
         if (items == null || itemRandomTicks++ >= 100) {
@@ -231,44 +211,6 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
     private void syncClickedButton(int r) {
         ClientHelper.getClient().ifPresent(mc -> mc.gameMode.handleInventoryButtonClick((this.menu).containerId, r));
-    }
-
-    private void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
-        if (minecraft == null) return;
-
-        // Convert the input string according to the runes that the player knows.
-        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
-
-        int index = 0;
-
-        for (int y = 0; y < yMax; y++) {
-            for (int x = 0; x < xMax; x++) {
-                if (index < revealed.length()) {
-                    Component rune;
-                    int color;
-
-                    var unknown = String.valueOf(Runes.UNKNOWN_RUNE);
-                    String s = String.valueOf(revealed.charAt(index));
-                    if (s.equals(unknown)) {
-                        rune = new TextComponent(unknown);
-                        color = UNKNOWN_COLOR;
-                    } else {
-                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-                        color = KNOWN_COLOR;
-                    }
-
-                    int xo = left + (x * xOffset);
-                    int yo = top + (y * yOffset);
-
-                    if (withShadow) {
-                        minecraft.font.drawShadow(poseStack, rune, xo, yo, color);
-                    } else {
-                        minecraft.font.draw(poseStack, rune, xo, yo, color);
-                    }
-                }
-                index++;
-            }
-        }
     }
 
     @Override

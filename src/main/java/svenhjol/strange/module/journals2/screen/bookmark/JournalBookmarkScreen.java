@@ -21,6 +21,7 @@ import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.journals2.photo.BookmarkPhoto;
 import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -36,8 +37,10 @@ public class JournalBookmarkScreen extends JournalScreen {
     protected int minPhotoDistance;
     protected int buttonWidth;
     protected int buttonHeight;
+    protected int knownColor = 0x997755;
     protected List<ButtonDefinition> pageButtons = new ArrayList<>();
     protected BookmarkPhoto photo;
+    protected RuneStringRenderer runeStringRenderer;
 
     public JournalBookmarkScreen(@Nonnull Bookmark bookmark) {
         super(new TextComponent(bookmark.getName()));
@@ -61,8 +64,9 @@ public class JournalBookmarkScreen extends JournalScreen {
         initEditBox();
 
         photo = new BookmarkPhoto(minecraft, bookmark);
+        runeStringRenderer = new RuneStringRenderer(midX - 61, 158, 13, 15, 10, 4);
 
-        pageButtons = new ArrayList<>();
+        pageButtons.clear();
 
         if (playerIsNearBookmark()) {
             pageButtons.add(new ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
@@ -100,7 +104,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
-        renderTitleIcon(getBookmarkIconItem(bookmark));
+        renderTitleIcon(BookmarksClient.getBookmarkIconItem(bookmark));
         renderPhoto(poseStack);
         renderDimensionName(poseStack);
         renderRunes(poseStack);
@@ -132,12 +136,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         // The player must be in the same dimension as the bookmark.
         if (!DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) return;
 
-        int left = midX - 61;
-        int top = 158;
-        int xOffset = 13;
-        int yOffset = 15;
-
-        renderRunesString(poseStack, bookmark.getRunes(), left, top, xOffset, yOffset, 10, 4, false);
+        runeStringRenderer.render(poseStack, font, bookmark.getRunes());
     }
 
     protected void renderPhoto(PoseStack poseStack) {

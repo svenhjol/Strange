@@ -4,9 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -14,14 +12,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.helper.GuiHelper.ImageButtonDefinition;
-import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.journals2.screen.bookmark.JournalBookmarksScreen;
 import svenhjol.strange.module.journals2.screen.knowledge.*;
 import svenhjol.strange.module.journals2.screen.quest.JournalQuestsScreen;
-import svenhjol.strange.module.runes.RuneHelper;
-import svenhjol.strange.module.runes.Runes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,10 +53,6 @@ public abstract class JournalScreen extends Screen {
     public static final Component TAKE_PHOTO;
     public static final Component TAKE_PHOTO_TOOLTIP;
 
-    protected boolean hasRenderedBottomButtons;
-    protected boolean hasRenderedNavigation;
-    protected boolean hasRenderedButtons; // generic buttons used by subclasses
-
     protected int backgroundWidth;
     protected int backgroundHeight;
 
@@ -94,12 +83,9 @@ public abstract class JournalScreen extends Screen {
     protected int titleColor;
     protected int errorColor;
     protected int subheadingColor;
-    protected int knownColor;
-    protected int unknownColor;
     protected int completedColor;
 
-    protected boolean hasFirstRendered = false;
-
+    protected boolean hasFirstRendered;
     protected int offset;
 
     protected List<ImageButtonDefinition> leftNavButtons = new ArrayList<>();
@@ -111,8 +97,6 @@ public abstract class JournalScreen extends Screen {
         super(component);
 
         this.passEvents = false;
-        this.hasRenderedBottomButtons = false;
-        this.hasRenderedNavigation = false;
         this.offset = 0;
 
         this.backgroundWidth = 256;
@@ -145,8 +129,6 @@ public abstract class JournalScreen extends Screen {
         this.titleColor = 0x000000;
         this.errorColor = 0x770000;
         this.subheadingColor = 0x887777;
-        this.unknownColor = 0xd0c0c0;
-        this.knownColor = 0x707070;
         this.completedColor = 0x228822;
     }
 
@@ -264,58 +246,6 @@ public abstract class JournalScreen extends Screen {
         this.offset = offset;
     }
 
-//    protected <T> void paginator(PoseStack poseStack, List<T> items, Consumer<T> renderItem, Supplier<Component> labelForNoItems, boolean shouldRenderButtons) {
-//        int perPage = 6;
-//        int paginationY = 180;
-//        int currentPage = lastPage - 1;
-//        List<T> sublist;
-//
-//        int size = items.size();
-//        if (size > perPage) {
-//            if (currentPage * perPage >= size || currentPage * perPage < 0) {
-//                // out of range, reset
-//                lastPage = 1;
-//                currentPage = 0;
-//            }
-//            sublist = items.subList(currentPage * perPage, Math.min(currentPage * perPage + perPage, size));
-//        } else {
-//            sublist = items;
-//        }
-//
-//        for (T item : sublist) {
-//            renderItem.accept(item);
-//        }
-//
-//        if (size > perPage) {
-//            TranslatableComponent component = new TranslatableComponent("gui.strange.journal.page", lastPage);
-//            GuiHelper.drawCenteredString(poseStack, font, component, midX, paginationY + 6, secondaryColor);
-//
-//            // only render pagination buttons on the first render pass
-//            if (shouldRenderButtons) {
-//                if (lastPage * perPage < size) {
-//                    addRenderableWidget(new ImageButton(midX + 30, paginationY, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
-//                        ++lastPage;
-//                        redraw();
-//                    }));
-//                }
-//                if (lastPage > 1) {
-//                    addRenderableWidget(new ImageButton(midX - 50, paginationY, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
-//                        --lastPage;
-//                        redraw();
-//                    }));
-//                }
-//            }
-//        }
-//
-//        if (size == 0) {
-//            GuiHelper.drawCenteredString(poseStack, font, labelForNoItems.get(), midX, 100, secondaryColor);
-//        }
-//    }
-
-    protected String getTruncatedName(String name, int length) {
-        return name.substring(0, Math.min(name.length(), length));
-    }
-
     protected void home() {
         minecraft.setScreen(new JournalHomeScreen());
     }
@@ -351,49 +281,6 @@ public abstract class JournalScreen extends Screen {
     protected void centeredText(PoseStack poseStack, Font renderer, Component component, int x, int y, int color) {
         String string = component.getString();
         renderer.draw(poseStack, string, x - (float)(renderer.width(string) / 2), y, color);
-    }
-
-    protected void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
-        if (minecraft == null) return;
-
-        // Convert the input string according to the runes that the player knows.
-        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
-
-        int index = 0;
-
-        for (int y = 0; y < yMax; y++) {
-            for (int x = 0; x < xMax; x++) {
-                if (index < revealed.length()) {
-                    Component rune;
-                    int color;
-
-                    var unknown = String.valueOf(Runes.UNKNOWN_RUNE);
-                    String s = String.valueOf(revealed.charAt(index));
-                    if (s.equals(unknown)) {
-                        rune = new TextComponent(unknown);
-                        color = unknownColor;
-                    } else {
-                        rune = new TextComponent(s).withStyle(StrangeFonts.ILLAGER_GLYPHS_STYLE);
-                        color = knownColor;
-                    }
-
-                    int xo = left + (x * xOffset);
-                    int yo = top + (y * yOffset);
-
-                    if (withShadow) {
-                        minecraft.font.drawShadow(poseStack, rune, xo, yo, color);
-                    } else {
-                        minecraft.font.draw(poseStack, rune, xo, yo, color);
-                    }
-                }
-                index++;
-            }
-        }
-    }
-
-    protected ItemStack getBookmarkIconItem(Bookmark bookmark) {
-        var icon = bookmark.getIcon();
-        return new ItemStack(Registry.ITEM.get(icon));
     }
 
     static {

@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.knowledge2.Learnable;
 import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
@@ -23,8 +22,8 @@ import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.RunestoneMaterial;
+import svenhjol.strange.module.runestones.Runestones;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,11 +203,8 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     private int renderRuneReward(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
         if (!showRuneReward) return top;
 
-        var journal = Journals2Client.journal;
-        if (journal == null) return top;
-
         var tier = quest.getTier();
-        var rune = Journal2Helper.nextLearnableRune(tier, journal);
+        var rune = Journal2Helper.nextLearnableRune(tier);
         if (rune < 0) {
             showRuneReward = false;
             return top;

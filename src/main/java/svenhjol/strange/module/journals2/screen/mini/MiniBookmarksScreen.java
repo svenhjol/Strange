@@ -12,11 +12,13 @@ import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals2.paginator.BookmarkPaginator;
 import svenhjol.strange.module.journals2.screen.JournalScreen;
 import svenhjol.strange.module.journals2.screen.MiniJournal;
+import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 public class MiniBookmarksScreen extends BaseMiniScreen {
     public static final Component INCORRECT_DIMENSION;
 
     private BookmarkPaginator paginator;
+    private RuneStringRenderer runeStringRenderer;
 
     public MiniBookmarksScreen(MiniJournal mini) {
         super(mini);
@@ -33,7 +35,7 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
                 return;
             }
 
-            // TODO: render runes here
+            runeStringRenderer = new RuneStringRenderer(journalMidX - 46, midY - 8, 9, 14, 10, 4);
 
             mini.addBackButton(b -> {
                 mini.selectedBookmark = null;
@@ -73,7 +75,9 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
     public void render(PoseStack poseStack, ItemRenderer itemRenderer, Font font) {
         mini.renderTitle(poseStack, JournalScreen.BOOKMARKS, midY - 94);
 
-        if (mini.selectedBookmark == null) {
+        if (mini.selectedBookmark != null) {
+            runeStringRenderer.render(poseStack, font, mini.selectedBookmark.getRunes());
+        } else {
             paginator.render(poseStack, itemRenderer, font);
         }
     }

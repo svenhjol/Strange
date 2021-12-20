@@ -6,16 +6,24 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.journals2.screen.JournalScreen;
 import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 import javax.annotation.Nullable;
 
 public abstract class JournalResourceScreen extends JournalScreen {
+    protected RuneStringRenderer runeStringRenderer;
     protected final ResourceLocation resource;
 
     public JournalResourceScreen(ResourceLocation resource) {
         super(new TextComponent(StringHelper.snakeToPretty(resource.getPath(), true)));
         this.resource = resource;
         setViewedPage();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        runeStringRenderer = new RuneStringRenderer(midX - 74, 80, 13, 15, 12, 3);
     }
 
     @Override
@@ -26,13 +34,7 @@ public abstract class JournalResourceScreen extends JournalScreen {
         if (branch == null) return;
 
         var runes = branch.get(resource);
-
-        int left = midX - 74;
-        int top = 80;
-        int xOffset = 13;
-        int yOffset = 15;
-
-        renderRunesString(poseStack, runes, left, top, xOffset, yOffset, 12, 3, false);
+        runeStringRenderer.render(poseStack, font, runes);
     }
 
     @Nullable
