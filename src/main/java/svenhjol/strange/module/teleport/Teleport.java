@@ -98,7 +98,7 @@ public class Teleport extends CharmModule {
         };
 
         if (handler == null) {
-            LogHelper.warn(this.getClass(), "No teleport handler for branch: " + branch.getBranchName());
+            LogHelper.debug(this.getClass(), "No teleport handler for branch: " + branch.getBranchName());
             return false;
         }
 
