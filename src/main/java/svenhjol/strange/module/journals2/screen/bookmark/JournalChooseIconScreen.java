@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals2.Journals2;
 import svenhjol.strange.module.journals2.screen.JournalScreen;
 
@@ -41,7 +42,7 @@ public class JournalChooseIconScreen extends JournalScreen {
                 if (index >= Journals2.BOOKMARK_ICONS.size()) continue;
                 ItemStack stack = new ItemStack(Journals2.BOOKMARK_ICONS.get(index));
 
-                if (ItemStack.isSame(getBookmarkIconItem(bookmark), stack)) {
+                if (ItemStack.isSame(BookmarksClient.getBookmarkIconItem(bookmark), stack)) {
                     fill(poseStack, midX + left + (x * xOffset), top + (y * yOffset), midX + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
                 }
 

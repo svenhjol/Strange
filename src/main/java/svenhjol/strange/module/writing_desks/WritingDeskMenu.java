@@ -1,5 +1,6 @@
 package svenhjol.strange.module.writing_desks;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -208,7 +209,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
                 RuneBranch<?, ?> branch = RuneHelper.branch(runes);
                 if (branch == null) return;
 
-                journal.learn(branch, runes);
+                journal.learn(branch, (ResourceLocation) branch.get(runes));
                 Journals2.sendSyncJournal(player);
             });
 

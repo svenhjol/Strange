@@ -47,14 +47,8 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
             var branch = BookmarksClient.branch;
             if (branch == null) return;
 
-            mini.addBackButton(b -> mini.changeSection(MiniJournal.Section.HOME));
-
             paginator = new BookmarkPaginator(branch.values(minecraft.player.getUUID()));
-            paginator.setButtonWidth(88);
-            paginator.setButtonHeight(20);
-            paginator.setYControls(midY + 50);
-            paginator.setDistBetweenPageButtons(23);
-            paginator.setDistBetweenIconAndButton(5);
+            setPaginatorDefaults(paginator);
 
             // If the listed bookmark is not in the player's dimension then disable it and show a tooltip to this effect.
             paginator.setOnItemHovered(bookmark -> validDimension(bookmark) ? new TextComponent(bookmark.getName()) : INCORRECT_DIMENSION);
@@ -67,6 +61,8 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
                 mini.offset = newOffset;
                 mini.redraw();
             });
+
+            mini.addBackButton(b -> mini.changeSection(MiniJournal.Section.HOME));
 
         }
     }

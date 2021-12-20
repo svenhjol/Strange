@@ -32,7 +32,8 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     public static final Component ACTIVATE;
 
     private final int wrapAt = 14;
-    private final int knownColor = 0x997755;
+    private final int knownColor = 0xffffff;
+    private final int unknownColor = 0xddccbb;
     private final Random random;
 
     private RunestoneMaterial material;
@@ -74,6 +75,8 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         runeStringRenderer = new RuneStringRenderer(midX - 76, midY - 70, 11, 14, 14, 4);
         runeStringRenderer.setWithShadow(true);
+        runeStringRenderer.setKnownColor(knownColor);
+        runeStringRenderer.setUnknownColor(unknownColor);
     }
 
     @Override

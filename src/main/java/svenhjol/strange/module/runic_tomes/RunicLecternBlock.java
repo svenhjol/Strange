@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -186,7 +187,7 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
                 RuneBranch<?, ?> branch = RuneHelper.branch(runes);
                 if (branch == null) return;
 
-                journal.learn(branch, runes);
+                journal.learn(branch, (ResourceLocation) branch.get(runes));
                 Journals2.sendSyncJournal(player);
             }
         });

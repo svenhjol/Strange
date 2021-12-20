@@ -69,11 +69,11 @@ public class Journal2Data {
         }
     }
 
-    public void learn(RuneBranch<?, ?> branch, Object id) {
+    public void learn(RuneBranch<?, ?> branch, ResourceLocation id) {
         switch (branch.getBranchName()) {
-            case BiomeBranch.NAME -> learnBiome((ResourceLocation) id);
-            case DimensionBranch.NAME -> learnDimension((ResourceLocation) id);
-            case StructureBranch.NAME -> learnStructure((ResourceLocation) id);
+            case BiomeBranch.NAME -> learnBiome(id);
+            case DimensionBranch.NAME -> learnDimension(id);
+            case StructureBranch.NAME -> learnStructure(id);
         }
     }
 

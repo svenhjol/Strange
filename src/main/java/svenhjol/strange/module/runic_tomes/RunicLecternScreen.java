@@ -46,9 +46,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         super(menu, inventory, component);
 
         this.passEvents = false;
-        this.midX = 0;
-        this.midY = 0;
-
         this.imageWidth = 176;
         this.imageHeight = 174;
     }
@@ -57,13 +54,13 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     protected void init() {
         super.init();
 
-        runeStringRenderer = new RuneStringRenderer(midX - 48, midY - 62, 10, 13, 10, 4);
-
         midX = width / 2;
         midY = height / 2;
 
+        runeStringRenderer = new RuneStringRenderer(midX - 48, midY - 62, 10, 13, 10, 4);
+        dimension = minecraft.level.dimension().location();
+
         int buttonWidth = 90;
-        ClientHelper.getLevel().ifPresent(l -> dimension = l.dimension().location());
 
         doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> {
             onClose();
@@ -85,9 +82,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         hasProvidedItem = menu.slots.get(0).hasItem();
 
-        // if there is a sacrificial item, allow the activate button to be clicked
-        activateButton.active = hasProvidedItem;
-
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 
@@ -103,6 +97,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         }
 
         runeStringRenderer.render(poseStack, font, runes);
+
+        // if there is a sacrificial item, allow the activate button to be clicked
+        activateButton.active = hasProvidedItem;
     }
 
     @Override
