@@ -1,14 +1,10 @@
 package svenhjol.strange.module.journals2.screen.knowledge;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals2.screen.JournalScreen;
-import svenhjol.strange.module.journals2.paginator.ResourcePaginator;
+import svenhjol.strange.module.journals2.screen.JournalPaginatedScreen;
 
-public abstract class JournalResourcesScreen extends JournalScreen {
-    protected ResourcePaginator paginator;
-
+public abstract class JournalResourcesScreen<T> extends JournalPaginatedScreen<T> {
     public JournalResourcesScreen(Component component) {
         super(component);
     }
@@ -16,27 +12,14 @@ public abstract class JournalResourcesScreen extends JournalScreen {
     @Override
     protected void init() {
         super.init();
-
-        // Set up the resource paginator.
-        paginator = getPaginator();
-
-        paginator.init(this, offset, midX, 40, newOffset -> {
-            offset = newOffset;
-            init(minecraft, width, height);
-        });
-
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
-
-        setViewedPage();
+        paginator.setButtonWidth(180);
     }
 
+    /**
+     * All knowledge resources screens go back to the main knowledge page.
+     */
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        super.render(poseStack, mouseX, mouseY, delta);
-        paginator.render(poseStack, itemRenderer, font);
+    protected void addButtons() {
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
     }
-
-    protected abstract ResourcePaginator getPaginator();
-
-    protected abstract void setViewedPage();
 }

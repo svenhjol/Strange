@@ -9,11 +9,9 @@ import svenhjol.charm.helper.StringHelper;
 
 import java.util.List;
 
-public abstract class ResourcePaginator extends Paginator<ResourceLocation> {
+public abstract class ResourcePaginator extends BasePaginator<ResourceLocation> {
     public ResourcePaginator(List<ResourceLocation> items) {
         super(items);
-
-        this.buttonWidth = 180;
     }
 
     @Override

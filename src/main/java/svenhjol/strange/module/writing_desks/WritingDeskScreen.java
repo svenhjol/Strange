@@ -15,7 +15,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
 import svenhjol.strange.module.journals2.Journals2Client;
 import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.journals2.screen.MiniJournalScreen;
+import svenhjol.strange.module.journals2.screen.MiniJournal;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 
@@ -42,14 +42,15 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     private final int deleteButtonWidth;
     private final int deleteButtonHeight;
     private final int deleteButtonYOffset;
-    private boolean hasInk = false;
-    private boolean hasBook = false;
+    private boolean hasInk;
+    private boolean hasBook;
+    private boolean hasFirstRendered;
 
     private String runes = "";
     private int midX;
     private int midY;
 
-    private MiniJournalScreen miniJournal;
+    private MiniJournal miniJournal;
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -73,24 +74,30 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         this.deleteButtonYOffset = 69;
         this.midX = 0;
         this.midY = 0;
+
+        this.hasInk = false;
+        this.hasBook = false;
+
+        this.miniJournal = new MiniJournal(this);
     }
 
     @Override
     protected void init() {
         super.init();
 
-        miniJournal = new MiniJournalScreen(minecraft, this);
-        miniJournal.init();
+        midX = width / 2;
+        midY = height / 2;
+
+        // Hack to prevent weird pixel positioning when window is rescaled.
+        if (height % 2 == 0) {
+            midY -= 1;
+        }
+
+        miniJournal.init(minecraft);
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        midX = width / 2;
-        midY = height / 2;
-
-        if (height % 2 == 0) {
-            midY -= 1;
-        }
 
         renderBackground(poseStack);
         renderBg(poseStack, delta, mouseX, mouseY);
@@ -111,6 +118,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         renderDeleteButton(poseStack, mouseX, mouseY);
         renderWrittenRunes(poseStack);
         renderTooltip(poseStack, mouseX, mouseY);
+
         miniJournal.render(poseStack, mouseX, mouseY);
     }
 

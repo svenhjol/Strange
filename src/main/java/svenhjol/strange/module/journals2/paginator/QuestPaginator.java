@@ -4,16 +4,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import svenhjol.charm.helper.ClientHelper;
-import svenhjol.strange.module.journals2.screen.quest.JournalQuestScreen;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestsClient;
 import svenhjol.strange.module.scrolls.Scrolls;
 
 import java.util.List;
-import java.util.function.Consumer;
 
-public class QuestPaginator extends Paginator<Quest> {
+public class QuestPaginator extends BasePaginator<Quest> {
     public QuestPaginator(List<Quest> quests) {
         super(quests);
     }
@@ -21,11 +18,6 @@ public class QuestPaginator extends Paginator<Quest> {
     @Override
     protected Component getItemName(Quest quest) {
         return new TextComponent(QuestsClient.getTitle(quest.getDefinition()));
-    }
-
-    @Override
-    protected Consumer<Quest> getItemClickAction(Quest quest) {
-        return q -> ClientHelper.getClient().ifPresent(client -> client.setScreen(new JournalQuestScreen(q)));
     }
 
     @Nullable

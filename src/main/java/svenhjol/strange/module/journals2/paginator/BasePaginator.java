@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.helper.GuiHelper;
@@ -16,10 +17,12 @@ import svenhjol.strange.module.journals2.screen.JournalScreen;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public abstract class Paginator<T> {
+public abstract class BasePaginator<T> {
     private final List<T> items;
     private int pageOffset;
     private int x;
@@ -31,19 +34,69 @@ public abstract class Paginator<T> {
     protected int yControls;
     protected int buttonWidth;
     protected int buttonHeight;
+    protected int distBetweenIconAndButton;
+    protected int distBetweenPageButtons;
+
+
+    protected BiConsumer<T, Button> onItemButtonRendered = (item, button) -> {};
+    protected Function<T, Component> onItemHovered = null;
 
     private List<T> sublist;
 
-    public Paginator(List<T> items) {
+    public BasePaginator(List<T> items) {
         this.perPage = 6;
         this.buttonHeight = 20;
         this.buttonWidth = 140;
         this.yOffset = 21;
         this.yControls = 180;
+        this.distBetweenIconAndButton = 6;
+        this.distBetweenPageButtons = 30;
         this.items = items;
     }
 
-    public void init(Screen screen, int pageOffset, int x, int y, Consumer<Integer> onRedraw) {
+    public void setPerPage(int perPage) {
+        this.perPage = perPage;
+    }
+
+    public void setButtonHeight(int buttonHeight) {
+        this.buttonHeight = buttonHeight;
+    }
+
+    public void setButtonWidth(int buttonWidth) {
+        this.buttonWidth = buttonWidth;
+    }
+
+    public void setYOffset(int yOffset) {
+        this.yOffset = yOffset;
+    }
+
+    public void setYControls(int yControls) {
+        this.yControls = yControls;
+    }
+
+    public void setDistBetweenIconAndButton(int distBetweenIconAndButton) {
+        this.distBetweenIconAndButton = distBetweenIconAndButton;
+    }
+
+    public void setDistBetweenPageButtons(int distBetweenPageButtons) {
+        this.distBetweenPageButtons = distBetweenPageButtons;
+    }
+
+    /**
+     * Define a function to be executed when creating a tooltip for the list item button.
+     */
+    public void setOnItemHovered(Function<T, Component> onItemHovered) {
+        this.onItemHovered = onItemHovered;
+    }
+
+    /**
+     * Define a consumer to be executed immediately after a list item has been rendered.
+     */
+    public void setOnItemButtonRendered(BiConsumer<T, Button> onItemButtonRendered) {
+        this.onItemButtonRendered = onItemButtonRendered;
+    }
+
+    public void init(Screen screen, int pageOffset, int x, int y, Consumer<T> onClick, Consumer<Integer> onRedraw) {
         this.pageOffset = pageOffset;
         this.currentPage = pageOffset - 1;
 
@@ -66,22 +119,42 @@ public abstract class Paginator<T> {
         for (int i = 0; i < sublist.size(); i++) {
             T item = sublist.get(i);
             var name = getItemName(item);
-            var action = getItemClickAction(item);
             var hasIcon = getItemIcon(item) != null;
-            var button = new Button(x - (buttonWidth / 2) + (hasIcon ? 6 : 0), y + (i * yOffset), buttonWidth, buttonHeight, name, b -> action.accept(item));
+
+            // Set up a button tooltip if the onItemTooltip function is defined.
+            Button.OnTooltip tooltip;
+            if (onItemHovered != null) {
+                tooltip = (button, poseStack, tx, ty) -> screen.renderTooltip(poseStack, onItemHovered.apply(item), tx, ty);
+            } else {
+                tooltip = Button.NO_TOOLTIP;
+            }
+
+            // Handle truncation if the text overflows the buttonWidth
+            if ((name.getContents().length() * 6) > buttonWidth) {
+                var max = buttonWidth / 6;
+                var newName = name.getContents().substring(0, max);
+                name = new TextComponent(newName);
+            }
+
+            // Add the button to the screen and run the onItemButtonRendered callback, allowing for manipulation of button state.
+            var bx = x - (buttonWidth / 2) + (hasIcon ? distBetweenIconAndButton : 0);
+            var by = y + (i * yOffset);
+            var button = new Button(bx, by, buttonWidth, buttonHeight, name, b -> onClick.accept(item), tooltip);
 
             screen.addRenderableWidget(button);
+            onItemButtonRendered.accept(item, button);
         }
 
+        // Draw the pagination buttons at the bottom of the page (yControls is the y-offset for these).
         if (size > perPage) {
             if (pageOffset * perPage < size) {
-                var button = new ImageButton(x + 30, yControls, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
+                var button = new ImageButton(x + distBetweenPageButtons, yControls, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
                     onRedraw.accept(this.pageOffset + 1);
                 });
                 screen.addRenderableWidget(button);
             }
             if (pageOffset > 1) {
-                var button = new ImageButton(x - 50, yControls, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
+                var button = new ImageButton(x - distBetweenPageButtons - 20, yControls, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
                     onRedraw.accept(this.pageOffset - 1);
                 });
                 screen.addRenderableWidget(button);
@@ -118,8 +191,6 @@ public abstract class Paginator<T> {
     }
 
     protected abstract Component getItemName(T item);
-
-    protected abstract Consumer<T> getItemClickAction(T item);
 
     @Nullable
     protected abstract ItemStack getItemIcon(T item);
