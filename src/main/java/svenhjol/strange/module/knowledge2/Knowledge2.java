@@ -18,7 +18,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.KnowledgeMessages;
-import svenhjol.strange.module.runes.Runes;
+import svenhjol.strange.module.knowledge2.command.KnowledgeCommand;
 
 import java.util.Optional;
 
@@ -28,6 +28,11 @@ public class Knowledge2 extends CharmModule {
 
     // This is set to the seed of the loaded overworld level.
     public static long SEED = Long.MIN_VALUE;
+
+    @Override
+    public void register() {
+        KnowledgeCommand.init();
+    }
 
     @Override
     public void runWhenEnabled() {
@@ -60,10 +65,6 @@ public class Knowledge2 extends CharmModule {
                 () -> new Knowledge2Data(overworld),
                 Knowledge2Data.getFileId(level.dimensionType())
             );
-
-            Runes.addBranch(knowledgeData.biomeBranch);
-            Runes.addBranch(knowledgeData.dimensionBranch);
-            Runes.addBranch(knowledgeData.structureBranch);
 
             Registry.STRUCTURE_FEATURE.forEach(structure -> knowledgeData.structureBranch.register(structure));
             BuiltinRegistries.BIOME.entrySet().forEach(entry -> knowledgeData.biomeBranch.register(entry.getValue()));
