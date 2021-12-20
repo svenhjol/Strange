@@ -132,7 +132,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     protected void renderLocationClue(PoseStack poseStack, Discovery discovery, Journal2Data journal) {
         String name;
         int left = midX - 76;
-        int top = midY - discovery.getRunes().length() > WRAP_AT ? 44 : 54;
+        int top = midY - (discovery.getRunes().length() > WRAP_AT ? 44 : 54);
         var unknown = Journal2Helper.countUnknownRunes(discovery.getRunes(), journal);
 
         if (unknown > 0 && unknown < Runestones.SHOW_TEXT_CLUE) {
