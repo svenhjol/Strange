@@ -191,7 +191,7 @@ public class MiniJournalScreen {
             int xOffset = 0;
             int yOffset = 24;
 
-            GuiHelper.addButtons(screen, screen.width, screen.font, homeButtons, buttonWidth, buttonHeight, x, y, xOffset, yOffset);
+            GuiHelper.addButtons(screen, screen.width, screen.font, homeButtons, x, y, xOffset, yOffset, buttonWidth, buttonHeight);
         }
     }
 
@@ -355,7 +355,7 @@ public class MiniJournalScreen {
     }
 
     private void redraw() {
-        ClientHelper.getClient().ifPresent(mc -> screen.init(mc, screen.width, screen.height));
+        screen.init(minecraft, screen.width, screen.height);
     }
 
     private String getTruncatedName(String name, int length) {
