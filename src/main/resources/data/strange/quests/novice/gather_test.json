@@ -1,33 +1,31 @@
 {
+  "test": true,
   "lang": {
     "en": {
-      "title": "Hunter Gathered",
-      "description": "Blahh blah blah ablh arhah what blah even SPLIT OVER LINES DAMN YOU woqeoiwekrowekr",
-      "hint": "Multiline\nworks?"
+      "title": "Gather Test",
+      "description": "Go find acacia logs.",
+      "hint": "You are amazing"
     }
-  },
-  "pack": "strange",
-  "hunt": {
-    "zombie": "1-2"
   },
   "gather": {
     "items": {
-      "birch_log": {
-        "count": "1-4"
-      },
-      "oak_log": {
-        "count": "1-4"
+      "acacia_log": {
+        "count": "12-16"
       }
     }
   },
   "reward": {
     "items": {
       "emerald": {
-        "count": "2-4"
+        "count": 1
       },
-      "loot0": {
+      "acacia_planks": {
+        "count": "16-24",
+        "chance": 0.75
+      },
+      "loot": {
         "table": "simple_dungeon",
-        "count": 5
+        "count": 3
       },
       "pool": {
         "items": "iron_helmet,iron_chestplate,iron_leggings,iron_boots",
@@ -39,7 +37,10 @@
     },
     "xp": {
       "player": {
-        "count": "2-4"
+        "count": 4
+      },
+      "villager": {
+        "count": 1
       }
     }
   }

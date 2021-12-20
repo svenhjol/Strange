@@ -14,7 +14,7 @@ import java.util.Map;
 public class QuestDefinition {
     private int tier;
     private String id;
-    private String pack;
+    private boolean test;
     private List<String> modules = new ArrayList<>();
     private List<String> dimensions = new ArrayList<>();
     private Map<String, Map<String, String>> lang = new HashMap<>();
@@ -36,11 +36,11 @@ public class QuestDefinition {
     }
 
     public Tier getTier() {
-        return Tier.byOrdinal(tier);
+        return Tier.byLevel(tier);
     }
 
-    public String getPack() {
-        return pack;
+    public boolean isTest() {
+        return test;
     }
 
     public List<String> getModules() {
@@ -80,6 +80,6 @@ public class QuestDefinition {
     }
 
     public void setTier(Tier tier) {
-        this.tier = tier.ordinal();
+        this.tier = tier.getLevel();
     }
 }

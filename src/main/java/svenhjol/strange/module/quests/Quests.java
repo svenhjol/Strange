@@ -65,7 +65,7 @@ public class Quests extends CharmModule {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeEnum(type);
         buffer.writeUtf(definitionId);
-        buffer.writeInt(tier.ordinal());
+        buffer.writeInt(tier.getLevel());
         ServerPlayNetworking.send(player, QuestMessages.CLIENT_SHOW_QUEST_TOAST, buffer);
     }
 
@@ -124,6 +124,8 @@ public class Quests extends CharmModule {
         QUESTCHECK: for (QuestDefinition definition : tierDefinitions) {
             List<String> dimensions = definition.getDimensions();
             List<String> modules = definition.getModules();
+
+            if (definition.isTest()) continue;
 
             if (!modules.isEmpty()) {
                 Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
