@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -24,10 +23,9 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
-import svenhjol.strange.module.teleport.EntityTeleportTicket;
-import svenhjol.strange.module.teleport.ITicket;
+import svenhjol.strange.module.teleport.iface.ITicket;
 import svenhjol.strange.module.teleport.Teleport;
-import svenhjol.strange.module.teleport.helper.TeleportHelper;
+import svenhjol.strange.module.teleport.runic.RunicTeleportTicket;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,14 +45,14 @@ public abstract class BaseTeleportHandler<V> {
     protected int maxDistance;
     protected V value;
 
-    protected static final List<MobEffect> POSITIVE_EFFECTS;
-    protected static final List<MobEffect> NEGATIVE_EFFECTS;
+    public static final List<MobEffect> POSITIVE_EFFECTS;
+    public static final List<MobEffect> NEGATIVE_EFFECTS;
 
     public BaseTeleportHandler(RuneBranch<?, V> branch) {
         this.branch = branch;
     }
 
-    public boolean setup(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
+    public boolean init(ServerLevel level, LivingEntity entity, ItemStack sacrifice, String runes, BlockPos originPos) {
         if (!branch.contains(runes)) {
             return false;
         }
@@ -71,80 +69,94 @@ public abstract class BaseTeleportHandler<V> {
         return value != null;
     }
 
-    public abstract void process();
+    public abstract boolean process();
 
-    protected void tryTeleport(ResourceLocation targetDimension, BlockPos targetPos, boolean exactPosition, boolean allowDimensionChange) {
+    protected boolean teleport(ResourceLocation targetDimension, BlockPos targetPos, boolean exactPosition, boolean allowDimensionChange) {
         this.targetPos = targetPos;
         this.targetDimension = targetDimension;
 
-        boolean isPlayer = entity instanceof ServerPlayer;
-        boolean valid = checkAndApplyEffects();
-
-        if (valid) {
-            EntityTeleportTicket entry = new EntityTeleportTicket(entity, targetDimension, originPos, this.targetPos, exactPosition, allowDimensionChange, this::onSuccess, this::onFail);
-            Teleport.teleportTickets.add(entry);
-        }
-
-        if (isPlayer) {
-            Teleport.sendClientTeleportEffect((ServerPlayer) entity, originPos, valid ? Teleport.Type.RUNESTONE : Teleport.Type.FAIL);
-        }
-    }
-
-    protected boolean checkAndApplyEffects() {
-        if (targetPos == null || targetDimension == null) {
+        if (!checkPosAndDimension()) {
             entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 1));
             return false;
         }
 
-        List<Item> items = RunestoneHelper.getItems(originDimension, runes);
-        Item sacrificeItem = sacrifice.getItem();
-        Item mainItem = items.get(0);
-        Random random = new Random(sacrificeItem.hashCode());
+        ItemOutcome result = checkSacrifice();
+        doEffects(result);
 
-        if (sacrificeItem.equals(mainItem)) {
-            int duration = Runestones.protectionDuration * 20;
-            int amplifier = 2;
-            POSITIVE_EFFECTS.forEach(effect -> entity.addEffect(new MobEffectInstance(effect, duration, amplifier)));
-
+        if (result == ItemOutcome.SUCCESS || result == ItemOutcome.PARTIAL_SUCCESS) {
+            var ticket = new RunicTeleportTicket(entity, targetDimension, originPos, this.targetPos);
+            ticket.useExactPosition(exactPosition);
+            ticket.allowDimensionChange(allowDimensionChange);
+            Teleport.addTeleportTicket(ticket);
             return true;
-        } else if (items.contains(sacrificeItem)) {
-            applyNegativeEffect(random);
-            return true;
-        } else {
-            LogHelper.debug(this.getClass(), "Invalid sacrificial item, doing Bad Things");
-            float f = random.nextFloat();
-            if (f < 0.1F) {
-                TeleportHelper.explode(level, originPos, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
-            } else if (f < 0.4F) {
-                entity.setSecondsOnFire(5);
-            } else if (f < 0.8F) {
-                applyNegativeEffect(random);
-            } else {
-                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
-                if (lightning != null) {
-                    lightning.moveTo(Vec3.atBottomCenterOf(entity.blockPosition()));
-                    lightning.setVisualOnly(false);
-                    level.addFreshEntity(lightning);
-                }
-            }
         }
 
         return false;
     }
 
-    private void onSuccess(ITicket ticket) {
-        // no op
+    protected boolean checkPosAndDimension() {
+        return targetPos != null && targetDimension != null;
+    }
+
+    protected ItemOutcome checkSacrifice() {
+        List<Item> items = RunestoneHelper.getItems(originDimension, runes);
+        Item sacrificeItem = sacrifice.getItem();
+        Item mainItem = items.get(0);
+
+        if (sacrificeItem.equals(mainItem)) {
+            return ItemOutcome.SUCCESS;
+        } else if (items.contains(sacrificeItem)) {
+            return ItemOutcome.PARTIAL_SUCCESS;
+        }
+
+        return ItemOutcome.FAIL;
+    }
+
+    protected void doEffects(ItemOutcome result) {
+        Item sacrificeItem = sacrifice.getItem();
+        Random random = new Random(sacrificeItem.hashCode());
+
+        if (result == ItemOutcome.SUCCESS) {
+            applyPositiveEffect();
+        } else if (result == ItemOutcome.PARTIAL_SUCCESS) {
+            applyNegativeEffect(random);
+        } else if (result == ItemOutcome.FAIL) {
+            applyFailureEffect(random);
+        }
     }
 
     private void onFail(ITicket ticket) {
-        LogHelper.warn(this.getClass(), "Teleport ticket failed, blowing up the origin");
-        TeleportHelper.explode(level, originPos, 2.0F, Explosion.BlockInteraction.BREAK);
     }
 
-    private void applyNegativeEffect(Random random) {
+    protected void applyPositiveEffect() {
+        int duration = Runestones.protectionDuration * 20;
+        int amplifier = 2;
+        POSITIVE_EFFECTS.forEach(effect -> entity.addEffect(new MobEffectInstance(effect, duration, amplifier)));
+    }
+
+    protected void applyNegativeEffect(Random random) {
         int duration = Runestones.penaltyDuration * 20;
         MobEffect effect = NEGATIVE_EFFECTS.get(random.nextInt(NEGATIVE_EFFECTS.size()));
         entity.addEffect(new MobEffectInstance(effect, duration, 1));
+    }
+
+    protected void applyFailureEffect(Random random) {
+        LogHelper.debug(getClass(), "Invalid sacrificial item, doing Bad Things");
+        float f = random.nextFloat();
+        if (f < 0.05F) {
+            WorldHelper.explode(level, originPos, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
+        } else if (f < 0.4F) {
+            entity.setSecondsOnFire(5);
+        } else if (f < 0.8F) {
+            applyNegativeEffect(random);
+        } else {
+            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
+            if (lightning != null) {
+                lightning.moveTo(Vec3.atBottomCenterOf(entity.blockPosition()));
+                lightning.setVisualOnly(false);
+                level.addFreshEntity(lightning);
+            }
+        }
     }
 
     protected BlockPos checkBounds(Level world, BlockPos pos) {
@@ -173,15 +185,15 @@ public abstract class BaseTeleportHandler<V> {
         StructureFeature<?> structureFeature = Registry.STRUCTURE_FEATURE.get(id);
 
         if (structureFeature == null) {
-            LogHelper.warn(this.getClass(), "Could not find structure in registry of type: " + id);
+            LogHelper.warn(getClass(), "Could not find structure in registry of type: " + id);
             return null;
         }
 
-        LogHelper.debug(this.getClass(), "Trying to locate structure in the world: " + id);
+        LogHelper.debug(getClass(), "Trying to locate structure in the world: " + id);
         BlockPos foundPos = level.findNearestMapFeature(structureFeature, destPos, 1000, false);
 
         if (foundPos == null) {
-            LogHelper.warn(this.getClass(), "Could not locate structure: " + id);
+            LogHelper.warn(getClass(), "Could not locate structure: " + id);
             return null;
         }
 
@@ -198,19 +210,25 @@ public abstract class BaseTeleportHandler<V> {
         Optional<Biome> biome = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(id);
 
         if (biome.isEmpty()) {
-            LogHelper.warn(this.getClass(), "Could not find biome in registry of type: " + id);
+            LogHelper.warn(getClass(), "Could not find biome in registry of type: " + id);
             return null;
         }
 
-        LogHelper.debug(this.getClass(), "Trying to locate biome in the world: " + id);
+        LogHelper.debug(getClass(), "Trying to locate biome in the world: " + id);
         BlockPos foundPos = level.findNearestBiome(biome.get(), destPos, 6400, 8); // ints stolen from LocateBiomeCommand
 
         if (foundPos == null) {
-            LogHelper.warn(this.getClass(), "Could not locate biome: " + id);
+            LogHelper.warn(getClass(), "Could not locate biome: " + id);
             return null;
         }
 
         return WorldHelper.addRandomOffset(foundPos, random, 6, 12);
+    }
+
+    public enum ItemOutcome {
+        SUCCESS,
+        PARTIAL_SUCCESS,
+        FAIL
     }
 
     static {

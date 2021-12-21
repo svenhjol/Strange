@@ -10,9 +10,9 @@ public class StructureTeleportHandler extends BaseTeleportHandler<ResourceLocati
     }
 
     @Override
-    public void process() {
+    public boolean process() {
         BlockPos target = getStructureTarget(value, level, originPos);
         ResourceLocation dimension = level.dimension().location();
-        tryTeleport(dimension, target, false, false);
+        return teleport(dimension, target, false, false);
     }
 }

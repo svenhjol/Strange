@@ -10,9 +10,9 @@ public class BiomeTeleportHandler extends BaseTeleportHandler<ResourceLocation> 
     }
 
     @Override
-    public void process() {
+    public boolean process() {
         BlockPos target = getBiomeTarget(value, level, originPos);
         ResourceLocation dimension = level.dimension().location();
-        tryTeleport(dimension, target,false, false);
+        return teleport(dimension, target,false, false);
     }
 }

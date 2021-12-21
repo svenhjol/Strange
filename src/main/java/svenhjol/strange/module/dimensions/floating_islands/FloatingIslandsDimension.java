@@ -1,6 +1,5 @@
 package svenhjol.strange.module.dimensions.floating_islands;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -14,8 +13,8 @@ import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
-import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.Teleport;
+import svenhjol.strange.module.teleport.ticket.GenericTeleportTicket;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,10 +56,11 @@ public class FloatingIslandsDimension implements IDimension {
     @Override
     public void handlePlayerTick(Player player) {
         // When the player falls out of the world (lower than Y=-16) then teleport them back to the overworld.
-        if (!player.level.isClientSide && player.level.getGameTime() % 5 == 0 && player.getY() < -16D) {
-            // don't keep adding teleport tickets for this player
-            if (Teleport.teleportTickets.stream().anyMatch(t -> t.getEntity() == player)) return;
-
+        if (!Teleport.hasTeleportTicket(player)
+            && !player.level.isClientSide
+            && player.level.getGameTime() % 5 == 0
+            && player.getY() < -16D
+        ) {
             ServerLevel serverLevel = (ServerLevel)player.level;
             ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
             if (overworld == null) return;
@@ -68,7 +68,11 @@ public class FloatingIslandsDimension implements IDimension {
             int height = overworld.getLogicalHeight();
             BlockPos source = player.blockPosition();
             BlockPos target = new BlockPos(source.getX(), height, source.getZ());
-            Teleport.teleportTickets.add(new EntityTeleportTicket(player, overworld.dimension().location(), source, target, true, true));
+
+            var ticket = new GenericTeleportTicket(player, overworld.dimension().location(), source, target);
+            ticket.useExactPosition(true);
+            ticket.allowDimensionChange(true);
+            Teleport.addTeleportTicket(ticket);
         }
     }
 

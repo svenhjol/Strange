@@ -1,4 +1,4 @@
-package svenhjol.strange.module.teleport;
+package svenhjol.strange.module.teleport.ticket;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
@@ -6,12 +6,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
@@ -19,50 +15,61 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.init.StrangeSounds;
+import svenhjol.strange.module.teleport.iface.ITicket;
+import svenhjol.strange.module.teleport.Teleport;
 
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Consumer;
 
-public class EntityTeleportTicket implements ITicket {
+public abstract class TeleportTicket implements ITicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
     private boolean success;
-    private final boolean exactPosition;
-    private final boolean allowDimensionChange;
-    private final Consumer<ITicket> onSuccess;
-    private final Consumer<ITicket> onFail;
+    private boolean exactPosition;
+    private boolean allowDimensionChange;
     private final LivingEntity entity;
     private final ServerLevel level;
     private final ResourceLocation dimension;
     private final BlockPos from;
     private final BlockPos to;
 
-    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange) {
-        this(entity, dimension, from, to, exactPosition, allowDimensionChange, t -> {}, t -> {});
-    }
-
-    public EntityTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to, boolean exactPosition, boolean allowDimensionChange, Consumer<ITicket> onSuccess, Consumer<ITicket> onFail) {
+    public TeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to) {
         this.entity = entity;
         this.level = (ServerLevel)entity.level;
         this.dimension = dimension;
         this.from = from;
         this.to = to;
-        this.exactPosition = exactPosition;
-        this.allowDimensionChange = allowDimensionChange;
-        this.onSuccess = onSuccess;
-        this.onFail = onFail;
+        this.exactPosition = false;
+        this.allowDimensionChange = false;
         this.valid = true;
         this.chunkLoaded = false;
         this.success = false;
         this.ticks = 0;
+    }
 
-        // Inform the client that we have started a teleport ticket. Allows for client effects.
-        if (entity instanceof Player && !entity.level.isClientSide) {
-            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));
-            Teleport.sendClientTeleportEffect((ServerPlayer)entity, from, Teleport.Type.RUNIC_TOME);
-        }
+    public void useExactPosition(boolean value) {
+        this.exactPosition = value;
+    }
+
+    public void allowDimensionChange(boolean value) {
+        this.allowDimensionChange = value;
+    }
+
+    public BlockPos getFrom() {
+        return from;
+    }
+
+    public BlockPos getTo() {
+        return to;
+    }
+
+    public ServerLevel getLevel() {
+        return level;
+    }
+
+    public ResourceLocation getDimension() {
+        return dimension;
     }
 
     public void tick() {
@@ -74,7 +81,7 @@ public class EntityTeleportTicket implements ITicket {
             chunkLoaded = openChunk();
 
             if (!chunkLoaded) {
-                LogHelper.warn(this.getClass(), "Could not load destination chunk, giving up");
+                LogHelper.warn(getClass(), "Could not load destination chunk, giving up");
                 valid = false;
                 return;
             }
@@ -86,7 +93,7 @@ public class EntityTeleportTicket implements ITicket {
             return;
         }
 
-        if (ticks++ == Teleport.TELEPORT_TICKS) {
+        if (ticks++ >= Teleport.teleportTicks) {
             BlockPos found;
             BlockPos target = to;
             Random r = new Random();
@@ -114,7 +121,7 @@ public class EntityTeleportTicket implements ITicket {
                         }
 
                         if (!exactPosition) {
-                            Teleport.repositionTickets.add(new EntityRepositionTicket(teleportedEntity, t -> Teleport.noEndPlatform.remove(uuid)));
+                            Teleport.addRepositionTicket(new GenericRepositionTicket(teleportedEntity));
                         }
                         success = true;
                         return;
@@ -129,19 +136,19 @@ public class EntityTeleportTicket implements ITicket {
 
             if (exactPosition) {
                 found = target;
-                LogHelper.debug(this.getClass(), "Using exactPosition in current dimension: " + found);
+                LogHelper.debug(getClass(), "Using exactPosition in current dimension: " + found);
             } else {
                 if (level.dimensionType().hasCeiling()) {
                     found = WorldHelper.getSurfacePos(level, target, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
-                    LogHelper.debug(this.getClass(), "Dimension has ceiling, using limited surfacePos: " + found);
+                    LogHelper.debug(getClass(), "Dimension has ceiling, using limited surfacePos: " + found);
                 } else {
                     found = WorldHelper.getSurfacePos(level, target);
-                    LogHelper.debug(this.getClass(), "Dimension has no ceiling, using surfacePos: " + found);
+                    LogHelper.debug(getClass(), "Dimension has no ceiling, using surfacePos: " + found);
                 }
 
                 if (found == null) {
                     found = target;
-                    LogHelper.debug(this.getClass(), "Could not find a target, using original: " + found);
+                    LogHelper.debug(getClass(), "Could not find a target, using original: " + found);
                 }
             }
 
@@ -149,7 +156,7 @@ public class EntityTeleportTicket implements ITicket {
 
             if (!exactPosition) {
                 // create a reposition ticket to safely land the player after teleport
-                Teleport.repositionTickets.add(new EntityRepositionTicket(entity, t -> {}));
+                Teleport.addRepositionTicket(new GenericRepositionTicket(entity));
             }
 
             closeChunk();
@@ -163,18 +170,8 @@ public class EntityTeleportTicket implements ITicket {
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean isSuccessful() {
         return success;
-    }
-
-    @Override
-    public void onSuccess() {
-        this.onSuccess.accept(this);
-    }
-
-    @Override
-    public void onFail() {
-        this.onFail.accept(this);
     }
 
     @Override

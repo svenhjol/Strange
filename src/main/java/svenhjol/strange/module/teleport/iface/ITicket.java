@@ -1,4 +1,4 @@
-package svenhjol.strange.module.teleport;
+package svenhjol.strange.module.teleport.iface;
 
 import net.minecraft.world.entity.LivingEntity;
 
@@ -7,11 +7,11 @@ public interface ITicket {
 
     boolean isValid();
 
-    boolean isSuccess();
+    boolean isSuccessful();
 
-    void onSuccess();
+    default void success() {}
 
-    void onFail();
+    default void fail() {}
 
     LivingEntity getEntity();
 }

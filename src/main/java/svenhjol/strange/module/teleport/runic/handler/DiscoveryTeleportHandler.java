@@ -14,7 +14,7 @@ public class DiscoveryTeleportHandler extends BaseTeleportHandler<Discovery> {
     }
 
     @Override
-    public void process() {
+    public boolean process() {
         ResourceLocation id = value.getLocation();
         ResourceLocation dimension = value.getDimension();
         BlockPos target;
@@ -29,9 +29,9 @@ public class DiscoveryTeleportHandler extends BaseTeleportHandler<Discovery> {
         } else if (WorldHelper.isBiome(id)) {
             target = getBiomeTarget(id, level, originPos);
         } else {
-            return;
+            return false;
         }
 
-        tryTeleport(dimension, target, false, allowDimensionChange);
+        return teleport(dimension, target, false, allowDimensionChange);
     }
 }

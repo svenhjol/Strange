@@ -11,9 +11,9 @@ public class BookmarkTeleportHandler extends BaseTeleportHandler<Bookmark> {
     }
 
     @Override
-    public void process() {
+    public boolean process() {
         BlockPos target = value.getBlockPos();
         ResourceLocation dimension  = value.getDimension();
-        tryTeleport(dimension, target, true, false);
+        return teleport(dimension, target, true, false);
     }
 }

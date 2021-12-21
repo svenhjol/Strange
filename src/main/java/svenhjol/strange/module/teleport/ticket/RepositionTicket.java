@@ -1,4 +1,4 @@
-package svenhjol.strange.module.teleport;
+package svenhjol.strange.module.teleport.ticket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,25 +9,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.module.teleport.iface.ITicket;
+import svenhjol.strange.module.teleport.Teleport;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
-public class EntityRepositionTicket implements ITicket {
+public abstract class RepositionTicket implements ITicket {
     private final LivingEntity entity;
     private final ServerLevel level;
     private int ticks;
     private boolean valid;
     private boolean success;
-    private final Consumer<ITicket> onSuccess;
 
-    public EntityRepositionTicket(LivingEntity entity, Consumer<ITicket> onSuccess) {
+    public RepositionTicket(LivingEntity entity) {
         this.entity = entity;
         this.level = (ServerLevel)entity.level;
         this.ticks = 0;
         this.valid = true;
         this.success = false;
-        this.onSuccess = onSuccess;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class EntityRepositionTicket implements ITicket {
 
         if (!valid) return;
 
-        if (ticks++ == Teleport.REPOSITION_TICKS) {
+        if (ticks++ >= Teleport.repositionTicks) {
             LogHelper.debug(this.getClass(), "Processing reposition ticket");
             BlockPos pos = entity.blockPosition();
             BlockState surfaceBlock = getSurfaceBlockForDimension(level);
@@ -108,6 +107,7 @@ public class EntityRepositionTicket implements ITicket {
                 makePlatform(relative, surfaceBlock);
             }
 
+            Teleport.noEndPlatform.remove(entity.getUUID());
             success = true;
         }
     }
@@ -118,18 +118,8 @@ public class EntityRepositionTicket implements ITicket {
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean isSuccessful() {
         return success;
-    }
-
-    @Override
-    public void onSuccess() {
-        onSuccess.accept(this);
-    }
-
-    @Override
-    public void onFail() {
-        // no
     }
 
     @Override

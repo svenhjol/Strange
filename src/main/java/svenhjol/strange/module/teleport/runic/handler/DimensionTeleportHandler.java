@@ -10,9 +10,9 @@ public class DimensionTeleportHandler extends BaseTeleportHandler<ResourceLocati
     }
 
     @Override
-    public void process() {
+    public boolean process() {
         BlockPos target = entity.blockPosition();
         ResourceLocation dimension = value;
-        tryTeleport(dimension, target, false, true);
+        return teleport(dimension, target, false, true);
     }
 }
