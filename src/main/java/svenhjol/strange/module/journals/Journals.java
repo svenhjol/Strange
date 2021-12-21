@@ -38,6 +38,10 @@ import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.PageTracker.Page;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
+import svenhjol.strange.module.journals.helper.JournalHelper;
+import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.Quests;
+import svenhjol.strange.module.quests.event.QuestEvents;
 
 import java.io.File;
 import java.util.*;
@@ -60,6 +64,19 @@ public class Journals extends CharmModule {
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
         ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_SYNC_JOURNAL, this::handleSyncJournal);
         ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_MAKE_MAP, this::handleMakeMap);
+        QuestEvents.COMPLETE.register(this::handleQuestComplete);
+    }
+
+    private void handleQuestComplete(Quest quest, ServerPlayer player) {
+        // Quest tiers are tied to rune tiers.
+        // Each quest in a tier will reward the player with a single rune from the equivalent rune tier.
+        // Once the player has exhausted that tier's runes, higher level quests will reward new ones.
+        if (!Quests.rewardRunes) return;
+        var val = JournalHelper.nextLearnableRune(quest.getTier());
+
+        if (val >= 0) {
+            Journals.getJournal(player).ifPresent(journal -> journal.learnRune(val));
+        }
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
