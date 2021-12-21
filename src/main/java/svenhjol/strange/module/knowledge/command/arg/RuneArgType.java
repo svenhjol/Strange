@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2.command.arg;
+package svenhjol.strange.module.knowledge.command.arg;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;

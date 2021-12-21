@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2;
+package svenhjol.strange.module.knowledge;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -11,12 +11,12 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.KnowledgeMessages;
-import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
-import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
-import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+import svenhjol.strange.module.knowledge.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge.branch.StructureBranch;
 
-@ClientModule(module = Knowledge2.class)
-public class Knowledge2Client extends CharmModule {
+@ClientModule(module = Knowledge.class)
+public class KnowledgeClient extends CharmModule {
     public static @Nullable BiomeBranch biomes;
     public static @Nullable DimensionBranch dimensions;
     public static @Nullable StructureBranch structures;
@@ -32,7 +32,7 @@ public class Knowledge2Client extends CharmModule {
     private void handleSyncSeed(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         long seed = buffer.readLong();
         client.execute(() -> {
-            Knowledge2.SEED = seed;
+            Knowledge.SEED = seed;
             LogHelper.debug(getClass(), "Received seed " + seed + " from server.");
         });
     }

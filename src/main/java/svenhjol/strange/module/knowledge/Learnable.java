@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2;
+package svenhjol.strange.module.knowledge;
 
 import svenhjol.charm.enums.ICharmEnum;
 

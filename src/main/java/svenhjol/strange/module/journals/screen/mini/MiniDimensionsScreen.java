@@ -7,7 +7,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.paginator.DimensionPaginator;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.MiniJournal;
-import svenhjol.strange.module.knowledge2.Knowledge2;
+import svenhjol.strange.module.knowledge.Knowledge;
 
 public class MiniDimensionsScreen extends BaseMiniScreen {
     private DimensionPaginator paginator;
@@ -56,7 +56,7 @@ public class MiniDimensionsScreen extends BaseMiniScreen {
 
         if (mini.selectedDimension != null) {
 
-            var knowledge = Knowledge2.getKnowledge().orElse(null);
+            var knowledge = Knowledge.getKnowledge().orElse(null);
             if (knowledge == null) return;
 
             // Get the runes for the selected dimension.

@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
-import svenhjol.strange.module.knowledge2.Knowledge2Client;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runes.RuneBranch;
 
 import javax.annotation.Nullable;
@@ -23,7 +23,7 @@ public class JournalDimensionScreen extends JournalResourceScreen {
     @Nullable
     @Override
     public RuneBranch<?, ResourceLocation> getBranch() {
-        return Knowledge2Client.dimensions;
+        return KnowledgeClient.dimensions;
     }
 
     @Override

@@ -18,9 +18,9 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.bookmarks.BookmarkBranch;
 import svenhjol.strange.module.discoveries.DiscoveryBranch;
-import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
-import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
-import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+import svenhjol.strange.module.knowledge.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge.branch.StructureBranch;
 
 @ClientModule(module = RunicTomes.class)
 public class RunicTomesClient extends CharmModule {

@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2.command;
+package svenhjol.strange.module.knowledge.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -23,9 +23,9 @@ import svenhjol.strange.helper.CommandHelper;
 import svenhjol.strange.init.StrangeCommands;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.knowledge2.Knowledge2;
-import svenhjol.strange.module.knowledge2.Knowledge2Data;
-import svenhjol.strange.module.knowledge2.command.arg.RuneArgType;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
 import svenhjol.strange.module.runes.Runes;
 
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class KnowledgeCommand {
     public static int learnAllBiomes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
         JournalData journal = getJournal(player);
-        Knowledge2Data knowledge = getKnowledge();
+        KnowledgeData knowledge = getKnowledge();
 
         knowledge.biomeBranch.values().forEach(journal::learnBiome);
         Journals.sendJournal(player);
@@ -128,7 +128,7 @@ public class KnowledgeCommand {
     private static int learnAllStructures(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
         JournalData journal = getJournal(player);
-        Knowledge2Data knowledge = getKnowledge();
+        KnowledgeData knowledge = getKnowledge();
 
         knowledge.structureBranch.values().forEach(journal::learnStructure);
         Journals.sendJournal(player);
@@ -140,7 +140,7 @@ public class KnowledgeCommand {
     private static int learnAllDimensions(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
         JournalData journal = getJournal(player);
-        Knowledge2Data knowledge = getKnowledge();
+        KnowledgeData knowledge = getKnowledge();
 
         knowledge.dimensionBranch.values().forEach(journal::learnDimension);
         Journals.sendJournal(player);
@@ -223,8 +223,8 @@ public class KnowledgeCommand {
         return Journals.getJournal(player).orElseThrow(() -> CommandHelper.makeException("Journal error", "Could not load the player's journal"));
     }
 
-    private static Knowledge2Data getKnowledge() throws CommandSyntaxException {
-        return Knowledge2.getKnowledge().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
+    private static KnowledgeData getKnowledge() throws CommandSyntaxException {
+        return Knowledge.getKnowledge().orElseThrow(() -> CommandHelper.makeException("Knowledge error", "Could not load knowledge data"));
     }
 
     static {

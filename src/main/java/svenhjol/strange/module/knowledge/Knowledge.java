@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2;
+package svenhjol.strange.module.knowledge;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -20,13 +20,13 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.KnowledgeMessages;
-import svenhjol.strange.module.knowledge2.command.KnowledgeCommand;
+import svenhjol.strange.module.knowledge.command.KnowledgeCommand;
 
 import java.util.Optional;
 
 @CommonModule(mod = Strange.MOD_ID)
-public class Knowledge2 extends CharmModule {
-    private static Knowledge2Data knowledgeData;
+public class Knowledge extends CharmModule {
+    private static KnowledgeData knowledgeData;
 
     // This is set to the seed of the loaded overworld level.
     public static long SEED = Long.MIN_VALUE;
@@ -46,7 +46,7 @@ public class Knowledge2 extends CharmModule {
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_STRUCTURES, this::handleSyncStructures);
     }
 
-    public static Optional<Knowledge2Data> getKnowledge() {
+    public static Optional<KnowledgeData> getKnowledge() {
         return Optional.ofNullable(knowledgeData);
     }
 
@@ -100,9 +100,9 @@ public class Knowledge2 extends CharmModule {
             // Set up knowledge and register world things.
             DimensionDataStorage storage = overworld.getDataStorage();
             knowledgeData = storage.computeIfAbsent(
-                tag -> Knowledge2Data.load(overworld, tag),
-                () -> new Knowledge2Data(overworld),
-                Knowledge2Data.getFileId(level.dimensionType())
+                tag -> KnowledgeData.load(overworld, tag),
+                () -> new KnowledgeData(overworld),
+                KnowledgeData.getFileId(level.dimensionType())
             );
 
             Registry.STRUCTURE_FEATURE.forEach(structure -> knowledgeData.structureBranch.register(structure));

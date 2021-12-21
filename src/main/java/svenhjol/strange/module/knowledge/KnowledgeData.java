@@ -1,23 +1,23 @@
-package svenhjol.strange.module.knowledge2;
+package svenhjol.strange.module.knowledge;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
-import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
-import svenhjol.strange.module.knowledge2.branch.StructureBranch;
+import svenhjol.strange.module.knowledge.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge.branch.StructureBranch;
 
 import javax.annotation.Nullable;
 
-public class Knowledge2Data extends SavedData {
+public class KnowledgeData extends SavedData {
     public static final String SEED_TAG = "Seed";
 
     public BiomeBranch biomeBranch;
     public DimensionBranch dimensionBranch;
     public StructureBranch structureBranch;
 
-    public Knowledge2Data(@Nullable ServerLevel level) {
+    public KnowledgeData(@Nullable ServerLevel level) {
         this.setDirty();
 
         biomeBranch = new BiomeBranch();
@@ -27,7 +27,7 @@ public class Knowledge2Data extends SavedData {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.putLong(SEED_TAG, Knowledge2.SEED);
+        tag.putLong(SEED_TAG, Knowledge.SEED);
 
         biomeBranch.save(tag);
         dimensionBranch.save(tag);
@@ -36,12 +36,12 @@ public class Knowledge2Data extends SavedData {
         return tag;
     }
 
-    public static Knowledge2Data load(CompoundTag tag) {
+    public static KnowledgeData load(CompoundTag tag) {
         return load(null, tag);
     }
 
-    public static Knowledge2Data load(@Nullable ServerLevel level, CompoundTag tag) {
-        Knowledge2Data knowledge = new Knowledge2Data(level);
+    public static KnowledgeData load(@Nullable ServerLevel level, CompoundTag tag) {
+        KnowledgeData knowledge = new KnowledgeData(level);
 
         knowledge.biomeBranch = BiomeBranch.load(tag);
         knowledge.dimensionBranch = DimensionBranch.load(tag);
@@ -51,6 +51,6 @@ public class Knowledge2Data extends SavedData {
     }
 
     public static String getFileId(DimensionType dimensionType) {
-        return "strange_knowledge2" + dimensionType.getFileSuffix();
+        return "strange_knowledge" + dimensionType.getFileSuffix();
     }
 }

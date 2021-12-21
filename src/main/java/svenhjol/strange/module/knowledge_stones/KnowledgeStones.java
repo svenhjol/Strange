@@ -3,7 +3,7 @@ package svenhjol.strange.module.knowledge_stones;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.knowledge2.Learnable;
+import svenhjol.strange.module.knowledge.Learnable;
 
 import java.util.HashMap;
 import java.util.Map;

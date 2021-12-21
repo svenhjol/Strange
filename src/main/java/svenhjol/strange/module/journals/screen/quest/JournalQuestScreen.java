@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.helper.JournalHelper;
-import svenhjol.strange.module.knowledge2.Learnable;
+import svenhjol.strange.module.knowledge.Learnable;
 import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;

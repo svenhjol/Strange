@@ -1,4 +1,4 @@
-package svenhjol.strange.module.knowledge2.exception;
+package svenhjol.strange.module.knowledge.exception;
 
 import svenhjol.charm.helper.LogHelper;
 

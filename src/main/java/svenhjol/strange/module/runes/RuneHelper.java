@@ -2,7 +2,7 @@ package svenhjol.strange.module.runes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import svenhjol.strange.module.knowledge2.Knowledge2;
+import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runes.exception.RuneStringException;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ public class RuneHelper {
      * Fetches an RNG based on the seed of the loaded overworld or a fresh one if the seed isn't set.
      */
     public static Random getRandom() {
-        return Knowledge2.SEED == Long.MIN_VALUE ? new Random() : new Random(Knowledge2.SEED);
+        return Knowledge.SEED == Long.MIN_VALUE ? new Random() : new Random(Knowledge.SEED);
     }
 
     /**

@@ -1,28 +1,27 @@
-package svenhjol.strange.module.knowledge2.branch;
+package svenhjol.strange.module.knowledge.branch;
 
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.StringHelper;
-import svenhjol.strange.module.knowledge2.exception.RegistrationException;
+import svenhjol.strange.module.knowledge.exception.RegistrationException;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runes.Tier;
 
-public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
-    public static final String NAME = "Biomes";
+public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
+    public static final String NAME = "Dimensions";
 
     @Override
-    public ResourceLocation register(Biome biome) {
-        ResourceLocation id = BuiltinRegistries.BIOME.getKey(biome);
+    public ResourceLocation register(Level level) {
+        ResourceLocation id = level.dimension().location();
 
         if (id == null) {
-            throw new RegistrationException("Could not register biome `" + biome + "`");
+            throw new RegistrationException("Could not register dimension `" + level + "`");
         }
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
@@ -38,13 +37,13 @@ public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
 
     @Override
     public char getStartRune() {
-        return RuneHelper.getFromRuneSet(Tier.APPRENTICE, 0);
+        return RuneHelper.getFromRuneSet(Tier.JOURNEYMAN, 1);
     }
 
     @Override
     public @Nullable String getValueName(String runes) {
-        var biome = get(runes);
-        return biome != null ? StringHelper.snakeToPretty(biome.getPath()) : null;
+        var dimension = get(runes);
+        return dimension != null ? StringHelper.snakeToPretty(dimension.getPath()) : null;
     }
 
     @Override
@@ -52,8 +51,8 @@ public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
         return NAME;
     }
 
-    public static BiomeBranch load(CompoundTag tag) {
-        BiomeBranch branch = new BiomeBranch();
+    public static DimensionBranch load(CompoundTag tag) {
+        DimensionBranch branch = new DimensionBranch();
         CompoundTag map = tag.getCompound(branch.getBranchName());
         map.getAllKeys().forEach(runes -> branch.add(runes, new ResourceLocation(map.getString(runes))));
         return branch;

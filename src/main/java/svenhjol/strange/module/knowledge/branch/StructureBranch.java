@@ -1,27 +1,28 @@
-package svenhjol.strange.module.knowledge2.branch;
+package svenhjol.strange.module.knowledge.branch;
 
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.StringHelper;
-import svenhjol.strange.module.knowledge2.exception.RegistrationException;
+import svenhjol.strange.module.knowledge.exception.RegistrationException;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runes.Tier;
 
-public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
-    public static final String NAME = "Dimensions";
+public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLocation> {
+    public static final String NAME = "Structures";
 
     @Override
-    public ResourceLocation register(Level level) {
-        ResourceLocation id = level.dimension().location();
+    public ResourceLocation register(StructureFeature<?> structureFeature) {
+        ResourceLocation id = Registry.STRUCTURE_FEATURE.getKey(structureFeature);
 
         if (id == null) {
-            throw new RegistrationException("Could not register dimension `" + level + "`");
+            throw new RegistrationException("Could not register structure feature `" + structureFeature + "`");
         }
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
@@ -37,13 +38,13 @@ public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
 
     @Override
     public char getStartRune() {
-        return RuneHelper.getFromRuneSet(Tier.JOURNEYMAN, 1);
+        return RuneHelper.getFromRuneSet(Tier.APPRENTICE, 1);
     }
 
     @Override
     public @Nullable String getValueName(String runes) {
-        var dimension = get(runes);
-        return dimension != null ? StringHelper.snakeToPretty(dimension.getPath()) : null;
+        var structure = get(runes);
+        return structure != null ? StringHelper.snakeToPretty(structure.getPath()) : null;
     }
 
     @Override
@@ -51,8 +52,8 @@ public class DimensionBranch extends RuneBranch<Level, ResourceLocation> {
         return NAME;
     }
 
-    public static DimensionBranch load(CompoundTag tag) {
-        DimensionBranch branch = new DimensionBranch();
+    public static StructureBranch load(CompoundTag tag) {
+        StructureBranch branch = new StructureBranch();
         CompoundTag map = tag.getCompound(branch.getBranchName());
         map.getAllKeys().forEach(runes -> branch.add(runes, new ResourceLocation(map.getString(runes))));
         return branch;

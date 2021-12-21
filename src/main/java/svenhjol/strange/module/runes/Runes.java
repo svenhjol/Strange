@@ -6,7 +6,7 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.knowledge2.command.arg.RuneArgType;
+import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
 
 import java.util.HashMap;
 import java.util.Map;

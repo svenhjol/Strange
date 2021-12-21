@@ -1,28 +1,28 @@
-package svenhjol.strange.module.knowledge2.branch;
+package svenhjol.strange.module.knowledge.branch;
 
-import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.StringHelper;
-import svenhjol.strange.module.knowledge2.exception.RegistrationException;
+import svenhjol.strange.module.knowledge.exception.RegistrationException;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runes.Tier;
 
-public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLocation> {
-    public static final String NAME = "Structures";
+public class BiomeBranch extends RuneBranch<Biome, ResourceLocation> {
+    public static final String NAME = "Biomes";
 
     @Override
-    public ResourceLocation register(StructureFeature<?> structureFeature) {
-        ResourceLocation id = Registry.STRUCTURE_FEATURE.getKey(structureFeature);
+    public ResourceLocation register(Biome biome) {
+        ResourceLocation id = BuiltinRegistries.BIOME.getKey(biome);
 
         if (id == null) {
-            throw new RegistrationException("Could not register structure feature `" + structureFeature + "`");
+            throw new RegistrationException("Could not register biome `" + biome + "`");
         }
 
         String runes = getStartRune() + RuneHelper.getFromResource(id, Runes.MAX_PHRASE_LENGTH);
@@ -38,13 +38,13 @@ public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLoc
 
     @Override
     public char getStartRune() {
-        return RuneHelper.getFromRuneSet(Tier.APPRENTICE, 1);
+        return RuneHelper.getFromRuneSet(Tier.APPRENTICE, 0);
     }
 
     @Override
     public @Nullable String getValueName(String runes) {
-        var structure = get(runes);
-        return structure != null ? StringHelper.snakeToPretty(structure.getPath()) : null;
+        var biome = get(runes);
+        return biome != null ? StringHelper.snakeToPretty(biome.getPath()) : null;
     }
 
     @Override
@@ -52,8 +52,8 @@ public class StructureBranch extends RuneBranch<StructureFeature<?>, ResourceLoc
         return NAME;
     }
 
-    public static StructureBranch load(CompoundTag tag) {
-        StructureBranch branch = new StructureBranch();
+    public static BiomeBranch load(CompoundTag tag) {
+        BiomeBranch branch = new BiomeBranch();
         CompoundTag map = tag.getCompound(branch.getBranchName());
         map.getAllKeys().forEach(runes -> branch.add(runes, new ResourceLocation(map.getString(runes))));
         return branch;

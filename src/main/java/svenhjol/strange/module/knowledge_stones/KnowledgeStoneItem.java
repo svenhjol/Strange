@@ -17,9 +17,9 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.helper.JournalHelper;
-import svenhjol.strange.module.knowledge2.Knowledge2;
-import svenhjol.strange.module.knowledge2.Knowledge2Data;
-import svenhjol.strange.module.knowledge2.Learnable;
+import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeData;
+import svenhjol.strange.module.knowledge.Learnable;
 import svenhjol.strange.module.runes.Tier;
 
 public class KnowledgeStoneItem extends CharmItem {
@@ -39,7 +39,7 @@ public class KnowledgeStoneItem extends CharmItem {
         KnowledgeStoneItem stone = (KnowledgeStoneItem)held.getItem();
 
         JournalData journal = Journals.getJournal(player).orElseThrow();
-        Knowledge2Data knowledge = Knowledge2.getKnowledge().orElseThrow();
+        KnowledgeData knowledge = Knowledge.getKnowledge().orElseThrow();
 
         if (!level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
