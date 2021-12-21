@@ -93,31 +93,30 @@ public class Quest implements ISerializable {
 
         this.owner = player.getUUID();
         state = State.STARTED;
+        setDirty();
 
         if (!player.level.isClientSide) {
             QuestEvents.START.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        setDirty();
         return true;
     }
 
     public void pause(Player player) {
         owner = QuestHelper.ANY_UUID;
         state = State.PAUSED;
+        setDirty();
 
         if (!player.level.isClientSide) {
             QuestEvents.PAUSE.invoker().invoke(this, (ServerPlayer) player);
         }
-
-        setDirty();
     }
 
     public void abandon(Player player) {
         components.forEach(c -> c.abandon(player));
         var copy = copy();
 
-        remove(player);
+        getQuests().remove(this);
 
         if (!player.level.isClientSide) {
             QuestEvents.ABANDON.invoker().invoke(copy, (ServerPlayer)player);
@@ -128,7 +127,8 @@ public class Quest implements ISerializable {
         components.forEach(c -> c.complete(player, merchant));
         var copy = copy();
 
-        remove(player);
+        // Bypass this quest's remove method so that the REMOVE trigger is not fired.
+        getQuests().remove(this);
 
         if (!player.level.isClientSide) {
             QuestEvents.COMPLETE.invoker().invoke(copy, (ServerPlayer)player);

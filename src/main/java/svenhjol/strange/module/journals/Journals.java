@@ -72,10 +72,13 @@ public class Journals extends CharmModule {
         // Each quest in a tier will reward the player with a single rune from the equivalent rune tier.
         // Once the player has exhausted that tier's runes, higher level quests will reward new ones.
         if (!Quests.rewardRunes) return;
-        var val = JournalHelper.nextLearnableRune(quest.getTier());
 
+        var journal = Journals.getJournal(player).orElse(null);
+        if (journal == null) return;
+
+        var val = JournalHelper.nextLearnableRune(quest.getTier(), journal);
         if (val >= 0) {
-            Journals.getJournal(player).ifPresent(journal -> journal.learnRune(val));
+            journal.learnRune(val);
         }
     }
 
