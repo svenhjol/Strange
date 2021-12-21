@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
@@ -203,7 +203,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             // It's possible that the player found out these runes through other means.
             // If it's a valid string, then add this to the player's journal so
             // that it's available to them next time they want to write a tome.
-            Journal2Helper.tryLearn(player, runes);
+            JournalHelper.tryLearn(player, runes);
 
             ItemStack tome = RunicTomeItem.create(runes, player);
             resultSlots.setItem(0, tome);

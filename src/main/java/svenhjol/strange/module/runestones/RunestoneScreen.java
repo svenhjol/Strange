@@ -19,7 +19,7 @@ import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.Discovery;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
@@ -116,7 +116,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         String name;
         int left = midX - 76;
         int top = midY - (discovery.getRunes().length() > wrapAt ? 44 : 54);
-        var unknown = Journal2Helper.countUnknownRunes(discovery.getRunes());
+        var unknown = JournalHelper.countUnknownRunes(discovery.getRunes());
 
         if (unknown > 0 && unknown < Runestones.SHOW_TEXT_CLUE) {
 
@@ -155,7 +155,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         List<Item> potentialItems = RunestoneHelper.getItems(dimension, discovery.getRunes());
 
         // If the player hasn't learned enough runes then exit early.
-        int unknown = Journal2Helper.countUnknownRunes(discovery.getRunes());
+        int unknown = JournalHelper.countUnknownRunes(discovery.getRunes());
         if (unknown > potentialItems.size()) return;
 
         if (items == null || itemRandomTicks++ >= 100) {

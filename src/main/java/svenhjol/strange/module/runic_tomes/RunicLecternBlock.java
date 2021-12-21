@@ -30,7 +30,7 @@ import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeParticles;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 
 import java.util.Random;
 
@@ -179,7 +179,7 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
 
         // If the player hasn't learned this rune phrase yet, try and learn it.
         String runes = RunicTomeItem.getRunes(lectern.getTome());
-        Journal2Helper.tryLearn(player, runes);
+        JournalHelper.tryLearn(player, runes);
 
         NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
         return true;

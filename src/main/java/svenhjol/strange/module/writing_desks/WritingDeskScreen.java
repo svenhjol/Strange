@@ -13,9 +13,9 @@ import net.minecraft.world.inventory.Slot;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.journals2.Journals2Client;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
-import svenhjol.strange.module.journals2.screen.MiniJournal;
+import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.helper.JournalHelper;
+import svenhjol.strange.module.journals.screen.MiniJournal;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 
@@ -144,7 +144,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderInputRunes(PoseStack poseStack) {
-        var journal = Journals2Client.journal;
+        var journal = JournalsClient.journal;
         if (journal == null) return;
 
         List<Integer> learnedRunes = journal.getLearnedRunes();
@@ -260,7 +260,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void runeClicked(int rune) {
-        var journal = Journals2Client.journal;
+        var journal = JournalsClient.journal;
         if (journal == null) return;
 
         if (journal.getLearnedRunes().contains(rune) && runes.length() <= Runes.MAX_PHRASE_LENGTH) {
@@ -290,7 +290,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         if (minecraft == null) return;
 
         // Convert the input string according to the runes that the player knows.
-        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
+        String revealed = RuneHelper.revealRunes(runes, JournalHelper.getLearnedRunes());
 
         int index = 0;
 

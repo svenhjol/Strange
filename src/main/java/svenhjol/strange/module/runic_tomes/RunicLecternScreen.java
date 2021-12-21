@@ -16,7 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
@@ -129,7 +129,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
             if (requiredItem == null) return;
 
             // If player hasn't learned enough runes then exit early.
-            int unknown = Journal2Helper.countUnknownRunes(runes);
+            int unknown = JournalHelper.countUnknownRunes(runes);
             if (unknown > 0) return;
 
             List<Component> text = Lists.newArrayList();

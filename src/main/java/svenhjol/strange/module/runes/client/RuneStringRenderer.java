@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import svenhjol.strange.init.StrangeFonts;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 
@@ -57,7 +57,7 @@ public class RuneStringRenderer {
 
     public void render(PoseStack poseStack, Font font, String runes) {
         // Convert the input string according to the runes that the player knows.
-        String revealed = RuneHelper.revealRunes(runes, Journal2Helper.getLearnedRunes());
+        String revealed = RuneHelper.revealRunes(runes, JournalHelper.getLearnedRunes());
 
         int index = 0;
 

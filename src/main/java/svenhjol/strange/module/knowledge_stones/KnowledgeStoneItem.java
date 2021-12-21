@@ -14,9 +14,9 @@ import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.journals2.Journal2Data;
-import svenhjol.strange.module.journals2.Journals2;
-import svenhjol.strange.module.journals2.helper.Journal2Helper;
+import svenhjol.strange.module.journals.JournalData;
+import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.knowledge2.Knowledge2;
 import svenhjol.strange.module.knowledge2.Knowledge2Data;
 import svenhjol.strange.module.knowledge2.Learnable;
@@ -38,7 +38,7 @@ public class KnowledgeStoneItem extends CharmItem {
         ItemStack held = player.getItemInHand(hand);
         KnowledgeStoneItem stone = (KnowledgeStoneItem)held.getItem();
 
-        Journal2Data journal = Journals2.getJournal(player).orElseThrow();
+        JournalData journal = Journals.getJournal(player).orElseThrow();
         Knowledge2Data knowledge = Knowledge2.getKnowledge().orElseThrow();
 
         if (!level.isClientSide) {
@@ -52,23 +52,23 @@ public class KnowledgeStoneItem extends CharmItem {
 
             switch (stone.type) {
                 case RUNE -> {
-                    int runeval = Journal2Helper.nextLearnableRune(Tier.MASTER);
+                    int runeval = JournalHelper.nextLearnableRune(Tier.MASTER);
                     if (runeval > 0) {
                         sendClientMessage(serverPlayer, "rune", String.valueOf((char)(runeval + 96)));
                     }
                     learned = true;
                 }
-                case BIOME -> learned = Journal2Helper.tryLearn(knowledge.biomeBranch, journal.getLearnedBiomes(), b -> {
+                case BIOME -> learned = JournalHelper.tryLearn(knowledge.biomeBranch, journal.getLearnedBiomes(), b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
-                case STRUCTURE -> learned = Journal2Helper.tryLearn(knowledge.structureBranch, journal.getLearnedStructures(), s -> {
+                case STRUCTURE -> learned = JournalHelper.tryLearn(knowledge.structureBranch, journal.getLearnedStructures(), s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
-                case DIMENSION -> learned = Journal2Helper.tryLearn(knowledge.dimensionBranch, journal.getLearnedDimensions(), d -> {
+                case DIMENSION -> learned = JournalHelper.tryLearn(knowledge.dimensionBranch, journal.getLearnedDimensions(), d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
