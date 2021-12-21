@@ -48,17 +48,17 @@ public class RunestonesClient extends CharmModule {
 
             for (String d : tag.getAllKeys()) {
                 var dimension = new ResourceLocation(d);
-                var tiers = tag.getCompound(d);
+                var tag1 = tag.getCompound(d);
 
-                for (String t : tiers.getAllKeys()) {
+                for (String t : tag1.getAllKeys()) {
                     var tier = Tier.byName(t);
-                    var items = NbtHelper.unpackStrings(tiers.getCompound(t)).stream()
+                    var items = NbtHelper.unpackStrings(tag1.getCompound(t)).stream()
                         .map(ResourceLocation::new)
                         .map(Registry.ITEM::get)
                         .collect(Collectors.toList());
 
                     count += items.size();
-                    Runestones.ITEMS.computeIfAbsent(dimension, h -> new HashMap<>()).put(tier, items);
+                    Runestones.ITEMS.computeIfAbsent(dimension, m -> new HashMap<>()).put(tier, items);
                 }
             }
             LogHelper.debug(getClass(), "Received " + count + " runestone items from server.");
