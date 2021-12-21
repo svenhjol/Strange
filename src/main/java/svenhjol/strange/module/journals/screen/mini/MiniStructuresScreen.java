@@ -7,7 +7,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.paginator.StructurePaginator;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.MiniJournal;
-import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 public class MiniStructuresScreen extends BaseMiniScreen {
     private StructurePaginator paginator;
@@ -56,11 +56,10 @@ public class MiniStructuresScreen extends BaseMiniScreen {
 
         if (mini.selectedStructure != null) {
 
-            var knowledge = Knowledge.getKnowledge().orElse(null);
-            if (knowledge == null) return;
+            if (KnowledgeClient.structures == null) return;
 
             // Get the runes for the selected structure.
-            var runes = knowledge.structureBranch.get(mini.selectedStructure);
+            var runes = KnowledgeClient.structures.get(mini.selectedStructure);
             if (runes == null) return;
 
             runeStringRenderer.render(poseStack, font, runes);

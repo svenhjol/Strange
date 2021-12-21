@@ -7,7 +7,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.paginator.BiomePaginator;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.MiniJournal;
-import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeClient;
 
 public class MiniBiomesScreen extends BaseMiniScreen {
     private BiomePaginator paginator;
@@ -56,11 +56,10 @@ public class MiniBiomesScreen extends BaseMiniScreen {
 
         if (mini.selectedBiome != null) {
 
-            var knowledge = Knowledge.getKnowledge().orElse(null);
-            if (knowledge == null) return;
+            if (KnowledgeClient.biomes == null) return;
 
             // Get the runes for the selected biome.
-            var runes = knowledge.biomeBranch.get(mini.selectedBiome);
+            var runes = KnowledgeClient.biomes.get(mini.selectedBiome);
             if (runes == null) return;
 
             runeStringRenderer.render(poseStack, font, runes);
