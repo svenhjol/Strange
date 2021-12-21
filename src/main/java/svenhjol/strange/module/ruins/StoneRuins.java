@@ -65,6 +65,13 @@ public class StoneRuins implements IRuinType {
             }
         }
 
+        // We don't want to try and generate these kinds of ruins in the Nether or End.
+        // Force add them to the blacklist to prevent generation and adding of destinations to runestones.
+        Ruins.stoneRuinDimensionBlacklist.addAll(List.of(
+            Level.NETHER.location().toString(),
+            Level.END.location().toString()
+        ));
+
         // TODO: player state callback
     }
 
