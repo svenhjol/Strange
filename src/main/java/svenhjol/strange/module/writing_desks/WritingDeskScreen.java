@@ -287,10 +287,11 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
-        if (minecraft == null) return;
+        var journal = JournalsClient.journal;
+        if (journal == null) return;
 
         // Convert the input string according to the runes that the player knows.
-        String revealed = RuneHelper.revealRunes(runes, JournalHelper.getLearnedRunes());
+        String revealed = RuneHelper.revealRunes(runes, JournalHelper.getLearnedRunes(journal));
 
         int index = 0;
 

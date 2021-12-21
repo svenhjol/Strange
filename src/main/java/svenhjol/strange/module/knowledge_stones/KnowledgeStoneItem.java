@@ -52,7 +52,7 @@ public class KnowledgeStoneItem extends CharmItem {
 
             switch (stone.type) {
                 case RUNE -> {
-                    int runeval = JournalHelper.nextLearnableRune(Tier.MASTER);
+                    int runeval = JournalHelper.nextLearnableRune(Tier.MASTER, journal);
                     if (runeval > 0) {
                         sendClientMessage(serverPlayer, "rune", String.valueOf((char)(runeval + 96)));
                     }

@@ -17,10 +17,10 @@ import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.JournalsClient;
-import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.PageTracker;
-import svenhjol.strange.module.journals.photo.BookmarkPhoto;
 import svenhjol.strange.module.journals.helper.JournalHelper;
+import svenhjol.strange.module.journals.photo.BookmarkPhoto;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 import javax.annotation.Nonnull;
@@ -118,6 +118,9 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void renderRunes(PoseStack poseStack) {
+        var journal = JournalsClient.journal;
+        if (journal == null) return;
+
         // When in creative mode just show the XYZ coordinates rather than the runes.
         if (minecraft.player.isCreative()) {
             BlockPos pos = bookmark.getBlockPos();
@@ -131,7 +134,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         }
 
         // Don't show anything if the player hasn't learned any runes.
-        if (JournalHelper.getLearnedRunes().isEmpty()) return;
+        if (JournalHelper.getLearnedRunes(journal).isEmpty()) return;
 
         // The player must be in the same dimension as the bookmark.
         if (!DimensionHelper.isDimension(minecraft.player.level, bookmark.getDimension())) return;
