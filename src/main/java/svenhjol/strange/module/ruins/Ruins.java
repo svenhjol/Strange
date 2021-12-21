@@ -17,7 +17,7 @@ public class Ruins extends CharmModule {
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
     );
 
-    public static List<String> stoneRuinDimensionBlacklist = List.of();
+    public static List<String> stoneRuinDimensionBlacklist = new ArrayList<>();
 
     public static final List<IRuinType> TYPES = new ArrayList<>();
 
