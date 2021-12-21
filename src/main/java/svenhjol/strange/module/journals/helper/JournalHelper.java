@@ -2,8 +2,8 @@ package svenhjol.strange.module.journals.helper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.knowledge.branch.BiomeBranch;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 import svenhjol.strange.module.knowledge.branch.StructureBranch;
@@ -18,19 +18,24 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class JournalHelper {
-    public static List<Integer> getLearnedRunes() {
-        if (JournalsClient.journal == null) return List.of();
-        return JournalsClient.journal.getLearnedRunes();
+    /**
+     * Returns an array containing the int value of all the runes a player has learned.
+     * This method is designed to be run on both sides.
+     */
+    public static List<Integer> getLearnedRunes(JournalData journal) {
+        return journal.getLearnedRunes();
     }
 
-    public static int countUnknownRunes(String runes) {
-        if (JournalsClient.journal == null) return 0;
-
+    /**
+     * Returns the number of runes that a player has not learned within a given string.
+     * This method is designed to be run on both sides.
+     */
+    public static int countUnknownRunes(String runes, JournalData journal) {
         int num = 0;
 
         for (int i = 0; i < runes.length(); i++) {
             int chr = runes.charAt(i) - 97;
-            if (!JournalsClient.journal.getLearnedRunes().contains(chr)) {
+            if (!journal.getLearnedRunes().contains(chr)) {
                 num++;
             }
         }
@@ -38,20 +43,22 @@ public class JournalHelper {
         return num;
     }
 
-    public static int nextLearnableRune(Tier currentTier) {
-        if (JournalsClient.journal != null) {
-            var learnedRunes = JournalsClient.journal.getLearnedRunes();
+    /**
+     * Returns the next learnable rune value within the given tier (or lower).
+     * This method is designed to be run on both sides.
+     */
+    public static int nextLearnableRune(Tier currentTier, JournalData journal) {
+        var learnedRunes = journal.getLearnedRunes();
 
-            for (int t = 1; t <= currentTier.getLevel(); t++) {
-                var tier = Tier.byLevel(t);
-                if (tier == null) continue;
-                var chars = tier.getChars();
+        for (int t = 1; t <= currentTier.getLevel(); t++) {
+            var tier = Tier.byLevel(t);
+            if (tier == null) continue;
+            var chars = tier.getChars();
 
-                for (char c : chars) {
-                    int intval = (int) c - 97;
-                    if (!learnedRunes.contains(intval)) {
-                        return intval;
-                    }
+            for (char c : chars) {
+                int intval = (int) c - 97;
+                if (!learnedRunes.contains(intval)) {
+                    return intval;
                 }
             }
         }
@@ -59,6 +66,11 @@ public class JournalHelper {
         return Integer.MIN_VALUE;
     }
 
+    /**
+     * Try to learn a completely new rune phrase within a given branch.
+     * ExistingKnowledge is checked so that a new phrase can be found.
+     * While this technically works on both sides you want to run it on the server.
+     */
     public static <T> boolean tryLearn(RuneBranch<?, T> branch, List<T> existingKnowledge, Function<T, Boolean> onLearn) {
         // If the current knowledge is less than the knowledge in the branch then there's something to be learned.
         if (existingKnowledge.size() < branch.size()) {
@@ -76,6 +88,10 @@ public class JournalHelper {
         return false;
     }
 
+    /**
+     * If the player doesn't know the thing that the given rune phrase represents, then try and learn it.
+     * This runs on the server side so that the learning can be backed.
+     */
     public static boolean tryLearn(ServerPlayer player, String runes) {
         var journal = Journals.getJournal(player).orElse(null);
         if (journal == null) return false;
