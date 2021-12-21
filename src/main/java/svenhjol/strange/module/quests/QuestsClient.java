@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.annotation.ClientModule;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.QuestMessages;
@@ -21,10 +22,7 @@ import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.runes.Tier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @ClientModule(module = Quests.class)
 public class QuestsClient extends CharmModule {
@@ -35,30 +33,7 @@ public class QuestsClient extends CharmModule {
     public void runWhenEnabled() {
         ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SHOW_QUEST_TOAST, this::handleShowQuestToast);
         ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SYNC_QUESTS, this::handleSyncQuests);
-    }
-
-    private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var type = buffer.readEnum(QuestToastType.class);
-        var definitionId = buffer.readUtf();
-        var tier = Tier.byLevel(buffer.readInt());
-
-        client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
-    }
-
-    private void handleSyncQuests(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = buffer.readNbt();
-
-        client.execute(() -> {
-            if (tag != null) {
-                quests.clear();
-                ListTag listTag = tag.getList(QuestData.QUESTS_TAG, 10);
-
-                for (int i = 0; i < listTag.size(); i++) {
-                    CompoundTag questTag = listTag.getCompound(i);
-                    quests.add(new Quest(questTag));
-                }
-            }
-        });
+        ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SYNC_QUEST_DEFINITIONS, this::handleSyncQuestDefinitions);
     }
 
     public static void sendSyncQuests() {
@@ -93,6 +68,54 @@ public class QuestsClient extends CharmModule {
 
     public static String getHint(QuestDefinition definition) {
         return getTranslatedKey(definition, "hint");
+    }
+
+    private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        var type = buffer.readEnum(QuestToastType.class);
+        var definitionId = buffer.readUtf();
+        var tier = Tier.byLevel(buffer.readInt());
+
+        client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
+    }
+
+    private void handleSyncQuestDefinitions(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        var tag = buffer.readNbt();
+        if (tag == null) return;
+
+        client.execute(() -> {
+            Quests.DEFINITIONS.clear();
+            int count = 0;
+
+            for (String t : tag.getAllKeys()) {
+                var tier = Tier.byName(t);
+                var tag1 = tag.getCompound(t);
+
+                for (String id : tag1.getAllKeys()) {
+                    var d = tag1.getCompound(id);
+                    var definition = QuestDefinition.load(d);
+
+                    count++;
+                    Quests.DEFINITIONS.computeIfAbsent(tier, m -> new HashMap<>()).put(id, definition);
+                }
+            }
+            LogHelper.debug(getClass(), "Received " + count + " quest definitions from server.");
+        });
+    }
+
+    private void handleSyncQuests(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        var tag = buffer.readNbt();
+        if (tag == null) return;
+
+        client.execute(() -> {
+            quests.clear();
+            ListTag listTag = tag.getList(QuestData.QUESTS_TAG, 10);
+
+            for (int i = 0; i < listTag.size(); i++) {
+                CompoundTag questTag = listTag.getCompound(i);
+                quests.add(new Quest(questTag));
+            }
+        });
+        LogHelper.debug(getClass(), "Received " + quests.size() + " quests from server.");
     }
 
     private static String getTranslatedKey(QuestDefinition definition, String key) {

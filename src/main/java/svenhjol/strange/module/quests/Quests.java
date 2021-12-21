@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +51,8 @@ public class Quests extends CharmModule {
 
     private static QuestData quests;
 
+    public static boolean rewardRunes = true;
+
     @Override
     public void register() {
         ArgumentTypes.register("quest_definition", QuestDefinitionArgType.class, new EmptyArgumentSerializer<>(QuestDefinitionArgType::new));
@@ -80,6 +83,29 @@ public class Quests extends CharmModule {
         buffer.writeUtf(definitionId);
         buffer.writeInt(tier.getLevel());
         ServerPlayNetworking.send(player, QuestMessages.CLIENT_SHOW_QUEST_TOAST, buffer);
+    }
+
+    public static void sendDefinitions(ServerPlayer player) {
+        var tag = new CompoundTag();
+        int count = 0;
+
+        for (Map.Entry<Tier, Map<String, QuestDefinition>> entry : DEFINITIONS.entrySet()) {
+            var tier = entry.getKey();
+            var tag1 = new CompoundTag();
+
+            for (Map.Entry<String, QuestDefinition> tierEntry : entry.getValue().entrySet()) {
+                var id = tierEntry.getKey();
+                var definition = tierEntry.getValue();
+
+                count++;
+                tag1.put(id, definition.save());
+            }
+
+            tag.put(tier.getSerializedName(), tag1);
+        }
+
+        LogHelper.debug(Quests.class, "Sending " + count + " quest definitions to " + player.getUUID());
+        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUEST_DEFINITIONS, buf -> buf.writeNbt(tag));
     }
 
     public static void sendQuests(ServerPlayer player) {
@@ -203,6 +229,7 @@ public class Quests extends CharmModule {
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
+        sendDefinitions(player);
         sendQuests(player);
     }
 
