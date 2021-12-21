@@ -1,11 +1,16 @@
 package svenhjol.strange.module.runestones;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -17,11 +22,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
+import svenhjol.strange.api.network.RunestoneMessages;
+import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
@@ -78,19 +86,53 @@ public class Runestones extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+    }
+
+    public static void sendItems(ServerPlayer player) {
+        var tag = new CompoundTag();
+        int count = 0;
+
+        for (Map.Entry<ResourceLocation, Map<Tier, List<Item>>> entry : ITEMS.entrySet()) {
+            var dim = entry.getKey();
+            var packed = new CompoundTag();
+
+            for (Map.Entry<Tier, List<Item>> tierEntry : entry.getValue().entrySet()) {
+                var tier = tierEntry.getKey();
+                var items = tierEntry.getValue();
+
+                var itemList = NbtHelper.packStrings(items.stream()
+                    .map(Registry.ITEM::getKey)
+                    .map(ResourceLocation::toString)
+                    .collect(Collectors.toList()));
+
+                count += items.size();
+                packed.put(tier.getSerializedName(), itemList);
+            }
+
+            tag.put(dim.toString(), packed);
+        }
+
+        LogHelper.debug(Runestones.class, "Sending " + count + " runestone items to " + player.getUUID());
+        NetworkHelper.sendPacketToClient(player, RunestoneMessages.CLIENT_SYNC_RUNESTONE_ITEMS, buf -> buf.writeNbt(tag));
+    }
+
+    private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        var player = listener.getPlayer();
+        sendItems(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
         ResourceManager manager = server.getResourceManager();
-        setupItems(manager, level);
-        setupDestinations(manager, level);
+        initItems(manager, level);
+        initDestinations(manager, level);
 
         if (level.dimension() == Level.OVERWORLD) {
-            setupClues(manager);
+            initClues(manager);
         }
     }
 
-    private void setupItems(ResourceManager manager, Level level) {
+    private void initItems(ResourceManager manager, Level level) {
         ResourceLocation dimension = level.dimension().location();
         Collection<ResourceLocation> resources = manager.listResources(ITEMS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
         ITEMS.computeIfAbsent(dimension, m -> new HashMap<>());
@@ -119,7 +161,7 @@ public class Runestones extends CharmModule {
         }
     }
 
-    private void setupClues(ResourceManager manager) {
+    private void initClues(ResourceManager manager) {
         Collection<ResourceLocation> resources = manager.listResources(RUNESTONES_FOLDER, f -> f.endsWith(".json"));
         ResourceLocation resource = null;
         CLUES.clear();
@@ -153,7 +195,7 @@ public class Runestones extends CharmModule {
         }
     }
 
-    private void setupDestinations(ResourceManager manager, Level level) {
+    private void initDestinations(ResourceManager manager, Level level) {
         ResourceLocation dimension = level.dimension().location();
         Collection<ResourceLocation> resources = manager.listResources(DESTINATIONS_DEFINITION_FOLDER, f -> f.endsWith(".json"));
         DESTINATIONS.computeIfAbsent(dimension, a -> new LinkedList<>());
