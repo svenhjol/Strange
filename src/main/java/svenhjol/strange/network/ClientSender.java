@@ -9,18 +9,15 @@ import svenhjol.charm.helper.LogHelper;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public abstract class ClientSend {
-    private final ResourceLocation id;
-
-    public ClientSend(ResourceLocation id) {
-        this.id = id;
-    }
+public abstract class ClientSender {
+    private ResourceLocation id;
 
     public void send() {
         send(null);
     }
 
     public void send(@Nullable Consumer<FriendlyByteBuf> callback) {
+        var id = id();
         var buffer = new FriendlyByteBuf(Unpooled.buffer());
 
         if (callback != null) {
@@ -29,5 +26,16 @@ public abstract class ClientSend {
 
         LogHelper.debug(getClass(), "Sending message `" + id + "` to server.");
         ClientPlayNetworking.send(id, buffer);
+    }
+
+    private ResourceLocation id() {
+        if (id == null && getClass().isAnnotationPresent(Id.class)) {
+            var annotation = getClass().getAnnotation(Id.class);
+            id = new ResourceLocation(annotation.value());
+        } else {
+            throw new IllegalStateException("Missing ID");
+        }
+
+        return id;
     }
 }

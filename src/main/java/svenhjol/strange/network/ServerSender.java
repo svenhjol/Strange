@@ -11,8 +11,19 @@ import svenhjol.charm.helper.LogHelper;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public abstract class ServerSend {
-    public abstract ResourceLocation id();
+public abstract class ServerSender {
+    private ResourceLocation id;
+
+    private ResourceLocation id() {
+        if (id == null && getClass().isAnnotationPresent(Id.class)) {
+            var annotation = getClass().getAnnotation(Id.class);
+            id = new ResourceLocation(annotation.value());
+        } else {
+            throw new IllegalStateException("Missing ID");
+        }
+
+        return id;
+    }
 
     public void send(ServerPlayer player) {
         send(player, null);

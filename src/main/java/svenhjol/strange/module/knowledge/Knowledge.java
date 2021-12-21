@@ -21,11 +21,14 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.KnowledgeMessages;
 import svenhjol.strange.module.knowledge.command.KnowledgeCommand;
+import svenhjol.strange.module.knowledge.network.ServerSendSeed;
 
 import java.util.Optional;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Knowledge extends CharmModule {
+    public static ServerSendSeed SEND_SEED;
+
     private static KnowledgeData knowledgeData;
 
     // This is set to the seed of the loaded overworld level.
@@ -40,7 +43,9 @@ public class Knowledge extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
-        ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_SEED, this::handleSyncSeed);
+
+        SEND_SEED = new ServerSendSeed();
+
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_BIOMES, this::handleSyncBiomes);
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_DIMENSIONS, this::handleSyncDimensions);
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_STRUCTURES, this::handleSyncStructures);
@@ -48,10 +53,6 @@ public class Knowledge extends CharmModule {
 
     public static Optional<KnowledgeData> getKnowledge() {
         return Optional.ofNullable(knowledgeData);
-    }
-
-    public static void sendSeed(ServerPlayer player) {
-        NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_SEED, buf -> buf.writeLong(SEED));
     }
 
     public static void sendBiomes(ServerPlayer player) {
@@ -80,7 +81,7 @@ public class Knowledge extends CharmModule {
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
-        sendSeed(player);
+        SEND_SEED.send(player);
         sendBiomes(player);
         sendDimensions(player);
         sendStructures(player);
@@ -119,10 +120,6 @@ public class Knowledge extends CharmModule {
             });
 
         }
-    }
-
-    private void handleSyncSeed(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendSeed(player));
     }
 
     private void handleSyncBiomes(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

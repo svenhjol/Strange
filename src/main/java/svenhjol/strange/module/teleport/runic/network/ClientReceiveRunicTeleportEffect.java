@@ -5,17 +5,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.teleport.runic.RunicTeleport;
-import svenhjol.strange.network.ClientReceive;
+import svenhjol.strange.network.ClientReceiver;
+import svenhjol.strange.network.Id;
 
 import java.util.Random;
 
-public class ClientRunicTeleportEffectReceiver extends ClientReceive {
-    public ClientRunicTeleportEffectReceiver(ResourceLocation id) {
-        super(id);
-    }
-
+@Id("strange:runic_teleport_effect")
+public class ClientReceiveRunicTeleportEffect extends ClientReceiver {
     @Override
     public void handle(Minecraft client, FriendlyByteBuf buffer) {
         RunicTeleport.Type type = buffer.readEnum(RunicTeleport.Type.class);

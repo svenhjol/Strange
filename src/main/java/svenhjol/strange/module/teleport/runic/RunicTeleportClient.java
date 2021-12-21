@@ -1,17 +1,17 @@
 package svenhjol.strange.module.teleport.runic;
 
 import svenhjol.strange.module.teleport.iface.ITeleportType;
-import svenhjol.strange.module.teleport.runic.network.ClientRunicTeleportEffectReceiver;
+import svenhjol.strange.module.teleport.runic.network.ClientReceiveRunicTeleportEffect;
 
 public class RunicTeleportClient implements ITeleportType {
-    public static ClientRunicTeleportEffectReceiver RUNIC_TELEPORT_EFFECT_RECEIVER;
+    public static ClientReceiveRunicTeleportEffect RECEIVE_RUNIC_TELEPORT_EFFECT;
 
     @Override
     public void register() {}
 
     @Override
     public void runWhenEnabled() {
-        RUNIC_TELEPORT_EFFECT_RECEIVER = new ClientRunicTeleportEffectReceiver(RunicTeleport.RUNIC_TELEPORT_EFFECT_SENDER.id());
+        RECEIVE_RUNIC_TELEPORT_EFFECT = new ClientReceiveRunicTeleportEffect();
 //        ClientPlayNetworking.registerGlobalReceiver(RunicTeleportClientMessages.CLIENT_RUNIC_TELEPORT_EFFECT, this::handleRunicTeleportEffect);
     }
 }

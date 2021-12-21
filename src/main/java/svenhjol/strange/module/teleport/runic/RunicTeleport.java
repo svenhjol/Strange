@@ -23,14 +23,14 @@ import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.iface.ITeleportType;
 import svenhjol.strange.module.teleport.runic.handler.*;
-import svenhjol.strange.module.teleport.runic.network.ServerRunicTeleportEffectSender;
+import svenhjol.strange.module.teleport.runic.network.ServerSendRunicTeleportEffect;
 
 public class RunicTeleport implements ITeleportType {
-    public static ServerRunicTeleportEffectSender RUNIC_TELEPORT_EFFECT_SENDER;
+    public static ServerSendRunicTeleportEffect SEND_RUNIC_TELEPORT_EFFECT;
 
     @Override
     public void register() {
-        RUNIC_TELEPORT_EFFECT_SENDER = new ServerRunicTeleportEffectSender();
+        SEND_RUNIC_TELEPORT_EFFECT = new ServerSendRunicTeleportEffect();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RunicTeleport implements ITeleportType {
         }
 
         // This allows the client to show particles for the runestone.
-        RUNIC_TELEPORT_EFFECT_SENDER.send(player, origin, Type.RUNESTONE);
+        SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNESTONE);
     }
 
     private void handleActivateRunicTome(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice) {
@@ -65,7 +65,7 @@ public class RunicTeleport implements ITeleportType {
         }
 
         // This allows the client to show particles for the runic tome.
-        RUNIC_TELEPORT_EFFECT_SENDER.send(player, origin, Type.RUNIC_TOME);
+        SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNIC_TOME);
     }
 
     private InteractionResult tryTeleport(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {

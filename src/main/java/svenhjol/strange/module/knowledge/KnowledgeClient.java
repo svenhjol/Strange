@@ -14,6 +14,7 @@ import svenhjol.strange.api.network.KnowledgeMessages;
 import svenhjol.strange.module.knowledge.branch.BiomeBranch;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 import svenhjol.strange.module.knowledge.branch.StructureBranch;
+import svenhjol.strange.module.knowledge.network.ClientReceiveSeed;
 
 @ClientModule(module = Knowledge.class)
 public class KnowledgeClient extends CharmModule {
@@ -21,9 +22,12 @@ public class KnowledgeClient extends CharmModule {
     public static @Nullable DimensionBranch dimensions;
     public static @Nullable StructureBranch structures;
 
+    public static ClientReceiveSeed RECEIVE_SEED;
+
     @Override
     public void runWhenEnabled() {
-        ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_SEED, this::handleSyncSeed);
+        RECEIVE_SEED = new ClientReceiveSeed();
+
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_BIOMES, this::handleSyncBiomes);
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, this::handleSyncDimensions);
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_STRUCTURES, this::handleSyncStructures);
