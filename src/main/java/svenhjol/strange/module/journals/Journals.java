@@ -79,6 +79,7 @@ public class Journals extends CharmModule {
         var val = JournalHelper.nextLearnableRune(quest.getTier(), journal);
         if (val >= 0) {
             journal.learnRune(val);
+            sendJournal(player);
         }
     }
 
