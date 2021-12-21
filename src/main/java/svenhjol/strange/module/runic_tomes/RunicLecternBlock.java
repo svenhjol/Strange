@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -31,9 +30,7 @@ import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeParticles;
-import svenhjol.strange.module.journals2.Journals2;
-import svenhjol.strange.module.runes.RuneBranch;
-import svenhjol.strange.module.runes.RuneHelper;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 
 import java.util.Random;
 
@@ -180,17 +177,9 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
         CompoundTag tomeTag = new CompoundTag();
         lectern.getTome().save(tomeTag);
 
-        // try and learn this if not already known
-        Journals2.getJournal(player).ifPresent(journal -> {
-            String runes = RunicTomeItem.getRunes(lectern.getTome());
-            if (!runes.isEmpty()) {
-                RuneBranch<?, ?> branch = RuneHelper.branch(runes);
-                if (branch == null) return;
-
-                journal.learn(branch, (ResourceLocation) branch.get(runes));
-                Journals2.sendSyncJournal(player);
-            }
-        });
+        // If the player hasn't learned this rune phrase yet, try and learn it.
+        String runes = RunicTomeItem.getRunes(lectern.getTome());
+        Journal2Helper.tryLearn(player, runes);
 
         NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
         return true;

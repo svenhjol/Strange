@@ -1,6 +1,5 @@
 package svenhjol.strange.module.writing_desks;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,8 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.strange.module.journals2.Journals2;
-import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.journals2.helper.Journal2Helper;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
@@ -205,13 +203,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             // It's possible that the player found out these runes through other means.
             // If it's a valid string, then add this to the player's journal so
             // that it's available to them next time they want to write a tome.
-            Journals2.getJournal(player).ifPresent(journal -> {
-                RuneBranch<?, ?> branch = RuneHelper.branch(runes);
-                if (branch == null) return;
-
-                journal.learn(branch, (ResourceLocation) branch.get(runes));
-                Journals2.sendSyncJournal(player);
-            });
+            Journal2Helper.tryLearn(player, runes);
 
             ItemStack tome = RunicTomeItem.create(runes, player);
             resultSlots.setItem(0, tome);
