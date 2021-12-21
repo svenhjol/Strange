@@ -35,8 +35,7 @@ public class Quest implements ISerializable {
     private UUID owner;
     private Random random;
     private float difficulty;
-
-    private final List<IQuestComponent> components = new LinkedList<>();
+    private List<IQuestComponent> components = new LinkedList<>();
 
     private Quest() {
         components.add(new GatherComponent(this));
@@ -58,6 +57,20 @@ public class Quest implements ISerializable {
         this.random = new Random(this.id.hashCode());
 
         getQuests().add(this);
+    }
+
+    public Quest copy() {
+        var copy = new Quest();
+
+        copy.state = state;
+        copy.id = id;
+        copy.definition = definition;
+        copy.owner = owner;
+        copy.random = random;
+        copy.difficulty = difficulty;
+        copy.components = components;
+
+        return copy;
     }
 
     public <T extends IQuestComponent> T getComponent(Class<? extends T> clazz) {
@@ -96,27 +109,30 @@ public class Quest implements ISerializable {
         if (!player.level.isClientSide) {
             QuestEvents.PAUSE.invoker().invoke(this, (ServerPlayer) player);
         }
+
         setDirty();
     }
 
     public void abandon(Player player) {
         components.forEach(c -> c.abandon(player));
+        var copy = copy();
+
+        remove(player);
 
         if (!player.level.isClientSide) {
-            QuestEvents.ABANDON.invoker().invoke(this, (ServerPlayer)player);
+            QuestEvents.ABANDON.invoker().invoke(copy, (ServerPlayer)player);
         }
-
-        getQuests().remove(this);
     }
 
     public void complete(Player player, @Nullable AbstractVillager merchant) {
         components.forEach(c -> c.complete(player, merchant));
-
-        if (!player.level.isClientSide) {
-            QuestEvents.COMPLETE.invoker().invoke(this, (ServerPlayer)player);
-        }
+        var copy = copy();
 
         remove(player);
+
+        if (!player.level.isClientSide) {
+            QuestEvents.COMPLETE.invoker().invoke(copy, (ServerPlayer)player);
+        }
     }
 
     public void playerTick(Player player) {
