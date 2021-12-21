@@ -1,16 +1,12 @@
 package svenhjol.strange.module.bookmarks;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
@@ -30,18 +26,10 @@ public class BookmarksClient extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ClientEntityEvents.ENTITY_LOAD.register(this::handlePlayerJoin);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_SYNC_BOOKMARKS, this::handleSyncBookmarks);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_ADD_BOOKMARK, this::handleAddBookmark);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_UPDATE_BOOKMARK, this::handleUpdateBookmark);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_REMOVE_BOOKMARK, this::handleRemoveBookmark);
-    }
-
-    private void handlePlayerJoin(Entity entity, ClientLevel level) {
-        if (!(entity instanceof LocalPlayer)) return;
-
-        // Ask the server for all bookmarks to be sent.
-        NetworkHelper.sendEmptyPacketToServer(BookmarkMessages.SERVER_SYNC_BOOKMARKS);
     }
 
     private void handleSyncBookmarks(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

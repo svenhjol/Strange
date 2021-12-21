@@ -105,7 +105,7 @@ public class KnowledgeCommand {
         Knowledge2Data knowledge = getKnowledge();
 
         knowledge.biomeBranch.values().forEach(journal::learnBiome);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.getSource().sendSuccess(LEARNED_ALL_BIOMES, false);
         return Command.SINGLE_SUCCESS;
@@ -119,7 +119,7 @@ public class KnowledgeCommand {
             journal.learnRune(i);
         }
 
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.getSource().sendSuccess(LEARNED_ALL_RUNES, false);
         return Command.SINGLE_SUCCESS;
@@ -131,7 +131,7 @@ public class KnowledgeCommand {
         Knowledge2Data knowledge = getKnowledge();
 
         knowledge.structureBranch.values().forEach(journal::learnStructure);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.getSource().sendSuccess(LEARNED_ALL_STRUCTURES, false);
         return Command.SINGLE_SUCCESS;
@@ -143,7 +143,7 @@ public class KnowledgeCommand {
         Knowledge2Data knowledge = getKnowledge();
 
         knowledge.dimensionBranch.values().forEach(journal::learnDimension);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.getSource().sendSuccess(LEARNED_ALL_DIMENSIONS, false);
         return Command.SINGLE_SUCCESS;
@@ -162,7 +162,7 @@ public class KnowledgeCommand {
 
         ServerPlayer player = context.getPlayerOrException();
         getJournal(player).learnBiome(res);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.sendSuccess(new TranslatableComponent("commands.strange.learned_biome", res), false);
         return Command.SINGLE_SUCCESS;
@@ -179,7 +179,7 @@ public class KnowledgeCommand {
 
         ServerPlayer player = context.getPlayerOrException();
         getJournal(player).learnDimension(res);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.sendSuccess(new TranslatableComponent("commands.strange.learned_dimension", res), false);
         return Command.SINGLE_SUCCESS;
@@ -194,7 +194,7 @@ public class KnowledgeCommand {
 
         ServerPlayer player = context.getSource().getPlayerOrException();
         getJournal(player).learnRune(runeVal);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.learned_rune", rune), false);
         return Command.SINGLE_SUCCESS;
@@ -213,7 +213,7 @@ public class KnowledgeCommand {
 
         ServerPlayer player = context.getPlayerOrException();
         getJournal(player).learnStructure(res);
-        Journals2.sendSyncJournal(player);
+        Journals2.sendJournal(player);
 
         context.sendSuccess(new TranslatableComponent("commands.strange.learned_structure", res), false);
         return Command.SINGLE_SUCCESS;

@@ -1,18 +1,13 @@
 package svenhjol.strange.module.discoveries;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.DiscoveryMessages;
 
@@ -26,17 +21,9 @@ public class DiscoveriesClient extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ClientEntityEvents.ENTITY_LOAD.register(this::handlePlayerJoin);
         ClientPlayNetworking.registerGlobalReceiver(DiscoveryMessages.CLIENT_SYNC_DISCOVERIES, this::handleSyncDiscoveries);
         ClientPlayNetworking.registerGlobalReceiver(DiscoveryMessages.CLIENT_ADD_DISCOVERY, this::handleAddDiscovery);
         ClientPlayNetworking.registerGlobalReceiver(DiscoveryMessages.CLIENT_INTERACT_DISCOVERY, this::handleInteractDiscovery);
-    }
-
-    private void handlePlayerJoin(Entity entity, ClientLevel level) {
-        if (!(entity instanceof LocalPlayer)) return;
-
-        // Ask the server for all discoveries to be sent.
-        NetworkHelper.sendEmptyPacketToServer(DiscoveryMessages.SERVER_SYNC_DISCOVERIES);
     }
 
     private void handleSyncDiscoveries(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

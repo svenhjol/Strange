@@ -2,6 +2,7 @@ package svenhjol.strange.module.bookmarks;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,6 +10,7 @@ import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -29,6 +31,7 @@ public class Bookmarks extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_SYNC_BOOKMARKS, this::handleSyncBookmarks);
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_ADD_BOOKMARK, this::handleAddBookmark);
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_UPDATE_BOOKMARK, this::handleUpdateBookmark);
@@ -37,6 +40,23 @@ public class Bookmarks extends CharmModule {
 
     public static Optional<BookmarkData> getBookmarks() {
         return Optional.ofNullable(bookmarkData);
+    }
+
+    /**
+     * Serialize and send all server-side bookmarks to the player.
+     */
+    public static void sendBookmarks(ServerPlayer player) {
+        var bookmarks = getBookmarks().orElse(null);
+        if (bookmarks == null) return;
+
+        CompoundTag tag = new CompoundTag();
+        bookmarks.branch.save(tag);
+        NetworkHelper.sendPacketToClient(player, BookmarkMessages.CLIENT_SYNC_BOOKMARKS, buf -> buf.writeNbt(tag));
+    }
+
+    private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        var player = listener.getPlayer();
+        sendBookmarks(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
@@ -55,14 +75,7 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleSyncBookmarks(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var bookmarks = getBookmarks().orElse(null);
-        if (bookmarks == null) return;
-
-        server.execute(() -> {
-            CompoundTag tag = new CompoundTag();
-            bookmarks.branch.save(tag);
-            NetworkHelper.sendPacketToClient(player, BookmarkMessages.CLIENT_SYNC_BOOKMARKS, buf -> buf.writeNbt(tag));
-        });
+        server.execute(() -> sendBookmarks(player));
     }
 
     private void handleAddBookmark(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

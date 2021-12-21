@@ -1,19 +1,14 @@
 package svenhjol.strange.module.knowledge2;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.KnowledgeMessages;
 import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
@@ -28,7 +23,6 @@ public class Knowledge2Client extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ClientEntityEvents.ENTITY_LOAD.register(this::handlePlayerJoin);
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_SEED, this::handleSyncSeed);
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_BIOMES, this::handleSyncBiomes);
         ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, this::handleSyncDimensions);
@@ -68,15 +62,5 @@ public class Knowledge2Client extends CharmModule {
             structures = StructureBranch.load(tag);
             LogHelper.debug(getClass(), "Received " + structures.size() + " structures from server.");
         });
-    }
-
-    private void handlePlayerJoin(Entity entity, ClientLevel level) {
-        if (!(entity instanceof LocalPlayer)) return;
-
-        // Ask the server for seed and data to be sent.
-        NetworkHelper.sendEmptyPacketToServer(KnowledgeMessages.SERVER_SYNC_SEED);
-        NetworkHelper.sendEmptyPacketToServer(KnowledgeMessages.SERVER_SYNC_BIOMES);
-        NetworkHelper.sendEmptyPacketToServer(KnowledgeMessages.SERVER_SYNC_DIMENSIONS);
-        NetworkHelper.sendEmptyPacketToServer(KnowledgeMessages.SERVER_SYNC_STRUCTURES);
     }
 }

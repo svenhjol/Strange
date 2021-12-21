@@ -2,6 +2,7 @@ package svenhjol.strange.module.journals2;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,9 +45,9 @@ import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Journals2 extends CharmModule {
-    public static final String BOOKMARK_ICONS_DEFINITION_FOLDER = "journals";
-    public static final String BOOKMARK_ICONS_DEFINITION_FILE = "bookmark_icons.json";
-    public static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
+    private static final String BOOKMARK_ICONS_DEFINITION_FOLDER = "journals";
+    private static final String BOOKMARK_ICONS_DEFINITION_FILE = "bookmark_icons.json";
+    private static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
 
     private static final String FILENAME = "strange_journal2.dat";
     private static final Map<UUID, Journal2Data> playerJournals = new HashMap<>();
@@ -53,10 +55,16 @@ public class Journals2 extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
         PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
         ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_SYNC_JOURNAL, this::handleSyncJournal);
         ServerPlayNetworking.registerGlobalReceiver(JournalMessages.SERVER_MAKE_MAP, this::handleMakeMap);
+    }
+
+    private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        var player = listener.getPlayer();
+        sendJournal(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
@@ -79,7 +87,7 @@ public class Journals2 extends CharmModule {
     }
 
     private void handleSyncJournal(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendSyncJournal(player));
+        server.execute(() -> sendJournal(player));
     }
 
     private void handleMakeMap(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
@@ -140,7 +148,7 @@ public class Journals2 extends CharmModule {
         return Optional.ofNullable(playerJournals.get(player.getUUID()));
     }
 
-    public static void sendSyncJournal(ServerPlayer player) {
+    public static void sendJournal(ServerPlayer player) {
         getJournal(player).ifPresent(journal -> {
             CompoundTag tag = journal.save();
             NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(tag));

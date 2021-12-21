@@ -2,6 +2,7 @@ package svenhjol.strange.module.knowledge2;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -11,6 +12,7 @@ import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -37,6 +39,7 @@ public class Knowledge2 extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_SEED, this::handleSyncSeed);
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_BIOMES, this::handleSyncBiomes);
         ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_DIMENSIONS, this::handleSyncDimensions);
@@ -45,6 +48,42 @@ public class Knowledge2 extends CharmModule {
 
     public static Optional<Knowledge2Data> getKnowledge() {
         return Optional.ofNullable(knowledgeData);
+    }
+
+    public static void sendSeed(ServerPlayer player) {
+        NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_SEED, buf -> buf.writeLong(SEED));
+    }
+
+    public static void sendBiomes(ServerPlayer player) {
+        getKnowledge().ifPresent(knowledge -> {
+            CompoundTag tag = new CompoundTag();
+            knowledge.biomeBranch.save(tag);
+            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_BIOMES, buf -> buf.writeNbt(tag));
+        });
+    }
+
+    public static void sendDimensions(ServerPlayer player) {
+        getKnowledge().ifPresent(knowledge -> {
+            CompoundTag tag = new CompoundTag();
+            knowledge.dimensionBranch.save(tag);
+            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, buf -> buf.writeNbt(tag));
+        });
+    }
+
+    public static void sendStructures(ServerPlayer player) {
+        getKnowledge().ifPresent(knowledge -> {
+            CompoundTag tag = new CompoundTag();
+            knowledge.structureBranch.save(tag);
+            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_STRUCTURES, buf -> buf.writeNbt(tag));
+        });
+    }
+
+    private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        var player = listener.getPlayer();
+        sendSeed(player);
+        sendBiomes(player);
+        sendDimensions(player);
+        sendStructures(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
@@ -83,30 +122,18 @@ public class Knowledge2 extends CharmModule {
     }
 
     private void handleSyncSeed(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_SEED, buf -> buf.writeLong(SEED));
+        server.execute(() -> sendSeed(player));
     }
 
     private void handleSyncBiomes(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.biomeBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_BIOMES, buf -> buf.writeNbt(tag));
-        });
+        server.execute(() -> sendBiomes(player));
     }
 
     private void handleSyncDimensions(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.dimensionBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, buf -> buf.writeNbt(tag));
-        });
+        server.execute(() -> sendDimensions(player));
     }
 
     private void handleSyncStructures(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.structureBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_STRUCTURES, buf -> buf.writeNbt(tag));
-        });
+        server.execute(() -> sendStructures(player));
     }
 }

@@ -4,13 +4,17 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,11 +58,12 @@ public class Quests extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_SYNC_QUESTS, this::handleSyncPlayerQuests);
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_ABANDON_QUEST, this::handleServerAbandonQuest);
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_PAUSE_QUEST, this::handleServerPauseQuest);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_SYNC_QUESTS, this::handleSyncQuests);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_ABANDON_QUEST, this::handleAbandonQuest);
+        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_PAUSE_QUEST, this::handlePauseQuest);
 
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
 
         QuestEvents.START.register(this::handleStartQuest);
@@ -75,6 +80,11 @@ public class Quests extends CharmModule {
         buffer.writeUtf(definitionId);
         buffer.writeInt(tier.getLevel());
         ServerPlayNetworking.send(player, QuestMessages.CLIENT_SHOW_QUEST_TOAST, buffer);
+    }
+
+    public static void sendQuests(ServerPlayer player) {
+        var tag = quests.save(player);
+        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUESTS, buf -> buf.writeNbt(tag));
     }
 
     public static Optional<QuestData> getQuestData() {
@@ -191,6 +201,11 @@ public class Quests extends CharmModule {
         getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
     }
 
+    private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        var player = listener.getPlayer();
+        sendQuests(player);
+    }
+
     private void handleWorldLoad(MinecraftServer server, Level level) {
         if (level.dimension() == Level.OVERWORLD) {
             ResourceManager manager = server.getResourceManager();
@@ -254,8 +269,8 @@ public class Quests extends CharmModule {
         }
     }
 
-    private void handleSyncPlayerQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        syncQuests(player);
+    private void handleSyncQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        server.execute(() -> sendQuests(player));
     }
 
     /**
@@ -263,7 +278,7 @@ public class Quests extends CharmModule {
      * - synchronise all player quest state back to the client
      */
     private void handleRemoveQuest(Quest quest, ServerPlayer player) {
-        syncQuests(player);
+        sendQuests(player);
     }
 
     /**
@@ -281,7 +296,7 @@ public class Quests extends CharmModule {
         definitions.push(quest.getDefinition());
 
         Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
-        syncQuests(player);
+        sendQuests(player);
     }
 
     /**
@@ -290,7 +305,7 @@ public class Quests extends CharmModule {
      */
     private void handleAbandonQuest(Quest quest, ServerPlayer player) {
         Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, quest.getDefinitionId(), quest.getTier());
-        syncQuests(player);
+        sendQuests(player);
     }
 
     /**
@@ -299,12 +314,13 @@ public class Quests extends CharmModule {
      */
     private void handleCompleteQuest(Quest quest, ServerPlayer player) {
         Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, quest.getDefinitionId(), quest.getTier());
-        syncQuests(player);
+        sendQuests(player);
     }
 
-    private void handleServerAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handleAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
-        var quests = Quests.getQuestData().orElseThrow();
+        var quests = Quests.getQuestData().orElse(null);
+        if (quests == null) return;
 
         server.execute(() -> {
             var quest = quests.get(questId);
@@ -315,9 +331,10 @@ public class Quests extends CharmModule {
         });
     }
 
-    private void handleServerPauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+    private void handlePauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
         String questId = buffer.readUtf();
-        var quests = Quests.getQuestData().orElseThrow();
+        var quests = Quests.getQuestData().orElse(null);
+        if (quests == null) return;
 
         server.execute(() -> {
             var quest = quests.get(questId);
@@ -326,10 +343,5 @@ public class Quests extends CharmModule {
                 Journals2.sendOpenPage(player, PageTracker.Page.QUESTS);
             }
         });
-    }
-
-    private void syncQuests(ServerPlayer player) {
-        var tag = quests.save(player);
-        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUESTS, buf -> buf.writeNbt(tag));
     }
 }

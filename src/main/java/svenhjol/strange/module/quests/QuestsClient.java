@@ -2,21 +2,17 @@ package svenhjol.strange.module.quests;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
@@ -37,16 +33,8 @@ public class QuestsClient extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ClientEntityEvents.ENTITY_LOAD.register(this::handlePlayerJoin);
         ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SHOW_QUEST_TOAST, this::handleShowQuestToast);
         ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SYNC_QUESTS, this::handleSyncQuests);
-    }
-
-    private void handlePlayerJoin(Entity entity, ClientLevel level) {
-        if (!(entity instanceof LocalPlayer)) return;
-
-        // Ask the server for all quests to be sent.
-        NetworkHelper.sendEmptyPacketToServer(QuestMessages.SERVER_SYNC_QUESTS);
     }
 
     private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {

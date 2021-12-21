@@ -5,10 +5,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import svenhjol.strange.module.knowledge2.branch.BiomeBranch;
-import svenhjol.strange.module.knowledge2.branch.DimensionBranch;
-import svenhjol.strange.module.knowledge2.branch.StructureBranch;
-import svenhjol.strange.module.runes.RuneBranch;
 
 import java.util.ArrayList;
 import java.util.Arrays;

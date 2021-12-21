@@ -58,17 +58,17 @@ public class KnowledgeStoneItem extends CharmItem {
                     }
                     learned = true;
                 }
-                case BIOME -> learned = Journal2Helper.learn(knowledge.biomeBranch, journal.getLearnedBiomes(), b -> {
+                case BIOME -> learned = Journal2Helper.tryLearn(knowledge.biomeBranch, journal.getLearnedBiomes(), b -> {
                     journal.learnBiome(b);
                     sendClientMessage(serverPlayer, "biome", b.getPath());
                     return true;
                 });
-                case STRUCTURE -> learned = Journal2Helper.learn(knowledge.structureBranch, journal.getLearnedStructures(), s -> {
+                case STRUCTURE -> learned = Journal2Helper.tryLearn(knowledge.structureBranch, journal.getLearnedStructures(), s -> {
                     journal.learnStructure(s);
                     sendClientMessage(serverPlayer, "structure", s.getPath());
                     return true;
                 });
-                case DIMENSION -> learned = Journal2Helper.learn(knowledge.dimensionBranch, journal.getLearnedDimensions(), d -> {
+                case DIMENSION -> learned = Journal2Helper.tryLearn(knowledge.dimensionBranch, journal.getLearnedDimensions(), d -> {
                     journal.learnDimension(d);
                     sendClientMessage(serverPlayer, "dimension", d.getPath());
                     return true;
