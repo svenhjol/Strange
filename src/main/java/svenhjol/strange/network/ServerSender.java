@@ -11,9 +11,15 @@ import svenhjol.charm.helper.LogHelper;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+/**
+ * A message sent from the server to a client or all connected clients.
+ */
 public abstract class ServerSender {
-    private ResourceLocation id;
+    private ResourceLocation id; // cached message ID
 
+    /**
+     * Cache and fetch the message ID from the annotation.
+     */
     private ResourceLocation id() {
         if (id == null && getClass().isAnnotationPresent(Id.class)) {
             var annotation = getClass().getAnnotation(Id.class);
@@ -25,10 +31,17 @@ public abstract class ServerSender {
         return id;
     }
 
+    /**
+     * Send an empty message to a player client.
+     * Typically this is used to request that the client perform a specific action.
+     */
     public void send(ServerPlayer player) {
         send(player, null);
     }
 
+    /**
+     * Send message with packet data to a player client.
+     */
     public void send(ServerPlayer player, @Nullable Consumer<FriendlyByteBuf> callback) {
         var id = id();
         var buffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -41,10 +54,16 @@ public abstract class ServerSender {
         ServerPlayNetworking.send(player, id, buffer);
     }
 
+    /**
+     * Send an empty message to all connected player clients.
+     */
     public void sendToAll(MinecraftServer server) {
         sendToAll(server, null);
     }
 
+    /**
+     * Send message with packet data to all connected player clients.
+     */
     public void sendToAll(MinecraftServer server, @Nullable Consumer<FriendlyByteBuf> callback) {
         var playerList = server.getPlayerList();
         playerList.getPlayers().forEach(player -> send(player, callback));

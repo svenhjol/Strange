@@ -9,13 +9,23 @@ import svenhjol.charm.helper.LogHelper;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+/**
+ * A message sent from a client to the server.
+ */
 public abstract class ClientSender {
-    private ResourceLocation id;
+    private ResourceLocation id; // cached message ID
 
+    /**
+     * Send an empty message to the server.
+     * Typically this is used to request the server send some specific data.
+     */
     public void send() {
         send(null);
     }
 
+    /**
+     * Send message to server with packet data.
+     */
     public void send(@Nullable Consumer<FriendlyByteBuf> callback) {
         var id = id();
         var buffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -28,6 +38,9 @@ public abstract class ClientSender {
         ClientPlayNetworking.send(id, buffer);
     }
 
+    /**
+     * Cache and fetch the message ID from the annotation.
+     */
     private ResourceLocation id() {
         if (id == null && getClass().isAnnotationPresent(Id.class)) {
             var annotation = getClass().getAnnotation(Id.class);
