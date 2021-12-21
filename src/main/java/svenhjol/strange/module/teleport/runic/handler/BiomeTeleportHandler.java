@@ -1,10 +1,10 @@
-package svenhjol.strange.module.teleport.handler;
+package svenhjol.strange.module.teleport.runic.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.runes.RuneBranch;
 
-public class BiomeTeleportHandler extends TeleportHandler<ResourceLocation> {
+public class BiomeTeleportHandler extends BaseTeleportHandler<ResourceLocation> {
     public BiomeTeleportHandler(RuneBranch<?, ResourceLocation> branch) {
         super(branch);
     }

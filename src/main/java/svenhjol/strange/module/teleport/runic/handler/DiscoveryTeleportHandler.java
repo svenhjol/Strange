@@ -1,4 +1,4 @@
-package svenhjol.strange.module.teleport.handler;
+package svenhjol.strange.module.teleport.runic.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +8,7 @@ import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runestones.Runestones;
 
-public class DiscoveryTeleportHandler extends TeleportHandler<Discovery> {
+public class DiscoveryTeleportHandler extends BaseTeleportHandler<Discovery> {
     public DiscoveryTeleportHandler(RuneBranch<?, Discovery> branch) {
         super(branch);
     }

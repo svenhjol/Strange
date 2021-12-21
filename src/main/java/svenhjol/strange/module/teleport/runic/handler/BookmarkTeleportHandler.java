@@ -1,11 +1,11 @@
-package svenhjol.strange.module.teleport.handler;
+package svenhjol.strange.module.teleport.runic.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.runes.RuneBranch;
 
-public class BookmarkTeleportHandler extends TeleportHandler<Bookmark> {
+public class BookmarkTeleportHandler extends BaseTeleportHandler<Bookmark> {
     public BookmarkTeleportHandler(RuneBranch<?, Bookmark> branch) {
         super(branch);
     }

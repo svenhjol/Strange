@@ -21,6 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.helper.WorldHelper;
@@ -62,6 +63,15 @@ public class Runestones extends CharmModule {
     public static Map<ResourceLocation, Map<Tier, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
     public static List<Item> DEFAULT_ITEMS;
+
+    @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
+    public static int maxDistance = 5000;
+
+    @Config(name = "Travel protection time", description = "Number of seconds of regeneration, fire resistance and slow fall after teleporting.")
+    public static int protectionDuration = 10;
+
+    @Config(name = "Travel penalty time", description = "Number of seconds of poison, wither, burning, slowness or weakness after teleporting without the correct item.")
+    public static int penaltyDuration = 10;
 
     @Override
     public void register() {

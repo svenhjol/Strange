@@ -1,4 +1,4 @@
-package svenhjol.strange.module.teleport.handler;
+package svenhjol.strange.module.teleport.runic.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -22,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.module.runes.RuneBranch;
+import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 import svenhjol.strange.module.teleport.EntityTeleportTicket;
 import svenhjol.strange.module.teleport.ITicket;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public abstract class TeleportHandler<V> {
+public abstract class BaseTeleportHandler<V> {
     protected LivingEntity entity;
     protected ServerLevel level;
     protected ItemStack sacrifice;
@@ -49,7 +50,7 @@ public abstract class TeleportHandler<V> {
     protected static final List<MobEffect> POSITIVE_EFFECTS;
     protected static final List<MobEffect> NEGATIVE_EFFECTS;
 
-    public TeleportHandler(RuneBranch<?, V> branch) {
+    public BaseTeleportHandler(RuneBranch<?, V> branch) {
         this.branch = branch;
     }
 
@@ -64,7 +65,7 @@ public abstract class TeleportHandler<V> {
         this.originPos = originPos;
         this.level = level;
         this.value = branch.get(runes);
-        this.maxDistance = Teleport.maxDistance;
+        this.maxDistance = Runestones.maxDistance;
         this.originDimension = this.entity.level.dimension().location();
 
         return value != null;
@@ -101,7 +102,7 @@ public abstract class TeleportHandler<V> {
         Random random = new Random(sacrificeItem.hashCode());
 
         if (sacrificeItem.equals(mainItem)) {
-            int duration = Teleport.protectionDuration * 20;
+            int duration = Runestones.protectionDuration * 20;
             int amplifier = 2;
             POSITIVE_EFFECTS.forEach(effect -> entity.addEffect(new MobEffectInstance(effect, duration, amplifier)));
 
@@ -141,7 +142,7 @@ public abstract class TeleportHandler<V> {
     }
 
     private void applyNegativeEffect(Random random) {
-        int duration = Teleport.penaltyDuration * 20;
+        int duration = Runestones.penaltyDuration * 20;
         MobEffect effect = NEGATIVE_EFFECTS.get(random.nextInt(NEGATIVE_EFFECTS.size()));
         entity.addEffect(new MobEffectInstance(effect, duration, 1));
     }
