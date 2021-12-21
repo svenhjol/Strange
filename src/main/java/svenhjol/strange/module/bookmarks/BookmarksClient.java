@@ -14,6 +14,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.BookmarkMessages;
+import svenhjol.strange.module.bookmarks.network.ClientReceiveBookmarks;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 
@@ -24,22 +25,15 @@ import java.util.function.Consumer;
 public class BookmarksClient extends CharmModule {
     public static @Nullable BookmarkBranch branch;
 
+    public static ClientReceiveBookmarks RECEIVE_BOOKMARKS;
+
     @Override
     public void runWhenEnabled() {
-        ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_SYNC_BOOKMARKS, this::handleSyncBookmarks);
+        RECEIVE_BOOKMARKS = new ClientReceiveBookmarks();
+
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_ADD_BOOKMARK, this::handleAddBookmark);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_UPDATE_BOOKMARK, this::handleUpdateBookmark);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_REMOVE_BOOKMARK, this::handleRemoveBookmark);
-    }
-
-    private void handleSyncBookmarks(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = buffer.readNbt();
-        if (tag == null) return;
-
-        client.execute(() -> {
-            branch = BookmarkBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + branch.size() + " bookmarks from server.");
-        });
     }
 
     /**
