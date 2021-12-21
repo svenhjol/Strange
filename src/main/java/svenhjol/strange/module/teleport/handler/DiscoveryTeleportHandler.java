@@ -18,10 +18,12 @@ public class DiscoveryTeleportHandler extends TeleportHandler<Discovery> {
         ResourceLocation id = value.getLocation();
         ResourceLocation dimension = value.getDimension();
         BlockPos target;
+        boolean allowDimensionChange = false;
 
         if (id.equals(Runestones.SPAWN)) {
             target = level.getSharedSpawnPos();
             dimension = ServerLevel.OVERWORLD.location();
+            allowDimensionChange = true;
         } else if (WorldHelper.isStructure(id)) {
             target = getStructureTarget(id, level, originPos);
         } else if (WorldHelper.isBiome(id)) {
@@ -30,6 +32,6 @@ public class DiscoveryTeleportHandler extends TeleportHandler<Discovery> {
             return;
         }
 
-        tryTeleport(dimension, target, false, false);
+        tryTeleport(dimension, target, false, allowDimensionChange);
     }
 }
