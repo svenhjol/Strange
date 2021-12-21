@@ -1,20 +1,15 @@
 package svenhjol.strange.module.knowledge;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.api.network.KnowledgeMessages;
 import svenhjol.strange.module.knowledge.branch.BiomeBranch;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 import svenhjol.strange.module.knowledge.branch.StructureBranch;
+import svenhjol.strange.module.knowledge.network.ClientReceiveBiomes;
+import svenhjol.strange.module.knowledge.network.ClientReceiveDimensions;
 import svenhjol.strange.module.knowledge.network.ClientReceiveSeed;
+import svenhjol.strange.module.knowledge.network.ClientReceiveStructures;
 
 @ClientModule(module = Knowledge.class)
 public class KnowledgeClient extends CharmModule {
@@ -23,48 +18,15 @@ public class KnowledgeClient extends CharmModule {
     public static @Nullable StructureBranch structures;
 
     public static ClientReceiveSeed RECEIVE_SEED;
+    public static ClientReceiveBiomes RECEIVE_BIOMES;
+    public static ClientReceiveDimensions RECEIVE_DIMENSIONS;
+    public static ClientReceiveStructures RECEIVE_STRUCTURES;
 
     @Override
     public void runWhenEnabled() {
         RECEIVE_SEED = new ClientReceiveSeed();
-
-        ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_BIOMES, this::handleSyncBiomes);
-        ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, this::handleSyncDimensions);
-        ClientPlayNetworking.registerGlobalReceiver(KnowledgeMessages.CLIENT_SYNC_STRUCTURES, this::handleSyncStructures);
-    }
-
-    private void handleSyncSeed(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        long seed = buffer.readLong();
-        client.execute(() -> {
-            Knowledge.SEED = seed;
-            LogHelper.debug(getClass(), "Received seed " + seed + " from server.");
-        });
-    }
-
-    private void handleSyncBiomes(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = buffer.readNbt();
-        if (tag == null || tag.isEmpty()) return;
-        client.execute(() -> {
-            biomes = BiomeBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + biomes.size() + " biomes from server.");
-        });
-    }
-
-    private void handleSyncDimensions(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = buffer.readNbt();
-        if (tag == null || tag.isEmpty()) return;
-        client.execute(() -> {
-            dimensions = DimensionBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + dimensions.size() + " dimensions from server.");
-        });
-    }
-
-    private void handleSyncStructures(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = buffer.readNbt();
-        if (tag == null || tag.isEmpty()) return;
-        client.execute(() -> {
-            structures = StructureBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + structures.size() + " structures from server.");
-        });
+        RECEIVE_BIOMES = new ClientReceiveBiomes();
+        RECEIVE_DIMENSIONS = new ClientReceiveDimensions();
+        RECEIVE_STRUCTURES = new ClientReceiveStructures();
     }
 }

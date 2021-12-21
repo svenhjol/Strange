@@ -3,31 +3,30 @@ package svenhjol.strange.module.knowledge;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.api.network.KnowledgeMessages;
 import svenhjol.strange.module.knowledge.command.KnowledgeCommand;
+import svenhjol.strange.module.knowledge.network.ServerSendBiomes;
+import svenhjol.strange.module.knowledge.network.ServerSendDimensions;
 import svenhjol.strange.module.knowledge.network.ServerSendSeed;
+import svenhjol.strange.module.knowledge.network.ServerSendStructures;
 
 import java.util.Optional;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Knowledge extends CharmModule {
     public static ServerSendSeed SEND_SEED;
+    public static ServerSendBiomes SEND_BIOMES;
+    public static ServerSendDimensions SEND_DIMENSIONS;
+    public static ServerSendStructures SEND_STRUCTURES;
 
     private static KnowledgeData knowledgeData;
 
@@ -45,46 +44,22 @@ public class Knowledge extends CharmModule {
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
 
         SEND_SEED = new ServerSendSeed();
-
-        ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_BIOMES, this::handleSyncBiomes);
-        ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_DIMENSIONS, this::handleSyncDimensions);
-        ServerPlayNetworking.registerGlobalReceiver(KnowledgeMessages.SERVER_SYNC_STRUCTURES, this::handleSyncStructures);
+        SEND_BIOMES = new ServerSendBiomes();
+        SEND_DIMENSIONS = new ServerSendDimensions();
+        SEND_STRUCTURES = new ServerSendStructures();
     }
 
     public static Optional<KnowledgeData> getKnowledge() {
         return Optional.ofNullable(knowledgeData);
     }
 
-    public static void sendBiomes(ServerPlayer player) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.biomeBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_BIOMES, buf -> buf.writeNbt(tag));
-        });
-    }
-
-    public static void sendDimensions(ServerPlayer player) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.dimensionBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_DIMENSIONS, buf -> buf.writeNbt(tag));
-        });
-    }
-
-    public static void sendStructures(ServerPlayer player) {
-        getKnowledge().ifPresent(knowledge -> {
-            CompoundTag tag = new CompoundTag();
-            knowledge.structureBranch.save(tag);
-            NetworkHelper.sendPacketToClient(player, KnowledgeMessages.CLIENT_SYNC_STRUCTURES, buf -> buf.writeNbt(tag));
-        });
-    }
-
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
+
         SEND_SEED.send(player);
-        sendBiomes(player);
-        sendDimensions(player);
-        sendStructures(player);
+        SEND_BIOMES.send(player);
+        SEND_DIMENSIONS.send(player);
+        SEND_STRUCTURES.send(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
@@ -120,17 +95,5 @@ public class Knowledge extends CharmModule {
             });
 
         }
-    }
-
-    private void handleSyncBiomes(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendBiomes(player));
-    }
-
-    private void handleSyncDimensions(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendDimensions(player));
-    }
-
-    private void handleSyncStructures(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendStructures(player));
     }
 }
