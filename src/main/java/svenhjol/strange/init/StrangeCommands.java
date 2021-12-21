@@ -5,11 +5,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.knowledge2.command.arg.RuneArgType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,6 @@ public class StrangeCommands {
     public final static List<LiteralArgumentBuilder<CommandSourceStack>> SUBCOMMANDS = new ArrayList<>();
 
     public static void init() {
-        ArgumentTypes.register("rune", RuneArgType.class, new EmptyArgumentSerializer<>(RuneArgType::new));
         CommandRegistrationCallback.EVENT.register(StrangeCommands::register);
     }
 

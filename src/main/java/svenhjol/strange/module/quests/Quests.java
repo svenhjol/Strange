@@ -28,6 +28,8 @@ import svenhjol.strange.module.journals2.Journals2;
 import svenhjol.strange.module.journals2.PageTracker;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.command.QuestCommand;
+import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
+import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.event.QuestEvents;
 import svenhjol.strange.module.runes.Tier;
@@ -43,6 +45,12 @@ public class Quests extends CharmModule {
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
 
     private static QuestData quests;
+
+    @Override
+    public void register() {
+        ArgumentTypes.register("quest_definition", QuestDefinitionArgType.class, new EmptyArgumentSerializer<>(QuestDefinitionArgType::new));
+        ArgumentTypes.register("quest_id", QuestIdArgType.class, new EmptyArgumentSerializer<>(QuestIdArgType::new));
+    }
 
     @Override
     public void runWhenEnabled() {

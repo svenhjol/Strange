@@ -1,9 +1,12 @@
 package svenhjol.strange.module.runes;
 
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.knowledge2.command.arg.RuneArgType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,11 @@ public class Runes extends CharmModule {
     public static final char UNKNOWN_RUNE = '?';
 
     private static final Map<String, RuneBranch<?, ?>> BRANCHES = new HashMap<>();
+
+    @Override
+    public void register() {
+        ArgumentTypes.register("rune", RuneArgType.class, new EmptyArgumentSerializer<>(RuneArgType::new));
+    }
 
     public static void addBranch(RuneBranch<?, ?> branch) {
         BRANCHES.put(branch.getBranchName(), branch);
