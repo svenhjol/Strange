@@ -9,8 +9,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -20,15 +22,17 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.JournalMessages;
+import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.photo.TakePhotoHandler;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ClientModule(module = Journals.class)
 public class JournalsClient extends CharmModule {
-    public static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
+    public static List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
 
     public static @Nullable JournalData journal;
     public static PageTracker tracker;
@@ -47,7 +51,7 @@ public class JournalsClient extends CharmModule {
         ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
         ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
         ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_OPEN_PAGE, this::handleOpenPage);
-
+        ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_SYNC_BOOKMARK_ICONS, this::handleSyncBookmarkIcons);
         initKeybind();
     }
 
@@ -62,6 +66,19 @@ public class JournalsClient extends CharmModule {
                 journal.getLearnedBiomes().size() + " learned biomes, " +
                 journal.getLearnedDimensions().size() + " learned dimensions, " +
                 journal.getLearnedStructures().size() + " learned structures.");
+        });
+    }
+
+    private void handleSyncBookmarkIcons(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
+        var tag = buffer.readNbt();
+        if (tag == null) return;
+
+        client.execute(() -> {
+            BOOKMARK_ICONS = NbtHelper.unpackStrings(tag).stream()
+                .map(ResourceLocation::new)
+                .map(Registry.ITEM::get)
+                .collect(Collectors.toList());
+            LogHelper.debug(getClass(), "Received " + BOOKMARK_ICONS.size() + " bookmark icons from server.");
         });
     }
 

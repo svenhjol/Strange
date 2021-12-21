@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import svenhjol.charm.annotation.CommonModule;
@@ -35,6 +34,7 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.JournalMessages;
+import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.PageTracker.Page;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 public class Journals extends CharmModule {
     private static final String BOOKMARK_ICONS_DEFINITION_FOLDER = "journals";
     private static final String BOOKMARK_ICONS_DEFINITION_FILE = "bookmark_icons.json";
-    private static final List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
+    private static final List<Item> BOOKMARK_ICONS = new LinkedList<>();
 
     private static final String FILENAME = "strange_journal.dat";
     private static final Map<UUID, JournalData> playerJournals = new HashMap<>();
@@ -65,6 +65,7 @@ public class Journals extends CharmModule {
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
         sendJournal(player);
+        sendBookmarkIcons(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
@@ -153,6 +154,15 @@ public class Journals extends CharmModule {
             CompoundTag tag = journal.save();
             NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_JOURNAL, buf -> buf.writeNbt(tag));
         });
+    }
+
+    public static void sendBookmarkIcons(ServerPlayer player) {
+        var tag = NbtHelper.packStrings(BOOKMARK_ICONS.stream()
+            .map(Registry.ITEM::getKey)
+            .map(ResourceLocation::toString)
+            .collect(Collectors.toList()));
+
+        NetworkHelper.sendPacketToClient(player, JournalMessages.CLIENT_SYNC_BOOKMARK_ICONS, buf -> buf.writeNbt(tag));
     }
 
     public static void sendOpenPage(ServerPlayer player, Page page) {

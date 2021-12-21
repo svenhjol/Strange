@@ -16,5 +16,6 @@ public class JournalMessages {
     // Server tells client to open the journal on a specific page.
     public static final ResourceLocation CLIENT_OPEN_PAGE = new ResourceLocation(Strange.MOD_ID, "client_open_page");
 
+    // Server sends all bookmark icons to the client.
     public static final ResourceLocation CLIENT_SYNC_BOOKMARK_ICONS = new ResourceLocation(Strange.MOD_ID, "client_sync_bookmark_icons");
 }
