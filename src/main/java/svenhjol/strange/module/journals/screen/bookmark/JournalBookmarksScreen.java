@@ -66,6 +66,6 @@ public class JournalBookmarksScreen extends JournalPaginatedScreen<Bookmark> {
             return;
         }
 
-        BookmarksClient.sendAddBookmark();
+        BookmarksClient.SEND_CREATE_BOOKMARK.send();
     }
 }

@@ -18,6 +18,8 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.network.BookmarkMessages;
+import svenhjol.strange.module.bookmarks.network.ServerReceiveCreateBookmark;
+import svenhjol.strange.module.bookmarks.network.ServerSendNewBookmark;
 import svenhjol.strange.module.bookmarks.network.ServerSendBookmarks;
 
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class Bookmarks extends CharmModule {
     private static BookmarkData bookmarkData;
 
     public static ServerSendBookmarks SEND_BOOKMARKS;
+    public static ServerReceiveCreateBookmark RECEIVE_CREATE_BOOKMARK;
+    public static ServerSendNewBookmark SEND_NEW_BOOKMARK;
 
     public static int maxBookmarksPerPlayer = 50;
 
@@ -36,6 +40,8 @@ public class Bookmarks extends CharmModule {
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
 
         SEND_BOOKMARKS = new ServerSendBookmarks();
+        RECEIVE_CREATE_BOOKMARK = new ServerReceiveCreateBookmark();
+        SEND_NEW_BOOKMARK = new ServerSendNewBookmark();
 
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_ADD_BOOKMARK, this::handleAddBookmark);
         ServerPlayNetworking.registerGlobalReceiver(BookmarkMessages.SERVER_UPDATE_BOOKMARK, this::handleUpdateBookmark);
@@ -53,7 +59,7 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
-
+x
         // Overworld is loaded first. We set up the bookmarks storage at this point.
         if (level.dimension() == Level.OVERWORLD) {
             ServerLevel overworld = (ServerLevel) level;

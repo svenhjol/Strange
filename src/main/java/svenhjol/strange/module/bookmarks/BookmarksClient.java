@@ -15,6 +15,8 @@ import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.api.network.BookmarkMessages;
 import svenhjol.strange.module.bookmarks.network.ClientReceiveBookmarks;
+import svenhjol.strange.module.bookmarks.network.ClientReceiveNewBookmark;
+import svenhjol.strange.module.bookmarks.network.ClientSendCreateBookmark;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
 
@@ -26,10 +28,14 @@ public class BookmarksClient extends CharmModule {
     public static @Nullable BookmarkBranch branch;
 
     public static ClientReceiveBookmarks RECEIVE_BOOKMARKS;
+    public static ClientSendCreateBookmark SEND_CREATE_BOOKMARK;
+    public static ClientReceiveNewBookmark RECEIVE_NEW_BOOKMARK;
 
     @Override
     public void runWhenEnabled() {
         RECEIVE_BOOKMARKS = new ClientReceiveBookmarks();
+        SEND_CREATE_BOOKMARK = new ClientSendCreateBookmark();
+        RECEIVE_NEW_BOOKMARK = new ClientReceiveNewBookmark();
 
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_ADD_BOOKMARK, this::handleAddBookmark);
         ClientPlayNetworking.registerGlobalReceiver(BookmarkMessages.CLIENT_UPDATE_BOOKMARK, this::handleUpdateBookmark);
