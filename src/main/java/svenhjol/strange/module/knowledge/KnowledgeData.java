@@ -10,6 +10,7 @@ import svenhjol.strange.module.knowledge.branch.StructureBranch;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class KnowledgeData extends SavedData {
     public static final String SEED_TAG = "Seed";
 

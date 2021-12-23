@@ -56,11 +56,11 @@ public class MiniDimensionsScreen extends BaseMiniScreen {
         mini.renderTitle(poseStack, JournalScreen.LEARNED_DIMENSIONS, midY - 94);
 
         if (mini.selectedDimension != null) {
-
-            if (KnowledgeClient.dimensions == null) return;
+            var dimensions = KnowledgeClient.getDimensions().orElse(null);
+            if (dimensions == null) return;
 
             // Get the runes for the selected dimension.
-            var runes = KnowledgeClient.dimensions.get(mini.selectedDimension);
+            var runes = dimensions.get(mini.selectedDimension);
             if (runes == null) return;
 
             runeStringRenderer.render(poseStack, font, runes);

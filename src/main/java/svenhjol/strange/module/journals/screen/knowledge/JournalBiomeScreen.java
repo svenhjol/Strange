@@ -23,7 +23,7 @@ public class JournalBiomeScreen extends JournalResourceScreen {
     @Nullable
     @Override
     public RuneBranch<?, ResourceLocation> getBranch() {
-        return KnowledgeClient.biomes;
+        return KnowledgeClient.getBiomes().orElse(null);
     }
 
     @Override

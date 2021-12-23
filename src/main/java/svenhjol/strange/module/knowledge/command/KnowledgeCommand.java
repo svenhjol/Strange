@@ -106,7 +106,6 @@ public class KnowledgeCommand {
 
         knowledge.biomeBranch.values().forEach(journal::learnBiome);
         Journals.SERVER_SEND_JOURNAL.send(player);
-
         context.getSource().sendSuccess(LEARNED_ALL_BIOMES, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -120,7 +119,6 @@ public class KnowledgeCommand {
         }
 
         Journals.SERVER_SEND_JOURNAL.send(player);
-
         context.getSource().sendSuccess(LEARNED_ALL_RUNES, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -132,7 +130,6 @@ public class KnowledgeCommand {
 
         knowledge.structureBranch.values().forEach(journal::learnStructure);
         Journals.SERVER_SEND_JOURNAL.send(player);
-
         context.getSource().sendSuccess(LEARNED_ALL_STRUCTURES, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -144,7 +141,6 @@ public class KnowledgeCommand {
 
         knowledge.dimensionBranch.values().forEach(journal::learnDimension);
         Journals.SERVER_SEND_JOURNAL.send(player);
-
         context.getSource().sendSuccess(LEARNED_ALL_DIMENSIONS, false);
         return Command.SINGLE_SUCCESS;
     }

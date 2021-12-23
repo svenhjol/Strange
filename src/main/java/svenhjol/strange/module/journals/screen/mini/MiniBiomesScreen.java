@@ -56,11 +56,11 @@ public class MiniBiomesScreen extends BaseMiniScreen {
         mini.renderTitle(poseStack, JournalScreen.LEARNED_BIOMES, midY - 94);
 
         if (mini.selectedBiome != null) {
-
-            if (KnowledgeClient.biomes == null) return;
+            var biomes = KnowledgeClient.getBiomes().orElse(null);
+            if (biomes == null) return;
 
             // Get the runes for the selected biome.
-            var runes = KnowledgeClient.biomes.get(mini.selectedBiome);
+            var runes = biomes.get(mini.selectedBiome);
             if (runes == null) return;
 
             runeStringRenderer.render(poseStack, font, runes);

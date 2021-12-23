@@ -56,11 +56,11 @@ public class MiniStructuresScreen extends BaseMiniScreen {
         mini.renderTitle(poseStack, JournalScreen.LEARNED_STRUCTURES, midY - 94);
 
         if (mini.selectedStructure != null) {
-
-            if (KnowledgeClient.structures == null) return;
+            var structures = KnowledgeClient.getStructures().orElse(null);
+            if (structures == null) return;
 
             // Get the runes for the selected structure.
-            var runes = KnowledgeClient.structures.get(mini.selectedStructure);
+            var runes = structures.get(mini.selectedStructure);
             if (runes == null) return;
 
             runeStringRenderer.render(poseStack, font, runes);

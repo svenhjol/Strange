@@ -23,7 +23,7 @@ public class JournalDimensionScreen extends JournalResourceScreen {
     @Nullable
     @Override
     public RuneBranch<?, ResourceLocation> getBranch() {
-        return KnowledgeClient.dimensions;
+        return KnowledgeClient.getDimensions().orElse(null);
     }
 
     @Override

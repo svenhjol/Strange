@@ -19,16 +19,17 @@ import svenhjol.strange.module.knowledge.network.ServerSendDimensions;
 import svenhjol.strange.module.knowledge.network.ServerSendSeed;
 import svenhjol.strange.module.knowledge.network.ServerSendStructures;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Knowledge extends CharmModule {
+    private static @Nullable KnowledgeData knowledgeData;
+
     public static ServerSendSeed SEND_SEED;
     public static ServerSendBiomes SEND_BIOMES;
     public static ServerSendDimensions SEND_DIMENSIONS;
     public static ServerSendStructures SEND_STRUCTURES;
-
-    private static KnowledgeData knowledgeData;
 
     // This is set to the seed of the loaded overworld level.
     public static long SEED = Long.MIN_VALUE;
@@ -80,6 +81,8 @@ public class Knowledge extends CharmModule {
                 () -> new KnowledgeData(overworld),
                 KnowledgeData.getFileId(level.dimensionType())
             );
+
+            if (knowledgeData == null) return;
 
             Registry.STRUCTURE_FEATURE.forEach(structure -> knowledgeData.structureBranch.register(structure));
             BuiltinRegistries.BIOME.entrySet().forEach(entry -> knowledgeData.biomeBranch.register(entry.getValue()));

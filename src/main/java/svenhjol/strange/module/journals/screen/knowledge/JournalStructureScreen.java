@@ -23,7 +23,7 @@ public class JournalStructureScreen extends JournalResourceScreen {
     @Nullable
     @Override
     public RuneBranch<?, ResourceLocation> getBranch() {
-        return KnowledgeClient.structures;
+        return KnowledgeClient.getStructures().orElse(null);
     }
 
     @Override
