@@ -10,6 +10,7 @@ import svenhjol.charm.helper.DimensionHelper;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class BookmarkData extends SavedData {
     public BookmarkBranch branch;
 

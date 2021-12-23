@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.annotation.Config;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.bookmarks.network.*;
@@ -16,7 +17,7 @@ import svenhjol.strange.module.bookmarks.network.*;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true, description = "Reads and writes player bookmarks.")
+@CommonModule(mod = Strange.MOD_ID, description = "Handles cataloguing player bookmarks.")
 public class Bookmarks extends CharmModule {
     private static @Nullable BookmarkData bookmarkData;
 
@@ -28,6 +29,7 @@ public class Bookmarks extends CharmModule {
     public static ServerReceiveRemoveBookmark RECEIVE_REMOVE_BOOKMARK;
     public static ServerReceiveUpdateBookmark RECEIVE_UPDATE_BOOKMARK;
 
+    @Config(name = "Maximum bookmarks", description = "The maximum number of bookmarks each player can create.")
     public static int maxBookmarksPerPlayer = 50;
 
     @Override
