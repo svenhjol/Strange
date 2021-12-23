@@ -28,7 +28,7 @@ import svenhjol.strange.module.journals.network.ServerSendJournal;
 import svenhjol.strange.module.journals.network.ServerSendPage;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
-import svenhjol.strange.module.quests.event.QuestEvents;
+import svenhjol.strange.api.event.QuestEvents;
 
 import java.io.File;
 import java.util.*;

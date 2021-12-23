@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GatherComponent implements IQuestComponent {
-    public static final String TAG_ITEMS = "items";
-    public static final String TAG_ITEM_DATA = "item_data";
-    public static final String TAG_ITEM_COUNT = "item_count";
+    public static final String ITEMS_TAG = "items";
+    public static final String ITEM_DATA_TAG = "item_data";
+    public static final String ITEM_COUNT_TAG = "item_count";
 
     public static final int MAX_ITEMS = 4;
 
@@ -64,15 +64,15 @@ public class GatherComponent implements IQuestComponent {
             index++;
         }
 
-        outTag.put(TAG_ITEM_DATA, dataTag);
-        outTag.put(TAG_ITEM_COUNT, countTag);
+        outTag.put(ITEM_DATA_TAG, dataTag);
+        outTag.put(ITEM_COUNT_TAG, countTag);
         return outTag;
     }
 
     @Override
     public void load(CompoundTag nbt) {
-        CompoundTag dataTag = (CompoundTag) nbt.get(TAG_ITEM_DATA);
-        CompoundTag countTag = (CompoundTag) nbt.get(TAG_ITEM_COUNT);
+        CompoundTag dataTag = (CompoundTag) nbt.get(ITEM_DATA_TAG);
+        CompoundTag countTag = (CompoundTag) nbt.get(ITEM_COUNT_TAG);
 
         items.clear();
 
@@ -94,7 +94,7 @@ public class GatherComponent implements IQuestComponent {
         if (player.level.isClientSide) return false;
 
         QuestDefinition definition = quest.getDefinition();
-        Map<String, Map<String, String>> gatherDefinition = definition.getGather().getOrDefault(TAG_ITEMS, null);
+        Map<String, Map<String, String>> gatherDefinition = definition.getGather().getOrDefault(ITEMS_TAG, null);
         if (gatherDefinition == null || gatherDefinition.isEmpty()) return true;
 
         GatherComponent gather = quest.getComponent(GatherComponent.class);

@@ -60,7 +60,6 @@ public class QuestCommand {
         }
 
         quest.abandon(player);
-
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.abandoned_quest", id), false);
         return Command.SINGLE_SUCCESS;
     }
@@ -77,7 +76,6 @@ public class QuestCommand {
         }
 
         quest.complete(player, null);
-
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.completed_quest", id), false);
         return Command.SINGLE_SUCCESS;
     }
@@ -92,7 +90,6 @@ public class QuestCommand {
 
         Quest quest = new Quest(definition, 1.0F);
         quest.start(player);
-
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.started_quest", quest.getId()), false);
         return Command.SINGLE_SUCCESS;
     }
@@ -101,13 +98,13 @@ public class QuestCommand {
      * Unwraps the optional, throws an exception if savedData is not available.
      */
     private static QuestData getQuestData() throws CommandSyntaxException {
-        Optional<QuestData> questSavedData = Quests.getQuestData();
+        Optional<QuestData> quests = Quests.getQuestData();
 
-        if (questSavedData.isEmpty()) {
+        if (quests.isEmpty()) {
             throw CommandHelper.makeException("Internal error", new TranslatableComponent("commands.strange.no_quest_data").getString());
         }
 
-        return questSavedData.get();
+        return quests.get();
     }
 
     private static CompletableFuture<Suggestions> getQuestIds(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {

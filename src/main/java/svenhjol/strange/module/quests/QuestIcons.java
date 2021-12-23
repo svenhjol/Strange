@@ -3,6 +3,7 @@ package svenhjol.strange.module.quests;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.Strange;
 
+@SuppressWarnings("unused")
 public class QuestIcons {
     public final static ResourceLocation ICONS = new ResourceLocation(Strange.MOD_ID, "textures/gui/quest_icons.png");
     public final static int ICON_WIDTH = 9;

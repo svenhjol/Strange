@@ -15,7 +15,7 @@ public class ClientReceiveSeed extends ClientReceiver {
 
         client.execute(() -> {
             Knowledge.SEED = seed;
-            LogHelper.debug(getClass(), "Received seed " + seed + " from server.");
+            LogHelper.debug(getClass(), "Received seed " + seed + ".");
         });
     }
 }

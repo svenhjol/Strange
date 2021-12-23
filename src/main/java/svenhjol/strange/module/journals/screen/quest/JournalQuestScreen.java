@@ -244,11 +244,11 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     }
 
     protected void abandon() {
-        QuestsClient.sendAbandonQuest(quest);
+        QuestsClient.CLIENT_SEND_ABANDON_QUEST.send(quest);
     }
 
     protected void pause() {
-        QuestsClient.sendPauseQuest(quest);
+        QuestsClient.CLIENT_SEND_PAUSE_QUEST.send(quest);
     }
 
     static {

@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.quests.event.QuestEvents;
+import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.runes.Tier;

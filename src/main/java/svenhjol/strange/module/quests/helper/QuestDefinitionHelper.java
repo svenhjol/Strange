@@ -11,31 +11,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import svenhjol.charm.helper.LootHelper;
 import svenhjol.charm.module.inventory_tidying.InventoryTidyingHandler;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class QuestDefinitionHelper {
-    public static final String TAG_CHANCE = "chance";
-    public static final String TAG_COUNT = "count";
-    public static final String TAG_ENCHANTED = "enchanted";
-    public static final String TAG_ENCHANTMENTS = "enchantments";
-    public static final String TAG_ENCHANTMENT_LEVEL = "enchantment_level";
-    public static final String TAG_IS_TREASURE = "is_treasure";
-    public static final String TAG_ITEMS = "items";
-    public static final String TAG_LIMIT = "limit";
-    public static final String TAG_LOOT = "loot";
-    public static final String TAG_NAME = "name";
-    public static final String TAG_POOL = "pool";
-    public static final String TAG_TABLE = "table";
+    public static final String CHANCE_TAG = "chance";
+    public static final String COUNT_TAG = "count";
+    public static final String ENCHANTED_TAG = "enchanted";
+    public static final String ENCHANTMENTS_TAG = "enchantments";
+    public static final String ENCHANTMENT_LEVEL_TAG = "enchantment_level";
+    public static final String IS_TREASURE_LEVEL = "is_treasure";
+    public static final String ITEMS_TAG = "items";
+    public static final String LIMIT_TAG = "limit";
+    public static final String LOOT_TAG = "loot";
+    public static final String NAME_TAG = "name";
+    public static final String POOL_TAG = "pool";
+    public static final String TABLE_TAG = "table";
 
     public static final List<Enchantment> FIXED_ENCHANTS;
 
@@ -58,22 +57,22 @@ public class QuestDefinitionHelper {
             int level;
 
             if (difficulty > 0.0F) {
-                count = getScaledCountFromValue(props.get(TAG_COUNT), 1, difficulty, random);
-                chance = getScaledChanceFromValue(props.get(TAG_CHANCE), 1.0F, difficulty);
-                level = getScaledCountFromValue(props.get(TAG_ENCHANTMENT_LEVEL), 5, difficulty, random);
+                count = getScaledCountFromValue(props.get(COUNT_TAG), 1, difficulty, random);
+                chance = getScaledChanceFromValue(props.get(CHANCE_TAG), 1.0F, difficulty);
+                level = getScaledCountFromValue(props.get(ENCHANTMENT_LEVEL_TAG), 5, difficulty, random);
             } else {
-                count = getCountFromValue(props.get(TAG_COUNT), 1, random);
-                chance = getChanceFromValue(props.get(TAG_CHANCE), 1.0F);
-                level = getCountFromValue(props.get(TAG_ENCHANTMENT_LEVEL), 5, random);
+                count = getCountFromValue(props.get(COUNT_TAG), 1, random);
+                chance = getChanceFromValue(props.get(CHANCE_TAG), 1.0F);
+                level = getCountFromValue(props.get(ENCHANTMENT_LEVEL_TAG), 5, random);
             }
 
-            int limit = Integer.parseInt(props.getOrDefault(TAG_LIMIT, "1"));
-            boolean isTreasure = Boolean.parseBoolean(props.getOrDefault(TAG_IS_TREASURE, "false"));
-            boolean enchanted = Boolean.parseBoolean(props.getOrDefault(TAG_ENCHANTED, "false"));
+            int limit = Integer.parseInt(props.getOrDefault(LIMIT_TAG, "1"));
+            boolean isTreasure = Boolean.parseBoolean(props.getOrDefault(IS_TREASURE_LEVEL, "false"));
+            boolean enchanted = Boolean.parseBoolean(props.getOrDefault(ENCHANTED_TAG, "false"));
 
-            String items = props.getOrDefault(TAG_ITEMS, "");
-            String name = props.getOrDefault(TAG_NAME, "");
-            String enchantments = props.getOrDefault(TAG_ENCHANTMENTS, "");
+            String items = props.getOrDefault(ITEMS_TAG, "");
+            String name = props.getOrDefault(NAME_TAG, "");
+            String enchantments = props.getOrDefault(ENCHANTMENTS_TAG, "");
 
             // if no chance for this item to generate, skip
             if (random.nextFloat() > chance) continue;
@@ -82,12 +81,12 @@ public class QuestDefinitionHelper {
             if (count <= 0)
                 continue;
 
-            if (itemId.startsWith(TAG_LOOT)) {
+            if (itemId.startsWith(LOOT_TAG)) {
                 // parse multiple items from a specified loot table (up to count)
-                if (!props.containsKey(TAG_TABLE)) continue;
+                if (!props.containsKey(TABLE_TAG)) continue;
 
                 // get the loot table ID and then load the lootmanager to generate a list of loot items
-                ResourceLocation tableId = LootHelper.getLootTable(props.get(TAG_TABLE), BuiltInLootTables.SIMPLE_DUNGEON);
+                ResourceLocation tableId = new ResourceLocation(props.get(TABLE_TAG));
 
                 LootTable table = serverLevel.getServer().getLootTables().get(tableId);
                 List<ItemStack> list = table.getRandomItems((new LootContext.Builder(serverLevel)
@@ -109,7 +108,7 @@ public class QuestDefinitionHelper {
                 }
                 continue;
 
-            } else if (itemId.startsWith(TAG_POOL)) {
+            } else if (itemId.startsWith(POOL_TAG)) {
                 // parse multiple items from a specified pool list (up to limit)
                 if (items.isEmpty()) continue;
 

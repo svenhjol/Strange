@@ -26,7 +26,7 @@ public class ClientReceiveBookmarkIcons extends ClientReceiver {
 
             Journals.BOOKMARK_ICONS.clear();
             Journals.BOOKMARK_ICONS.addAll(icons);
-            LogHelper.debug(getClass(), "There are " + icons.size() + " bookmark icons.");
+            LogHelper.debug(getClass(), "Received " + icons.size() + " bookmark icons.");
         });
     }
 }

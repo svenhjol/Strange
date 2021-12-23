@@ -20,7 +20,7 @@
         "count": 5
       },
       "loot1": {
-        "table": "abandoned_mineshaft",
+        "table": "chests/abandoned_mineshaft",
         "count": 5
       }
     },

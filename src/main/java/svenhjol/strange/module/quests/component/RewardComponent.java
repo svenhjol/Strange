@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.Random;
 
 public class RewardComponent implements IQuestComponent {
-    public static final String TAG_COUNT = "count";
-    public static final String TAG_ITEMS = "items";
-    public static final String TAG_XP = "xp";
-    public static final String TAG_PLAYER = "player";
-    public static final String TAG_MERCHANT = "merchant";
-    public static final String TAG_ITEM_DATA = "item_data";
-    public static final String TAG_ITEM_COUNT = "item_count";
-    public static final String TAG_PLAYER_XP = "player_xp";
-    public static final String TAG_MERCHANT_XP = "merchant_xp";
+    public static final String COUNT_TAG = "count";
+    public static final String ITEMS_TAG = "items";
+    public static final String XP_TAG = "xp";
+    public static final String PLAYER_TAG = "player";
+    public static final String MERCHANT_TAG = "merchant";
+    public static final String ITEM_DATA_TAG = "item_data";
+    public static final String ITEM_COUNT_TAG = "item_count";
+    public static final String PLAYER_XP_TAG = "player_xp";
+    public static final String MERCHANT_XP_TAG = "merchant_xp";
 
     public static final int MAX_ITEM_REWARDS = 2;
 
@@ -79,8 +79,8 @@ public class RewardComponent implements IQuestComponent {
         RewardComponent reward = quest.getComponent(RewardComponent.class);
         float difficulty = quest.getDifficulty();
 
-        Map<String, Map<String, String>> itemDefinition = definition.getReward().getOrDefault(TAG_ITEMS, null);
-        Map<String, Map<String, String>> xpDefinition = definition.getReward().getOrDefault(TAG_XP, null);
+        Map<String, Map<String, String>> itemDefinition = definition.getReward().getOrDefault(ITEMS_TAG, null);
+        Map<String, Map<String, String>> xpDefinition = definition.getReward().getOrDefault(XP_TAG, null);
 
         if (itemDefinition != null) {
             List<ItemStack> items = QuestDefinitionHelper.parseItems((ServerPlayer)player, itemDefinition, MAX_ITEM_REWARDS, difficulty);
@@ -89,20 +89,20 @@ public class RewardComponent implements IQuestComponent {
 
         if (xpDefinition != null) {
             // set the player's awarded XP count
-            if (xpDefinition.containsKey(TAG_PLAYER)) {
-                Map<String, String> playerXp = xpDefinition.get(TAG_PLAYER);
+            if (xpDefinition.containsKey(PLAYER_TAG)) {
+                Map<String, String> playerXp = xpDefinition.get(PLAYER_TAG);
 
-                int count = QuestDefinitionHelper.getScaledCountFromValue(playerXp.getOrDefault(TAG_COUNT, ""), 0, difficulty, random);
+                int count = QuestDefinitionHelper.getScaledCountFromValue(playerXp.getOrDefault(COUNT_TAG, ""), 0, difficulty, random);
                 if (count > 0) {
                     reward.setPlayerXp(count);
                 }
             }
 
             // set the villager's awarded XP count
-            if (xpDefinition.containsKey(TAG_MERCHANT)) {
-                Map<String, String> merchantXp = xpDefinition.get(TAG_MERCHANT);
+            if (xpDefinition.containsKey(MERCHANT_TAG)) {
+                Map<String, String> merchantXp = xpDefinition.get(MERCHANT_TAG);
 
-                int count = QuestDefinitionHelper.getScaledCountFromValue(merchantXp.getOrDefault(TAG_COUNT, ""), 0, difficulty, random);
+                int count = QuestDefinitionHelper.getScaledCountFromValue(merchantXp.getOrDefault(COUNT_TAG, ""), 0, difficulty, random);
                 if (count > 0) {
                     reward.setMerchantXp(count);
                 }
@@ -136,20 +136,20 @@ public class RewardComponent implements IQuestComponent {
             }
         }
 
-        outNbt.put(TAG_ITEM_DATA, dataNbt);
-        outNbt.put(TAG_ITEM_COUNT, countNbt);
-        outNbt.putInt(TAG_PLAYER_XP, playerXp);
-        outNbt.putInt(TAG_MERCHANT_XP, merchantXp);
+        outNbt.put(ITEM_DATA_TAG, dataNbt);
+        outNbt.put(ITEM_COUNT_TAG, countNbt);
+        outNbt.putInt(PLAYER_XP_TAG, playerXp);
+        outNbt.putInt(MERCHANT_XP_TAG, merchantXp);
 
         return outNbt;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        playerXp = tag.getInt(TAG_PLAYER_XP);
-        merchantXp = tag.getInt(TAG_MERCHANT_XP);
-        CompoundTag dataTag = (CompoundTag) tag.get(TAG_ITEM_DATA);
-        CompoundTag countTag = (CompoundTag) tag.get(TAG_ITEM_COUNT);
+        playerXp = tag.getInt(PLAYER_XP_TAG);
+        merchantXp = tag.getInt(MERCHANT_XP_TAG);
+        CompoundTag dataTag = (CompoundTag) tag.get(ITEM_DATA_TAG);
+        CompoundTag countTag = (CompoundTag) tag.get(ITEM_COUNT_TAG);
 
         items = new HashMap<>();
 

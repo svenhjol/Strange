@@ -22,7 +22,7 @@
         "count": "1-2"
       },
       "loot": {
-        "table": "village_weaponsmith",
+        "table": "chests/village/village_weaponsmith",
         "limit": 1
       },
       "pool": {

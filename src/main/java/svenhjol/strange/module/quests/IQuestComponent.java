@@ -1,14 +1,15 @@
 package svenhjol.strange.module.quests;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import svenhjol.strange.iface.ISerializable;
 
 import javax.annotation.Nullable;
 
-public interface IQuestComponent extends ISerializable {
+@SuppressWarnings("unused")
+public interface IQuestComponent {
     String getId();
 
     boolean isEmpty();
@@ -36,4 +37,8 @@ public interface IQuestComponent extends ISerializable {
     boolean start(Player player);
 
     void update(Player player);
+
+    CompoundTag save();
+
+    void load(CompoundTag tag);
 }

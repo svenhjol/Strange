@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class QuestData extends SavedData {
     public static final String QUESTS_TAG = "quests";
 
@@ -30,12 +31,11 @@ public class QuestData extends SavedData {
 
     public static QuestData load(@Nullable ServerLevel level, CompoundTag tag) {
         QuestData data = new QuestData(level);
-
         ListTag listTag = tag.getList(QUESTS_TAG, 10);
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag questTag = listTag.getCompound(i);
-            Quest quest = new Quest(questTag);
+            Quest quest = Quest.load(questTag);
             data.add(quest);
         }
 

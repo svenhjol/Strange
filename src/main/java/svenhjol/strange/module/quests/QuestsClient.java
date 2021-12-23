@@ -2,50 +2,39 @@ package svenhjol.strange.module.quests;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.language.LanguageInfo;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.api.network.QuestMessages;
-import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.module.runes.Tier;
+import svenhjol.strange.module.quests.network.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @ClientModule(module = Quests.class)
 public class QuestsClient extends CharmModule {
     public static final String DEFAULT_LOCALE = "en";
     public static List<Quest> quests = new ArrayList<>();
 
+    public static ClientReceiveQuests CLIENT_RECEIVE_QUESTS;
+    public static ClientReceiveQuestDefinitions CLIENT_RECEIVE_QUEST_DEFINITIONS;
+    public static ClientReceiveQuestToast CLIENT_RECEIVE_QUEST_TOAST;
+    public static ClientSendAbandonQuest CLIENT_SEND_ABANDON_QUEST;
+    public static ClientSendPauseQuest CLIENT_SEND_PAUSE_QUEST;
+
     @Override
     public void runWhenEnabled() {
-        ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SHOW_QUEST_TOAST, this::handleShowQuestToast);
-        ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SYNC_QUESTS, this::handleSyncQuests);
-        ClientPlayNetworking.registerGlobalReceiver(QuestMessages.CLIENT_SYNC_QUEST_DEFINITIONS, this::handleSyncQuestDefinitions);
-    }
-
-    public static void sendSyncQuests() {
-        NetworkHelper.sendEmptyPacketToServer(QuestMessages.SERVER_SYNC_QUESTS);
-    }
-
-    public static void sendAbandonQuest(Quest quest) {
-        NetworkHelper.sendPacketToServer(QuestMessages.SERVER_ABANDON_QUEST, buf -> buf.writeUtf(quest.getId()));
-    }
-
-    public static void sendPauseQuest(Quest quest) {
-        NetworkHelper.sendPacketToServer(QuestMessages.SERVER_PAUSE_QUEST, buf -> buf.writeUtf(quest.getId()));
+        CLIENT_RECEIVE_QUESTS = new ClientReceiveQuests();
+        CLIENT_RECEIVE_QUEST_DEFINITIONS = new ClientReceiveQuestDefinitions();
+        CLIENT_RECEIVE_QUEST_TOAST = new ClientReceiveQuestToast();
+        CLIENT_SEND_ABANDON_QUEST = new ClientSendAbandonQuest();
+        CLIENT_SEND_PAUSE_QUEST = new ClientSendPauseQuest();
     }
 
     public static void renderIcon(Screen screen, PoseStack poseStack, int[] icon, int x, int y) {
@@ -68,54 +57,6 @@ public class QuestsClient extends CharmModule {
 
     public static String getHint(QuestDefinition definition) {
         return getTranslatedKey(definition, "hint");
-    }
-
-    private void handleShowQuestToast(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var type = buffer.readEnum(QuestToastType.class);
-        var definitionId = buffer.readUtf();
-        var tier = Tier.byLevel(buffer.readInt());
-
-        client.execute(() -> client.getToasts().addToast(new QuestToast(type, definitionId, tier)));
-    }
-
-    private void handleSyncQuestDefinitions(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = buffer.readNbt();
-        if (tag == null) return;
-
-        client.execute(() -> {
-            Quests.DEFINITIONS.clear();
-            int count = 0;
-
-            for (String t : tag.getAllKeys()) {
-                var tier = Tier.byName(t);
-                var tag1 = tag.getCompound(t);
-
-                for (String id : tag1.getAllKeys()) {
-                    var d = tag1.getCompound(id);
-                    var definition = QuestDefinition.load(d);
-
-                    count++;
-                    Quests.DEFINITIONS.computeIfAbsent(tier, m -> new HashMap<>()).put(id, definition);
-                }
-            }
-            LogHelper.debug(getClass(), "Received " + count + " quest definitions from server.");
-        });
-    }
-
-    private void handleSyncQuests(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = buffer.readNbt();
-        if (tag == null) return;
-
-        client.execute(() -> {
-            quests.clear();
-            ListTag listTag = tag.getList(QuestData.QUESTS_TAG, 10);
-
-            for (int i = 0; i < listTag.size(); i++) {
-                CompoundTag questTag = listTag.getCompound(i);
-                quests.add(new Quest(questTag));
-            }
-        });
-        LogHelper.debug(getClass(), "Received " + quests.size() + " quests from server.");
     }
 
     private static String getTranslatedKey(QuestDefinition definition, String key) {

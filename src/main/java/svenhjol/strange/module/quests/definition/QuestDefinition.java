@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class QuestDefinition {
     public static final String TIER_TAG = "Tier";
     public static final String ID_TAG = "Id";

@@ -15,10 +15,11 @@ import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class HuntComponent implements IQuestComponent {
-    public static final String TAG_ENTITY_DATA = "entity_data";
-    public static final String TAG_ENTITY_COUNT = "entity_count";
-    public static final String TAG_ENTITY_KILLED = "entity_killed";
+    public static final String ENTITY_DATA_TAG = "entity_data";
+    public static final String ENTITY_COUNT_TAG = "entity_count";
+    public static final String ENTITY_KILLED_TAG = "entity_killed";
 
     private final Quest quest;
     private final Map<ResourceLocation, Integer> entities = new HashMap<>();
@@ -62,18 +63,18 @@ public class HuntComponent implements IQuestComponent {
             index++;
         }
 
-        outTag.put(TAG_ENTITY_DATA, dataTag);
-        outTag.put(TAG_ENTITY_COUNT, countTag);
-        outTag.put(TAG_ENTITY_KILLED, killedTag);
+        outTag.put(ENTITY_DATA_TAG, dataTag);
+        outTag.put(ENTITY_COUNT_TAG, countTag);
+        outTag.put(ENTITY_KILLED_TAG, killedTag);
 
         return outTag;
     }
 
     @Override
     public void load(CompoundTag nbt) {
-        CompoundTag dataTag = (CompoundTag) nbt.get(TAG_ENTITY_DATA);
-        CompoundTag countTag = (CompoundTag) nbt.get(TAG_ENTITY_COUNT);
-        CompoundTag killedTag = (CompoundTag) nbt.get(TAG_ENTITY_KILLED);
+        CompoundTag dataTag = (CompoundTag) nbt.get(ENTITY_DATA_TAG);
+        CompoundTag countTag = (CompoundTag) nbt.get(ENTITY_COUNT_TAG);
+        CompoundTag killedTag = (CompoundTag) nbt.get(ENTITY_KILLED_TAG);
 
         entities.clear();
         killed.clear();

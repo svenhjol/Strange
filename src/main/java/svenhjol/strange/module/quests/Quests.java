@@ -1,16 +1,11 @@
 package svenhjol.strange.module.quests;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -24,19 +19,16 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
-import svenhjol.strange.api.network.QuestMessages;
-import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.command.QuestCommand;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.module.quests.event.QuestEvents;
+import svenhjol.strange.api.event.QuestEvents;
+import svenhjol.strange.module.quests.network.*;
 import svenhjol.strange.module.runes.Tier;
 
 import javax.annotation.Nullable;
@@ -49,7 +41,13 @@ public class Quests extends CharmModule {
     public static final Map<Tier, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
 
-    private static QuestData quests;
+    public static ServerSendQuests SERVER_SEND_QUESTS;
+    public static ServerSendQuestDefinitions SERVER_SEND_QUEST_DEFINITIONS;
+    public static ServerSendQuestToast SERVER_SEND_QUEST_TOAST;
+    public static ServerReceiveAbandonQuest SERVER_RECEIVE_ABANDON_QUEST;
+    public static ServerReceivePauseQuest SERVER_RECEIVE_PAUSE_QUEST;
+
+    public static QuestData quests;
 
     public static boolean rewardRunes = true;
 
@@ -61,9 +59,11 @@ public class Quests extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_SYNC_QUESTS, this::handleSyncQuests);
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_ABANDON_QUEST, this::handleAbandonQuest);
-        ServerPlayNetworking.registerGlobalReceiver(QuestMessages.SERVER_PAUSE_QUEST, this::handlePauseQuest);
+        SERVER_SEND_QUESTS = new ServerSendQuests();
+        SERVER_SEND_QUEST_DEFINITIONS = new ServerSendQuestDefinitions();
+        SERVER_SEND_QUEST_TOAST = new ServerSendQuestToast();
+        SERVER_RECEIVE_ABANDON_QUEST = new ServerReceiveAbandonQuest();
+        SERVER_RECEIVE_PAUSE_QUEST = new ServerReceivePauseQuest();
 
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
@@ -75,42 +75,6 @@ public class Quests extends CharmModule {
         QuestEvents.REMOVE.register(this::handleRemoveQuest);
 
         QuestCommand.init();
-    }
-
-    public static void sendToast(ServerPlayer player, QuestToastType type, String definitionId, Tier tier) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        buffer.writeEnum(type);
-        buffer.writeUtf(definitionId);
-        buffer.writeInt(tier.getLevel());
-        ServerPlayNetworking.send(player, QuestMessages.CLIENT_SHOW_QUEST_TOAST, buffer);
-    }
-
-    public static void sendDefinitions(ServerPlayer player) {
-        var tag = new CompoundTag();
-        int count = 0;
-
-        for (Map.Entry<Tier, Map<String, QuestDefinition>> entry : DEFINITIONS.entrySet()) {
-            var tier = entry.getKey();
-            var tag1 = new CompoundTag();
-
-            for (Map.Entry<String, QuestDefinition> tierEntry : entry.getValue().entrySet()) {
-                var id = tierEntry.getKey();
-                var definition = tierEntry.getValue();
-
-                count++;
-                tag1.put(id, definition.save());
-            }
-
-            tag.put(tier.getSerializedName(), tag1);
-        }
-
-        LogHelper.debug(Quests.class, "Sending " + count + " quest definitions to " + player.getUUID());
-        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUEST_DEFINITIONS, buf -> buf.writeNbt(tag));
-    }
-
-    public static void sendQuests(ServerPlayer player) {
-        var tag = quests.save(player);
-        NetworkHelper.sendPacketToClient(player, QuestMessages.CLIENT_SYNC_QUESTS, buf -> buf.writeNbt(tag));
     }
 
     public static Optional<QuestData> getQuestData() {
@@ -229,8 +193,8 @@ public class Quests extends CharmModule {
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
-        sendDefinitions(player);
-        sendQuests(player);
+        SERVER_SEND_QUEST_DEFINITIONS.send(player);
+        SERVER_SEND_QUESTS.send(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
@@ -296,79 +260,63 @@ public class Quests extends CharmModule {
         }
     }
 
-    private void handleSyncQuests(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendQuests(player));
-    }
-
     /**
-     * When a quest is removed (from the master quest data state):
-     * - synchronise all player quest state back to the client
-     */
-    private void handleRemoveQuest(Quest quest, ServerPlayer player) {
-        sendQuests(player);
-    }
-
-    /**
-     * When a quest is started:
-     * - log to the last_quest list so that the same quest doesn't get recommended straight away
-     * - send toast to the player
-     * - synchronise all player quest state back to the client
+     * Runs when a quest is started.
+     *
+     * At this point the quest has been added to the SavedData.
+     * The quest is a reference to the live object.
+     *
+     * The new quest's definition is stored against the player so that the next time
+     * they start a quest we can try and avoid giving them the same quest again.
+     *
+     * Update all quests on the client and send the toast.
      */
     private void handleStartQuest(Quest quest, ServerPlayer player) {
         LinkedList<QuestDefinition> definitions = LAST_QUESTS.computeIfAbsent(player.getUUID(), a -> new LinkedList<>());
         if (definitions.size() >= 3) {
             definitions.pop();
         }
-
         definitions.push(quest.getDefinition());
 
-        Quests.sendToast(player, QuestToast.QuestToastType.STARTED, quest.getDefinitionId(), quest.getTier());
-        sendQuests(player);
+        SERVER_SEND_QUESTS.send(player);
+        SERVER_SEND_QUEST_TOAST.send(player, quest, QuestToastType.STARTED);
     }
 
     /**
-     * When a quest is abandoned:
-     * - send toast to the player
+     * Runs when a quest is abandoned.
+     *
+     * At this point the quest has been removed from the SavedData
+     * and the quest object is a clone of the original.
+     *
+     * Update all quests on the client and send the toast.
      */
     private void handleAbandonQuest(Quest quest, ServerPlayer player) {
-        Quests.sendToast(player, QuestToast.QuestToastType.ABANDONED, quest.getDefinitionId(), quest.getTier());
-        sendQuests(player);
+        SERVER_SEND_QUESTS.send(player);
+        SERVER_SEND_QUEST_TOAST.send(player, quest, QuestToastType.ABANDONED);
     }
 
     /**
-     * When a quest is completed:
-     * - send toast to the player
+     * Runs when a quest is completed.
+     *
+     * At this point the quest has been removed from the SavedData
+     * and the quest object is a clone of the original.
+     *
+     * Update all quests on the client and send the toast.
      */
     private void handleCompleteQuest(Quest quest, ServerPlayer player) {
-        Quests.sendToast(player, QuestToast.QuestToastType.COMPLETED, quest.getDefinitionId(), quest.getTier());
-        sendQuests(player);
+        SERVER_SEND_QUESTS.send(player);
+        SERVER_SEND_QUEST_TOAST.send(player, quest, QuestToastType.COMPLETED);
     }
 
-    private void handleAbandonQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        String questId = buffer.readUtf();
-        var quests = Quests.getQuestData().orElse(null);
-        if (quests == null) return;
-
-        server.execute(() -> {
-            var quest = quests.get(questId);
-            if (quest != null) {
-                quest.abandon(player);
-                Journals.SERVER_SEND_PAGE.send(player, PageTracker.Page.QUESTS);
-            }
-        });
-    }
-
-    private void handlePauseQuest(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        String questId = buffer.readUtf();
-        var quests = Quests.getQuestData().orElse(null);
-        if (quests == null) return;
-
-        server.execute(() -> {
-            var quest = quests.get(questId);
-            if (quest != null) {
-                quest.pause(player);
-                Journals.SERVER_SEND_PAGE.send(player, PageTracker.Page.QUESTS);
-            }
-        });
+    /**
+     * Runs when a quest is removed.
+     *
+     * At this point the quest has been removed from the SavedData
+     * and the quest object is a clone of the original.
+     *
+     * We update the client's quests but don't send a toast.
+     */
+    private void handleRemoveQuest(Quest quest, ServerPlayer player) {
+        SERVER_SEND_QUESTS.send(player);
     }
 }

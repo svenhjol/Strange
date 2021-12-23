@@ -24,7 +24,7 @@
         "chance": 0.75
       },
       "loot": {
-        "table": "simple_dungeon",
+        "table": "chests/simple_dungeon",
         "count": 3
       },
       "pool": {

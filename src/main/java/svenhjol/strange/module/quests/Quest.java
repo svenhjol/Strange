@@ -8,20 +8,19 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
-import svenhjol.strange.iface.ISerializable;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.module.quests.event.QuestEvents;
+import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.runes.Tier;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
-public class Quest implements ISerializable {
+@SuppressWarnings({"unused", "unchecked"})
+public class Quest {
     public static final String ID_TAG = "id";
     public static final String DEFINITION_TAG = "definition";
     public static final String PLAYER_TAG = "player";
@@ -41,11 +40,6 @@ public class Quest implements ISerializable {
         components.add(new GatherComponent(this));
         components.add(new HuntComponent(this));
         components.add(new RewardComponent(this));
-    }
-
-    public Quest(CompoundTag tag) {
-        this();
-        this.load(tag);
     }
 
     public Quest(QuestDefinition definition, float difficulty) {
@@ -160,7 +154,6 @@ public class Quest implements ISerializable {
         return components.stream().allMatch(q -> q.isSatisfied(player));
     }
 
-    @Override
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
 
@@ -184,15 +177,18 @@ public class Quest implements ISerializable {
         return tag;
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        id = tag.getString(ID_TAG);
-        definition = Quests.getDefinition(tag.getString(DEFINITION_TAG));
-        owner = UUID.fromString(tag.getString(PLAYER_TAG));
-        state = State.valueOf(tag.getString(STATE_TAG).toUpperCase(Locale.ROOT));
-        difficulty = tag.getFloat(DIFFICULTY_TAG);
-        random = new Random(id.hashCode());
-        components.forEach(c -> c.load(tag.getCompound(c.getId())));
+    public static Quest load(CompoundTag tag) {
+        var quest = new Quest();
+
+        quest.id = tag.getString(ID_TAG);
+        quest.definition = Quests.getDefinition(tag.getString(DEFINITION_TAG));
+        quest.owner = UUID.fromString(tag.getString(PLAYER_TAG));
+        quest.state = State.valueOf(tag.getString(STATE_TAG).toUpperCase(Locale.ROOT));
+        quest.difficulty = tag.getFloat(DIFFICULTY_TAG);
+        quest.random = new Random(quest.id.hashCode());
+        quest.components.forEach(c -> c.load(tag.getCompound(c.getId())));
+
+        return quest;
     }
 
     public QuestDefinition getDefinition() {

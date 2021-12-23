@@ -19,7 +19,7 @@ public class ClientReceiveStructures extends ClientReceiver {
         client.execute(() -> {
             var branch = StructureBranch.load(tag);
             KnowledgeClient.setStructures(branch);
-            LogHelper.debug(getClass(), "Received " + branch.size() + " structures from server.");
+            LogHelper.debug(getClass(), "Structures branch has " + branch.size() + " structures.");
         });
     }
 }

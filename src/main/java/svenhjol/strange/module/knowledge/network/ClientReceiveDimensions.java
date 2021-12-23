@@ -19,7 +19,7 @@ public class ClientReceiveDimensions extends ClientReceiver {
         client.execute(() -> {
             var branch = DimensionBranch.load(tag);
             KnowledgeClient.setDimensions(branch);
-            LogHelper.debug(getClass(), "Received " + branch.size() + " dimensions from server.");
+            LogHelper.debug(getClass(), "Dimensions branch has " + branch.size() + " dimensions.");
         });
     }
 }

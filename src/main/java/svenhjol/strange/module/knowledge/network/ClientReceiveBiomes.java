@@ -19,7 +19,7 @@ public class ClientReceiveBiomes extends ClientReceiver {
         client.execute(() -> {
             var branch = BiomeBranch.load(tag);
             KnowledgeClient.setBiomes(branch);
-            LogHelper.debug(getClass(), "Received " + branch.size() + " biomes from server.");
+            LogHelper.debug(getClass(), "Biomes branch has " + branch.size() + " biomes.");
         });
     }
 }
