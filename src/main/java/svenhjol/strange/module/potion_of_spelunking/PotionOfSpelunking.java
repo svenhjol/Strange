@@ -1,11 +1,8 @@
 package svenhjol.strange.module.potion_of_spelunking;
 
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +16,7 @@ import svenhjol.charm.event.PlayerTickCallback;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.potion_of_spelunking.network.ServerSendShowParticles;
 
 import java.util.*;
 
@@ -29,7 +27,7 @@ public class PotionOfSpelunking extends CharmModule {
     public static SpelunkingEffect SPELUNKING_EFFECT;
     public static SpelunkingPotion SPELUNKING_POTION;
 
-    public static final ResourceLocation MSG_CLIENT_SET_PARTICLES = new ResourceLocation(Strange.MOD_ID, "client_set_particles");
+    public static ServerSendShowParticles SERVER_SEND_SHOW_PARTICLES;
     public static final ResourceLocation TRIGGER_HAS_SPELUNKING_EFFECT = new ResourceLocation(Strange.MOD_ID, "has_spelunking_effect");
 
     public static final Map<Block, DyeColor> BLOCKS = new HashMap<>();
@@ -91,6 +89,8 @@ public class PotionOfSpelunking extends CharmModule {
     @Override
     public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+
+        SERVER_SEND_SHOW_PARTICLES = new ServerSendShowParticles();
     }
 
     private void handlePlayerTick(Player player) {
@@ -99,40 +99,25 @@ public class PotionOfSpelunking extends CharmModule {
             && player.hasEffect(SPELUNKING_EFFECT)
             && !BLOCKS.isEmpty()
         ) {
-            ServerLevel world = (ServerLevel)player.level;
+            ServerLevel level = (ServerLevel)player.level;
             BlockPos playerPos = player.blockPosition();
             Map<BlockPos, DyeColor> found = new WeakHashMap<>();
 
             BLOCK_TAGS.forEach((tag, color) -> {
                 Optional<BlockPos> closest = BlockPos.findClosestMatch(playerPos.below((depth/2) - 2), 8, depth / 2,
-                    pos -> world.getBlockState(pos).is(tag));
+                    pos -> level.getBlockState(pos).is(tag));
                 closest.ifPresent(blockPos -> found.put(blockPos, color));
             });
 
             BLOCKS.forEach((block, color) -> {
                 Optional<BlockPos> closest = BlockPos.findClosestMatch(playerPos.below(depth/2), 8, depth / 2,
-                    pos -> block.equals(world.getBlockState(pos).getBlock()));
+                    pos -> block.equals(level.getBlockState(pos).getBlock()));
                 closest.ifPresent(blockPos -> found.put(blockPos, color));
             });
 
             if (found.isEmpty()) return;
 
-            // prepare network packet for sending particle positions and colors to player
-            FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
-
-            // ore positions (blockpos to longs)
-            data.writeLongArray(found.keySet()
-                .stream()
-                .map(BlockPos::asLong)
-                .mapToLong(Long::longValue).toArray());
-
-            // ore colors (dyecolor to ints)
-            data.writeVarIntArray(found.values()
-                .stream()
-                .map(DyeColor::getId)
-                .mapToInt(Integer::intValue).toArray());
-
-            ServerPlayNetworking.send((ServerPlayer)player, MSG_CLIENT_SET_PARTICLES, data);
+            SERVER_SEND_SHOW_PARTICLES.send((ServerPlayer) player, found);
             CharmAdvancements.ACTION_PERFORMED.trigger((ServerPlayer) player, TRIGGER_HAS_SPELUNKING_EFFECT);
         }
     }
