@@ -73,6 +73,7 @@ public class Quests extends CharmModule {
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
         QuestEvents.REMOVE.register(this::handleRemoveQuest);
+        QuestEvents.PAUSE.register(this::handlePauseQuest);
 
         QuestCommand.init();
     }
@@ -293,6 +294,18 @@ public class Quests extends CharmModule {
     private void handleAbandonQuest(Quest quest, ServerPlayer player) {
         SERVER_SEND_QUESTS.send(player);
         SERVER_SEND_QUEST_TOAST.send(player, quest, QuestToastType.ABANDONED);
+    }
+
+    /**
+     * Runs when a quest is paused.
+     *
+     * At this point the quest has been removed from the SavedData
+     * and the quest object is a clone of the original.
+     *
+     * Update all quests on the client but don't send a toast.
+     */
+    private void handlePauseQuest(Quest quest, ServerPlayer player) {
+        SERVER_SEND_QUESTS.send(player);
     }
 
     /**
