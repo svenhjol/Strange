@@ -57,7 +57,7 @@ public class RuneStringRenderer {
     }
 
     public void render(PoseStack poseStack, Font font, String runes) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         // Convert the input string according to the runes that the player knows.

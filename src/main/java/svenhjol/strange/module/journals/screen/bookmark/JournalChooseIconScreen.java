@@ -5,7 +5,7 @@ import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
-import svenhjol.strange.module.journals.JournalsClient;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 
 public class JournalChooseIconScreen extends JournalScreen {
@@ -39,8 +39,8 @@ public class JournalChooseIconScreen extends JournalScreen {
 
         for (int y = 0; y < maxRows; y++) {
             for (int x = 0; x < perRow; x++) {
-                if (index >= JournalsClient.BOOKMARK_ICONS.size()) continue;
-                ItemStack stack = new ItemStack(JournalsClient.BOOKMARK_ICONS.get(index));
+                if (index >= Journals.BOOKMARK_ICONS.size()) continue;
+                ItemStack stack = new ItemStack(Journals.BOOKMARK_ICONS.get(index));
 
                 if (ItemStack.isSame(BookmarksClient.getBookmarkIconItem(bookmark), stack)) {
                     fill(poseStack, midX + left + (x * xOffset), top + (y * yOffset), midX + left + (x * xOffset) + 16, top + (y * yOffset) + 16, 0x9F9F9640);
@@ -58,10 +58,10 @@ public class JournalChooseIconScreen extends JournalScreen {
 
         for (int cy = 0; cy < maxRows; cy++) {
             for (int cx = 0; cx < perRow; cx++) {
-                if (index >= JournalsClient.BOOKMARK_ICONS.size()) continue;
+                if (index >= Journals.BOOKMARK_ICONS.size()) continue;
                 if (x >= (midX + left + (cx * xOffset)) && x < (midX + left + (cx * xOffset) + 16)
                     && y >= (top + (cy * yOffset)) && y < (top + (cy * yOffset) + 16)) {
-                    selected = new ItemStack(JournalsClient.BOOKMARK_ICONS.get(index));
+                    selected = new ItemStack(Journals.BOOKMARK_ICONS.get(index));
                     break;
                 }
                 index++;

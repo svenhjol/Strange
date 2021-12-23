@@ -116,7 +116,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     }
 
     protected void renderLocationClue(PoseStack poseStack, Discovery discovery) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         String name;
@@ -147,7 +147,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     }
 
     protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY, Discovery discovery) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         int top = midY - 28;

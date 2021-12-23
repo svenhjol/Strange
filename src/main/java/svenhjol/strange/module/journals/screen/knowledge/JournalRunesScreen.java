@@ -30,7 +30,7 @@ public class JournalRunesScreen extends JournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         List<Integer> learnedRunes = JournalHelper.getLearnedRunes(journal);

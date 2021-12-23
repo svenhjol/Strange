@@ -63,9 +63,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         int buttonWidth = 90;
 
-        doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> {
-            onClose();
-        }));
+        doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> onClose()));
         takeButton = addRenderableWidget(new Button(midX - 45, midY + 94, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.take_tome"), button -> {
             syncClickedButton(0);
             onClose();
@@ -121,7 +119,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     @Override
     protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         int top = midY - 28;

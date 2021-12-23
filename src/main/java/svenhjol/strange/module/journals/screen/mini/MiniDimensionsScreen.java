@@ -29,9 +29,10 @@ public class MiniDimensionsScreen extends BaseMiniScreen {
 
         } else {
 
-            if (JournalsClient.journal == null) return;
-            var dimensions = JournalsClient.journal.getLearnedDimensions();
-            if (dimensions == null) return;
+            var journal = JournalsClient.getJournal().orElse(null);
+            if (journal == null) return;
+
+            var dimensions = journal.getLearnedDimensions();
 
             paginator = new DimensionPaginator(dimensions);
             setPaginatorDefaults(paginator);

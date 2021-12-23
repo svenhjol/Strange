@@ -9,6 +9,7 @@ import svenhjol.strange.module.journals.paginator.ResourcePaginator;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("ConstantConditions")
 public class JournalDimensionsScreen extends JournalResourcesScreen<ResourceLocation> {
     public JournalDimensionsScreen() {
         super(LEARNED_DIMENSIONS);
@@ -21,7 +22,7 @@ public class JournalDimensionsScreen extends JournalResourcesScreen<ResourceLoca
 
     @Override
     protected ResourcePaginator getPaginator() {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         return new DimensionPaginator(journal != null ? journal.getLearnedDimensions() : List.of());
     }
 

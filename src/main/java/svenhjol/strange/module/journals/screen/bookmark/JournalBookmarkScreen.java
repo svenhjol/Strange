@@ -118,7 +118,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void renderRunes(PoseStack poseStack) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         // When in creative mode just show the XYZ coordinates rather than the runes.
@@ -200,8 +200,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void makeMap() {
-        save();
-        JournalsClient.sendMakeMap(bookmark);
+        JournalsClient.CLIENT_SEND_MAKE_MAP.send(bookmark);
         minecraft.setScreen(null);
     }
 

@@ -8,6 +8,7 @@ import svenhjol.strange.module.journals.paginator.BiomePaginator;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("ConstantConditions")
 public class JournalBiomesScreen extends JournalResourcesScreen<ResourceLocation> {
     public JournalBiomesScreen() {
         super(LEARNED_BIOMES);
@@ -20,7 +21,7 @@ public class JournalBiomesScreen extends JournalResourcesScreen<ResourceLocation
 
     @Override
     protected BiomePaginator getPaginator() {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         return new BiomePaginator(journal != null ? journal.getLearnedBiomes() : List.of());
     }
 

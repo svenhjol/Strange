@@ -353,7 +353,7 @@ public class Quests extends CharmModule {
             var quest = quests.get(questId);
             if (quest != null) {
                 quest.abandon(player);
-                Journals.sendOpenPage(player, PageTracker.Page.QUESTS);
+                Journals.SERVER_SEND_PAGE.send(player, PageTracker.Page.QUESTS);
             }
         });
     }
@@ -367,7 +367,7 @@ public class Quests extends CharmModule {
             var quest = quests.get(questId);
             if (quest != null) {
                 quest.pause(player);
-                Journals.sendOpenPage(player, PageTracker.Page.QUESTS);
+                Journals.SERVER_SEND_PAGE.send(player, PageTracker.Page.QUESTS);
             }
         });
     }

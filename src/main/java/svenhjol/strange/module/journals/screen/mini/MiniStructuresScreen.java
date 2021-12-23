@@ -29,9 +29,10 @@ public class MiniStructuresScreen extends BaseMiniScreen {
 
         } else {
 
-            if (JournalsClient.journal == null) return;
-            var structures = JournalsClient.journal.getLearnedStructures();
-            if (structures == null) return;
+            var journal = JournalsClient.getJournal().orElse(null);
+            if (journal == null) return;
+
+            var structures = journal.getLearnedStructures();
 
             paginator = new StructurePaginator(structures);
             setPaginatorDefaults(paginator);

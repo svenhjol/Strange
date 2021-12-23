@@ -101,7 +101,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         }
         top += 10;
         top = renderCompletion(poseStack, top, left, mouseX, mouseY);
-        top = renderRewards(poseStack, top, left, mouseX, mouseY);
+        renderRewards(poseStack, top, left, mouseX, mouseY);
     }
 
     private int renderCompletion(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
@@ -201,7 +201,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     private int renderRuneReward(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
         if (!showRuneReward) return top;
 
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return top;
 
         var tier = quest.getTier();

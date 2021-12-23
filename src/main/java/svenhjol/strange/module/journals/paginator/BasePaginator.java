@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
+@SuppressWarnings("unused")
 public abstract class BasePaginator<T> {
     private final List<T> items;
     private int pageOffset;
@@ -148,15 +149,13 @@ public abstract class BasePaginator<T> {
         // Draw the pagination buttons at the bottom of the page (yControls is the y-offset for these).
         if (size > perPage) {
             if (pageOffset * perPage < size) {
-                var button = new ImageButton(x + distBetweenPageButtons, yControls, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b -> {
-                    onRedraw.accept(this.pageOffset + 1);
-                });
+                var button = new ImageButton(x + distBetweenPageButtons, yControls, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b
+                    -> onRedraw.accept(this.pageOffset + 1));
                 screen.addRenderableWidget(button);
             }
             if (pageOffset > 1) {
-                var button = new ImageButton(x - distBetweenPageButtons - 20, yControls, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b -> {
-                    onRedraw.accept(this.pageOffset - 1);
-                });
+                var button = new ImageButton(x - distBetweenPageButtons - 20, yControls, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b
+                    -> onRedraw.accept(this.pageOffset - 1));
                 screen.addRenderableWidget(button);
             }
         }

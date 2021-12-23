@@ -29,9 +29,10 @@ public class MiniBiomesScreen extends BaseMiniScreen {
 
         } else {
 
-            if (JournalsClient.journal == null) return;
-            var biomes = JournalsClient.journal.getLearnedBiomes();
-            if (biomes == null) return;
+            var journal = JournalsClient.getJournal().orElse(null);
+            if (journal == null) return;
+
+            var biomes = journal.getLearnedBiomes();
 
             paginator = new BiomePaginator(biomes);
             setPaginatorDefaults(paginator);

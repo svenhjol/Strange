@@ -144,7 +144,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderInputRunes(PoseStack poseStack) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         List<Integer> learnedRunes = journal.getLearnedRunes();
@@ -260,7 +260,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void runeClicked(int rune) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         if (journal.getLearnedRunes().contains(rune) && runes.length() <= Runes.MAX_PHRASE_LENGTH) {
@@ -287,7 +287,7 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
     }
 
     private void renderRunesString(PoseStack poseStack, String runes, int left, int top, int xOffset, int yOffset, int xMax, int yMax, boolean withShadow) {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
         // Convert the input string according to the runes that the player knows.

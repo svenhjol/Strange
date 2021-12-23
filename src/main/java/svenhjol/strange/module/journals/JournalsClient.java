@@ -3,38 +3,30 @@ package svenhjol.strange.module.journals;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.api.network.JournalMessages;
-import svenhjol.strange.helper.NbtHelper;
-import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.journals.network.ClientReceiveBookmarkIcons;
+import svenhjol.strange.module.journals.network.ClientReceiveJournal;
+import svenhjol.strange.module.journals.network.ClientReceivePage;
+import svenhjol.strange.module.journals.network.ClientSendMakeMap;
 import svenhjol.strange.module.journals.photo.TakePhotoHandler;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @ClientModule(module = Journals.class)
 public class JournalsClient extends CharmModule {
-    public static List<ItemLike> BOOKMARK_ICONS = new LinkedList<>();
+    public static ClientReceiveJournal CLIENT_RECEIVE_JOURNAL;
+    public static ClientReceiveBookmarkIcons CLIENT_RECEIVE_BOOKMARK_ICONS;
+    public static ClientReceivePage CLIENT_RECEIVE_PAGE;
+    public static ClientSendMakeMap CLIENT_SEND_MAKE_MAP;
 
-    public static @Nullable JournalData journal;
+    private static @Nullable JournalData journal;
+
     public static PageTracker tracker;
     public static TakePhotoHandler photo;
 
@@ -49,46 +41,21 @@ public class JournalsClient extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
-        ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_SYNC_JOURNAL, this::handleSyncJournal);
-        ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_OPEN_PAGE, this::handleOpenPage);
-        ClientPlayNetworking.registerGlobalReceiver(JournalMessages.CLIENT_SYNC_BOOKMARK_ICONS, this::handleSyncBookmarkIcons);
+
+        CLIENT_RECEIVE_JOURNAL = new ClientReceiveJournal();
+        CLIENT_RECEIVE_BOOKMARK_ICONS = new ClientReceiveBookmarkIcons();
+        CLIENT_RECEIVE_PAGE = new ClientReceivePage();
+        CLIENT_SEND_MAKE_MAP = new ClientSendMakeMap();
+
         initKeybind();
     }
 
-    private void handleSyncJournal(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        CompoundTag tag = buffer.readNbt();
-        if (tag == null) return;
-
-        client.execute(() -> {
-            journal = JournalData.load(tag);
-            LogHelper.debug(getClass(), "Received journal. " +
-                journal.getLearnedRunes().size() + " learned runes, " +
-                journal.getLearnedBiomes().size() + " learned biomes, " +
-                journal.getLearnedDimensions().size() + " learned dimensions, " +
-                journal.getLearnedStructures().size() + " learned structures.");
-        });
+    public static Optional<JournalData> getJournal() {
+        return Optional.ofNullable(journal);
     }
 
-    private void handleSyncBookmarkIcons(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var tag = buffer.readNbt();
-        if (tag == null) return;
-
-        client.execute(() -> {
-            BOOKMARK_ICONS = NbtHelper.unpackStrings(tag).stream()
-                .map(ResourceLocation::new)
-                .map(Registry.ITEM::get)
-                .collect(Collectors.toList());
-            LogHelper.debug(getClass(), "Received " + BOOKMARK_ICONS.size() + " bookmark icons from server.");
-        });
-    }
-
-    private void handleOpenPage(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        var page = buffer.readEnum(PageTracker.Page.class);
-
-        client.execute(() -> {
-            client.setScreen(tracker.getScreen(page));
-            LogHelper.debug(getClass(), "Received request to open journal page `" + page + "` from server.");
-        });
+    public static void setJournal(JournalData journal) {
+        JournalsClient.journal = journal;
     }
 
     private void handleWorldTick(ClientLevel level) {
@@ -113,9 +80,5 @@ public class JournalsClient extends CharmModule {
             GLFW.GLFW_KEY_J,
             category
         ));
-    }
-
-    public static void sendMakeMap(Bookmark bookmark) {
-        NetworkHelper.sendPacketToServer(JournalMessages.SERVER_MAKE_MAP, data -> data.writeNbt(bookmark.save()));
     }
 }

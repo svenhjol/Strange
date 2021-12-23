@@ -8,6 +8,7 @@ import svenhjol.strange.module.journals.paginator.StructurePaginator;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("ConstantConditions")
 public class JournalStructuresScreen extends JournalResourcesScreen<ResourceLocation> {
     public JournalStructuresScreen() {
         super(LEARNED_STRUCTURES);
@@ -20,7 +21,7 @@ public class JournalStructuresScreen extends JournalResourcesScreen<ResourceLoca
 
     @Override
     protected StructurePaginator getPaginator() {
-        var journal = JournalsClient.journal;
+        var journal = JournalsClient.getJournal().orElse(null);
         return new StructurePaginator(journal != null ? journal.getLearnedStructures() : List.of());
     }
 

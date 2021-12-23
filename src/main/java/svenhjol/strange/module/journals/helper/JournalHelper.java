@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+@SuppressWarnings("UnusedReturnValue")
 public class JournalHelper {
     /**
      * Returns an array containing the int value of all the runes a player has learned.
@@ -125,7 +126,7 @@ public class JournalHelper {
         }
 
         if (learned) {
-            Journals.sendJournal(player);
+            Journals.SERVER_SEND_JOURNAL.send(player);
         }
 
         return learned;
