@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.strange.module.teleport.runic.RunicTeleport;
-import svenhjol.strange.network.ClientReceiver;
-import svenhjol.strange.network.Id;
+import svenhjol.charm.network.ClientReceiver;
+import svenhjol.charm.network.Id;
 
 import java.util.Random;
 

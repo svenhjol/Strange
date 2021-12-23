@@ -5,8 +5,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.bookmarks.BookmarkBranch;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
-import svenhjol.strange.network.ClientReceiver;
-import svenhjol.strange.network.Id;
+import svenhjol.charm.network.ClientReceiver;
+import svenhjol.charm.network.Id;
 
 /**
  * Client receives all bookmarks in the form of a bookmark branch.

@@ -3,8 +3,8 @@ package svenhjol.strange.module.bookmarks.network;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import svenhjol.strange.module.bookmarks.Bookmarks;
-import svenhjol.strange.network.Id;
-import svenhjol.strange.network.ServerSender;
+import svenhjol.charm.network.Id;
+import svenhjol.charm.network.ServerSender;
 
 /**
  * Send all bookmarks to a player client when they connect.

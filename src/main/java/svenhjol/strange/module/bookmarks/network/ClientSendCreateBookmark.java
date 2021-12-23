@@ -1,7 +1,7 @@
 package svenhjol.strange.module.bookmarks.network;
 
-import svenhjol.strange.network.ClientSender;
-import svenhjol.strange.network.Id;
+import svenhjol.charm.network.ClientSender;
+import svenhjol.charm.network.Id;
 
 /**
  * Client sends an empty request to create a new bookmark on the server.

@@ -6,8 +6,8 @@ import net.minecraft.server.level.ServerPlayer;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.bookmarks.BookmarkException;
 import svenhjol.strange.module.bookmarks.Bookmarks;
-import svenhjol.strange.network.Id;
-import svenhjol.strange.network.ServerReceiver;
+import svenhjol.charm.network.Id;
+import svenhjol.charm.network.ServerReceiver;
 
 /**
  * Server receives an empty request to create a new bookmark.

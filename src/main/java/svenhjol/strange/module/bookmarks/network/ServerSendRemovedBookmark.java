@@ -2,8 +2,8 @@ package svenhjol.strange.module.bookmarks.network;
 
 import net.minecraft.server.MinecraftServer;
 import svenhjol.strange.module.bookmarks.Bookmark;
-import svenhjol.strange.network.Id;
-import svenhjol.strange.network.ServerSender;
+import svenhjol.charm.network.Id;
+import svenhjol.charm.network.ServerSender;
 
 /**
  * Server sends removed bookmark to all connected clients.

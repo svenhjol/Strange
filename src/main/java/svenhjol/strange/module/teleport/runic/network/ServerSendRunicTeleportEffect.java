@@ -3,8 +3,8 @@ package svenhjol.strange.module.teleport.runic.network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import svenhjol.strange.module.teleport.runic.RunicTeleport;
-import svenhjol.strange.network.Id;
-import svenhjol.strange.network.ServerSender;
+import svenhjol.charm.network.Id;
+import svenhjol.charm.network.ServerSender;
 
 @Id("strange:runic_teleport_effect")
 public class ServerSendRunicTeleportEffect extends ServerSender {

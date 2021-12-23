@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
-import svenhjol.strange.network.ClientReceiver;
-import svenhjol.strange.network.Id;
+import svenhjol.charm.network.ClientReceiver;
+import svenhjol.charm.network.Id;
 
 @Id("strange:knowledge_seed")
 public class ClientReceiveSeed extends ClientReceiver {

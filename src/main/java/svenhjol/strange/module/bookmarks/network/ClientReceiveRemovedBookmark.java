@@ -6,8 +6,8 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarksScreen;
-import svenhjol.strange.network.ClientReceiver;
-import svenhjol.strange.network.Id;
+import svenhjol.charm.network.ClientReceiver;
+import svenhjol.charm.network.Id;
 
 /**
  * Client receives a request to remove a bookmark.
