@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Quests are player tasks with rewards provided by a Scrollkeeper villager.")
 public class Quests extends CharmModule {
     public static final String DEFINITION_FOLDER = "quests";
     public static final Map<Tier, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
