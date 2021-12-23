@@ -1,18 +1,10 @@
 package svenhjol.strange.module.structures;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -21,6 +13,9 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.structures.network.ServerReceiveUpdateStructureBlock;
+import svenhjol.strange.module.structures.network.ServerSendOpenDataBlockScreen;
+import svenhjol.strange.module.structures.network.ServerSendOpenEntityBlockScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,14 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true, priority = 10)
+@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true, priority = 10, description = "Special blocks for building dynamic structures.")
 public class Structures extends CharmModule {
     public static final ResourceLocation DATA_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "data_block");
     public static final ResourceLocation ENTITY_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "entity_block");
 
-    public static final ResourceLocation MSG_SERVER_UPDATE_BLOCK_ENTITY = new ResourceLocation(Strange.MOD_ID, "server_update_data_block");
-    public static final ResourceLocation MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN = new ResourceLocation(Strange.MOD_ID, "client_open_data_block_screen");
-    public static final ResourceLocation MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN = new ResourceLocation(Strange.MOD_ID, "client_open_entity_block_screen");
+    public static ServerSendOpenDataBlockScreen SERVER_SEND_OPEN_DATA_BLOCK_SCREEN;
+    public static ServerSendOpenEntityBlockScreen SERVER_SEND_OPEN_ENTITY_BLOCK_SCREEN;
+    public static ServerReceiveUpdateStructureBlock SERVER_RECEIVE_UPDATE_STRUCTURE_BLOCK;
 
     public static IgnoreBlock IGNORE_BLOCK;
     public static DataBlock DATA_BLOCK;
@@ -61,7 +56,10 @@ public class Structures extends CharmModule {
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_BLOCK_ENTITY, this::handleUpdateBlockEntity);
+
+        SERVER_SEND_OPEN_DATA_BLOCK_SCREEN = new ServerSendOpenDataBlockScreen();
+        SERVER_SEND_OPEN_ENTITY_BLOCK_SCREEN = new ServerSendOpenEntityBlockScreen();
+        SERVER_RECEIVE_UPDATE_STRUCTURE_BLOCK = new ServerReceiveUpdateStructureBlock();
     }
 
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
@@ -78,22 +76,6 @@ public class Structures extends CharmModule {
                 Structures.DECORATIONS.put(table, itemStacks);
             });
         }
-    }
-
-    private void handleUpdateBlockEntity(MinecraftServer server, ServerPlayer player, ServerGamePacketListener serverGamePacketListener, FriendlyByteBuf buffer, PacketSender sender) {
-        BlockPos pos = buffer.readBlockPos();
-        CompoundTag tag = buffer.readNbt();
-
-        server.execute(() -> {
-            if (player == null || player.level == null || tag == null || tag.isEmpty()) return;
-            ServerLevel level = (ServerLevel) player.level;
-
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                blockEntity.load(tag);
-                blockEntity.setChanged();
-            }
-        });
     }
 
     private static List<ItemStack> loadLootTable(MinecraftServer server, LootContext.Builder builder, ResourceLocation lootTable) {

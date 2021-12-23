@@ -4,9 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.strange.module.structures.DataBlockEntity;
-import svenhjol.strange.module.structures.Structures;
+import svenhjol.strange.module.structures.StructuresClient;
 
 public class DataBlockScreen extends BaseScreen<DataBlockEntity> {
     private EditBox metadataEditBox;
@@ -36,11 +35,7 @@ public class DataBlockScreen extends BaseScreen<DataBlockEntity> {
 
     protected void save() {
         if (minecraft != null) {
-            NetworkHelper.sendPacketToServer(Structures.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
-                blockEntity.setChanged();
-                buf.writeBlockPos(pos);
-                buf.writeNbt(blockEntity.saveWithoutMetadata());
-            });
+            StructuresClient.CLIENT_SEND_UPDATE_STRUCTURE_BLOCK.send(blockEntity, pos);
             minecraft.setScreen(null);
         }
     }

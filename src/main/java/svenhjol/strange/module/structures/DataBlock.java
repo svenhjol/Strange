@@ -27,10 +27,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.raid_horns.RaidHorns;
 
+@SuppressWarnings("deprecation")
 public class DataBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
     public static final VoxelShape SHAPE;
@@ -99,9 +99,7 @@ public class DataBlock extends CharmBlockWithEntity {
                     SoundEvent sound = result ? SoundEvents.PLAYER_LEVELUP : RaidHorns.SQUEAK_SOUND;
                     level.playSound(null, player.blockPosition(), sound, SoundSource.BLOCKS, 1.0F, 1.0F);
                 } else {
-                    NetworkHelper.sendPacketToClient((ServerPlayer) player, Structures.MSG_CLIENT_OPEN_DATA_BLOCK_SCREEN, buf -> {
-                        buf.writeBlockPos(pos);
-                    });
+                    Structures.SERVER_SEND_OPEN_DATA_BLOCK_SCREEN.send((ServerPlayer) player, pos);
                 }
 
                 data.syncToClient();

@@ -7,9 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.strange.module.structures.EntityBlockEntity;
-import svenhjol.strange.module.structures.Structures;
+import svenhjol.strange.module.structures.StructuresClient;
 
 public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
     private EditBox entityEditBox;
@@ -58,9 +57,7 @@ public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
         primedCheckbox = new Checkbox(midX - 100, 188, 150, 20, new TextComponent("Primed"), blockEntity.isPrimed());
         addRenderableWidget(primedCheckbox);
 
-
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
-//        setFocused(entityEditBox);
     }
 
     @Override
@@ -89,16 +86,13 @@ public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
     @Override
     protected void save() {
         if (minecraft != null) {
-            NetworkHelper.sendPacketToServer(Structures.MSG_SERVER_UPDATE_BLOCK_ENTITY, buf -> {
-                blockEntity.setCount(Integer.parseInt(count));
-                blockEntity.setHealth(Double.parseDouble(health));
-                blockEntity.setPersistent(persistentCheckbox.selected());
-                blockEntity.setPrimed(primedCheckbox.selected());
+            blockEntity.setCount(Integer.parseInt(count));
+            blockEntity.setHealth(Double.parseDouble(health));
+            blockEntity.setPersistent(persistentCheckbox.selected());
+            blockEntity.setPrimed(primedCheckbox.selected());
+            blockEntity.setChanged();
 
-                blockEntity.setChanged();
-                buf.writeBlockPos(pos);
-                buf.writeNbt(blockEntity.saveWithoutMetadata());
-            });
+            StructuresClient.CLIENT_SEND_UPDATE_STRUCTURE_BLOCK.send(blockEntity, pos);
             minecraft.setScreen(null);
         }
     }

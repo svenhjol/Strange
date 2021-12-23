@@ -26,9 +26,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 
+@SuppressWarnings("deprecation")
 public class EntityBlock extends CharmBlockWithEntity {
     public static final VoxelShape SHAPE;
     public static final BooleanProperty HIDDEN = BooleanProperty.create("hidden");
@@ -83,10 +83,7 @@ public class EntityBlock extends CharmBlockWithEntity {
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof EntityBlockEntity blockEntity) {
-                NetworkHelper.sendPacketToClient((ServerPlayer) player, Structures.MSG_CLIENT_OPEN_ENTITY_BLOCK_SCREEN, buf -> {
-                    buf.writeBlockPos(pos);
-                });
-
+                Structures.SERVER_SEND_OPEN_ENTITY_BLOCK_SCREEN.send((ServerPlayer) player, pos);
                 blockEntity.syncToClient();
             }
         }
