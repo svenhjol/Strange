@@ -6,10 +6,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EntityDimensions;
@@ -23,23 +21,22 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
-import svenhjol.strange.api.network.RunestoneMessages;
-import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
 import svenhjol.strange.module.runestones.definition.ItemDefinition;
+import svenhjol.strange.module.runestones.network.ServerSendRunestoneClues;
+import svenhjol.strange.module.runestones.network.ServerSendRunestoneItems;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID, priority = 5)
+@CommonModule(mod = Strange.MOD_ID, priority = 5, description = "Runestones allow fast travel to points of interest around the world.")
 public class Runestones extends CharmModule {
     public static final int MAX_ITEMS = 3; // number of item possibilities
     public static final int SHOW_TEXT_CLUE = 5; // show text clue when there are this many (or less) unknowns
@@ -63,6 +60,9 @@ public class Runestones extends CharmModule {
     public static Map<ResourceLocation, Map<Tier, List<Item>>> ITEMS = new TreeMap<>();
     public static Map<ResourceLocation, List<String>> CLUES = new HashMap<>();
     public static List<Item> DEFAULT_ITEMS;
+
+    public static ServerSendRunestoneItems SERVER_SEND_RUNESTONE_ITEMS;
+    public static ServerSendRunestoneClues SERVER_SEND_RUNESTONE_CLUES;
 
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
     public static int maxDistance = 5000;
@@ -97,39 +97,14 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
-    }
 
-    public static void sendItems(ServerPlayer player) {
-        var tag = new CompoundTag();
-        int count = 0;
-
-        for (Map.Entry<ResourceLocation, Map<Tier, List<Item>>> entry : ITEMS.entrySet()) {
-            var dim = entry.getKey();
-            var packed = new CompoundTag();
-
-            for (Map.Entry<Tier, List<Item>> tierEntry : entry.getValue().entrySet()) {
-                var tier = tierEntry.getKey();
-                var items = tierEntry.getValue();
-
-                var itemList = NbtHelper.packStrings(items.stream()
-                    .map(Registry.ITEM::getKey)
-                    .map(ResourceLocation::toString)
-                    .collect(Collectors.toList()));
-
-                count += items.size();
-                packed.put(tier.getSerializedName(), itemList);
-            }
-
-            tag.put(dim.toString(), packed);
-        }
-
-        LogHelper.debug(Runestones.class, "Sending " + count + " runestone items to " + player.getUUID());
-        NetworkHelper.sendPacketToClient(player, RunestoneMessages.CLIENT_SYNC_RUNESTONE_ITEMS, buf -> buf.writeNbt(tag));
+        SERVER_SEND_RUNESTONE_ITEMS = new ServerSendRunestoneItems();
+        SERVER_SEND_RUNESTONE_CLUES = new ServerSendRunestoneClues();
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
-        sendItems(player);
+        SERVER_SEND_RUNESTONE_ITEMS.send(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {

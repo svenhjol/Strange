@@ -40,6 +40,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
     private RunestoneMaterial material;
     private ResourceLocation texture;
     private NonNullList<ItemStack> items;
+    private List<Item> potentialItems;
     private int itemRandomTicks = 0;
     private int midX;
     private int midY;
@@ -161,7 +162,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         if (slot.hasItem()) return;
 
         ResourceLocation dimension = DimensionHelper.getDimension(minecraft.level);
-        List<Item> potentialItems = RunestoneHelper.getItems(dimension, discovery.getRunes());
+
+        if (potentialItems == null) {
+            potentialItems = RunestoneHelper.getItems(dimension, discovery.getRunes());
+        }
 
         // If the player hasn't learned enough runes then exit early.
         int unknown = JournalHelper.countUnknownRunes(discovery.getRunes(), journal);
@@ -186,6 +190,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
                 sublist.addAll(items.subList(0, 1));
             }
 
+            potentialItems = null;
             items = sublist;
             itemRandomTicks = 0;
         }

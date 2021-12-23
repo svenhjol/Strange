@@ -24,6 +24,7 @@ import svenhjol.strange.module.discoveries.DiscoveryHelper;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+@SuppressWarnings("deprecation")
 public class RunestoneBlock extends CharmBlockWithEntity {
     private final RunestoneMaterial material;
 
@@ -106,7 +107,6 @@ public class RunestoneBlock extends CharmBlockWithEntity {
 
             // The runestone has runes that do not exist in the saved discoveries.
             // This means that we need to regenerate this location and store it back into the discoveries.
-//        } else if (!knowledge.specials.has(runestone.runes) && !knowledge.discoveries.has(runestone.runes)) {
             LogHelper.warn(getClass(), "Runestone data was erased for this runestone, regenerating it.");
             generate = true;
 
