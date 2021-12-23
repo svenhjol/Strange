@@ -17,7 +17,7 @@ import svenhjol.strange.module.discoveries.network.ServerSendInteractDiscovery;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID, description = "Handles cataloguing discoveries found by players throughout dimensions.")
+@CommonModule(mod = Strange.MOD_ID, description = "Catalogues discoveries found by players throughout dimensions.")
 public class Discoveries extends CharmModule {
     private static @Nullable DiscoveryData discoveryData;
 

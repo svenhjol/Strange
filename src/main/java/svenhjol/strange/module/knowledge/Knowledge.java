@@ -22,7 +22,7 @@ import svenhjol.strange.module.knowledge.network.ServerSendStructures;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, alwaysEnabled = true, description = "Catalogues all biomes, structures and dimensions as runes.")
 public class Knowledge extends CharmModule {
     private static @Nullable KnowledgeData knowledgeData;
 

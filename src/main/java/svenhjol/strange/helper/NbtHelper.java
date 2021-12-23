@@ -30,6 +30,7 @@ public class NbtHelper {
 
         List<String> out = new ArrayList<>();
         var list = (ListTag)tag.get(LIST);
+        if (list == null) return List.of();
 
         for (int i = 0; i < list.size(); i++) {
             out.add(list.getString(i));
