@@ -6,5 +6,5 @@ public enum Learnable implements ICharmEnum {
     RUNE,
     BIOME,
     STRUCTURE,
-    DIMENSIONw
+    DIMENSION
 }
