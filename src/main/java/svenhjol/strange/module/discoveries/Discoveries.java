@@ -3,57 +3,43 @@ package svenhjol.strange.module.discoveries;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.api.network.DiscoveryMessages;
+import svenhjol.strange.module.discoveries.network.ServerSendAddDiscovery;
+import svenhjol.strange.module.discoveries.network.ServerSendDiscoveries;
+import svenhjol.strange.module.discoveries.network.ServerSendInteractDiscovery;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Handles cataloguing discoveries found by players throughout dimensions.")
 public class Discoveries extends CharmModule {
-    private static DiscoveryData discoveryData;
+    private static @Nullable DiscoveryData discoveryData;
+
+    public static ServerSendDiscoveries SERVER_SEND_DISCOVERIES;
+    public static ServerSendAddDiscovery SERVER_SEND_ADD_DISCOVERY;
+    public static ServerSendInteractDiscovery SERVER_SEND_INTERACT_DISCOVERY;
 
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
-        ServerPlayNetworking.registerGlobalReceiver(DiscoveryMessages.SERVER_SYNC_DISCOVERIES, this::handleSyncDiscoveries);
+
+        SERVER_SEND_DISCOVERIES = new ServerSendDiscoveries();
+        SERVER_SEND_ADD_DISCOVERY = new ServerSendAddDiscovery();
+        SERVER_SEND_INTERACT_DISCOVERY = new ServerSendInteractDiscovery();
     }
 
     public static Optional<DiscoveryData> getDiscoveries() {
         return Optional.ofNullable(discoveryData);
     }
 
-    public static void sendDiscoveries(ServerPlayer player) {
-        var discoveries = getDiscoveries().orElse(null);
-        if (discoveries == null) return;
-
-        var tag = new CompoundTag();
-        discoveries.branch.save(tag);
-        NetworkHelper.sendPacketToClient(player, DiscoveryMessages.CLIENT_SYNC_DISCOVERIES, buf -> buf.writeNbt(tag));
-    }
-
-    public static void sendInteractDiscovery(ServerPlayer player, Discovery discovery) {
-        NetworkHelper.sendPacketToClient(player, DiscoveryMessages.CLIENT_INTERACT_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
-    }
-
-    public static void sendAddDiscovery(MinecraftServer server, Discovery discovery) {
-        NetworkHelper.sendPacketToAllClients(server, DiscoveryMessages.CLIENT_ADD_DISCOVERY, buf -> buf.writeNbt(discovery.save()));
-    }
-
     private void handleWorldLoad(MinecraftServer server, Level level) {
-
         // Overworld loaded first and only once.
         if (level.dimension() == Level.OVERWORLD) {
             var overworld = (ServerLevel) level;
@@ -68,11 +54,6 @@ public class Discoveries extends CharmModule {
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
-        var player = listener.getPlayer();
-        sendDiscoveries(player);
-    }
-
-    private void handleSyncDiscoveries(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> sendDiscoveries(player));
+        SERVER_SEND_DISCOVERIES.send(listener.getPlayer());
     }
 }

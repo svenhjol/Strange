@@ -89,8 +89,10 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         renderTooltip(poseStack, mouseX, mouseY);
 
         // Need to have a synchronised discovery for the runestone block that the player is looking at.
-        var discovery = DiscoveriesClient.interactedWithDiscovery;
-        if (discovery == null) return;
+        var opt = DiscoveriesClient.getInteractedDiscovery();
+        if (opt.isEmpty()) return;
+
+        var discovery = opt.get();
 
         activateButton.active = menu.slots.get(0).hasItem();
         runeStringRenderer.render(poseStack, font, discovery.getRunes());
@@ -225,7 +227,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
     @Override
     public void onClose() {
-        DiscoveriesClient.interactedWithDiscovery = null;
+        DiscoveriesClient.setInteractedDiscovery(null);
         super.onClose();
     }
 

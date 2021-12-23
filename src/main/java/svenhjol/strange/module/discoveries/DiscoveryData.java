@@ -8,6 +8,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class DiscoveryData extends SavedData {
     public DiscoveryBranch branch;
 

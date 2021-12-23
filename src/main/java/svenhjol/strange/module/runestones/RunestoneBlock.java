@@ -127,7 +127,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             runestone.setChanged();
 
             // Send the destination to all connected players to keep their copies in sync.
-            Discoveries.sendAddDiscovery(level.getServer(), discovery);
+            Discoveries.SERVER_SEND_ADD_DISCOVERY.sendToAll(level.getServer(), discovery);
         }
 
         // At this point we should be able to fetch the discovery that matches the runestone's runes.
@@ -139,7 +139,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         // Inform the player's client that they looked at this specific runestone.
-        Discoveries.sendInteractDiscovery(player, discovery);
+        Discoveries.SERVER_SEND_INTERACT_DISCOVERY.send(player, discovery);
         return true;
     }
 }
