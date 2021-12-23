@@ -1,12 +1,5 @@
 package svenhjol.strange.module.scrollkeepers;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,29 +13,32 @@ import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.helper.VillagerHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.scrollkeepers.ScrollkeeperTradeOffers.ScrollForEmeralds;
+import svenhjol.strange.module.scrollkeepers.network.ServerReceiveCheckSatisfied;
+import svenhjol.strange.module.scrollkeepers.network.ServerSendSatisfied;
 import svenhjol.strange.module.writing_desks.WritingDesks;
 
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Scrollkeepers sell quest scrolls and provide rewards on quest completion.")
 public class Scrollkeepers extends CharmModule {
-    public static final ResourceLocation MSG_SERVER_CHECK_HAS_SATISFIED = new ResourceLocation(Strange.MOD_ID, "server_check_has_satisfied");
-    public static final ResourceLocation MSG_CLIENT_SET_HAS_SATISFIED = new ResourceLocation(Strange.MOD_ID, "server_has_satisfied");
-    public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
     public static String VILLAGER_ID = "strange_scrollkeeper";
     public static VillagerProfession SCROLLKEEPER;
     public static PoiType POIT;
+
+    public static ServerSendSatisfied SERVER_SEND_SATISFIED;
+    public static ServerReceiveCheckSatisfied SERVER_RECEIVE_CHECK_SATISFIED;
+
+    public static final int[] QUEST_XP = new int[]{1, 10, 16, 24, 35, 44};
 
     @Config(name = "Bad Omen chance", description = "Chance (out of 1.0) of the player receiving Bad Omen when completing a quest with a scrollkeeper.\n" +
         "Bad Omen will never be applied if the scrollkeeper's level is less than Journeyman.")
@@ -55,23 +51,17 @@ public class Scrollkeepers extends CharmModule {
     public void register() {
         POIT = WorldHelper.addPointOfInterestType(WritingDesks.WRITING_DESK_BLOCK_ID, WritingDesks.WRITING_DESK, 1);
         SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.VILLAGER_WORK_LIBRARIAN);
-
         addDependencyCheck(mod -> Strange.LOADER.isEnabled(Quests.class) && Strange.LOADER.isEnabled(WritingDesks.class));
     }
 
     @Override
     public void runWhenEnabled() {
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_CHECK_HAS_SATISFIED, this::handleCheckHasSatisfied);
+        SERVER_SEND_SATISFIED = new ServerSendSatisfied();
+        SERVER_RECEIVE_CHECK_SATISFIED = new ServerReceiveCheckSatisfied();
 
         for (Tier tier : Tier.values()) {
             VillagerHelper.addTrade(SCROLLKEEPER, tier.getLevel(), new ScrollForEmeralds(tier));
         }
-    }
-
-    private void handleCheckHasSatisfied(MinecraftServer server, ServerPlayer player, ServerGamePacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(()
-            -> NetworkHelper.sendPacketToClient(player, MSG_CLIENT_SET_HAS_SATISFIED, buf
-                -> buf.writeBoolean(QuestHelper.getFirstSatisfiedQuest(player).isPresent())));
     }
 
     /**

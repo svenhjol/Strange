@@ -1,37 +1,33 @@
 package svenhjol.strange.module.scrollkeepers;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.event.PlayerTickCallback;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.scrollkeepers.network.ClientReceiveSatisfied;
+import svenhjol.strange.module.scrollkeepers.network.ClientSendCheckSatisfied;
 
 import java.util.List;
 
 @ClientModule(module = Scrollkeepers.class)
 public class ScrollkeepersClient extends CharmModule {
-    private boolean hasSatisfiedQuest;
+    public static boolean hasSatisfiedQuest;
     private int backoff = 1; // exponential backoff when checking for scrollkeepers nearby
+
+    public static ClientReceiveSatisfied CLIENT_RECEIVE_SATISFIED;
+    public static ClientSendCheckSatisfied CLIENT_SEND_CHECK_SATISFIED;
 
     @Override
     public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
-        ClientPlayNetworking.registerGlobalReceiver(Scrollkeepers.MSG_CLIENT_SET_HAS_SATISFIED, this::handleSetHasSatisfied);
-    }
 
-    private void handleSetHasSatisfied(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buffer, PacketSender sender) {
-        boolean has = buffer.readBoolean();
-        client.execute(() -> hasSatisfiedQuest = has);
+        CLIENT_RECEIVE_SATISFIED = new ClientReceiveSatisfied();
+        CLIENT_SEND_CHECK_SATISFIED = new ClientSendCheckSatisfied();
     }
 
     private void handlePlayerTick(Player player) {
@@ -55,7 +51,7 @@ public class ScrollkeepersClient extends CharmModule {
         backoff = 1;
         for (Villager villager : villagers) {
             if (villager.getVillagerData().getProfession() == Scrollkeepers.SCROLLKEEPER) {
-                NetworkHelper.sendEmptyPacketToServer(Scrollkeepers.MSG_SERVER_CHECK_HAS_SATISFIED);
+                CLIENT_SEND_CHECK_SATISFIED.send();
                 if (hasSatisfiedQuest) {
                     showParticlesInterest(villager);
                 }
