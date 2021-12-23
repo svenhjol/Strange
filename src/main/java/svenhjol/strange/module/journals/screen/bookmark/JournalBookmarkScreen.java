@@ -73,10 +73,10 @@ public class JournalBookmarkScreen extends JournalScreen {
         }
 
         pageButtons.add(new ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
-        pageButtons.add(new ButtonDefinition(b -> saveAndGoBack(), SAVE));
+        pageButtons.add(new ButtonDefinition(b -> save(), SAVE));
 
         bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP));
-        bottomButtons.add(0, new ButtonDefinition(b -> saveAndGoBack(), GO_BACK));
+        bottomButtons.add(0, new ButtonDefinition(b -> save(), SAVE));
 
         // add map icon if player has an empty map
         if (playerCanMakeMap()) {
@@ -179,7 +179,6 @@ public class JournalBookmarkScreen extends JournalScreen {
      */
     protected void saveAndGoBack() {
         save(); // save progress before changing screen
-        minecraft.setScreen(new JournalBookmarksScreen());
     }
 
     @Override
@@ -189,11 +188,11 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void save() {
-        BookmarksClient.sendUpdateBookmark(bookmark);
+        BookmarksClient.SEND_UPDATE_BOOKMARK.send(bookmark);
     }
 
     protected void remove() {
-        BookmarksClient.sendRemoveBookmark(bookmark);
+        BookmarksClient.SEND_REMOVE_BOOKMARK.send(bookmark);
     }
 
     protected void chooseIcon() {

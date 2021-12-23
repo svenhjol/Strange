@@ -4,9 +4,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
+
+import java.util.Optional;
 
 /**
  * A server message received on the client.
@@ -24,11 +27,13 @@ public abstract class ClientReceiver {
      * Cache and fetch the message ID from the annotation.
      */
     private ResourceLocation id() {
-        if (id == null && getClass().isAnnotationPresent(Id.class)) {
-            var annotation = getClass().getAnnotation(Id.class);
-            id = new ResourceLocation(annotation.value());
-        } else {
-            throw new IllegalStateException("Missing ID");
+        if (id == null) {
+            if (getClass().isAnnotationPresent(Id.class)) {
+                var annotation = getClass().getAnnotation(Id.class);
+                id = new ResourceLocation(annotation.value());
+            } else {
+                throw new IllegalStateException("Missing ID for `" + getClass() + "`");
+            }
         }
 
         return id;
@@ -52,4 +57,11 @@ public abstract class ClientReceiver {
      * If exceptions are thrown here then they are caught by handleInternal.
      */
     public abstract void handle(Minecraft client, FriendlyByteBuf buffer);
+
+    /**
+     * Convenience method to read a wrapped optional compound tag from a buffer.
+     */
+    public Optional<CompoundTag> getCompoundTag(FriendlyByteBuf buffer) {
+        return Optional.ofNullable(buffer.readNbt());
+    }
 }

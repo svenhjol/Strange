@@ -8,17 +8,20 @@ import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.network.ClientReceiver;
 import svenhjol.strange.network.Id;
 
-import java.util.Optional;
-
+/**
+ * Client receives all bookmarks in the form of a bookmark branch.
+ * Deserialize this branch to the client in order to maintain a local copy.
+ */
 @Id("strange:bookmarks")
 public class ClientReceiveBookmarks extends ClientReceiver {
     @Override
     public void handle(Minecraft client, FriendlyByteBuf buffer) {
-        var tag = Optional.ofNullable(buffer.readNbt()).orElseThrow();
+        var tag = getCompoundTag(buffer).orElseThrow();
 
         client.execute(() -> {
-            BookmarksClient.branch = BookmarkBranch.load(tag);
-            LogHelper.debug(getClass(), "Received " + BookmarksClient.branch.size() + " bookmarks from server.");
+            var branch = BookmarkBranch.load(tag);
+            BookmarksClient.setBranch(branch);
+            LogHelper.debug(getClass(), "Bookmarks branch has " + branch.size() + " bookmarks.");
         });
     }
 }

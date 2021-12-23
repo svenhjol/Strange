@@ -6,6 +6,9 @@ import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.strange.network.Id;
 import svenhjol.strange.network.ServerSender;
 
+/**
+ * Send all bookmarks to a player client when they connect.
+ */
 @Id("strange:bookmarks")
 public class ServerSendBookmarks extends ServerSender {
     @Override

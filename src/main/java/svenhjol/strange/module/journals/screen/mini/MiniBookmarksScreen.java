@@ -44,10 +44,10 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
 
         } else {
 
-            var branch = BookmarksClient.branch;
-            if (branch == null) return;
+            var branch = BookmarksClient.getBranch();
+            if (branch.isEmpty()) return;
 
-            paginator = new BookmarkPaginator(branch.values(minecraft.player.getUUID()));
+            paginator = new BookmarkPaginator(branch.get().values(minecraft.player.getUUID()));
             setPaginatorDefaults(paginator);
 
             // If the listed bookmark is not in the player's dimension then disable it and show a tooltip to this effect.

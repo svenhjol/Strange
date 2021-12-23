@@ -21,11 +21,13 @@ public abstract class ServerSender {
      * Cache and fetch the message ID from the annotation.
      */
     private ResourceLocation id() {
-        if (id == null && getClass().isAnnotationPresent(Id.class)) {
-            var annotation = getClass().getAnnotation(Id.class);
-            id = new ResourceLocation(annotation.value());
-        } else {
-            throw new IllegalStateException("Missing ID");
+        if (id == null) {
+            if (getClass().isAnnotationPresent(Id.class)) {
+                var annotation = getClass().getAnnotation(Id.class);
+                id = new ResourceLocation(annotation.value());
+            } else {
+                throw new IllegalStateException("Missing ID for `" + getClass() + "`");
+            }
         }
 
         return id;

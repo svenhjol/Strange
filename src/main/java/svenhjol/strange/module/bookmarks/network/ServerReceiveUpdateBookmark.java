@@ -4,29 +4,33 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarkException;
 import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.strange.network.Id;
 import svenhjol.strange.network.ServerReceiver;
 
 /**
- * Server receives an empty request to create a new bookmark.
- * The resulting bookmark is sent back to all clients via {@link Bookmarks#SEND_CREATED_BOOKMARK}.
+ * Server receives an updated bookmark.
+ * The bookmark is saved and then broadcast to all clients to keep their copies in sync.
  */
-@Id("strange:create_bookmark")
-public class ServerReceiveCreateBookmark extends ServerReceiver {
+@Id("strange:update_bookmark")
+public class ServerReceiveUpdateBookmark extends ServerReceiver {
     @Override
     public void handle(MinecraftServer server, ServerPlayer player, FriendlyByteBuf buffer) {
         var bookmarks = Bookmarks.getBookmarks().orElseThrow();
+        var tag = getCompoundTag(buffer).orElseThrow();
 
         server.execute(() -> {
+            var bookmark = Bookmark.load(tag);
+
             try {
-                // When the bookmark has been created on the server side, send it to all connected players.
-                var bookmark = bookmarks.add(player);
-                Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(server, bookmark);
+                // When bookmark updated on server, send to all players.
+                var updated = bookmarks.update(bookmark);
+                Bookmarks.SEND_UPDATED_BOOKMARK.sendToAll(server, updated);
 
             } catch (BookmarkException e) {
-                LogHelper.warn(getClass(), "Failed to register bookmark: " + e.getMessage());
+                LogHelper.warn(getClass(), "Failed to update bookmark: " + e.getMessage());
             }
         });
     }

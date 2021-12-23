@@ -27,8 +27,9 @@ public class JournalBookmarksScreen extends JournalPaginatedScreen<Bookmark> {
     }
 
     protected List<Bookmark> getPlayerBookmarks() {
-        if (BookmarksClient.branch == null) return List.of();
-        return BookmarksClient.branch.values(minecraft.player.getUUID());
+        var branch = BookmarksClient.getBranch();
+        if (branch.isEmpty()) return List.of();
+        return branch.get().values(minecraft.player.getUUID());
     }
 
     @Override
