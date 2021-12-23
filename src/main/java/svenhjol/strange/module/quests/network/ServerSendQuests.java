@@ -9,7 +9,9 @@ import svenhjol.strange.module.quests.Quests;
 public class ServerSendQuests extends ServerSender {
     @Override
     public void send(ServerPlayer player) {
-        var tag = Quests.quests.save(player);
-        super.send(player, buf -> buf.writeNbt(tag));
+        Quests.getQuestData().ifPresent(quests -> {
+            var tag = quests.save(player);
+            super.send(player, buf -> buf.writeNbt(tag));
+        });
     }
 }

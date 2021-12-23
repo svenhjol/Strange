@@ -47,7 +47,7 @@ public class Quests extends CharmModule {
     public static ServerReceiveAbandonQuest SERVER_RECEIVE_ABANDON_QUEST;
     public static ServerReceivePauseQuest SERVER_RECEIVE_PAUSE_QUEST;
 
-    public static QuestData quests;
+    private static @Nullable QuestData quests;
 
     public static boolean rewardRunes = true;
 
