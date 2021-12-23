@@ -1,17 +1,10 @@
 package svenhjol.strange.module.ender_bundles;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.hover_sorting.HoverSorting;
@@ -25,10 +18,7 @@ import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Ender bundles allow transfer of items to and from your ender chest.")
 public class EnderBundles extends CharmModule {
-    public static final String TAG_ENDER_ITEMS = "EnderItems";
-
-    public static final ResourceLocation MSG_SERVER_UPDATE_ENDER_INVENTORY = new ResourceLocation(Strange.MOD_ID, "server_update_ender_inventory");
-    public static final ResourceLocation MSG_CLIENT_UPDATE_ENDER_INVENTORY = new ResourceLocation(Strange.MOD_ID, "server_client_ender_inventory");
+    public static final String ENDER_ITEMS_TAG = "EnderItems";
     public static final ResourceLocation TRIGGER_USED_ENDER_BUNDLE = new ResourceLocation(Strange.MOD_ID, "used_ender_bundle");
 
     public static ServerSendUpdatedEnderInventory SERVER_SEND_UPDATED_ENDER_INVENTORY;
@@ -44,10 +34,10 @@ public class EnderBundles extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
-        ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_ENDER_INVENTORY, this::handleUpdateEnderInventory);
         HoverSortItemsCallback.EVENT.register(this::handleSortItems);
 
         SERVER_SEND_UPDATED_ENDER_INVENTORY = new ServerSendUpdatedEnderInventory();
+        SERVER_RECEIVE_UPDATE_ENDER_INVENTORY = new ServerReceiveUpdateEnderInventory();
     }
 
     private void handleSortItems(ServerPlayer player, ItemStack stack, boolean direction) {
@@ -65,14 +55,6 @@ public class EnderBundles extends CharmModule {
             enderChestInventory.clearContent();
             contents.forEach(enderChestInventory::addItem);
         }
-    }
-
-    private void handleUpdateEnderInventory(MinecraftServer server, ServerPlayer player, ServerGamePacketListener handler, FriendlyByteBuf buffer, PacketSender sender) {
-        server.execute(() -> {
-            CompoundTag tag = new CompoundTag();
-            tag.put(TAG_ENDER_ITEMS, player.getEnderChestInventory().createTag());
-            NetworkHelper.sendPacketToClient(player, MSG_CLIENT_UPDATE_ENDER_INVENTORY, buf -> buf.writeNbt(tag));
-        });
     }
 
     public static void triggerUsedEnderBundle(ServerPlayer player) {
