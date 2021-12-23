@@ -19,6 +19,7 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.casks.network.ServerSendAddToCask;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +40,7 @@ public class Casks extends CharmModule {
     public static CaskBlock CASK;
     public static BlockEntityType<CaskBlockEntity> BLOCK_ENTITY;
 
-    public static final ResourceLocation MSG_CLIENT_ADDED_TO_CASK = new ResourceLocation(Strange.MOD_ID, "client_added_to_cask");
+    public static ServerSendAddToCask SERVER_SEND_ADD_TO_CASK;
 
     @Override
     public void register() {
@@ -50,6 +51,7 @@ public class Casks extends CharmModule {
     @Override
     public void runWhenEnabled() {
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
+        SERVER_SEND_ADD_TO_CASK = new ServerSendAddToCask();
     }
 
     public static void triggerFilledWithPotion(ServerPlayer player) {

@@ -34,14 +34,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class CaskBlockEntity extends CharmSyncedBlockEntity {
-    public static final String TAG_PORTIONS = "Portions";
-    public static final String TAG_EFFECTS = "Effects";
-    public static final String TAG_DURATIONS = "Duration";
-    public static final String TAG_AMPLIFIERS = "Amplifier";
-    public static final String TAG_DILUTIONS = "Dilutions";
-    public static final String TAG_NAME = "Name";
-    public static final String TAG_FERMENTATION = "Fermentation";
+    public static final String PORTION_TAG = "Portions";
+    public static final String EFFECTS_TAG = "Effects";
+    public static final String DURATIONS_TAG = "Duration";
+    public static final String AMPLIFIERS_TAG = "Amplifier";
+    public static final String DILUTIONS_TAG = "Dilutions";
+    public static final String NAME_TAG = "Name";
+    public static final String FERMENTATION_TAG = "Fermentation";
 
     public int portions = 0;
     public int fermentation = 0;
@@ -59,23 +60,23 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
     public void load(CompoundTag nbt) {
         super.load(nbt);
 
-        this.name = nbt.getString(TAG_NAME);
-        this.portions = nbt.getInt(TAG_PORTIONS);
-        this.fermentation = nbt.getInt(TAG_FERMENTATION);
+        this.name = nbt.getString(NAME_TAG);
+        this.portions = nbt.getInt(PORTION_TAG);
+        this.fermentation = nbt.getInt(FERMENTATION_TAG);
         this.effects = new ArrayList<>();
         this.durations = new HashMap<>();
         this.amplifiers = new HashMap<>();
         this.dilutions = new HashMap<>();
 
-        ListTag list = nbt.getList(TAG_EFFECTS, 8);
+        ListTag list = nbt.getList(EFFECTS_TAG, 8);
         list.stream()
             .map(Tag::getAsString)
             .map(i -> i.replace("\"", "")) // madness
             .forEach(item -> this.effects.add(new ResourceLocation(item)));
 
-        CompoundTag durations = nbt.getCompound(TAG_DURATIONS);
-        CompoundTag amplifiers = nbt.getCompound(TAG_AMPLIFIERS);
-        CompoundTag dilutions = nbt.getCompound(TAG_DILUTIONS);
+        CompoundTag durations = nbt.getCompound(DURATIONS_TAG);
+        CompoundTag amplifiers = nbt.getCompound(AMPLIFIERS_TAG);
+        CompoundTag dilutions = nbt.getCompound(DILUTIONS_TAG);
         this.effects.forEach(effect -> {
             this.durations.put(effect, durations.getInt(effect.toString()));
             this.amplifiers.put(effect, amplifiers.getInt(effect.toString()));
@@ -85,9 +86,9 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.putString(TAG_NAME, this.name);
-        tag.putInt(TAG_PORTIONS, this.portions);
-        tag.putInt(TAG_FERMENTATION, this.fermentation);
+        tag.putString(NAME_TAG, this.name);
+        tag.putInt(PORTION_TAG, this.portions);
+        tag.putInt(FERMENTATION_TAG, this.fermentation);
 
         CompoundTag durations = new CompoundTag();
         CompoundTag amplifiers = new CompoundTag();
@@ -101,10 +102,10 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
             dilutions.putInt(effect.toString(), this.dilutions.get(effect));
         });
 
-        tag.put(TAG_EFFECTS, effects);
-        tag.put(TAG_DURATIONS, durations);
-        tag.put(TAG_AMPLIFIERS, amplifiers);
-        tag.put(TAG_DILUTIONS, dilutions);
+        tag.put(EFFECTS_TAG, effects);
+        tag.put(DURATIONS_TAG, durations);
+        tag.put(AMPLIFIERS_TAG, amplifiers);
+        tag.put(DILUTIONS_TAG, dilutions);
     }
 
     public boolean add(Level level, BlockPos pos, BlockState state, ItemStack input) {

@@ -1,16 +1,13 @@
 package svenhjol.strange.module.casks;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -48,7 +45,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "EnhancedSwitchMigration"})
 public class CaskBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final VoxelShape X1, X2, X3, X4;
@@ -135,9 +132,7 @@ public class CaskBlock extends CharmBlockWithEntity {
                         PlayerHelper.addOrDropStack(player, new ItemStack(Items.GLASS_BOTTLE));
 
                         // send message to client that an item was added
-                        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
-                        data.writeLong(pos.asLong());
-                        ServerPlayNetworking.send((ServerPlayer) player, Casks.MSG_CLIENT_ADDED_TO_CASK, data);
+                        Casks.SERVER_SEND_ADD_TO_CASK.send((ServerPlayer) player, pos);
 
                         // do advancement for filling with potions
                         if (cask.portions > 1 && cask.effects.size() > 1) {
