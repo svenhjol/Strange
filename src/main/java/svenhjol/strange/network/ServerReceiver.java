@@ -43,7 +43,7 @@ public abstract class ServerReceiver {
 
     private void handleInternal(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl listener, FriendlyByteBuf buffer, PacketSender sender) {
         var id = id();
-        LogHelper.debug(getClass(), "Received message `" + id + "` from server.");
+        LogHelper.debug(getClass(), "Received message `" + id + "` from client " + player.getUUID() + ".");
 
         try {
             handle(server, player, buffer);
