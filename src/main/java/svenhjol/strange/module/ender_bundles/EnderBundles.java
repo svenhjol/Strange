@@ -17,6 +17,8 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.hover_sorting.HoverSorting;
 import svenhjol.charm.module.hover_sorting.event.HoverSortItemsCallback;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.ender_bundles.network.ServerReceiveUpdateEnderInventory;
+import svenhjol.strange.module.ender_bundles.network.ServerSendUpdatedEnderInventory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +30,9 @@ public class EnderBundles extends CharmModule {
     public static final ResourceLocation MSG_SERVER_UPDATE_ENDER_INVENTORY = new ResourceLocation(Strange.MOD_ID, "server_update_ender_inventory");
     public static final ResourceLocation MSG_CLIENT_UPDATE_ENDER_INVENTORY = new ResourceLocation(Strange.MOD_ID, "server_client_ender_inventory");
     public static final ResourceLocation TRIGGER_USED_ENDER_BUNDLE = new ResourceLocation(Strange.MOD_ID, "used_ender_bundle");
+
+    public static ServerSendUpdatedEnderInventory SERVER_SEND_UPDATED_ENDER_INVENTORY;
+    public static ServerReceiveUpdateEnderInventory SERVER_RECEIVE_UPDATE_ENDER_INVENTORY;
 
     public static EnderBundleItem ENDER_BUNDLE;
 
@@ -41,6 +46,8 @@ public class EnderBundles extends CharmModule {
     public void runWhenEnabled() {
         ServerPlayNetworking.registerGlobalReceiver(MSG_SERVER_UPDATE_ENDER_INVENTORY, this::handleUpdateEnderInventory);
         HoverSortItemsCallback.EVENT.register(this::handleSortItems);
+
+        SERVER_SEND_UPDATED_ENDER_INVENTORY = new ServerSendUpdatedEnderInventory();
     }
 
     private void handleSortItems(ServerPlayer player, ItemStack stack, boolean direction) {

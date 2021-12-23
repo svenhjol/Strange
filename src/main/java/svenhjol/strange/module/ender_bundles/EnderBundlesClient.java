@@ -18,8 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.event.ItemTooltipImageCallback;
 import svenhjol.charm.helper.ClientHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.ender_bundles.network.ClientReceiveUpdatedEnderInventory;
+import svenhjol.strange.module.ender_bundles.network.ClientSendUpdateEnderInventory;
 
 import java.util.Optional;
 
@@ -29,6 +30,9 @@ public class EnderBundlesClient extends CharmModule {
     public static final ResourceLocation ENDER_BUNDLE_FILLED = new ResourceLocation("ender_bundle_filled");
     public static float CACHED_AMOUNT_FILLED = 0.0F;
     private static boolean isEnabled = false;
+
+    public static ClientReceiveUpdatedEnderInventory CLIENT_RECEIVE_UPDATED_ENDER_INVENTORY;
+    public static ClientSendUpdateEnderInventory CLIENT_SEND_UPDATE_ENDER_INVENTORY;
 
     @Override
     public void register() {
@@ -45,6 +49,8 @@ public class EnderBundlesClient extends CharmModule {
     public void runWhenEnabled() {
         ItemTooltipImageCallback.EVENT.register(this::handleItemTooltipImage);
         isEnabled = true;
+
+        CLIENT_RECEIVE_UPDATED_ENDER_INVENTORY = new ClientReceiveUpdatedEnderInventory();
     }
 
     private Optional<TooltipComponent> handleItemTooltipImage(ItemStack stack) {
@@ -55,7 +61,7 @@ public class EnderBundlesClient extends CharmModule {
         // Poll for enderinventory changes on the server at a faster rate when the player is hovering over an ender bundle.
         ClientHelper.getLevel().ifPresent(world -> {
             if (world.getGameTime() % 5 == 0) {
-                NetworkHelper.sendEmptyPacketToServer(EnderBundles.MSG_SERVER_UPDATE_ENDER_INVENTORY);
+                CLIENT_SEND_UPDATE_ENDER_INVENTORY.send();
             }
         });
 
@@ -96,12 +102,11 @@ public class EnderBundlesClient extends CharmModule {
      * Poll for enderinventory changes on the server.
      */
     private void handleClientTick(Minecraft client) {
-        if (client == null || client.level == null || client.player == null)
-            return;
+        if (client == null || client.level == null || client.player == null) return;
 
         // do this sparingly
         if (client.level.getGameTime() % 60 == 0) {
-            NetworkHelper.sendEmptyPacketToServer(EnderBundles.MSG_SERVER_UPDATE_ENDER_INVENTORY);
+            CLIENT_SEND_UPDATE_ENDER_INVENTORY.send();
         }
     }
 }
