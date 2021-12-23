@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.Quest;
@@ -24,6 +23,7 @@ import svenhjol.strange.module.runes.Tier;
 
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class ScrollItem extends CharmItem {
     private static final String QUEST_TAG = "quest";
     private static final String DIFFICULTY_TAG = "difficulty";
@@ -79,13 +79,13 @@ public class ScrollItem extends CharmItem {
         }
 
         scroll.shrink(1);
-        NetworkHelper.sendEmptyPacketToClient(serverPlayer, Scrolls.MSG_CLIENT_OPEN_SCROLL);
+        Scrolls.SERVER_SEND_OPEN_SCROLL.send(serverPlayer);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, scroll);
     }
 
     private InteractionResultHolder<ItemStack> destroy(ServerPlayer player, ItemStack scroll) {
         scroll.shrink(1);
-        NetworkHelper.sendEmptyPacketToClient(player, Scrolls.MSG_CLIENT_DESTROY_SCROLL);
+        Scrolls.SERVER_SEND_DESTROY_SCROLL.send(player);
         return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
     }
 

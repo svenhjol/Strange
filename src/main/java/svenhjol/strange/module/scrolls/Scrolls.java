@@ -1,6 +1,5 @@
 package svenhjol.strange.module.scrolls;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.CommonModule;
@@ -10,14 +9,16 @@ import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.runes.Tier;
+import svenhjol.strange.module.scrolls.network.ServerSendDestroyScroll;
+import svenhjol.strange.module.scrolls.network.ServerSendOpenScroll;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Scrolls extends CharmModule {
-    public static final ResourceLocation MSG_CLIENT_DESTROY_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_destroy_scroll");
-    public static final ResourceLocation MSG_CLIENT_OPEN_SCROLL = new ResourceLocation(Strange.MOD_ID, "client_open_scroll");
+    public static ServerSendDestroyScroll SERVER_SEND_DESTROY_SCROLL;
+    public static ServerSendOpenScroll SERVER_SEND_OPEN_SCROLL;
 
     public static final Map<Tier, ScrollItem> SCROLLS = new HashMap<>();
 
@@ -33,6 +34,9 @@ public class Scrolls extends CharmModule {
     @Override
     public void runWhenEnabled() {
         QuestEvents.PAUSE.register(this::handlePauseQuest);
+
+        SERVER_SEND_DESTROY_SCROLL = new ServerSendDestroyScroll();
+        SERVER_SEND_OPEN_SCROLL = new ServerSendOpenScroll();
     }
 
     /**
