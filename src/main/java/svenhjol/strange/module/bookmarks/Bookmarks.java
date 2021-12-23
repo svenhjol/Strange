@@ -59,7 +59,7 @@ public class Bookmarks extends CharmModule {
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
-x
+
         // Overworld is loaded first. We set up the bookmarks storage at this point.
         if (level.dimension() == Level.OVERWORLD) {
             ServerLevel overworld = (ServerLevel) level;
