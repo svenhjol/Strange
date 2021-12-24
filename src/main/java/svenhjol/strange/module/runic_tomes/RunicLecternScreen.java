@@ -32,8 +32,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     private int midX;
     private int midY;
 
-    private Button doneButton;
-    private Button takeButton;
     private Button activateButton;
 
     private ItemStack tome;
@@ -63,8 +61,8 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         int buttonWidth = 90;
 
-        doneButton = addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> onClose()));
-        takeButton = addRenderableWidget(new Button(midX - 45, midY + 94, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.take_tome"), button -> {
+        addRenderableWidget(new Button(midX - 140, midY + 94, buttonWidth, 20, CommonComponents.GUI_DONE, button -> onClose()));
+        addRenderableWidget(new Button(midX - 45, midY + 94, buttonWidth, 20, new TranslatableComponent("gui.strange.runic_lecterns.take_tome"), button -> {
             syncClickedButton(0);
             onClose();
         }));

@@ -3,7 +3,6 @@ package svenhjol.strange.module.runic_tomes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -27,13 +26,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.NetworkHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.init.StrangeParticles;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 
 import java.util.Random;
 
+@SuppressWarnings("deprecation")
 public class RunicLecternBlock extends CharmBlockWithEntity {
     public static final DirectionProperty FACING;
     public static final VoxelShape SHAPE_BASE;
@@ -101,18 +100,13 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        switch(state.getValue(FACING)) {
-            case NORTH:
-                return SHAPE_NORTH;
-            case SOUTH:
-                return SHAPE_SOUTH;
-            case EAST:
-                return SHAPE_EAST;
-            case WEST:
-                return SHAPE_WEST;
-            default:
-                return SHAPE_COMMON;
-        }
+        return switch (state.getValue(FACING)) {
+            case NORTH -> SHAPE_NORTH;
+            case SOUTH -> SHAPE_SOUTH;
+            case EAST -> SHAPE_EAST;
+            case WEST -> SHAPE_WEST;
+            default -> SHAPE_COMMON;
+        };
     }
 
     @Override
@@ -174,14 +168,11 @@ public class RunicLecternBlock extends CharmBlockWithEntity {
             return false;
         }
 
-        CompoundTag tomeTag = new CompoundTag();
-        lectern.getTome().save(tomeTag);
-
         // If the player hasn't learned this rune phrase yet, try and learn it.
         String runes = RunicTomeItem.getRunes(lectern.getTome());
         JournalHelper.tryLearn(player, runes);
 
-        NetworkHelper.sendPacketToClient(player, RunicTomes.MSG_CLIENT_SET_LECTERN_TOME, buf -> buf.writeNbt(tomeTag));
+        RunicTomes.SERVER_SEND_SET_TOME.send(player, lectern.getTome());
         return true;
     }
 

@@ -37,13 +37,15 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.runic_tomes.loot.BiomeTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.loot.DimensionTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.loot.StructureTomeLootFunction;
+import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
 import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class RunicTomes extends CharmModule {
     public static final ResourceLocation RUNIC_LECTERN_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runic_lectern");
-    public static final ResourceLocation MSG_CLIENT_SET_LECTERN_TOME = new ResourceLocation(Strange.MOD_ID, "client_set_lectern_tome");
+
+    public static ServerSendSetTome SERVER_SEND_SET_TOME;
 
     public static RunicLecternBlock RUNIC_LECTERN;
     public static MenuType<RunicLecternMenu> RUNIC_LECTERN_MENU;
@@ -72,6 +74,7 @@ public class RunicTomes extends CharmModule {
     public void runWhenEnabled() {
         UseBlockCallback.EVENT.register(this::handleUseBlock);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
+        SERVER_SEND_SET_TOME = new ServerSendSetTome();
     }
 
     /**

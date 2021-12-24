@@ -15,9 +15,6 @@ import svenhjol.charm.menu.CharmContainerMenu;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 
 public class RunicLecternMenu extends CharmContainerMenu {
-    private final Inventory playerInventory;
-    private final Player player;
-    private final Container inventory;
     private final ContainerLevelAccess access;
 
     public RunicLecternMenu(int syncId, Inventory playerInventory) {
@@ -28,9 +25,6 @@ public class RunicLecternMenu extends CharmContainerMenu {
         super(RunicTomes.RUNIC_LECTERN_MENU, syncId, playerInventory, inventory);
 
         this.access = access;
-        this.inventory = inventory;
-        this.playerInventory = playerInventory;
-        this.player = playerInventory.player;
 
         // sacrificial item
         this.addSlot(new Slot(inventory, 0, 80, 62) {

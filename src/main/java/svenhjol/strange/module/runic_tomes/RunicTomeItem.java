@@ -13,6 +13,7 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 
+@SuppressWarnings("unused")
 public class RunicTomeItem extends CharmItem {
     private static final String TAG_RUNES = "Runes";
     private static final String TAG_BRANCH = "Branch";

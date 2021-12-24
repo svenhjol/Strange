@@ -14,11 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class RunicLecternRenderer<T extends RunicLecternBlockEntity> implements BlockEntityRenderer<T> {
     private final BookModel bookModel;
-    private final BlockEntityRendererProvider.Context context;
 
     public RunicLecternRenderer(BlockEntityRendererProvider.Context context) {
         this.bookModel = new BookModel(context.bakeLayer(ModelLayers.BOOK));
-        this.context = context;
     }
 
     @Override
