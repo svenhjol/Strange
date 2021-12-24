@@ -1,12 +1,9 @@
 package svenhjol.strange.module.cooking_pots;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -153,9 +150,7 @@ public class CookingPotBlock extends CharmBlockWithEntity {
                             }
 
                             // send message to client that an item was added
-                            FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
-                            data.writeLong(pos.asLong());
-                            ServerPlayNetworking.send((ServerPlayer) player, CookingPots.MSG_CLIENT_ADDED_TO_POT, data);
+                            CookingPots.SERVER_SEND_ADD_TO_POT.send((ServerPlayer) player, pos);
 
                             // do add items advancement
                             if (pot.getRemainingPortions() > 0) {

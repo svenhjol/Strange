@@ -1,6 +1,5 @@
 package svenhjol.strange.module.cooking_pots;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -16,24 +15,32 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.cooking_pots.network.ClientReceiveAddToPot;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 @ClientModule(module = CookingPots.class)
+@SuppressWarnings("unused")
 public class CookingPotsClient extends CharmModule {
     public static final ResourceLocation MIXED_STEW_QUALITY = new ResourceLocation("mixed_stew_quality");
+
+    public static ClientReceiveAddToPot CLIENT_RECEIVE_ADD_TO_POT;
 
     @Override
     public void register() {
         ColorProviderRegistry.BLOCK.register(this::handleColorProvider, CookingPots.COOKING_POT);
         BlockEntityRendererRegistry.register(CookingPots.BLOCK_ENTITY, CookingPotBlockEntityRenderer::new);
-        ClientPlayNetworking.registerGlobalReceiver(CookingPots.MSG_CLIENT_ADDED_TO_POT, this::handleClientAddedToPot);
 
         ModelPredicateProviderRegistryAccessor.callRegister(MIXED_STEW_QUALITY, ((stack, level, entity, i) -> {
             int quality = MixedStewItem.getQuality(stack);
             return quality / 10.0F;
         }));
+    }
+
+    @Override
+    public void runWhenEnabled() {
+        CLIENT_RECEIVE_ADD_TO_POT = new ClientReceiveAddToPot();
     }
 
     private int handleColorProvider(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {

@@ -11,6 +11,7 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.cooking_pots.network.ServerSendAddToPot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,18 @@ public class CookingPots extends CharmModule {
     @Config(name = "Add food effects", description = "If true, foods that have effects such as hunger or poison have a chance of being added to the pot.")
     public static boolean addFoodEffects = true;
 
-    public static final ResourceLocation MSG_CLIENT_ADDED_TO_POT = new ResourceLocation(Strange.MOD_ID, "client_added_to_pot");
+    public static ServerSendAddToPot SERVER_SEND_ADD_TO_POT;
 
     @Override
     public void register() {
         COOKING_POT = new CookingPotBlock(this);
         BLOCK_ENTITY = CommonRegistry.blockEntity(ID, CookingPotBlockEntity::new, COOKING_POT);
         MIXED_STEW = new MixedStewItem(this);
+    }
+
+    @Override
+    public void runWhenEnabled() {
+        SERVER_SEND_ADD_TO_POT = new ServerSendAddToPot();
     }
 
     public static List<Item> getResolvedItems(List<ResourceLocation> ids) {
