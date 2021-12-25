@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.runes.Tier;
@@ -33,7 +34,7 @@ public class ClientReceiveQuestDefinitions extends ClientReceiver {
                     Quests.DEFINITIONS.computeIfAbsent(tier, m -> new HashMap<>()).put(id, definition);
                 }
             }
-            LogHelper.debug(getClass(), "Received " + count + " quest definitions.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Received " + count + " quest definitions.");
         });
     }
 }

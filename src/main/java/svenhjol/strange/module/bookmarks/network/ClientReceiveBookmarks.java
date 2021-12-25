@@ -3,10 +3,11 @@ package svenhjol.strange.module.bookmarks.network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
-import svenhjol.strange.module.bookmarks.BookmarkBranch;
-import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
+import svenhjol.strange.module.bookmarks.BookmarkBranch;
+import svenhjol.strange.module.bookmarks.BookmarksClient;
 
 /**
  * Client receives all bookmarks in the form of a bookmark branch.
@@ -21,7 +22,7 @@ public class ClientReceiveBookmarks extends ClientReceiver {
         client.execute(() -> {
             var branch = BookmarkBranch.load(tag);
             BookmarksClient.setBranch(branch);
-            LogHelper.debug(getClass(), "Bookmarks branch has " + branch.size() + " bookmarks.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Bookmarks branch has " + branch.size() + " bookmarks.");
         });
     }
 }

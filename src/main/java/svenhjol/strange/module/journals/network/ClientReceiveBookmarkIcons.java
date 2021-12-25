@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.journals.Journals;
 
@@ -26,7 +27,7 @@ public class ClientReceiveBookmarkIcons extends ClientReceiver {
 
             Journals.BOOKMARK_ICONS.clear();
             Journals.BOOKMARK_ICONS.addAll(icons);
-            LogHelper.debug(getClass(), "Received " + icons.size() + " bookmark icons.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Received " + icons.size() + " bookmark icons.");
         });
     }
 }

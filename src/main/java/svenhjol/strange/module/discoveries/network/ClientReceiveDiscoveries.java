@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.DiscoveryBranch;
 
@@ -17,7 +18,7 @@ public class ClientReceiveDiscoveries extends ClientReceiver {
         client.execute(() -> {
             var branch = DiscoveryBranch.load(tag);
             DiscoveriesClient.setBranch(branch);
-            LogHelper.debug(getClass(), "Discoveries branch has " + branch.size() + " discoveries.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Discoveries branch has " + branch.size() + " discoveries.");
         });
     }
 }

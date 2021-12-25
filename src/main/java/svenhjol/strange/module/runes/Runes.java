@@ -31,7 +31,7 @@ public class Runes extends CharmModule {
 
     public static void addBranch(RuneBranch<?, ?> branch) {
         BRANCHES.put(branch.getBranchName(), branch);
-        LogHelper.debug(Runes.class, "Updated branch `" + branch.getBranchName() + "`.");
+        LogHelper.debug(Strange.MOD_ID, Runes.class, "Updated branch `" + branch.getBranchName() + "`.");
     }
 
     public static Map<String, RuneBranch<?, ?>> getBranches() {

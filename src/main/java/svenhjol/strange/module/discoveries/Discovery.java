@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneHelper;
 
 import javax.annotation.Nullable;
@@ -82,7 +83,7 @@ public class Discovery {
     public long getSeed() {
         if (cachedSeed == 0) {
             cachedSeed = RuneHelper.seed(runes);
-            LogHelper.debug(this.getClass(), "This block's random seed is " + cachedSeed);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "This block's random seed is " + cachedSeed);
         }
         return cachedSeed;
     }

@@ -108,7 +108,7 @@ public class Scrollkeepers extends CharmModule {
             int amplifier = scaleBadOmen ? Math.max(0, villagerLevel - 2) : 0;
             MobEffectInstance effect = new MobEffectInstance(MobEffects.BAD_OMEN, 120000, amplifier, false, false, false);
             player.addEffect(effect);
-            LogHelper.debug(Scrollkeepers.class, "Applying Bad Omen effect with amplifier: " + amplifier);
+            LogHelper.debug(Strange.MOD_ID, Scrollkeepers.class, "Applying Bad Omen effect with amplifier: " + amplifier);
         }
 
         return true;

@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker.Page;
 
@@ -15,7 +16,7 @@ public class ClientReceivePage extends ClientReceiver {
         var page = buffer.readEnum(Page.class);
 
         client.execute(() -> {
-            LogHelper.debug(getClass(), "Wants to open journal page `" + page + "`.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Wants to open journal page `" + page + "`.");
             client.setScreen(JournalsClient.tracker.getScreen(page));
         });
     }

@@ -11,6 +11,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class LootHelper {
                 if (Registry.ITEM.getOptional(res).isPresent()) {
                     map.computeIfAbsent(p, a -> new LinkedList<>()).add(Registry.ITEM.get(res));
                 } else {
-                    LogHelper.debug(LootHelper.class, "Could not find item in registry: " + res);
+                    LogHelper.debug(Strange.MOD_ID, LootHelper.class, "Could not find item in registry: " + res);
                 }
             }
         }

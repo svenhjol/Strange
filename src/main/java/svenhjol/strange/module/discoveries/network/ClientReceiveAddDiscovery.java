@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.Discovery;
 
@@ -18,7 +19,7 @@ public class ClientReceiveAddDiscovery extends ClientReceiver {
         client.execute(() -> {
             var discovery = Discovery.load(tag);
             branch.add(discovery.getRunes(), discovery);
-            LogHelper.debug(getClass(), "Added discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Added discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
         });
     }
 }

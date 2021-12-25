@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.Processors;
 
 import java.util.Random;
@@ -30,10 +31,10 @@ public class LegacyDataProcessor extends StructureProcessor {
         Block block = blockInfo.state.getBlock();
         CompoundTag nbt = blockInfo.nbt;
         if (nbt != null && !nbt.isEmpty()) {
-            LogHelper.debug(getClass(), nbt.getAsString());
+            LogHelper.debug(Strange.MOD_ID, getClass(), nbt.getAsString());
         }
-        if (block == Blocks.STRUCTURE_BLOCK) {
-            StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
+        if (block == Blocks.STRUCTURE_BLOCK && nbt != null) {
+            StructureMode mode = StructureMode.valueOf(nbt.getString("mode"));
             if (mode == StructureMode.DATA) {
                 Rotation rotation = placement.getRotation();
                 Random posRandom = new Random(pos.asLong());

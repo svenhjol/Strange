@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.init.StrangeParticles;
 import svenhjol.strange.module.bookmarks.BookmarkBranch;
@@ -88,7 +89,7 @@ public class RunicTeleport implements ITeleportType {
 
         // Skip if there's no matching handler.
         if (handler == null) {
-            LogHelper.debug(this.getClass(), "No teleport handler for branch: " + branch.getBranchName());
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "No teleport handler for branch: " + branch.getBranchName());
             return InteractionResult.PASS;
         }
 

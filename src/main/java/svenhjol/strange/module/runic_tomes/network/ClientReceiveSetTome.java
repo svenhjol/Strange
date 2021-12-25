@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomesClient;
 
@@ -21,11 +22,11 @@ public class ClientReceiveSetTome extends ClientReceiver {
             String runes = RunicTomeItem.getRunes(RunicTomesClient.tomeHolder);
 
             if (runes.isEmpty()) {
-                LogHelper.error(getClass(), "Could not fetch runes from tome");
+                LogHelper.info(Strange.MOD_ID, getClass(), "Could not fetch runes from tome");
                 return;
             }
 
-            LogHelper.debug(getClass(), "Tome set from server. Runes = " + runes);
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Tome set from server. Runes = " + runes);
         });
     }
 }

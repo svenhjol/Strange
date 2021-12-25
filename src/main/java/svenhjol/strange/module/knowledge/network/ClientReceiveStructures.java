@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.branch.StructureBranch;
 
@@ -19,7 +20,7 @@ public class ClientReceiveStructures extends ClientReceiver {
         client.execute(() -> {
             var branch = StructureBranch.load(tag);
             KnowledgeClient.setStructures(branch);
-            LogHelper.debug(getClass(), "Structures branch has " + branch.size() + " structures.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Structures branch has " + branch.size() + " structures.");
         });
     }
 }

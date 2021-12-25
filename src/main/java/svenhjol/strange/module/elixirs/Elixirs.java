@@ -61,13 +61,13 @@ public class Elixirs extends CharmModule {
 
                     IElixir potion = (IElixir)clazz.getDeclaredConstructor().newInstance();
                     POTIONS.add(potion);
-                    LogHelper.debug(getClass(), "Loaded potion: " + simpleClassName);
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "Loaded potion: " + simpleClassName);
                 } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                     LogHelper.warn(getClass(), "Elixir `" + simpleClassName + "` failed to load: " + e.getMessage());
                 }
             }
         } catch (IOException | URISyntaxException e) {
-            LogHelper.error(getClass(), "Failed to load classes from namespace: " + e.getMessage());
+            LogHelper.info(Strange.MOD_ID, getClass(), "Failed to load classes from namespace: " + e.getMessage());
         }
 
         for (String lootTable : configLootTables) {

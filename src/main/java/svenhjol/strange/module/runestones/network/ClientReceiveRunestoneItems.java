@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.helper.NbtHelper;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.Runestones;
@@ -39,7 +40,7 @@ public class ClientReceiveRunestoneItems extends ClientReceiver {
                     Runestones.ITEMS.computeIfAbsent(dimension, m -> new HashMap<>()).put(tier, items);
                 }
             }
-            LogHelper.debug(getClass(), "Received " + count + " runestone items.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Received " + count + " runestone items.");
         });
     }
 }

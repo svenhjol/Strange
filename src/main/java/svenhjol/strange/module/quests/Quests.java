@@ -141,7 +141,7 @@ public class Quests extends CharmModule {
                 for (String module : modules) {
                     ResourceLocation moduleId = new ResourceLocation(module);
                     if (!allModules.containsKey(moduleId) || !allModules.get(moduleId).isEnabled()) {
-                        LogHelper.debug(Quests.class, "Skipping definition " + definition.getId() + " because module dependency failed: " + moduleId);
+                        LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because module dependency failed: " + moduleId);
                         break QUESTCHECK;
                     }
                 }
@@ -151,7 +151,7 @@ public class Quests extends CharmModule {
                 ResourceLocation thisDimension = DimensionHelper.getDimension(player.level);
                 List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).collect(Collectors.toList());
                 if (!dimensionIds.contains(thisDimension)) {
-                    LogHelper.debug(Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
+                    LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
                     break;
                 }
             }
@@ -176,13 +176,13 @@ public class Quests extends CharmModule {
         }
 
         if (found == null && !eligibleDefinitions.isEmpty()) {
-            LogHelper.debug(Quests.class, "No exact quest definition found. Trying to using an eligible one instead");
+            LogHelper.debug(Strange.MOD_ID, Quests.class, "No exact quest definition found. Trying to using an eligible one instead");
             Collections.shuffle(eligibleDefinitions, random);
             found = eligibleDefinitions.get(0);
         }
 
         if (found == null) {
-            LogHelper.debug(Quests.class, "Could not find any eligible quest definitions");
+            LogHelper.debug(Strange.MOD_ID, Quests.class, "Could not find any eligible quest definitions");
         }
 
         return found;
@@ -205,7 +205,7 @@ public class Quests extends CharmModule {
 
             for (Tier tier : Tier.values()) {
                 Collection<ResourceLocation> definitions = manager.listResources(DEFINITION_FOLDER + "/" + tier.getSerializedName(), file -> file.endsWith(".json"));
-                LogHelper.debug(this.getClass(), "Tier " + tier + " has " + definitions.size() + " definitions");
+                LogHelper.debug(Strange.MOD_ID, this.getClass(), "Tier " + tier + " has " + definitions.size() + " definitions");
                 for (ResourceLocation resource : definitions) {
                     try {
                         QuestDefinition definition = QuestDefinition.deserialize(manager.getResource(resource));
@@ -217,7 +217,7 @@ public class Quests extends CharmModule {
                             for (String module : modules) {
                                 ResourceLocation modres = new ResourceLocation(module);
                                 if (!allModules.containsKey(modres)) {
-                                    LogHelper.info(this.getClass(), "Quest definition " + definition.getId() + " requires module " + modres + ", skipping");
+                                    LogHelper.info(Strange.MOD_ID, this.getClass(), "Quest definition " + definition.getId() + " requires module " + modres + ", skipping");
                                     skip = true;
                                     break;
                                 }
@@ -241,7 +241,7 @@ public class Quests extends CharmModule {
                         DEFINITIONS.computeIfAbsent(tier, a -> new HashMap<>()).put(id, definition);
                         String path = resource.getPath();
                         String fileName = path.substring(path.lastIndexOf("/") + 1);
-                        LogHelper.debug(this.getClass(), "Loaded tier " + tier + " definition: " + fileName);
+                        LogHelper.debug(Strange.MOD_ID, this.getClass(), "Loaded tier " + tier + " definition: " + fileName);
                     } catch (Exception e) {
                         LogHelper.warn(this.getClass(), "Could not load quest definition for " + resource.toString() + ": " + e.getMessage());
                     }
@@ -257,7 +257,7 @@ public class Quests extends CharmModule {
                 () -> new QuestData(overworld),
                 QuestData.getFileId(overworld.getLevel().dimensionType()));
 
-            LogHelper.info(this.getClass(), "Loaded quests saved data");
+            LogHelper.info(Strange.MOD_ID, this.getClass(), "Loaded quests saved data");
         }
     }
 

@@ -16,6 +16,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.network.Id;
 import svenhjol.charm.network.ServerReceiver;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.bookmarks.Bookmark;
 
 @Id("strange:make_map")
@@ -34,7 +35,7 @@ public class ServerReceiveMakeMap extends ServerReceiver {
                 LogHelper.warn(getClass(), "No map found in any inventory slot");
                 return;
             }
-            LogHelper.debug(getClass(), "Found empty map at slot " + slot);
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Found empty map at slot " + slot);
 
             BlockPos pos = bookmark.getBlockPos();
             String name = bookmark.getName();
@@ -42,13 +43,13 @@ public class ServerReceiveMakeMap extends ServerReceiver {
             ItemStack map = MapHelper.create((ServerLevel)player.level, pos, new TextComponent(name), decoration, 0x000000);
 
             inventory.setItem(slot, ItemStack.EMPTY);
-            LogHelper.debug(getClass(), "Setting slot " + slot + " to empty");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Setting slot " + slot + " to empty");
 
             ItemStack held = player.getMainHandItem().copy();
-            LogHelper.debug(getClass(), "Player was holding: " + held + ", setting to new map");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Player was holding: " + held + ", setting to new map");
             player.setItemInHand(InteractionHand.MAIN_HAND, map);
 
-            LogHelper.debug(getClass(), "Attempting to place previously held item " + held + " back to inventory");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Attempting to place previously held item " + held + " back to inventory");
             inventory.placeItemBackInInventory(held);
         });
     }

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 
 public class GenericTeleportTicket extends TeleportTicket {
     public GenericTeleportTicket(LivingEntity entity, ResourceLocation dimension, BlockPos from, BlockPos to) {
@@ -13,7 +14,7 @@ public class GenericTeleportTicket extends TeleportTicket {
     @Override
     public void success() {
         super.success();
-        LogHelper.debug(getClass(), "Successfully finished entity teleport.");
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Successfully finished entity teleport.");
     }
 
     @Override

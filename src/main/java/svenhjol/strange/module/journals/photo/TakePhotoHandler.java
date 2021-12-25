@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
@@ -57,7 +58,7 @@ public class TakePhotoHandler {
 
                     client.execute(() -> {
                         client.setScreen(new JournalBookmarkScreen(newBookmark));
-                        LogHelper.debug(getClass(), "Screenshot taken for bookmark `" + newBookmark.getRunes() + "`");
+                        LogHelper.debug(Strange.MOD_ID, getClass(), "Screenshot taken for bookmark `" + newBookmark.getRunes() + "`");
                     });
                 }
             );

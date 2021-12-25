@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -163,9 +164,9 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         boolean result = trySpawn(level, entityBlock.worldPosition, entityBlock);
 
         if (result) {
-            LogHelper.debug(EntityBlockEntity.class, "EntityBlock spawned entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock spawned entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
         } else {
-            LogHelper.debug(EntityBlockEntity.class, "EntityBlock failed to spawn entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock failed to spawn entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
         }
     }
 

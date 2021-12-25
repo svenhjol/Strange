@@ -26,6 +26,6 @@ public class StrangeCommands {
         }
 
         dispatcher.register(builder);
-        LogHelper.debug(StrangeCommands.class, "Registered " + SUBCOMMANDS.size() + " subcommands");
+        LogHelper.debug(Strange.MOD_ID, StrangeCommands.class, "Registered " + SUBCOMMANDS.size() + " subcommands");
     }
 }

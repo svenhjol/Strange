@@ -20,11 +20,12 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
-import svenhjol.strange.module.teleport.iface.ITicket;
 import svenhjol.strange.module.teleport.Teleport;
+import svenhjol.strange.module.teleport.iface.ITicket;
 import svenhjol.strange.module.teleport.runic.RunicTeleportTicket;
 
 import java.util.Arrays;
@@ -141,7 +142,7 @@ public abstract class BaseTeleportHandler<V> {
     }
 
     protected void applyFailureEffect(Random random) {
-        LogHelper.debug(getClass(), "Invalid sacrificial item, doing Bad Things");
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Invalid sacrificial item, doing Bad Things");
         float f = random.nextFloat();
         if (f < 0.05F) {
             WorldHelper.explode(level, originPos, 2.0F + (random.nextFloat() * 1.5F), Explosion.BlockInteraction.BREAK);
@@ -189,7 +190,7 @@ public abstract class BaseTeleportHandler<V> {
             return null;
         }
 
-        LogHelper.debug(getClass(), "Trying to locate structure in the world: " + id);
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Trying to locate structure in the world: " + id);
         BlockPos foundPos = level.findNearestMapFeature(structureFeature, destPos, 1000, false);
 
         if (foundPos == null) {
@@ -214,7 +215,7 @@ public abstract class BaseTeleportHandler<V> {
             return null;
         }
 
-        LogHelper.debug(getClass(), "Trying to locate biome in the world: " + id);
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Trying to locate biome in the world: " + id);
         BlockPos foundPos = level.findNearestBiome(biome.get(), destPos, 6400, 8); // ints stolen from LocateBiomeCommand
 
         if (foundPos == null) {

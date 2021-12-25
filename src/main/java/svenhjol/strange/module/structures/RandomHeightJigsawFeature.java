@@ -16,12 +16,13 @@ import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * @see {{@link net.minecraft.world.level.levelgen.feature.JigsawFeature}}
+ * {@link net.minecraft.world.level.levelgen.feature.JigsawFeature}
  */
 public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureFeature<JigsawConfiguration> {
     public RandomHeightJigsawFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation, boolean relativeToBottom, Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> checkLocation) {
@@ -73,7 +74,7 @@ public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureF
             Optional<PieceGenerator<JigsawConfiguration>> generator = JigsawPlacement.addPieces(newContext, PoolElementStructurePiece::new, blockPos, false, false);
 
             if (generator.isPresent()) {
-                LogHelper.debug(RandomHeightJigsawFeature.class, "Generated structure at " + blockPos);
+                LogHelper.debug(Strange.MOD_ID, RandomHeightJigsawFeature.class, "Generated structure at " + blockPos);
             }
 
             return generator;

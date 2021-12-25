@@ -15,15 +15,17 @@ import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.runestones.RunestoneBlockEntity;
-import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.RunestoneMaterial;
+import svenhjol.strange.module.runestones.Runestones;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@SuppressWarnings("rawtypes")
 public class StoneCirclePiece extends ScatteredFeaturePiece {
     public static int maxCheckSurface = 5; // if the surface Y value is this many blocks higher than starting Y, don't generate
     public static int minCheckSurface = -15; // if the surface Y value is this many blocks lower than starting Y, don't generate
@@ -144,7 +146,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                         if (location != null) {
                             runestone.location = location;
                         }
-                        LogHelper.debug(this.getClass(), "Created runestone with difficulty: " + difficulty);
+                        LogHelper.debug(Strange.MOD_ID, this.getClass(), "Created runestone with difficulty: " + difficulty);
                     }
                     generatedColumn = true;
                 }
@@ -157,7 +159,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         }
 
         if (!generatedSomething) {
-            LogHelper.debug(this.getClass(), "Did not generate a stone circle at: " + blockPos);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Did not generate a stone circle at: " + blockPos);
         }
     }
 }

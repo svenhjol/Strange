@@ -95,7 +95,7 @@ public class Teleport extends CharmModule {
                 int size = ticketsToRemove.size();
 
                 ticketsToRemove.stream().findFirst().ifPresent(first
-                    -> LogHelper.debug(this.getClass(), "Removing " + size + " tickets of class " + first.getClass().getSimpleName()));
+                    -> LogHelper.debug(Strange.MOD_ID, this.getClass(), "Removing " + size + " tickets of class " + first.getClass().getSimpleName()));
 
                 ticketsToRemove.forEach(tickets::remove);
             }

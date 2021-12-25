@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeSounds;
 
 import javax.annotation.Nullable;
@@ -82,9 +83,7 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
         tag.putString(TAG_NAME, this.name);
 
         ListTag contents = new ListTag();
-        this.contents.forEach(food -> {
-            contents.add(StringTag.valueOf(food.toString()));
-        });
+        this.contents.forEach(food -> contents.add(StringTag.valueOf(food.toString())));
 
         ListTag effects = new ListTag();
         this.effects.forEach(effect -> {
@@ -154,11 +153,11 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
             hunger += foodHunger;
             saturation += foodSaturation;
 
-            LogHelper.debug(this.getClass(), "Food provides hunger: " + foodHunger);
-            LogHelper.debug(this.getClass(), "Food provides saturation ratio: " + foodSaturationRatio);
-            LogHelper.debug(this.getClass(), "Food provides saturation: " + foodSaturation);
-            LogHelper.debug(this.getClass(), "Pot hunger is now: " + hunger);
-            LogHelper.debug(this.getClass(), "Pot saturation is now: " + saturation);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Food provides hunger: " + foodHunger);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Food provides saturation ratio: " + foodSaturationRatio);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Food provides saturation: " + foodSaturation);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Pot hunger is now: " + hunger);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Pot saturation is now: " + saturation);
 
             setChanged();
 
@@ -185,9 +184,9 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
             float newSaturation = Math.round((saturation - sr) * 10.0) / 10.0F;
             float stewSaturation = Math.min(20, Math.max(0F, 2 * (Math.round(sr/2))));
 
-            LogHelper.debug(this.getClass(), "Set pot hunger from " + hunger + " to " + newHunger + " (hr = " + hr + ")");
-            LogHelper.debug(this.getClass(), "Set pot saturation from " + saturation + " to " + newSaturation + " (sr = " + sr + ")");
-            LogHelper.debug(this.getClass(), "Set stew saturation to " + stewSaturation);
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Set pot hunger from " + hunger + " to " + newHunger + " (hr = " + hr + ")");
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Set pot saturation from " + saturation + " to " + newSaturation + " (sr = " + sr + ")");
+            LogHelper.debug(Strange.MOD_ID, this.getClass(), "Set stew saturation to " + stewSaturation);
 
             hunger = newHunger;
             saturation = newSaturation;
@@ -201,7 +200,7 @@ public class CookingPotBlockEntity extends CharmSyncedBlockEntity {
             // if no more portions in the pot, flush out the pot data
             if (hunger <= 0) {
                 this.flush(level, pos, state);
-                LogHelper.debug(this.getClass(), "Hunger is 0, flushing pot");
+                LogHelper.debug(Strange.MOD_ID, this.getClass(), "Hunger is 0, flushing pot");
             }
 
             // match cooking pot name if set

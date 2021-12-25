@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 
@@ -19,7 +20,7 @@ public class ClientReceiveDimensions extends ClientReceiver {
         client.execute(() -> {
             var branch = DimensionBranch.load(tag);
             KnowledgeClient.setDimensions(branch);
-            LogHelper.debug(getClass(), "Dimensions branch has " + branch.size() + " dimensions.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Dimensions branch has " + branch.size() + " dimensions.");
         });
     }
 }

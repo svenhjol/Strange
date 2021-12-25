@@ -67,13 +67,13 @@ public class Relics extends CharmModule {
 
                     IRelicItem item = (IRelicItem) clazz.getDeclaredConstructor().newInstance();
                     RELICS.add(item);
-                    LogHelper.debug(getClass(), "Loaded relic: " + simpleClassName);
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "Loaded relic: " + simpleClassName);
                 } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                     LogHelper.warn(getClass(), "Relic `" + simpleClassName + "` failed to load: " + e.getMessage());
                 }
             }
         } catch (IOException | URISyntaxException e) {
-            LogHelper.error(getClass(), "Failed to load classes from namespace: " + e.getMessage());
+            LogHelper.info(Strange.MOD_ID, getClass(), "Failed to load classes from namespace: " + e.getMessage());
         }
 
         for (String lootTable : configLootTables) {

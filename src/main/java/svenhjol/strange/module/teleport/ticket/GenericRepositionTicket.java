@@ -2,6 +2,7 @@ package svenhjol.strange.module.teleport.ticket;
 
 import net.minecraft.world.entity.LivingEntity;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 
 public class GenericRepositionTicket extends RepositionTicket {
     public GenericRepositionTicket(LivingEntity entity) {
@@ -11,7 +12,7 @@ public class GenericRepositionTicket extends RepositionTicket {
     @Override
     public void success() {
         super.success();
-        LogHelper.debug(getClass(), "Successfully finished entity reposition.");
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Successfully finished entity reposition.");
     }
 
     @Override

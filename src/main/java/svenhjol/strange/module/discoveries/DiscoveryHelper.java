@@ -2,6 +2,7 @@ package svenhjol.strange.module.discoveries;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runestones.Runestones;
@@ -34,7 +35,7 @@ public class DiscoveryHelper {
             var discovery = new Discovery(runes, Runestones.SPAWN);
 
             discoveries.add(discovery);
-            LogHelper.debug(DiscoveryHelper.class, "Registered spawn point discovery `" + discovery.getRunes() + "`.");
+            LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Registered spawn point discovery `" + discovery.getRunes() + "`.");
             return discovery;
 
         } else {
@@ -54,7 +55,7 @@ public class DiscoveryHelper {
         discovery.setPlayer(discoverer);
 
         discoveries.add(discovery);
-        LogHelper.debug(DiscoveryHelper.class, "Registered discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
+        LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Registered discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
 
         return discovery;
     }
@@ -67,7 +68,7 @@ public class DiscoveryHelper {
         if (!Runestones.DESTINATIONS.containsKey(dimension)) {
 
             // If the master destinations map doesn't contain any destinations for this dimension then we have to give up here.
-            LogHelper.debug(DiscoveryHelper.class, "No destinations are available for dimension `" + dimension + "`, giving up.");
+            LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "No destinations are available for dimension `" + dimension + "`, giving up.");
             return null;
 
         }

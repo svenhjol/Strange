@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.JournalsClient;
 
@@ -18,7 +19,7 @@ public class ClientReceiveJournal extends ClientReceiver {
             var journal = JournalData.load(tag);
             JournalsClient.setJournal(journal);
 
-            LogHelper.debug(getClass(), "Journal: " +
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Journal: " +
                 journal.getLearnedRunes().size() + " learned runes, " +
                 journal.getLearnedBiomes().size() + " learned biomes, " +
                 journal.getLearnedDimensions().size() + " learned dimensions, " +

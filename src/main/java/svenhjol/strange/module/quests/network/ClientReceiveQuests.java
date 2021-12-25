@@ -7,6 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.network.ClientReceiver;
 import svenhjol.charm.network.Id;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.quests.QuestsClient;
@@ -26,7 +27,7 @@ public class ClientReceiveQuests extends ClientReceiver {
                 QuestsClient.quests.add(Quest.load(questTag));
             }
 
-            LogHelper.debug(getClass(), "Received " + QuestsClient.quests.size() + " quests.");
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Received " + QuestsClient.quests.size() + " quests.");
         });
     }
 }

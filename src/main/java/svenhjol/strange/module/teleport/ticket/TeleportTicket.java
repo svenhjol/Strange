@@ -14,9 +14,10 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.init.StrangeSounds;
-import svenhjol.strange.module.teleport.iface.ITicket;
 import svenhjol.strange.module.teleport.Teleport;
+import svenhjol.strange.module.teleport.iface.ITicket;
 
 import java.util.Random;
 import java.util.UUID;
@@ -136,19 +137,19 @@ public abstract class TeleportTicket implements ITicket {
 
             if (exactPosition) {
                 found = target;
-                LogHelper.debug(getClass(), "Using exactPosition in current dimension: " + found);
+                LogHelper.debug(Strange.MOD_ID, getClass(), "Using exactPosition in current dimension: " + found);
             } else {
                 if (level.dimensionType().hasCeiling()) {
                     found = WorldHelper.getSurfacePos(level, target, Math.min(level.getSeaLevel() + 40, level.getLogicalHeight() - 20));
-                    LogHelper.debug(getClass(), "Dimension has ceiling, using limited surfacePos: " + found);
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "Dimension has ceiling, using limited surfacePos: " + found);
                 } else {
                     found = WorldHelper.getSurfacePos(level, target);
-                    LogHelper.debug(getClass(), "Dimension has no ceiling, using surfacePos: " + found);
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "Dimension has no ceiling, using surfacePos: " + found);
                 }
 
                 if (found == null) {
                     found = target;
-                    LogHelper.debug(getClass(), "Could not find a target, using original: " + found);
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "Could not find a target, using original: " + found);
                 }
             }
 
