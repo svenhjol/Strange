@@ -10,8 +10,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.api.event.ApplyBeaconEffectsCallback;
-import svenhjol.charm.event.EntityJumpCallback;
-import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.api.event.EntityJumpCallback;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 

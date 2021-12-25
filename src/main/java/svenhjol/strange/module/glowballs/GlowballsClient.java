@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.EntityType;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.event.ClientSpawnEntityCallback;
+import svenhjol.charm.api.event.ClientSpawnEntityCallback;
 import svenhjol.charm.loader.CharmModule;
 
 @ClientModule(module = Glowballs.class)

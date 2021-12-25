@@ -19,7 +19,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.potion.CharmPotion;

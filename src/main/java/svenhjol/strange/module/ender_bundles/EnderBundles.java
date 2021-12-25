@@ -8,7 +8,7 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.hover_sorting.HoverSorting;
-import svenhjol.charm.module.hover_sorting.event.HoverSortItemsCallback;
+import svenhjol.charm.api.event.HoverSortItemsCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.ender_bundles.network.ServerReceiveUpdateEnderInventory;
 import svenhjol.strange.module.ender_bundles.network.ServerSendUpdatedEnderInventory;

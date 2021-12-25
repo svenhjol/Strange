@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.event.ItemTooltipImageCallback;
+import svenhjol.charm.api.event.ItemTooltipImageCallback;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;

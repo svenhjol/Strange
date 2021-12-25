@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.ClientModule;
-import svenhjol.charm.event.PlayerTickCallback;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.scrollkeepers.network.ClientReceiveSatisfied;
 import svenhjol.strange.module.scrollkeepers.network.ClientSendCheckSatisfied;
