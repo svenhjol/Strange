@@ -41,7 +41,6 @@ public class PotionOfRecall extends CharmModule {
     @Override
     public void runWhenEnabled() {
         VALID_LOOT_TABLES.add(BuiltInLootTables.SIMPLE_DUNGEON);
-
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
     }
 

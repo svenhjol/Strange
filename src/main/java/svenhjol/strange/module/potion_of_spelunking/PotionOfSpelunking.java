@@ -106,6 +106,7 @@ public class PotionOfSpelunking extends CharmModule {
     @Override
     public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+        LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         SERVER_SEND_SHOW_PARTICLES = new ServerSendShowParticles();
         VALID_LOOT_TABLES.add(BuiltInLootTables.SIMPLE_DUNGEON);
     }
