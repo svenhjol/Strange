@@ -63,6 +63,14 @@
     "chance": 0.6
   },
   {
+    "comment": "// Replace bookshelves with variants from the bookshelves table (if Charm's variant bookshelves are enabled)",
+    "processor_type": "strange:decoration_replacement",
+    "block": "bookshelf",
+    "type": "bookshelf",
+    "chance": 0.6,
+    "preserve": true
+  },
+  {
     "comment": "// Replace looms with blocks from the loom table",
     "processor_type": "strange:decoration_replacement",
     "block": "loom",

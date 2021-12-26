@@ -7,11 +7,11 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.colored_glints.ColoredGlints;
 
 import java.util.Locale;
-import java.util.Random;
 
 public class ExperienceBottleLootFunction extends LootItemConditionalFunction {
     protected ExperienceBottleLootFunction(LootItemCondition[] conditions) {
@@ -30,18 +30,31 @@ public class ExperienceBottleLootFunction extends LootItemConditionalFunction {
     }
 
     private ItemStack tryCreate(ItemStack stack, LootContext context) {
-        ExperienceBottles.Type type;
-        Random random = context.getRandom();
-
         if (ExperienceBottles.EXPERIENCE_BOTTLES.isEmpty()) return stack;
 
+        ExperienceBottles.Type type;
+        var random = context.getRandom();
+        var level = context.getLevel();
+        var isOverworld = DimensionHelper.isOverworld(level);
+
+        // This should be very rare in the overworld.
+        if (isOverworld && random.nextFloat() > 0.02F) {
+            return stack;
+        }
+
+        // 75% chance of not generating at all.
+        if (random.nextFloat() > 0.25F) {
+            return stack;
+        }
+
+        // 10% chance of "greatest", 90% chance of "greater".
         if (random.nextFloat() < 0.1F) {
             type = ExperienceBottles.Type.GREATEST;
         } else {
             type = ExperienceBottles.Type.GREATER;
         }
 
-        ItemStack bottle = new ItemStack(ExperienceBottles.EXPERIENCE_BOTTLES.get(type));
+        var bottle = new ItemStack(ExperienceBottles.EXPERIENCE_BOTTLES.get(type));
         ColoredGlints.applyColoredGlint(bottle, type.getColor().getSerializedName().toLowerCase(Locale.ROOT));
         return bottle;
     }

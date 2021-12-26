@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@SuppressWarnings("deprecation")
 public class RubbleBlock extends CharmBlockWithEntity {
     public static IntegerProperty LAYER;
     public static final List<VoxelShape> SHAPES = new ArrayList<>();
@@ -150,7 +151,7 @@ public class RubbleBlock extends CharmBlockWithEntity {
         RubbleBlockEntity rubble = getBlockEntity(level, pos);
         if (rubble == null) return false;
 
-        LootTable lootTable = level.getServer().getLootTables().get(Rubble.LOOT);
+        LootTable lootTable = level.getServer().getLootTables().get(RubbleLoot.RUBBLE);
         List<ItemStack> list = lootTable.getRandomItems((new LootContext.Builder(level)
             .withParameter(LootContextParams.THIS_ENTITY, entity)
             .withParameter(LootContextParams.ORIGIN, entity.position())

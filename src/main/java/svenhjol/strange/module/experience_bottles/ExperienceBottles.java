@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -29,6 +30,8 @@ import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.ruins.StoneRuinsLoot;
+import svenhjol.strange.module.vaults.VaultsLoot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +71,7 @@ public class ExperienceBottles extends CharmModule {
             DispenserBlock.registerBehavior(bottle, new AbstractProjectileDispenseBehavior() {
                 @Override
                 protected Projectile getProjectile(Level level, Position pos, ItemStack itemStack) {
-                    return Util.make(new ExperienceBottleEntity(level, pos.x(), pos.y(), pos.z()), e -> e.setItem(itemStack));
+                return Util.make(new ExperienceBottleEntity(level, pos.x(), pos.y(), pos.z()), e -> e.setItem(itemStack));
                 }
             });
         }
@@ -77,7 +80,9 @@ public class ExperienceBottles extends CharmModule {
     @Override
     public void runWhenEnabled() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
-//        VALID_LOOT_TABLES.add(Rubble.LOOT);
+        VALID_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
+        VALID_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
+        VALID_LOOT_TABLES.add(BuiltInLootTables.SIMPLE_DUNGEON);
     }
 
     private void handleLootTables(ResourceManager manager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {

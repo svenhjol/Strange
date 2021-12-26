@@ -56,7 +56,7 @@ public interface IElixir {
     }
 
     default ItemStack getPotionItem() {
-        ItemStack bottle = PotionHelper.getFilledWaterBottle();
+        ItemStack bottle = PotionHelper.getFilledWaterBottle(1);
 
         // apply effects
         PotionUtils.setCustomEffects(bottle, getEffects());

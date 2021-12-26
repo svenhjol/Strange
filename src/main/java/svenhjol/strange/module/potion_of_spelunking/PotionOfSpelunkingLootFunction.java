@@ -23,11 +23,16 @@ public class PotionOfSpelunkingLootFunction extends LootItemConditionalFunction 
         var random = context.getRandom();
         var isOverworld = DimensionHelper.isOverworld(level);
 
+        // This should be quite rare in the overworld.
         if (isOverworld && random.nextFloat() > 0.2F) {
             return stack;
         }
 
-        if (random.nextFloat() > 0.75F) return stack;
+        // 25% chance of not generating at all.
+        if (random.nextFloat() > 0.75F) {
+            return stack;
+        }
+
         return PotionHelper.getPotionBottle(PotionOfSpelunking.SPELUNKING_POTION, 1);
     }
 

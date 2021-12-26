@@ -19,7 +19,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.Charm;
 import svenhjol.charm.helper.ItemHelper;
+import svenhjol.charm.module.variant_bookshelves.VariantBookshelves;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.Processors;
 import svenhjol.strange.module.structures.Structures;
@@ -55,6 +57,10 @@ public class DecorationReplacementProcessor extends StructureProcessor {
         CompoundTag nbt = structureBlockInfo2.nbt;
         StructureBlockInfo air = new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null);
         Optional<Direction> prop;
+
+        if (!moduleCheck()) {
+            return structureBlockInfo2;
+        }
 
         Optional<Block> block = Registry.BLOCK.getOptional(new ResourceLocation(this.block));
         if (block.isEmpty() || !(state.getBlock() == block.get())) {
@@ -106,5 +112,11 @@ public class DecorationReplacementProcessor extends StructureProcessor {
     @Override
     protected StructureProcessorType<?> getType() {
         return Processors.DECORATION_REPLACEMENT;
+    }
+
+    protected boolean moduleCheck() {
+        if (this.block.equals("bookshelf") && Charm.LOADER.isEnabled(VariantBookshelves.class)) return false;
+
+        return true;
     }
 }

@@ -8,7 +8,6 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.init.StrangeLoot;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class Rubble extends CharmModule {
@@ -17,11 +16,9 @@ public class Rubble extends CharmModule {
 
     public static RubbleBlock RUBBLE;
     public static BlockEntityType<RubbleBlockEntity> BLOCK_ENTITY;
-    public static ResourceLocation LOOT;
 
     @Override
     public void register() {
-        LOOT = StrangeLoot.createLootTable("gameplay/rubble");
         RUBBLE = new RubbleBlock(this);
         BLOCK_ENTITY = CommonRegistry.blockEntity(BLOCK_ID, RubbleBlockEntity::new, RUBBLE);
     }

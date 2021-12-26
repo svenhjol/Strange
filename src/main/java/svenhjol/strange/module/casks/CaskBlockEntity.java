@@ -202,7 +202,7 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
 
         if (this.portions > 0) {
             // create a potion from the cask's contents
-            ItemStack bottle = PotionHelper.getFilledWaterBottle();
+            ItemStack bottle = PotionHelper.getFilledWaterBottle(1);
             List<MobEffectInstance> effects = new ArrayList<>();
 
             for (ResourceLocation effectId : this.effects) {
