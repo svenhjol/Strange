@@ -13,14 +13,13 @@ import svenhjol.charm.network.Id;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Id("strange:show_spelunking_particles")
 public class ClientReceiveShowParticles extends ClientReceiver {
     @Override
     public void handle(Minecraft client, FriendlyByteBuf buffer) {
-        List<BlockPos> positions = Arrays.stream(buffer.readLongArray()).boxed().map(BlockPos::of).collect(Collectors.toList());
-        List<DyeColor> colors = Arrays.stream(buffer.readVarIntArray()).boxed().map(DyeColor::byId).collect(Collectors.toList());
+        List<BlockPos> positions = Arrays.stream(buffer.readLongArray()).boxed().map(BlockPos::of).toList();
+        List<DyeColor> colors = Arrays.stream(buffer.readVarIntArray()).boxed().map(DyeColor::byId).toList();
 
         client.execute(() -> {
             LocalPlayer player = client.player;
