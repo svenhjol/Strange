@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -34,10 +33,8 @@ public class Elixirs extends CharmModule {
     public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "elixirs_loot");
     public static LootItemFunctionType LOOT_FUNCTION;
 
-    @Config(name = "Loot tables", description = "List of loot tables to add elixirs to.")
-    public static List<String> configLootTables = Arrays.asList(
-        "strange:gameplay/rubble" // TODO: temporary
-    );
+    @Config(name = "Additional loot tables", description = "List of additional loot tables that elixirs will be added to.")
+    public static List<String> additionalLootTables = List.of();
 
     @Config(name = "Blacklist", description = "List of elixirs that will not be loaded. See wiki for details.")
     public static List<String> configBlacklist = new ArrayList<>();
@@ -70,7 +67,7 @@ public class Elixirs extends CharmModule {
             LogHelper.info(Strange.MOD_ID, getClass(), "Failed to load classes from namespace: " + e.getMessage());
         }
 
-        for (String lootTable : configLootTables) {
+        for (String lootTable : additionalLootTables) {
             VALID_LOOT_TABLES.add(new ResourceLocation(lootTable));
         }
     }

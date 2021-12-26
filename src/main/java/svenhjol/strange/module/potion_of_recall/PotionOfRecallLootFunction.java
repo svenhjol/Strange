@@ -34,7 +34,16 @@ public class PotionOfRecallLootFunction extends LootItemConditionalFunction {
             return stack;
         }
 
-        return PotionHelper.getPotionBottle(1, PotionOfRecall.RECALL_POTION);
+        ItemStack out;
+        if (random.nextFloat() < 0.75F) {
+            out = PotionHelper.getPotionBottle(PotionOfRecall.RECALL_POTION, 1);
+        } else if (random.nextFloat() < 0.9F) {
+            out = PotionHelper.getSplashPotionBottle(PotionOfRecall.RECALL_POTION, 1);
+        } else {
+            out = PotionHelper.getLingeringPotionBottle(PotionOfRecall.RECALL_POTION, 1);
+        }
+
+        return out;
     }
 
     @Override

@@ -1,20 +1,32 @@
 package svenhjol.strange.module.potion_of_spelunking;
 
+import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.potion_of_spelunking.network.ServerSendShowParticles;
 
@@ -23,6 +35,10 @@ import java.util.*;
 @CommonModule(mod = Strange.MOD_ID)
 public class PotionOfSpelunking extends CharmModule {
     private static final DyeColor DEFAULT_COLOR = DyeColor.WHITE;
+
+    public static ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "potion_of_spelunking_loot");
+    public static LootItemFunctionType LOOT_FUNCTION;
+    public static List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
 
     public static SpelunkingEffect SPELUNKING_EFFECT;
     public static SpelunkingPotion SPELUNKING_POTION;
@@ -58,6 +74,7 @@ public class PotionOfSpelunking extends CharmModule {
     public void register() {
         SPELUNKING_EFFECT = new SpelunkingEffect(this);
         SPELUNKING_POTION = new SpelunkingPotion(this);
+        LOOT_FUNCTION = CommonRegistry.lootFunctionType(LOOT_ID, new LootItemFunctionType(new PotionOfSpelunkingLootFunction.Serializer()));
 
         configBlocks.forEach(def -> {
             String blockId;
@@ -89,8 +106,8 @@ public class PotionOfSpelunking extends CharmModule {
     @Override
     public void runWhenEnabled() {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
-
         SERVER_SEND_SHOW_PARTICLES = new ServerSendShowParticles();
+        VALID_LOOT_TABLES.add(BuiltInLootTables.SIMPLE_DUNGEON);
     }
 
     private void handlePlayerTick(Player player) {
@@ -119,6 +136,18 @@ public class PotionOfSpelunking extends CharmModule {
 
             SERVER_SEND_SHOW_PARTICLES.send((ServerPlayer) player, found);
             CharmAdvancements.ACTION_PERFORMED.trigger((ServerPlayer) player, TRIGGER_HAS_SPELUNKING_EFFECT);
+        }
+    }
+
+    private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
+        if (VALID_LOOT_TABLES.contains(id)) {
+            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+                .rolls(ConstantValue.exactly(1))
+                .with(LootItem.lootTableItem(Items.AIR)
+                    .setWeight(1)
+                    .apply(() -> new PotionOfSpelunkingLootFunction(new LootItemCondition[0])));
+
+            supplier.withPool(builder);
         }
     }
 }
