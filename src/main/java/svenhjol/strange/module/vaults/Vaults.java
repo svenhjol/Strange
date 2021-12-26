@@ -61,7 +61,7 @@ public class Vaults extends CharmModule {
 
         FabricStructureBuilder.create(STRUCTURE_ID, VAULTS_FEATURE)
             .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(32, 28,334020111)
+            .defaultConfig(40, 36,334020111)
             .register();
 
         CommonRegistry.configuredStructureFeature(STRUCTURE_ID, CONFIGURED_FEATURE);
