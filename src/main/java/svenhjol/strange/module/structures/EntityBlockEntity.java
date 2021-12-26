@@ -31,7 +31,6 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public static final String ENTITY_TAG = "entity";
@@ -155,7 +154,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
 
         // fetch all survival players nearby
         List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(Structures.entityTriggerDistance))
-            .stream().filter(p -> (!p.getAbilities().instabuild && !p.isSpectator())).collect(Collectors.toList());
+            .stream().filter(p -> !p.isSpectator()).toList();
 
         if (players.size() == 0) return;
 
