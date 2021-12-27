@@ -84,7 +84,7 @@ public class ChestLootProcessor extends StructureProcessor {
         }
 
         if (random.nextFloat() < chance) {
-            return new StructureBlockInfo(blockInfo.pos, Blocks.AIR.defaultBlockState(), null);
+            return getAir(blockInfo.pos);
         }
 
         return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(loot));
@@ -102,11 +102,11 @@ public class ChestLootProcessor extends StructureProcessor {
         double blockChanceValue = Double.parseDouble(blockChance);
 
         if (!matchLoot.isEmpty() && !lootValue.equalsIgnoreCase(matchLoot)) {
-            return blockInfo;
+            return getAir(blockInfo.pos);
         }
 
         if (random.nextDouble() > blockChanceValue) {
-            return new StructureBlockInfo(blockInfo.pos, Blocks.AIR.defaultBlockState(), null);
+            return getAir(blockInfo.pos);
         }
 
         BlockState state = blockInfo.state;
@@ -132,6 +132,10 @@ public class ChestLootProcessor extends StructureProcessor {
         }
 
         return nbt;
+    }
+
+    private StructureBlockInfo getAir(BlockPos pos) {
+        return new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null);
     }
 
     @Override
