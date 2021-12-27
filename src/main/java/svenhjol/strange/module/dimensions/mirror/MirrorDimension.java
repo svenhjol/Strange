@@ -68,13 +68,12 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void register() {
-
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, 0x004434);
         Dimensions.GRASS_COLOR.put(ID, 0x607065);
         Dimensions.FOLIAGE_COLOR.put(ID, 0x506055);
-        Dimensions.WATER_COLOR.put(ID, 0x107070);
-        Dimensions.WATER_FOG_COLOR.put(ID, 0x102020);
+        Dimensions.WATER_COLOR.put(ID, 0x407070);
+        Dimensions.WATER_FOG_COLOR.put(ID, 0x405050);
         Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
         Dimensions.TEMPERATURE.put(ID, 0.0F);
@@ -104,7 +103,6 @@ public class MirrorDimension implements IDimension {
     public InteractionResult handleAddEntity(Entity entity) {
         Level level = entity.level;
         if (!level.isClientSide) {
-            ServerLevel serverLevel = (ServerLevel)level;
             Random random = new Random(entity.hashCode());
             boolean result;
 
@@ -203,6 +201,7 @@ public class MirrorDimension implements IDimension {
         }
     }
 
+    /** @see ServerLevel#tickChunk */
     private void handleLightning(ServerLevel level, Random random) {
         if (weatherTicks > startLightningAt && weatherTicks < stopLightningAt) {
             if (lightningTicks == 0) {
@@ -220,7 +219,6 @@ public class MirrorDimension implements IDimension {
                 BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist / 2) - x, pos.getY(), pos.getZ() + (dist / 2) - z));
                 if (!level.isLoaded(lightningPos)) return;
 
-                /** @see ServerLevel#tickChunk */
                 LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
                 if (lightningBolt == null) return;
 
