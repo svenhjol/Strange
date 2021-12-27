@@ -19,6 +19,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.structures.DataBlock;
 import svenhjol.strange.module.structures.Processors;
 
@@ -28,21 +30,18 @@ import java.util.Random;
 
 public class ChestLootProcessor extends StructureProcessor {
     public static final Codec<ChestLootProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.FLOAT.fieldOf("chance").orElse(1.0F).forGetter(p -> p.chance),
-        Codec.STRING.fieldOf("match_loot").orElse("").forGetter(p -> p.matchLoot),
+        Codec.DOUBLE.fieldOf("chance").orElse(1.0D).forGetter(p -> p.chance),
         Codec.BOOL.fieldOf("remove").orElse(true).forGetter(p -> p.remove)
     ).apply(instance, ChestLootProcessor::new));
 
     public static List<ResourceLocation> TABLES;
 
-    private final float chance; // Chance (out of 1.0) of a matching chest being processed.
-    private final String matchLoot; // If set, only chests that match this loot table will be processed. Otherwise, this processor will be skipped.
+    private final double chance; // Chance (out of 1.0) of a matching chest being processed.
     private final boolean remove; // If true and a matching chest fails the chance test, the chest will be replaced with air.
     private Random random;
 
-    public ChestLootProcessor(float chance, String matchLoot, boolean remove) {
+    public ChestLootProcessor(double chance, boolean remove) {
         this.chance = chance;
-        this.matchLoot = matchLoot;
         this.remove = remove;
     }
 
@@ -70,11 +69,6 @@ public class ChestLootProcessor extends StructureProcessor {
 
         if (blockInfo.nbt != null) {
             String lootValue = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
-
-            if (!matchLoot.isEmpty() && !lootValue.equalsIgnoreCase(matchLoot)) {
-                return blockInfo;
-            }
-
             loot = new ResourceLocation(lootValue);
 
         } else {
@@ -98,14 +92,16 @@ public class ChestLootProcessor extends StructureProcessor {
         ResourceLocation loot;
         String metadata = blockInfo.nbt.getString("metadata");
         String lootValue = Processors.getValue(metadata, "loot", "");
-        String blockChance = Processors.getValue(metadata, "chance", String.valueOf(chance));
-        double blockChanceValue = Double.parseDouble(blockChance);
+        String blockChance = Processors.getValue(metadata, "chance", "");
+        double newChance;
 
-        if (!matchLoot.isEmpty() && !lootValue.equalsIgnoreCase(matchLoot)) {
-            return getAir(blockInfo.pos);
+        if (!blockChance.isEmpty()) {
+            newChance = Integer.parseInt(blockChance) / 100D;
+        } else {
+            newChance = chance;
         }
 
-        if (random.nextDouble() > blockChanceValue) {
+        if (random.nextDouble() > newChance) {
             return getAir(blockInfo.pos);
         }
 
@@ -119,6 +115,7 @@ public class ChestLootProcessor extends StructureProcessor {
             loot = TABLES.get(random.nextInt(TABLES.size()));
         }
 
+        LogHelper.debug(Strange.MOD_ID, getClass(), "Set loot `" + loot + "` for chest at block pos: " + blockInfo.pos);
         return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(loot));
     }
 
