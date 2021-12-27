@@ -37,10 +37,10 @@ public class DecorationReplacementProcessor extends StructureProcessor {
         Codec.BOOL.fieldOf("fixed_random").orElse(false).forGetter(p -> p.fixedRandom)
     ).apply(instance, DecorationReplacementProcessor::new));
 
-    private final String block;
-    private final String decoration;
-    private final float chance;
-    private final boolean remove;
+    private final String block; // Block to match. Processor is skipped if the block is not matched.
+    private final String decoration; // Decoration loot table to replace from.
+    private final float chance; // Chance (out of 1.0) of a matching block being processed.
+    private final boolean remove; // If true and a matching block fails the chance test, the block will be replaced with air.
     private final boolean fixedRandom; // If true, all matching blocks within this piece will use the same RNG.
 
     public DecorationReplacementProcessor(String block, String decoration, float chance, boolean remove, boolean fixedRandom) {
