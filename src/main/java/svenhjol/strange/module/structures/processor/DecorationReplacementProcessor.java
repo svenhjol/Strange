@@ -115,7 +115,7 @@ public class DecorationReplacementProcessor extends StructureProcessor {
     }
 
     protected boolean moduleCheck() {
-        if (this.block.equals("bookshelf") && Charm.LOADER.isEnabled(VariantBookshelves.class)) return false;
+        if (this.block.equals("bookshelf") && !Charm.LOADER.isEnabled(VariantBookshelves.class)) return false;
 
         return true;
     }
