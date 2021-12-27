@@ -109,7 +109,7 @@
     "processor_type": "strange:chest_loot",
     "chance": 0.65,
     "match_loot": "strange:vaults/vaults_room"
-  },,
+  },
   {
     "comment": "// Add loot to barrels",
     "processor_type": "strange:barrel_loot",
