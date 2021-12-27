@@ -46,14 +46,16 @@
     "processor_type": "strange:decoration_replacement",
     "block": "iron_ore",
     "type": "common_stone_ore",
-    "chance": 0.9
+    "chance": 0.9,
+    "preserve": true
   },
   {
     "comment": "// Replace diamond_ore with blocks from the precious_stone_ore table",
     "processor_type": "strange:decoration_replacement",
     "block": "diamond_ore",
     "type": "precious_stone_ore",
-    "chance": 0.9
+    "chance": 0.9,
+    "preserve": true
   },
   {
     "comment": "// Replace furnaces with blocks from the furnace table",
@@ -67,7 +69,7 @@
     "processor_type": "strange:decoration_replacement",
     "block": "bookshelf",
     "type": "bookshelf",
-    "chance": 0.6,
+    "chance": 1.0,
     "preserve": true
   },
   {
@@ -92,7 +94,7 @@
   {
     "comment": "// Add loot tables to chests",
     "processor_type": "strange:chest_loot",
-    "chance": 0.75
+    "chance": 0.72
   },
   {
     "comment": "// Add loot tables to barrels",
