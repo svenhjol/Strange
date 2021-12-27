@@ -1,6 +1,7 @@
 package svenhjol.strange.module.structures.processor;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -16,21 +17,33 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.structures.DataBlock;
 import svenhjol.strange.module.structures.Processors;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ChestLootProcessor extends StructureProcessor {
-    public static final Codec<ChestLootProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(ChestLootProcessor::new, p -> p.chance).codec();
-    public static final String FALLBACK_LOOT_TABLE = "chests/simple_dungeon";
+    public static final Codec<ChestLootProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.FLOAT.fieldOf("chance").orElse(1.0F).forGetter(p -> p.chance),
+        Codec.STRING.fieldOf("match_loot").orElse("").forGetter(p -> p.matchLoot),
+        Codec.BOOL.fieldOf("remove").orElse(true).forGetter(p -> p.remove)
+    ).apply(instance, ChestLootProcessor::new));
 
-    private final float chance;
+    public static List<ResourceLocation> TABLES;
+
+    private final float chance; // Chance (out of 1.0) of a matching chest being processed.
+    private final String matchLoot; // If set, only chests that match this loot table will be processed. Otherwise, this processor will be skipped.
+    private final boolean remove; // If true and a matching chest fails the chance test, the chest will be replaced with air.
     private Random random;
 
-    public ChestLootProcessor(float chance) {
+    public ChestLootProcessor(float chance, String matchLoot, boolean remove) {
         this.chance = chance;
+        this.matchLoot = matchLoot;
+        this.remove = remove;
     }
 
     @Nullable
@@ -38,57 +51,75 @@ public class ChestLootProcessor extends StructureProcessor {
     public StructureBlockInfo processBlock(LevelReader levelReader, BlockPos blockPos, BlockPos blockPos2, StructureBlockInfo OMGNO, StructureBlockInfo structureBlockInfo2, StructurePlaceSettings structurePlaceSettings) {
         random = structurePlaceSettings.getRandom(structureBlockInfo2.pos);
         BlockState state = structureBlockInfo2.state;
-        BlockPos pos = structureBlockInfo2.pos;
         Block block = state.getBlock();
-        StructureBlockInfo out;
 
         if (block instanceof ChestBlock) {
-            out = processChest(structureBlockInfo2);
+            return processChest(structureBlockInfo2);
         } else if (block instanceof DataBlock) {
-            out = processDataBlock(structureBlockInfo2);
+            return processDataBlock(structureBlockInfo2);
         } else {
             return structureBlockInfo2;
         }
-
-        return out == null ? new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null) : out;
     }
 
-    @Nullable
     private StructureBlockInfo processChest(StructureBlockInfo blockInfo) {
-        if (random.nextFloat() < chance) return null;
-
-        String loot;
+        ResourceLocation loot;
         BlockState state = blockInfo.state;
         BlockState newState = Blocks.CHEST.defaultBlockState()
             .setValue(ChestBlock.FACING, state.getValue(ChestBlock.FACING));
 
         if (blockInfo.nbt != null) {
-            loot = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
+            String lootValue = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
+
+            if (!matchLoot.isEmpty() && !lootValue.equalsIgnoreCase(matchLoot)) {
+                return blockInfo;
+            }
+
+            loot = new ResourceLocation(lootValue);
+
         } else {
-            loot = FALLBACK_LOOT_TABLE;
+
+            loot = TABLES.get(random.nextInt(TABLES.size()));
+
         }
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
+        if (random.nextFloat() < chance) {
+            return new StructureBlockInfo(blockInfo.pos, Blocks.AIR.defaultBlockState(), null);
+        }
+
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(loot));
     }
 
-    @Nullable
     private StructureBlockInfo processDataBlock(StructureBlockInfo blockInfo) {
         if (blockInfo.nbt == null || !blockInfo.nbt.getString("metadata").startsWith("chest")) {
             return blockInfo;
         }
 
+        ResourceLocation loot;
         String metadata = blockInfo.nbt.getString("metadata");
-        String loot = Processors.getValue(metadata, "loot", FALLBACK_LOOT_TABLE);
+        String lootValue = Processors.getValue(metadata, "loot", "");
         String blockChance = Processors.getValue(metadata, "chance", String.valueOf(chance));
-        double newChance = Double.parseDouble(blockChance);
+        double blockChanceValue = Double.parseDouble(blockChance);
 
-        if (random.nextDouble() > newChance) return null;
+        if (!matchLoot.isEmpty() && !lootValue.equalsIgnoreCase(matchLoot)) {
+            return blockInfo;
+        }
+
+        if (random.nextDouble() > blockChanceValue) {
+            return new StructureBlockInfo(blockInfo.pos, Blocks.AIR.defaultBlockState(), null);
+        }
 
         BlockState state = blockInfo.state;
         BlockState newState = Blocks.CHEST.defaultBlockState()
             .setValue(ChestBlock.FACING, state.getValue(DataBlock.FACING));
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
+        if (!lootValue.isEmpty()) {
+            loot = new ResourceLocation(lootValue);
+        } else {
+            loot = TABLES.get(random.nextInt(TABLES.size()));
+        }
+
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(loot));
     }
 
     private CompoundTag createContainerNbt(ResourceLocation lootTable) {
@@ -106,5 +137,15 @@ public class ChestLootProcessor extends StructureProcessor {
     @Override
     protected StructureProcessorType<?> getType() {
         return Processors.CHEST_LOOT;
+    }
+
+    static {
+        TABLES = Arrays.asList(
+            BuiltInLootTables.SIMPLE_DUNGEON,
+            BuiltInLootTables.ABANDONED_MINESHAFT,
+            BuiltInLootTables.DESERT_PYRAMID,
+            BuiltInLootTables.JUNGLE_TEMPLE,
+            BuiltInLootTables.END_CITY_TREASURE
+        );
     }
 }
