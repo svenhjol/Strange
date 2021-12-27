@@ -40,7 +40,7 @@ public class ConfigurableBiomeEffectsMixin {
         cancellable = true
     )
     private void hookGetWaterColor(CallbackInfoReturnable<Integer> cir) {
-        DimensionsClient.getSkyColor((Biome)(Object)this).ifPresent(cir::setReturnValue);
+        DimensionsClient.getWaterColor((Biome)(Object)this).ifPresent(cir::setReturnValue);
     }
 
     @Inject(
