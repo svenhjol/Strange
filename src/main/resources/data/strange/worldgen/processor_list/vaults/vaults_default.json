@@ -107,8 +107,13 @@
   {
     "comment": "// Add loot vaults corridor chests",
     "processor_type": "strange:chest_loot",
-    "chance": 0.65,
+    "chance": 0.7,
     "match_loot": "strange:vaults/vaults_room"
+  },
+  {
+    "comment": "// Add loot to generic chests",
+    "processor_type": "strange:chest_loot",
+    "chance": 0.7
   },
   {
     "comment": "// Add loot to barrels",
