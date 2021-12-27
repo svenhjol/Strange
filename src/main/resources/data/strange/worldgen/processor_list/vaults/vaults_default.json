@@ -93,27 +93,9 @@
     "amount": 0.12
   },
   {
-    "comment": "// Add loot to vaults large room chests",
+    "comment": "// Add loot to chests",
     "processor_type": "strange:chest_loot",
-    "chance": 0.9,
-    "match_loot": "strange:vaults/vaults_large_room"
-  },
-  {
-    "comment": "// Add loot vaults normal room chests",
-    "processor_type": "strange:chest_loot",
-    "chance": 0.8,
-    "match_loot": "strange:vaults/vaults_room"
-  },
-  {
-    "comment": "// Add loot vaults corridor chests",
-    "processor_type": "strange:chest_loot",
-    "chance": 0.7,
-    "match_loot": "strange:vaults/vaults_room"
-  },
-  {
-    "comment": "// Add loot to generic chests",
-    "processor_type": "strange:chest_loot",
-    "chance": 0.7
+    "chance": 0.85
   },
   {
     "comment": "// Add loot to barrels",
