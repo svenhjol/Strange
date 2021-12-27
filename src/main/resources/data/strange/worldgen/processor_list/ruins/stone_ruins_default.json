@@ -47,14 +47,16 @@
     "processor_type": "strange:decoration_replacement",
     "block": "iron_ore",
     "type": "common_stone_ore",
-    "chance": 0.75
+    "chance": 0.75,
+    "fixed_random": true
   },
   {
     "comment": "// Replace diamond_ore with blocks from the precious_stone_ore table",
     "processor_type": "strange:decoration_replacement",
     "block": "diamond_ore",
     "type": "precious_stone_ore",
-    "chance": 0.75
+    "chance": 0.75,
+    "fixed_random": true
   },
   {
     "comment": "// Replace furnaces with blocks from the furnace table",
@@ -96,5 +98,13 @@
     "comment": "// Add loot tables to barrels",
     "processor_type": "strange:barrel_loot",
     "chance": 0.65
+  },
+  {
+    "comment": "// Replace bookshelves with variants from the bookshelves table (if Charm's variant bookshelves are enabled)",
+    "processor_type": "strange:decoration_replacement",
+    "block": "bookshelf",
+    "type": "bookshelf",
+    "chance": 0.8,
+    "fixed_random": true
   }
 ]
