@@ -16,14 +16,17 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.structures.Processors;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class BarrelLootProcessor extends StructureProcessor {
     public static final Codec<BarrelLootProcessor> CODEC = Codec.FLOAT.fieldOf("chance").orElse(1.0F).xmap(BarrelLootProcessor::new, p -> p.chance).codec();
-    public static final String FALLBACK_LOOT_TABLE = "chests/village/village_fisher";
+    public static List<ResourceLocation> TABLES;
 
     private final float chance;
     private Random random;
@@ -54,21 +57,23 @@ public class BarrelLootProcessor extends StructureProcessor {
     private StructureBlockInfo processBarrel(StructureBlockInfo blockInfo) {
         if (random.nextFloat() > chance) return null;
 
-        String loot;
+        ResourceLocation loot = null;
         BlockState state = blockInfo.state;
         BlockState newState = Blocks.BARREL.defaultBlockState()
             .setValue(BarrelBlock.FACING, state.getValue(BarrelBlock.FACING));
 
         if (blockInfo.nbt != null) {
-            loot = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
-            if (loot.isEmpty()) {
-                loot = FALLBACK_LOOT_TABLE;
+            String lootValue = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
+            if (!lootValue.isEmpty()) {
+                loot = new ResourceLocation(lootValue);
             }
-        } else {
-            loot = FALLBACK_LOOT_TABLE;
         }
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(new ResourceLocation(loot)));
+        if (loot == null) {
+            loot = TABLES.get(random.nextInt(TABLES.size()));
+        }
+
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(loot));
     }
 
     private CompoundTag createContainerNbt(ResourceLocation lootTable) {
@@ -86,5 +91,29 @@ public class BarrelLootProcessor extends StructureProcessor {
     @Override
     protected StructureProcessorType<?> getType() {
         return Processors.BARREL_LOOT;
+    }
+
+    static {
+        TABLES = Arrays.asList(
+            BuiltInLootTables.VILLAGE_WEAPONSMITH,
+            BuiltInLootTables.VILLAGE_TOOLSMITH,
+            BuiltInLootTables.VILLAGE_ARMORER,
+            BuiltInLootTables.VILLAGE_CARTOGRAPHER,
+            BuiltInLootTables.VILLAGE_MASON,
+            BuiltInLootTables.VILLAGE_SHEPHERD,
+            BuiltInLootTables.VILLAGE_BUTCHER,
+            BuiltInLootTables.VILLAGE_FLETCHER,
+            BuiltInLootTables.VILLAGE_FISHER,
+            BuiltInLootTables.VILLAGE_TANNERY,
+            BuiltInLootTables.VILLAGE_TEMPLE,
+            BuiltInLootTables.ABANDONED_MINESHAFT,
+            BuiltInLootTables.DESERT_PYRAMID,
+            BuiltInLootTables.JUNGLE_TEMPLE,
+            BuiltInLootTables.IGLOO_CHEST,
+            BuiltInLootTables.WOODLAND_MANSION,
+            BuiltInLootTables.PILLAGER_OUTPOST,
+            BuiltInLootTables.SIMPLE_DUNGEON,
+            BuiltInLootTables.END_CITY_TREASURE
+        );
     }
 }
