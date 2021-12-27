@@ -74,6 +74,22 @@
     "fixed_random": true
   },
   {
+    "comment": "// Replace red carpets with variants from the carpet table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "red_carpet",
+    "type": "carpet",
+    "chance": 1.0,
+    "fixed_random": true
+  },
+  {
+    "comment": "// Replace red wool with variants from the carpet table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "red_wool",
+    "type": "wool",
+    "chance": 1.0,
+    "fixed_random": true
+  },
+  {
     "comment": "// Replace looms with blocks from the loom table",
     "processor_type": "strange:decoration_replacement",
     "block": "loom",
