@@ -33,28 +33,31 @@ public class DecorationReplacementProcessor extends StructureProcessor {
         Codec.STRING.fieldOf("block").orElse("").forGetter(p -> p.block),
         Codec.STRING.fieldOf("type").orElse("").forGetter(p -> p.decoration),
         Codec.FLOAT.fieldOf("chance").orElse(1.0F).forGetter(p -> p.chance),
-        Codec.BOOL.fieldOf("remove").orElse(true).forGetter(p -> p.remove)
+        Codec.BOOL.fieldOf("remove").orElse(true).forGetter(p -> p.remove),
+        Codec.BOOL.fieldOf("fixed_random").orElse(false).forGetter(p -> p.fixedRandom)
     ).apply(instance, DecorationReplacementProcessor::new));
 
     private final String block;
     private final String decoration;
     private final float chance;
     private final boolean remove;
+    private final boolean fixedRandom; // If true, all matching blocks within this piece will use the same RNG.
 
-    public DecorationReplacementProcessor(String block, String decoration, float chance, boolean remove) {
+    public DecorationReplacementProcessor(String block, String decoration, float chance, boolean remove, boolean fixedRandom) {
         this.block = block;
         this.decoration = decoration;
         this.chance = chance;
         this.remove = remove;
+        this.fixedRandom = fixedRandom;
     }
 
     @Nullable
     @Override
     public StructureBlockInfo processBlock(LevelReader levelReader, BlockPos blockPos, BlockPos blockPos2, StructureBlockInfo NONONONO, StructureBlockInfo structureBlockInfo2, StructurePlaceSettings structurePlaceSettings) {
-        Random random = structurePlaceSettings.getRandom(structureBlockInfo2.pos);
         BlockPos pos = structureBlockInfo2.pos;
         BlockState state = structureBlockInfo2.state;
         CompoundTag nbt = structureBlockInfo2.nbt;
+        Random random = structurePlaceSettings.getRandom(fixedRandom ? blockPos : pos);
         StructureBlockInfo air = new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null);
         Optional<Direction> prop;
 
