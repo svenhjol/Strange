@@ -1,6 +1,7 @@
 package svenhjol.strange.module.dimensions.mirror;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -26,14 +27,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MirrorDimension implements IDimension {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
@@ -44,19 +53,26 @@ public class MirrorDimension implements IDimension {
 
     public static final AmbientParticleSettings ASH;
     public static final AmbientParticleSettings WARPED_SPORE;
+    public static final AmbientParticleSettings CRIMSON_SPORE;
     public static final AmbientParticleSettings SPORE_BLOSSOM;
 
-    public static final int startLightningAt = 1000; // start lightning when weather ticks reaches this number
-    public static final int stopLightningAt = 18000; // stop lightning when weather ticks reaches this number
-    public static final int startSnowingAt = 20000; // start snowing when weather ticks reaches this number
-    public static final int stopSnowingAt = 30000; // stop snowing when weather ticks reaches this number
-    public static final int maxWeatherTicks = 33000; // number of ticks before weather will be reset
-    public static final int startParticlesAt = 1200; // number of ticks between particle effects
+    public static final int FOG = 0x004434;
+    public static final float TEMP = 0.5F;
+
+    public static final int startParticlesAfter = 750; // number of ticks between particle effects
     public static final int maxParticleTicks = 1000; // number of ticks that particle effects will occur
     public static final int lightningDistanceFromPlayer = 140; // maximum distance from a random player that a lightning strike can occur
     public static final int minLightningTicks = 200; // minimum number of ticks before another lightning strike occurs
 
-    public static int weatherTicks = 0;
+    public static int weatherPhaseTicks = 0;
+    public static WeatherPhase weatherPhase = WeatherPhase.FREEZING;
+
+    public static int eruptTicks = 0;
+    public static int nextEruptAt = 0;
+    public static int heatTicks = 0;
+    public static int nextHeatAt = 0;
+    public static int coldTicks = 0;
+    public static int nextColdAt = 0;
     public static int lightningTicks = 0;
     public static int nextLightningAt = 0;
     public static int particleTicks = 0;
@@ -69,14 +85,14 @@ public class MirrorDimension implements IDimension {
     @Override
     public void register() {
         Dimensions.SKY_COLOR.put(ID, 0x000000);
-        Dimensions.FOG_COLOR.put(ID, 0x004434);
+        Dimensions.FOG_COLOR.put(ID, FOG);
         Dimensions.GRASS_COLOR.put(ID, 0x607065);
         Dimensions.FOLIAGE_COLOR.put(ID, 0x506055);
         Dimensions.WATER_COLOR.put(ID, 0x525C60);
         Dimensions.WATER_FOG_COLOR.put(ID, 0x404C50);
         Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
-        Dimensions.TEMPERATURE.put(ID, 0.0F);
+        Dimensions.TEMPERATURE.put(ID, TEMP);
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
         Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
     }
@@ -90,13 +106,12 @@ public class MirrorDimension implements IDimension {
     @Override
     public void handleWorldTick(Level level) {
         if (level.isClientSide) return;
+
         ServerLevel serverLevel = (ServerLevel) level;
         Random random = serverLevel.getRandom();
 
-        handleWeather();
-        handleSnow();
         handleParticles(random);
-        handleLightning(serverLevel, random);
+        handleWeather(serverLevel, random);
     }
 
     @Override
@@ -163,70 +178,327 @@ public class MirrorDimension implements IDimension {
     }
 
     private void handleParticles(Random random) {
-        if (weatherTicks > startSnowingAt) {
+        if (!Dimensions.mirrorDimensionWeather) {
+            return;
+        }
+
+        if (weatherPhase == WeatherPhase.FREEZING || weatherPhase == WeatherPhase.SCORCHING) {
             if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
                 Dimensions.AMBIENT_PARTICLE.put(ID, ASH);
             }
-        } else if (particleTicks++ > startParticlesAt) {
+        } else if (particleTicks++ > startParticlesAfter) {
             if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
                 Dimensions.AMBIENT_PARTICLE.put(ID, AMBIENT_PARTICLES.get(random.nextInt(AMBIENT_PARTICLES.size())));
             }
 
-            if (particleTicks > startParticlesAt + maxParticleTicks) {
+            if (particleTicks > startParticlesAfter + maxParticleTicks) {
                 Dimensions.AMBIENT_PARTICLE.remove(ID);
                 particleTicks = 0;
             }
         }
     }
 
-    private void handleWeather() {
-        if (weatherTicks++ >= maxWeatherTicks) {
-            weatherTicks = 0;
+    private void handleWeather(ServerLevel level, Random random) {
+        if (weatherPhaseTicks++ >= weatherPhase.getDuration()) {
+            Dimensions.FOG_COLOR.put(ID, FOG);
+            Dimensions.TEMPERATURE.put(ID, TEMP);
+            weatherPhaseTicks = 0;
+            weatherPhase = WeatherPhase.getNextPhase(weatherPhase);
+            LogHelper.debug(Strange.MOD_ID, getClass(), "Setting weather phase to " + weatherPhase);
+        }
+
+        switch (weatherPhase) {
+            case FREEZING -> handleFreezingPhase(level, random);
+            case SCORCHING -> handleScorchingPhase(level, random);
+            case STORMING -> handleStormingPhase(level, random);
         }
     }
 
-    private void handleSnow() {
-        int snowTicks = weatherTicks - startSnowingAt;
-        if (weatherTicks > startSnowingAt && weatherTicks < stopSnowingAt) {
-            int totalSnowTicks = stopSnowingAt - startSnowingAt;
-            int halfSnowTicks = totalSnowTicks / 2;
+    private void handleScorchingPhase(ServerLevel level, Random random) {
+        float scale = 0;
+        int halfScorchTicks = WeatherPhase.SCORCHING.getDuration() / 2;
 
-            if (snowTicks >= 0 && snowTicks < halfSnowTicks) {
-                float rainLevel = (float) snowTicks / ((float) halfSnowTicks);
-                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
-            } else if (snowTicks >= halfSnowTicks && snowTicks < totalSnowTicks) {
-                float rainLevel = 1.0F - (float) (snowTicks - halfSnowTicks) / halfSnowTicks;
-                Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+        if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfScorchTicks) {
+            scale = (float) weatherPhaseTicks / ((float) halfScorchTicks);
+        } else if (weatherPhaseTicks >= halfScorchTicks && weatherPhaseTicks < WeatherPhase.FREEZING.getDuration()) {
+            scale = 1.0F - (float) (weatherPhaseTicks - halfScorchTicks) / halfScorchTicks;
+        }
+
+        if (heatTicks++ > nextHeatAt) {
+            heatTicks = 0;
+            nextHeatAt = 50 + random.nextInt(150);
+            ServerPlayer player = level.getRandomPlayer();
+            if (player != null) {
+                int range = 20;
+                int tries = 5;
+
+                List<Block> meltableBlocks = Arrays.asList(
+                    Blocks.SNOW,
+                    Blocks.SNOW_BLOCK,
+                    Blocks.POWDER_SNOW,
+                    Blocks.ICE,
+                    Blocks.BLUE_ICE,
+                    Blocks.FROSTED_ICE,
+                    Blocks.PACKED_ICE
+                );
+
+                BlockPos pos = player.blockPosition();
+                int px = pos.getX() + random.nextInt(32) - 16;
+                int pz = pos.getZ() + random.nextInt(32) - 16;
+
+                List<BlockPos> meltable = new ArrayList<>();
+                List<BlockPos> ignitable = new ArrayList<>();
+
+                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
+                for (int y = surface - (range / 2); y < surface + range; y++) {
+                    for (int r = range; r > 7; --r) {
+                        for (int t = 1; t < tries; ++t) {
+                            BlockPos checkPos = new BlockPos(px + random.nextInt(r), y, pz + random.nextInt(r));
+                            Block checkBlock = level.getBlockState(checkPos).getBlock();
+
+                            if (meltableBlocks.contains(checkBlock)) {
+                                meltable.add(checkPos);
+                            }
+
+                            if (y == surface && ignitable.size() < 4) {
+                                ignitable.add(checkPos);
+                            }
+
+                            if (meltable.size() > 5) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!ignitable.isEmpty()) {
+                    for (BlockPos blockPos : ignitable) {
+                        if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
+                            BlockState fireState = BaseFireBlock.getState(level, blockPos);
+                            level.setBlock(blockPos, fireState, 11);
+                        }
+                    }
+                }
+
+                if (!meltable.isEmpty()) {
+                    for (BlockPos blockPos : meltable) {
+                        level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
+                    }
+                }
             }
         }
+
+        if (eruptTicks++ > nextEruptAt) {
+            eruptTicks = 0;
+            nextEruptAt = 200 + random.nextInt(300);
+            ServerPlayer player = level.getRandomPlayer();
+            if (player != null) {
+                int range = 14;
+                int tries = 20;
+
+                List<Block> replaceableBlocks = Arrays.asList(
+                    Blocks.DIRT,
+                    Blocks.COARSE_DIRT,
+                    Blocks.PODZOL,
+                    Blocks.MYCELIUM,
+                    Blocks.GRASS_BLOCK,
+                    Blocks.GRAVEL,
+                    Blocks.DIRT_PATH,
+                    Blocks.SAND,
+                    Blocks.MAGMA_BLOCK
+                );
+
+                BlockPos pos = player.blockPosition();
+                int px = pos.getX() + random.nextInt(32) - 16;
+                int pz = pos.getZ() + random.nextInt(32) - 16;
+
+                List<BlockPos> replaceable = new ArrayList<>();
+
+                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
+                for (int y = surface - (range / 2); y < surface + range; y++) {
+                    for (int r = range; r > 5; --r) {
+                        for (int t = 1; t < tries; ++t) {
+                            BlockPos checkPos = new BlockPos(px + random.nextInt(r), y, pz + random.nextInt(r));
+                            Block checkBlock = level.getBlockState(checkPos).getBlock();
+
+                            if (replaceableBlocks.contains(checkBlock)) {
+                                replaceable.add(checkPos);
+                            }
+
+                            if (replaceable.size() > 3) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!replaceable.isEmpty()) {
+                    for (BlockPos blockPos : replaceable) {
+                        if (level.getBlockState(blockPos).getBlock() == Blocks.MAGMA_BLOCK) {
+                            level.setBlockAndUpdate(blockPos, Blocks.LAVA.defaultBlockState());
+                        } else {
+                            level.setBlockAndUpdate(blockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
+                            if (level.getBlockState(blockPos.above()).getBlock() != Blocks.AIR) {
+                                level.setBlockAndUpdate(blockPos.above(), Blocks.AIR.defaultBlockState());
+                            }
+                        }
+
+                        for (int i = 0; i < 5; i++) {
+                            level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX() + 0.5F, blockPos.getY() + 0.5F, blockPos.getZ() + 0.5F, random.nextInt(5) + 1, 0.1F, 0.2F, 0.1F, 0.05F);
+                        }
+                    }
+                }
+            }
+        }
+
+        int r = (FOG >> 16 & 0xFF);
+        int g = (FOG >> 8 & 0xFF);
+        int b = (FOG & 0xFF);
+
+        r += 130 * scale;
+        g += 20 * scale;
+        b -= 4 * scale;
+
+        int newFog = 0xFF000000 | r << 16 | g << 8 | b;
+        float newTemp = TEMP + (scale * 0.5F);
+
+        Dimensions.FOG_COLOR.put(ID, newFog);
+        Dimensions.TEMPERATURE.put(ID, newTemp);
+    }
+
+    private void handleFreezingPhase(ServerLevel level, Random random) {
+        float rainLevel = 0;
+        int halfSnowTicks = WeatherPhase.FREEZING.getDuration() / 2;
+
+        if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfSnowTicks) {
+            rainLevel = (float) weatherPhaseTicks / ((float) halfSnowTicks);
+            Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+        } else if (weatherPhaseTicks >= halfSnowTicks && weatherPhaseTicks < WeatherPhase.FREEZING.getDuration()) {
+            rainLevel = 1.0F - (float) (weatherPhaseTicks - halfSnowTicks) / halfSnowTicks;
+            Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+        }
+
+        if (coldTicks++ > nextColdAt) {
+            coldTicks = 0;
+            nextColdAt = 50 + random.nextInt(100);
+            ServerPlayer player = level.getRandomPlayer();
+            if (player != null) {
+                int range = 24;
+                int tries = 8;
+
+                Map<BlockState, BlockState> replaceableBlocks = new HashMap<>();
+
+                replaceableBlocks.put(Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.GRANITE.defaultBlockState());
+                replaceableBlocks.put(Blocks.WATER.defaultBlockState(), Blocks.ICE.defaultBlockState());
+                replaceableBlocks.put(Blocks.LAVA.defaultBlockState(), Blocks.MAGMA_BLOCK.defaultBlockState());
+                replaceableBlocks.put(Blocks.FIRE.defaultBlockState(), Blocks.AIR.defaultBlockState());
+                replaceableBlocks.put(Blocks.ICE.defaultBlockState(), Blocks.PACKED_ICE.defaultBlockState());
+                replaceableBlocks.put(Blocks.CAMPFIRE.defaultBlockState(), Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false));
+
+                BlockPos pos = player.blockPosition();
+                int px = pos.getX() + random.nextInt(16) - 8;
+                int pz = pos.getZ() + random.nextInt(16) - 8;
+
+                List<BlockPos> replaceable = new ArrayList<>();
+
+                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
+                for (int y = surface - (range / 2); y < surface + range; y++) {
+                    for (int r = range; r > 0; --r) {
+                        for (int t = 1; t < tries; ++t) {
+                            BlockPos checkPos = new BlockPos(px + random.nextInt(r), y, pz + random.nextInt(r));
+                            BlockState checkState = level.getBlockState(checkPos);
+
+                            if (replaceableBlocks.containsKey(checkState)) {
+                                replaceable.add(checkPos);
+                            }
+
+                            if (replaceable.size() > 3) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!replaceable.isEmpty()) {
+                    for (BlockPos blockPos : replaceable) {
+                        BlockState stateAtPos = level.getBlockState(blockPos);
+                        BlockState newState = replaceableBlocks.getOrDefault(stateAtPos, null);
+
+                        if (newState != null) {
+                            level.setBlockAndUpdate(blockPos, newState);
+
+                            for (int i = 0; i < 5; i++) {
+                                level.sendParticles(ParticleTypes.SNOWFLAKE, blockPos.getX() + 0.5F, blockPos.getY() + 0.5F, blockPos.getZ() + 0.5F, random.nextInt(5) + 1, 0.1F, 0.2F, 0.1F, 0.05F);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        int r = (FOG >> 16 & 0xFF);
+        int g = (FOG >> 8 & 0xFF);
+        int b = (FOG & 0xFF);
+
+        r += 4 * rainLevel;
+        g += 10 * rainLevel;
+        b += 50 * rainLevel;
+
+        int newFog = 0xFF000000 | r << 16 | g << 8 | b;
+        float newTemp = TEMP - (rainLevel * 0.5F);
+
+        Dimensions.FOG_COLOR.put(ID, newFog);
+        Dimensions.TEMPERATURE.put(ID, newTemp);
     }
 
     /** @see ServerLevel#tickChunk */
-    private void handleLightning(ServerLevel level, Random random) {
-        if (weatherTicks > startLightningAt && weatherTicks < stopLightningAt) {
-            if (lightningTicks == 0) {
-                nextLightningAt = random.nextInt(400) + minLightningTicks;
-            }
+    private void handleStormingPhase(ServerLevel level, Random random) {
+        if (lightningTicks == 0) {
+            nextLightningAt = random.nextInt(400) + minLightningTicks;
+        }
 
-            if (lightningTicks++ >= nextLightningAt) {
-                ServerPlayer player = level.getRandomPlayer();
-                if (player == null) return;
-                int dist = lightningDistanceFromPlayer;
-                BlockPos pos = player.blockPosition();
-                int x = level.random.nextInt(dist);
-                int z = level.random.nextInt(dist);
+        if (lightningTicks++ >= nextLightningAt) {
+            ServerPlayer player = level.getRandomPlayer();
+            if (player == null) return;
+            int dist = lightningDistanceFromPlayer;
+            BlockPos pos = player.blockPosition();
+            int x = level.random.nextInt(dist);
+            int z = level.random.nextInt(dist);
 
-                BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist / 2) - x, pos.getY(), pos.getZ() + (dist / 2) - z));
-                if (!level.isLoaded(lightningPos)) return;
+            BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist / 2) - x, pos.getY(), pos.getZ() + (dist / 2) - z));
+            if (!level.isLoaded(lightningPos)) return;
 
-                LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
-                if (lightningBolt == null) return;
+            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+            if (lightningBolt == null) return;
 
-                lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
-                lightningBolt.setVisualOnly(false);
-                level.addFreshEntity(lightningBolt);
-                lightningTicks = 0;
-            }
+            lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
+            lightningBolt.setVisualOnly(false);
+            level.addFreshEntity(lightningBolt);
+            lightningTicks = 0;
+        }
+    }
+
+    public enum WeatherPhase {
+        FREEZING(12000),
+        SCORCHING(7000),
+        STORMING(5000),
+        CALM(1000);
+
+        private final int duration;
+
+        WeatherPhase(int duration) {
+            this.duration = duration;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public static WeatherPhase getNextPhase(WeatherPhase current) {
+            List<WeatherPhase> phases = Arrays.stream(values()).collect(Collectors.toList());
+            phases.remove(current);
+            Random random = new Random();
+            return phases.get(random.nextInt(phases.size()));
         }
     }
 
@@ -247,10 +519,11 @@ public class MirrorDimension implements IDimension {
 
         ASH = new AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.148F);
         WARPED_SPORE = new AmbientParticleSettings(ParticleTypes.WARPED_SPORE, 0.0245F);
+        CRIMSON_SPORE = new AmbientParticleSettings(ParticleTypes.CRIMSON_SPORE, 0.0185F);
         SPORE_BLOSSOM = new AmbientParticleSettings(ParticleTypes.SPORE_BLOSSOM_AIR, 0.0245F);
 
         AMBIENT_PARTICLES = Arrays.asList(
-            WARPED_SPORE, SPORE_BLOSSOM
+            WARPED_SPORE, CRIMSON_SPORE, SPORE_BLOSSOM
         );
 
         STRUCTURES_TO_REMOVE = List.of(

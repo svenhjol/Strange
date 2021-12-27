@@ -48,6 +48,9 @@ public class Dimensions extends CharmModule {
     public static final ThreadLocal<LevelReader> LEVEL = new ThreadLocal<>();
 
     public static boolean loadMirrorDimension = true;
+
+    public static boolean mirrorDimensionWeather = true;
+
     public static boolean loadFloatingIslandsDimension = true;
 
     @Override
@@ -96,7 +99,7 @@ public class Dimensions extends CharmModule {
 
     private void handleWorldTick(Level level) {
         DIMENSIONS.forEach(d -> {
-            if (level.dimension().location().equals(d.getId())) {
+            if (level.players().size() > 0 && level.dimension().location().equals(d.getId())) {
                 d.handleWorldTick(level);
             }
         });
