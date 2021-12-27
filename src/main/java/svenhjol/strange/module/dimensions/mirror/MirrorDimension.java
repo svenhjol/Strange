@@ -72,8 +72,8 @@ public class MirrorDimension implements IDimension {
         Dimensions.FOG_COLOR.put(ID, 0x004434);
         Dimensions.GRASS_COLOR.put(ID, 0x607065);
         Dimensions.FOLIAGE_COLOR.put(ID, 0x506055);
-        Dimensions.WATER_COLOR.put(ID, 0x407070);
-        Dimensions.WATER_FOG_COLOR.put(ID, 0x405050);
+        Dimensions.WATER_COLOR.put(ID, 0x525C60);
+        Dimensions.WATER_FOG_COLOR.put(ID, 0x404C50);
         Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
         Dimensions.TEMPERATURE.put(ID, 0.0F);
