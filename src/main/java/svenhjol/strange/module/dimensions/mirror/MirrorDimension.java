@@ -46,14 +46,16 @@ public class MirrorDimension implements IDimension {
     public static final AmbientParticleSettings WARPED_SPORE;
     public static final AmbientParticleSettings SPORE_BLOSSOM;
 
-    public static final int startSnowingAt = 20000; // number of ticks between snowfall
-    public static final int maxSnowTicks = 10000; // number of ticks that snowfall will last
-    public static final int startParticlesAt = 1000; // number of ticks between particle effects
-    public static final int maxParticleTicks = 500; // number of ticks that particle effects will occur
+    public static final int startLightningAt = 1000; // start lightning when weather ticks reaches this number
+    public static final int stopLightningAt = 18000; // stop lightning when weather ticks reaches this number
+    public static final int startSnowingAt = 20000; // start snowing when weather ticks reaches this number
+    public static final int stopSnowingAt = 30000; // stop snowing when weather ticks reaches this number
+    public static final int maxWeatherTicks = 33000; // number of ticks before weather will be reset
+    public static final int startParticlesAt = 1200; // number of ticks between particle effects
+    public static final int maxParticleTicks = 1000; // number of ticks that particle effects will occur
     public static final int lightningDistanceFromPlayer = 140; // maximum distance from a random player that a lightning strike can occur
     public static final int minLightningTicks = 200; // minimum number of ticks before another lightning strike occurs
 
-    public static int snowTicks = 0;
     public static int weatherTicks = 0;
     public static int lightningTicks = 0;
     public static int nextLightningAt = 0;
@@ -92,6 +94,7 @@ public class MirrorDimension implements IDimension {
         ServerLevel serverLevel = (ServerLevel) level;
         Random random = serverLevel.getRandom();
 
+        handleWeather();
         handleSnow();
         handleParticles(random);
         handleLightning(serverLevel, random);
@@ -162,7 +165,7 @@ public class MirrorDimension implements IDimension {
     }
 
     private void handleParticles(Random random) {
-        if (weatherTicks++ > startSnowingAt) {
+        if (weatherTicks > startSnowingAt) {
             if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
                 Dimensions.AMBIENT_PARTICLE.put(ID, ASH);
             }
@@ -178,49 +181,54 @@ public class MirrorDimension implements IDimension {
         }
     }
 
+    private void handleWeather() {
+        if (weatherTicks++ >= maxWeatherTicks) {
+            weatherTicks = 0;
+        }
+    }
+
     private void handleSnow() {
-        if (weatherTicks++ > startSnowingAt) {
-            int halfSnowTicks = maxSnowTicks / 2;
+        int snowTicks = weatherTicks - startSnowingAt;
+        if (weatherTicks > startSnowingAt && weatherTicks < stopSnowingAt) {
+            int totalSnowTicks = stopSnowingAt - startSnowingAt;
+            int halfSnowTicks = totalSnowTicks / 2;
 
             if (snowTicks >= 0 && snowTicks < halfSnowTicks) {
                 float rainLevel = (float) snowTicks / ((float) halfSnowTicks);
                 Dimensions.RAIN_LEVEL.put(ID, rainLevel);
-            } else if (snowTicks >= halfSnowTicks && snowTicks < maxSnowTicks) {
+            } else if (snowTicks >= halfSnowTicks && snowTicks < totalSnowTicks) {
                 float rainLevel = 1.0F - (float) (snowTicks - halfSnowTicks) / halfSnowTicks;
                 Dimensions.RAIN_LEVEL.put(ID, rainLevel);
-            } else if (snowTicks >= maxSnowTicks) {
-                snowTicks = 0;
-                weatherTicks = 0;
             }
-
-            snowTicks++;
         }
     }
 
     private void handleLightning(ServerLevel level, Random random) {
-        if (lightningTicks == 0) {
-            nextLightningAt = random.nextInt(400) + minLightningTicks;
-        }
+        if (weatherTicks > startLightningAt && weatherTicks < stopLightningAt) {
+            if (lightningTicks == 0) {
+                nextLightningAt = random.nextInt(400) + minLightningTicks;
+            }
 
-        if (lightningTicks++ >= nextLightningAt) {
-            ServerPlayer player = level.getRandomPlayer();
-            if (player == null) return;
-            int dist = lightningDistanceFromPlayer;
-            BlockPos pos = player.blockPosition();
-            int x = level.random.nextInt(dist);
-            int z = level.random.nextInt(dist);
+            if (lightningTicks++ >= nextLightningAt) {
+                ServerPlayer player = level.getRandomPlayer();
+                if (player == null) return;
+                int dist = lightningDistanceFromPlayer;
+                BlockPos pos = player.blockPosition();
+                int x = level.random.nextInt(dist);
+                int z = level.random.nextInt(dist);
 
-            BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist/2) - x, pos.getY(), pos.getZ() + (dist/2) - z));
-            if (!level.isLoaded(lightningPos)) return;
+                BlockPos lightningPos = level.findLightningTargetAround(new BlockPos(pos.getX() + (dist / 2) - x, pos.getY(), pos.getZ() + (dist / 2) - z));
+                if (!level.isLoaded(lightningPos)) return;
 
-            /** @see ServerLevel#tickChunk */
-            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
-            if (lightningBolt == null) return;
+                /** @see ServerLevel#tickChunk */
+                LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+                if (lightningBolt == null) return;
 
-            lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
-            lightningBolt.setVisualOnly(false);
-            level.addFreshEntity(lightningBolt);
-            lightningTicks = 0;
+                lightningBolt.moveTo(Vec3.atBottomCenterOf(lightningPos));
+                lightningBolt.setVisualOnly(false);
+                level.addFreshEntity(lightningBolt);
+                lightningTicks = 0;
+            }
         }
     }
 
