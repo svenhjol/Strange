@@ -90,11 +90,11 @@
   {
     "comment": "// Add loot tables to chests",
     "processor_type": "strange:chest_loot",
-    "chance": 0.5
+    "chance": 0.62
   },
   {
     "comment": "// Add loot tables to barrels",
     "processor_type": "strange:barrel_loot",
-    "chance": 0.75
+    "chance": 0.65
   }
 ]
