@@ -227,8 +227,9 @@ public class ExploreComponent implements IQuestComponent {
     @Override
     public void playerTick(Player player) {
         if (player.level.isClientSide) return;
-        if (structurePos == null) return;
-        if (!chests.isEmpty()) return;
+        if (structurePos == null) return; // No position has been calculated for structure to explore.
+        if (!DimensionHelper.isDimension(player.level, dimension)) return; // Must match dimension that quest was started in.
+        if (!chests.isEmpty()) return; // Means they've already been populated with items for this exploration.
 
         // At this point we check if the player is within distance of the target structure pos.
         // Generate the chests and let the player know they're in the right vicinity for searching.

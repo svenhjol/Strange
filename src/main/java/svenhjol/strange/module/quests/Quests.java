@@ -24,18 +24,17 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.QuestToast.QuestToastType;
 import svenhjol.strange.module.quests.command.QuestCommand;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.network.*;
 import svenhjol.strange.module.runes.Tier;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Quests are player tasks with rewards provided by a Scrollkeeper villager.")
 public class Quests extends CharmModule {
@@ -155,7 +154,7 @@ public class Quests extends CharmModule {
 
             if (!dimensions.isEmpty()) {
                 ResourceLocation thisDimension = DimensionHelper.getDimension(player.level);
-                List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).collect(Collectors.toList());
+                List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).toList();
                 if (!dimensionIds.contains(thisDimension)) {
                     LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
                     break;
