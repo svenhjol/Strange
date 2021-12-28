@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.helper.*;
 import svenhjol.strange.Strange;
@@ -53,11 +53,12 @@ public class ExploreComponent implements IQuestComponent {
     public static final String DEFAULT_CHEST_START = "32";
     public static final String DEFAULT_CHEST_RANGE = "24";
     public static final String DEFAULT_SKIP_EXISTING_CHUNKS = "false";
+
     public static final int MAX_ITEMS = 4;
     public static final int FALLBACK_RANGE = 8;
     public static final int POPULATE_DISTANCE = 1200;
     public static final int MAP_COLOR = 0x007700;
-    public static final MapDecoration.Type MAP_TAG = MapDecoration.Type.TARGET_X;
+    public static final Type MAP_TAG = Type.TARGET_X;
 
     private final Quest quest;
     private ResourceLocation dimension;
@@ -218,7 +219,7 @@ public class ExploreComponent implements IQuestComponent {
         // Set to the player's current dimension.
         dimension = DimensionHelper.getDimension(level);
 
-        // Provide a map to the player.
+        // Provide a map to the structure.
         provideMap(serverPlayer);
 
         return true;
