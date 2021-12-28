@@ -443,7 +443,8 @@ public class ExploreComponent implements IQuestComponent {
 
     @Override
     public void provideMap(ServerPlayer player) {
-        var map = MapHelper.create((ServerLevel) player.level, structurePos, player.getName(), MAP_TAG, MAP_COLOR);
+        var title = Quests.getTranslatedKey(quest.getDefinition(), "title");
+        var map = MapHelper.create((ServerLevel) player.level, structurePos, title, MAP_TAG, MAP_COLOR);
         player.getInventory().placeItemBackInInventory(map);
     }
 }

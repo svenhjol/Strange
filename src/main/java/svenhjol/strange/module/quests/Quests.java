@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -51,6 +53,7 @@ public class Quests extends CharmModule {
 
     private static @Nullable QuestData quests;
 
+    public static String locale = "en";
     public static boolean rewardRunes = true;
     public static boolean showExplorePlacement = false; // TODO: must be FALSE for production!
     public static boolean showExploreHint = true;
@@ -85,6 +88,28 @@ public class Quests extends CharmModule {
 
     public static Optional<QuestData> getQuestData() {
         return Optional.ofNullable(quests);
+    }
+
+    /**
+     * This is designed for server-side lookup of lang strings from a quest definition.
+     * It uses the configured locale for lang lookups.
+     *
+     * Do not use this on the client; instead use {@link QuestsClient#getTranslatedKey}.
+     * The client version queries the player's configured language.
+     */
+    public static Component getTranslatedKey(QuestDefinition definition, String key) {
+        var id = definition.getId();
+        var lang = definition.getLang();
+        var code = locale;
+
+        if (lang == null) return new TranslatableComponent(id);
+
+        if (!lang.containsKey(code)) {
+            code = Quests.DEFAULT_LOCALE;
+        }
+
+        var value = lang.get(code).getOrDefault(key, id);
+        return new TranslatableComponent(value);
     }
 
     @Nullable

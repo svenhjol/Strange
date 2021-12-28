@@ -56,7 +56,7 @@ public class QuestsClient extends CharmModule {
         return getTranslatedKey(definition, "hint");
     }
 
-    private static String getTranslatedKey(QuestDefinition definition, String key) {
+    public static String getTranslatedKey(QuestDefinition definition, String key) {
         var id = definition.getId();
         var lang = definition.getLang();
 
