@@ -124,9 +124,6 @@ public class MirrorDimension implements IDimension {
             if (entity instanceof LivingEntity livingEntity) {
                 result = handleMonsterBuffs(livingEntity, random);
                 if (!result) return InteractionResult.FAIL;
-
-                result = handleVillagerRemoval(livingEntity);
-                if (!result) return InteractionResult.FAIL;
             }
         }
 

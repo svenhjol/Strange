@@ -27,8 +27,8 @@ public class ElixirsLootFunction extends LootItemConditionalFunction {
 
         var random = context.getRandom();
 
-        // 50% chance of not generating at all.
-        if (random.nextFloat() > 0.5F) {
+        // 60% chance of not generating at all.
+        if (random.nextFloat() > 0.4F) {
             return stack;
         }
 
