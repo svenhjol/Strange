@@ -6,8 +6,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
@@ -16,6 +14,7 @@ import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.knowledge.Learnable;
 import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
 import svenhjol.strange.module.quests.*;
+import svenhjol.strange.module.quests.component.ExploreComponent;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
@@ -42,6 +41,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     private Component hint;
     private GatherComponent gather;
     private HuntComponent hunt;
+    private ExploreComponent explore;
 
     private boolean showRuneReward;
     private final int rowHeight;
@@ -70,6 +70,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         hint = new TextComponent(QuestsClient.getHint(definition));
         gather = quest.getComponent(GatherComponent.class);
         hunt = quest.getComponent(HuntComponent.class);
+        explore = quest.getComponent(ExploreComponent.class);
 
         RewardComponent reward = quest.getComponent(RewardComponent.class);
         items = reward.getItems();
@@ -108,46 +109,67 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         GuiHelper.drawCenteredString(poseStack, font, OBJECTIVES, midX, top, subheadingColor);
         top += 12;
 
-        if (!gather.getItems().isEmpty()) {
+        if (!gather.isEmpty()) {
             List<Component> hover = new ArrayList<>();
             int totalRequired = 0;
             int totalGathered = 0;
 
-            for (Map.Entry<ItemStack, Integer> entry : gather.getItems().entrySet()) {
-                ItemStack item = entry.getKey();
-                Integer requiredCount = entry.getValue();
-                Integer gatheredCount = gather.getSatisfied().getOrDefault(item, 0);
+            for (var entry : gather.getItems().entrySet()) {
+                var item = entry.getKey();
+                var requiredCount = entry.getValue();
+                var gatheredCount = gather.getSatisfied().getOrDefault(item, 0);
                 hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", item.getHoverName(), gatheredCount, requiredCount));
 
                 totalGathered += gatheredCount;
                 totalRequired += requiredCount;
             }
 
-            Component label = new TranslatableComponent("gui.strange.journal.items_gathered", totalGathered, totalRequired);
+            var label = new TranslatableComponent("gui.strange.journal.items_gathered", totalGathered, totalRequired);
             renderComponentIcon(poseStack, gather, GATHER_ICON, COMPLETED_GATHER_ICON, left, top);
             renderCompletionTextAndHover(poseStack, gather, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
 
-        if (!hunt.getEntities().isEmpty()) {
+        if (!hunt.isEmpty()) {
             List<Component> hover = new ArrayList<>();
-            int totalRequired = 0;
-            int totalKilled = 0;
+            var totalRequired = 0;
+            var totalKilled = 0;
 
-            for (Map.Entry<ResourceLocation, Integer> entry : hunt.getEntities().entrySet()) {
-                ResourceLocation entityId = entry.getKey();
-                EntityType<?> entity = Registry.ENTITY_TYPE.get(entityId);
-                int requiredCount = entry.getValue();
-                int killedCount = hunt.getKilled().getOrDefault(entityId, 0);
+            for (var entry : hunt.getEntities().entrySet()) {
+                var entityId = entry.getKey();
+                var entity = Registry.ENTITY_TYPE.get(entityId);
+                var requiredCount = entry.getValue();
+                var killedCount = hunt.getKilled().getOrDefault(entityId, 0);
                 hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", entity.getDescription().getString(), killedCount, requiredCount));
 
                 totalKilled += killedCount;
                 totalRequired += requiredCount;
             }
 
-            Component label = new TranslatableComponent("gui.strange.journal.mobs_hunted", totalKilled, totalRequired);
+            var label = new TranslatableComponent("gui.strange.journal.mobs_hunted", totalKilled, totalRequired);
             renderComponentIcon(poseStack, hunt, HUNT_ICON, COMPLETED_HUNT_ICON, left, top);
             renderCompletionTextAndHover(poseStack, hunt, label, hover, left, top, mouseX, mouseY);
+            top += rowHeight;
+        }
+
+        if (!explore.isEmpty()) {
+            List<Component> hover = new ArrayList<>();
+            var totalRequired = 0;
+            var totalGathered = 0;
+
+            for (var stack : explore.getItems()) {
+                var item = stack.getItem();
+                var requiredCount = 1;
+                var gatheredCount = explore.getSatisfied().getOrDefault(item, false) ? 1 : 0;
+                hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", stack.getHoverName(), gatheredCount, requiredCount));
+
+                totalRequired += requiredCount;
+                totalGathered += gatheredCount;
+            }
+
+            var label = new TranslatableComponent("gui.strange.journal.structures_explored", totalGathered, totalRequired);
+            renderComponentIcon(poseStack, explore, EXPLORE_ICON, COMPLETED_EXPLORE_ICON, left, top);
+            renderCompletionTextAndHover(poseStack, explore, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
 

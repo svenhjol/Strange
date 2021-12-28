@@ -23,12 +23,12 @@ public abstract class JournalBaseQuestScreen extends JournalScreen {
     protected static final ItemStack EXPERIENCE_ICON;
     protected static final ItemStack GATHER_ICON;
     protected static final ItemStack HUNT_ICON;
-    protected static final ItemStack DISCOVER_ICON;
-    protected static final ItemStack DEFEAT_ICON;
+    protected static final ItemStack EXPLORE_ICON;
+    protected static final ItemStack BOSS_ICON;
     protected static final ItemStack COMPLETED_GATHER_ICON;
     protected static final ItemStack COMPLETED_HUNT_ICON;
-    protected static final ItemStack COMPLETED_DISCOVER_ICON;
-    protected static final ItemStack COMPLETED_DEFEAT_ICON;
+    protected static final ItemStack COMPLETED_EXPLORE_ICON;
+    protected static final ItemStack COMPLETED_BOSS_ICON;
 
     public JournalBaseQuestScreen(Quest quest) {
         super(new TextComponent(QuestsClient.getTitle(quest.getDefinition())));
@@ -36,8 +36,8 @@ public abstract class JournalBaseQuestScreen extends JournalScreen {
 
         COMPLETED_GATHER_ICON.enchant(Enchantments.UNBREAKING, 1);
         COMPLETED_HUNT_ICON.enchant(Enchantments.UNBREAKING, 1);
-        COMPLETED_DISCOVER_ICON.enchant(Enchantments.UNBREAKING, 1);
-        COMPLETED_DEFEAT_ICON.enchant(Enchantments.UNBREAKING, 1);
+        COMPLETED_EXPLORE_ICON.enchant(Enchantments.UNBREAKING, 1);
+        COMPLETED_BOSS_ICON.enchant(Enchantments.UNBREAKING, 1);
     }
 
     @Override
@@ -57,11 +57,11 @@ public abstract class JournalBaseQuestScreen extends JournalScreen {
         EXPERIENCE_ICON = new ItemStack(Items.EXPERIENCE_BOTTLE);
         GATHER_ICON = new ItemStack(Items.BUNDLE);
         HUNT_ICON = new ItemStack(Items.STONE_SWORD);
-        DISCOVER_ICON = new ItemStack(Items.CHEST);
-        DEFEAT_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
+        EXPLORE_ICON = new ItemStack(Items.CHEST);
+        BOSS_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
         COMPLETED_GATHER_ICON = new ItemStack(Items.BUNDLE);
         COMPLETED_HUNT_ICON = new ItemStack(Items.STONE_SWORD);
-        COMPLETED_DISCOVER_ICON = new ItemStack(Items.CHEST);
-        COMPLETED_DEFEAT_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
+        COMPLETED_EXPLORE_ICON = new ItemStack(Items.CHEST);
+        COMPLETED_BOSS_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
     }
 }

@@ -7,8 +7,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.teleport.Teleport;
 import svenhjol.strange.module.teleport.iface.ITicket;
@@ -42,7 +42,7 @@ public abstract class RepositionTicket implements ITicket {
         if (ticks++ >= Teleport.repositionTicks) {
             LogHelper.debug(Strange.MOD_ID, this.getClass(), "Processing reposition ticket");
             BlockPos pos = entity.blockPosition();
-            BlockState surfaceBlock = getSurfaceBlockForDimension(level);
+            BlockState surfaceBlock = WorldHelper.getSurfaceBlockForDimension(level);
 
             if (!level.dimensionType().hasCeiling()) {
                 BlockPos surfacePos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
@@ -140,18 +140,5 @@ public abstract class RepositionTicket implements ITicket {
         int z = pos.getZ();
         BlockPos.betweenClosed(x - 1, y, z - 1, x + 1, y, z + 1).forEach(p -> level.setBlockAndUpdate(p, solid));
         LogHelper.debug(Strange.MOD_ID, this.getClass(), "Made platform at: " + pos);
-    }
-
-    private BlockState getSurfaceBlockForDimension(ServerLevel level) {
-        BlockState block;
-        if (DimensionHelper.isEnd(level)) {
-            block = Blocks.END_STONE.defaultBlockState();
-        } else if (DimensionHelper.isNether(level)) {
-            block = Blocks.NETHERRACK.defaultBlockState();
-        } else {
-            block = Blocks.STONE.defaultBlockState();
-        }
-
-        return block;
     }
 }

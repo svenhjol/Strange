@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.language.LanguageInfo;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
@@ -15,11 +14,9 @@ import svenhjol.strange.module.quests.network.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @ClientModule(module = Quests.class)
 public class QuestsClient extends CharmModule {
-    public static final String DEFAULT_LOCALE = "en";
     public static List<Quest> quests = new ArrayList<>();
 
     public static ClientReceiveQuests CLIENT_RECEIVE_QUESTS;
@@ -60,23 +57,25 @@ public class QuestsClient extends CharmModule {
     }
 
     private static String getTranslatedKey(QuestDefinition definition, String key) {
-        String definitionId = definition.getId();
-        Map<String, Map<String, String>> langDefinition = definition.getLang();
+        var id = definition.getId();
+        var lang = definition.getLang();
 
-        if (langDefinition == null) return definitionId;
+        if (lang == null) {
+            return id;
+        }
 
-        Minecraft client = Minecraft.getInstance();
-        LanguageInfo selected = client.getLanguageManager().getSelected();
-        String code = selected.getCode();
+        var client = Minecraft.getInstance();
+        var selected = client.getLanguageManager().getSelected();
+        var code = selected.getCode();
 
         // split code, we only care about the first bit
         code = code.split("_")[0].toLowerCase(Locale.ROOT);
 
-        if (!langDefinition.containsKey(code)) {
-            code = DEFAULT_LOCALE;
+        if (!lang.containsKey(code)) {
+            code = Quests.DEFAULT_LOCALE;
         }
 
-        String value = langDefinition.get(code).getOrDefault(key, definitionId);
+        var value = lang.get(code).getOrDefault(key, id);
         return I18n.get(value);
     }
 }

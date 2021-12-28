@@ -1,6 +1,7 @@
 package svenhjol.strange.module.quests;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -31,6 +32,10 @@ public interface IQuestComponent {
     }
 
     default void playerTick(Player player) {
+        // no op
+    }
+
+    default void provideMap(ServerPlayer player) {
         // no op
     }
 

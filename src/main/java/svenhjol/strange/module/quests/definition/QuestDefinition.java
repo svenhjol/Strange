@@ -24,7 +24,7 @@ public class QuestDefinition {
     public static final String HUNT_TAG = "Hunt";
     public static final String GATHER_TAG = "Gather";
     public static final String EXPLORE_TAG = "Explore";
-    public static final String BOSS_TAG = "Explore";
+    public static final String BOSS_TAG = "Boss";
     public static final String REWARD_TAG = "Reward";
 
     private boolean test;

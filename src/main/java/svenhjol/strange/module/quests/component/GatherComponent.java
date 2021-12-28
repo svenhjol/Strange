@@ -158,13 +158,13 @@ public class GatherComponent implements IQuestComponent {
         // remove the required items from the player's inventory
         items.forEach((stack, count) -> {
             int remainder = count;
-            for (ItemStack invStack : player.getInventory().items) {
+            for (ItemStack inv : player.getInventory().items) {
                 if (remainder <= 0) continue;
 
-                if (stack.sameItem(invStack)) {
-                    int decrement = Math.min(remainder, invStack.getCount());
+                if (stack.sameItem(inv)) {
+                    int decrement = Math.min(remainder, inv.getCount());
                     remainder -= decrement;
-                    invStack.shrink(decrement);
+                    inv.shrink(decrement);
                 }
             }
         });

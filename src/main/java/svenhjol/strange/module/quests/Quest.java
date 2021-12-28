@@ -8,6 +8,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.strange.module.quests.component.ExploreComponent;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
 import svenhjol.strange.module.quests.component.RewardComponent;
@@ -39,6 +40,7 @@ public class Quest {
     private Quest() {
         components.add(new GatherComponent(this));
         components.add(new HuntComponent(this));
+        components.add(new ExploreComponent(this));
         components.add(new RewardComponent(this));
     }
 
@@ -73,7 +75,6 @@ public class Quest {
 
     public boolean start(Player player) {
         if (state == State.CREATED) {
-
             // do first-time population of each component
             components.forEach(c -> {
                 if (!c.start(player)) {
@@ -131,9 +132,6 @@ public class Quest {
 
     public void playerTick(Player player) {
         components.forEach(c -> c.playerTick(player));
-        if (player.level != null && player.level.getGameTime() % 40 == 0) {
-            components.forEach(c -> c.update(player));
-        }
     }
 
     public void entityKilled(LivingEntity entity, Entity attacker) {

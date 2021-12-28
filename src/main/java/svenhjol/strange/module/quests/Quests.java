@@ -14,9 +14,11 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
@@ -40,6 +42,7 @@ public class Quests extends CharmModule {
     public static final String DEFINITION_FOLDER = "quests";
     public static final Map<Tier, Map<String, QuestDefinition>> DEFINITIONS = new HashMap<>();
     public static final Map<UUID, LinkedList<QuestDefinition>> LAST_QUESTS = new HashMap<>();
+    public static final String DEFAULT_LOCALE = "en";
 
     public static ServerSendQuests SERVER_SEND_QUESTS;
     public static ServerSendQuestDefinitions SERVER_SEND_QUEST_DEFINITIONS;
@@ -50,6 +53,8 @@ public class Quests extends CharmModule {
     private static @Nullable QuestData quests;
 
     public static boolean rewardRunes = true;
+    public static boolean showExplorePlacement = false; // TODO: must be FALSE for production!
+    public static boolean showExploreHint = true;
 
     @Override
     public void register() {
@@ -67,6 +72,7 @@ public class Quests extends CharmModule {
 
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(this::handleKilledEntity);
 
         QuestEvents.START.register(this::handleStartQuest);
@@ -190,6 +196,10 @@ public class Quests extends CharmModule {
 
     private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {
         getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.entityKilled(target, attacker)));
+    }
+
+    private void handlePlayerTick(Player player) {
+        getQuestData().ifPresent(quests -> quests.eachQuest(q -> q.playerTick(player)));
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
