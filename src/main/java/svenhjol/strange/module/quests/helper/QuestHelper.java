@@ -1,6 +1,11 @@
 package svenhjol.strange.module.quests.helper;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import svenhjol.charm.helper.MapHelper;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.quests.Quests;
@@ -23,5 +28,11 @@ public class QuestHelper {
         QuestData quests = Quests.getQuestData().orElseThrow();
         List<Quest> playerQuests = quests.all(player);
         return playerQuests.stream().filter(q -> q.isSatisfied(player)).findFirst();
+    }
+
+    public static void provideMap(ServerPlayer player, Quest quest, BlockPos pos, MapDecoration.Type type, int color) {
+        var title = Quests.getTranslatedKey(quest.getDefinition(), "title");
+        var map = MapHelper.create((ServerLevel) player.level, pos, title, type, color);
+        player.getInventory().placeItemBackInInventory(map);
     }
 }

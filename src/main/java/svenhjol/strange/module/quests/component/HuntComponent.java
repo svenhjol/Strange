@@ -17,7 +17,7 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class HuntComponent implements IQuestComponent {
-    public static final String ENTITY_DATA_TAG = "entity_data";
+    public static final String ENTITIES_TAG = "entities";
     public static final String ENTITY_COUNT_TAG = "entity_count";
     public static final String ENTITY_KILLED_TAG = "entity_killed";
 
@@ -42,48 +42,48 @@ public class HuntComponent implements IQuestComponent {
 
     @Override
     public CompoundTag save() {
-        CompoundTag outTag = new CompoundTag();
-        CompoundTag dataTag = new CompoundTag();
-        CompoundTag countTag = new CompoundTag();
-        CompoundTag killedTag = new CompoundTag();
+        var out = new CompoundTag();
+        var entitiesTag = new CompoundTag();
+        var countTag = new CompoundTag();
+        var killedTag = new CompoundTag();
 
-        if (entities.isEmpty()) return null;
+        if (!entities.isEmpty()) {
+            var index = 0;
+            for (ResourceLocation id : entities.keySet()) {
+                var entityIndex = Integer.toString(index);
+                var entityCount = entities.get(id);
+                var entityKilled = killed.getOrDefault(id, 0);
 
-        int index = 0;
-        for (ResourceLocation entityId : entities.keySet()) {
-            String entityIndex = Integer.toString(index);
-            int entityCount = entities.get(entityId);
-            int entityKilled = killed.getOrDefault(entityId, 0);
+                // Write to tags at stringified index.
+                entitiesTag.putString(entityIndex, id.toString());
+                countTag.putInt(entityIndex, entityCount);
+                killedTag.putInt(entityIndex, entityKilled);
 
-            // write the data to the tags at the specified index
-            dataTag.putString(entityIndex, entityId.toString());
-            countTag.putInt(entityIndex, entityCount);
-            killedTag.putInt(entityIndex, entityKilled);
+                index++;
+            }
 
-            index++;
+            out.put(ENTITIES_TAG, entitiesTag);
+            out.put(ENTITY_COUNT_TAG, countTag);
+            out.put(ENTITY_KILLED_TAG, killedTag);
         }
 
-        outTag.put(ENTITY_DATA_TAG, dataTag);
-        outTag.put(ENTITY_COUNT_TAG, countTag);
-        outTag.put(ENTITY_KILLED_TAG, killedTag);
-
-        return outTag;
+        return out;
     }
 
     @Override
     public void load(CompoundTag nbt) {
-        CompoundTag dataTag = (CompoundTag) nbt.get(ENTITY_DATA_TAG);
+        CompoundTag entitiesTag = (CompoundTag) nbt.get(ENTITIES_TAG);
         CompoundTag countTag = (CompoundTag) nbt.get(ENTITY_COUNT_TAG);
         CompoundTag killedTag = (CompoundTag) nbt.get(ENTITY_KILLED_TAG);
 
         entities.clear();
         killed.clear();
 
-        if (dataTag != null && dataTag.size() > 0 && countTag != null) {
-            for (int i = 0; i < dataTag.size(); i++) {
+        if (entitiesTag != null && entitiesTag.size() > 0 && countTag != null) {
+            for (int i = 0; i < entitiesTag.size(); i++) {
                 // read the data from the tags at the specified index
                 String tagIndex = String.valueOf(i);
-                ResourceLocation entityId = ResourceLocation.tryParse(dataTag.getString(tagIndex));
+                ResourceLocation entityId = ResourceLocation.tryParse(entitiesTag.getString(tagIndex));
                 if (entityId == null) continue;
 
                 int entityCount = countTag.getInt(tagIndex);

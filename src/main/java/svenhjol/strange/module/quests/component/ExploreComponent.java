@@ -30,6 +30,7 @@ import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 
 import java.util.*;
 
@@ -144,13 +145,7 @@ public class ExploreComponent implements IQuestComponent {
         var pos = serverPlayer.blockPosition();
         var random = serverPlayer.getRandom();
         var level = (ServerLevel) serverPlayer.getLevel();
-
         var definition = quest.getDefinition();
-        var exploreDefinition = definition.getExplore();
-        if (exploreDefinition == null || exploreDefinition.isEmpty()) {
-            // No definition - no explore quest. Exit cleanly.
-            return true;
-        }
 
         // The explore definition has two sections:
         //   1. items
@@ -158,6 +153,12 @@ public class ExploreComponent implements IQuestComponent {
         //
         // The items section consists of one or more special items that must be found in a chest within the structure.
         // The settings section describes the type of structure and where to spawn the chest.
+
+        var exploreDefinition = definition.getExplore();
+        if (exploreDefinition == null || exploreDefinition.isEmpty()) {
+            // No definition - no explore quest. Exit cleanly.
+            return true;
+        }
 
         var itemMap = exploreDefinition.getOrDefault(ITEMS_TAG, null);
         if (itemMap == null || itemMap.isEmpty()) {
@@ -419,7 +420,7 @@ public class ExploreComponent implements IQuestComponent {
 
         chestRange = tag.getInt(CHEST_RANGE_TAG);
         chestStart = tag.getInt(CHEST_START_TAG);
-        structurePos = tag.contains(STRUCTURE_TAG) ? BlockPos.of(tag.getLong(STRUCTURE_TAG)) : null;
+        structurePos = tag.contains(STRUCTURE_POS_TAG) ? BlockPos.of(tag.getLong(STRUCTURE_POS_TAG)) : null;
         dimension = ResourceLocation.tryParse(tag.getString(DIMENSION_TAG));
 
         if (dimension == null) {
@@ -444,8 +445,6 @@ public class ExploreComponent implements IQuestComponent {
 
     @Override
     public void provideMap(ServerPlayer player) {
-        var title = Quests.getTranslatedKey(quest.getDefinition(), "title");
-        var map = MapHelper.create((ServerLevel) player.level, structurePos, title, MAP_TAG, MAP_COLOR);
-        player.getInventory().placeItemBackInInventory(map);
+        QuestHelper.provideMap(player, quest, structurePos, MAP_TAG, MAP_COLOR);
     }
 }

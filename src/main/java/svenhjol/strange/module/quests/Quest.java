@@ -75,6 +75,7 @@ public class Quest {
 
     public boolean start(Player player) {
         if (state == State.CREATED) {
+
             // do first-time population of each component
             components.forEach(c -> {
                 if (!c.start(player)) {
