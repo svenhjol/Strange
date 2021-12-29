@@ -19,7 +19,7 @@ public class QuestDefinition {
     public static final String ID_TAG = "Id";
     public static final String TEST_TAG = "Test";
     public static final String MODULES_TAG = "Modules";
-    public static final String DIMENSIONS_TAG = "Dimension";
+    public static final String DIMENSIONS_TAG = "Dimensions";
     public static final String LANG_TAG = "Lang";
     public static final String HUNT_TAG = "Hunt";
     public static final String GATHER_TAG = "Gather";
