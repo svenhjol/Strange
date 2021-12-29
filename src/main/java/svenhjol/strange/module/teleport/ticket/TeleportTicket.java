@@ -22,7 +22,7 @@ import svenhjol.strange.module.teleport.iface.ITicket;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class TeleportTicket implements ITicket {
+public class TeleportTicket implements ITicket {
     private int ticks;
     private boolean valid;
     private boolean chunkLoaded;
@@ -122,7 +122,7 @@ public abstract class TeleportTicket implements ITicket {
                         }
 
                         if (!exactPosition) {
-                            Teleport.addRepositionTicket(new GenericRepositionTicket(teleportedEntity));
+                            Teleport.addRepositionTicket(new RepositionTicket(teleportedEntity));
                         }
                         success = true;
                         return;
@@ -157,7 +157,7 @@ public abstract class TeleportTicket implements ITicket {
 
             if (!exactPosition) {
                 // create a reposition ticket to safely land the player after teleport
-                Teleport.addRepositionTicket(new GenericRepositionTicket(entity));
+                Teleport.addRepositionTicket(new RepositionTicket(entity));
             }
 
             closeChunk();

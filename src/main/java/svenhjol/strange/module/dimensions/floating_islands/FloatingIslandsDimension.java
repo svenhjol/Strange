@@ -14,7 +14,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
 import svenhjol.strange.module.teleport.Teleport;
-import svenhjol.strange.module.teleport.ticket.GenericTeleportTicket;
+import svenhjol.strange.module.teleport.ticket.TeleportTicket;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +69,7 @@ public class FloatingIslandsDimension implements IDimension {
             BlockPos source = player.blockPosition();
             BlockPos target = new BlockPos(source.getX(), height, source.getZ());
 
-            var ticket = new GenericTeleportTicket(player, overworld.dimension().location(), source, target);
+            var ticket = new TeleportTicket(player, overworld.dimension().location(), source, target);
             ticket.useExactPosition(true);
             ticket.allowDimensionChange(true);
             Teleport.addTeleportTicket(ticket);

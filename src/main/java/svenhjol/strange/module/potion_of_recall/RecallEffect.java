@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.potion.CharmStatusEffect;
 import svenhjol.strange.module.teleport.Teleport;
-import svenhjol.strange.module.teleport.ticket.GenericTeleportTicket;
+import svenhjol.strange.module.teleport.ticket.TeleportTicket;
 
 public class RecallEffect extends CharmStatusEffect {
     protected RecallEffect(CharmModule module) {
@@ -35,7 +35,7 @@ public class RecallEffect extends CharmStatusEffect {
             livingEntity.removeEffect(this);
 
             // generate a teleportation ticket for the player to the spawn point
-            var ticket = new GenericTeleportTicket(livingEntity, overworld, livingEntity.blockPosition(), serverLevel.getSharedSpawnPos());
+            var ticket = new TeleportTicket(livingEntity, overworld, livingEntity.blockPosition(), serverLevel.getSharedSpawnPos());
             ticket.useExactPosition(false);
             ticket.allowDimensionChange(true);
             Teleport.addTeleportTicket(ticket);

@@ -15,7 +15,7 @@ import svenhjol.strange.module.teleport.iface.ITicket;
 
 import java.util.Arrays;
 
-public abstract class RepositionTicket implements ITicket {
+public class RepositionTicket implements ITicket {
     private final LivingEntity entity;
     private final ServerLevel level;
     private int ticks;
