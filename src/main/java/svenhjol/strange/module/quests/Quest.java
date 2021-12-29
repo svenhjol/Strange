@@ -8,6 +8,8 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
+import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.component.ExploreComponent;
 import svenhjol.strange.module.quests.component.GatherComponent;
 import svenhjol.strange.module.quests.component.HuntComponent;
@@ -73,21 +75,23 @@ public class Quest {
         return (T)components.stream().filter(c -> c.getClass() == clazz).findFirst().orElseThrow();
     }
 
-    public boolean start(Player player) {
+    public StartResult start(Player player) {
         if (state == State.CREATED) {
 
             // do first-time population of each component
-            components.forEach(c -> {
-                if (!c.start(player)) {
-                    throw QuestHelper.makeException(this, "Could not initialise quest component: " + c.getId());
+            for (var component : components) {
+                if (!component.start(player)) {
+                    LogHelper.warn(Strange.MOD_ID, getClass(), "Could not initialise quest component `" + component.getId() + "`");
+                    return StartResult.INVALID_STATE;
                 }
-            });
+            }
 
         } else if (state != State.PAUSED) {
-            throw QuestHelper.makeException(this, "Quest should be in PAUSED or CREATED state, was in " + state.getSerializedName());
+            LogHelper.warn(Strange.MOD_ID, getClass(), "Quest should be in PAUSED or CREATED state, was in " + state.getSerializedName());
+            return StartResult.INVALID_STATE;
         }
 
-        this.owner = player.getUUID();
+        owner = player.getUUID();
         state = State.STARTED;
         setDirty();
 
@@ -95,7 +99,7 @@ public class Quest {
             QuestEvents.START.invoker().invoke(this, (ServerPlayer)player);
         }
 
-        return true;
+        return StartResult.SUCCESS;
     }
 
     public void pause(Player player) {
@@ -237,9 +241,26 @@ public class Quest {
         }
     }
 
-    private enum State implements ICharmEnum {
+    public enum State implements ICharmEnum {
         CREATED,
         STARTED,
         PAUSED
+    }
+
+    public enum StartResult implements ICharmEnum {
+        SUCCESS(true),
+        INVALID_STATE(false),
+        INVALID_DIMENSION(false),
+        FAILURE(false);
+
+        private final boolean valid;
+
+        StartResult(boolean valid) {
+            this.valid = valid;
+        }
+
+        public boolean isValid() {
+            return valid;
+        }
     }
 }

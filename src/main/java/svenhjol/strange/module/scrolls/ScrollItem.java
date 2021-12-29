@@ -15,9 +15,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.Quest;
-import svenhjol.strange.module.quests.QuestData;
 import svenhjol.strange.module.quests.Quests;
-import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.runes.Tier;
 
@@ -41,41 +39,67 @@ public class ScrollItem extends CharmItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack scroll = player.getItemInHand(hand);
+        boolean invalidQuest = false;
+        Quest.StartResult startResult = null;
+        var scroll = player.getItemInHand(hand);
+
         if (level.isClientSide) {
             return new InteractionResultHolder<>(InteractionResult.PASS, scroll);
         }
 
-        ServerPlayer serverPlayer = (ServerPlayer) player;
-        QuestData quests = Quests.getQuestData().orElseThrow();
+        var serverPlayer = (ServerPlayer) player;
+        var quests = Quests.getQuestData().orElseThrow();
         if (quests.all(serverPlayer).size() >= QuestHelper.MAX_QUESTS) {
             player.displayClientMessage(new TranslatableComponent("gui.strange.quests.max_reached"), true);
             return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
         }
 
-        String questId = getScrollQuest(scroll);
-        float difficulty = getScrollDifficulty(scroll);
+        var questId = getScrollQuest(scroll);
+        var difficulty = getScrollDifficulty(scroll);
 
         if (questId.isEmpty()) {
-            Random random = new Random();
-            QuestDefinition definition = Quests.getRandomDefinition(serverPlayer, tier, random);
 
-            if (definition == null) {
+            // This is a new scroll without an associated paused quest. Generate a new quest.
+            var random = new Random();
+            var definition = Quests.getRandomDefinition(serverPlayer, tier, random);
+            if (definition != null) {
+
+                // Definition is valid, create a new quest.
+                var quest = new Quest(definition, difficulty);
+                startResult = quest.start(player);
+
+            } else {
+
+                // No valid definition found, destroy the scroll.
                 LogHelper.warn(this.getClass(), "Could not find any definitions, giving up");
-                return destroy(serverPlayer, scroll);
-            }
+                invalidQuest = true;
 
-            Quest quest = new Quest(definition, difficulty);
-            quest.start(player);
+            }
 
         } else {
-            var quest = quests.get(questId);
-            if (quest == null) {
-                LogHelper.warn(this.getClass(), "No matching quest with id " + questId + ", giving up");
-                return destroy(serverPlayer, scroll);
-            }
 
-            quest.start(player);
+            // The scroll contains the ID of a paused quest, resume it here.
+            var quest = quests.get(questId);
+            if (quest != null) {
+
+                // Quest is valid, resume the quest.
+                startResult = quest.start(player);
+
+            } else {
+
+                // No valid quest found, destroy the scroll.
+                LogHelper.warn(this.getClass(), "No matching quest with id " + questId + ", giving up");
+                invalidQuest = true;
+
+            }
+        }
+
+        if (invalidQuest) {
+            return destroy(serverPlayer, scroll);
+        }
+
+        if (startResult != null && !startResult.isValid()) {
+            // TODO: show error to player and return without destroying scroll
         }
 
         scroll.shrink(1);
