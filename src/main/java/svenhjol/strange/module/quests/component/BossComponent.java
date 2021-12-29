@@ -6,10 +6,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.MobHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.IQuestComponent;
@@ -19,14 +28,10 @@ import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.stone_circles.StoneCircles;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BossComponent implements IQuestComponent {
     public static final String TARGETS_TAG = "targets";
-    public static final String SETTINGS_TAG = "settings";
     public static final String SUPPORT_TAG = "support";
     public static final String HEALTH_TAG = "health";
     public static final String EFFECTS_TAG = "effects";
@@ -61,7 +66,6 @@ public class BossComponent implements IQuestComponent {
 
     // Dynamically generated and not stored in NBT.
     private final Map<ResourceLocation, Boolean> satisfied = new HashMap<>();
-    private final Map<ResourceLocation, String> names = new HashMap<>();
 
     public BossComponent(Quest quest) {
         this.quest = quest;
@@ -74,7 +78,38 @@ public class BossComponent implements IQuestComponent {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return targets.isEmpty();
+    }
+
+    public Map<ResourceLocation, Boolean> getSatisfied() {
+        return satisfied;
+    }
+
+    @Override
+    public void update(Player player) {
+        satisfied.clear();
+
+        targets.forEach((id, count) -> {
+            var countKilled = killed.getOrDefault(id, 0);
+            satisfied.put(id, countKilled >= count);
+        });
+    }
+
+    @Override
+    public void entityKilled(LivingEntity entity, Entity attacker) {
+        var tags = entity.getTags();
+        var id = Registry.ENTITY_TYPE.getKey(entity.getType());
+
+        if (tags.contains(quest.getId())) {
+            var count = killed.getOrDefault(id, 0);
+            killed.put(id, count);
+            quest.setDirty();
+
+            if (attacker instanceof Player player) {
+                quest.update(player);
+                // TODO: this used to call checkEncounter - what does this do?
+            }
+        }
     }
 
     @Override
@@ -145,8 +180,106 @@ public class BossComponent implements IQuestComponent {
     }
 
     @Override
-    public void update(Player player) {
+    public void playerTick(Player player) {
+        if (player.level.isClientSide) return;
+        if (!spawned) return;
+        if (structurePos == null) return;
+        if (!DimensionHelper.isDimension(player.level, dimension)) return;
 
+        var serverPlayer = (ServerPlayer) player;
+        var playerPos = serverPlayer.blockPosition();
+        var level = serverPlayer.getLevel();
+        var dist = WorldHelper.getDistanceSquared(playerPos, structurePos);
+
+        if (dist > POPULATE_DISTANCE) return;
+
+        var bossDefinition = quest.getDefinition().getBoss();
+        var targetsMap = bossDefinition.get(TARGETS_TAG);
+        var supportMap = bossDefinition.get(SUPPORT_TAG);
+
+        if (targetsMap != null) {
+            var result = trySpawnEntities(level, structurePos, targetsMap, true);
+            if (!result) {
+                quest.abandon(player);
+                return;
+            }
+        }
+
+        if (supportMap != null) {
+            trySpawnEntities(level, structurePos, supportMap, false);
+        }
+
+        level.playSound(null, structurePos, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 1.0F, 1.0F);
+        spawned = true;
+    }
+
+    private boolean trySpawnEntities(ServerLevel level, BlockPos pos, Map<String, Map<String, String>> entityMap, boolean isTarget) {
+        var amplifier = Math.max(1, quest.getTier().ordinal() - 3);
+        boolean didSpawn;
+
+        for (Map.Entry<String, Map<String, String>> entry : entityMap.entrySet()) {
+            var entityId = entry.getKey();
+            var attributes = entry.getValue();
+
+            var entityType = EntityType.byString(entityId).orElse(null);
+            if (entityType == null) return false;
+
+            var count = Integer.parseInt(attributes.getOrDefault(COUNT_TAG, "1"));
+
+            for (int i = 0; i < count; i++) {
+                var entity = entityType.create(level);
+                if (!(entity instanceof Mob mob)) return false;
+
+                var health = Integer.parseInt(attributes.getOrDefault(HEALTH_TAG, "20"));
+                var effectsDefinition = attributes.getOrDefault(EFFECTS_TAG, "");
+                List<String> effects = new ArrayList<>();
+
+                if (effectsDefinition.length() > 0) {
+                    if (effectsDefinition.contains(",")) {
+                        effects.addAll(Arrays.asList(effectsDefinition.split(",")));
+                    } else {
+                        effects.add(effectsDefinition);
+                    }
+                }
+
+                effects.addAll(BOSS_EFFECTS);
+
+                didSpawn = MobHelper.spawnNearBlockPos(level, pos, mob, (m, p) -> {
+                    m.setPersistenceRequired();
+
+                    if (isTarget) {
+                        m.addTag(quest.getId());
+                    }
+
+                    var healthAttribute = m.getAttribute(Attributes.MAX_HEALTH);
+                    if (healthAttribute != null) {
+                        healthAttribute.setBaseValue(health);
+                    }
+                    m.setHealth(health);
+
+                    if (effects.size() > 0) {
+                        effects.forEach(
+                            e -> Registry.MOB_EFFECT.getOptional(new ResourceLocation(e)).ifPresent(
+                                me -> m.addEffect(new MobEffectInstance(me, BOSS_EFFECT_DURATION, amplifier))));
+                    }
+
+                    LogHelper.info(Strange.MOD_ID, getClass(), "Spawned `" + entityId + "` at " + p);
+                });
+
+                if (!didSpawn) {
+                    LogHelper.info(Strange.MOD_ID, getClass(), "Failed to spawn `" + entityId + "`");
+
+                    if (isTarget) {
+                        var resId = new ResourceLocation(entityId);
+                        var entityCount = killed.getOrDefault(resId, 0);
+                        killed.put(resId, entityCount + 1);
+                        quest.setDirty();
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override

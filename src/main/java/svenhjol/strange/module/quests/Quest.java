@@ -11,10 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.quests.component.ExploreComponent;
-import svenhjol.strange.module.quests.component.GatherComponent;
-import svenhjol.strange.module.quests.component.HuntComponent;
-import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.component.*;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.helper.QuestHelper;
@@ -45,6 +42,7 @@ public class Quest {
         components.add(new HuntComponent(this));
         components.add(new ExploreComponent(this));
         components.add(new RewardComponent(this));
+        components.add(new BossComponent(this));
     }
 
     public Quest(QuestDefinition definition, float difficulty) {
