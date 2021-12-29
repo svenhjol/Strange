@@ -15,6 +15,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.item.CharmItem;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.quests.Quest;
+import svenhjol.strange.module.quests.Quest.State;
 import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.runes.Tier;
@@ -39,8 +40,8 @@ public class ScrollItem extends CharmItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        Quest quest = null;
         boolean invalidQuest = false;
-        Quest.StartResult startResult = null;
         var scroll = player.getItemInHand(hand);
 
         if (level.isClientSide) {
@@ -65,8 +66,8 @@ public class ScrollItem extends CharmItem {
             if (definition != null) {
 
                 // Definition is valid, create a new quest.
-                var quest = new Quest(definition, difficulty);
-                startResult = quest.start(player);
+                quest = new Quest(definition, difficulty);
+                quest.start(player);
 
             } else {
 
@@ -79,11 +80,11 @@ public class ScrollItem extends CharmItem {
         } else {
 
             // The scroll contains the ID of a paused quest, resume it here.
-            var quest = quests.get(questId);
+            quest = quests.get(questId);
             if (quest != null) {
 
                 // Quest is valid, resume the quest.
-                startResult = quest.start(player);
+                quest.start(player);
 
             } else {
 
@@ -94,17 +95,15 @@ public class ScrollItem extends CharmItem {
             }
         }
 
-        if (invalidQuest) {
+        if (invalidQuest || quest.getState() == State.FINISHED) {
             return destroy(serverPlayer, scroll);
+        } else if (quest.getState() == State.PAUSED) {
+            return new InteractionResultHolder<>(InteractionResult.PASS, scroll);
+        } else {
+            scroll.shrink(1);
+            Scrolls.SERVER_SEND_OPEN_SCROLL.send(serverPlayer);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, scroll);
         }
-
-        if (startResult != null && !startResult.isValid()) {
-            // TODO: show error to player and return without destroying scroll
-        }
-
-        scroll.shrink(1);
-        Scrolls.SERVER_SEND_OPEN_SCROLL.send(serverPlayer);
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, scroll);
     }
 
     private InteractionResultHolder<ItemStack> destroy(ServerPlayer player, ItemStack scroll) {

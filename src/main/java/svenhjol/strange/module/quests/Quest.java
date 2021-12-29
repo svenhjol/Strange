@@ -75,20 +75,21 @@ public class Quest {
         return (T)components.stream().filter(c -> c.getClass() == clazz).findFirst().orElseThrow();
     }
 
-    public StartResult start(Player player) {
+    public void start(Player player) {
         if (state == State.CREATED) {
 
             // do first-time population of each component
             for (var component : components) {
                 if (!component.start(player)) {
                     LogHelper.warn(Strange.MOD_ID, getClass(), "Could not initialise quest component `" + component.getId() + "`");
-                    return StartResult.INVALID_STATE;
+                    state = State.FINISHED;
+                    return;
                 }
             }
 
         } else if (state != State.PAUSED) {
             LogHelper.warn(Strange.MOD_ID, getClass(), "Quest should be in PAUSED or CREATED state, was in " + state.getSerializedName());
-            return StartResult.INVALID_STATE;
+            return;
         }
 
         owner = player.getUUID();
@@ -98,8 +99,6 @@ public class Quest {
         if (!player.level.isClientSide) {
             QuestEvents.START.invoker().invoke(this, (ServerPlayer)player);
         }
-
-        return StartResult.SUCCESS;
     }
 
     public void pause(Player player) {
@@ -125,6 +124,8 @@ public class Quest {
 
     public void complete(Player player, @Nullable AbstractVillager merchant) {
         components.forEach(c -> c.complete(player, merchant));
+        state = State.FINISHED;
+
         var copy = copy();
 
         // Bypass this quest's remove method so that the REMOVE trigger is not fired.
@@ -229,12 +230,18 @@ public class Quest {
         getQuests().setDirty();
     }
 
+    public State getState() {
+        return state;
+    }
+
     private QuestData getQuests() {
         return Quests.getQuestData().orElseThrow();
     }
 
     private void remove(Player player) {
         getQuests().remove(this);
+
+        state = State.FINISHED;
 
         if (!player.level.isClientSide) {
             QuestEvents.REMOVE.invoker().invoke(this, (ServerPlayer)player);
@@ -244,23 +251,7 @@ public class Quest {
     public enum State implements ICharmEnum {
         CREATED,
         STARTED,
-        PAUSED
-    }
-
-    public enum StartResult implements ICharmEnum {
-        SUCCESS(true),
-        INVALID_STATE(false),
-        INVALID_DIMENSION(false),
-        FAILURE(false);
-
-        private final boolean valid;
-
-        StartResult(boolean valid) {
-            this.valid = valid;
-        }
-
-        public boolean isValid() {
-            return valid;
-        }
+        PAUSED,
+        FINISHED
     }
 }
