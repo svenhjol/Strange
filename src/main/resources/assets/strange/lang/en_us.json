@@ -101,6 +101,8 @@
   "gui.strange.quests.started": "Quest started",
   "gui.strange.quests.max_reached": "Complete a quest before starting a new one!",
   "gui.strange.quests.explore_nearby": "This seems like the right place to search...",
+  "gui.strange.quests.invalid_dimension": "This is the wrong world to begin this quest.",
+  "gui.strange.quests.failed_to_start": "The quest failed to start.",
   "gui.strange.clues.ancient": "Ancient",
   "gui.strange.clues.biome": "Biome",
   "gui.strange.clues.cold": "Cold",

@@ -1,6 +1,7 @@
 package svenhjol.strange.module.quests;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -78,11 +79,21 @@ public class Quest {
     public void start(Player player) {
         if (state == State.CREATED) {
 
-            // do first-time population of each component
+            // If quest dimension doesn't match, we can't start this quest (yet).
+            var playerDimension = player.level.dimension().location().toString();
+            var dimensions = getDefinition().getDimensions();
+
+            if (!dimensions.contains(playerDimension)) {
+                player.displayClientMessage(new TranslatableComponent("gui.strange.quests.invalid_dimension"), true);
+                setState(State.PAUSED);
+                return;
+            }
+
             for (var component : components) {
                 if (!component.start(player)) {
                     LogHelper.warn(Strange.MOD_ID, getClass(), "Could not initialise quest component `" + component.getId() + "`");
-                    state = State.FINISHED;
+                    player.displayClientMessage(new TranslatableComponent("gui.strange.quests.failed_to_start"), true);
+                    setState(State.FINISHED);
                     return;
                 }
             }
@@ -103,8 +114,7 @@ public class Quest {
 
     public void pause(Player player) {
         owner = QuestHelper.ANY_UUID;
-        state = State.PAUSED;
-        setDirty();
+        setState(State.PAUSED);
 
         if (!player.level.isClientSide) {
             QuestEvents.PAUSE.invoker().invoke(this, (ServerPlayer) player);
@@ -228,6 +238,11 @@ public class Quest {
 
     public void setDirty() {
         getQuests().setDirty();
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        setDirty();
     }
 
     public State getState() {

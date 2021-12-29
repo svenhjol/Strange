@@ -96,13 +96,23 @@ public class ScrollItem extends CharmItem {
         }
 
         if (invalidQuest || quest.getState() == State.FINISHED) {
+
+            // Quest failed somehow, destroy the scroll.
             return destroy(serverPlayer, scroll);
+
         } else if (quest.getState() == State.PAUSED) {
+
+            // Write the quest data to the scroll so we can reopen it another time.
+            setScrollQuest(scroll, quest.getId());
             return new InteractionResultHolder<>(InteractionResult.PASS, scroll);
+
         } else {
+
+            // Quest successfully started, destroy the scroll.
             scroll.shrink(1);
             Scrolls.SERVER_SEND_OPEN_SCROLL.send(serverPlayer);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, scroll);
+
         }
     }
 
