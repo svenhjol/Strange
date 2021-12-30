@@ -18,14 +18,15 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
+import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * With special thanks to TG.
- * @see {https://github.com/TelepathicGrunt/StructureTutorialMod/blob/bcef90ea39d3389ccbf2cf8b28a1a4eb2eb44f6a/src/main/java/com/telepathicgrunt/structure_tutorial/STConfiguredStructures.java#L15}
- * @see {https://github.com/TelepathicGrunt/StructureTutorialMod/blob/bcef90ea39d3389ccbf2cf8b28a1a4eb2eb44f6a/src/main/java/com/telepathicgrunt/structure_tutorial/structures/RunDownHouseStructure.java#L122}
+ * @link {https://github.com/TelepathicGrunt/StructureTutorialMod/blob/bcef90ea39d3389ccbf2cf8b28a1a4eb2eb44f6a/src/main/java/com/telepathicgrunt/structure_tutorial/STConfiguredStructures.java#L15}
+ * @link {https://github.com/TelepathicGrunt/StructureTutorialMod/blob/bcef90ea39d3389ccbf2cf8b28a1a4eb2eb44f6a/src/main/java/com/telepathicgrunt/structure_tutorial/structures/RunDownHouseStructure.java#L122}
  */
 public class StoneRuins implements IRuinType {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "stone_ruin");
@@ -69,7 +70,8 @@ public class StoneRuins implements IRuinType {
         // Force add them to the blacklist to prevent generation and adding of destinations to runestones.
         Ruins.stoneRuinDimensionBlacklist.addAll(List.of(
             Level.NETHER.location().toString(),
-            Level.END.location().toString()
+            Level.END.location().toString(),
+            FloatingIslandsDimension.ID.toString()
         ));
 
         // TODO: player state callback
