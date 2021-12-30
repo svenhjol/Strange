@@ -33,6 +33,7 @@ import svenhjol.strange.module.quests.helper.QuestDefinitionHelper;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExploreComponent implements IQuestComponent {
     public static final String STRUCTURE_TAG = "structure";
@@ -255,7 +256,7 @@ public class ExploreComponent implements IQuestComponent {
         var foundChestPositions = BlockPos.betweenClosedStream(pos1, pos2).map(BlockPos::immutable).filter(p -> {
             BlockState state = level.getBlockState(p);
             return state.getBlock() instanceof ChestBlock;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (foundChestPositions.isEmpty()) {
             // If no chests have been found then place one in the world.
