@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.init.StrangeSounds;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,15 +66,7 @@ public class CaskBlock extends CharmBlockWithEntity {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        switch((state.getValue(FACING)).getAxis()) {
-            case X:
-            default:
-                return X_SHAPE;
-            case Z:
-                return Z_SHAPE;
-            case Y:
-                return Y_SHAPE;
-        }
+        return getShape(state, level, pos, context);
     }
 
     @Override
@@ -228,17 +218,6 @@ public class CaskBlock extends CharmBlockWithEntity {
         }
 
         return null;
-    }
-
-    @Override
-    public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {
-        super.tick(blockState, level, blockPos, random);
-        CaskBlockEntity cask = getBlockEntity(level, blockPos);
-
-        if (cask != null && random.nextInt(1000) == 0) {
-            cask.ferment();
-            level.playSound(null, blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D, StrangeSounds.FERMENT, SoundSource.BLOCKS, 0.3F + (0.1F * random.nextFloat()), random.nextFloat() * 0.7F + 0.6F);
-        }
     }
 
     @Override

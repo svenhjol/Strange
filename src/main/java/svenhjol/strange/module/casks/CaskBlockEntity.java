@@ -42,10 +42,8 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
     public static final String AMPLIFIERS_TAG = "Amplifier";
     public static final String DILUTIONS_TAG = "Dilutions";
     public static final String NAME_TAG = "Name";
-    public static final String FERMENTATION_TAG = "Fermentation";
 
     public int portions = 0;
-    public int fermentation = 0;
     public String name = "";
     public Map<ResourceLocation, Integer> durations = new HashMap<>();
     public Map<ResourceLocation, Integer> amplifiers = new HashMap<>();
@@ -62,7 +60,6 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
 
         this.name = nbt.getString(NAME_TAG);
         this.portions = nbt.getInt(PORTION_TAG);
-        this.fermentation = nbt.getInt(FERMENTATION_TAG);
         this.effects = new ArrayList<>();
         this.durations = new HashMap<>();
         this.amplifiers = new HashMap<>();
@@ -88,7 +85,6 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
     public void saveAdditional(CompoundTag tag) {
         tag.putString(NAME_TAG, this.name);
         tag.putInt(PORTION_TAG, this.portions);
-        tag.putInt(FERMENTATION_TAG, this.fermentation);
 
         CompoundTag durations = new CompoundTag();
         CompoundTag amplifiers = new CompoundTag();
@@ -211,7 +207,7 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
                     int amplifier = this.amplifiers.get(effectId);
                     int dilution = this.dilutions.get(effectId);
 
-                    effects.add(new MobEffectInstance(statusEffect, (duration / dilution) * Math.max(1, fermentation), amplifier));
+                    effects.add(new MobEffectInstance(statusEffect, duration / dilution, amplifier));
                 });
             }
 
@@ -240,19 +236,12 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity {
         return null;
     }
 
-    public void ferment() {
-        if (this.portions > 0 && this.fermentation < 5) {
-            this.fermentation++;
-        }
-    }
-
     private void flush(Level level, BlockPos pos, BlockState state) {
         effects = new ArrayList<>();
         durations = new HashMap<>();
         dilutions = new HashMap<>();
         amplifiers = new HashMap<>();
         portions = 0;
-        fermentation = 0;
 
         setChanged();
     }
