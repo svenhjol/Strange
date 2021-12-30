@@ -1,9 +1,9 @@
 {
   "lang": {
     "en": {
-      "title": "Shipwreck salvage",
+      "title": "Swamp hut shenanigans",
       "description": "Use the map to find the lost item.",
-      "hint": "This scroll provides a map.\nFollow the map to a shipwreck and\nsearch all chests for the item."
+      "hint": "This scroll provides a map.\nFollow the map to a swamp hut and\nsearch all nearby chests for the item."
     }
   },
   "dimensions": [
@@ -13,7 +13,7 @@
   ],
   "explore": {
     "items": {
-      "iron_ingot | gold_ingot": {
+      "glistering_melon_slice | fermented_spider_eye": {
         "enchanted": true,
         "enchantment_force": true,
         "enchantment_level": 1
@@ -21,10 +21,10 @@
     },
     "settings": {
       "structure": {
-        "type": "shipwreck",
+        "type": "swamp_hut",
         "min_distance": 200,
         "max_distance": 500,
-        "chest_range": 32,
+        "chest_range": 24,
         "chest_start": 64
       }
     }
@@ -35,12 +35,12 @@
         "count": "3-5"
       },
       "loot1": {
-        "table": "chests/simple_dungeon",
-        "limit": 3
+        "table": "chests/pillager_outpost",
+        "limit": 1
       },
       "pool": {
-        "items": "iron_ingot,gold_ingot,raw_iron,raw_gold",
-        "count": "5-10",
+        "items": "spider_eye,glowstone,redstone,glass_bottle",
+        "count": "4-8",
         "limit": 3
       }
     },
