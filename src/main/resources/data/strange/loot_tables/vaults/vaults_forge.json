@@ -116,22 +116,22 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:gold_chestplate"
+          "name": "minecraft:golden_chestplate"
         },
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:gold_helmet"
+          "name": "minecraft:golden_helmet"
         },
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:gold_leggings"
+          "name": "minecraft:golden_leggings"
         },
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:gold_boots"
+          "name": "minecraft:golden_boots"
         },
         {
           "type": "minecraft:item",
