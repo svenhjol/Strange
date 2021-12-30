@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.MapHelper;
 import svenhjol.charm.loader.CharmModule;
@@ -95,9 +94,9 @@ public class QuestHelper {
         QuestDefinition found = null;
 
         QUESTCHECK: for (QuestDefinition definition : tierDefinitions) {
-            List<String> dimensions = definition.getDimensions();
             List<String> modules = definition.getModules();
 
+            // Skip test quest definitions. We can still use these via quest commands.
             if (definition.isTest()) continue;
 
             if (!modules.isEmpty()) {
@@ -111,22 +110,13 @@ public class QuestHelper {
                 }
             }
 
-            if (!dimensions.isEmpty()) {
-                ResourceLocation thisDimension = DimensionHelper.getDimension(player.level);
-                List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).toList();
-                if (!dimensionIds.contains(thisDimension)) {
-                    LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
-                    break;
-                }
-            }
-
-            // if the player is already doing this quest, add to eligible and skip
+            // If the player is already doing this quest, add to eligible and skip.
             if (allPlayerQuests.stream().anyMatch(q -> q.getDefinitionId().equals(definition.getId()))) {
                 eligibleDefinitions.add(definition);
                 continue;
             }
 
-            // if the player has done this quest within the last 3 quests, add to eligible and skip
+            // If the player has done this quest within the last 3 quests, add to eligible and skip.
             if (Quests.LAST_QUESTS.containsKey(uuid)) {
                 LinkedList<QuestDefinition> lastQuests = Quests.LAST_QUESTS.get(uuid);
                 if (lastQuests.contains(definition)) {
