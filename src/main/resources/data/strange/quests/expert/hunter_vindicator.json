@@ -1,0 +1,37 @@
+{
+  "lang": {
+    "en": {
+      "title": "The village strikes back",
+      "description": "Seek out and destroy the enemies."
+    }
+  },
+  "hunt": {
+    "vindicator": "18-22"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "7-12"
+      },
+      "loot0": {
+        "table": "chests/woodland_mansion",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 1
+      },
+      "pool": {
+        "items": "iron_sword,iron_chestplate,iron_leggings,iron_boots,iron_helmet",
+        "enchanted": true,
+        "enchantment_level": "15-22",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}

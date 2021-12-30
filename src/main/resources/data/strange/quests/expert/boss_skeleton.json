@@ -1,0 +1,48 @@
+{
+  "lang": {
+    "en": {
+      "title": "Skeletal Horde",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:skeleton": {
+        "count": 12,
+        "health": 20,
+        "effects": "regeneration,fire_protection"
+      },
+      "minecraft:stray": {
+        "count": 12,
+        "health": 20,
+        "effects": "regeneration,fire_protection"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block | emerald_block": {
+        "count": 1
+      },
+      "loot0": {
+        "table": "chests/bastion_treasure",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}

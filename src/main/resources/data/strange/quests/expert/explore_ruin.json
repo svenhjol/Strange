@@ -1,0 +1,52 @@
+{
+  "default_pack": true,
+  "modules": [
+    "strange:ruins"
+  ],
+  "lang": {
+    "en": {
+      "title": "A forgotten ruin",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror"
+  ],
+  "explore": {
+    "items": {
+      "clock": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "strange:cave_ruin",
+        "min_distance": 1000,
+        "max_distance": 2000,
+        "chest_range": 32,
+        "chest_start": 32
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "chests/simple_dungeon",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}

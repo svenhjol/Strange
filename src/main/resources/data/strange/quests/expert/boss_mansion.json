@@ -1,0 +1,45 @@
+{
+  "lang": {
+    "en": {
+      "title": "Day out from the mansion",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:evoker": {
+        "count": 1,
+        "health": 40,
+        "effects": "regeneration"
+      },
+      "minecraft:vindicator": {
+        "count": 5,
+        "health": 30
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "totem_of_undying": {
+        "count": 1
+      },
+      "pool": {
+        "items": "crossbow,bow,diamond_sword,diamond_boots,diamond_helmet,diamond_pickaxe",
+        "enchanted": true,
+        "enchantment_level": "12-17",
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}

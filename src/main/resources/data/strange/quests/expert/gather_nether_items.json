@@ -1,0 +1,38 @@
+{
+  "lang": {
+    "en": {
+      "title": "The Nether",
+      "description": "Collect the items to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "ghast_tear": {
+        "count": "3-4"
+      },
+      "blaze_rod": {
+        "count": "4-5"
+      },
+      "magma_cream": {
+        "count": "3-4"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "chests/bastion_treasure",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "3-5"
+      }
+    }
+  }
+}

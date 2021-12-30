@@ -1,0 +1,34 @@
+{
+  "lang": {
+    "en": {
+      "title": "Lode of fun",
+      "description": "Find or craft a lodestone to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "lodestone": {
+        "count": 1
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "5-12"
+      },
+      "loot0": {
+        "table": "ruined_portal",
+        "limit": 1
+      },
+      "netherite_ingot": {
+        "chance": 0.85
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "4-7"
+      }
+    }
+  }
+}

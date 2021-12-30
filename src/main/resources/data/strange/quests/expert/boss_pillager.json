@@ -1,0 +1,55 @@
+{
+  "lang": {
+    "en": {
+      "title": "Raiding party",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "boss": {
+    "targets": {
+      "pillager": {
+        "count": 5,
+        "health": 30,
+        "effects": "regeneration"
+      }
+    },
+    "support": {
+      "ravager": {
+        "count": 1,
+        "health": 10
+      },
+      "witch": {
+        "count": 3,
+        "health": 20
+      },
+      "vindicator": {
+        "count": 3,
+        "health": 20
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "totem_of_undying": {
+        "count": 1
+      },
+      "pool": {
+        "items": "crossbow,bow,diamond_sword,diamond_boots,diamond_helmet,diamond_pickaxe",
+        "enchanted": true,
+        "enchantment_level": "12-17",
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "5-10"
+      }
+    }
+  }
+}
