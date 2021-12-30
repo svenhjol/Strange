@@ -1,12 +1,14 @@
 {
-  "default_pack": true,
-  "valid_dimensions": ["minecraft:overworld"],
+  "test": true,
   "lang": {
     "en": {
       "title": "Boss Test",
       "description": "Defeat all enemies."
     }
   },
+  "dimensions": [
+    "minecraft:overworld"
+  ],
   "boss": {
     "targets": {
       "minecraft:vindicator": {

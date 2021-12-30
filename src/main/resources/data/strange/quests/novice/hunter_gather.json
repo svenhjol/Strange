@@ -1,0 +1,46 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Hunter Gatherer",
+      "description": "Find the items and eliminate the monsters."
+    }
+  },
+  "gather": {
+    "items": {
+      "apple | oak_sapling": {
+        "count": "3-6"
+      },
+      "wheat | wheat_seeds": {
+        "count": "4-6"
+      }
+    }
+  },
+  "hunt": {
+    "skeleton | zombie": "2-3"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-2"
+      },
+      "loot0": {
+        "table": "chests/village/village_butcher",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "chests/village/village_tannery",
+        "limit": 1
+      },
+      "iron_sword": {
+        "enchanted": true,
+        "chance": 0.5
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

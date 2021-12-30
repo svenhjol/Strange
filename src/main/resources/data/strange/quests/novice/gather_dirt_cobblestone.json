@@ -1,0 +1,43 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Gather Materials",
+      "description": "Find the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "dirt": {
+        "count": "20-30"
+      },
+      "cobblestone": {
+        "count": "20-30"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot0": {
+        "table": "chests/village/chests/village/village_mason",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/village/village_weaponsmith",
+        "limit": 2
+      },
+      "pool": {
+        "items": "stone,smooth_stone",
+        "count": "20-30"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

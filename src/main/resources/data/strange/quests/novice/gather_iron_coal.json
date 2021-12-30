@@ -1,0 +1,40 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "From the earth",
+      "description": "Find the ores and materials to complete this scroll.",
+      "hint": "Coal and iron appear close to the surface of the world.\nUse a pickaxe to start looking for them, or\nsearch for open caves."
+    }
+  },
+  "gather": {
+    "items": {
+      "coal": {
+        "count": "8-12"
+      },
+      "iron_ore": {
+        "count": "4-8"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-2"
+      },
+      "loot": {
+        "table": "chests/village/village_mason",
+        "limit": 1
+      },
+      "pool": {
+        "items": "iron_shovel,iron_axe,iron_sword,iron_pickaxe",
+        "limit": 1
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

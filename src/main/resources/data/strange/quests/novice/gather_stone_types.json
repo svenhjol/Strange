@@ -1,0 +1,36 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Gather Stone",
+      "description": "Find the required stone types to complete the scroll.",
+      "hint": "Andesite, granite and diorite form in clumps at any level underground.\nCreate a mine or look for a cave to find exposed stone."
+    }
+  },
+  "gather": {
+    "items": {
+      "andesite": {
+        "count": "12-16"
+      },
+      "granite | diorite": {
+        "count": "12-16"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": 1
+      },
+      "loot": {
+        "table": "chests/village/village_mason",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

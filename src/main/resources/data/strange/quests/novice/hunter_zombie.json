@@ -1,0 +1,40 @@
+{
+  "default_pack": true,
+  "lang": {
+    "en": {
+      "title": "Zombie hunt",
+      "description": "Seek out and eliminate the zombies."
+    }
+  },
+  "hunt": {
+    "zombie": "4-5"
+  },
+  "gather": {
+    "items": {
+      "rotten_flesh": {
+        "count": "3-6"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot": {
+        "table": "chests/village/village_weaponsmith",
+        "limit": 3
+      },
+      "pool": {
+        "items": "iron_sword,stone_sword,wooden_sword",
+        "enchanted": true,
+        "chance": 0.75
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-1"
+      }
+    }
+  }
+}

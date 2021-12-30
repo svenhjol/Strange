@@ -1,4 +1,5 @@
 {
+  "test": true,
   "lang": {
     "en": {
       "title": "Explore Test",
@@ -7,7 +8,7 @@
     }
   },
   "dimensions": [
-    "overworld"
+    "minecraft:overworld"
   ],
   "explore": {
     "items": {

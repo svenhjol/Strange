@@ -16,7 +16,7 @@
         "count": "2-4"
       },
       "loot0": {
-        "table": "simple_dungeon",
+        "table": "chests/simple_dungeon",
         "count": 5
       },
       "loot1": {
