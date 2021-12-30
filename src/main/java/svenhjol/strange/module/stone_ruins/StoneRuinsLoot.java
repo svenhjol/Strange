@@ -1,4 +1,4 @@
-package svenhjol.strange.module.ruins;
+package svenhjol.strange.module.stone_ruins;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.Strange;

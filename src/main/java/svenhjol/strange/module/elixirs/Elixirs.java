@@ -19,7 +19,7 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.rubble.RubbleLoot;
-import svenhjol.strange.module.ruins.StoneRuinsLoot;
+import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.VaultsLoot;
 
 import java.io.IOException;

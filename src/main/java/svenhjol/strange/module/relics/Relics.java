@@ -23,8 +23,8 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.ruins.Ruins;
-import svenhjol.strange.module.ruins.StoneRuinsLoot;
+import svenhjol.strange.module.stone_ruins.StoneRuins;
+import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.Vaults;
 import svenhjol.strange.module.vaults.VaultsLoot;
 
@@ -69,7 +69,7 @@ public class Relics extends CharmModule {
             // If vaults is enabled, add relics to the large room.
             VALID_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
 
-        } else if (Strange.LOADER.isEnabled(Ruins.class) && Ruins.stoneRuins) {
+        } else if (Strange.LOADER.isEnabled(StoneRuins.class)) {
 
             // If vaults not enabled and stone ruins are enabled, add relics to the ruin rooms.
             VALID_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);

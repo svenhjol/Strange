@@ -1,4 +1,4 @@
-package svenhjol.strange.module.ruins;
+package svenhjol.strange.module.stone_ruins;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
