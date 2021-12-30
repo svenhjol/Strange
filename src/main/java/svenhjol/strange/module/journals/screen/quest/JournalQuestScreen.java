@@ -11,8 +11,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.helper.JournalHelper;
-import svenhjol.strange.module.knowledge.Learnable;
-import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
 import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.*;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
@@ -51,8 +49,6 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         showRuneReward = Strange.LOADER.isEnabled(Quests.class) && Quests.rewardRunes;
 
         if (Strange.LOADER.isEnabled("knowledge_stones")) {
-            RUNE_ICON = new ItemStack(KnowledgeStones.KNOWLEDGE_STONES.get(Learnable.RUNE));
-        } else {
             RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
         }
     }

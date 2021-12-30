@@ -18,7 +18,6 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.rubble.RubbleLoot;
 import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.VaultsLoot;
 
@@ -52,7 +51,6 @@ public class Elixirs extends CharmModule {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         VALID_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
         VALID_LOOT_TABLES.add(VaultsLoot.VAULTS_ROOM);
-        VALID_LOOT_TABLES.add(RubbleLoot.RUBBLE);
 
         try {
             List<String> classes = ClassHelper.getClassesInPackage(ELIXIR_NAMESPACE);
