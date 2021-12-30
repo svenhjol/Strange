@@ -7,6 +7,7 @@ import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.PageTracker;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,17 +17,17 @@ public class JournalKnowledgeScreen extends JournalScreen {
     protected List<ButtonDefinition> pageButtons;
 
     public JournalKnowledgeScreen() {
-        this(KNOWLEDGE);
+        this(JournalResources.KNOWLEDGE);
     }
 
     public JournalKnowledgeScreen(Component component) {
         super(component);
 
         pageButtons = Arrays.asList(
-            new ButtonDefinition(b -> runes(), LEARNED_RUNES),
-            new ButtonDefinition(b -> biomes(), LEARNED_BIOMES),
-            new ButtonDefinition(b -> structures(), LEARNED_STRUCTURES),
-            new ButtonDefinition(b -> dimensions(), LEARNED_DIMENSIONS)
+            new ButtonDefinition(b -> runes(), JournalResources.LEARNED_RUNES),
+            new ButtonDefinition(b -> biomes(), JournalResources.LEARNED_BIOMES),
+            new ButtonDefinition(b -> structures(), JournalResources.LEARNED_STRUCTURES),
+            new ButtonDefinition(b -> dimensions(), JournalResources.LEARNED_DIMENSIONS)
         );
 
         JournalsClient.tracker.setPage(PageTracker.Page.KNOWLEDGE);

@@ -6,6 +6,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
@@ -15,7 +16,7 @@ public class JournalRunesScreen extends JournalScreen {
     private RuneStringRenderer runeStringRenderer;
 
     public JournalRunesScreen() {
-        super(LEARNED_RUNES);
+        super(JournalResources.LEARNED_RUNES);
         JournalsClient.tracker.setPage(PageTracker.Page.RUNES);
     }
 
@@ -23,7 +24,7 @@ public class JournalRunesScreen extends JournalScreen {
     protected void init() {
         super.init();
         runeStringRenderer = new RuneStringRenderer(0, 49, 42, 20, 2, 7);
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), GO_BACK));
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> knowledge(), JournalResources.GO_BACK));
     }
 
     @Override

@@ -10,7 +10,7 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.paginator.BookmarkPaginator;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.journals.screen.MiniJournal;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
@@ -69,7 +69,7 @@ public class MiniBookmarksScreen extends BaseMiniScreen {
 
     @Override
     public void render(PoseStack poseStack, ItemRenderer itemRenderer, Font font) {
-        mini.renderTitle(poseStack, JournalScreen.BOOKMARKS, midY - 94);
+        mini.renderTitle(poseStack, JournalResources.BOOKMARKS, midY - 94);
 
         if (mini.selectedBookmark != null) {
             runeStringRenderer.render(poseStack, font, mini.selectedBookmark.getRunes());

@@ -4,6 +4,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.paginator.QuestPaginator;
 import svenhjol.strange.module.journals.screen.JournalPaginatedScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.QuestsClient;
 
@@ -12,7 +13,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("ConstantConditions")
 public class JournalQuestsScreen extends JournalPaginatedScreen<Quest> {
     public JournalQuestsScreen() {
-        super(QUESTS);
+        super(JournalResources.QUESTS);
     }
 
     @Override

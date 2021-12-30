@@ -16,7 +16,7 @@ public class JournalHomeScreen extends JournalScreen {
     protected List<ButtonDefinition> homeButtons = new ArrayList<>();
 
     public JournalHomeScreen() {
-        super(JOURNAL);
+        super(JournalResources.JOURNAL);
         JournalsClient.tracker.setPage(PageTracker.Page.HOME);
     }
 
@@ -25,9 +25,9 @@ public class JournalHomeScreen extends JournalScreen {
         super.init();
 
         homeButtons = new ArrayList<>(Arrays.asList(
-            new ButtonDefinition(b -> bookmarks(), BOOKMARKS),
-            new ButtonDefinition(b -> quests(), QUESTS),
-            new ButtonDefinition(b -> knowledge(), KNOWLEDGE)
+            new ButtonDefinition(b -> bookmarks(), JournalResources.BOOKMARKS),
+            new ButtonDefinition(b -> quests(), JournalResources.QUESTS),
+            new ButtonDefinition(b -> knowledge(), JournalResources.KNOWLEDGE)
         ));
     }
 

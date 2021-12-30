@@ -21,6 +21,7 @@ import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.photo.BookmarkPhoto;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 import javax.annotation.Nonnull;
@@ -69,23 +70,23 @@ public class JournalBookmarkScreen extends JournalScreen {
         pageButtons.clear();
 
         if (playerIsNearBookmark()) {
-            pageButtons.add(new ButtonDefinition(b -> takePhoto(), TAKE_PHOTO));
+            pageButtons.add(new ButtonDefinition(b -> takePhoto(), JournalResources.TAKE_PHOTO));
         }
 
-        pageButtons.add(new ButtonDefinition(b -> chooseIcon(), CHOOSE_ICON));
-        pageButtons.add(new ButtonDefinition(b -> save(), SAVE));
+        pageButtons.add(new ButtonDefinition(b -> chooseIcon(), JournalResources.CHOOSE_ICON));
+        pageButtons.add(new ButtonDefinition(b -> save(), JournalResources.SAVE));
 
-        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), NAVIGATION, 20, 0, 18, DELETE_TOOLTIP));
-        bottomButtons.add(0, new ButtonDefinition(b -> save(), SAVE));
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), NAVIGATION, 20, 0, 18, JournalResources.DELETE_TOOLTIP));
+        bottomButtons.add(0, new ButtonDefinition(b -> save(), JournalResources.SAVE));
 
         // add map icon if player has an empty map
         if (playerCanMakeMap()) {
-            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, MAKE_MAP_TOOLTIP));
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, JournalResources.MAKE_MAP_TOOLTIP));
         }
 
         // add take picture icon if player is near the location
         if (playerIsNearBookmark()) {
-            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, TAKE_PHOTO_TOOLTIP));
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, JournalResources.TAKE_PHOTO_TOOLTIP));
         }
     }
 

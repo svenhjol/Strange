@@ -11,6 +11,8 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.helper.JournalHelper;
+import svenhjol.strange.module.journals.screen.JournalResources;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.quests.*;
 import svenhjol.strange.module.quests.component.*;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
@@ -24,10 +26,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("ConstantConditions")
-public class JournalQuestScreen extends JournalBaseQuestScreen {
+public class JournalQuestScreen extends JournalScreen {
     private static final Component RUNE_LABEL;
     private static ItemStack RUNE_ICON;
 
+    private final Quest quest;
     private Map<ItemStack, Integer> items;
     private int playerXp;
     private int merchantXp;
@@ -43,7 +46,8 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     private final int rowHeight;
 
     public JournalQuestScreen(Quest quest) {
-        super(quest);
+        super(new TextComponent(QuestsClient.getTitle(quest.getDefinition())));
+        this.quest = quest;
 
         rowHeight = 15;
         showRuneReward = Strange.LOADER.isEnabled(Quests.class) && Quests.rewardRunes;
@@ -72,13 +76,15 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         playerXp = reward.getPlayerXp();
         merchantXp = reward.getMerchantXp();
 
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> quests(), GO_BACK));
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> quests(), JournalResources.GO_BACK));
 
         // In future we could have an objectives breakdown page, but it's not needed for initial release.
         // bottomButtons.add(1, new GuiHelper.ButtonDefinition(b -> objectives(), OBJECTIVES));
 
-        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, ABANDON_TOOLTIP));
-        rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, PAUSE_TOOLTIP));
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, JournalResources.ABANDON_TOOLTIP));
+        rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, JournalResources.PAUSE_TOOLTIP));
+
+        JournalsClient.tracker.setQuest(quest);
     }
 
     @Override
@@ -88,7 +94,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         int left = midX - 64;
 
         if (quest.isSatisfied(minecraft.player)) {
-            top = GuiHelper.drawWordWrap(font, QUEST_SATISFIED, left - 40, top, 220, textColor);
+            top = GuiHelper.drawWordWrap(font, JournalResources.QUEST_SATISFIED, left - 40, top, 220, textColor);
         } else {
             if (description.getString().length() > 50) {
                 top = GuiHelper.drawWordWrap(font, description, left - 40, top, 220, textColor);
@@ -103,7 +109,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     }
 
     private int renderCompletion(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
-        GuiHelper.drawCenteredString(poseStack, font, OBJECTIVES, midX, top, subheadingColor);
+        GuiHelper.drawCenteredString(poseStack, font, JournalResources.OBJECTIVES, midX, top, subheadingColor);
         top += 12;
 
         if (gather.isPresent()) {
@@ -122,7 +128,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             }
 
             var label = new TranslatableComponent("gui.strange.journal.items_gathered", totalGathered, totalRequired);
-            renderComponentIcon(poseStack, gather, GATHER_ICON, COMPLETED_GATHER_ICON, left, top);
+            renderComponentIcon(poseStack, gather, JournalResources.GATHER_ICON, JournalResources.COMPLETED_GATHER_ICON, left, top);
             renderCompletionTextAndHover(poseStack, gather, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
@@ -145,7 +151,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             }
 
             var label = new TranslatableComponent("gui.strange.journal.mobs_hunted", totalKilled, totalRequired);
-            renderComponentIcon(poseStack, hunt, HUNT_ICON, COMPLETED_HUNT_ICON, left, top);
+            renderComponentIcon(poseStack, hunt, JournalResources.HUNT_ICON, JournalResources.COMPLETED_HUNT_ICON, left, top);
             renderCompletionTextAndHover(poseStack, hunt, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
@@ -166,7 +172,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             }
 
             var label = new TranslatableComponent("gui.strange.journal.structures_explored", totalGathered, totalRequired);
-            renderComponentIcon(poseStack, explore, EXPLORE_ICON, COMPLETED_EXPLORE_ICON, left, top);
+            renderComponentIcon(poseStack, explore, JournalResources.EXPLORE_ICON, JournalResources.COMPLETED_EXPLORE_ICON, left, top);
             renderCompletionTextAndHover(poseStack, explore, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
@@ -189,7 +195,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             }
 
             var label = new TranslatableComponent("gui.strange.journal.bosses_defeated", totalKilled, totalRequired);
-            renderComponentIcon(poseStack, boss, BOSS_ICON, COMPLETED_BOSS_ICON, left, top);
+            renderComponentIcon(poseStack, boss, JournalResources.BOSS_ICON, JournalResources.COMPLETED_BOSS_ICON, left, top);
             renderCompletionTextAndHover(poseStack, boss, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
@@ -198,11 +204,11 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     }
 
     private int renderRewards(PoseStack poseStack, int top, int left, int mouseX, int mouseY) {
-        GuiHelper.drawCenteredString(poseStack, font, REWARDS, midX, top, subheadingColor);
+        GuiHelper.drawCenteredString(poseStack, font, JournalResources.REWARDS, midX, top, subheadingColor);
         top += 12;
 
         if (items.size() == 0 && playerXp == 0 && merchantXp == 0) {
-            GuiHelper.drawCenteredString(poseStack, font, NO_REWARDS, midX, top, secondaryColor);
+            GuiHelper.drawCenteredString(poseStack, font, JournalResources.NO_REWARDS, midX, top, secondaryColor);
         } else {
             Component playerXpLabel = new TranslatableComponent("gui.strange.journal.reward_levels", playerXp);
 
@@ -231,7 +237,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
 
             // xp levels
             if (playerXp > 0) {
-                itemRenderer.renderGuiItem(EXPERIENCE_ICON, left, top - 5);
+                itemRenderer.renderGuiItem(JournalResources.EXPERIENCE_ICON, left, top - 5);
                 font.draw(poseStack, playerXpLabel, left + 19, top, textColor);
                 top += 16;
             }

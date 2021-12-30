@@ -10,6 +10,7 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.paginator.BookmarkPaginator;
 import svenhjol.strange.module.journals.screen.JournalPaginatedScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("ConstantConditions")
 public class JournalBookmarksScreen extends JournalPaginatedScreen<Bookmark> {
     public JournalBookmarksScreen() {
-        super(BOOKMARKS);
+        super(JournalResources.BOOKMARKS);
     }
 
     @Override
@@ -49,11 +50,11 @@ public class JournalBookmarksScreen extends JournalPaginatedScreen<Bookmark> {
         if (getPlayerBookmarks().size() == 0) {
             int buttonWidth = 140;
             int buttonHeight = 20;
-            var button = new Button(midX - (buttonWidth / 2), 40, buttonWidth, buttonHeight, ADD_BOOKMARK, b -> addBookmark());
+            var button = new Button(midX - (buttonWidth / 2), 40, buttonWidth, buttonHeight, JournalResources.ADD_BOOKMARK, b -> addBookmark());
             addRenderableWidget(button);
         }
 
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> addBookmark(), ADD_BOOKMARK));
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> addBookmark(), JournalResources.ADD_BOOKMARK));
     }
 
     @Override

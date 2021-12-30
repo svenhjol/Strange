@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 import svenhjol.strange.module.runes.RuneBranch;
 
@@ -17,7 +18,7 @@ public class JournalDimensionScreen extends JournalResourceScreen {
     @Override
     protected void init() {
         super.init();
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> dimensions(), GO_BACK));
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> dimensions(), JournalResources.GO_BACK));
     }
 
     @Nullable

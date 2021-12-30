@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.paginator.DimensionPaginator;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.journals.screen.MiniJournal;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 
@@ -53,7 +53,7 @@ public class MiniDimensionsScreen extends BaseMiniScreen {
 
     @Override
     public void render(PoseStack poseStack, ItemRenderer itemRenderer, Font font) {
-        mini.renderTitle(poseStack, JournalScreen.LEARNED_DIMENSIONS, midY - 94);
+        mini.renderTitle(poseStack, JournalResources.LEARNED_DIMENSIONS, midY - 94);
 
         if (mini.selectedDimension != null) {
             var dimensions = KnowledgeClient.getDimensions().orElse(null);

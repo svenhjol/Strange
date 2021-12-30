@@ -7,6 +7,7 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.photo.BookmarkPhoto;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 @SuppressWarnings("ConstantConditions")
 public class JournalPhotoScreen extends JournalScreen {
@@ -23,7 +24,7 @@ public class JournalPhotoScreen extends JournalScreen {
         super.init();
         photo = new BookmarkPhoto(minecraft, bookmark);
 
-        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(), GO_BACK));
+        bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> back(), JournalResources.GO_BACK));
     }
 
     @Override

@@ -7,6 +7,7 @@ import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 public class JournalChooseIconScreen extends JournalScreen {
     protected Bookmark bookmark;
@@ -20,7 +21,7 @@ public class JournalChooseIconScreen extends JournalScreen {
     protected int top;
 
     public JournalChooseIconScreen(Bookmark bookmark) {
-        super(CHOOSE_ICON);
+        super(JournalResources.CHOOSE_ICON);
 
         this.bookmark = bookmark;
         this.perRow = 8;

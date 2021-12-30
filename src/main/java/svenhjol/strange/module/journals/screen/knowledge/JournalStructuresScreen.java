@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.paginator.StructurePaginator;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -11,7 +12,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("ConstantConditions")
 public class JournalStructuresScreen extends JournalResourcesScreen<ResourceLocation> {
     public JournalStructuresScreen() {
-        super(LEARNED_STRUCTURES);
+        super(JournalResources.LEARNED_STRUCTURES);
     }
 
     @Override

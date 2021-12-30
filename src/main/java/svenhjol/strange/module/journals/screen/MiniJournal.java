@@ -139,7 +139,7 @@ public class MiniJournal {
     public void addBackButton(Button.OnPress onPress) {
         int buttonWidth = 74;
         int buttonHeight = 20;
-        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, JournalScreen.GO_BACK, onPress));
+        screen.addRenderableWidget(new Button(journalMidX - 38, midY + 76, buttonWidth, buttonHeight, JournalResources.GO_BACK, onPress));
     }
 
     public void renderTitle(PoseStack poseStack, Component title, int y) {

@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.paginator.StructurePaginator;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.journals.screen.MiniJournal;
 import svenhjol.strange.module.knowledge.KnowledgeClient;
 
@@ -53,7 +53,7 @@ public class MiniStructuresScreen extends BaseMiniScreen {
 
     @Override
     public void render(PoseStack poseStack, ItemRenderer itemRenderer, Font font) {
-        mini.renderTitle(poseStack, JournalScreen.LEARNED_STRUCTURES, midY - 94);
+        mini.renderTitle(poseStack, JournalResources.LEARNED_STRUCTURES, midY - 94);
 
         if (mini.selectedStructure != null) {
             var structures = KnowledgeClient.getStructures().orElse(null);

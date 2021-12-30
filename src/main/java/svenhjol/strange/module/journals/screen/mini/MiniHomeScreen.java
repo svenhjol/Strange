@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 import svenhjol.strange.module.journals.screen.MiniJournal;
 import svenhjol.strange.module.journals.screen.MiniJournal.Section;
 
@@ -25,10 +25,10 @@ public class MiniHomeScreen extends BaseMiniScreen {
         super.init();
 
         homeButtons = Arrays.asList(
-            new ButtonDefinition(b -> mini.changeSection(Section.BOOKMARKS), JournalScreen.BOOKMARKS),
-            new ButtonDefinition(b -> mini.changeSection(Section.BIOMES), JournalScreen.LEARNED_BIOMES),
-            new ButtonDefinition(b -> mini.changeSection(Section.STRUCTURES), JournalScreen.LEARNED_STRUCTURES),
-            new ButtonDefinition(b -> mini.changeSection(Section.DIMENSIONS), JournalScreen.LEARNED_DIMENSIONS)
+            new ButtonDefinition(b -> mini.changeSection(Section.BOOKMARKS), JournalResources.BOOKMARKS),
+            new ButtonDefinition(b -> mini.changeSection(Section.BIOMES), JournalResources.LEARNED_BIOMES),
+            new ButtonDefinition(b -> mini.changeSection(Section.STRUCTURES), JournalResources.LEARNED_STRUCTURES),
+            new ButtonDefinition(b -> mini.changeSection(Section.DIMENSIONS), JournalResources.LEARNED_DIMENSIONS)
         );
     }
 
@@ -44,6 +44,6 @@ public class MiniHomeScreen extends BaseMiniScreen {
 
     @Override
     public void render(PoseStack poseStack, ItemRenderer itemRenderer, Font font) {
-        mini.renderTitle(poseStack, JournalScreen.JOURNAL, midY - 86);
+        mini.renderTitle(poseStack, JournalResources.JOURNAL, midY - 86);
     }
 }

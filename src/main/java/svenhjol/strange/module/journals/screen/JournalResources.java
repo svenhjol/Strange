@@ -1,0 +1,95 @@
+package svenhjol.strange.module.journals.screen;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+public class JournalResources {
+    public static final Component ADD_BOOKMARK;
+    public static final Component CHOOSE_ICON;
+    public static final Component CLOSE;
+    public static final Component DELETE_TOOLTIP;
+    public static final Component GO_BACK;
+    public static final Component HOME_TOOLTIP;
+    public static final Component JOURNAL;
+    public static final Component KNOWLEDGE;
+    public static final Component KNOWLEDGE_TOOLTIP;
+    public static final Component LEARNED_BIOMES;
+    public static final Component LEARNED_DIMENSIONS;
+    public static final Component LEARNED_RUNES;
+    public static final Component LEARNED_STRUCTURES;
+    public static final Component BOOKMARKS;
+    public static final Component BOOKMARKS_TOOLTIP;
+    public static final Component MAKE_MAP_TOOLTIP;
+    public static final Component NO_BIOMES;
+    public static final Component NO_DIMENSIONS;
+    public static final Component NO_BOOKMARKS;
+    public static final Component NO_STRUCTURES;
+    public static final Component NO_QUESTS;
+    public static final Component QUESTS;
+    public static final Component QUESTS_TOOLTIP;
+    public static final Component SAVE;
+    public static final Component TAKE_PHOTO;
+    public static final Component TAKE_PHOTO_TOOLTIP;
+    public static final Component REWARDS;
+    public static final Component NO_REWARDS;
+    public static final Component OBJECTIVES;
+    public static final Component QUEST_SATISFIED;
+    public static final Component ABANDON_TOOLTIP;
+    public static final Component PAUSE_TOOLTIP;
+    public static final ItemStack EXPERIENCE_ICON;
+    public static final ItemStack GATHER_ICON;
+    public static final ItemStack HUNT_ICON;
+    public static final ItemStack EXPLORE_ICON;
+    public static final ItemStack BOSS_ICON;
+    public static final ItemStack COMPLETED_GATHER_ICON;
+    public static final ItemStack COMPLETED_HUNT_ICON;
+    public static final ItemStack COMPLETED_EXPLORE_ICON;
+    public static final ItemStack COMPLETED_BOSS_ICON;
+
+    static {
+        ADD_BOOKMARK = new TranslatableComponent("gui.strange.journal.add_bookmark");
+        CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
+        CLOSE = new TranslatableComponent("gui.strange.journal.close");
+        DELETE_TOOLTIP = new TranslatableComponent("gui.strange.journal.delete");
+        GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
+        HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
+        JOURNAL = new TranslatableComponent("gui.strange.journal.title");
+        KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
+        KNOWLEDGE_TOOLTIP = new TranslatableComponent("gui.strange.journal.knowledge_tooltip");
+        LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
+        LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
+        LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
+        LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
+        BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
+        BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
+        MAKE_MAP_TOOLTIP = new TranslatableComponent("gui.strange.journal.make_map_tooltip");
+        NO_QUESTS = new TranslatableComponent("gui.strange.journal.no_quests");
+        NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
+        NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
+        NO_BOOKMARKS = new TranslatableComponent("gui.strange.journal.no_bookmarks");
+        NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
+        QUESTS = new TranslatableComponent("gui.strange.journal.quests");
+        QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");
+        SAVE = new TranslatableComponent("gui.strange.journal.save");
+        TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
+        TAKE_PHOTO_TOOLTIP = new TranslatableComponent("gui.strange.journal.take_photo_tooltip");
+
+        REWARDS = new TranslatableComponent("gui.strange.journal.rewards");
+        NO_REWARDS = new TranslatableComponent("gui.strange.journal.no_rewards");
+        OBJECTIVES = new TranslatableComponent("gui.strange.journal.objectives");
+        QUEST_SATISFIED = new TranslatableComponent("gui.strange.journal.quest_satisfied");
+        ABANDON_TOOLTIP = new TranslatableComponent("gui.strange.journal.abandon_tooltip");
+        PAUSE_TOOLTIP = new TranslatableComponent("gui.strange.journal.pause_tooltip");
+        EXPERIENCE_ICON = new ItemStack(Items.EXPERIENCE_BOTTLE);
+        GATHER_ICON = new ItemStack(Items.BUNDLE);
+        HUNT_ICON = new ItemStack(Items.STONE_SWORD);
+        EXPLORE_ICON = new ItemStack(Items.CHEST);
+        BOSS_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
+        COMPLETED_GATHER_ICON = new ItemStack(Items.BUNDLE);
+        COMPLETED_HUNT_ICON = new ItemStack(Items.STONE_SWORD);
+        COMPLETED_EXPLORE_ICON = new ItemStack(Items.CHEST);
+        COMPLETED_BOSS_ICON = new ItemStack(Items.WITHER_SKELETON_SKULL);
+    }
+}

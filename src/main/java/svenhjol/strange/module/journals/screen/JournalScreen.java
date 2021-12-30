@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
@@ -25,33 +25,6 @@ public abstract class JournalScreen extends Screen {
     public static final ResourceLocation COVER_BACKGROUND;
     public static final ResourceLocation OPEN_BACKGROUND;
     public static final ResourceLocation NAVIGATION;
-
-    public static final Component ADD_BOOKMARK;
-    public static final Component CHOOSE_ICON;
-    public static final Component CLOSE;
-    public static final Component DELETE_TOOLTIP;
-    public static final Component GO_BACK;
-    public static final Component HOME_TOOLTIP;
-    public static final Component JOURNAL;
-    public static final Component KNOWLEDGE;
-    public static final Component KNOWLEDGE_TOOLTIP;
-    public static final Component LEARNED_BIOMES;
-    public static final Component LEARNED_DIMENSIONS;
-    public static final Component LEARNED_RUNES;
-    public static final Component LEARNED_STRUCTURES;
-    public static final Component BOOKMARKS;
-    public static final Component BOOKMARKS_TOOLTIP;
-    public static final Component MAKE_MAP_TOOLTIP;
-    public static final Component NO_BIOMES;
-    public static final Component NO_DIMENSIONS;
-    public static final Component NO_BOOKMARKS;
-    public static final Component NO_STRUCTURES;
-    public static final Component NO_QUESTS;
-    public static final Component QUESTS;
-    public static final Component QUESTS_TOOLTIP;
-    public static final Component SAVE;
-    public static final Component TAKE_PHOTO;
-    public static final Component TAKE_PHOTO_TOOLTIP;
 
     protected int backgroundWidth;
     protected int backgroundHeight;
@@ -130,6 +103,11 @@ public abstract class JournalScreen extends Screen {
         this.errorColor = 0x770000;
         this.subheadingColor = 0x887777;
         this.completedColor = 0x228822;
+
+        JournalResources.COMPLETED_GATHER_ICON.enchant(Enchantments.UNBREAKING, 1);
+        JournalResources.COMPLETED_HUNT_ICON.enchant(Enchantments.UNBREAKING, 1);
+        JournalResources.COMPLETED_EXPLORE_ICON.enchant(Enchantments.UNBREAKING, 1);
+        JournalResources.COMPLETED_BOSS_ICON.enchant(Enchantments.UNBREAKING, 1);
     }
 
     @Override
@@ -143,10 +121,10 @@ public abstract class JournalScreen extends Screen {
 
         leftNavButtons.clear();
         leftNavButtons.addAll(Arrays.asList(
-            new ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18, HOME_TOOLTIP),
-            new ImageButtonDefinition(b -> bookmarks(), NAVIGATION, 60, 36, 18, BOOKMARKS_TOOLTIP),
-            new ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18, QUESTS_TOOLTIP),
-            new ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18, KNOWLEDGE_TOOLTIP)
+            new ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18, JournalResources.HOME_TOOLTIP),
+            new ImageButtonDefinition(b -> bookmarks(), NAVIGATION, 60, 36, 18, JournalResources.BOOKMARKS_TOOLTIP),
+            new ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18, JournalResources.QUESTS_TOOLTIP),
+            new ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18, JournalResources.KNOWLEDGE_TOOLTIP)
         ));
 
         rightNavButtons.clear();
@@ -154,7 +132,7 @@ public abstract class JournalScreen extends Screen {
 
         bottomButtons.clear();
         bottomButtons.addAll(List.of(
-            new ButtonDefinition(b -> onClose(), CLOSE)
+            new ButtonDefinition(b -> onClose(), JournalResources.CLOSE)
         ));
 
         hasFirstRendered = false;
@@ -287,32 +265,5 @@ public abstract class JournalScreen extends Screen {
         COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
         OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
         NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
-
-        ADD_BOOKMARK = new TranslatableComponent("gui.strange.journal.add_bookmark");
-        CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
-        CLOSE = new TranslatableComponent("gui.strange.journal.close");
-        DELETE_TOOLTIP = new TranslatableComponent("gui.strange.journal.delete");
-        GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
-        HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
-        JOURNAL = new TranslatableComponent("gui.strange.journal.title");
-        KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
-        KNOWLEDGE_TOOLTIP = new TranslatableComponent("gui.strange.journal.knowledge_tooltip");
-        LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
-        LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
-        LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
-        LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
-        BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
-        BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
-        MAKE_MAP_TOOLTIP = new TranslatableComponent("gui.strange.journal.make_map_tooltip");
-        NO_QUESTS = new TranslatableComponent("gui.strange.journal.no_quests");
-        NO_BIOMES = new TranslatableComponent("gui.strange.journal.no_learned_biomes");
-        NO_DIMENSIONS = new TranslatableComponent("gui.strange.journal.no_learned_dimensions");
-        NO_BOOKMARKS = new TranslatableComponent("gui.strange.journal.no_bookmarks");
-        NO_STRUCTURES = new TranslatableComponent("gui.strange.journal.no_learned_structures");
-        QUESTS = new TranslatableComponent("gui.strange.journal.quests");
-        QUESTS_TOOLTIP = new TranslatableComponent("gui.strange.journal.quests_tooltip");
-        SAVE = new TranslatableComponent("gui.strange.journal.save");
-        TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
-        TAKE_PHOTO_TOOLTIP = new TranslatableComponent("gui.strange.journal.take_photo_tooltip");
     }
 }
