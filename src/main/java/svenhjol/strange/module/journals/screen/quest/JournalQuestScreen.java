@@ -14,10 +14,7 @@ import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.knowledge.Learnable;
 import svenhjol.strange.module.knowledge_stones.KnowledgeStones;
 import svenhjol.strange.module.quests.*;
-import svenhjol.strange.module.quests.component.ExploreComponent;
-import svenhjol.strange.module.quests.component.GatherComponent;
-import svenhjol.strange.module.quests.component.HuntComponent;
-import svenhjol.strange.module.quests.component.RewardComponent;
+import svenhjol.strange.module.quests.component.*;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
 import svenhjol.strange.module.runestones.RunestoneMaterial;
 import svenhjol.strange.module.runestones.Runestones;
@@ -42,6 +39,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
     private GatherComponent gather;
     private HuntComponent hunt;
     private ExploreComponent explore;
+    private BossComponent boss;
 
     private boolean showRuneReward;
     private final int rowHeight;
@@ -71,6 +69,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         gather = quest.getComponent(GatherComponent.class);
         hunt = quest.getComponent(HuntComponent.class);
         explore = quest.getComponent(ExploreComponent.class);
+        boss = quest.getComponent(BossComponent.class);
 
         RewardComponent reward = quest.getComponent(RewardComponent.class);
         items = reward.getItems();
@@ -138,9 +137,10 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             for (var entry : hunt.getEntities().entrySet()) {
                 var entityId = entry.getKey();
                 var entity = Registry.ENTITY_TYPE.get(entityId);
+                var description = entity.getDescription().getString();
                 var requiredCount = entry.getValue();
                 var killedCount = hunt.getKilled().getOrDefault(entityId, 0);
-                hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", entity.getDescription().getString(), killedCount, requiredCount));
+                hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", description, killedCount, requiredCount));
 
                 totalKilled += killedCount;
                 totalRequired += requiredCount;
@@ -170,6 +170,29 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             var label = new TranslatableComponent("gui.strange.journal.structures_explored", totalGathered, totalRequired);
             renderComponentIcon(poseStack, explore, EXPLORE_ICON, COMPLETED_EXPLORE_ICON, left, top);
             renderCompletionTextAndHover(poseStack, explore, label, hover, left, top, mouseX, mouseY);
+            top += rowHeight;
+        }
+
+        if (!boss.isEmpty()) {
+            List<Component> hover = new ArrayList<>();
+            var totalRequired = 0;
+            var totalKilled = 0;
+
+            for (var entry : boss.getTargets().entrySet()) {
+                var entryId = entry.getKey();
+                var requiredCount = entry.getValue();
+                var killedCount = boss.getKilled().getOrDefault(entryId, 0);
+                var entity = Registry.ENTITY_TYPE.get(entryId);
+                var description = entity.getDescription().getString();
+                hover.add(new TranslatableComponent("gui.strange.journal.hover_completion", description, killedCount, requiredCount));
+
+                totalRequired += requiredCount;
+                totalKilled += killedCount;
+            }
+
+            var label = new TranslatableComponent("gui.strange.journal.bosses_defeated", totalKilled, totalRequired);
+            renderComponentIcon(poseStack, boss, BOSS_ICON, COMPLETED_BOSS_ICON, left, top);
+            renderCompletionTextAndHover(poseStack, boss, label, hover, left, top, mouseX, mouseY);
             top += rowHeight;
         }
 

@@ -11,9 +11,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charm.enums.ICharmEnum;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.component.*;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
-import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.quests.helper.QuestHelper;
 import svenhjol.strange.module.runes.Tier;
 
@@ -81,7 +81,7 @@ public class Quest {
             var playerDimension = player.level.dimension().location().toString();
             var dimensions = getDefinition().getDimensions();
 
-            if (!dimensions.contains(playerDimension)) {
+            if (!dimensions.isEmpty() && !dimensions.contains(playerDimension)) {
                 player.displayClientMessage(new TranslatableComponent("gui.strange.quests.invalid_dimension"), true);
                 setState(State.PAUSED);
                 return;
@@ -159,6 +159,10 @@ public class Quest {
      */
     public void update(Player player) {
         components.forEach(c -> c.update(player));
+
+        if (!player.level.isClientSide) {
+            QuestEvents.UPDATE.invoker().invoke(this, (ServerPlayer) player);
+        }
     }
 
     public boolean isSatisfied(Player player) {

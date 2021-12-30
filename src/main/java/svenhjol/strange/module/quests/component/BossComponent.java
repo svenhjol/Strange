@@ -81,8 +81,18 @@ public class BossComponent implements IQuestComponent {
         return targets.isEmpty();
     }
 
-    public Map<ResourceLocation, Boolean> getSatisfied() {
-        return satisfied;
+    @Override
+    public boolean isSatisfied(Player player) {
+        if (isEmpty()) return true; // To bypass quests that don't have a boss component.
+        return satisfied.size() == targets.size() && satisfied.values().stream().allMatch(b -> b);
+    }
+
+    public Map<ResourceLocation, Integer> getTargets() {
+        return targets;
+    }
+
+    public Map<ResourceLocation, Integer> getKilled() {
+        return killed;
     }
 
     @Override
@@ -102,7 +112,7 @@ public class BossComponent implements IQuestComponent {
 
         if (tags.contains(quest.getId())) {
             var count = killed.getOrDefault(id, 0);
-            killed.put(id, count);
+            killed.put(id, count + 1);
             quest.setDirty();
 
             if (attacker instanceof Player player) {
@@ -182,7 +192,7 @@ public class BossComponent implements IQuestComponent {
     @Override
     public void playerTick(Player player) {
         if (player.level.isClientSide) return;
-        if (!spawned) return;
+        if (spawned) return;
         if (structurePos == null) return;
         if (!DimensionHelper.isDimension(player.level, dimension)) return;
 

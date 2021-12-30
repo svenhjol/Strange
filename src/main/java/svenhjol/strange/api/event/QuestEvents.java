@@ -30,6 +30,12 @@ public final class QuestEvents {
         }
     });
 
+    public static final Event<QuestPlayerInvoker> UPDATE = EventFactory.createArrayBacked(QuestPlayerInvoker.class, callbacks -> (quest, player) -> {
+        for (QuestPlayerInvoker callback : callbacks) {
+            callback.invoke(quest, player);
+        }
+    });
+
     public static final Event<QuestPlayerInvoker> REMOVE = EventFactory.createArrayBacked(QuestPlayerInvoker.class, callbacks -> (quest, player) -> {
         for (QuestPlayerInvoker callback : callbacks) {
             callback.invoke(quest, player);

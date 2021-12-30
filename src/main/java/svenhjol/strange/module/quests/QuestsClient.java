@@ -24,6 +24,7 @@ public class QuestsClient extends CharmModule {
     public static ClientReceiveQuestToast CLIENT_RECEIVE_QUEST_TOAST;
     public static ClientSendAbandonQuest CLIENT_SEND_ABANDON_QUEST;
     public static ClientSendPauseQuest CLIENT_SEND_PAUSE_QUEST;
+    public static ClientSendSyncQuests CLIENT_SEND_SYNC_QUESTS;
 
     @Override
     public void runWhenEnabled() {
@@ -32,6 +33,7 @@ public class QuestsClient extends CharmModule {
         CLIENT_RECEIVE_QUEST_TOAST = new ClientReceiveQuestToast();
         CLIENT_SEND_ABANDON_QUEST = new ClientSendAbandonQuest();
         CLIENT_SEND_PAUSE_QUEST = new ClientSendPauseQuest();
+        CLIENT_SEND_SYNC_QUESTS = new ClientSendSyncQuests();
     }
 
     public static void renderIcon(Screen screen, PoseStack poseStack, int[] icon, int x, int y) {

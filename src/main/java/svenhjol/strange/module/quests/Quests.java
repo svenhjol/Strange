@@ -50,6 +50,7 @@ public class Quests extends CharmModule {
     public static ServerSendQuestToast SERVER_SEND_QUEST_TOAST;
     public static ServerReceiveAbandonQuest SERVER_RECEIVE_ABANDON_QUEST;
     public static ServerReceivePauseQuest SERVER_RECEIVE_PAUSE_QUEST;
+    public static ServerReceiveSyncQuests SERVER_RECEIVE_SYNC_QUESTS;
 
     private static @Nullable QuestData quests;
 
@@ -71,6 +72,7 @@ public class Quests extends CharmModule {
         SERVER_SEND_QUEST_TOAST = new ServerSendQuestToast();
         SERVER_RECEIVE_ABANDON_QUEST = new ServerReceiveAbandonQuest();
         SERVER_RECEIVE_PAUSE_QUEST = new ServerReceivePauseQuest();
+        SERVER_RECEIVE_SYNC_QUESTS = new ServerReceiveSyncQuests();
 
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
@@ -81,6 +83,7 @@ public class Quests extends CharmModule {
         QuestEvents.COMPLETE.register(this::handleCompleteQuest);
         QuestEvents.ABANDON.register(this::handleAbandonQuest);
         QuestEvents.REMOVE.register(this::handleRemoveQuest);
+        QuestEvents.UPDATE.register(this::handleUpdateQuest);
         QuestEvents.PAUSE.register(this::handlePauseQuest);
 
         QuestCommand.init();
@@ -315,6 +318,10 @@ public class Quests extends CharmModule {
 
         SERVER_SEND_QUESTS.send(player);
         SERVER_SEND_QUEST_TOAST.send(player, quest, QuestToastType.STARTED);
+    }
+
+    private void handleUpdateQuest(Quest quest, ServerPlayer player) {
+        SERVER_SEND_QUESTS.send(player);
     }
 
     /**

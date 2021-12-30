@@ -1,0 +1,42 @@
+{
+  "default_pack": true,
+  "valid_dimensions": ["minecraft:overworld"],
+  "lang": {
+    "en": {
+      "title": "Boss Test",
+      "description": "Defeat all enemies."
+    }
+  },
+  "boss": {
+    "targets": {
+      "minecraft:vindicator": {
+        "count": 3,
+        "health": 100,
+        "effects": "strength"
+      }
+    },
+    "support": {
+      "minecraft:pillager": {
+        "count": 3,
+        "health": 20
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "egg": {
+        "count": 4
+      },
+      "crossbow": {
+        "enchanted": true,
+        "enchantment_levels": 30,
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": 15
+      }
+    }
+  }
+}
