@@ -53,7 +53,7 @@ public class ChestLootProcessor extends StructureProcessor {
 
         String lootValue = "";
         ResourceLocation loot;
-        var newState = Blocks.CHEST.defaultBlockState()
+        var newState = state
             .setValue(ChestBlock.FACING, state.getValue(ChestBlock.FACING));
 
         if (blockInfo.nbt != null) {
