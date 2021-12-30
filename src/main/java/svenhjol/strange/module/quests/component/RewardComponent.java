@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class RewardComponent implements IQuestComponent {
+    public static final String ID = "reward";
+
     public static final String COUNT_TAG = "count";
     public static final String ITEMS_TAG = "items";
     public static final String XP_TAG = "xp";
@@ -43,7 +45,7 @@ public class RewardComponent implements IQuestComponent {
     }
 
     public String getId() {
-        return "reward";
+        return ID;
     }
 
     @Override

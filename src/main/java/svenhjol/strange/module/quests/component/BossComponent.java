@@ -31,6 +31,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class BossComponent implements IQuestComponent {
+    public static final String ID = "boss";
+
     public static final String TARGETS_TAG = "targets";
     public static final String SUPPORT_TAG = "support";
     public static final String HEALTH_TAG = "health";
@@ -73,7 +75,7 @@ public class BossComponent implements IQuestComponent {
 
     @Override
     public String getId() {
-        return "boss";
+        return ID;
     }
 
     @Override

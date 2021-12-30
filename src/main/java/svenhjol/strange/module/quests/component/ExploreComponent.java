@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExploreComponent implements IQuestComponent {
+    public static final String ID = "explore";
+
     public static final String STRUCTURE_TAG = "structure";
     public static final String DIMENSION_TAG = "dimension";
     public static final String SETTINGS_TAG = "settings";
@@ -78,7 +80,7 @@ public class ExploreComponent implements IQuestComponent {
 
     @Override
     public String getId() {
-        return "explore";
+        return ID;
     }
 
     @Override

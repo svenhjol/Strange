@@ -17,6 +17,8 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class HuntComponent implements IQuestComponent {
+    public static final String ID = "hunt";
+
     public static final String ENTITIES_TAG = "entities";
     public static final String ENTITY_COUNT_TAG = "entity_count";
     public static final String ENTITY_KILLED_TAG = "entity_killed";
@@ -32,7 +34,7 @@ public class HuntComponent implements IQuestComponent {
 
     @Override
     public String getId() {
-        return "hunt";
+        return ID;
     }
 
     @Override

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GatherComponent implements IQuestComponent {
+    public static final String ID = "gather";
+
     public static final String ITEMS_TAG = "items";
     public static final String ITEM_DATA_TAG = "item_data";
     public static final String ITEM_COUNT_TAG = "item_count";
@@ -34,7 +36,7 @@ public class GatherComponent implements IQuestComponent {
 
     @Override
     public String getId() {
-        return "gather";
+        return ID;
     }
 
     @Override
