@@ -11,6 +11,7 @@
   "block.strange.ignore_block": "Ignore Block",
   "commands.strange.abandoned_quest": "Abandoned quest with ID %s",
   "commands.strange.completed_quest": "Completed quest with ID %s",
+  "commands.strange.paused_quest": "Paused quest with ID %s",
   "commands.strange.invalid_biome": "Invalid biome",
   "commands.strange.invalid_structure": "Invalid structure",
   "commands.strange.learned_all_biomes": "Learned all biomes",

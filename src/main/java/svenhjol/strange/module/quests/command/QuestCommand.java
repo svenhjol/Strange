@@ -40,6 +40,12 @@ public class QuestCommand {
                     .suggests(QuestCommand::getQuestIds)
                     .executes(QuestCommand::abandon)),
 
+            Commands.literal("pause_quest")
+                .requires(source -> source.hasPermission(2))
+                .then(Commands.argument("id", QuestIdArgType.id())
+                    .suggests(QuestCommand::getQuestIds)
+                    .executes(QuestCommand::pause)),
+
             Commands.literal("complete_quest")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", QuestIdArgType.id())
@@ -61,6 +67,22 @@ public class QuestCommand {
 
         quest.abandon(player);
         context.getSource().sendSuccess(new TranslatableComponent("commands.strange.abandoned_quest", id), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int pause(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        QuestData quests = getQuestData();
+
+        String id = QuestIdArgType.getId(context, "id");
+        Quest quest = quests.get(id);
+
+        if (quest == null) {
+            throw CommandHelper.makeException("Invalid quest", new TranslatableComponent("commands.strange.no_quest_found", id).getString());
+        }
+
+        quest.pause(player);
+        context.getSource().sendSuccess(new TranslatableComponent("commands.strange.paused_quest", id), false);
         return Command.SINGLE_SUCCESS;
     }
 
