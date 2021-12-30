@@ -51,18 +51,22 @@ public class ChestLootProcessor extends StructureProcessor {
             return blockInfo;
         }
 
+        String lootValue = "";
         ResourceLocation loot;
         var newState = Blocks.CHEST.defaultBlockState()
             .setValue(ChestBlock.FACING, state.getValue(ChestBlock.FACING));
 
         if (blockInfo.nbt != null) {
-            var lootValue = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
-            loot = new ResourceLocation(lootValue);
-        } else {
-            loot = TABLES.get(random.nextInt(TABLES.size()));
+            lootValue = blockInfo.nbt.getString(RandomizableContainerBlockEntity.LOOT_TABLE_TAG);
         }
 
-        if (random.nextFloat() < chance) {
+        if (lootValue.isEmpty()) {
+            loot = TABLES.get(random.nextInt(TABLES.size()));
+        } else {
+            loot = new ResourceLocation(lootValue);
+        }
+
+        if (random.nextDouble() > chance) {
             return getAir(blockInfo.pos);
         }
 
