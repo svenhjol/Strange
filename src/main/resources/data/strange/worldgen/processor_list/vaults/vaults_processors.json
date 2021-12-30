@@ -5,6 +5,15 @@
     "blocks": [{"Name": "strange:ignore_block"}]
   },
   {
+    "comment": "// Prepare strange's data blocks",
+    "processor_type": "strange:data"
+  },
+  {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.9
+  },
+  {
     "processor_type": "minecraft:rule",
     "rules": [
       {
@@ -20,11 +29,6 @@
         "output_state": {"Name": "minecraft:granite"}
       }
     ]
-  },
-  {
-    "comment": "// Prepare strange's entity blocks",
-    "processor_type": "strange:entity",
-    "chance": 0.9
   },
   {
     "comment": "// Replace anvils with blocks from the anvil table",

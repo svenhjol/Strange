@@ -5,6 +5,15 @@
     "blocks": [{"Name": "strange:ignore_block"}]
   },
   {
+    "comment": "// Prepare strange's data blocks",
+    "processor_type": "strange:data"
+  },
+  {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.8
+  },
+  {
     "processor_type": "minecraft:rule",
     "rules": [
       {
@@ -78,11 +87,6 @@
     "block": "spawner",
     "type": "spawner",
     "chance": 0.75
-  },
-  {
-    "comment": "// Prepare strange's entity blocks",
-    "processor_type": "strange:entity",
-    "chance": 0.8
   },
   {
     "comment": "// Replace some stone-type blocks with gravel",
