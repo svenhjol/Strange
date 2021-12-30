@@ -11,6 +11,11 @@ import java.util.List;
 
 public class Shovel implements IRelicItem {
     @Override
+    public Relics.Type getType() {
+        return Relics.Type.TOOL;
+    }
+
+    @Override
     public List<String> getValidEnchantments() {
         return Arrays.asList(
             "minecraft:fortune",

@@ -10,6 +10,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Leggings implements IRelicItem {
+    @Override
+    public Relics.Type getType() {
+        return Relics.Type.ARMOR;
+    }
 
     @Override
     public List<String> getValidEnchantments() {

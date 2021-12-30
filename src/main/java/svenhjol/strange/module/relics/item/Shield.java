@@ -10,6 +10,11 @@ import java.util.List;
 
 public class Shield implements IRelicItem {
     @Override
+    public Relics.Type getType() {
+        return Relics.Type.ARMOR;
+    }
+
+    @Override
     public List<String> getValidEnchantments() {
         return List.of(
             "minecraft:unbreaking"

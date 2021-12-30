@@ -23,6 +23,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.relics.loot.ToolRelicLootFunction;
 import svenhjol.strange.module.stone_ruins.StoneRuins;
 import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.Vaults;
@@ -39,10 +40,22 @@ import java.util.Map;
 @CommonModule(mod = Strange.MOD_ID)
 public class Relics extends CharmModule {
     public static final String ITEM_NAMESPACE = "svenhjol.strange.module.relics.item";
-    public static final List<IRelicItem> RELICS = new ArrayList<>();
-    public static final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
-    public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "relics_loot");
-    public static LootItemFunctionType LOOT_FUNCTION;
+    public static final Map<Type, List<IRelicItem>> RELICS = new HashMap<>();
+
+    public static final List<ResourceLocation> TOOL_LOOT_TABLES = new ArrayList<>();
+    public static final List<ResourceLocation> WEAPON_LOOT_TABLES = new ArrayList<>();
+    public static final List<ResourceLocation> ARMOR_LOOT_TABLES = new ArrayList<>();
+    public static final List<ResourceLocation> WEIRD_LOOT_TABLES = new ArrayList<>();
+
+    public static final ResourceLocation TOOL_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "tool_relic_loot");
+    public static final ResourceLocation WEAPON_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "weapon_relic_loot");
+    public static final ResourceLocation ARMOR_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "armor_relic_loot");
+    public static final ResourceLocation WEIRD_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "weird_relic_loot");
+
+    public static LootItemFunctionType TOOL_LOOT_FUNCTION;
+    public static LootItemFunctionType WEAPON_LOOT_FUNCTION;
+    public static LootItemFunctionType ARMOR_LOOT_FUNCTION;
+    public static LootItemFunctionType WEIRD_LOOT_FUNCTION;
 
     @Config(name = "Additional levels", description = "Number of levels above the enchantment maximum level that can be applied to relics.\n" +
         "Enchantment levels are capped at level 10.")
@@ -51,13 +64,12 @@ public class Relics extends CharmModule {
     @Config(name = "Additional loot tables", description = "List of additional loot tables that relics will be added to.")
     public static List<String> additionalLootTables = List.of();
 
-
     @Config(name = "Blacklist", description = "List of relic items that will not be loaded. See wiki for details.")
     public static List<String> configBlacklist = new ArrayList<>();
 
     @Override
     public void register() {
-        LOOT_FUNCTION = CommonRegistry.lootFunctionType(LOOT_ID, new LootItemFunctionType(new RelicsLootFunction.Serializer()));
+        TOOL_LOOT_FUNCTION = CommonRegistry.lootFunctionType(TOOL_LOOT_ID, new LootItemFunctionType(new ToolRelicLootFunction.Serializer()));
     }
 
     @Override
@@ -67,30 +79,34 @@ public class Relics extends CharmModule {
         if (Strange.LOADER.isEnabled(Vaults.class)) {
 
             // If vaults is enabled, add relics to the large room.
-            VALID_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
+            TOOL_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
+            WEAPON_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
 
         } else if (Strange.LOADER.isEnabled(StoneRuins.class)) {
 
             // If vaults not enabled and stone ruins are enabled, add relics to the ruin rooms.
-            VALID_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
+            TOOL_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
+            WEAPON_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
 
         } else {
 
             // Default to adding relics to woodland mansions.
-            VALID_LOOT_TABLES.add(BuiltInLootTables.WOODLAND_MANSION);
+            TOOL_LOOT_TABLES.add(BuiltInLootTables.WOODLAND_MANSION);
+            WEAPON_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
 
         }
 
         try {
             List<String> classes = ClassHelper.getClassesInPackage(ITEM_NAMESPACE);
-            for (String className : classes) {
-                String simpleClassName = className.substring(className.lastIndexOf(".") + 1);
+            for (var className : classes) {
+                var simpleClassName = className.substring(className.lastIndexOf(".") + 1);
                 try {
-                    Class<?> clazz = Class.forName(className);
+                    var clazz = Class.forName(className);
                     if (configBlacklist.contains(simpleClassName)) continue;
 
-                    IRelicItem item = (IRelicItem) clazz.getDeclaredConstructor().newInstance();
-                    RELICS.add(item);
+                    var item = (IRelicItem) clazz.getDeclaredConstructor().newInstance();
+                    RELICS.computeIfAbsent(item.getType(), a -> new ArrayList<>()).add(item);
+
                     LogHelper.debug(Strange.MOD_ID, getClass(), "Loaded relic: " + simpleClassName);
                 } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                     LogHelper.warn(getClass(), "Relic `" + simpleClassName + "` failed to load: " + e.getMessage());
@@ -100,8 +116,12 @@ public class Relics extends CharmModule {
             LogHelper.info(Strange.MOD_ID, getClass(), "Failed to load classes from namespace: " + e.getMessage());
         }
 
-        for (String lootTable : additionalLootTables) {
-            VALID_LOOT_TABLES.add(new ResourceLocation(lootTable));
+        for (var lootTable : additionalLootTables) {
+            var table = new ResourceLocation(lootTable);
+            TOOL_LOOT_TABLES.add(table);
+            WEAPON_LOOT_TABLES.add(table);
+            ARMOR_LOOT_TABLES.add(table);
+            WEIRD_LOOT_TABLES.add(table);
         }
     }
 
@@ -110,7 +130,7 @@ public class Relics extends CharmModule {
 
         if (book.getItem() instanceof EnchantedBookItem) {
             Map<Enchantment, Integer> reset = new HashMap<>();
-            Map<Enchantment, Integer> bookEnchants = EnchantmentHelper.getEnchantments(book);
+            var bookEnchants = EnchantmentHelper.getEnchantments(book);
 
             bookEnchants.forEach((e, l) -> {
                 if (l > e.getMaxLevel()) {
@@ -129,14 +149,21 @@ public class Relics extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
-        if (VALID_LOOT_TABLES.contains(id)) {
+        if (TOOL_LOOT_TABLES.contains(id)) {
             FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
                 .rolls(ConstantValue.exactly(1))
-                .with(LootItem.lootTableItem(Items.DIAMOND_SWORD)
+                .with(LootItem.lootTableItem(Items.DIAMOND_PICKAXE)
                     .setWeight(1)
-                    .apply(() -> new RelicsLootFunction(new LootItemCondition[0])));
+                    .apply(() -> new ToolRelicLootFunction(new LootItemCondition[0])));
 
             supplier.withPool(builder);
         }
+    }
+
+    public enum Type {
+        TOOL,
+        WEAPON,
+        ARMOR,
+        WEIRD
     }
 }

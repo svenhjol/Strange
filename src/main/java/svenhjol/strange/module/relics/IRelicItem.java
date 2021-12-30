@@ -15,6 +15,8 @@ import java.util.*;
 public interface IRelicItem {
     int MAX_ENCHANT_LEVEL = 10;
 
+    Relics.Type getType();
+
     List<String> getValidEnchantments();
 
     ItemStack getItemStack();

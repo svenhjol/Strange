@@ -12,6 +12,11 @@ import java.util.List;
 
 public class Crossbow implements IRelicItem {
     @Override
+    public Relics.Type getType() {
+        return Relics.Type.WEAPON;
+    }
+
+    @Override
     public List<String> getValidEnchantments() {
         return Arrays.asList(
             "minecraft:quick_charge",

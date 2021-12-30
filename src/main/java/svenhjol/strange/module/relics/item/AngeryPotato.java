@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import svenhjol.strange.module.relics.IRelicItem;
+import svenhjol.strange.module.relics.Relics;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class AngeryPotato implements IRelicItem {
+    @Override
+    public Relics.Type getType() {
+        return Relics.Type.WEIRD;
+    }
+
     @Override
     public DyeColor getColor() {
         return DyeColor.ORANGE;
