@@ -1,0 +1,41 @@
+{
+  "lang": {
+    "en": {
+      "title": "Scorching heat",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:the_nether"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:blaze": {
+        "count": 10,
+        "health": 30,
+        "effects": "regeneration,water_breathing"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block | emerald_block": {
+        "count": 1
+      },
+      "loot0": {
+        "table": "chests/end_city_treasure",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}

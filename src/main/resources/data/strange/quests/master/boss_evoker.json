@@ -1,0 +1,46 @@
+{
+  "lang": {
+    "en": {
+      "title": "Magical mayhem",
+      "description": "Defeat the enemy in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:the_end"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:evoker": {
+        "count": 1,
+        "health": 100,
+        "effects": "fire_resistance,water_breathing"
+      }
+    },
+    "support": {
+      "minecraft:shulker": {
+        "count": 3
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block | gold_block": {
+        "count": 1
+      },
+      "loot0": {
+        "table": "chests/end_city_treasure",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}

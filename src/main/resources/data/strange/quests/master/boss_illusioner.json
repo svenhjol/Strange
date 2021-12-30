@@ -1,0 +1,43 @@
+{
+  "lang": {
+    "en": {
+      "title": "Trick of the light",
+      "description": "Defeat the enemies in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:illusioner": {
+        "count": 5,
+        "health": 40,
+        "effects": "regeneration,fire_resistance,water_breathing"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "diamond_block | emerald_block": {
+        "count": 1
+      },
+      "loot0": {
+        "table": "chests/end_city_treasure",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/ruined_portal",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "8-13"
+      }
+    }
+  }
+}
