@@ -1,6 +1,7 @@
 package svenhjol.strange.module.runic_tomes;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -25,6 +26,11 @@ public class RunicTomeItem extends CharmItem {
         super(module, "runic_tome", new FabricItemSettings()
             .tab(CreativeModeTab.TAB_MISC)
             .stacksTo(16));
+    }
+
+    @Override
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+        // no thanks
     }
 
     public static ItemStack create(String runes) {
