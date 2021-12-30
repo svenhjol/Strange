@@ -16,12 +16,12 @@
       "minecraft:skeleton": {
         "count": 12,
         "health": 20,
-        "effects": "regeneration,fire_protection"
+        "effects": "regeneration,fire_resistance"
       },
       "minecraft:stray": {
         "count": 12,
         "health": 20,
-        "effects": "regeneration,fire_protection"
+        "effects": "regeneration,fire_resistance"
       }
     }
   },

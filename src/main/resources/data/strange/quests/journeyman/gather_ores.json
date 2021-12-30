@@ -25,11 +25,11 @@
         "count": "4-6"
       },
       "loot0": {
-        "table": "simple_dungeon",
+        "table": "chests/simple_dungeon",
         "limit": 3
       },
       "loot1": {
-        "table": "pillager_outpost",
+        "table": "chests/pillager_outpost",
         "limit": 3
       }
     },

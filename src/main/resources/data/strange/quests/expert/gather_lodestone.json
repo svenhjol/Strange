@@ -18,7 +18,7 @@
         "count": "5-12"
       },
       "loot0": {
-        "table": "ruined_portal",
+        "table": "chests/ruined_portal",
         "limit": 1
       },
       "netherite_ingot": {
