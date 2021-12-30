@@ -16,7 +16,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.structures.DataBlock;
 import svenhjol.strange.module.structures.Processors;
+import svenhjol.strange.module.structures.Structures;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 
@@ -39,26 +41,23 @@ public class DataBlockProcessor extends StructureProcessor {
         pos = blockInfo.pos;
         block = state.getBlock();
 
-        if (!(block instanceof DataBlock)) {
+        if (block != Structures.DATA_BLOCK) {
             return blockInfo;
         }
 
         // Pipe character acts as an OR. Data will use one of the definitions at random.
         var metadata = nbt.getString("metadata").toLowerCase(Locale.ROOT);
         if (metadata.contains("|")) {
-            var split = metadata.split("\\|");
-            metadata = split[random.nextInt(split.length)];
+            var strings = Arrays.stream(metadata.split("\\|")).map(String::trim).toList();
+            metadata = strings.get(random.nextInt(strings.size()));
         }
 
-        switch (metadata) {
-            case "chest":
-                return processChest();
+        if (metadata.startsWith("chest")) {
+            return processChest();
+        }
 
-            case "spawner":
-                return new StructureBlockInfo(pos, Blocks.SPAWNER.defaultBlockState(), null);
-
-            default:
-                break;
+        if (metadata.startsWith("spawner")) {
+            return new StructureBlockInfo(pos, Blocks.SPAWNER.defaultBlockState(), null);
         }
 
         return getAir(pos);
