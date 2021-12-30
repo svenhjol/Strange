@@ -1,0 +1,50 @@
+{
+  "lang": {
+    "en": {
+      "title": "Portal to the underworld",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "minecraft:the_nether",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "explore": {
+    "items": {
+      "flint_and_steel | iron_ingot | gold_ingot": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "ruined_portal",
+        "min_distance": 600,
+        "max_distance": 800,
+        "chest_range": 10,
+        "chest_start": 62
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "chests/ruined_portal",
+        "limit": 3
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-3"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "lang": {
+    "en": {
+      "title": "Evil Trio",
+      "description": "Defeat the witches in combat.",
+      "hint": "This scroll provides a map.\nFollow the map to an encounter with the enemy."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "boss": {
+    "targets": {
+      "minecraft:witch": {
+        "count": 3,
+        "health": 25,
+        "effects": "regeneration"
+      }
+    },
+    "support": {
+      "minecraft:zombie_villager": {
+        "count": 3
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "totem_of_undying": {
+        "count": 1,
+        "chance": 0.75
+      },
+      "bow": {
+        "enchanted": true,
+        "enchantment_level": "12-15",
+        "enchantment_treasure": true
+      },
+      "pool": {
+        "items": "iron_sword,iron_pickaxe,iron_axe,iron_shovel",
+        "enchanted": true,
+        "enchantment_level": "15-17",
+        "enchantment_treasure": true
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "4-7"
+      }
+    }
+  }
+}

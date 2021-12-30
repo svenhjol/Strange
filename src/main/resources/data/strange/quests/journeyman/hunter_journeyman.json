@@ -1,0 +1,40 @@
+{
+  "lang": {
+    "en": {
+      "title": "The journeyman's hunt",
+      "description": "Seek out and eliminate the enemies."
+    }
+  },
+  "hunt": {
+    "pillager": "12-16",
+    "skeleton | zombie": "12-16"
+  },
+  "gather": {
+    "items": {
+      "crossbow": {
+        "count": 1
+      },
+      "bone | rotten_flesh": {
+        "count": "10-20"
+      },
+      "emerald": {
+        "count": "10-20"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "pool": {
+        "items": "diamond_sword,diamond_leggings,iron_sword,iron_leggings",
+        "enchanted": true,
+        "enchantment_level": "8-12",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "3-4"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "lang": {
+    "en": {
+      "title": "The journeyman weaponsmith",
+      "description": "Find or craft the weapons to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "diamond_sword": {
+        "count": 1
+      },
+      "diamond_axe": {
+        "count": 1
+      },
+      "anvil": {
+        "count": 1
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-6"
+      },
+      "loot0": {
+        "table": "chests/village/village_weaponsmith",
+        "limit": 3
+      },
+      "pool": {
+        "items": "diamond_pickaxe,diamond_shovel",
+        "enchanted": true,
+        "enchantment_level": "7-12",
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}

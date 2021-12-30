@@ -1,0 +1,42 @@
+{
+  "lang": {
+    "en": {
+      "title": "The journeyman blacksmith",
+      "description": "Find or craft the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "anvil": {
+        "count": "2-3"
+      },
+      "cauldron | minecart": {
+        "count": 1
+      },
+      "pool": {
+        "items": "iron_chestplate,iron_leggings,gold_chestplate,gold_leggings",
+        "limit": 2
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot": {
+        "table": "chests/village/village_armorer",
+        "limit": 3
+      },
+      "pool": {
+        "items": "diamond_shovel,diamond_axe",
+        "chance": 0.6
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-4"
+      }
+    }
+  }
+}

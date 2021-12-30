@@ -1,0 +1,50 @@
+{
+  "lang": {
+    "en": {
+      "title": "Journeyfisherman",
+      "description": "Fish or find the necessary items for this scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "squid_ink": {
+        "count": "10-20"
+      },
+      "pufferfish": {
+        "count": "5-10"
+      },
+      "tropical_fish_bucket": {
+        "count": 1
+      },
+      "cod": {
+        "count": "10-20"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot0": {
+        "table": "chests/village/villager_fisherman",
+        "limit": 2
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 2,
+        "chance": 0.8
+      },
+      "fishing_rod": {
+        "enchanted": true,
+        "enchantment_level": "12-15",
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}

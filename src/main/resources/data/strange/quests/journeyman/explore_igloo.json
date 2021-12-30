@@ -1,0 +1,49 @@
+{
+  "lang": {
+    "en": {
+      "title": "Snow Trouble",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a structure and\nsearch all chests for the item."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:mirror",
+    "strange:floating_islands"
+  ],
+  "explore": {
+    "items": {
+      "leather_boots | chainmail_boots": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": "1-2"
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "igloo",
+        "min_distance": 750,
+        "max_distance": 1750,
+        "chest_range": 20,
+        "chest_start": 60
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "loot0": {
+        "table": "chests/igloo_chest",
+        "limit": 3
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-3"
+      }
+    }
+  }
+}
