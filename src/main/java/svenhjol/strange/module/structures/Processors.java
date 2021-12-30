@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 public class Processors {
     public static BlockIgnoreProcessor IGNORE;
     public static StructureProcessorType<EntityBlockProcessor> ENTITY;
+    public static StructureProcessorType<DataBlockProcessor> DATA;
     public static StructureProcessorType<DecorationReplacementProcessor> DECORATION_REPLACEMENT;
     public static StructureProcessorType<StoneBricksDecayProcessor> STONE_BRICKS_DECAY;
     public static StructureProcessorType<GravelifyProcessor> GRAVELIFY;
@@ -42,6 +43,7 @@ public class Processors {
     public static void init() {
         // register custom processors
         IGNORE = new BlockIgnoreProcessor(ImmutableList.of(Structures.IGNORE_BLOCK));
+        DATA = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "data"), () -> DataBlockProcessor.CODEC);
         ENTITY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "entity"), () -> EntityBlockProcessor.CODEC);
         DECORATION_REPLACEMENT = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "decoration_replacement"), () -> DecorationReplacementProcessor.CODEC);
         STONE_BRICKS_DECAY = CommonRegistry.structureProcessor(new ResourceLocation(Strange.MOD_ID, "stone_bricks_decay"), () -> StoneBricksDecayProcessor.CODEC);
