@@ -1,0 +1,48 @@
+{
+  "lang": {
+    "en": {
+      "title": "The apprentice's hunt",
+      "description": "Seek out and eliminate the monsters."
+    }
+  },
+  "hunt": {
+    "zombie": "8-12",
+    "skeleton": "8-12",
+    "spider": "8-12"
+  },
+  "gather": {
+    "items": {
+      "bone": {
+        "count": "3-6"
+      },
+      "string": {
+        "count": "3-6"
+      },
+      "rotten_flesh": {
+        "count": "3-6"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-5"
+      },
+      "loot": {
+        "table": "chests/village/village_weaponsmith",
+        "limit": 3
+      },
+      "pool": {
+        "items": "iron_sword,gold_sword,iron_chestplate,gold_chestplate",
+        "enchanted": true,
+        "enchantment_level": "7-10",
+        "chance": 0.8
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-2"
+      }
+    }
+  }
+}

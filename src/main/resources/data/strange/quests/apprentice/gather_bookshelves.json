@@ -1,0 +1,42 @@
+{
+  "lang": {
+    "en": {
+      "title": "The apprentice crafter",
+      "description": "Find or craft the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "bookshelf": {
+        "count": "2-3"
+      },
+      "oak_slab | spruce_slab": {
+        "count": "48-64"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-3"
+      },
+      "loot0": {
+        "table": "chests/village/village_tannery",
+        "limit": 1
+      },
+      "loot1": {
+        "table": "chests/village/village_shepherd",
+        "limit": 1
+      },
+      "loot2": {
+        "table": "chests/village/village_weaponsmith",
+        "limit": 1
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

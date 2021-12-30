@@ -1,0 +1,41 @@
+{
+  "lang": {
+    "en": {
+      "title": "Smelted ore",
+      "description": "Smelt or blast these ores to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "iron_ingot": {
+        "count": "16-20"
+      },
+      "gold_ingot": {
+        "count": "4-8"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-5"
+      },
+      "pool0": {
+        "items": "furnace,blast_furnace",
+        "count": 1,
+        "limit": 1
+      },
+      "pool1": {
+        "items": "iron_block,gold_block",
+        "count": 1,
+        "limit": 1,
+        "chance": 0.5
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

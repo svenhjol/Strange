@@ -1,0 +1,42 @@
+{
+  "lang": {
+    "en": {
+      "title": "The apprentice librarian",
+      "description": "Find or craft the materials to complete the scroll."
+    }
+  },
+  "gather": {
+    "items": {
+      "book": {
+        "count": "3-5"
+      },
+      "lectern | bookshelf": {
+        "count": "3-5"
+      },
+      "paper | sugar_cane": {
+        "count": "10-12"
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "2-3"
+      },
+      "loot": {
+        "table": "chests/village/village_cartographer",
+        "limit": 1
+      },
+      "pool": {
+        "items": "leather,book,paper,sugar_cane,sugar",
+        "limit": 3,
+        "count": "10-12"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}

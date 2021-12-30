@@ -1,0 +1,53 @@
+{
+  "lang": {
+    "en": {
+      "title": "The village thief",
+      "description": "Use the map to find the stolen item.",
+      "hint": "This scroll provides a map.\nFollow the map to a village and\nsearch all chests for the item."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "strange:floating_islands",
+    "strange:mirror"
+  ],
+  "explore": {
+    "items": {
+      "potato | carrot | apple | wheat": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": 1
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "village",
+        "min_distance": 250,
+        "max_distance": 500,
+        "chest_range": 24,
+        "chest_start": 64
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "3-5"
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 3
+      },
+      "pool": {
+        "items": "potato,carrot,apple,wheat",
+        "count": "10",
+        "limit": 3
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "1-3"
+      }
+    }
+  }
+}

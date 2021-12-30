@@ -1,0 +1,38 @@
+{
+  "lang": {
+    "en": {
+      "title": "Spiderman",
+      "description": "Eliminate the spiders and collect string."
+    }
+  },
+  "gather": {
+    "items": {
+      "string": {
+        "count": "4-6"
+      }
+    }
+  },
+  "hunt": {
+    "spider": "5-6"
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "1-4"
+      },
+      "loot1": {
+        "table": "chests/village/village_armorer",
+        "limit": 3
+      },
+      "pool": {
+        "items": "cobweb,white_wool",
+        "count": "4-6"
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "0-2"
+      }
+    }
+  }
+}
