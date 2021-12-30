@@ -53,25 +53,25 @@ public class DecorationReplacementProcessor extends StructureProcessor {
 
     @Nullable
     @Override
-    public StructureBlockInfo processBlock(LevelReader levelReader, BlockPos blockPos, BlockPos blockPos2, StructureBlockInfo NONONONO, StructureBlockInfo structureBlockInfo2, StructurePlaceSettings structurePlaceSettings) {
-        BlockPos pos = structureBlockInfo2.pos;
-        BlockState state = structureBlockInfo2.state;
-        CompoundTag nbt = structureBlockInfo2.nbt;
+    public StructureBlockInfo processBlock(LevelReader levelReader, BlockPos blockPos, BlockPos blockPos2, StructureBlockInfo NONONONO, StructureBlockInfo blockInfo, StructurePlaceSettings structurePlaceSettings) {
+        BlockPos pos = blockInfo.pos;
+        BlockState state = blockInfo.state;
+        CompoundTag nbt = blockInfo.nbt;
         Random random = structurePlaceSettings.getRandom(fixedRandom ? blockPos : pos);
         StructureBlockInfo air = new StructureBlockInfo(pos, Blocks.AIR.defaultBlockState(), null);
         Optional<Direction> prop;
 
         if (!moduleCheck()) {
-            return structureBlockInfo2;
+            return blockInfo;
         }
 
         Optional<Block> block = Registry.BLOCK.getOptional(new ResourceLocation(this.block));
         if (block.isEmpty() || !(state.getBlock() == block.get())) {
-            return structureBlockInfo2;
+            return blockInfo;
         }
 
         if (random.nextFloat() > chance) {
-            return remove ? air : structureBlockInfo2;
+            return remove ? air : blockInfo;
         }
 
         DirectionProperty facingProp = HorizontalDirectionalBlock.FACING;
@@ -93,6 +93,10 @@ public class DecorationReplacementProcessor extends StructureProcessor {
 
             // try and set the block entity tag if present
             if (stack.hasTag()) {
+                if (nbt == null) {
+                    nbt = new CompoundTag();
+                }
+
                 // TODO: make BlockItem.BLOCK_ENTITY_TAG public
                 CompoundTag blockEntityTag = Objects.requireNonNull(stack.getTag()).getCompound("BlockEntityTag");
                 if (!blockEntityTag.isEmpty()) {
@@ -109,7 +113,7 @@ public class DecorationReplacementProcessor extends StructureProcessor {
             return new StructureBlockInfo(pos, newState, nbt);
         }
 
-        return remove ? air : structureBlockInfo2;
+        return remove ? air : blockInfo;
     }
 
     @Override
