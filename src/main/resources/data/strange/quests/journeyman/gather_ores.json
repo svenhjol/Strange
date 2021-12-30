@@ -29,7 +29,7 @@
         "limit": 3
       },
       "loot1": {
-        "items": "pillager_outpost",
+        "table": "pillager_outpost",
         "limit": 3
       }
     },

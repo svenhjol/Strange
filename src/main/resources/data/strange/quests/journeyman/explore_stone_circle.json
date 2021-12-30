@@ -1,0 +1,55 @@
+{
+  "lang": {
+    "en": {
+      "title": "The Circle",
+      "description": "Use the map to find the lost item.",
+      "hint": "This scroll provides a map.\nFollow the map to a stone circle and\nsearch all chests for the item."
+    }
+  },
+  "dimensions": [
+    "minecraft:overworld",
+    "minecraft:the_nether",
+    "minecraft:the_end",
+    "strange:floating_islands",
+    "strange:mirror"
+  ],
+  "explore": {
+    "items": {
+      "diamond | gold_ingot | emerald": {
+        "enchanted": true,
+        "enchantment_force": true,
+        "enchantment_level": 1
+      }
+    },
+    "settings": {
+      "structure": {
+        "type": "strange:stone_circle",
+        "min_distance": 1000,
+        "max_distance": 2000,
+        "chest_range": 24,
+        "chest_start": 64
+      }
+    }
+  },
+  "reward": {
+    "items": {
+      "emerald": {
+        "count": "4-6"
+      },
+      "loot1": {
+        "table": "chests/simple_dungeon",
+        "limit": 2
+      },
+      "pool": {
+        "items": "diamond_sword,diamond_axe",
+        "count": "2-3",
+        "limit": 2
+      }
+    },
+    "xp": {
+      "player": {
+        "count": "2-3"
+      }
+    }
+  }
+}
