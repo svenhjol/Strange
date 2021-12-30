@@ -8,7 +8,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_stone_alcove1",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -17,7 +17,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_stone_alcove2",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -26,7 +26,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_stone_books",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -35,7 +35,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_stone_nook",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -44,7 +44,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_stone_storage",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -53,7 +53,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_wood_alcove1",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -62,7 +62,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_wood_alcove2",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -71,7 +71,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_wood_alcove3",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -80,7 +80,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_wood_books",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     },
     {
@@ -89,7 +89,7 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "strange:vaults/end_wood_chests",
-        "processors": "strange:vaults/vaults_default"
+        "processors": "strange:vaults/vaults_processors"
       }
     }
   ]
