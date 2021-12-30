@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
-import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.helper.GuiHelper.ImageButtonDefinition;
@@ -22,9 +21,6 @@ import java.util.List;
 
 @SuppressWarnings({"SameParameterValue", "ConstantConditions"})
 public abstract class JournalScreen extends Screen {
-    public static final ResourceLocation COVER_BACKGROUND;
-    public static final ResourceLocation OPEN_BACKGROUND;
-    public static final ResourceLocation NAVIGATION;
 
     protected int backgroundWidth;
     protected int backgroundHeight;
@@ -121,10 +117,10 @@ public abstract class JournalScreen extends Screen {
 
         leftNavButtons.clear();
         leftNavButtons.addAll(Arrays.asList(
-            new ImageButtonDefinition(b -> home(), NAVIGATION, 0, 36, 18, JournalResources.HOME_TOOLTIP),
-            new ImageButtonDefinition(b -> bookmarks(), NAVIGATION, 60, 36, 18, JournalResources.BOOKMARKS_TOOLTIP),
-            new ImageButtonDefinition(b -> quests(), NAVIGATION, 20, 36, 18, JournalResources.QUESTS_TOOLTIP),
-            new ImageButtonDefinition(b -> knowledge(), NAVIGATION, 40, 36, 18, JournalResources.KNOWLEDGE_TOOLTIP)
+            new ImageButtonDefinition(b -> home(), JournalResources.NAVIGATION, 0, 36, 18, JournalResources.HOME_TOOLTIP),
+            new ImageButtonDefinition(b -> bookmarks(), JournalResources.NAVIGATION, 60, 36, 18, JournalResources.BOOKMARKS_TOOLTIP),
+            new ImageButtonDefinition(b -> quests(), JournalResources.NAVIGATION, 20, 36, 18, JournalResources.QUESTS_TOOLTIP),
+            new ImageButtonDefinition(b -> knowledge(), JournalResources.NAVIGATION, 40, 36, 18, JournalResources.KNOWLEDGE_TOOLTIP)
         ));
 
         rightNavButtons.clear();
@@ -168,7 +164,7 @@ public abstract class JournalScreen extends Screen {
      * Override this to return a custom background.
      */
     protected ResourceLocation getBackgroundTexture() {
-        return OPEN_BACKGROUND;
+        return JournalResources.OPEN_BACKGROUND;
     }
 
     /**
@@ -259,11 +255,5 @@ public abstract class JournalScreen extends Screen {
     protected void centeredText(PoseStack poseStack, Font renderer, Component component, int x, int y, int color) {
         String string = component.getString();
         renderer.draw(poseStack, string, x - (float)(renderer.width(string) / 2), y, color);
-    }
-
-    static {
-        COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
-        OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
-        NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
     }
 }

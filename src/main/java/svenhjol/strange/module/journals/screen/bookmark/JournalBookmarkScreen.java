@@ -76,17 +76,17 @@ public class JournalBookmarkScreen extends JournalScreen {
         pageButtons.add(new ButtonDefinition(b -> chooseIcon(), JournalResources.CHOOSE_ICON));
         pageButtons.add(new ButtonDefinition(b -> save(), JournalResources.SAVE));
 
-        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), NAVIGATION, 20, 0, 18, JournalResources.DELETE_TOOLTIP));
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), JournalResources.NAVIGATION, 20, 0, 18, JournalResources.DELETE_TOOLTIP));
         bottomButtons.add(0, new ButtonDefinition(b -> save(), JournalResources.SAVE));
 
         // add map icon if player has an empty map
         if (playerCanMakeMap()) {
-            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> makeMap(), NAVIGATION, 40, 0, 18, JournalResources.MAKE_MAP_TOOLTIP));
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> makeMap(), JournalResources.NAVIGATION, 40, 0, 18, JournalResources.MAKE_MAP_TOOLTIP));
         }
 
         // add take picture icon if player is near the location
         if (playerIsNearBookmark()) {
-            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> takePhoto(), NAVIGATION, 80, 0, 18, JournalResources.TAKE_PHOTO_TOOLTIP));
+            rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> takePhoto(), JournalResources.NAVIGATION, 80, 0, 18, JournalResources.TAKE_PHOTO_TOOLTIP));
         }
     }
 

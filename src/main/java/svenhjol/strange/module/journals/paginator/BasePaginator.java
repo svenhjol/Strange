@@ -13,7 +13,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.helper.GuiHelper;
-import svenhjol.strange.module.journals.screen.JournalScreen;
+import svenhjol.strange.module.journals.screen.JournalResources;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -149,12 +149,12 @@ public abstract class BasePaginator<T> {
         // Draw the pagination buttons at the bottom of the page (yControls is the y-offset for these).
         if (size > perPage) {
             if (pageOffset * perPage < size) {
-                var button = new ImageButton(x + distBetweenPageButtons, yControls, 20, 18, 120, 0, 18, JournalScreen.NAVIGATION, b
+                var button = new ImageButton(x + distBetweenPageButtons, yControls, 20, 18, 120, 0, 18, JournalResources.NAVIGATION, b
                     -> onRedraw.accept(this.pageOffset + 1));
                 screen.addRenderableWidget(button);
             }
             if (pageOffset > 1) {
-                var button = new ImageButton(x - distBetweenPageButtons - 20, yControls, 20, 18, 140, 0, 18, JournalScreen.NAVIGATION, b
+                var button = new ImageButton(x - distBetweenPageButtons - 20, yControls, 20, 18, 140, 0, 18, JournalResources.NAVIGATION, b
                     -> onRedraw.accept(this.pageOffset - 1));
                 screen.addRenderableWidget(button);
             }

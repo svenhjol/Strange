@@ -2,8 +2,10 @@ package svenhjol.strange.module.journals.screen;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.strange.Strange;
 
 public class JournalResources {
     public static final Component ADD_BOOKMARK;
@@ -47,8 +49,15 @@ public class JournalResources {
     public static final ItemStack COMPLETED_HUNT_ICON;
     public static final ItemStack COMPLETED_EXPLORE_ICON;
     public static final ItemStack COMPLETED_BOSS_ICON;
+    public static final ResourceLocation COVER_BACKGROUND;
+    public static final ResourceLocation OPEN_BACKGROUND;
+    public static final ResourceLocation NAVIGATION;
 
     static {
+        COVER_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_cover.png");
+        OPEN_BACKGROUND = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_open.png");
+        NAVIGATION = new ResourceLocation(Strange.MOD_ID, "textures/gui/journal_navigation.png");
+
         ADD_BOOKMARK = new TranslatableComponent("gui.strange.journal.add_bookmark");
         CHOOSE_ICON = new TranslatableComponent("gui.strange.journal.choose_icon");
         CLOSE = new TranslatableComponent("gui.strange.journal.close");

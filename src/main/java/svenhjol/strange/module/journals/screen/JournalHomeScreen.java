@@ -33,7 +33,7 @@ public class JournalHomeScreen extends JournalScreen {
 
     @Override
     protected ResourceLocation getBackgroundTexture() {
-        return COVER_BACKGROUND;
+        return JournalResources.COVER_BACKGROUND;
     }
 
     @Override

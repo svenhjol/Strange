@@ -81,8 +81,8 @@ public class JournalQuestScreen extends JournalScreen {
         // In future we could have an objectives breakdown page, but it's not needed for initial release.
         // bottomButtons.add(1, new GuiHelper.ButtonDefinition(b -> objectives(), OBJECTIVES));
 
-        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> abandon(), NAVIGATION, 20, 0, 18, JournalResources.ABANDON_TOOLTIP));
-        rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> pause(), NAVIGATION, 100, 36, 18, JournalResources.PAUSE_TOOLTIP));
+        bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> abandon(), JournalResources.NAVIGATION, 20, 0, 18, JournalResources.ABANDON_TOOLTIP));
+        rightNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> pause(), JournalResources.NAVIGATION, 100, 36, 18, JournalResources.PAUSE_TOOLTIP));
 
         JournalsClient.tracker.setQuest(quest);
     }
