@@ -197,7 +197,7 @@ public class Quest {
         var quest = new Quest();
 
         quest.id = tag.getString(ID_TAG);
-        quest.definition = Quests.getDefinition(tag.getString(DEFINITION_TAG));
+        quest.definition = QuestHelper.getDefinition(tag.getString(DEFINITION_TAG));
         quest.owner = UUID.fromString(tag.getString(PLAYER_TAG));
         quest.state = State.valueOf(tag.getString(STATE_TAG).toUpperCase(Locale.ROOT));
         quest.difficulty = tag.getFloat(DIFFICULTY_TAG);

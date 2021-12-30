@@ -62,7 +62,7 @@ public class ScrollItem extends CharmItem {
 
             // This is a new scroll without an associated paused quest. Generate a new quest.
             var random = new Random();
-            var definition = Quests.getRandomDefinition(serverPlayer, tier, random);
+            var definition = QuestHelper.getRandomDefinition(serverPlayer, tier, random);
             if (definition != null) {
 
                 // Definition is valid, create a new quest.

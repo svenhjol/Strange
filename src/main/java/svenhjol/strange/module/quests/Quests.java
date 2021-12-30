@@ -6,8 +6,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.api.event.PlayerTickCallback;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.loader.CommonLoader;
@@ -91,134 +88,6 @@ public class Quests extends CharmModule {
 
     public static Optional<QuestData> getQuestData() {
         return Optional.ofNullable(quests);
-    }
-
-    /**
-     * This is designed for server-side lookup of lang strings from a quest definition.
-     * It uses the configured locale for lang lookups.
-     *
-     * Do not use this on the client; instead use {@link QuestsClient#getTranslatedKey}.
-     * The client version queries the player's configured language.
-     */
-    public static Component getTranslatedKey(QuestDefinition definition, String key) {
-        var id = definition.getId();
-        var lang = definition.getLang();
-        var code = locale;
-
-        if (lang == null) return new TranslatableComponent(id);
-
-        if (!lang.containsKey(code)) {
-            code = Quests.DEFAULT_LOCALE;
-        }
-
-        var value = lang.get(code).getOrDefault(key, id);
-        return new TranslatableComponent(value);
-    }
-
-    @Nullable
-    public static QuestDefinition getDefinition(String id) {
-        String[] split;
-        String tierName;
-
-        if (id.contains("/")) {
-            id = id.replace("/", ".");
-        }
-
-        if (!id.contains(".")) {
-            return null;
-        }
-
-        split = id.split("\\.");
-        tierName = split[0];
-
-        var tier = Tier.byName(tierName);
-        if (tier == null) return null;
-
-        if (DEFINITIONS.containsKey(tier) && DEFINITIONS.get(tier).containsKey(id)) {
-            return DEFINITIONS.get(tier).get(id);
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public static QuestDefinition getRandomDefinition(ServerPlayer player, Tier tier, Random random) {
-        UUID uuid = player.getUUID();
-
-        if (!DEFINITIONS.containsKey(tier)) {
-            LogHelper.warn(Quests.class, "No quest definitions available for this tier: " + tier);
-            return null;
-        }
-
-        Map<String, QuestDefinition> definitions = DEFINITIONS.get(tier);
-        if (definitions.isEmpty()) {
-            LogHelper.warn(Quests.class, "No quests definitions found in this tier: " + tier);
-            return null;
-        }
-
-        QuestData quests = getQuestData().orElseThrow();
-        List<Quest> allPlayerQuests = quests.all(player);
-        List<QuestDefinition> eligibleDefinitions = new ArrayList<>();
-        List<QuestDefinition> tierDefinitions = new ArrayList<>(definitions.values());
-        Collections.shuffle(tierDefinitions, random);
-        QuestDefinition found = null;
-
-        QUESTCHECK: for (QuestDefinition definition : tierDefinitions) {
-            List<String> dimensions = definition.getDimensions();
-            List<String> modules = definition.getModules();
-
-            if (definition.isTest()) continue;
-
-            if (!modules.isEmpty()) {
-                Map<ResourceLocation, CharmModule> allModules = CommonLoader.getAllModules();
-                for (String module : modules) {
-                    ResourceLocation moduleId = new ResourceLocation(module);
-                    if (!allModules.containsKey(moduleId) || !allModules.get(moduleId).isEnabled()) {
-                        LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because module dependency failed: " + moduleId);
-                        break QUESTCHECK;
-                    }
-                }
-            }
-
-            if (!dimensions.isEmpty()) {
-                ResourceLocation thisDimension = DimensionHelper.getDimension(player.level);
-                List<ResourceLocation> dimensionIds = dimensions.stream().map(ResourceLocation::new).toList();
-                if (!dimensionIds.contains(thisDimension)) {
-                    LogHelper.debug(Strange.MOD_ID, Quests.class, "Skipping definition " + definition.getId() + " because dimension dependency failed: " + thisDimension);
-                    break;
-                }
-            }
-
-            // if the player is already doing this quest, add to eligible and skip
-            if (allPlayerQuests.stream().anyMatch(q -> q.getDefinitionId().equals(definition.getId()))) {
-                eligibleDefinitions.add(definition);
-                continue;
-            }
-
-            // if the player has done this quest within the last 3 quests, add to eligible and skip
-            if (LAST_QUESTS.containsKey(uuid)) {
-                LinkedList<QuestDefinition> lastQuests = LAST_QUESTS.get(uuid);
-                if (lastQuests.contains(definition)) {
-                    eligibleDefinitions.add(definition);
-                    continue;
-                }
-            }
-
-            found = definition;
-            break;
-        }
-
-        if (found == null && !eligibleDefinitions.isEmpty()) {
-            LogHelper.debug(Strange.MOD_ID, Quests.class, "No exact quest definition found. Trying to using an eligible one instead");
-            Collections.shuffle(eligibleDefinitions, random);
-            found = eligibleDefinitions.get(0);
-        }
-
-        if (found == null) {
-            LogHelper.debug(Strange.MOD_ID, Quests.class, "Could not find any eligible quest definitions");
-        }
-
-        return found;
     }
 
     private void handleKilledEntity(ServerLevel level, Entity attacker, LivingEntity target) {

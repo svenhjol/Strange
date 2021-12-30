@@ -18,6 +18,7 @@ import svenhjol.strange.module.quests.Quests;
 import svenhjol.strange.module.quests.command.arg.QuestDefinitionArgType;
 import svenhjol.strange.module.quests.command.arg.QuestIdArgType;
 import svenhjol.strange.module.quests.definition.QuestDefinition;
+import svenhjol.strange.module.quests.helper.QuestHelper;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -105,7 +106,7 @@ public class QuestCommand {
     private static int start(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
 
-        QuestDefinition definition = Quests.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
+        QuestDefinition definition = QuestHelper.getDefinition(QuestDefinitionArgType.getDefinition(context, "definition"));
         if (definition == null) {
             throw CommandHelper.makeException("Invalid definition", new TranslatableComponent("commands.strange.no_quest_definition").getString());
         }
