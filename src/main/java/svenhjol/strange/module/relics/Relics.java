@@ -10,9 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -23,7 +25,10 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.relics.loot.ArmorRelicLootFunction;
 import svenhjol.strange.module.relics.loot.ToolRelicLootFunction;
+import svenhjol.strange.module.relics.loot.WeaponRelicLootFunction;
+import svenhjol.strange.module.relics.loot.WeirdRelicLootFunction;
 import svenhjol.strange.module.stone_ruins.StoneRuins;
 import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.Vaults;
@@ -70,6 +75,9 @@ public class Relics extends CharmModule {
     @Override
     public void register() {
         TOOL_LOOT_FUNCTION = CommonRegistry.lootFunctionType(TOOL_LOOT_ID, new LootItemFunctionType(new ToolRelicLootFunction.Serializer()));
+        WEAPON_LOOT_FUNCTION = CommonRegistry.lootFunctionType(WEAPON_LOOT_ID, new LootItemFunctionType(new WeaponRelicLootFunction.Serializer()));
+        ARMOR_LOOT_FUNCTION = CommonRegistry.lootFunctionType(ARMOR_LOOT_ID, new LootItemFunctionType(new ArmorRelicLootFunction.Serializer()));
+        WEIRD_LOOT_FUNCTION = CommonRegistry.lootFunctionType(WEIRD_LOOT_ID, new LootItemFunctionType(new WeirdRelicLootFunction.Serializer()));
     }
 
     @Override
@@ -150,14 +158,32 @@ public class Relics extends CharmModule {
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
         if (TOOL_LOOT_TABLES.contains(id)) {
-            FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantValue.exactly(1))
-                .with(LootItem.lootTableItem(Items.DIAMOND_PICKAXE)
-                    .setWeight(1)
-                    .apply(() -> new ToolRelicLootFunction(new LootItemCondition[0])));
-
+            var builder = getBuilder(Items.DIAMOND_PICKAXE, new ToolRelicLootFunction(new LootItemCondition[0]));
             supplier.withPool(builder);
         }
+
+        if (WEAPON_LOOT_TABLES.contains(id)) {
+            var builder = getBuilder(Items.DIAMOND_SWORD, new WeaponRelicLootFunction(new LootItemCondition[0]));
+            supplier.withPool(builder);
+        }
+
+        if (ARMOR_LOOT_TABLES.contains(id)) {
+            var builder = getBuilder(Items.DIAMOND_CHESTPLATE, new ArmorRelicLootFunction(new LootItemCondition[0]));
+            supplier.withPool(builder);
+        }
+
+        if (WEIRD_LOOT_TABLES.contains(id)) {
+            var builder = getBuilder(Items.DIAMOND, new WeirdRelicLootFunction(new LootItemCondition[0]));
+            supplier.withPool(builder);
+        }
+    }
+
+    private FabricLootPoolBuilder getBuilder(ItemLike defaultStack, LootItemConditionalFunction function) {
+        return FabricLootPoolBuilder.builder()
+            .rolls(ConstantValue.exactly(1))
+            .with(LootItem.lootTableItem(defaultStack)
+                .setWeight(1)
+                .apply(() -> function));
     }
 
     public enum Type {
