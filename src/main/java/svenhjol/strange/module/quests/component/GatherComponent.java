@@ -38,8 +38,8 @@ public class GatherComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isEmpty() {
-        return items.isEmpty();
+    public boolean isPresent() {
+        return items.size() > 0;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class GatherComponent implements IQuestComponent {
 
     @Override
     public boolean isSatisfied(Player player) {
-        if (items.isEmpty()) return true;
+        if (!isPresent()) return true;
         var count = 0;
 
         for (ItemStack i : items.keySet()) {

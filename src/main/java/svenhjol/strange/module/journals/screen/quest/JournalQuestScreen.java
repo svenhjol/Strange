@@ -108,7 +108,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
         GuiHelper.drawCenteredString(poseStack, font, OBJECTIVES, midX, top, subheadingColor);
         top += 12;
 
-        if (!gather.isEmpty()) {
+        if (gather.isPresent()) {
             List<Component> hover = new ArrayList<>();
             int totalRequired = 0;
             int totalGathered = 0;
@@ -129,7 +129,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             top += rowHeight;
         }
 
-        if (!hunt.isEmpty()) {
+        if (hunt.isPresent()) {
             List<Component> hover = new ArrayList<>();
             var totalRequired = 0;
             var totalKilled = 0;
@@ -152,7 +152,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             top += rowHeight;
         }
 
-        if (!explore.isEmpty()) {
+        if (explore.isPresent()) {
             List<Component> hover = new ArrayList<>();
             var totalRequired = 0;
             var totalGathered = 0;
@@ -173,7 +173,7 @@ public class JournalQuestScreen extends JournalBaseQuestScreen {
             top += rowHeight;
         }
 
-        if (!boss.isEmpty()) {
+        if (boss.isPresent()) {
             List<Component> hover = new ArrayList<>();
             var totalRequired = 0;
             var totalKilled = 0;

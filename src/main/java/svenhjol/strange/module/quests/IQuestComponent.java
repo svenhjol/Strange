@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public interface IQuestComponent {
     String getId();
 
-    boolean isEmpty();
+    boolean isPresent();
 
     default void abandon(Player player) {
         // no op

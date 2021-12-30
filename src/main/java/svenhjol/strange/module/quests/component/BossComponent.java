@@ -77,13 +77,13 @@ public class BossComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isEmpty() {
-        return targets.isEmpty();
+    public boolean isPresent() {
+        return targets.size() > 0;
     }
 
     @Override
     public boolean isSatisfied(Player player) {
-        if (isEmpty()) return true; // To bypass quests that don't have a boss component.
+        if (!isPresent()) return true; // To bypass quests that don't have a boss component.
         return satisfied.size() == targets.size() && satisfied.values().stream().allMatch(b -> b);
     }
 

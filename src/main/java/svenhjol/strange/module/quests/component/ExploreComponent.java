@@ -82,13 +82,13 @@ public class ExploreComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isEmpty() {
-        return items.isEmpty();
+    public boolean isPresent() {
+        return items.size() > 0;
     }
 
     @Override
     public boolean isSatisfied(Player player) {
-        if (isEmpty()) return true; // To bypass quests that don't have an explore component.
+        if (!isPresent()) return true; // To bypass quests that don't have an explore component.
         return satisfied.size() == items.size() && satisfied.values().stream().allMatch(b -> b);
     }
 
@@ -102,7 +102,7 @@ public class ExploreComponent implements IQuestComponent {
 
     @Override
     public void complete(Player player, @Nullable AbstractVillager merchant) {
-        if (isEmpty()) return;
+        if (!isPresent()) return;
 
         items.forEach(stack -> {
             for (ItemStack inv : player.getInventory().items) {

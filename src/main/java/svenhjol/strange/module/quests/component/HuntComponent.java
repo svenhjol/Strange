@@ -36,8 +36,8 @@ public class HuntComponent implements IQuestComponent {
     }
 
     @Override
-    public boolean isEmpty() {
-        return entities.isEmpty();
+    public boolean isPresent() {
+        return entities.size() > 0;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class HuntComponent implements IQuestComponent {
 
     @Override
     public boolean isSatisfied(Player player) {
-        if (entities.isEmpty()) return true;
+        if (!isPresent()) return true;
         var count = 0;
 
         for (ResourceLocation res : entities.keySet()) {
