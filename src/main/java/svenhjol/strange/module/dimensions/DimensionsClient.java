@@ -2,8 +2,10 @@ package svenhjol.strange.module.dimensions;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import svenhjol.charm.annotation.ClientModule;
@@ -62,6 +64,14 @@ public class DimensionsClient extends CharmModule {
 
     public static Optional<Music> getMusic(Biome biome) {
         return Optional.ofNullable(Dimensions.MUSIC.get(getDimension()));
+    }
+
+    public static Optional<SoundEvent> getAmbientLoop(Biome biome) {
+        return Optional.ofNullable(Dimensions.AMBIENT_LOOP.get(getDimension()));
+    }
+
+    public static Optional<AmbientAdditionsSettings> getAmbientAdditions(Biome biome) {
+        return Optional.ofNullable(Dimensions.AMBIENT_ADDITIONS.get(getDimension()));
     }
 
     public static Optional<Double> getHorizonHeight(LevelHeightAccessor levelHeight) {

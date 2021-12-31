@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Musics;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
@@ -22,9 +23,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
@@ -56,6 +58,18 @@ public class MirrorDimension implements IDimension {
     public static final AmbientParticleSettings CRIMSON_SPORE;
     public static final AmbientParticleSettings SPORE_BLOSSOM;
 
+    public static SoundEvent MIRROR_AMBIENCE_LOOP;
+    public static SoundEvent MIRROR_AMBIENCE_ADDITIONS;
+    public static AmbientAdditionsSettings MIRROR_AMBIENCE_SETTINGS;
+
+    public static SoundEvent MIRROR_FREEZING_LOOP;
+    public static SoundEvent MIRROR_FREEZING_ADDITIONS;
+    public static AmbientAdditionsSettings MIRROR_FREEZING_SETTINGS;
+
+    public static SoundEvent MIRROR_SCORCHING_LOOP;
+    public static SoundEvent MIRROR_SCORCHING_ADDITIONS;
+    public static AmbientAdditionsSettings MIRROR_SCORCHING_SETTINGS;
+
     public static final int FOG = 0x004434;
     public static final float TEMP = 0.5F;
 
@@ -65,7 +79,7 @@ public class MirrorDimension implements IDimension {
     public static final int minLightningTicks = 200; // minimum number of ticks before another lightning strike occurs
 
     public static int weatherPhaseTicks = 0;
-    public static WeatherPhase weatherPhase = WeatherPhase.FREEZING;
+    public static WeatherPhase weatherPhase = WeatherPhase.STORMING;
 
     public static int eruptTicks = 0;
     public static int nextEruptAt = 0;
@@ -84,6 +98,18 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void register() {
+        MIRROR_AMBIENCE_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_loop"));
+        MIRROR_AMBIENCE_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_additions"));
+        MIRROR_AMBIENCE_SETTINGS = new AmbientAdditionsSettings(MIRROR_AMBIENCE_ADDITIONS, 0.0100);
+
+        MIRROR_FREEZING_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_freezing_loop"));
+        MIRROR_FREEZING_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_freezing_additions"));
+        MIRROR_FREEZING_SETTINGS = new AmbientAdditionsSettings(MIRROR_FREEZING_ADDITIONS, 0.0100);
+
+        MIRROR_SCORCHING_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_scorching_loop"));
+        MIRROR_SCORCHING_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_scorching_additions"));
+        MIRROR_SCORCHING_SETTINGS = new AmbientAdditionsSettings(MIRROR_SCORCHING_ADDITIONS, 0.0100);
+
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, FOG);
         Dimensions.GRASS_COLOR.put(ID, 0x607065);
@@ -95,6 +121,8 @@ public class MirrorDimension implements IDimension {
         Dimensions.TEMPERATURE.put(ID, TEMP);
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
         Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
+        Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
+        Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
     }
 
     @Override
@@ -133,14 +161,6 @@ public class MirrorDimension implements IDimension {
     @Override
     public void handlePlayerTick(Player player) {
         // not yet
-    }
-
-    private boolean handleVillagerRemoval(LivingEntity livingEntity) {
-        if (livingEntity instanceof Villager villager) {
-            villager.discard();
-            return false;
-        }
-        return true;
     }
 
     private boolean handleMonsterBuffs(LivingEntity livingEntity, Random random) {
@@ -208,12 +228,25 @@ public class MirrorDimension implements IDimension {
             case FREEZING -> handleFreezingPhase(level, random);
             case SCORCHING -> handleScorchingPhase(level, random);
             case STORMING -> handleStormingPhase(level, random);
+            case CALM -> handleCalmPhase(level, random);
+        }
+    }
+
+    private void handleCalmPhase(ServerLevel level, Random random) {
+        if (weatherPhaseTicks == 0) {
+            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
+            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
         }
     }
 
     private void handleScorchingPhase(ServerLevel level, Random random) {
         float scale = 0;
         int halfScorchTicks = WeatherPhase.SCORCHING.getDuration() / 2;
+
+        if (weatherPhaseTicks == 0) {
+            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_SCORCHING_LOOP);
+            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_SCORCHING_SETTINGS);
+        }
 
         if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfScorchTicks) {
             scale = (float) weatherPhaseTicks / ((float) halfScorchTicks);
@@ -367,6 +400,11 @@ public class MirrorDimension implements IDimension {
         float rainLevel = 0;
         int halfSnowTicks = WeatherPhase.FREEZING.getDuration() / 2;
 
+        if (weatherPhaseTicks == 0) {
+            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_FREEZING_LOOP);
+            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_FREEZING_SETTINGS);
+        }
+
         if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfSnowTicks) {
             rainLevel = (float) weatherPhaseTicks / ((float) halfSnowTicks);
             Dimensions.RAIN_LEVEL.put(ID, rainLevel);
@@ -450,6 +488,11 @@ public class MirrorDimension implements IDimension {
 
     /** @see ServerLevel#tickChunk */
     private void handleStormingPhase(ServerLevel level, Random random) {
+        if (weatherPhaseTicks == 0) {
+            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
+            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
+        }
+
         if (lightningTicks == 0) {
             nextLightningAt = random.nextInt(400) + minLightningTicks;
         }
@@ -476,10 +519,10 @@ public class MirrorDimension implements IDimension {
     }
 
     public enum WeatherPhase {
-        FREEZING(12000),
-        SCORCHING(7000),
-        STORMING(5000),
-        CALM(1000);
+        FREEZING(2000),
+        SCORCHING(2000),
+        STORMING(2000),
+        CALM(2000);
 
         private final int duration;
 

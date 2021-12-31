@@ -2,7 +2,9 @@ package svenhjol.strange.mixin.dimensions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.Music;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
@@ -87,6 +89,26 @@ public class ConfigurableBiomeEffectsMixin {
     )
     private void hookGetBackgroundMusic(CallbackInfoReturnable<Optional<Music>> cir) {
         Optional<Music> opt = DimensionsClient.getMusic((Biome)(Object)this);
+        opt.ifPresent(p -> cir.setReturnValue(opt));
+    }
+
+    @Inject(
+        method = "getAmbientLoop",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void hookGetAmbientLoop(CallbackInfoReturnable<Optional<SoundEvent>> cir) {
+        var opt = DimensionsClient.getAmbientLoop((Biome) (Object) this);
+        opt.ifPresent(p -> cir.setReturnValue(opt));
+    }
+
+    @Inject(
+        method = "getAmbientAdditions",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void hookGetAmbientAdditions(CallbackInfoReturnable<Optional<AmbientAdditionsSettings>> cir) {
+        var opt = DimensionsClient.getAmbientAdditions((Biome) (Object) this);
         opt.ifPresent(p -> cir.setReturnValue(opt));
     }
 
