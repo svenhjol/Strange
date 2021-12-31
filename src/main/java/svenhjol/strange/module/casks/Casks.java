@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -34,7 +35,11 @@ public class Casks extends CharmModule {
     public static final ResourceLocation TRIGGER_FILLED_WITH_POTION = new ResourceLocation(Strange.MOD_ID, "filled_with_potion");
     public static final ResourceLocation TRIGGER_TAKEN_BREW = new ResourceLocation(Strange.MOD_ID, "taken_brew");
 
-    public static final String TAG_STORED_POTIONS = "StoredPotions";
+    public static final String STORED_POTIONS_TAG = "StoredPotions";
+    public static SoundEvent CASK_EXTRACT_SOUND;
+    public static SoundEvent CASK_FILL_SOUND;
+    public static SoundEvent CASK_INTERACT_SOUND;
+    public static SoundEvent CASK_NAME_SOUND;
 
     @Config(name = "Maximum bottles", description = "Maximum number of bottles a cask can hold.")
     public static int maxPortions = 64;
@@ -52,6 +57,10 @@ public class Casks extends CharmModule {
     public void register() {
         CASK = new CaskBlock(this);
         BLOCK_ENTITY = CommonRegistry.blockEntity(ID, CaskBlockEntity::new, CASK);
+        CASK_EXTRACT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "cask_extract"));
+        CASK_FILL_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "cask_fill"));
+        CASK_INTERACT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "cask_interact"));
+        CASK_NAME_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "cask_name"));
     }
 
     @Override
@@ -84,7 +93,7 @@ public class Casks extends CharmModule {
             if (preserveContents && cask.portions > 0) {
                 CompoundTag tag = new CompoundTag();
                 cask.saveAdditional(tag);
-                out.getOrCreateTag().put(TAG_STORED_POTIONS, tag);
+                out.getOrCreateTag().put(STORED_POTIONS_TAG, tag);
             }
 
             if (!cask.name.isEmpty()) {

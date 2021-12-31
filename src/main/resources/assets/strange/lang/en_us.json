@@ -202,5 +202,11 @@
   "item.strange.elixirs.moonshine": "Moonshine",
   "item.strange.elixirs.nether_master": "Nether Master",
   "item.strange.glowball": "Glowball",
-  "item.strange.ender_bundle": "Ender Bundle"
+  "item.strange.ender_bundle": "Ender Bundle",
+  "subtitles.strange.block.cask.extract": "Cask extracts",
+  "subtitles.strange.block.cask.fill": "Cask fills",
+  "subtitles.strange.block.cask.interact": "Cask does nothing",
+  "subtitles.strange.block.cask.name": "Cask named",
+  "subtitles.strange.block.teleport.activate": "Teleport activates",
+  "subtitles.strange.player.screenshot.take": "Screenshot taken"
 }

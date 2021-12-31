@@ -9,7 +9,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -93,7 +92,8 @@ public class CaskBlock extends CharmBlockWithEntity {
 
                     cask.name = held.getHoverName().getContents();
                     cask.setChanged();
-                    level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.85F, 1.1F);
+
+                    playCaskNameSound(level, pos);
                     held.shrink(1);
 
                 } else {
@@ -103,12 +103,13 @@ public class CaskBlock extends CharmBlockWithEntity {
                     if (out == null) {
 
                         // Wasn't able to process this item. Pass through.
+                        playCaskInteractSound(level, pos);
                         return InteractionResult.PASS;
 
                     } else if (out.isEmpty()) {
 
                         // Added the contents to the cask, Return empty bottle.
-                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
+                        playCaskFillSound(level, pos);
 
                         // send message to client that an item was added
                         Casks.SERVER_SEND_ADD_TO_CASK.send((ServerPlayer) player, pos);
@@ -128,15 +129,14 @@ public class CaskBlock extends CharmBlockWithEntity {
                         player.getInventory().placeItemBackInInventory(out);
 
                         if (cask.portions > 0) {
-                            playCaskOpenSound(level, pos);
 
-                            // TODO: custom sound effect
-                            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.7F, 1.0F);
+                            // Portion extracted.
+                            playCaskExtractSound(level, pos);
 
                         } else {
 
-                            // TODO: custom sound effect
-                            level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 1.0F);
+                            // The cask is empty.
+                            playCaskInteractSound(level, pos);
                         }
 
                         // Do advancement for successful extraction of brew.
@@ -180,7 +180,7 @@ public class CaskBlock extends CharmBlockWithEntity {
             // try restore contents from tag
             CompoundTag tag = itemStack.getTag();
             if (tag != null && !tag.isEmpty()) {
-                cask.load(tag.getCompound(Casks.TAG_STORED_POTIONS));
+                cask.load(tag.getCompound(Casks.STORED_POTIONS_TAG));
             }
 
             if (!level.isClientSide) {
@@ -264,8 +264,20 @@ public class CaskBlock extends CharmBlockWithEntity {
         }
     }
 
-    private void playCaskOpenSound(Level level, BlockPos pos) {
-        level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.6F, 1.0F);
+    private void playCaskExtractSound(Level level, BlockPos pos) {
+        level.playSound(null, pos, Casks.CASK_EXTRACT_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    private void playCaskFillSound(Level level, BlockPos pos) {
+        level.playSound(null, pos, Casks.CASK_FILL_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    private void playCaskInteractSound(Level level, BlockPos pos) {
+        level.playSound(null, pos, Casks.CASK_INTERACT_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    private void playCaskNameSound(Level level, BlockPos pos) {
+        level.playSound(null, pos, Casks.CASK_NAME_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     static {
