@@ -24,6 +24,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -35,13 +37,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.PlayerHelper;
 import svenhjol.charm.loader.CharmModule;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"deprecation", "EnhancedSwitchMigration"})
 public class CaskBlock extends CharmBlockWithEntity {
@@ -86,45 +86,54 @@ public class CaskBlock extends CharmBlockWithEntity {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack held = player.getItemInHand(hand);
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof CaskBlockEntity cask) {
+        if (level.getBlockEntity(pos) instanceof CaskBlockEntity cask) {
             if (!level.isClientSide) {
+
                 if (held.getItem() == Items.NAME_TAG && held.hasCustomHoverName()) {
+
                     cask.name = held.getHoverName().getContents();
                     cask.setChanged();
                     level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.85F, 1.1F);
                     held.shrink(1);
 
-                } else if (held.getItem() == Items.GLASS_BOTTLE) {
-                    ItemStack out = cask.take(level, pos, state, held);
-                    if (out != null) {
-                        PlayerHelper.addOrDropStack(player, out);
+                } else {
+
+                    ItemStack out = cask.interact(level, pos, state, held);
+
+                    if (out == null) {
+
+                        // Nothing happened, just pass.
+                        return InteractionResult.PASS;
+
+                    } else if (!out.isEmpty()) {
+
+                        player.getInventory().placeItemBackInInventory(out);
 
                         if (cask.portions > 0) {
                             playCaskOpenSound(level, pos);
+
+                            // TODO: custom sound effect
                             level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.7F, 1.0F);
+
                         } else {
+
+                            // TODO: custom sound effect
                             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 1.0F);
                         }
 
-                        // do advancement for taking brew
+                        // Do advancement for successful extraction of brew.
                         if (cask.portions > 1 && cask.effects.size() > 1) {
                             Casks.triggerTakenBrew((ServerPlayer) player);
                         }
-                    }
-                } else if (held.getItem() == Items.POTION) {
-                    boolean result = cask.add(level, pos, state, held);
-                    if (result) {
-                        playCaskOpenSound(level, pos);
-                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
 
-                        // give the glass bottle back to the player
-                        PlayerHelper.addOrDropStack(player, new ItemStack(Items.GLASS_BOTTLE));
+                    } else {
+
+                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
 
                         // send message to client that an item was added
                         Casks.SERVER_SEND_ADD_TO_CASK.send((ServerPlayer) player, pos);
 
-                        // do advancement for filling with potions
+                        // Do advancement for successful filling with potion.
                         if (cask.portions > 1 && cask.effects.size() > 1) {
                             Casks.triggerFilledWithPotion((ServerPlayer) player);
                         }
@@ -136,6 +145,12 @@ public class CaskBlock extends CharmBlockWithEntity {
         }
 
         return InteractionResult.PASS;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : CaskBlockEntity::serverTick;
     }
 
     @Override
@@ -230,7 +245,7 @@ public class CaskBlock extends CharmBlockWithEntity {
                     .stream()
                     .map(Registry.MOB_EFFECT::get)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                    .toList();
 
                 effects.forEach(effect -> {
                     int color = effect.getColor();
