@@ -31,7 +31,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.block.CharmSyncedBlockEntity;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.PotionHelper;
+import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -133,9 +135,17 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
      * True if a potion was processed, false on fail.
      */
     public boolean add(ItemStack input) {
+        if (!Casks.VALID_INPUT_ITEMS.contains(input.getItem())) {
+            LogHelper.debug(Strange.MOD_ID, getClass(), "The input wasn't a valid item.");
+            return false;
+        }
+
         Potion potion = PotionUtils.getPotion(input);
         List<MobEffectInstance> customEffects = PotionUtils.getCustomEffects(input);
-        if (potion == Potions.EMPTY) return false;
+        if (potion == Potions.EMPTY) {
+            LogHelper.debug(Strange.MOD_ID, getClass(), "The input didn't have any valid potions.");
+            return false;
+        }
 
         if (portions < Casks.maxPortions) {
 
@@ -154,7 +164,10 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
                     .filter(e -> e.getDuration() > 1)
                     .collect(Collectors.toList());
 
-                if (effects.isEmpty()) return false;
+                if (effects.isEmpty()) {
+                    LogHelper.debug(Strange.MOD_ID, getClass(), "The input didn't have any valid effects.");
+                    return false;
+                }
 
                 effects.forEach(effect -> {
                     boolean changedAmplifier = false;
@@ -200,9 +213,11 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
                 }
             });
 
+            LogHelper.debug(Strange.MOD_ID, getClass(), "The input was successfully added. Now " + portions + " portions.");
             return true;
         }
 
+        LogHelper.debug(Strange.MOD_ID, getClass(), "The cask is full.");
         return false;
     }
 
@@ -240,12 +255,25 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
             }
 
             portions--;
+            LogHelper.debug(Strange.MOD_ID, getClass(), "A portion was successfully extracted. Now " + portions + " portions.");
             return bottle;
         }
 
+        LogHelper.debug(Strange.MOD_ID, getClass(), "The cask is empty, returning empty itemstack.");
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Push an item into the cask and receive an output according to the item and cask state.
+     *
+     * If a glass bottle:
+     * - if the cask is not empty, return a potion bottle.
+     * - if the cask is empty, return null.
+     *
+     * If anything else:
+     * - if it could be added to the cask, return empty itemstack.
+     * - if it could not, return null.
+     */
     @Nullable
     public ItemStack interact(Level level, BlockPos pos, BlockState state, ItemStack input) {
         var out = ItemStack.EMPTY;
@@ -261,14 +289,19 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
 
                 input.shrink(1);
             } else {
+
+                LogHelper.debug(Strange.MOD_ID, getClass(), "Nothing extracted, returning null.");
                 return null;
             }
+
         } else {
 
             var result= add(input);
             if (result) {
                 input.shrink(1);
             } else {
+
+                LogHelper.debug(Strange.MOD_ID, getClass(), "Nothing added, returning null.");
                 return null;
             }
 
@@ -286,6 +319,7 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         portions = 0;
 
+        LogHelper.debug(Strange.MOD_ID, getClass(), "No more portions, flushing the cask.");
         setChanged();
     }
 
@@ -338,7 +372,7 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
     }
 
     /**
-     * Copypasta from {@link net.minecraft.world.level.block.entity.BrewingStandBlockEntity#stillValid}=
+     * Copypasta from {@link net.minecraft.world.level.block.entity.BrewingStandBlockEntity#stillValid}
      */
     @Override
     public boolean stillValid(Player player) {
@@ -396,13 +430,17 @@ public class CaskBlockEntity extends CharmSyncedBlockEntity implements WorldlyCo
         var out = cask.interact(level, pos, state, slot0);
 
         if (out == null) {
+            // Wasn't able to process this item. Pass through.
             cask.setItem(1, slot0);
-            cask.setItem(0, ItemStack.EMPTY);
+        } else if (out.isEmpty()) {
+            // Added the contents to the cask. Return empty bottle.
+            cask.setItem(1, new ItemStack(Items.GLASS_BOTTLE));
         } else {
-            cask.setItem(0, ItemStack.EMPTY);
+            // Extracted contents from the cask. Return potion bottle.
             cask.setItem(1, out);
         }
 
+        cask.setItem(0, ItemStack.EMPTY);
         cask.setChanged();
     }
 

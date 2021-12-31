@@ -8,7 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,6 +24,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.casks.network.ServerSendAddToCask;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Casks let you combine up to 64 potions, keeping an average of duration. Use glass bottles to extract home brew from the cask.")
 public class Casks extends CharmModule {
@@ -32,13 +37,14 @@ public class Casks extends CharmModule {
     public static final String TAG_STORED_POTIONS = "StoredPotions";
 
     @Config(name = "Maximum bottles", description = "Maximum number of bottles a cask can hold.")
-    public static int maxPortions = 16;
+    public static int maxPortions = 64;
 
     @Config(name = "Preserve contents", description = "If true, a cask remembers it contents when broken.")
     public static boolean preserveContents = true;
 
     public static CaskBlock CASK;
     public static BlockEntityType<CaskBlockEntity> BLOCK_ENTITY;
+    public static final List<Item> VALID_INPUT_ITEMS = new ArrayList<>();
 
     public static ServerSendAddToCask SERVER_SEND_ADD_TO_CASK;
 
@@ -52,6 +58,10 @@ public class Casks extends CharmModule {
     public void runWhenEnabled() {
         PlayerBlockBreakEvents.BEFORE.register(this::handleBlockBreak);
         SERVER_SEND_ADD_TO_CASK = new ServerSendAddToCask();
+        VALID_INPUT_ITEMS.addAll(Arrays.asList(
+            Items.GLASS_BOTTLE,
+            Items.POTION
+        ));
     }
 
     public static void triggerFilledWithPotion(ServerPlayer player) {

@@ -102,11 +102,29 @@ public class CaskBlock extends CharmBlockWithEntity {
 
                     if (out == null) {
 
-                        // Nothing happened, just pass.
+                        // Wasn't able to process this item. Pass through.
                         return InteractionResult.PASS;
 
-                    } else if (!out.isEmpty()) {
+                    } else if (out.isEmpty()) {
 
+                        // Added the contents to the cask, Return empty bottle.
+                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
+
+                        // send message to client that an item was added
+                        Casks.SERVER_SEND_ADD_TO_CASK.send((ServerPlayer) player, pos);
+
+                        // Do advancement for successful filling with potion.
+                        if (cask.portions > 1 && cask.effects.size() > 1) {
+                            Casks.triggerFilledWithPotion((ServerPlayer) player);
+                        }
+
+                        // Return a glass bottle to the player
+                        player.getInventory().placeItemBackInInventory(new ItemStack(Items.GLASS_BOTTLE));
+
+
+                    } else {
+
+                        // Extracted contents from the cask. Return potion bottle.
                         player.getInventory().placeItemBackInInventory(out);
 
                         if (cask.portions > 0) {
@@ -124,18 +142,6 @@ public class CaskBlock extends CharmBlockWithEntity {
                         // Do advancement for successful extraction of brew.
                         if (cask.portions > 1 && cask.effects.size() > 1) {
                             Casks.triggerTakenBrew((ServerPlayer) player);
-                        }
-
-                    } else {
-
-                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
-
-                        // send message to client that an item was added
-                        Casks.SERVER_SEND_ADD_TO_CASK.send((ServerPlayer) player, pos);
-
-                        // Do advancement for successful filling with potion.
-                        if (cask.portions > 1 && cask.effects.size() > 1) {
-                            Casks.triggerFilledWithPotion((ServerPlayer) player);
                         }
                     }
                 }
