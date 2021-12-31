@@ -15,7 +15,6 @@ import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.teleport.Teleport;
 import svenhjol.strange.module.teleport.iface.ITicket;
 
@@ -87,7 +86,7 @@ public class TeleportTicket implements ITicket {
                 return;
             }
 
-            level.playSound(null, from, StrangeSounds.RUNESTONE_TRAVEL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, from, Teleport.STRANGE_TELEPORT_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         if (!valid) {

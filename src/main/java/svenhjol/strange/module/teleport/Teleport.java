@@ -1,12 +1,15 @@
 package svenhjol.strange.module.teleport;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.teleport.iface.ITeleportType;
 import svenhjol.strange.module.teleport.iface.ITicket;
@@ -26,6 +29,8 @@ public class Teleport extends CharmModule {
     private static final List<ITicket> TELEPORT_TICKETS = new ArrayList<>();
     private static final List<ITicket> REPOSITION_TICKETS = new ArrayList<>();
 
+    public static SoundEvent STRANGE_TELEPORT_SOUND;
+
     public static List<UUID> noEndPlatform = new ArrayList<>();
     public static ThreadLocal<Entity> entityCreatingPlatform = new ThreadLocal<>();
 
@@ -41,6 +46,8 @@ public class Teleport extends CharmModule {
         // Bound the ticks config. min = 0, max = 20
         teleportTicks = Mth.clamp(teleportTicks, 0, 20);
         repositionTicks = Mth.clamp(repositionTicks, 0, 20);
+
+        STRANGE_TELEPORT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "strange_teleport"));
     }
 
     @Override

@@ -58,9 +58,9 @@
     ],
     "subtitle": "subtitles.strange.block.cask.name"
   },
-  "runestone_travel": {
+  "strange_teleport": {
     "sounds": [
-      "strange:runestone_travel"
+      "strange:strange_teleport"
     ],
     "subtitle": "subtitles.strange.block.teleport.activate"
   },
