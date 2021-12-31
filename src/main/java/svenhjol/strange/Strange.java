@@ -17,7 +17,6 @@ public class Strange implements ModInitializer {
 
         // setup Strange afterwards
         StrangeCommands.init();
-        StrangeSounds.init();
         StrangeEvents.init();
         StrangeParticles.init();
 

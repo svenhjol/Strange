@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,9 @@ import svenhjol.charm.api.event.PlayerLoadDataCallback;
 import svenhjol.charm.api.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.network.ServerReceiveMakeMap;
@@ -28,7 +31,6 @@ import svenhjol.strange.module.journals.network.ServerSendJournal;
 import svenhjol.strange.module.journals.network.ServerSendPage;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
-import svenhjol.strange.api.event.QuestEvents;
 
 import java.io.File;
 import java.util.*;
@@ -47,6 +49,13 @@ public class Journals extends CharmModule {
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
     public static ServerSendPage SERVER_SEND_PAGE;
     public static ServerReceiveMakeMap SERVER_RECEIVE_MAKE_MAP;
+
+    public static SoundEvent SCREENSHOT_SOUND;
+
+    @Override
+    public void register() {
+        SCREENSHOT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "screenshot"));
+    }
 
     @Override
     public void runWhenEnabled() {

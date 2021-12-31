@@ -7,8 +7,8 @@ import net.minecraft.client.Screenshot;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.init.StrangeSounds;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.screen.bookmark.JournalBookmarkScreen;
 
 import javax.annotation.Nullable;
@@ -53,7 +53,7 @@ public class TakePhotoHandler {
                 filename,
                 client.getMainRenderTarget(),
                 component -> {
-                    client.player.playSound(StrangeSounds.SCREENSHOT, 1.0F, 1.0F);
+                    client.player.playSound(Journals.SCREENSHOT_SOUND, 1.0F, 1.0F);
                     client.options.hideGui = false;
 
                     client.execute(() -> {
