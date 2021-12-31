@@ -49,27 +49,27 @@
       {
         "name": "strange:mirror_freezing_additions1",
         "weight": 20,
-        "volume": 0.5
+        "volume": 0.45
       },
       {
         "name": "strange:mirror_freezing_additions2",
         "weight": 20,
-        "volume": 0.5
+        "volume": 0.45
       },
       {
         "name": "strange:mirror_freezing_additions3",
         "weight": 20,
-        "volume": 0.5
+        "volume": 0.45
       },
       {
         "name": "strange:mirror_freezing_additions4",
         "weight": 20,
-        "volume": 0.5
+        "volume": 0.45
       },
       {
         "name": "strange:mirror_freezing_additions5",
         "weight": 20,
-        "volume": 0.5
+        "volume": 0.45
       }
     ]
   },

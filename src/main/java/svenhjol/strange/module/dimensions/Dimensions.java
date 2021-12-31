@@ -1,10 +1,12 @@
 package svenhjol.strange.module.dimensions;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionResult;
@@ -72,7 +74,19 @@ public class Dimensions extends CharmModule {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
         AddEntityCallback.EVENT.register(this::handleAddEntity);
+    }
+
+    /**
+     * Fires when player changes dimension. Send to subclass if the destination dimension matches.
+     */
+    private void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
+        DIMENSIONS.forEach(d -> {
+            if (destination.dimension().location().equals(d.getId())) {
+                d.handlePlayerChangeDimension(player, origin, destination);
+            }
+        });
     }
 
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {

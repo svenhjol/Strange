@@ -1,5 +1,7 @@
 package svenhjol.strange.module.dimensions;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -32,6 +34,16 @@ public class DimensionsClient extends CharmModule {
 
         // register all dimension clients
         DIMENSION_CLIENTS.forEach(IDimensionClient::register);
+
+        ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
+    }
+
+    private void handleWorldTick(ClientLevel level) {
+        DIMENSION_CLIENTS.forEach(d -> {
+            if (level.dimension().location().equals(d.getId())) {
+                d.handleWorldTick(level);
+            }
+        });
     }
 
     public static Optional<Integer> getSkyColor(Biome biome) {

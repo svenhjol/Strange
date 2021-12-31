@@ -23,7 +23,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
@@ -42,6 +41,8 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
+import svenhjol.strange.module.dimensions.mirror.network.ServerSendWeatherChange;
+import svenhjol.strange.module.dimensions.mirror.network.ServerSendWeatherTicks;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,6 +53,9 @@ public class MirrorDimension implements IDimension {
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
     public static final List<MobEffect> POSITIVE_MOB_EFFECTS;
     public static final List<AmbientParticleSettings> AMBIENT_PARTICLES;
+
+    public static ServerSendWeatherChange SERVER_SEND_WEATHER_CHANGE;
+    public static ServerSendWeatherTicks SERVER_SEND_WEATHER_TICKS;
 
     public static final AmbientParticleSettings ASH;
     public static final AmbientParticleSettings WARPED_SPORE;
@@ -73,8 +77,6 @@ public class MirrorDimension implements IDimension {
     public static final int FOG = 0x004434;
     public static final float TEMP = 0.5F;
 
-    public static final int startParticlesAfter = 750; // number of ticks between particle effects
-    public static final int maxParticleTicks = 1000; // number of ticks that particle effects will occur
     public static final int lightningDistanceFromPlayer = 140; // maximum distance from a random player that a lightning strike can occur
     public static final int minLightningTicks = 200; // minimum number of ticks before another lightning strike occurs
 
@@ -89,7 +91,6 @@ public class MirrorDimension implements IDimension {
     public static int nextColdAt = 0;
     public static int lightningTicks = 0;
     public static int nextLightningAt = 0;
-    public static int particleTicks = 0;
 
     @Override
     public ResourceLocation getId() {
@@ -98,17 +99,20 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void register() {
+        SERVER_SEND_WEATHER_CHANGE = new ServerSendWeatherChange();
+        SERVER_SEND_WEATHER_TICKS = new ServerSendWeatherTicks();
+
         MIRROR_AMBIENCE_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_loop"));
         MIRROR_AMBIENCE_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_additions"));
-        MIRROR_AMBIENCE_SETTINGS = new AmbientAdditionsSettings(MIRROR_AMBIENCE_ADDITIONS, 0.0100);
+        MIRROR_AMBIENCE_SETTINGS = new AmbientAdditionsSettings(MIRROR_AMBIENCE_ADDITIONS, 0.005);
 
         MIRROR_FREEZING_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_freezing_loop"));
         MIRROR_FREEZING_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_freezing_additions"));
-        MIRROR_FREEZING_SETTINGS = new AmbientAdditionsSettings(MIRROR_FREEZING_ADDITIONS, 0.0100);
+        MIRROR_FREEZING_SETTINGS = new AmbientAdditionsSettings(MIRROR_FREEZING_ADDITIONS, 0.005);
 
         MIRROR_SCORCHING_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_scorching_loop"));
         MIRROR_SCORCHING_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_scorching_additions"));
-        MIRROR_SCORCHING_SETTINGS = new AmbientAdditionsSettings(MIRROR_SCORCHING_ADDITIONS, 0.0100);
+        MIRROR_SCORCHING_SETTINGS = new AmbientAdditionsSettings(MIRROR_SCORCHING_ADDITIONS, 0.005);
 
         Dimensions.SKY_COLOR.put(ID, 0x000000);
         Dimensions.FOG_COLOR.put(ID, FOG);
@@ -132,13 +136,17 @@ public class MirrorDimension implements IDimension {
     }
 
     @Override
+    public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
+        SERVER_SEND_WEATHER_TICKS.send(player, weatherPhase, weatherPhaseTicks);
+    }
+
+    @Override
     public void handleWorldTick(Level level) {
         if (level.isClientSide) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
         Random random = serverLevel.getRandom();
 
-        handleParticles(random);
         handleWeather(serverLevel, random);
     }
 
@@ -156,11 +164,6 @@ public class MirrorDimension implements IDimension {
         }
 
         return InteractionResult.PASS;
-    }
-
-    @Override
-    public void handlePlayerTick(Player player) {
-        // not yet
     }
 
     private boolean handleMonsterBuffs(LivingEntity livingEntity, Random random) {
@@ -194,33 +197,14 @@ public class MirrorDimension implements IDimension {
         return true;
     }
 
-    private void handleParticles(Random random) {
-        if (!Dimensions.mirrorDimensionWeather) {
-            return;
-        }
-
-        if (weatherPhase == WeatherPhase.FREEZING || weatherPhase == WeatherPhase.SCORCHING) {
-            if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
-                Dimensions.AMBIENT_PARTICLE.put(ID, ASH);
-            }
-        } else if (particleTicks++ > startParticlesAfter) {
-            if (!Dimensions.AMBIENT_PARTICLE.containsKey(ID)) {
-                Dimensions.AMBIENT_PARTICLE.put(ID, AMBIENT_PARTICLES.get(random.nextInt(AMBIENT_PARTICLES.size())));
-            }
-
-            if (particleTicks > startParticlesAfter + maxParticleTicks) {
-                Dimensions.AMBIENT_PARTICLE.remove(ID);
-                particleTicks = 0;
-            }
-        }
-    }
-
     private void handleWeather(ServerLevel level, Random random) {
         if (weatherPhaseTicks++ >= weatherPhase.getDuration()) {
-            Dimensions.FOG_COLOR.put(ID, FOG);
             Dimensions.TEMPERATURE.put(ID, TEMP);
+
             weatherPhaseTicks = 0;
             weatherPhase = WeatherPhase.getNextPhase(weatherPhase);
+
+            SERVER_SEND_WEATHER_CHANGE.send(level.getServer(), weatherPhase);
             LogHelper.debug(Strange.MOD_ID, getClass(), "Setting weather phase to " + weatherPhase);
         }
 
@@ -228,25 +212,12 @@ public class MirrorDimension implements IDimension {
             case FREEZING -> handleFreezingPhase(level, random);
             case SCORCHING -> handleScorchingPhase(level, random);
             case STORMING -> handleStormingPhase(level, random);
-            case CALM -> handleCalmPhase(level, random);
-        }
-    }
-
-    private void handleCalmPhase(ServerLevel level, Random random) {
-        if (weatherPhaseTicks == 0) {
-            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
-            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
         }
     }
 
     private void handleScorchingPhase(ServerLevel level, Random random) {
         float scale = 0;
         int halfScorchTicks = WeatherPhase.SCORCHING.getDuration() / 2;
-
-        if (weatherPhaseTicks == 0) {
-            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_SCORCHING_LOOP);
-            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_SCORCHING_SETTINGS);
-        }
 
         if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfScorchTicks) {
             scale = (float) weatherPhaseTicks / ((float) halfScorchTicks);
@@ -381,36 +352,20 @@ public class MirrorDimension implements IDimension {
             }
         }
 
-        int r = (FOG >> 16 & 0xFF);
-        int g = (FOG >> 8 & 0xFF);
-        int b = (FOG & 0xFF);
-
-        r += 130 * scale;
-        g += 20 * scale;
-        b -= 4 * scale;
-
-        int newFog = 0xFF000000 | r << 16 | g << 8 | b;
         float newTemp = TEMP + (scale * 0.5F);
-
-        Dimensions.FOG_COLOR.put(ID, newFog);
         Dimensions.TEMPERATURE.put(ID, newTemp);
     }
 
     private void handleFreezingPhase(ServerLevel level, Random random) {
-        float rainLevel = 0;
+        float scale = 0;
         int halfSnowTicks = WeatherPhase.FREEZING.getDuration() / 2;
 
-        if (weatherPhaseTicks == 0) {
-            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_FREEZING_LOOP);
-            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_FREEZING_SETTINGS);
-        }
-
         if (weatherPhaseTicks >= 0 && weatherPhaseTicks < halfSnowTicks) {
-            rainLevel = (float) weatherPhaseTicks / ((float) halfSnowTicks);
-            Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+            scale = (float) weatherPhaseTicks / ((float) halfSnowTicks);
+            Dimensions.RAIN_LEVEL.put(ID, scale);
         } else if (weatherPhaseTicks >= halfSnowTicks && weatherPhaseTicks < WeatherPhase.FREEZING.getDuration()) {
-            rainLevel = 1.0F - (float) (weatherPhaseTicks - halfSnowTicks) / halfSnowTicks;
-            Dimensions.RAIN_LEVEL.put(ID, rainLevel);
+            scale = 1.0F - (float) (weatherPhaseTicks - halfSnowTicks) / halfSnowTicks;
+            Dimensions.RAIN_LEVEL.put(ID, scale);
         }
 
         if (coldTicks++ > nextColdAt) {
@@ -471,28 +426,12 @@ public class MirrorDimension implements IDimension {
             }
         }
 
-        int r = (FOG >> 16 & 0xFF);
-        int g = (FOG >> 8 & 0xFF);
-        int b = (FOG & 0xFF);
-
-        r += 4 * rainLevel;
-        g += 10 * rainLevel;
-        b += 50 * rainLevel;
-
-        int newFog = 0xFF000000 | r << 16 | g << 8 | b;
-        float newTemp = TEMP - (rainLevel * 0.5F);
-
-        Dimensions.FOG_COLOR.put(ID, newFog);
+        float newTemp = TEMP - (scale * 0.5F);
         Dimensions.TEMPERATURE.put(ID, newTemp);
     }
 
     /** @see ServerLevel#tickChunk */
     private void handleStormingPhase(ServerLevel level, Random random) {
-        if (weatherPhaseTicks == 0) {
-            Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
-            Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
-        }
-
         if (lightningTicks == 0) {
             nextLightningAt = random.nextInt(400) + minLightningTicks;
         }
