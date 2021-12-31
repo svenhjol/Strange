@@ -7,9 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.Musics;
+import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -62,6 +61,9 @@ public class MirrorDimension implements IDimension {
     public static final AmbientParticleSettings CRIMSON_SPORE;
     public static final AmbientParticleSettings SPORE_BLOSSOM;
 
+    public static SoundEvent MIRROR_WORLD_MUSIC;
+    public static Music MIRROR_WORLD_GAME_MUSIC;
+
     public static SoundEvent MIRROR_AMBIENCE_LOOP;
     public static SoundEvent MIRROR_AMBIENCE_ADDITIONS;
     public static AmbientAdditionsSettings MIRROR_AMBIENCE_SETTINGS;
@@ -102,6 +104,9 @@ public class MirrorDimension implements IDimension {
         SERVER_SEND_WEATHER_CHANGE = new ServerSendWeatherChange();
         SERVER_SEND_WEATHER_TICKS = new ServerSendWeatherTicks();
 
+        MIRROR_WORLD_MUSIC = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_world_music"));
+        MIRROR_WORLD_GAME_MUSIC = new Music(MIRROR_WORLD_MUSIC, 12000, 24000, true);
+
         MIRROR_AMBIENCE_LOOP = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_loop"));
         MIRROR_AMBIENCE_ADDITIONS = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "mirror_ambience_additions"));
         MIRROR_AMBIENCE_SETTINGS = new AmbientAdditionsSettings(MIRROR_AMBIENCE_ADDITIONS, 0.005);
@@ -124,7 +129,7 @@ public class MirrorDimension implements IDimension {
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
         Dimensions.TEMPERATURE.put(ID, TEMP);
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
-        Dimensions.MUSIC.put(ID, Musics.createGameMusic(SoundEvents.MUSIC_BIOME_BASALT_DELTAS));
+        Dimensions.MUSIC.put(ID, MIRROR_WORLD_GAME_MUSIC);
         Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
         Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
     }

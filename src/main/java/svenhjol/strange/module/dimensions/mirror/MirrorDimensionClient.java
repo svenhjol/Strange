@@ -20,7 +20,7 @@ public class MirrorDimensionClient implements IDimensionClient {
     public static final int startParticlesAfter = 750; // number of ticks between particle effects
     public static final int maxParticleTicks = 1000; // number of ticks that particle effects will occur
 
-    public static MirrorDimension.WeatherPhase weatherPhase;
+    public static MirrorDimension.WeatherPhase weatherPhase = MirrorDimension.WeatherPhase.CALM;
     public static int weatherPhaseTicks = 0;
     public static int particleTicks = 0;
 
