@@ -12,6 +12,6 @@ public class ClientReceiveWeatherChange extends ClientReceiver {
     @Override
     public void handle(Minecraft client, FriendlyByteBuf buffer) {
         var weather = buffer.readEnum(MirrorDimension.WeatherPhase.class);
-        client.execute(() -> MirrorDimensionClient.handleWeatherChange(weather));
+        client.execute(() -> MirrorDimensionClient.handleWeatherChange(weather, 0));
     }
 }

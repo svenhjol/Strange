@@ -1,15 +1,21 @@
 package svenhjol.strange.module.dimensions.mirror;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.resources.sounds.BiomeAmbientSoundsHandler;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.charm.helper.LogHelper;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimensionClient;
 import svenhjol.strange.module.dimensions.mirror.network.ClientReceiveWeatherChange;
 import svenhjol.strange.module.dimensions.mirror.network.ClientReceiveWeatherTicks;
+import svenhjol.strange.module.intercept_music.InterceptMusic;
+import svenhjol.strange.module.intercept_music.InterceptMusicClient;
+import svenhjol.strange.module.intercept_music.MusicCondition;
 
 import java.util.Random;
 
@@ -22,7 +28,7 @@ public class MirrorDimensionClient implements IDimensionClient {
 
     public static MirrorDimension.WeatherPhase weatherPhase = MirrorDimension.WeatherPhase.CALM;
     public static int weatherPhaseTicks = 0;
-    public static int particleTicks = 0;
+    public static int particleTicks = startParticlesAfter;
 
     @Override
     public ResourceLocation getId() {
@@ -35,6 +41,16 @@ public class MirrorDimensionClient implements IDimensionClient {
         CLIENT_RECEIVE_WEATHER_TICKS = new ClientReceiveWeatherTicks();
 
         DimensionSpecialEffects.EFFECTS.put(MirrorDimension.ID, new MirrorEffects());
+
+        if (Strange.LOADER.isEnabled(InterceptMusic.class)) {
+            var ambientMusicCondition = new MusicCondition("mirror_music", 0, MirrorDimension.MIRROR_MUSIC, 12000, 24000, true, current -> {
+                var mc = Minecraft.getInstance();
+                if (mc == null || mc.player == null) return false;
+                return mc.player.level.dimension().location().equals(MirrorDimension.ID);
+            });
+
+            InterceptMusicClient.addCondition(ambientMusicCondition);
+        }
     }
 
     @Override
@@ -44,8 +60,8 @@ public class MirrorDimensionClient implements IDimensionClient {
         handleWeather(level, random);
     }
 
-    public static void handleWeatherChange(MirrorDimension.WeatherPhase weather) {
-        weatherPhaseTicks = 0;
+    public static void handleWeatherChange(MirrorDimension.WeatherPhase weather, int ticks) {
+        weatherPhaseTicks = ticks;
         weatherPhase = weather;
 
         Dimensions.FOG_COLOR.put(MirrorDimension.ID, MirrorDimension.FOG);
@@ -65,14 +81,17 @@ public class MirrorDimensionClient implements IDimensionClient {
             }
         }
 
-        // TODO: reset sounds here
-
         ClientHelper.getPlayer().ifPresent(player -> {
             if (player instanceof LocalPlayer localPlayer) {
                 localPlayer.ambientSoundHandlers.stream()
                     .filter(h -> h instanceof BiomeAmbientSoundsHandler)
                     .findFirst()
-                    .ifPresent(handler -> ((BiomeAmbientSoundsHandler)handler).previousBiome = null);
+                    .ifPresent(handler -> {
+                        var biomeHandler = (BiomeAmbientSoundsHandler) handler;
+                        LogHelper.debug(Strange.MOD_ID, MirrorDimensionClient.class, "previousBiome is set to `" + biomeHandler.previousBiome + "`");
+                        biomeHandler.loopSounds.clear();
+                        biomeHandler.previousBiome = null;
+                    });
             }
         });
     }

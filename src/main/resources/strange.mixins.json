@@ -16,6 +16,7 @@
     "dimensions.PreventPlayerCreatingPlatformMixin",
     "dimensions.WorldGenSettingsMixin",
     "helper.DeepCopyStructuresMixin",
+    "intercept_music.TryCustomMusicMixin",
     "potion_of_hogsbane.PreventAttackingAiMixin",
     "potion_of_hogsbane.PreventAttackingHoglinMixin",
     "relics.PreserveHighestLevelEnchantmentsMixin",

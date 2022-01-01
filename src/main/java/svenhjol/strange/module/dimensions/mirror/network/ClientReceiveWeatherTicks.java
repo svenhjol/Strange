@@ -15,8 +15,7 @@ public class ClientReceiveWeatherTicks extends ClientReceiver {
         var ticks = buffer.readInt();
 
         client.execute(() -> {
-            MirrorDimensionClient.weatherPhase = weather;
-            MirrorDimensionClient.weatherPhaseTicks = ticks;
+            MirrorDimensionClient.handleWeatherChange(weather, ticks);
         });
     }
 }

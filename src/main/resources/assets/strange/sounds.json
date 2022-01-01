@@ -1,8 +1,22 @@
 {
-  "mirror_world_music": {
+  "mirror_music": {
     "sounds": [
       {
         "name": "strange:skuggi",
+        "stream": true,
+        "volume": 0.62
+      },
+      {
+        "name": "music/game/nether/soulsand_valley/so_below",
+        "stream:": true,
+        "volume": 0.4
+      }
+    ]
+  },
+  "vaults_music": {
+    "sounds": [
+      {
+        "name": "strange:draugur",
         "stream": true,
         "volume": 0.5
       }
@@ -13,7 +27,7 @@
       {
         "name": "strange:mirror_ambience_loop",
         "stream": true,
-        "volume": 0.5
+        "volume": 0.45
       }
     ]
   },
@@ -51,7 +65,7 @@
       {
         "name": "strange:mirror_freezing_loop",
         "stream": true,
-        "volume": 0.5
+        "volume": 0.45
       }
     ]
   },
@@ -60,27 +74,27 @@
       {
         "name": "strange:mirror_freezing_additions1",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_freezing_additions2",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_freezing_additions3",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_freezing_additions4",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_freezing_additions5",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       }
     ]
   },
@@ -89,7 +103,7 @@
       {
         "name": "strange:mirror_scorching_loop",
         "stream": true,
-        "volume": 0.5
+        "volume": 0.45
       }
     ]
   },
@@ -98,27 +112,27 @@
       {
         "name": "strange:mirror_scorching_additions1",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_scorching_additions2",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_scorching_additions3",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_scorching_additions4",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       },
       {
         "name": "strange:mirror_scorching_additions5",
         "weight": 20,
-        "volume": 0.45
+        "volume": 0.4
       }
     ]
   },

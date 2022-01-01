@@ -1,7 +1,6 @@
 package svenhjol.strange.mixin.dimensions;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.AmbientAdditionsSettings;
@@ -79,16 +78,6 @@ public class ConfigurableBiomeEffectsMixin {
     )
     private void hookGetAmbientParticle(CallbackInfoReturnable<Optional<AmbientParticleSettings>> cir) {
         Optional<AmbientParticleSettings> opt = DimensionsClient.getAmbientParticle((Biome) (Object) this);
-        opt.ifPresent(p -> cir.setReturnValue(opt));
-    }
-
-    @Inject(
-        method = "getBackgroundMusic",
-        at = @At("HEAD"),
-        cancellable = true
-    )
-    private void hookGetBackgroundMusic(CallbackInfoReturnable<Optional<Music>> cir) {
-        Optional<Music> opt = DimensionsClient.getMusic((Biome)(Object)this);
         opt.ifPresent(p -> cir.setReturnValue(opt));
     }
 

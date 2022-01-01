@@ -6,6 +6,7 @@ import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -39,6 +40,8 @@ public class Vaults extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "vaults");
     public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "vaults/starts");
 
+    public static SoundEvent VAULTS_MUSIC;
+
     public static StructureFeature<JigsawConfiguration> VAULTS_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
 
@@ -65,6 +68,8 @@ public class Vaults extends CharmModule {
             .register();
 
         CommonRegistry.configuredStructureFeature(STRUCTURE_ID, CONFIGURED_FEATURE);
+
+        VAULTS_MUSIC = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "vaults_music"));
     }
 
     @Override
