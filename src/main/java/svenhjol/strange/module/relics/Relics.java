@@ -84,25 +84,10 @@ public class Relics extends CharmModule {
     public void runWhenEnabled() {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
-        if (Strange.LOADER.isEnabled(Vaults.class)) {
+        var vaultsEnabled = Strange.LOADER.isEnabled(Vaults.class);
+        var stoneRuinsEnabled = Strange.LOADER.isEnabled(StoneRuins.class);
 
-            // If vaults is enabled, add relics to the large room.
-            TOOL_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
-            WEAPON_LOOT_TABLES.add(VaultsLoot.VAULTS_LARGE_ROOM);
-
-        } else if (Strange.LOADER.isEnabled(StoneRuins.class)) {
-
-            // If vaults not enabled and stone ruins are enabled, add relics to the ruin rooms.
-            TOOL_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
-            WEAPON_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
-
-        } else {
-
-            // Default to adding relics to woodland mansions.
-            TOOL_LOOT_TABLES.add(BuiltInLootTables.WOODLAND_MANSION);
-            WEAPON_LOOT_TABLES.add(StoneRuinsLoot.STONE_RUINS_ROOM);
-
-        }
+        WEAPON_LOOT_TABLES.add(vaultsEnabled ? VaultsLoot.VAULTS_LARGE_ROOM : (stoneRuinsEnabled ? StoneRuinsLoot.STONE_RUINS_ROOM : BuiltInLootTables.WOODLAND_MANSION));
 
         try {
             List<String> classes = ClassHelper.getClassesInPackage(ITEM_NAMESPACE);
