@@ -32,7 +32,6 @@ import svenhjol.strange.module.journals.network.ServerSendJournal;
 import svenhjol.strange.module.journals.network.ServerSendPage;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
-import svenhjol.strange.module.runes.Tier;
 
 import java.io.File;
 import java.util.*;
@@ -49,7 +48,6 @@ public class Journals extends CharmModule {
 
     public static final ResourceLocation TRIGGER_LEARN_RUNE = new ResourceLocation(Strange.MOD_ID, "learn_rune");
     public static final ResourceLocation TRIGGER_LEARN_ALL_RUNES = new ResourceLocation(Strange.MOD_ID, "learn_all_runes");
-    public static final Map<Tier, ResourceLocation> RUNE_TIER_TRIGGERS = new HashMap<>();
 
     public static ServerSendJournal SERVER_SEND_JOURNAL;
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
@@ -61,10 +59,6 @@ public class Journals extends CharmModule {
     @Override
     public void register() {
         SCREENSHOT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "screenshot"));
-
-        for (Tier tier : Tier.values()) {
-            RUNE_TIER_TRIGGERS.put(tier, new ResourceLocation(Strange.MOD_ID, "learn_" + tier.getSerializedName() + "_runes"));
-        }
     }
 
     @Override
@@ -91,13 +85,6 @@ public class Journals extends CharmModule {
 
     public static void triggerLearnAllRunes(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LEARN_ALL_RUNES);
-    }
-
-    public static void triggerLearnTierRunes(ServerPlayer player, Tier tier) {
-        var res = RUNE_TIER_TRIGGERS.get(tier);
-        if (res != null) {
-            CharmAdvancements.ACTION_PERFORMED.trigger(player, res);
-        }
     }
 
     private void handleQuestComplete(Quest quest, ServerPlayer player) {

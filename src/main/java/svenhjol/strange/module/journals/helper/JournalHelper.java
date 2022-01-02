@@ -107,15 +107,9 @@ public class JournalHelper {
             journal.learnRune(val);
             SERVER_SEND_JOURNAL.send(player);
             learned = true;
-        }
-
-        // If the player has learned all runes within a given tier, trigger advancement for that tier.
-        if (JournalHelper.nextLearnableRune(tier, journal) < 0) {
-            if (tier == Tier.getHighestTier()) {
-                Journals.triggerLearnAllRunes(player);
-            } else {
-                Journals.triggerLearnTierRunes(player, tier);
-            }
+        } else if (tier == Tier.getHighestTier()) {
+            // If the player has learned all runes within a given tier, trigger advancement for that tier.
+            Journals.triggerLearnAllRunes(player);
         }
 
         // True if player has learned a rune.

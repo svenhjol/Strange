@@ -1,5 +1,5 @@
 {
-  "parent": "strange:journals/learn_expert_runes",
+  "parent": "strange:journals/learn_rune",
   "display": {
     "icon": {
       "item": "strange:stone_runestone"
