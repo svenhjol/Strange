@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/tools",
+  "display": {
+    "icon": {
+      "item": "minecraft:potion"
+    },
+    "title": {
+      "translate": "advancements.strange.scare_hoglins.title"
+    },
+    "description": {
+      "translate": "advancements.strange.scare_hoglins.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "scared_hoglins": {
+      "trigger": "charm:action_performed",
+      "conditions": {
+        "action": "strange:scared_hoglins"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "scared_hoglins"
+    ]
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "strange:ender_bundles/obtain_ender_bundle",
+  "display": {
+    "icon": {
+      "item": "strange:ender_bundle"
+    },
+    "title": {
+      "translate": "advancements.strange.use_ender_bundle.title"
+    },
+    "description": {
+      "translate": "advancements.strange.use_ender_bundle.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "used_ender_bundle": {
+      "trigger": "charm:action_performed",
+      "conditions": {
+        "action": "strange:used_ender_bundle"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "used_ender_bundle"
+    ]
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/root",
+  "display": {
+    "icon": {
+      "item": "strange:runic_tome"
+    },
+    "title": {
+      "translate": "advancements.strange.adventure.title"
+    },
+    "description": {
+      "translate": "advancements.strange.adventure.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "player_joined": {
+      "trigger": "charm:action_performed",
+      "conditions": {
+        "action": "charm:player_joined"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "player_joined"
+    ]
+  ]
+}

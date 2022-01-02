@@ -1,0 +1,32 @@
+{
+  "parent": "strange:core/root",
+  "display": {
+    "icon": {
+      "item": "strange:ender_bundle",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "translate": "advancements.strange.tools.title"
+    },
+    "description": {
+      "translate": "advancements.strange.tools.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "player_joined": {
+      "trigger": "charm:action_performed",
+      "conditions": {
+        "action": "charm:player_joined"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "player_joined"
+    ]
+  ]
+}
