@@ -16,6 +16,8 @@ import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.intercept_music.InterceptMusic;
 import svenhjol.strange.module.intercept_music.InterceptMusicClient;
 import svenhjol.strange.module.intercept_music.MusicCondition;
+import svenhjol.strange.module.mirror_dimension.network.ClientReceiveWeatherChange;
+import svenhjol.strange.module.mirror_dimension.network.ClientReceiveWeatherTicks;
 
 import java.util.Random;
 
