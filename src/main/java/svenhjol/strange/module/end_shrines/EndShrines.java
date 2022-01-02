@@ -13,9 +13,11 @@ import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfigura
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.BiomeHelper;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
 import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
@@ -23,6 +25,7 @@ import svenhjol.strange.module.end_shrines.processor.EndShrinePortalProcessor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @CommonModule(mod = Strange.MOD_ID)
@@ -62,6 +65,8 @@ public class EndShrines extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
+        AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
+
         DESTINATIONS.add(Level.OVERWORLD.location());
 
         if (Dimensions.mirrorEnabled()) {
@@ -81,6 +86,12 @@ public class EndShrines extends CharmModule {
 
             var biomeKey = BiomeHelper.getBiomeKeyFromBiome(biome);
             BiomeHelper.addStructureToBiome(CONFIGURED_FEATURE, biomeKey);
+        }
+    }
+
+    private void handleAddRunestoneDestination(Level level, LinkedList<ResourceLocation> destinations) {
+        if (DimensionHelper.isEnd(level)) {
+            destinations.add(STRUCTURE_ID);
         }
     }
 
