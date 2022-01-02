@@ -5,7 +5,16 @@
     {
       "weight": 1,
       "element": {
-        "location": "strange:stone_ruins/test/test_start1",
+        "location": "strange:stone_ruins/castle/start_tower",
+        "processors": "strange:stone_ruins/stone_ruins_processors",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "strange:stone_ruins/castle/start_tower2",
         "processors": "strange:stone_ruins/stone_ruins_processors",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

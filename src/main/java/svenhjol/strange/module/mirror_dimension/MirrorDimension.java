@@ -38,6 +38,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.api.event.AddEntityCallback;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.init.CharmAdvancements;
@@ -155,11 +156,14 @@ public class MirrorDimension extends CharmModule {
     }
 
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
+        if (!DimensionHelper.isDimension(player.level, ID)) return;
+
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_MIRROR);
         SERVER_SEND_WEATHER_TICKS.send(player, weatherPhase, weatherPhaseTicks);
     }
 
     public void handleWorldTick(Level level) {
+        if (!DimensionHelper.isDimension(level, ID)) return;
         if (level.isClientSide) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
@@ -169,6 +173,8 @@ public class MirrorDimension extends CharmModule {
     }
 
     public InteractionResult handleAddEntity(Entity entity) {
+        if (!DimensionHelper.isDimension(entity.level, ID)) return InteractionResult.PASS;
+
         Level level = entity.level;
         if (!level.isClientSide) {
             Random random = new Random(entity.hashCode());

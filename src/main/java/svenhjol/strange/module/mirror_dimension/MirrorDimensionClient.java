@@ -9,6 +9,7 @@ import net.minecraft.client.resources.sounds.BiomeAmbientSoundsHandler;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
@@ -62,6 +63,7 @@ public class MirrorDimensionClient extends CharmModule {
     }
 
     public void handleWorldTick(ClientLevel level) {
+        if (!DimensionHelper.isDimension(level, MirrorDimension.ID)) return;
         Random random = level.getRandom();
         handleParticles(random);
         handleWeather(level, random);
@@ -104,6 +106,8 @@ public class MirrorDimensionClient extends CharmModule {
     }
 
     private void handleWeather(ClientLevel level, Random random) {
+        if (!DimensionHelper.isDimension(level, MirrorDimension.ID)) return;
+
         switch (weatherPhase) {
             case FREEZING -> handleFreezingPhase(level, random);
             case SCORCHING -> handleScorchingPhase(level, random);

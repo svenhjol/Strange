@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.api.event.PlayerTickCallback;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
@@ -38,7 +39,6 @@ public class FloatingIslandsDimension extends CharmModule {
     @Override
     public void register() {
         Dimensions.HORIZON_HEIGHT.put(ID, -64.0D);
-
         addDependencyCheck(m -> Strange.LOADER.isEnabled(Dimensions.class));
     }
 
@@ -59,10 +59,14 @@ public class FloatingIslandsDimension extends CharmModule {
     }
 
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
+        if (!DimensionHelper.isDimension(destination, ID)) return;
+
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_FLOATING_ISLANDS);
     }
 
     public void handlePlayerTick(Player player) {
+        if (!DimensionHelper.isDimension(player.level, ID)) return;
+
         // When the player falls out of the world (lower than Y=-16) then teleport them back to the overworld.
         if (!Teleport.hasTeleportTicket(player)
             && !player.level.isClientSide
