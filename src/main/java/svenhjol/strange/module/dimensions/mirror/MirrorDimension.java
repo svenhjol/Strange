@@ -459,9 +459,9 @@ public class MirrorDimension implements IDimension {
     }
 
     public enum WeatherPhase {
-        FREEZING(2000),
-        SCORCHING(2000),
-        STORMING(2000),
+        FREEZING(10000),
+        SCORCHING(8000),
+        STORMING(4000),
         CALM(2000);
 
         private final int duration;
