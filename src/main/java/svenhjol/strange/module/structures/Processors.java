@@ -189,7 +189,7 @@ public class Processors {
                         entityBlock.setArmor(pairs.getOrDefault("armor", ""));
                         entityBlock.setEffects(pairs.getOrDefault("effects", ""));
                         entityBlock.setCount(Integer.parseInt(pairs.getOrDefault("count", "1")));
-                        entityBlock.setEntity(new ResourceLocation(pairs.getOrDefault("type", "minecraft:sheep")));
+                        entityBlock.setEntity(pairs.getOrDefault("type", "minecraft:sheep"));
                         entityBlock.setChanged();
                     }
                 };

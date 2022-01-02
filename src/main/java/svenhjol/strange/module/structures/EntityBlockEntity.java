@@ -43,7 +43,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public static final String ROTATION_TAG = "rotation";
     public static final String PRIMED_TAG = "primed";
 
-    private ResourceLocation entity = new ResourceLocation("minecraft:pig");
+    private String entity = "";
     private Rotation rotation = Rotation.NONE;
     private boolean persistent = true;
     private boolean primed = false;
@@ -63,9 +63,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        ResourceLocation entity = ResourceLocation.tryParse(tag.getString(ENTITY_TAG));
-        this.entity = entity != null ? entity : new ResourceLocation("minecraft:pig");
-
+        this.entity = tag.getString(ENTITY_TAG);
         this.persistent = tag.getBoolean(PERSISTENT_TAG);
         this.health = tag.getDouble(HEALTH_TAG);
         this.count = tag.getInt(COUNT_TAG);
@@ -82,7 +80,7 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
-        tag.putString(ENTITY_TAG, entity.toString());
+        tag.putString(ENTITY_TAG, entity);
         tag.putString(ROTATION_TAG, rotation.name());
         tag.putBoolean(PERSISTENT_TAG, persistent);
         tag.putBoolean(PRIMED_TAG, primed);
@@ -93,11 +91,11 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         tag.putString(META_TAG, meta);
     }
 
-    public ResourceLocation getEntity() {
+    public String getEntity() {
         return entity;
     }
 
-    public void setEntity(ResourceLocation entity) {
+    public void setEntity(String entity) {
         this.entity = entity;
     }
 
@@ -163,9 +161,9 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         boolean result = trySpawn(level, entityBlock.worldPosition, entityBlock);
 
         if (result) {
-            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock spawned entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock spawned entity " + entityBlock.getEntity() + " at pos: " + pos);
         } else {
-            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock failed to spawn entity " + entityBlock.getEntity().toString() + " at pos: " + pos);
+            LogHelper.debug(Strange.MOD_ID, EntityBlockEntity.class, "EntityBlock failed to spawn entity " + entityBlock.getEntity() + " at pos: " + pos);
         }
     }
 
@@ -173,7 +171,13 @@ public class EntityBlockEntity extends CharmSyncedBlockEntity {
         Entity spawned;
         if (level == null) return false;
 
-        Optional<EntityType<?>> opt = Registry.ENTITY_TYPE.getOptional(spawner.entity);
+        var spawnerEntity = spawner.entity;
+        if (spawnerEntity.contains("|")) {
+            var strings = Arrays.stream(spawnerEntity.split("\\|")).map(String::trim).toList();
+            spawnerEntity = strings.get(level.getRandom().nextInt(strings.size()));
+        }
+
+        Optional<EntityType<?>> opt = Registry.ENTITY_TYPE.getOptional(new ResourceLocation(spawnerEntity));
         if (opt.isEmpty()) return false;
 
         EntityType<?> type = opt.get();

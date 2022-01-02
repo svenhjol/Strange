@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import svenhjol.strange.module.structures.EntityBlockEntity;
 import svenhjol.strange.module.structures.StructuresClient;
 
@@ -36,7 +35,7 @@ public class EntityBlockScreen extends BaseScreen<EntityBlockEntity> {
         count = String.valueOf(blockEntity.getCount());
         health = String.valueOf(blockEntity.getHealth());
 
-        entityEditBox = setupInputBox("EntityEditBox", midX - 100, 50, 200, blockEntity.getEntity().toString(), t -> blockEntity.setEntity(new ResourceLocation(t)));
+        entityEditBox = setupInputBox("EntityEditBox", midX - 100, 50, 200, blockEntity.getEntity(), t -> blockEntity.setEntity(t));
         addRenderableWidget(entityEditBox);
 
         healthEditBox = setupInputBox("HealthEditBox", midX - 100, 75, 200, health, t -> health = t);

@@ -1,0 +1,29 @@
+{
+  "parent": "strange:core/adventure",
+  "display": {
+    "icon": {
+      "item": "minecraft:writable_book"
+    },
+    "title": {
+      "translate": "advancements.strange.open_journal.title"
+    },
+    "description": {
+      "translate": "advancements.strange.open_journal.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "opened_journal": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:open_journal"}
+    }
+  },
+  "requirements": [
+    [
+      "opened_journal"
+    ]
+  ]
+}
