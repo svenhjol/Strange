@@ -48,6 +48,10 @@ public class TeleportTicket implements ITicket {
         this.ticks = 0;
     }
 
+    /**
+     * When true, the entity will be teleported to the exact destination blockpos (use Y).
+     * When false, the entity will be teleported to the surface at the destination blockpos (calculate Y).
+     */
     public void useExactPosition(boolean value) {
         this.exactPosition = value;
     }

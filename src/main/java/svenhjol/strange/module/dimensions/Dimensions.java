@@ -29,7 +29,7 @@ import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
 import java.util.*;
 
 /**
- * @see {https://misode.github.io/worldgen/}
+ * @link {https://misode.github.io/worldgen/}
  */
 @SuppressWarnings("unused")
 @CommonModule(mod = Strange.MOD_ID)
@@ -53,17 +53,17 @@ public class Dimensions extends CharmModule {
     public static final List<IDimension> DIMENSIONS = new ArrayList<>();
     public static final ThreadLocal<LevelReader> LEVEL = new ThreadLocal<>();
 
-    public static boolean loadMirrorDimension = true;
+    public static boolean loadMirror = true;
 
     public static boolean mirrorDimensionWeather = true;
 
-    public static boolean loadFloatingIslandsDimension = true;
+    public static boolean loadFloatingIslands = true;
 
     @Override
     public void register() {
         // add new dimensions to this list
-        if (loadMirrorDimension) DIMENSIONS.add(new MirrorDimension());
-        if (loadFloatingIslandsDimension) DIMENSIONS.add(new FloatingIslandsDimension());
+        if (loadMirror) DIMENSIONS.add(new MirrorDimension());
+        if (loadFloatingIslands) DIMENSIONS.add(new FloatingIslandsDimension());
 
         // register all dimensions
         DIMENSIONS.forEach(IDimension::register);
@@ -76,6 +76,14 @@ public class Dimensions extends CharmModule {
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
         AddEntityCallback.EVENT.register(this::handleAddEntity);
+    }
+
+    public static boolean mirrorEnabled() {
+        return Strange.LOADER.isEnabled(Dimensions.class) && loadMirror;
+    }
+
+    public static boolean floatingIslandsEnabled() {
+        return Strange.LOADER.isEnabled(Dimensions.class) && loadFloatingIslands;
     }
 
     /**

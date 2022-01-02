@@ -29,8 +29,8 @@ public class DimensionsClient extends CharmModule {
     @Override
     public void register() {
         // add new dimension clients to this list
-        if (Dimensions.loadMirrorDimension) DIMENSION_CLIENTS.add(new MirrorDimensionClient());
-        if (Dimensions.loadFloatingIslandsDimension) DIMENSION_CLIENTS.add(new FloatingIslandsDimensionClient());
+        if (Dimensions.loadMirror) DIMENSION_CLIENTS.add(new MirrorDimensionClient());
+        if (Dimensions.loadFloatingIslands) DIMENSION_CLIENTS.add(new FloatingIslandsDimensionClient());
 
         // register all dimension clients
         DIMENSION_CLIENTS.forEach(IDimensionClient::register);
