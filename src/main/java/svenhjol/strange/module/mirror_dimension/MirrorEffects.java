@@ -1,4 +1,4 @@
-package svenhjol.strange.module.dimensions.mirror;
+package svenhjol.strange.module.mirror_dimension;
 
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;

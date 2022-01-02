@@ -1,30 +1,17 @@
 package svenhjol.strange.module.dimensions;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.api.event.AddEntityCallback;
-import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
-import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
 
 import java.util.*;
 
@@ -32,7 +19,8 @@ import java.util.*;
  * @link {https://misode.github.io/worldgen/}
  */
 @SuppressWarnings("unused")
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Supports additional dimensions and their unique effects.\n" +
+    "If this feature is disabled, all custom dimensions will be disabled.")
 public class Dimensions extends CharmModule {
     public static final Map<ResourceLocation, Integer> FOG_COLOR = new HashMap<>();
     public static final Map<ResourceLocation, Integer> SKY_COLOR = new HashMap<>();
@@ -50,60 +38,7 @@ public class Dimensions extends CharmModule {
     public static final Map<ResourceLocation, AmbientParticleSettings> AMBIENT_PARTICLE = new HashMap<>();
     public static final Map<ResourceLocation, Biome.Precipitation> PRECIPITATION = new HashMap<>();
 
-    public static final List<IDimension> DIMENSIONS = new ArrayList<>();
     public static final ThreadLocal<LevelReader> LEVEL = new ThreadLocal<>();
-
-    public static boolean loadMirror = true;
-
-    public static boolean mirrorDimensionWeather = true;
-
-    public static boolean loadFloatingIslands = true;
-
-    @Override
-    public void register() {
-        // add new dimensions to this list
-        if (loadMirror) DIMENSIONS.add(new MirrorDimension());
-        if (loadFloatingIslands) DIMENSIONS.add(new FloatingIslandsDimension());
-
-        // register all dimensions
-        DIMENSIONS.forEach(IDimension::register);
-    }
-
-    @Override
-    public void runWhenEnabled() {
-        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
-        ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
-        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
-        AddEntityCallback.EVENT.register(this::handleAddEntity);
-    }
-
-    public static boolean mirrorEnabled() {
-        return Strange.LOADER.isEnabled(Dimensions.class) && loadMirror;
-    }
-
-    public static boolean floatingIslandsEnabled() {
-        return Strange.LOADER.isEnabled(Dimensions.class) && loadFloatingIslands;
-    }
-
-    /**
-     * Fires when player changes dimension. Send to subclass if the destination dimension matches.
-     */
-    private void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
-        DIMENSIONS.forEach(d -> {
-            if (destination.dimension().location().equals(d.getId())) {
-                d.handlePlayerChangeDimension(player, origin, destination);
-            }
-        });
-    }
-
-    private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-        DIMENSIONS.forEach(d -> {
-            if (level.dimension().location().equals(d.getId())) {
-                d.handleWorldLoad(server, level);
-            }
-        });
-    }
 
     public static Optional<Float> getTemperature(LevelReader level, Biome biome) {
         if (level instanceof Level) {
@@ -121,34 +56,6 @@ public class Dimensions extends CharmModule {
 
     public static Optional<Float> getRainLevel(Level level) {
         return Optional.ofNullable(RAIN_LEVEL.get(DimensionHelper.getDimension(level)));
-    }
-
-    private void handleWorldTick(Level level) {
-        DIMENSIONS.forEach(d -> {
-            if (level.players().size() > 0 && level.dimension().location().equals(d.getId())) {
-                d.handleWorldTick(level);
-            }
-        });
-    }
-
-    private InteractionResult handleAddEntity(Entity entity) {
-        for (IDimension dimension : DIMENSIONS) {
-            if (entity.level.dimension().location().equals(dimension.getId())) {
-                InteractionResult result = dimension.handleAddEntity(entity);
-                if (result == InteractionResult.FAIL) {
-                    return InteractionResult.FAIL;
-                }
-            }
-        }
-        return InteractionResult.PASS;
-    }
-
-    private void handlePlayerTick(Player player) {
-        DIMENSIONS.forEach(d -> {
-            if (player.level.dimension().location().equals(d.getId())) {
-                d.handlePlayerTick(player);
-            }
-        });
     }
 
     public static final class SeedSupplier {

@@ -1,25 +1,26 @@
-package svenhjol.strange.module.dimensions.mirror;
+package svenhjol.strange.module.mirror_dimension;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.resources.sounds.BiomeAmbientSoundsHandler;
 import net.minecraft.resources.ResourceLocation;
+import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.dimensions.IDimensionClient;
-import svenhjol.strange.module.dimensions.mirror.network.ClientReceiveWeatherChange;
-import svenhjol.strange.module.dimensions.mirror.network.ClientReceiveWeatherTicks;
 import svenhjol.strange.module.intercept_music.InterceptMusic;
 import svenhjol.strange.module.intercept_music.InterceptMusicClient;
 import svenhjol.strange.module.intercept_music.MusicCondition;
 
 import java.util.Random;
 
-public class MirrorDimensionClient implements IDimensionClient {
+@ClientModule(module = MirrorDimension.class)
+public class MirrorDimensionClient extends CharmModule {
     public static ClientReceiveWeatherChange CLIENT_RECEIVE_WEATHER_CHANGE;
     public static ClientReceiveWeatherTicks CLIENT_RECEIVE_WEATHER_TICKS;
 
@@ -54,6 +55,10 @@ public class MirrorDimensionClient implements IDimensionClient {
     }
 
     @Override
+    public void runWhenEnabled() {
+        ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
+    }
+
     public void handleWorldTick(ClientLevel level) {
         Random random = level.getRandom();
         handleParticles(random);
@@ -150,10 +155,6 @@ public class MirrorDimensionClient implements IDimensionClient {
     }
 
     private void handleParticles(Random random) {
-        if (!Dimensions.mirrorDimensionWeather) {
-            return;
-        }
-
         if (weatherPhase == MirrorDimension.WeatherPhase.FREEZING || weatherPhase == MirrorDimension.WeatherPhase.SCORCHING) {
             if (!Dimensions.AMBIENT_PARTICLE.containsKey(MirrorDimension.ID)) {
                 Dimensions.AMBIENT_PARTICLE.put(MirrorDimension.ID, MirrorDimension.ASH);

@@ -20,7 +20,7 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
-import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
+import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

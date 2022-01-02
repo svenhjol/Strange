@@ -1,4 +1,4 @@
-package svenhjol.strange.module.dimensions.floating_islands;
+package svenhjol.strange.module.floating_islands_dimension;
 
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;

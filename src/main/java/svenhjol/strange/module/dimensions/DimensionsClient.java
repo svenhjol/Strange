@@ -1,7 +1,5 @@
 package svenhjol.strange.module.dimensions;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -14,38 +12,12 @@ import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.loader.CharmModule;
-import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimensionClient;
-import svenhjol.strange.module.dimensions.mirror.MirrorDimensionClient;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
 @ClientModule(module = Dimensions.class)
 public class DimensionsClient extends CharmModule {
-    public static final List<IDimensionClient> DIMENSION_CLIENTS = new ArrayList<>();
-
-    @Override
-    public void register() {
-        // add new dimension clients to this list
-        if (Dimensions.loadMirror) DIMENSION_CLIENTS.add(new MirrorDimensionClient());
-        if (Dimensions.loadFloatingIslands) DIMENSION_CLIENTS.add(new FloatingIslandsDimensionClient());
-
-        // register all dimension clients
-        DIMENSION_CLIENTS.forEach(IDimensionClient::register);
-
-        ClientTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
-    }
-
-    private void handleWorldTick(ClientLevel level) {
-        DIMENSION_CLIENTS.forEach(d -> {
-            if (level.dimension().location().equals(d.getId())) {
-                d.handleWorldTick(level);
-            }
-        });
-    }
-
     public static Optional<Integer> getSkyColor(Biome biome) {
         return Optional.ofNullable(Dimensions.SKY_COLOR.get(getDimension()));
     }

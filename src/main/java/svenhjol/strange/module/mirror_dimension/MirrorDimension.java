@@ -1,5 +1,8 @@
-package svenhjol.strange.module.dimensions.mirror;
+package svenhjol.strange.module.mirror_dimension;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,20 +36,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
+import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.api.event.AddEntityCallback;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.init.CharmAdvancements;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.dimensions.IDimension;
-import svenhjol.strange.module.dimensions.mirror.network.ServerSendWeatherChange;
-import svenhjol.strange.module.dimensions.mirror.network.ServerSendWeatherTicks;
+import svenhjol.strange.module.mirror_dimension.network.ServerSendWeatherChange;
+import svenhjol.strange.module.mirror_dimension.network.ServerSendWeatherTicks;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MirrorDimension implements IDimension {
+@CommonModule(mod = Strange.MOD_ID)
+public class MirrorDimension extends CharmModule {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
     public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;
     public static final List<MobEffect> NEGATIVE_MOB_EFFECTS;
@@ -131,21 +137,28 @@ public class MirrorDimension implements IDimension {
         Dimensions.RENDER_PRECIPITATION.put(ID, false);
         Dimensions.AMBIENT_LOOP.put(ID, MIRROR_AMBIENCE_LOOP);
         Dimensions.AMBIENT_ADDITIONS.put(ID, MIRROR_AMBIENCE_SETTINGS);
+
+        addDependencyCheck(m -> Strange.LOADER.isEnabled(Dimensions.class));
     }
 
     @Override
+    public void runWhenEnabled() {
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
+        AddEntityCallback.EVENT.register(this::handleAddEntity);
+    }
+
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
         // Remove structures that are not valid in this dimension.
         WorldHelper.removeStructures(level, STRUCTURES_TO_REMOVE);
     }
 
-    @Override
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_MIRROR);
         SERVER_SEND_WEATHER_TICKS.send(player, weatherPhase, weatherPhaseTicks);
     }
 
-    @Override
     public void handleWorldTick(Level level) {
         if (level.isClientSide) return;
 
@@ -155,7 +168,6 @@ public class MirrorDimension implements IDimension {
         handleWeather(serverLevel, random);
     }
 
-    @Override
     public InteractionResult handleAddEntity(Entity entity) {
         Level level = entity.level;
         if (!level.isClientSide) {

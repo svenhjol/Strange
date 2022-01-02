@@ -1,27 +1,30 @@
-package svenhjol.strange.module.dimensions.floating_islands;
+package svenhjol.strange.module.floating_islands_dimension;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.init.CharmAdvancements;
+import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.dimensions.IDimension;
 import svenhjol.strange.module.teleport.Teleport;
 import svenhjol.strange.module.teleport.ticket.TeleportTicket;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class FloatingIslandsDimension implements IDimension {
+@CommonModule(mod = Strange.MOD_ID)
+public class FloatingIslandsDimension extends CharmModule {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "floating_islands");
     public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;
 
@@ -35,9 +38,17 @@ public class FloatingIslandsDimension implements IDimension {
     @Override
     public void register() {
         Dimensions.HORIZON_HEIGHT.put(ID, -64.0D);
+
+        addDependencyCheck(m -> Strange.LOADER.isEnabled(Dimensions.class));
     }
 
     @Override
+    public void runWhenEnabled() {
+        ServerWorldEvents.LOAD.register(this::handleWorldLoad);
+        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
+    }
+
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
         // We need to remove certain structures from generating in the Floating Islands.
         // Mineshafts generate very strangely with hanging wooden platforms.
@@ -47,22 +58,10 @@ public class FloatingIslandsDimension implements IDimension {
         WorldHelper.removeStructures(level, STRUCTURES_TO_REMOVE);
     }
 
-    @Override
-    public void handleWorldTick(Level level) {
-        // not required yet
-    }
-
-    @Override
-    public InteractionResult handleAddEntity(Entity entity) {
-        return InteractionResult.PASS;
-    }
-
-    @Override
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_FLOATING_ISLANDS);
     }
 
-    @Override
     public void handlePlayerTick(Player player) {
         // When the player falls out of the world (lower than Y=-16) then teleport them back to the overworld.
         if (!Teleport.hasTeleportTicket(player)

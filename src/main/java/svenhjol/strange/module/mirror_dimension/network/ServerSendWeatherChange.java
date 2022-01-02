@@ -1,9 +1,9 @@
-package svenhjol.strange.module.dimensions.mirror.network;
+package svenhjol.strange.module.mirror_dimension.network;
 
 import net.minecraft.server.MinecraftServer;
 import svenhjol.charm.network.Id;
 import svenhjol.charm.network.ServerSender;
-import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
+import svenhjol.strange.module.mirror_dimension.MirrorDimension;
 
 @Id("strange:mirror_weather_change")
 public class ServerSendWeatherChange extends ServerSender {

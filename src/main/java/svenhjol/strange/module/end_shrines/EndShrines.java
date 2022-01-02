@@ -19,8 +19,8 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.dimensions.floating_islands.FloatingIslandsDimension;
-import svenhjol.strange.module.dimensions.mirror.MirrorDimension;
+import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
+import svenhjol.strange.module.mirror_dimension.MirrorDimension;
 import svenhjol.strange.module.end_shrines.processor.EndShrinePortalProcessor;
 
 import java.util.ArrayList;
@@ -73,11 +73,11 @@ public class EndShrines extends CharmModule {
 
         DESTINATIONS.add(Level.OVERWORLD.location());
 
-        if (Dimensions.mirrorEnabled()) {
+        if (Strange.LOADER.isEnabled(MirrorDimension.class)) {
             DESTINATIONS.add(MirrorDimension.ID);
         }
 
-        if (Dimensions.floatingIslandsEnabled()) {
+        if (Strange.LOADER.isEnabled(FloatingIslandsDimension.class)) {
             DESTINATIONS.add(FloatingIslandsDimension.ID);
         }
 
