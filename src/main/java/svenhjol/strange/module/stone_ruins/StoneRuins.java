@@ -34,7 +34,7 @@ import java.util.List;
 @CommonModule(mod = Strange.MOD_ID)
 public class StoneRuins extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "stone_ruin");
-    public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "ruins/stone_starts");
+    public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "stone_ruins/starts");
 
     public static StructureFeature<JigsawConfiguration> STONE_RUIN_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;

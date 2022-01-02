@@ -1,12 +1,12 @@
 {
-  "name": "strange:ruins/stone_starts",
+  "name": "strange:stone_ruins/starts",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "strange:ruins/test/test_start1",
-        "processors": "strange:ruins/stone_ruins_processors",
+        "location": "strange:stone_ruins/test/test_start1",
+        "processors": "strange:stone_ruins/stone_ruins_processors",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

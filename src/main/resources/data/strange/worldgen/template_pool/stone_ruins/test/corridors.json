@@ -1,5 +1,5 @@
 {
-  "name": "strange:ruins/test/corridors",
+  "name": "strange:stone_ruins/test/corridors",
   "fallback": "minecraft:empty",
   "elements": [
     {
@@ -7,8 +7,8 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "strange:ruins/test/test_corridor1",
-        "processors": "strange:ruins/stone_ruins_processors"
+        "location": "strange:stone_ruins/test/test_corridor1",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
       }
     }
   ]
