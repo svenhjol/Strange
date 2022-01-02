@@ -35,6 +35,9 @@ public class EndShrines extends CharmModule {
     public static EndShrinePortalBlock END_SHRINE_PORTAL_BLOCK;
     public static BlockEntityType<EndShrinePortalBlockEntity> END_SHRINE_PORTAL_BLOCK_ENTITY;
 
+    // Loot table for End Shrines chests.
+    public static final ResourceLocation END_SHRINES_TREASURE = new ResourceLocation(Strange.MOD_ID, "end_shrines/end_shrine_treasure");
+
     public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "end_shrines/starts");
     public static StructureFeature<JigsawConfiguration> END_SHRINE_FEATURE;
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;

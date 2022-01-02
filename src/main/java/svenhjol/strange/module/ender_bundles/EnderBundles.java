@@ -16,13 +16,12 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.api.event.HoverSortItemsCallback;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.module.hover_sorting.HoverSorting;
-import svenhjol.charm.api.event.HoverSortItemsCallback;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.end_shrines.EndShrineLoot;
 import svenhjol.strange.module.end_shrines.EndShrines;
 import svenhjol.strange.module.ender_bundles.network.ServerReceiveUpdateEnderInventory;
 import svenhjol.strange.module.ender_bundles.network.ServerSendUpdatedEnderInventory;
@@ -62,7 +61,7 @@ public class EnderBundles extends CharmModule {
         SERVER_RECEIVE_UPDATE_ENDER_INVENTORY = new ServerReceiveUpdateEnderInventory();
 
         var endShrinesEnabled = Strange.LOADER.isEnabled(EndShrines.class);
-        VALID_LOOT_TABLES.add(endShrinesEnabled ? EndShrineLoot.END_SHRINES_TREASURE : BuiltInLootTables.END_CITY_TREASURE);
+        VALID_LOOT_TABLES.add(endShrinesEnabled ? EndShrines.END_SHRINES_TREASURE : BuiltInLootTables.END_CITY_TREASURE);
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder fabricLootSupplierBuilder, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
