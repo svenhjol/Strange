@@ -1,0 +1,15 @@
+{
+  "name": "strange:end_shrines/end_shrines_starts",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "strange:end_shrines/start1",
+        "processors": "strange:end_shrines/end_shrines_processors",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

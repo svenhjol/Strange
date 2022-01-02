@@ -1,0 +1,26 @@
+[
+  {
+    "comment": "// Bypass strange's ignore_blocks",
+    "processor_type": "minecraft:block_ignore",
+    "blocks": [{"Name": "strange:ignore_block"}]
+  },
+  {
+    "comment": "// Prepare strange's data blocks",
+    "processor_type": "strange:data"
+  },
+  {
+    "comment": "// Prepare End Shrine dimensional portals",
+    "processor_type": "strange:end_shrine_portal"
+  },
+  {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.9
+  },
+  {
+    "comment": "// Add loot to chests",
+    "processor_type": "strange:chest_loot",
+    "chance": 0.9,
+    "loot": "strange:end_shrines/end_shrines_treasure"
+  }
+]

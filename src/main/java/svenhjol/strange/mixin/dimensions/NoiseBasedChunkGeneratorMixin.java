@@ -18,7 +18,7 @@ import svenhjol.strange.module.dimensions.Dimensions;
 
 import java.util.function.Supplier;
 
-@SuppressWarnings({"target"})
+@SuppressWarnings({"target", "mapping"})
 @Mixin(NoiseBasedChunkGenerator.class)
 public abstract class NoiseBasedChunkGeneratorMixin extends ChunkGenerator {
     @Mutable @Final @Shadow private long seed;

@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
@@ -25,15 +26,11 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.module.teleport.Teleport;
 import svenhjol.strange.module.teleport.ticket.TeleportTicket;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class EndShrinePortalBlock extends CharmBlockWithEntity {
     private static final VoxelShape SHAPE = Block.box(0.0, 6.0, 0.0, 16.0, 12.0, 16.0);
-    private static final Map<UUID, Long> PORTAL_TICKS = new HashMap<>();
 
     public EndShrinePortalBlock(CharmModule module) {
         super(module, EndShrines.BLOCK_ID.getPath(), FabricBlockSettings.of(Material.PORTAL)
@@ -76,39 +73,28 @@ public class EndShrinePortalBlock extends CharmBlockWithEntity {
     }
 
     @Override
-    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        if (!world.isClientSide
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (!level.isClientSide
             && !entity.isPassenger()
             && !entity.isVehicle()
             && entity.canChangeDimensions()
             && entity instanceof LivingEntity livingEntity
         ) {
-            UUID uuid = entity.getUUID();
-            long worldTime = world.getGameTime();
-
-            if (PORTAL_TICKS.containsKey(uuid)) {
-                if (worldTime - PORTAL_TICKS.get(uuid) < 5) {
-                    PORTAL_TICKS.put(uuid, worldTime);
-                    return;
-                } else {
-                    PORTAL_TICKS.remove(uuid);
-                }
-            }
-
-            EndShrinePortalBlockEntity portal = getBlockEntity(world, pos);
+            var serverLevel = (ServerLevel)level;
+            var portal = getBlockEntity(level, pos);
             if (portal == null) return;
             if (portal.dimension == null) return;
 
-            PORTAL_TICKS.put(uuid, worldTime);
-
+            // Teleport entity to spawn position in the portal's dimension.
+            var spawn = serverLevel.getSharedSpawnPos();
             var destination = portal.dimension;
-            var ticket = new TeleportTicket(livingEntity, destination, pos, pos);
+            var ticket = new TeleportTicket(livingEntity, destination, pos, spawn);
             ticket.allowDimensionChange(true);
-            ticket.useExactPosition(true);
+            ticket.useExactPosition(false);
             Teleport.addTeleportTicket(ticket);
         }
 
-        super.entityInside(state, world, pos, entity);
+        super.entityInside(state, level, pos, entity);
     }
 
     @Nullable

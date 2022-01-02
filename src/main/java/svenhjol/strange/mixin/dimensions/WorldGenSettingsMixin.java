@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import svenhjol.strange.module.dimensions.Dimensions;
 
+@SuppressWarnings({"target", "mapping"})
 @Mixin(WorldGenSettings.class)
 public class WorldGenSettingsMixin {
-    @SuppressWarnings({"target"})
     @Redirect(
         method = "lambda$static$1(Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;", // CODEC
         at = @At(
