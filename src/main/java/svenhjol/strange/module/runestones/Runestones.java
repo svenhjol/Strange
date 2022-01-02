@@ -4,10 +4,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EntityDimensions;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,9 +25,11 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
@@ -55,6 +60,9 @@ public class Runestones extends CharmModule {
     public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
     public static RunestoneDustItem RUNESTONE_DUST;
     public static MenuType<RunestoneMenu> MENU;
+
+    public static final ResourceLocation TRIGGER_LOOK_AT_RUNESTONE = new ResourceLocation(Strange.MOD_ID, "look_at_runestone");
+    public static final ResourceLocation TRIGGER_ACTIVATE_RUNESTONE = new ResourceLocation(Strange.MOD_ID, "activate_runestone");
 
     public static Map<ResourceLocation, LinkedList<ResourceLocation>> DESTINATIONS = new HashMap<>();
     public static Map<ResourceLocation, Map<Tier, List<Item>>> ITEMS = new TreeMap<>();
@@ -97,9 +105,22 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+        ActivateRunestoneCallback.EVENT.register(this::handleActivateRunestone);
 
         SERVER_SEND_RUNESTONE_ITEMS = new ServerSendRunestoneItems();
         SERVER_SEND_RUNESTONE_CLUES = new ServerSendRunestoneClues();
+    }
+
+    private void handleActivateRunestone(ServerPlayer player, BlockPos pos, String runes, ItemStack stack) {
+        triggerActivatedRunestone(player);
+    }
+
+    public static void triggerLookedAtRunestone(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LOOK_AT_RUNESTONE);
+    }
+
+    public static void triggerActivatedRunestone(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_ACTIVATE_RUNESTONE);
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {

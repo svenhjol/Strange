@@ -139,6 +139,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         // Inform the player's client that they looked at this specific runestone.
+        Runestones.triggerLookedAtRunestone(player);
         Discoveries.SERVER_SEND_INTERACT_DISCOVERY.send(player, discovery);
         return true;
     }

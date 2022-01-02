@@ -1,10 +1,12 @@
 package svenhjol.strange.module.potion_of_recall;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.potion.CharmStatusEffect;
 import svenhjol.strange.module.teleport.Teleport;
@@ -39,6 +41,10 @@ public class RecallEffect extends CharmStatusEffect {
             ticket.useExactPosition(false);
             ticket.allowDimensionChange(true);
             Teleport.addTeleportTicket(ticket);
+
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
+                CharmAdvancements.ACTION_PERFORMED.trigger(serverPlayer, PotionOfRecall.TRIGGER_HAS_RECALL_EFFECT);
+            }
         } else {
             super.applyInstantenousEffect(attacker1, attacker2, livingEntity, amplifier, d);
         }

@@ -19,6 +19,7 @@ import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.api.event.PlayerLoadDataCallback;
 import svenhjol.charm.api.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -31,6 +32,7 @@ import svenhjol.strange.module.journals.network.ServerSendJournal;
 import svenhjol.strange.module.journals.network.ServerSendPage;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
+import svenhjol.strange.module.runes.Tier;
 
 import java.io.File;
 import java.util.*;
@@ -45,6 +47,10 @@ public class Journals extends CharmModule {
     private static final String FILENAME = "strange_journal.dat";
     private static final Map<UUID, JournalData> playerJournals = new HashMap<>();
 
+    public static final ResourceLocation TRIGGER_LEARN_RUNE = new ResourceLocation(Strange.MOD_ID, "learn_rune");
+    public static final ResourceLocation TRIGGER_LEARN_ALL_RUNES = new ResourceLocation(Strange.MOD_ID, "learn_all_runes");
+    public static final Map<Tier, ResourceLocation> RUNE_TIER_TRIGGERS = new HashMap<>();
+
     public static ServerSendJournal SERVER_SEND_JOURNAL;
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
     public static ServerSendPage SERVER_SEND_PAGE;
@@ -55,6 +61,10 @@ public class Journals extends CharmModule {
     @Override
     public void register() {
         SCREENSHOT_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "screenshot"));
+
+        for (Tier tier : Tier.values()) {
+            RUNE_TIER_TRIGGERS.put(tier, new ResourceLocation(Strange.MOD_ID, "learn_" + tier.getSerializedName() + "_runes"));
+        }
     }
 
     @Override
@@ -75,6 +85,21 @@ public class Journals extends CharmModule {
         return Optional.ofNullable(playerJournals.get(player.getUUID()));
     }
 
+    public static void triggerLearnRune(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LEARN_RUNE);
+    }
+
+    public static void triggerLearnAllRunes(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_LEARN_ALL_RUNES);
+    }
+
+    public static void triggerLearnTierRunes(ServerPlayer player, Tier tier) {
+        var res = RUNE_TIER_TRIGGERS.get(tier);
+        if (res != null) {
+            CharmAdvancements.ACTION_PERFORMED.trigger(player, res);
+        }
+    }
+
     private void handleQuestComplete(Quest quest, ServerPlayer player) {
         // Quest tiers are tied to rune tiers.
         // Each quest in a tier will reward the player with a single rune from the equivalent rune tier.
@@ -84,11 +109,8 @@ public class Journals extends CharmModule {
         var journal = Journals.getJournal(player).orElse(null);
         if (journal == null) return;
 
-        var val = JournalHelper.nextLearnableRune(quest.getTier(), journal);
-        if (val >= 0) {
-            journal.learnRune(val);
-            SERVER_SEND_JOURNAL.send(player);
-        }
+        var tier = quest.getTier();
+        JournalHelper.tryLearnRune(tier, journal, player);
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {

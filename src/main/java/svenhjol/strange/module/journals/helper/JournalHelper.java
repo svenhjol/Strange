@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+import static svenhjol.strange.module.journals.Journals.SERVER_SEND_JOURNAL;
+
 @SuppressWarnings("UnusedReturnValue")
 public class JournalHelper {
     /**
@@ -89,6 +91,37 @@ public class JournalHelper {
         return false;
     }
 
+    public static boolean tryLearnRune(Tier tier, JournalData journal, ServerPlayer player) {
+        var learned = false;
+
+        // The rune value will be Int.MIN_VALUE if there is no rune to learn in specified iter.
+        var val = JournalHelper.nextLearnableRune(tier, journal);
+
+        if (val >= 0) {
+            // If player doesn't know any runes, trigger the learn_rune advancement.
+            if (journal.getLearnedBiomes().isEmpty()) {
+                Journals.triggerLearnRune(player);
+            }
+
+            // Add the learned rune and sync the journal with the client.
+            journal.learnRune(val);
+            SERVER_SEND_JOURNAL.send(player);
+            learned = true;
+        }
+
+        // If the player has learned all runes within a given tier, trigger advancement for that tier.
+        if (JournalHelper.nextLearnableRune(tier, journal) < 0) {
+            if (tier == Tier.getHighestTier()) {
+                Journals.triggerLearnAllRunes(player);
+            } else {
+                Journals.triggerLearnTierRunes(player, tier);
+            }
+        }
+
+        // True if player has learned a rune.
+        return learned;
+    }
+
     /**
      * If the player doesn't know the thing that the given rune phrase represents, then try and learn it.
      * This runs on the server side so that the learning can be backed.
@@ -126,7 +159,7 @@ public class JournalHelper {
         }
 
         if (learned) {
-            Journals.SERVER_SEND_JOURNAL.send(player);
+            SERVER_SEND_JOURNAL.send(player);
         }
 
         return learned;

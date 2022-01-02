@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/adventure",
+  "display": {
+    "icon": {
+      "item": "strange:stone_runestone"
+    },
+    "title": {
+      "translate": "advancements.strange.find_stone_circle.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_stone_circle.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "found_stone_circle": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:stone_circle"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "found_stone_circle"
+    ]
+  ]
+}

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.dimensions.IDimension;
@@ -23,6 +24,8 @@ import java.util.List;
 public class FloatingIslandsDimension implements IDimension {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "floating_islands");
     public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;
+
+    public static final ResourceLocation TRIGGER_VISIT_FLOATING_ISLANDS = new ResourceLocation(Strange.MOD_ID, "visit_floating_islands");
 
     @Override
     public ResourceLocation getId() {
@@ -56,7 +59,7 @@ public class FloatingIslandsDimension implements IDimension {
 
     @Override
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
-        //
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_FLOATING_ISLANDS);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class PotionOfSpelunking extends CharmModule {
     public static SpelunkingPotion SPELUNKING_POTION;
 
     public static ServerSendShowParticles SERVER_SEND_SHOW_PARTICLES;
-    public static final ResourceLocation TRIGGER_HAS_SPELUNKING_EFFECT = new ResourceLocation(Strange.MOD_ID, "has_spelunking_effect");
+    public static final ResourceLocation TRIGGER_TRAVEL_TO_SPAWN_POINT = new ResourceLocation(Strange.MOD_ID, "has_spelunking_effect");
 
     public static final Map<Block, DyeColor> BLOCKS = new HashMap<>();
     public static final Map<Tag<Block>, DyeColor> BLOCK_TAGS = new HashMap<>();
@@ -136,7 +136,7 @@ public class PotionOfSpelunking extends CharmModule {
             if (found.isEmpty()) return;
 
             SERVER_SEND_SHOW_PARTICLES.send((ServerPlayer) player, found);
-            CharmAdvancements.ACTION_PERFORMED.trigger((ServerPlayer) player, TRIGGER_HAS_SPELUNKING_EFFECT);
+            CharmAdvancements.ACTION_PERFORMED.trigger((ServerPlayer) player, TRIGGER_TRAVEL_TO_SPAWN_POINT);
         }
     }
 

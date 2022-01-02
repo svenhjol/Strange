@@ -1,0 +1,29 @@
+{
+  "parent": "strange:journals/learn_rune",
+  "display": {
+    "icon": {
+      "item": "strange:stone_runestone"
+    },
+    "title": {
+      "translate": "advancements.strange.learn_novice_runes.title"
+    },
+    "description": {
+      "translate": "advancements.strange.learn_novice_runes.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "learned_novice_runes": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:learn_novice_runes"}
+    }
+  },
+  "requirements": [
+    [
+      "learned_novice_runes"
+    ]
+  ]
+}

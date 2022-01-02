@@ -1,0 +1,29 @@
+{
+  "parent": "strange:runestones/look_at_runestone",
+  "display": {
+    "icon": {
+      "item": "strange:stone_runestone"
+    },
+    "title": {
+      "translate": "advancements.strange.activate_runestone.title"
+    },
+    "description": {
+      "translate": "advancements.strange.activate_runestone.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "activated_runestone": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:activate_runestone" }
+    }
+  },
+  "requirements": [
+    [
+      "activated_runestone"
+    ]
+  ]
+}

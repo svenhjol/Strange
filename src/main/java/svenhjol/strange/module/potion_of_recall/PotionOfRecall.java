@@ -27,6 +27,8 @@ public class PotionOfRecall extends CharmModule {
     public static ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "potion_of_recall_loot");
     public static LootItemFunctionType LOOT_FUNCTION;
 
+    public static final ResourceLocation TRIGGER_HAS_RECALL_EFFECT = new ResourceLocation(Strange.MOD_ID, "has_recall_effect");
+
     private final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
 
     public static boolean onlyOutsideOverworld = true;

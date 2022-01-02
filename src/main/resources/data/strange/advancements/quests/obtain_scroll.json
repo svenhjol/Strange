@@ -1,0 +1,35 @@
+{
+  "parent": "strange:writing_desks/obtain_writing_desk",
+  "display": {
+    "icon": {
+      "item": "strange:apprentice_scroll"
+    },
+    "title": {
+      "translate": "advancements.strange.obtain_scroll.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtain_scroll.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtained_scroll": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": [
+        "strange:novice_scroll",
+        "strange:apprentice_scroll",
+        "strange:journeyman_scroll",
+        "strange:expert_scroll",
+        "strange:master_scroll"
+      ]}]}
+    }
+  },
+  "requirements": [
+    [
+      "obtained_scroll"
+    ]
+  ]
+}

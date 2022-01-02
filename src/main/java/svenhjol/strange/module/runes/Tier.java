@@ -31,6 +31,11 @@ public enum Tier implements ICharmEnum {
         return Tier.values().length;
     }
 
+    public static Tier getHighestTier() {
+        var tiers = Arrays.asList(values());
+        return tiers.get(tiers.size() - 1);
+    }
+
     @Nullable
     public static Tier byName(String name) {
         var first = Arrays.stream(values()).filter(t -> t.getSerializedName().equals(name)).findFirst();

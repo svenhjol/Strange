@@ -35,6 +35,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
@@ -73,6 +74,8 @@ public class MirrorDimension implements IDimension {
     public static SoundEvent MIRROR_SCORCHING_LOOP;
     public static SoundEvent MIRROR_SCORCHING_ADDITIONS;
     public static AmbientAdditionsSettings MIRROR_SCORCHING_SETTINGS;
+
+    public static final ResourceLocation TRIGGER_VISIT_MIRROR = new ResourceLocation(Strange.MOD_ID, "visit_mirror");
 
     public static final int FOG = 0x004434;
     public static final float TEMP = 0.5F;
@@ -138,6 +141,7 @@ public class MirrorDimension implements IDimension {
 
     @Override
     public void handlePlayerChangeDimension(ServerPlayer player, ServerLevel origin, ServerLevel destination) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_VISIT_MIRROR);
         SERVER_SEND_WEATHER_TICKS.send(player, weatherPhase, weatherPhaseTicks);
     }
 

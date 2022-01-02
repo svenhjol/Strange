@@ -1,0 +1,29 @@
+{
+  "parent": "strange:stone_circles/find_stone_circle",
+  "display": {
+    "icon": {
+      "item": "strange:stone_runestone"
+    },
+    "title": {
+      "translate": "advancements.strange.look_at_runestone.title"
+    },
+    "description": {
+      "translate": "advancements.strange.look_at_runestone.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "looked_at_runestone": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:look_at_runestone" }
+    }
+  },
+  "requirements": [
+    [
+      "looked_at_runestone"
+    ]
+  ]
+}

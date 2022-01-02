@@ -1,0 +1,29 @@
+{
+  "parent": "strange:quests/obtain_scroll",
+  "display": {
+    "icon": {
+      "item": "strange:stone_runestone"
+    },
+    "title": {
+      "translate": "advancements.strange.learn_rune.title"
+    },
+    "description": {
+      "translate": "advancements.strange.learn_rune.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "learned_rune": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:learn_rune"}
+    }
+  },
+  "requirements": [
+    [
+      "learned_rune"
+    ]
+  ]
+}

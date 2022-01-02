@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/adventure",
+  "display": {
+    "icon": {
+      "item": "strange:writing_desk"
+    },
+    "title": {
+      "translate": "advancements.strange.obtain_writing_desk.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtain_writing_desk.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtained_writing_desk": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": [
+        "strange:writing_desk"
+      ]}]}
+    }
+  },
+  "requirements": [
+    [
+      "obtained_writing_desk"
+    ]
+  ]
+}
