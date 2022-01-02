@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/adventure",
+  "display": {
+    "icon": {
+      "item": "minecraft:end_stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.strange.find_end_shrine.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_end_shrine.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "found_end_shrine": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:end_shrine"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "found_end_shrine"
+    ]
+  ]
+}

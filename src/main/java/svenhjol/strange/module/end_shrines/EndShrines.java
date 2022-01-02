@@ -28,7 +28,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "End Shrines are floating islands found high above the outer islands of the End.\n" +
+    "Shrines have portals that lead back to the overworld or onward to other dimensions.")
 public class EndShrines extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "end_shrine");
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "end_shrine_portal");
@@ -100,7 +101,7 @@ public class EndShrines extends CharmModule {
 
     static {
         BIOMES = new ArrayList<>(Arrays.asList(
-            "end_highlands", "end_midlands", "small_end_islands", "end_barrens"
+            "small_end_islands"
         ));
     }
 }
