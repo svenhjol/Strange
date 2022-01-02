@@ -2,7 +2,7 @@
   "parent": "strange:core/root",
   "display": {
     "icon": {
-      "item": "strange:ender_bundle",
+      "item": "minecraft:iron_pickaxe",
       "nbt": "{Damage:0}"
     },
     "title": {

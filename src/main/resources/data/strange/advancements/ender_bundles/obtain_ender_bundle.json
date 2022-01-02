@@ -1,5 +1,5 @@
 {
-  "parent": "strange:core/tools",
+  "parent": "strange:end_shrines/find_end_shrine",
   "display": {
     "icon": {
       "item": "strange:ender_bundle"

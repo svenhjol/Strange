@@ -1,5 +1,5 @@
 {
-  "parent": "strange:core/adventure",
+  "parent": "strange:end_shrines/find_end_shrine",
   "display": {
     "icon": {
       "item": "minecraft:ender_eye"
