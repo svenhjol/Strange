@@ -27,16 +27,19 @@ public class ChestLootProcessor extends StructureProcessor {
 
     public static final Codec<ChestLootProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("chance").orElse(DEFAULT_CHANCE).forGetter(p -> p.chance),
+        Codec.STRING.fieldOf("loot").orElse("").forGetter(p -> p.loot),
         Codec.BOOL.fieldOf("remove").orElse(true).forGetter(p -> p.remove)
     ).apply(instance, ChestLootProcessor::new));
 
     public static List<ResourceLocation> TABLES;
 
     private final double chance; // Chance (out of 1.0) of a matching chest being processed.
+    private final String loot; // Optional manually defined loot table for all chests in this structure piece that don't have a loot table.
     private final boolean remove; // If true and a matching chest fails the chance test, the chest will be replaced with air.
 
-    public ChestLootProcessor(double chance, boolean remove) {
+    public ChestLootProcessor(double chance, String loot, boolean remove) {
         this.chance = chance;
+        this.loot = loot;
         this.remove = remove;
     }
 
@@ -52,7 +55,7 @@ public class ChestLootProcessor extends StructureProcessor {
         }
 
         String lootValue = "";
-        ResourceLocation loot;
+        ResourceLocation useLoot;
         var newState = state
             .setValue(ChestBlock.FACING, state.getValue(ChestBlock.FACING));
 
@@ -61,16 +64,20 @@ public class ChestLootProcessor extends StructureProcessor {
         }
 
         if (lootValue.isEmpty()) {
-            loot = TABLES.get(random.nextInt(TABLES.size()));
+            if (!loot.isEmpty()) {
+                useLoot = new ResourceLocation(loot);
+            } else {
+                useLoot = TABLES.get(random.nextInt(TABLES.size()));
+            }
         } else {
-            loot = new ResourceLocation(lootValue);
+            useLoot = new ResourceLocation(lootValue);
         }
 
         if (random.nextDouble() > chance) {
             return getAir(blockInfo.pos);
         }
 
-        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(random, loot));
+        return new StructureBlockInfo(blockInfo.pos, newState, createContainerNbt(random, useLoot));
     }
 
     public static CompoundTag createContainerNbt(Random random, @Nullable ResourceLocation lootTable) {
