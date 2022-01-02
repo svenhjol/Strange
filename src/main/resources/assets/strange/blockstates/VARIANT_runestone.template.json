@@ -1,0 +1,10 @@
+{
+  "template": {
+    "variants": {
+      "": {
+        "model": "strange:block/VARIANT_runestone"
+      }
+    }
+  },
+  "variants": "runestone_material"
+}

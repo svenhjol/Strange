@@ -15,8 +15,8 @@ public enum RunestoneMaterial implements ICharmEnum {
     DEEPSLATE(Properties.copy(Blocks.DEEPSLATE)),
     BLACKSTONE(Properties.copy(Blocks.BLACKSTONE)),
     NETHER_BRICK(Properties.copy(Blocks.NETHER_BRICKS)),
-    OBSIDIAN( Properties.copy(Blocks.OBSIDIAN)),
-    PURPUR( Properties.copy(Blocks.PURPUR_BLOCK));
+    OBSIDIAN(Properties.copy(Blocks.OBSIDIAN)),
+    PURPUR(Properties.copy(Blocks.PURPUR_BLOCK));
 
     private final Properties properties;
 
