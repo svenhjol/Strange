@@ -100,7 +100,7 @@ public class ScrollItem extends CharmItem {
             // Quest failed somehow, destroy the scroll.
             return destroy(serverPlayer, scroll);
 
-        } else if (quest.getState() == State.PAUSED) {
+        } else if (quest.getState() == State.PAUSED || quest.getState() == State.CREATED) {
 
             // Write the quest data to the scroll so we can reopen it another time.
             setScrollQuest(scroll, quest);

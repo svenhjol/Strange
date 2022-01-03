@@ -83,7 +83,7 @@ public class Quest {
 
             if (!dimensions.isEmpty() && !dimensions.contains(playerDimension)) {
                 player.displayClientMessage(new TranslatableComponent("gui.strange.quests.invalid_dimension"), true);
-                setState(State.PAUSED);
+                setState(State.CREATED);
                 return;
             }
 

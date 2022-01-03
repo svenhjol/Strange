@@ -207,7 +207,8 @@ public class JournalQuestScreen extends JournalScreen {
         top += 12;
 
         if (items.size() == 0 && playerXp == 0 && merchantXp == 0) {
-            GuiHelper.drawCenteredString(poseStack, font, JournalResources.NO_REWARDS, midX, top, secondaryColor);
+            GuiHelper.drawCenteredString(poseStack, font, JournalResources.NO_REWARDS, midX, top, textColor);
+            top += 16;
         } else {
             Component playerXpLabel = new TranslatableComponent("gui.strange.journal.reward_levels", playerXp);
 
