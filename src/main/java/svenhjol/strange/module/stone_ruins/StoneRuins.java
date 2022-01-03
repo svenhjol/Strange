@@ -59,7 +59,7 @@ public class StoneRuins extends CharmModule {
         // register the feature via Fabric API
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_RUIN_FEATURE)
             .step(GenerationStep.Decoration.UNDERGROUND_STRUCTURES)
-            .defaultConfig(32, 18, 1158102994)
+            .defaultConfig(32, 24, 1158102994)
             .register();
 
         // register the configured structure feature with minecraft
