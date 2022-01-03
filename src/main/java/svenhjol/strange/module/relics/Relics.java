@@ -3,8 +3,11 @@ package svenhjol.strange.module.relics;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,8 +23,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.helper.ClassHelper;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.NbtHelper;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -45,6 +51,7 @@ import java.util.Map;
 @CommonModule(mod = Strange.MOD_ID)
 public class Relics extends CharmModule {
     public static final String ITEM_NAMESPACE = "svenhjol.strange.module.relics.item";
+    public static final String RELIC_TAG = "strange_relic";
     public static final Map<Type, List<IRelicItem>> RELICS = new HashMap<>();
 
     public static final List<ResourceLocation> TOOL_LOOT_TABLES = new ArrayList<>();
@@ -61,6 +68,9 @@ public class Relics extends CharmModule {
     public static LootItemFunctionType WEAPON_LOOT_FUNCTION;
     public static LootItemFunctionType ARMOR_LOOT_FUNCTION;
     public static LootItemFunctionType WEIRD_LOOT_FUNCTION;
+
+    private static final ResourceLocation TRIGGER_FIND_RELIC = new ResourceLocation(Strange.MOD_ID, "find_relic");
+    private static Advancement CACHED_RELIC_ADVANCEMENT = null;
 
     @Config(name = "Additional levels", description = "Number of levels above the enchantment maximum level that can be applied to relics.\n" +
         "Enchantment levels are capped at level 10.")
@@ -82,6 +92,7 @@ public class Relics extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
+        PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
 
         var vaultsEnabled = Strange.LOADER.isEnabled(Vaults.class);
@@ -116,6 +127,38 @@ public class Relics extends CharmModule {
             ARMOR_LOOT_TABLES.add(table);
             WEIRD_LOOT_TABLES.add(table);
         }
+    }
+
+    private void handlePlayerTick(Player player) {
+        if (player.level.isClientSide || player.level.getGameTime() % 50 == 0) return;
+        var serverPlayer = (ServerPlayer) player;
+
+        if (CACHED_RELIC_ADVANCEMENT == null) {
+            var advancements = serverPlayer.getLevel().getServer().getAdvancements();
+            var id = new ResourceLocation(Strange.MOD_ID, "relics/" + TRIGGER_FIND_RELIC.getPath());
+            CACHED_RELIC_ADVANCEMENT = advancements.getAdvancement(id);
+        }
+
+        if (CACHED_RELIC_ADVANCEMENT != null) {
+            var progress = serverPlayer.getAdvancements().getOrStartProgress(CACHED_RELIC_ADVANCEMENT);
+
+            if (!progress.isDone()) {
+                var inventory = player.getInventory();
+                var size = inventory.getContainerSize();
+                for (int i = 0; i < size; i++) {
+                    var inSlot = inventory.getItem(i);
+                    if (inSlot.isEmpty()) continue;
+                    if (NbtHelper.tagExists(inSlot, RELIC_TAG)) {
+                        triggerFindRelic(serverPlayer);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void triggerFindRelic(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_FIND_RELIC);
     }
 
     public static void preserveHighestLevelEnchantment(Map<Enchantment, Integer> enchantments, ItemStack book, ItemStack output) {

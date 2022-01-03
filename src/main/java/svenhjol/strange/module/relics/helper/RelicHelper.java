@@ -25,6 +25,7 @@ public class RelicHelper {
             stack.setDamageValue(Math.max(0, (maxDamage / 2) - random.nextInt(maxDamage / 2)));
         }
 
+        stack.getOrCreateTag().putBoolean(Relics.RELIC_TAG, true);
         return stack;
     }
 }

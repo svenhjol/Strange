@@ -1,0 +1,30 @@
+{
+  "parent": "strange:mirror_dimension/visit_mirror",
+  "display": {
+    "icon": {
+      "item": "minecraft:iron_sword",
+      "nbt": "{Enchantments:[{id:\"unbreaking\",lvl:1}],strange_glint:\"red\"}"
+    },
+    "title": {
+      "translate": "advancements.strange.find_relic.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_relic.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "found_relic": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:find_relic" }
+    }
+  },
+  "requirements": [
+    [
+      "found_relic"
+    ]
+  ]
+}
