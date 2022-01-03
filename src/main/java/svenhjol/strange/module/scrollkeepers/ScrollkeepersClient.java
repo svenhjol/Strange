@@ -9,6 +9,7 @@ import net.minecraft.world.phys.AABB;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.api.event.PlayerTickCallback;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.quests.QuestsClient;
 import svenhjol.strange.module.scrollkeepers.network.ClientReceiveSatisfied;
 import svenhjol.strange.module.scrollkeepers.network.ClientSendCheckSatisfied;
 
@@ -31,7 +32,7 @@ public class ScrollkeepersClient extends CharmModule {
     }
 
     private void handlePlayerTick(Player player) {
-        if (!player.level.isClientSide || player.level.getGameTime() % (30L * backoff) > 0) return;
+        if (!player.level.isClientSide || player.level.getGameTime() % (50L * backoff) > 0) return;
         Level level = player.level;
         BlockPos pos = player.blockPosition();
 
@@ -44,7 +45,7 @@ public class ScrollkeepersClient extends CharmModule {
         List<Villager> villagers = level.getEntitiesOfClass(Villager.class, new AABB(
             x - range, y - range, z - range, x + range, y + range, z + range
         ));
-        if (villagers.isEmpty()) {
+        if (villagers.isEmpty() || QuestsClient.quests.isEmpty()) {
             if (backoff < 4) ++backoff;
             return;
         }
