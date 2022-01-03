@@ -2,14 +2,13 @@
   "parent": "strange:writing_desks/obtain_writing_desk",
   "display": {
     "icon": {
-      "item": "strange:runic_tome",
-      "nbt": "{branch:0.2}"
+      "item": "strange:runic_tome"
     },
     "title": {
-      "translate": "advancements.strange.write_bookmark_tome.title"
+      "translate": "advancements.strange.write_tome.title"
     },
     "description": {
-      "translate": "advancements.strange.write_bookmark_tome.description"
+      "translate": "advancements.strange.write_tome.description"
     },
     "frame": "goal",
     "show_toast": true,
@@ -17,14 +16,14 @@
     "hidden": false
   },
   "criteria": {
-    "wrote_bookmark_tome": {
+    "wrote_tome": {
       "trigger": "charm:action_performed",
-      "conditions": { "action": "strange:write_bookmark_tome" }
+      "conditions": { "action": "strange:write_tome" }
     }
   },
   "requirements": [
     [
-      "wrote_bookmark_tome"
+      "wrote_tome"
     ]
   ]
 }

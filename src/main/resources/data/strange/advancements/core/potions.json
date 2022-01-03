@@ -2,7 +2,8 @@
   "parent": "strange:core/root",
   "display": {
     "icon": {
-      "item": "minecraft:glass_bottle"
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:swiftness\"}"
     },
     "title": {
       "translate": "advancements.strange.potions.title"

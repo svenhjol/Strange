@@ -2,7 +2,8 @@
   "parent": "strange:core/potions",
   "display": {
     "icon": {
-      "item": "minecraft:potion"
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"strange:recall\"}"
     },
     "title": {
       "translate": "advancements.strange.travel_to_spawn_point.title"

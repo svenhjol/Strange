@@ -2,7 +2,8 @@
   "parent": "strange:core/potions",
   "display": {
     "icon": {
-      "item": "minecraft:potion"
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"strange:spelunking\"}"
     },
     "title": {
       "translate": "advancements.strange.obtain_spelunking_effect.title"

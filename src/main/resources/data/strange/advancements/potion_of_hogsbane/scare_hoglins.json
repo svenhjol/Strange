@@ -2,7 +2,8 @@
   "parent": "strange:core/potions",
   "display": {
     "icon": {
-      "item": "minecraft:potion"
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"strange:hogsbane\"}"
     },
     "title": {
       "translate": "advancements.strange.scare_hoglins.title"
