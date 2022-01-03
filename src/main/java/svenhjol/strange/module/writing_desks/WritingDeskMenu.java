@@ -148,6 +148,12 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         this.access.execute((level, pos) -> {
             // TODO: this needs to be a custom sound effect
             level.playSound(null, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+            // Do the writing desk advancement.
+            if (player instanceof ServerPlayer serverPlayer) {
+                var branch = RunicTomeItem.getBranch(stack);
+                WritingDesks.triggerWriteTome(serverPlayer, branch);
+            }
         });
     }
 
