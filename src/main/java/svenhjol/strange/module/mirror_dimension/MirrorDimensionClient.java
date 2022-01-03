@@ -7,13 +7,16 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.resources.sounds.BiomeAmbientSoundsHandler;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charmonium.api.event.AddUndergroundAmbienceCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
+import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 import svenhjol.strange.module.intercept_music.InterceptMusic;
 import svenhjol.strange.module.intercept_music.InterceptMusicClient;
 import svenhjol.strange.module.intercept_music.MusicCondition;
@@ -45,6 +48,7 @@ public class MirrorDimensionClient extends CharmModule {
         CLIENT_RECEIVE_WEATHER_TICKS = new ClientReceiveWeatherTicks();
 
         DimensionSpecialEffects.EFFECTS.put(MirrorDimension.ID, new MirrorEffects());
+        AddUndergroundAmbienceCallback.EVENT.register(this::handlCharmoniumAmbience);
 
         if (Strange.LOADER.isEnabled(InterceptMusic.class)) {
             var ambientMusicCondition = new MusicCondition("mirror_music", 0, MirrorDimension.MIRROR_MUSIC, 12000, 24000, true, current -> {
@@ -55,6 +59,10 @@ public class MirrorDimensionClient extends CharmModule {
 
             InterceptMusicClient.addCondition(ambientMusicCondition);
         }
+    }
+
+    private boolean handlCharmoniumAmbience(Level level) {
+        return DimensionHelper.isDimension(level, MirrorDimension.ID);
     }
 
     @Override

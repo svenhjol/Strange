@@ -60,7 +60,7 @@ dependencies {
 	include "com.electronwill.night-config:toml:${project.tomlnc_version}"
 
 	modImplementation "svenhjol.charm:charm:${project.charm_version}"
-//	modRuntime "svenhjol.charmonium:charmonium:${project.charmonium_version}"
+	modRuntime "svenhjol.charmonium:charmonium:${project.charmonium_version}"
 }
 
 
