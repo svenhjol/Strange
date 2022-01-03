@@ -3,7 +3,6 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -12,9 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,14 +47,11 @@ public class Runestones extends CharmModule {
     public static final String ITEMS_DEFINITION_FOLDER = "runestones/items";
 
     public static final ResourceLocation BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runestone");
-    public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
     public static final ResourceLocation SPAWN = new ResourceLocation(Strange.MOD_ID, "spawn_point");
     public static final String UNKNOWN_CLUE = "unknown";
 
     public static Map<RunestoneMaterial, RunestoneBlock> RUNESTONE_BLOCKS = new HashMap<>();
     public static BlockEntityType<RunestoneBlockEntity> BLOCK_ENTITY;
-    public static EntityType<RunestoneDustEntity> RUNESTONE_DUST_ENTITY;
-    public static RunestoneDustItem RUNESTONE_DUST;
     public static MenuType<RunestoneMenu> MENU;
 
     public static final ResourceLocation TRIGGER_LOOK_AT_RUNESTONE = new ResourceLocation(Strange.MOD_ID, "look_at_runestone");
@@ -91,14 +84,6 @@ public class Runestones extends CharmModule {
 
         BLOCK_ENTITY = CommonRegistry.blockEntity(BLOCK_ID, RunestoneBlockEntity::new);
         MENU = CommonRegistry.menu(BLOCK_ID, RunestoneMenu::new);
-
-        // setup runestone dust item and entity
-        RUNESTONE_DUST = new RunestoneDustItem(this);
-        RUNESTONE_DUST_ENTITY = CommonRegistry.entity(RUNESTONE_DUST_ID, FabricEntityTypeBuilder
-            .<RunestoneDustEntity>create(MobCategory.MISC, RunestoneDustEntity::new)
-            .trackRangeBlocks(80)
-            .trackedUpdateRate(10)
-            .dimensions(EntityDimensions.fixed(2.0F, 2.0F)));
     }
 
     @Override

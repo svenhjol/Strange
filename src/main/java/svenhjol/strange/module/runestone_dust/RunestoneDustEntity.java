@@ -1,4 +1,4 @@
-package svenhjol.strange.module.runestones;
+package svenhjol.strange.module.runestone_dust;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +26,7 @@ public class RunestoneDustEntity extends Entity {
     }
 
     public RunestoneDustEntity(Level world, int x, int z) {
-        this(Runestones.RUNESTONE_DUST_ENTITY, world);
+        this(RunestoneDust.RUNESTONE_DUST_ENTITY, world);
         entityData.set(TARGET_X, x);
         entityData.set(TARGET_Z, z);
     }

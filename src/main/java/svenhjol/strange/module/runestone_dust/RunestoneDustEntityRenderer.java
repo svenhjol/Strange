@@ -1,4 +1,4 @@
-package svenhjol.strange.module.runestones;
+package svenhjol.strange.module.runestone_dust;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

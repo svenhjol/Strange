@@ -1,4 +1,4 @@
-package svenhjol.strange.module.runestones;
+package svenhjol.strange.module.runestone_dust;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.BlockPos;
