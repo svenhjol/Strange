@@ -36,15 +36,16 @@ public class RecallEffect extends CharmStatusEffect {
             // remove recall effect so it doesn't try and teleport multiple times
             livingEntity.removeEffect(this);
 
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
+                CharmAdvancements.ACTION_PERFORMED.trigger(serverPlayer, PotionOfRecall.TRIGGER_TRAVEL_TO_SPAWN_POINT);
+            }
+
             // generate a teleportation ticket for the player to the spawn point
             var ticket = new TeleportTicket(livingEntity, overworld, livingEntity.blockPosition(), serverLevel.getSharedSpawnPos());
             ticket.useExactPosition(false);
             ticket.allowDimensionChange(true);
             Teleport.addTeleportTicket(ticket);
 
-            if (livingEntity instanceof ServerPlayer serverPlayer) {
-                CharmAdvancements.ACTION_PERFORMED.trigger(serverPlayer, PotionOfRecall.TRIGGER_HAS_RECALL_EFFECT);
-            }
         } else {
             super.applyInstantenousEffect(attacker1, attacker2, livingEntity, amplifier, d);
         }
