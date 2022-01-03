@@ -23,12 +23,10 @@ import svenhjol.strange.helper.CommandHelper;
 import svenhjol.strange.init.StrangeCommands;
 import svenhjol.strange.module.journals.JournalData;
 import svenhjol.strange.module.journals.Journals;
-import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
 import svenhjol.strange.module.runes.Runes;
-import svenhjol.strange.module.runes.Tier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,16 +114,13 @@ public class KnowledgeCommand {
         ServerPlayer player = context.getSource().getPlayerOrException();
         JournalData journal = getJournal(player);
 
-        for (Tier tier : Tier.values()) {
-            var i = 0;
-            var result = false;
-
-            do {
-                result = JournalHelper.tryLearnRune(tier, journal, player);
-            } while (!result && i++ < 20);
+        for (int rune = 0; rune < Runes.NUM_RUNES; rune++) {
+            journal.learnRune(rune);
         }
 
         Journals.SERVER_SEND_JOURNAL.send(player);
+        Journals.triggerLearnRune(player);
+        Journals.triggerLearnAllRunes(player);
         context.getSource().sendSuccess(LEARNED_ALL_RUNES, false);
         return Command.SINGLE_SUCCESS;
     }
