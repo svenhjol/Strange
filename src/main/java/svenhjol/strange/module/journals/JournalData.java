@@ -46,7 +46,7 @@ public class JournalData {
         return tag;
     }
 
-    public boolean hasEverOpened() {
+    public boolean hasOpened() {
         return openedJournal;
     }
 

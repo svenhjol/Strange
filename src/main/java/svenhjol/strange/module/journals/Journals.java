@@ -51,6 +51,7 @@ public class Journals extends CharmModule {
     public static ServerSendJournal SERVER_SEND_JOURNAL;
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
     public static ServerSendPage SERVER_SEND_PAGE;
+    public static ServerSendHint SERVER_SEND_HINT;
     public static ServerReceiveMakeMap SERVER_RECEIVE_MAKE_MAP;
     public static ServerReceiveOpenJournal SERVER_RECEIVE_OPEN_JOURNAL;
 
@@ -72,6 +73,7 @@ public class Journals extends CharmModule {
         SERVER_SEND_JOURNAL = new ServerSendJournal();
         SERVER_SEND_BOOKMARK_ICONS = new ServerSendBookmarkIcons();
         SERVER_SEND_PAGE = new ServerSendPage();
+        SERVER_SEND_HINT = new ServerSendHint();
         SERVER_RECEIVE_MAKE_MAP = new ServerReceiveMakeMap();
         SERVER_RECEIVE_OPEN_JOURNAL = new ServerReceiveOpenJournal();
     }
@@ -113,6 +115,12 @@ public class Journals extends CharmModule {
         var player = listener.getPlayer();
         SERVER_SEND_JOURNAL.send(player);
         SERVER_SEND_BOOKMARK_ICONS.send(player);
+
+        getJournal(player).ifPresent(journal -> {
+            if (!journal.hasOpened()) {
+                SERVER_SEND_HINT.send(player); // sends the "open journal" hint once per client login
+            }
+        });
     }
 
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {

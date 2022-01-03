@@ -1,14 +1,11 @@
 package svenhjol.strange.module.journals;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +23,7 @@ public class JournalsClient extends CharmModule {
     public static ClientReceiveJournal CLIENT_RECEIVE_JOURNAL;
     public static ClientReceiveBookmarkIcons CLIENT_RECEIVE_BOOKMARK_ICONS;
     public static ClientReceivePage CLIENT_RECEIVE_PAGE;
+    public static ClientReceiveHint CLIENT_RECEIVE_HINT;
     public static ClientSendMakeMap CLIENT_SEND_MAKE_MAP;
     public static ClientSendOpenJournal CLIENT_SEND_OPEN_JOURNAL;
 
@@ -35,23 +33,12 @@ public class JournalsClient extends CharmModule {
     public static TakePhotoHandler photo;
 
     private KeyMapping keyBinding;
-    private boolean showJournalHint = true;
+    public static boolean showJournalHint = false;
 
     @Override
     public void register() {
         tracker = new PageTracker();
         photo = new TakePhotoHandler();
-
-        ClientEntityEvents.ENTITY_LOAD.register(this::handleJoinWorld);
-    }
-
-    private void handleJoinWorld(Entity entity, ClientLevel level) {
-        if (!(entity instanceof LocalPlayer)) return;
-        if (keyBinding == null || keyBinding.isUnbound()) return;
-
-        if (!showJournalHint) {
-            showJournalHint = true;
-        }
     }
 
     @Override
@@ -61,6 +48,7 @@ public class JournalsClient extends CharmModule {
         CLIENT_RECEIVE_JOURNAL = new ClientReceiveJournal();
         CLIENT_RECEIVE_BOOKMARK_ICONS = new ClientReceiveBookmarkIcons();
         CLIENT_RECEIVE_PAGE = new ClientReceivePage();
+        CLIENT_RECEIVE_HINT = new ClientReceiveHint();
         CLIENT_SEND_MAKE_MAP = new ClientSendMakeMap();
         CLIENT_SEND_OPEN_JOURNAL = new ClientSendOpenJournal();
 
@@ -107,7 +95,7 @@ public class JournalsClient extends CharmModule {
     private void checkJournalHint(Player player) {
         if (showJournalHint) {
             getJournal().ifPresent(journal -> {
-                if (!journal.hasEverOpened()) {
+                if (!journal.hasOpened()) {
                     var key = keyBinding.saveString();
                     if (key.contains(".")) {
                         var split = key.split("\\.");
