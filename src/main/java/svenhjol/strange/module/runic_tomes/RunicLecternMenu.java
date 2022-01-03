@@ -79,9 +79,12 @@ public class RunicLecternMenu extends CharmContainerMenu {
             });
             case 1 -> access.execute((level, pos) -> {
                 if (level.getBlockEntity(pos) instanceof RunicLecternBlockEntity lectern) {
+                    var serverPlayer = (ServerPlayer) player;
                     ItemStack tome = lectern.getTome();
                     ItemStack sacrifice = slots.get(0).getItem();
-                    ActivateRunicTomeCallback.EVENT.invoker().interact((ServerPlayer) player, pos, tome, sacrifice);
+
+                    RunicTomes.triggerActivateTome(serverPlayer);
+                    ActivateRunicTomeCallback.EVENT.invoker().interact(serverPlayer, pos, tome, sacrifice);
 
                     if (!sacrifice.isEmpty()) {
                         sacrifice.shrink(1);

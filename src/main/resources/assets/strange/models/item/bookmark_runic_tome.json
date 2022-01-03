@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "strange:item/bookmark_runic_tome"
-  }
-}

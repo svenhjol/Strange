@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,15 +32,21 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.bookmarks.BookmarkBranch;
+import svenhjol.strange.module.discoveries.DiscoveryBranch;
+import svenhjol.strange.module.knowledge.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge.branch.DimensionBranch;
+import svenhjol.strange.module.knowledge.branch.StructureBranch;
 import svenhjol.strange.module.runic_tomes.loot.BiomeTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.loot.DimensionTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.loot.StructureTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
-import java.util.List;
+import java.util.*;
 
 @CommonModule(mod = Strange.MOD_ID)
 public class RunicTomes extends CharmModule {
@@ -50,18 +57,25 @@ public class RunicTomes extends CharmModule {
     public static RunicLecternBlock RUNIC_LECTERN;
     public static MenuType<RunicLecternMenu> RUNIC_LECTERN_MENU;
     public static BlockEntityType<RunicLecternBlockEntity> RUNIC_LECTERN_BLOCK_ENTITY;
-    public static RunicTomeItem RUNIC_TOME;
     public static LootItemFunctionType BIOME_TOME_LOOT;
     public static LootItemFunctionType DIMENSION_TOME_LOOT;
     public static LootItemFunctionType STRUCTURE_TOME_LOOT;
+
+    public static Map<String, RunicTomeItem> RUNIC_TOMES = new HashMap<>();
+    public static List<String> VALID_BRANCHES;
 
     private static final List<ResourceLocation> VALID_LOOT_FOR_BIOMES;
     private static final List<ResourceLocation> VALID_LOOT_FOR_DIMENSIONS;
     private static final List<ResourceLocation> VALID_LOOT_FOR_STRUCTURES;
 
+    private static final ResourceLocation TRIGGER_ACTIVATE_TOME = new ResourceLocation(Strange.MOD_ID, "activate_tome");
+
     @Override
     public void register() {
-        RUNIC_TOME = new RunicTomeItem(this);
+        for (String branch : VALID_BRANCHES) {
+            RUNIC_TOMES.put(branch, new RunicTomeItem(this, branch));
+        }
+
         RUNIC_LECTERN = new RunicLecternBlock(this);
         RUNIC_LECTERN_MENU = CommonRegistry.menu(RUNIC_LECTERN_BLOCK_ID, RunicLecternMenu::new);
         RUNIC_LECTERN_BLOCK_ENTITY = CommonRegistry.blockEntity(RUNIC_LECTERN_BLOCK_ID, RunicLecternBlockEntity::new, RUNIC_LECTERN);
@@ -75,6 +89,10 @@ public class RunicTomes extends CharmModule {
         UseBlockCallback.EVENT.register(this::handleUseBlock);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         SERVER_SEND_SET_TOME = new ServerSendSetTome();
+    }
+
+    public static void triggerActivateTome(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_ACTIVATE_TOME);
     }
 
     /**
@@ -134,6 +152,14 @@ public class RunicTomes extends CharmModule {
     }
 
     static {
+        VALID_BRANCHES = Arrays.asList(
+            BiomeBranch.NAME,
+            BookmarkBranch.NAME,
+            DimensionBranch.NAME,
+            DiscoveryBranch.NAME,
+            StructureBranch.NAME
+        );
+
         VALID_LOOT_FOR_DIMENSIONS = List.of(
             BuiltInLootTables.STRONGHOLD_LIBRARY
         );

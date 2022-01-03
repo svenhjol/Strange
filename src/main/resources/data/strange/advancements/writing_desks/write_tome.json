@@ -2,7 +2,7 @@
   "parent": "strange:writing_desks/obtain_writing_desk",
   "display": {
     "icon": {
-      "item": "strange:runic_tome"
+      "item": "strange:bookmarks_runic_tome"
     },
     "title": {
       "translate": "advancements.strange.write_tome.title"

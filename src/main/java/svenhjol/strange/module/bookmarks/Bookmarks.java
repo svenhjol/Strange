@@ -17,7 +17,7 @@ import svenhjol.strange.module.bookmarks.network.*;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-@CommonModule(mod = Strange.MOD_ID, description = "Catalogues player bookmarks.")
+@CommonModule(mod = Strange.MOD_ID, priority = 10, description = "Catalogues player bookmarks.")
 public class Bookmarks extends CharmModule {
     private static @Nullable BookmarkData bookmarkData;
 

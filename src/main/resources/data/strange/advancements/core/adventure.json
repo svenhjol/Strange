@@ -2,7 +2,7 @@
   "parent": "strange:core/root",
   "display": {
     "icon": {
-      "item": "strange:runic_tome"
+      "item": "strange:discoveries_runic_tome"
     },
     "title": {
       "translate": "advancements.strange.adventure.title"
