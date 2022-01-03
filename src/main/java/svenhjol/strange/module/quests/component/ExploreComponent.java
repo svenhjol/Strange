@@ -195,7 +195,7 @@ public class ExploreComponent implements IQuestComponent {
 
         var structureFeature = Registry.STRUCTURE_FEATURE.get(new ResourceLocation(structureId));
         if (structureFeature == null) {
-            LogHelper.error(Strange.MOD_ID, getClass(), "Invalid structure type, cannot start quest.");
+            LogHelper.error(Strange.MOD_ID, getClass(), "Invalid structure type `" + structureId + "`, cannot start quest.");
             return false; // Invalid structure type.
         }
 
