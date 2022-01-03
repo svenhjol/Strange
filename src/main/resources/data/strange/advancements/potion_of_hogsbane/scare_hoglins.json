@@ -11,7 +11,7 @@
     "description": {
       "translate": "advancements.strange.scare_hoglins.description"
     },
-    "frame": "challenge",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
