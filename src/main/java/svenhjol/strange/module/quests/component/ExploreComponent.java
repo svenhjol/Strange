@@ -210,7 +210,7 @@ public class ExploreComponent implements IQuestComponent {
         structurePos = level.findNearestMapFeature(structureFeature, blockPos, 500, skipExistingChunks);// TODO: what is 500 here
 
         if (structurePos == null) {
-            LogHelper.error(Strange.MOD_ID, getClass(), "Could not find structure, cannot start quest.");
+            LogHelper.error(Strange.MOD_ID, getClass(), "Could not find structure `" + structureId + "`, cannot start quest.");
             return false; // Could not find structure.
         }
 
