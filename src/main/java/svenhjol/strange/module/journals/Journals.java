@@ -26,10 +26,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.QuestEvents;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
 import svenhjol.strange.module.journals.helper.JournalHelper;
-import svenhjol.strange.module.journals.network.ServerReceiveMakeMap;
-import svenhjol.strange.module.journals.network.ServerSendBookmarkIcons;
-import svenhjol.strange.module.journals.network.ServerSendJournal;
-import svenhjol.strange.module.journals.network.ServerSendPage;
+import svenhjol.strange.module.journals.network.*;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
 
@@ -48,11 +45,13 @@ public class Journals extends CharmModule {
 
     public static final ResourceLocation TRIGGER_LEARN_RUNE = new ResourceLocation(Strange.MOD_ID, "learn_rune");
     public static final ResourceLocation TRIGGER_LEARN_ALL_RUNES = new ResourceLocation(Strange.MOD_ID, "learn_all_runes");
+    public static final ResourceLocation TRIGGER_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "open_journal");
 
     public static ServerSendJournal SERVER_SEND_JOURNAL;
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
     public static ServerSendPage SERVER_SEND_PAGE;
     public static ServerReceiveMakeMap SERVER_RECEIVE_MAKE_MAP;
+    public static ServerReceiveOpenJournal SERVER_RECEIVE_OPEN_JOURNAL;
 
     public static SoundEvent SCREENSHOT_SOUND;
 
@@ -73,10 +72,15 @@ public class Journals extends CharmModule {
         SERVER_SEND_BOOKMARK_ICONS = new ServerSendBookmarkIcons();
         SERVER_SEND_PAGE = new ServerSendPage();
         SERVER_RECEIVE_MAKE_MAP = new ServerReceiveMakeMap();
+        SERVER_RECEIVE_OPEN_JOURNAL = new ServerReceiveOpenJournal();
     }
 
     public static Optional<JournalData> getJournal(Player player) {
         return Optional.ofNullable(playerJournals.get(player.getUUID()));
+    }
+
+    public static void triggerOpenJournal(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_OPEN_JOURNAL);
     }
 
     public static void triggerLearnRune(ServerPlayer player) {

@@ -17,10 +17,12 @@ public class JournalData {
     private static final String BIOMES_TAG = "Biomes";
     private static final String DIMENSIONS_TAG = "Dimensions";
     private static final String STRUCTURES_TAG = "Structures";
+    private static final String OPENED_JOURNAL_TAG = "OpenedJournal";
 
     private final List<ResourceLocation> biomes = new ArrayList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
+    private boolean openedJournal = false;
 
     private List<Integer> runes = new ArrayList<>();
 
@@ -35,12 +37,17 @@ public class JournalData {
         dimensions.forEach(dimension -> dimensionsTag.add(StringTag.valueOf(dimension.toString())));
         structures.forEach(structure -> structuresTag.add(StringTag.valueOf(structure.toString())));
 
+        tag.putBoolean(OPENED_JOURNAL_TAG, openedJournal);
         tag.putIntArray(RUNES_TAG, runes);
         tag.put(BIOMES_TAG, biomesTag);
         tag.put(DIMENSIONS_TAG, dimensionsTag);
         tag.put(STRUCTURES_TAG, structuresTag);
 
         return tag;
+    }
+
+    public boolean hasEverOpened() {
+        return openedJournal;
     }
 
     public List<Integer> getLearnedRunes() {
@@ -83,9 +90,14 @@ public class JournalData {
         }
     }
 
+    public void setOpenedJournal(boolean val) {
+        openedJournal = val;
+    }
+
     public static JournalData load(CompoundTag tag) {
         JournalData journal = new JournalData();
 
+        journal.openedJournal = tag.getBoolean(OPENED_JOURNAL_TAG);
         ListTag biomesTag = tag.getList(BIOMES_TAG, 8);
         ListTag dimensionsTag = tag.getList(DIMENSIONS_TAG, 8);
         ListTag structuresTag = tag.getList(STRUCTURES_TAG, 8);
