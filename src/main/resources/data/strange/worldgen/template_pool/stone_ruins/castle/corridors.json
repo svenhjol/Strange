@@ -1,0 +1,69 @@
+{
+  "name": "strange:stone_ruins/castle/corridors",
+  "fallback": "strange:stone_ruins/castle/ends",
+  "elements": [
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_long",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_long_lower",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_med",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_med_low",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_spawner_lower",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_spawner_upper",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/corridor_stairs",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    }
+  ]
+}

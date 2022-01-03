@@ -1,0 +1,114 @@
+{
+  "name": "strange:stone_ruins/castle/rooms",
+  "fallback": "strange:stone_ruins/castle/ends",
+  "elements": [
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_corner_lower",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_corner_upper",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_damaged",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_nature",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_wood",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_tower",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_trap",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_secret",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_damage_half1",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_damage_half2",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_damage_half3",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "strange:stone_ruins/castle/room_smlib",
+        "processors": "strange:stone_ruins/stone_ruins_processors"
+      }
+    }
+  ]
+}

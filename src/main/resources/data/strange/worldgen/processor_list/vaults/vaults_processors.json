@@ -1,17 +1,11 @@
 [
   {
-    "comment": "// Bypass strange's ignore_blocks",
-    "processor_type": "minecraft:block_ignore",
-    "blocks": [{"Name": "strange:ignore_block"}]
-  },
-  {
-    "comment": "// Prepare strange's data blocks",
-    "processor_type": "strange:data"
-  },
-  {
-    "comment": "// Prepare strange's entity blocks",
-    "processor_type": "strange:entity",
-    "chance": 0.9
+    "comment": "// Replace some stone_bricks with blocks from the stone_bricks_decay table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "stone_bricks",
+    "type": "stone_bricks_decay",
+    "chance": 0.8,
+    "remove": false
   },
   {
     "processor_type": "minecraft:rule",
@@ -31,19 +25,25 @@
     ]
   },
   {
+    "comment": "// Bypass strange's ignore_blocks",
+    "processor_type": "minecraft:block_ignore",
+    "blocks": [{"Name": "strange:ignore_block"}]
+  },
+  {
+    "comment": "// Prepare strange's data blocks",
+    "processor_type": "strange:data"
+  },
+  {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.9
+  },
+  {
     "comment": "// Replace anvils with blocks from the anvil table",
     "processor_type": "strange:decoration_replacement",
     "block": "anvil",
     "type": "anvil",
     "chance": 0.8
-  },
-  {
-    "comment": "// Replace some stone_bricks with blocks from the stone_bricks_decay table",
-    "processor_type": "strange:decoration_replacement",
-    "block": "stone_bricks",
-    "type": "stone_bricks_decay",
-    "chance": 0.8,
-    "remove": false
   },
   {
     "comment": "// Replace iron_ore with blocks from the common_stone_ore table",

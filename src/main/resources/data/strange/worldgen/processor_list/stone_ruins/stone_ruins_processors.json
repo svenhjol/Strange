@@ -1,31 +1,35 @@
 [
   {
-    "comment": "// Bypass strange's ignore_blocks",
-    "processor_type": "minecraft:block_ignore",
-    "blocks": [{"Name": "strange:ignore_block"}]
-  },
-  {
-    "comment": "// Prepare strange's data blocks",
-    "processor_type": "strange:data"
-  },
-  {
-    "comment": "// Prepare strange's entity blocks",
-    "processor_type": "strange:entity",
-    "chance": 0.8
-  },
-  {
     "processor_type": "minecraft:rule",
     "rules": [
       {
         "comment": "// Remove some lanterns",
         "location_predicate": {"predicate_type": "minecraft:always_true"},
-        "input_predicate": {"block": "minecraft:lantern", "probability": 0.1, "predicate_type": "minecraft:random_block_match"},
+        "input_predicate": {"block": "minecraft:lantern", "probability": 0.33, "predicate_type": "minecraft:random_block_match"},
         "output_state": {"Name": "minecraft:air"}
       },
       {
-        "comment": "// Make some holes",
+        "comment": "// Remove some gravel",
         "location_predicate": {"predicate_type": "minecraft:always_true"},
-        "input_predicate": {"block": "stone_bricks", "probability": 0.1, "predicate_type": "minecraft:random_block_match"},
+        "input_predicate": {"block": "minecraft:gravel", "probability": 0.25, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:air"}
+      },
+      {
+        "comment": "// Make some holes in ceiling",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "cobblestone", "probability": 0.12, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:air"}
+      },
+      {
+        "comment": "// Make some holes in walls",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "stone_bricks", "probability": 0.06, "predicate_type": "minecraft:random_block_match"},
+        "output_state": {"Name": "minecraft:air"}
+      },
+      {
+        "comment": "// Make some holes in floor",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "stone_bricks", "probability": 0.01, "predicate_type": "minecraft:random_block_match"},
         "output_state": {"Name": "minecraft:air"}
       },
       {
@@ -37,14 +41,15 @@
     ]
   },
   {
-    "comment": "// Replace anvils with blocks from the anvil table",
+    "comment": "// Replace ceiling with blocks from the stone_bricks_decay table",
     "processor_type": "strange:decoration_replacement",
-    "block": "anvil",
-    "type": "anvil",
-    "chance": 0.5
+    "block": "cobblestone",
+    "type": "stone_bricks_decay",
+    "chance": 0.7,
+    "remove": false
   },
   {
-    "comment": "// Replace some stone_bricks with blocks from the stone_bricks_decay table",
+    "comment": "// Replace walls with blocks from the stone_bricks_decay table",
     "processor_type": "strange:decoration_replacement",
     "block": "stone_bricks",
     "type": "stone_bricks_decay",
@@ -52,11 +57,45 @@
     "remove": false
   },
   {
+    "comment": "// Replace floor with blocks from the stone_bricks_decay table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "mossy_cobblestone",
+    "type": "stone_bricks_decay",
+    "chance": 0.7,
+    "remove": false
+  },
+  {
+    "comment": "// Replace some stone-type blocks with gravel",
+    "processor_type": "strange:gravelify",
+    "amount": 0.1
+  },
+  {
+    "comment": "// Bypass strange's ignore_blocks",
+    "processor_type": "minecraft:block_ignore",
+    "blocks": [{"Name": "strange:ignore_block"}]
+  },
+  {
+    "comment": "// Prepare strange's data blocks",
+    "processor_type": "strange:data"
+  },
+  {
+    "comment": "// Prepare strange's entity blocks",
+    "processor_type": "strange:entity",
+    "chance": 0.7
+  },
+  {
+    "comment": "// Replace anvils with blocks from the anvil table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "anvil",
+    "type": "anvil",
+    "chance": 0.5
+  },
+  {
     "comment": "// Replace iron_ore with blocks from the common_stone_ore table",
     "processor_type": "strange:decoration_replacement",
     "block": "iron_ore",
     "type": "common_stone_ore",
-    "chance": 0.75,
+    "chance": 0.7,
     "fixed_random": true
   },
   {
@@ -64,7 +103,7 @@
     "processor_type": "strange:decoration_replacement",
     "block": "diamond_ore",
     "type": "precious_stone_ore",
-    "chance": 0.75,
+    "chance": 0.7,
     "fixed_random": true
   },
   {
@@ -72,14 +111,14 @@
     "processor_type": "strange:decoration_replacement",
     "block": "furnace",
     "type": "furnace",
-    "chance": 0.75
+    "chance": 0.7
   },
   {
     "comment": "// Replace looms with blocks from the loom table",
     "processor_type": "strange:decoration_replacement",
     "block": "loom",
     "type": "loom",
-    "chance": 0.75
+    "chance": 0.7
   },
   {
     "comment": "// Replace spawners with blocks from the spawner table",
@@ -87,11 +126,6 @@
     "block": "spawner",
     "type": "spawner",
     "chance": 0.75
-  },
-  {
-    "comment": "// Replace some stone-type blocks with gravel",
-    "processor_type": "strange:gravelify",
-    "amount": 0.1
   },
   {
     "comment": "// Add loot tables to chests",
@@ -108,7 +142,7 @@
     "processor_type": "strange:decoration_replacement",
     "block": "bookshelf",
     "type": "bookshelf",
-    "chance": 0.8,
+    "chance": 0.75,
     "fixed_random": true
   },
   {
