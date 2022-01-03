@@ -115,11 +115,11 @@
   {
     "comment": "// Add loot to chests",
     "processor_type": "strange:chest_loot",
-    "chance": 0.85
+    "chance": 0.88
   },
   {
     "comment": "// Add loot to barrels",
     "processor_type": "strange:barrel_loot",
-    "chance": 0.85
+    "chance": 0.88
   }
 ]
