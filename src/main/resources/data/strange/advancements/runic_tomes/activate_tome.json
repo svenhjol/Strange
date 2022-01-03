@@ -1,0 +1,29 @@
+{
+  "parent": "strange:writing_desks/write_tome",
+  "display": {
+    "icon": {
+      "item": "minecraft:lectern"
+    },
+    "title": {
+      "translate": "advancements.strange.activate_tome.title"
+    },
+    "description": {
+      "translate": "advancements.strange.activate_tome.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "activated_tome": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:activate_tome" }
+    }
+  },
+  "requirements": [
+    [
+      "activated_tome"
+    ]
+  ]
+}
