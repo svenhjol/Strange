@@ -2,7 +2,7 @@
   "parent": "strange:core/adventure",
   "display": {
     "icon": {
-      "item": "minecraft:writable_book"
+      "item": "minecraft:book"
     },
     "title": {
       "translate": "advancements.strange.open_journal.title"
