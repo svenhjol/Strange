@@ -1,0 +1,31 @@
+{
+  "parent": "strange:stone_circles/find_stone_circle",
+  "display": {
+    "icon": {
+      "item": "minecraft:cracked_stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.strange.find_stone_ruin.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_stone_ruin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "found_stone_ruin": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "feature": "strange:stone_ruin"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "found_stone_ruin"
+    ]
+  ]
+}

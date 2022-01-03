@@ -1,0 +1,30 @@
+{
+  "parent": "strange:writing_desks/write_structure_tome",
+  "display": {
+    "icon": {
+      "item": "strange:runic_tome",
+      "nbt": "{branch:0.3}"
+    },
+    "title": {
+      "translate": "advancements.strange.write_structure_tome.title"
+    },
+    "description": {
+      "translate": "advancements.strange.write_structure_tome.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "wrote_structure_tome": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:write_structure_tome" }
+    }
+  },
+  "requirements": [
+    [
+      "wrote_structure_tome"
+    ]
+  ]
+}

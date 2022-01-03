@@ -1,0 +1,29 @@
+{
+  "parent": "strange:journals/open_journal",
+  "display": {
+    "icon": {
+      "item": "minecraft:writable_book"
+    },
+    "title": {
+      "translate": "advancements.strange.make_bookmark.title"
+    },
+    "description": {
+      "translate": "advancements.strange.make_bookmark.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "made_bookmark": {
+      "trigger": "charm:action_performed",
+      "conditions": {"action": "strange:make_bookmark"}
+    }
+  },
+  "requirements": [
+    [
+      "made_bookmark"
+    ]
+  ]
+}
