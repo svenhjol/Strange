@@ -8,6 +8,7 @@ import svenhjol.strange.module.bookmarks.BookmarkException;
 import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.charm.network.Id;
 import svenhjol.charm.network.ServerReceiver;
+import svenhjol.strange.module.journals.Journals;
 
 /**
  * Server receives an empty request to create a new bookmark.
@@ -20,6 +21,9 @@ public class ServerReceiveCreateBookmark extends ServerReceiver {
         var bookmarks = Bookmarks.getBookmarks().orElseThrow();
 
         server.execute(() -> {
+            // Do the advancement for the player.
+            Journals.triggerMakeBookmark(player);
+
             try {
                 // When the bookmark has been created on the server side, send it to all connected players.
                 var bookmark = bookmarks.add(player);

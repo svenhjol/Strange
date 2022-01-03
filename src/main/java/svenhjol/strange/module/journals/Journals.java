@@ -46,6 +46,7 @@ public class Journals extends CharmModule {
     public static final ResourceLocation TRIGGER_LEARN_RUNE = new ResourceLocation(Strange.MOD_ID, "learn_rune");
     public static final ResourceLocation TRIGGER_LEARN_ALL_RUNES = new ResourceLocation(Strange.MOD_ID, "learn_all_runes");
     public static final ResourceLocation TRIGGER_OPEN_JOURNAL = new ResourceLocation(Strange.MOD_ID, "open_journal");
+    public static final ResourceLocation TRIGGER_MAKE_BOOKMARK = new ResourceLocation(Strange.MOD_ID, "make_bookmark");
 
     public static ServerSendJournal SERVER_SEND_JOURNAL;
     public static ServerSendBookmarkIcons SERVER_SEND_BOOKMARK_ICONS;
@@ -81,6 +82,10 @@ public class Journals extends CharmModule {
 
     public static void triggerOpenJournal(ServerPlayer player) {
         CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_OPEN_JOURNAL);
+    }
+
+    public static void triggerMakeBookmark(ServerPlayer player) {
+        CharmAdvancements.ACTION_PERFORMED.trigger(player, TRIGGER_MAKE_BOOKMARK);
     }
 
     public static void triggerLearnRune(ServerPlayer player) {
