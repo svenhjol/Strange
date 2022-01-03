@@ -24,7 +24,7 @@ import svenhjol.strange.module.teleport.ticket.TeleportTicket;
 import java.util.Arrays;
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "A discoverable dimension that uses vanilla's Floating Islands world generation.")
 public class FloatingIslandsDimension extends CharmModule {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "floating_islands");
     public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;

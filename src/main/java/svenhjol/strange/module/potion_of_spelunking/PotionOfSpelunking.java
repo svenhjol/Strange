@@ -32,7 +32,8 @@ import svenhjol.strange.module.potion_of_spelunking.network.ServerSendShowPartic
 
 import java.util.*;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Drinking a Potion of Spelunking shows particles at ground level to help locate ores below you.\n" +
+    "This potion is not brewable and can be found in dungeon loot.")
 public class PotionOfSpelunking extends CharmModule {
     private static final DyeColor DEFAULT_COLOR = DyeColor.WHITE;
 

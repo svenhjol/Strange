@@ -15,7 +15,7 @@ import svenhjol.strange.module.scrolls.network.ServerSendOpenScroll;
 import java.util.HashMap;
 import java.util.Map;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Scrolls provide quest instructions. They are sold by scrollkeeper villagers.")
 public class Scrolls extends CharmModule {
     public static ServerSendDestroyScroll SERVER_SEND_DESTROY_SCROLL;
     public static ServerSendOpenScroll SERVER_SEND_OPEN_SCROLL;

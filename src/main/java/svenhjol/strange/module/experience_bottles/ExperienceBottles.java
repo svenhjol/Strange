@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Discoverable experience bottles that provide large amounts of XP when broken.")
 public class ExperienceBottles extends CharmModule {
     public static final ResourceLocation ENTITY_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottle");
     public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "experience_bottles_loot");

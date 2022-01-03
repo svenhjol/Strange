@@ -10,7 +10,8 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Runestone dust can be used to show the heading of the nearest stone circle.\n" +
+    "It is obtainable by mining a runestone.")
 public class RunestoneDust extends CharmModule {
     public static final ResourceLocation RUNESTONE_DUST_ID = new ResourceLocation(Strange.MOD_ID, "runestone_dust");
     public static RunestoneDustItem RUNESTONE_DUST;

@@ -11,7 +11,7 @@ import svenhjol.strange.Strange;
 import java.util.Arrays;
 import java.util.Locale;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Customizable item enchantment colors.")
 public class ColoredGlints extends CharmModule {
     private static final String DEFAULT_COLOR = "purple";
     public static final String TAG_GLINT = "strange_glint";

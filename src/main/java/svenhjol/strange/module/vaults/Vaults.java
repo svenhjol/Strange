@@ -35,7 +35,8 @@ import java.util.List;
  *
  * //replace stone,cobblestone,mossy_cobblestone,cracked_stone_bricks,mossy_stone_bricks,andesite,gravel stone_bricks
  */
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Vaults are large underground structures found in the Mirror dimension by default.\n" +
+    "They contain rare loot and Relics can be found in chests within the large rooms.")
 public class Vaults extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "vaults");
     public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "vaults/starts");

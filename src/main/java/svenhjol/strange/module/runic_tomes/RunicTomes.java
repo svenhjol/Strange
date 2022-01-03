@@ -48,7 +48,7 @@ import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
 import java.util.*;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Runic Tomes can be created on a writing desk and provide fast transport between locations.")
 public class RunicTomes extends CharmModule {
     public static final ResourceLocation RUNIC_LECTERN_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "runic_lectern");
 

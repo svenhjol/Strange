@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-@CommonModule(mod = Strange.MOD_ID, priority = 10)
+@CommonModule(mod = Strange.MOD_ID, priority = 10, description = "Writing Desks are the job site for scrollkeeper villagers.\n" +
+    "Once you have learned enough runes, the writing desk will allow you to create a Runic Tome to a location of interest.")
 public class WritingDesks extends CharmModule {
     public static final ResourceLocation WRITING_DESK_BLOCK_ID = new ResourceLocation(Strange.MOD_ID, "writing_desk");
     public static final ResourceLocation TRIGGER_WRITE_TOME = new ResourceLocation(Strange.MOD_ID, "write_tome");

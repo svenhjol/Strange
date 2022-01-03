@@ -52,7 +52,8 @@ import svenhjol.strange.module.mirror_dimension.network.ServerSendWeatherTicks;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "A frightening echo of the overworld with more challenging mobs and weather effects.\n" +
+    "By default, the mirror dimension is the only place to find Relics.")
 public class MirrorDimension extends CharmModule {
     public static final ResourceLocation ID = new ResourceLocation(Strange.MOD_ID, "mirror");
     public static final List<StructureFeature<?>> STRUCTURES_TO_REMOVE;

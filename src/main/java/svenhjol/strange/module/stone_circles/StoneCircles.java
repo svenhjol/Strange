@@ -26,7 +26,8 @@ import svenhjol.strange.module.runestones.Runestones;
 import java.util.LinkedList;
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Circles of stone columns with runestones at the top.\n" +
+    "Nearly all stone circles contain a runestone that leads you back to spawn point.")
 public class StoneCircles extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "stone_circle");
     public static final ResourceLocation PIECE_ID = new ResourceLocation(Strange.MOD_ID, "stone_circle_piece");

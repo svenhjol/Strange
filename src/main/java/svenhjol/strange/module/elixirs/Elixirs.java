@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Discoverable potions with much greater strength and duration.")
 public class Elixirs extends CharmModule {
     public static final String ELIXIR_NAMESPACE = "svenhjol.strange.module.elixirs.elixir";
     public static final List<IElixir> POTIONS = new ArrayList<>();

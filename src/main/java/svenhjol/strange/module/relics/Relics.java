@@ -48,7 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Relics are items, weapons and armor with enchantments beyond normal limits.\n" +
+    "They may also contain 'impossible' enchantment combinations.")
 public class Relics extends CharmModule {
     public static final String ITEM_NAMESPACE = "svenhjol.strange.module.relics.item";
     public static final String RELIC_TAG = "strange_relic";

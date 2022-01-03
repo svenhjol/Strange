@@ -27,7 +27,8 @@ import svenhjol.strange.Strange;
 
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID, description = "Causes all hoglins in the vicinity to run away from you.")
+@CommonModule(mod = Strange.MOD_ID, description = "Drinking a Potion of Hogsbane causes all hoglins in the vicinity to run away from you.\n" +
+    "It also grants a damage boost when attacking hoglins.")
 public class PotionOfHogsbane extends CharmModule {
     public static HogsbaneEffect HOGSBANE_EFFECT;
     public static CharmPotion HOGSPANE_POTION;

@@ -20,7 +20,7 @@ import svenhjol.strange.Strange;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommonModule(mod = Strange.MOD_ID)
+@CommonModule(mod = Strange.MOD_ID, description = "Drinking a Potion of Recall teleports you back to the overworld spawn point regardless of your dimension and position.")
 public class PotionOfRecall extends CharmModule {
     public static RecallPotion RECALL_POTION;
     public static RecallEffect RECALL_EFFECT;
