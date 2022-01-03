@@ -44,11 +44,10 @@ public class Scrolls extends CharmModule {
      * - give the player a scroll encoded with the quest's ID.
      */
     private void handlePauseQuest(Quest quest, ServerPlayer player) {
-        String id = quest.getId();
         Tier tier = quest.getTier();
 
         ItemStack scroll = new ItemStack(SCROLLS.get(tier));
-        ScrollItem.setScrollQuest(scroll, id);
+        ScrollItem.setScrollQuest(scroll, quest);
 
         player.getInventory().placeItemBackInInventory(scroll);
     }

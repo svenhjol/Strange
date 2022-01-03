@@ -103,7 +103,7 @@ public class ScrollItem extends CharmItem {
         } else if (quest.getState() == State.PAUSED) {
 
             // Write the quest data to the scroll so we can reopen it another time.
-            setScrollQuest(scroll, quest.getId());
+            setScrollQuest(scroll, quest);
             return new InteractionResultHolder<>(InteractionResult.PASS, scroll);
 
         } else {
@@ -122,8 +122,9 @@ public class ScrollItem extends CharmItem {
         return new InteractionResultHolder<>(InteractionResult.FAIL, scroll);
     }
 
-    public static void setScrollQuest(ItemStack scroll, String quest) {
-        scroll.getOrCreateTag().putString(QUEST_TAG, quest);
+    public static void setScrollQuest(ItemStack scroll, Quest quest) {
+        scroll.getOrCreateTag().putString(QUEST_TAG, quest.getId());
+        scroll.setHoverName(QuestHelper.getTranslatedKey(quest.getDefinition(), "title"));
     }
 
     public static void setScrollDifficulty(ItemStack scroll, float difficulty) {
