@@ -52,9 +52,8 @@ public class JournalQuestScreen extends JournalScreen {
         rowHeight = 15;
         showRuneReward = Strange.LOADER.isEnabled(Quests.class) && Quests.rewardRunes;
 
-        if (Strange.LOADER.isEnabled("knowledge_stones")) {
-            RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
-        }
+        boolean knowledgeStonesEnabled = Strange.LOADER.isEnabled("knowledge_stones");
+        RUNE_ICON = new ItemStack(Runestones.RUNESTONE_BLOCKS.get(RunestoneMaterial.STONE));
     }
 
     @Override
