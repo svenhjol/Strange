@@ -128,13 +128,6 @@
     "chance": 0.66
   },
   {
-    "comment": "// Replace flower pots with blocks from the flower_pot table",
-    "processor_type": "strange:decoration_replacement",
-    "block": "flower_pot",
-    "type": "flower_pot",
-    "chance": 0.7
-  },
-  {
     "comment": "// Replace spawners with blocks from the spawner table",
     "processor_type": "strange:decoration_replacement",
     "block": "spawner",
