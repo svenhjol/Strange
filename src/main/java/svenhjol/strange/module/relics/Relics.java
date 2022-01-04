@@ -43,10 +43,7 @@ import svenhjol.strange.module.vaults.VaultsLoot;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Relics are items, weapons and armor with enchantments beyond normal limits.\n" +
     "They may also contain 'impossible' enchantment combinations.")
@@ -99,7 +96,11 @@ public class Relics extends CharmModule {
         var vaultsEnabled = Strange.LOADER.isEnabled(Vaults.class);
         var stoneRuinsEnabled = Strange.LOADER.isEnabled(StoneRuins.class);
 
-        WEAPON_LOOT_TABLES.add(vaultsEnabled ? VaultsLoot.VAULTS_LARGE_ROOM : (stoneRuinsEnabled ? StoneRuinsLoot.STONE_RUINS_ROOM : BuiltInLootTables.WOODLAND_MANSION));
+        // This adds the tools, weapons and armor to the vaults large room. "Weird" relics will be handled by rubble later.
+        var defaultLootTable = vaultsEnabled ? VaultsLoot.VAULTS_LARGE_ROOM : (stoneRuinsEnabled ? StoneRuinsLoot.STONE_RUINS_ROOM : BuiltInLootTables.WOODLAND_MANSION);
+        TOOL_LOOT_TABLES.add(defaultLootTable);
+        WEAPON_LOOT_TABLES.add(defaultLootTable);
+        ARMOR_LOOT_TABLES.add(defaultLootTable);
 
         try {
             List<String> classes = ClassHelper.getClassesInPackage(ITEM_NAMESPACE);
@@ -186,23 +187,27 @@ public class Relics extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
-        if (TOOL_LOOT_TABLES.contains(id)) {
-            var builder = getBuilder(Items.DIAMOND_PICKAXE, new ToolRelicLootFunction(new LootItemCondition[0]));
-            supplier.withPool(builder);
+        List<Type> types = new ArrayList<>();
+        FabricLootPoolBuilder builder = null;
+
+        if (TOOL_LOOT_TABLES.contains(id)) types.add(Type.TOOL);
+        if (WEAPON_LOOT_TABLES.contains(id)) types.add(Type.WEAPON);
+        if (ARMOR_LOOT_TABLES.contains(id)) types.add(Type.ARMOR);
+        if (WEIRD_LOOT_TABLES.contains(id)) types.add(Type.WEIRD);
+
+        if (types.isEmpty()) return;
+
+        var random = new Random(id.hashCode());
+        var type = types.get(random.nextInt(types.size()));
+
+        switch (type) {
+            case TOOL -> builder = getBuilder(Items.DIAMOND_PICKAXE, new ToolRelicLootFunction(new LootItemCondition[0]));
+            case WEAPON -> builder = getBuilder(Items.DIAMOND_SWORD, new WeaponRelicLootFunction(new LootItemCondition[0]));
+            case ARMOR -> builder = getBuilder(Items.DIAMOND_CHESTPLATE, new ArmorRelicLootFunction(new LootItemCondition[0]));
+            case WEIRD -> builder = getBuilder(Items.DIAMOND, new WeirdRelicLootFunction(new LootItemCondition[0]));
         }
 
-        if (WEAPON_LOOT_TABLES.contains(id)) {
-            var builder = getBuilder(Items.DIAMOND_SWORD, new WeaponRelicLootFunction(new LootItemCondition[0]));
-            supplier.withPool(builder);
-        }
-
-        if (ARMOR_LOOT_TABLES.contains(id)) {
-            var builder = getBuilder(Items.DIAMOND_CHESTPLATE, new ArmorRelicLootFunction(new LootItemCondition[0]));
-            supplier.withPool(builder);
-        }
-
-        if (WEIRD_LOOT_TABLES.contains(id)) {
-            var builder = getBuilder(Items.DIAMOND, new WeirdRelicLootFunction(new LootItemCondition[0]));
+        if (builder != null) {
             supplier.withPool(builder);
         }
     }
