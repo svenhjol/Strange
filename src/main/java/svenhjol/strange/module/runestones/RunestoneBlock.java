@@ -15,11 +15,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.block.CharmBlockWithEntity;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.EnchantmentsHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.Strange;
 import svenhjol.strange.module.discoveries.Discoveries;
 import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.discoveries.DiscoveryHelper;
+import svenhjol.strange.module.runestone_dust.RunestoneDust;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -68,6 +71,15 @@ public class RunestoneBlock extends CharmBlockWithEntity {
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         RunestoneBlockEntity blockEntity = getBlockEntity(level, pos);
         if (blockEntity != null) {
+
+            // Drop runestone dust if enabled. Fortune affects number of drops.
+            if (Strange.LOADER.isEnabled(RunestoneDust.class)) {
+                var drops = 1 + level.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);
+                for (int i = 0; i < drops; i++) {
+                    level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RunestoneDust.RUNESTONE_DUST)));
+                }
+            }
+
             ItemStack stack = blockEntity.getItem(0);
             ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY() + 0.5D, pos.getZ(), stack);
             level.addFreshEntity(itemEntity);
