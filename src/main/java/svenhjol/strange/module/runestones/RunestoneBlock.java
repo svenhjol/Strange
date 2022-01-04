@@ -51,7 +51,8 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         super.onPlace(state, level, pos, state2, bl);
         RunestoneBlockEntity runestone = getBlockEntity(level, pos);
         if (runestone != null) {
-            runestone.difficulty = level.random.nextFloat();
+            var random = new Random(pos.asLong() + runestone.hashCode());
+            runestone.difficulty = random.nextFloat();
             runestone.setChanged();
         }
     }
