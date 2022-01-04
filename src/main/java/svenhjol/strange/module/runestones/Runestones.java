@@ -111,6 +111,7 @@ public class Runestones extends CharmModule {
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         var player = listener.getPlayer();
         SERVER_SEND_RUNESTONE_ITEMS.send(player);
+        SERVER_SEND_RUNESTONE_CLUES.send(player);
     }
 
     private void handleWorldLoad(MinecraftServer server, Level level) {
