@@ -5,7 +5,7 @@
       {
         "comment": "// Remove some lanterns",
         "location_predicate": {"predicate_type": "minecraft:always_true"},
-        "input_predicate": {"block": "minecraft:lantern", "probability": 0.33, "predicate_type": "minecraft:random_block_match"},
+        "input_predicate": {"block": "minecraft:lantern", "probability": 0.5, "predicate_type": "minecraft:random_block_match"},
         "output_state": {"Name": "minecraft:air"}
       },
       {
@@ -118,6 +118,20 @@
     "processor_type": "strange:decoration_replacement",
     "block": "loom",
     "type": "loom",
+    "chance": 0.7
+  },
+  {
+    "comment": "// Replace dandelions with blocks from the flower table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "dandelion",
+    "type": "flower",
+    "chance": 0.66
+  },
+  {
+    "comment": "// Replace flower pots with blocks from the flower_pot table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "flower_pot",
+    "type": "flower_pot",
     "chance": 0.7
   },
   {

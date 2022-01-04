@@ -70,6 +70,20 @@
     "chance": 0.6
   },
   {
+    "comment": "// Replace dandelions with blocks from the flower table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "dandelion",
+    "type": "flower",
+    "chance": 0.8
+  },
+  {
+    "comment": "// Replace flower pots with blocks from the flower_pot table",
+    "processor_type": "strange:decoration_replacement",
+    "block": "flower_pot",
+    "type": "flower_pot",
+    "chance": 0.8
+  },
+  {
     "comment": "// Replace bookshelves with variants from the bookshelves table (if Charm's variant bookshelves are enabled)",
     "processor_type": "strange:decoration_replacement",
     "block": "bookshelf",
