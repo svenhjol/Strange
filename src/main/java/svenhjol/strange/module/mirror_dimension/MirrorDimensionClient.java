@@ -16,7 +16,6 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charmonium.api.event.AddUndergroundAmbienceCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 import svenhjol.strange.module.intercept_music.InterceptMusic;
 import svenhjol.strange.module.intercept_music.InterceptMusicClient;
 import svenhjol.strange.module.intercept_music.MusicCondition;
@@ -81,7 +80,7 @@ public class MirrorDimensionClient extends CharmModule {
         weatherPhaseTicks = ticks;
         weatherPhase = weather;
 
-        Dimensions.FOG_COLOR.put(MirrorDimension.ID, MirrorDimension.FOG);
+        setFogColor(MirrorDimension.FOG);
 
         switch (weather) {
             case FREEZING -> {
@@ -143,7 +142,7 @@ public class MirrorDimensionClient extends CharmModule {
         b += 50 * scale;
 
         int newFog = 0xFF000000 | r << 16 | g << 8 | b;
-        Dimensions.FOG_COLOR.put(MirrorDimension.ID, newFog);
+        setFogColor(newFog);
     }
 
     private void handleScorchingPhase(ClientLevel level, Random random) {
@@ -165,7 +164,7 @@ public class MirrorDimensionClient extends CharmModule {
         b -= 4 * scale;
 
         int newFog = 0xFF000000 | r << 16 | g << 8 | b;
-        Dimensions.FOG_COLOR.put(MirrorDimension.ID, newFog);
+        setFogColor(newFog);
     }
 
     private void handleParticles(Random random) {
@@ -183,5 +182,10 @@ public class MirrorDimensionClient extends CharmModule {
                 particleTicks = 0;
             }
         }
+    }
+
+    private static void setFogColor(int color) {
+        var fixedFogColor = MirrorDimension.useFixedFogColor;
+        Dimensions.FOG_COLOR.put(MirrorDimension.ID, fixedFogColor ? MirrorDimension.FIXED_FOG : color);
     }
 }

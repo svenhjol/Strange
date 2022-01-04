@@ -37,6 +37,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.annotation.Config;
 import svenhjol.charm.api.event.AddEntityCallback;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.LogHelper;
@@ -86,6 +87,7 @@ public class MirrorDimension extends CharmModule {
     public static final ResourceLocation TRIGGER_VISIT_MIRROR = new ResourceLocation(Strange.MOD_ID, "visit_mirror");
 
     public static final int FOG = 0x004434;
+    public static final int FIXED_FOG = 0x000000;
     public static final float TEMP = 0.5F;
 
     public static final int lightningDistanceFromPlayer = 140; // maximum distance from a random player that a lightning strike can occur
@@ -102,6 +104,11 @@ public class MirrorDimension extends CharmModule {
     public static int nextColdAt = 0;
     public static int lightningTicks = 0;
     public static int nextLightningAt = 0;
+
+    @Config(name = "Use fixed fog color", description = "If true, the fog color will be set to black and will not change according to weather.\n" +
+        "This can reduce issues with shaders that render the ambient fog too brightly.\n" +
+        "Without shaders this setting will make the mirror dimension terrifyingly dark.")
+    public static boolean useFixedFogColor = false;
 
     @Override
     public ResourceLocation getId() {
@@ -128,11 +135,11 @@ public class MirrorDimension extends CharmModule {
         MIRROR_SCORCHING_SETTINGS = new AmbientAdditionsSettings(MIRROR_SCORCHING_ADDITIONS, 0.005);
 
         Dimensions.SKY_COLOR.put(ID, 0x000000);
-        Dimensions.FOG_COLOR.put(ID, FOG);
+        Dimensions.FOG_COLOR.put(ID, useFixedFogColor ? FIXED_FOG : FOG);
         Dimensions.GRASS_COLOR.put(ID, 0x607065);
         Dimensions.FOLIAGE_COLOR.put(ID, 0x506055);
         Dimensions.WATER_COLOR.put(ID, 0x525C60);
-        Dimensions.WATER_FOG_COLOR.put(ID, 0x404C50);
+        Dimensions.WATER_FOG_COLOR.put(ID, 0x040608);
         Dimensions.PRECIPITATION.put(ID, Biome.Precipitation.SNOW);
         Dimensions.RAIN_LEVEL.put(ID, 0.0F);
         Dimensions.TEMPERATURE.put(ID, TEMP);
