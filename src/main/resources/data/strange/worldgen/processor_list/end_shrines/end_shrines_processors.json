@@ -21,6 +21,6 @@
     "comment": "// Add loot to chests",
     "processor_type": "strange:chest_loot",
     "chance": 0.9,
-    "loot": "strange:end_shrines/end_shrines_treasure"
+    "loot": "strange:end_shrines/end_shrine_treasure"
   }
 ]
