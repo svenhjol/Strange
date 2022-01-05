@@ -18,10 +18,9 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
-import svenhjol.strange.module.dimensions.Dimensions;
+import svenhjol.strange.module.end_shrines.processor.EndShrinePortalProcessor;
 import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 import svenhjol.strange.module.mirror_dimension.MirrorDimension;
-import svenhjol.strange.module.end_shrines.processor.EndShrinePortalProcessor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +53,7 @@ public class EndShrines extends CharmModule {
         END_SHRINE_PORTAL_BLOCK = new EndShrinePortalBlock(this);
         END_SHRINE_PORTAL_BLOCK_ENTITY = CommonRegistry.blockEntity(BLOCK_ID, EndShrinePortalBlockEntity::new, END_SHRINE_PORTAL_BLOCK);
 
-        END_SHRINE_FEATURE = new EndShrineFeature(JigsawConfiguration.CODEC, STARTS, 1, 150, 25);
+        END_SHRINE_FEATURE = new EndShrineFeature(JigsawConfiguration.CODEC, STARTS, 1, 60, 5);
         CONFIGURED_FEATURE = END_SHRINE_FEATURE.configured(new JigsawConfiguration(() -> PlainVillagePools.START, 0));
 
         FabricStructureBuilder.create(STRUCTURE_ID, END_SHRINE_FEATURE)

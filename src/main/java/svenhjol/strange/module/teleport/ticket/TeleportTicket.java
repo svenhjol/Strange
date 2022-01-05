@@ -151,8 +151,13 @@ public class TeleportTicket implements ITicket {
                 }
 
                 if (found == null) {
-                    found = target;
                     LogHelper.debug(Strange.MOD_ID, getClass(), "Could not find a target, using original: " + found);
+                    found = target;
+                    if (found.getY() < 1) {
+                        var seaLevel = level.getSeaLevel();
+                        LogHelper.debug(Strange.MOD_ID, getClass(), "Invalid Y level for target. Resetting to sea level: " + seaLevel);
+                        found = new BlockPos(found.getX(), seaLevel, found.getZ());
+                    }
                 }
             }
 
