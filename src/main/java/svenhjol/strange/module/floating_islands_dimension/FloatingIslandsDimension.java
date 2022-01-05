@@ -55,6 +55,7 @@ public class FloatingIslandsDimension extends CharmModule {
         // Ruined portals don't allow you into the nether when built.
         // Shipwrecks, ocean ruins and monuments sometimes generate floating at Y=0 which looks very odd.
         // Woodland mansions sometimes generate over an open space, creating a huge cobblestone pillar to Y=0.
+        if (!DimensionHelper.isDimension(level, ID)) return;
         WorldHelper.removeStructures(level, STRUCTURES_TO_REMOVE);
     }
 

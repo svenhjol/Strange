@@ -160,6 +160,7 @@ public class MirrorDimension extends CharmModule {
 
     public void handleWorldLoad(MinecraftServer server, ServerLevel level) {
         // Remove structures that are not valid in this dimension.
+        if (!DimensionHelper.isDimension(level, ID)) return;
         WorldHelper.removeStructures(level, STRUCTURES_TO_REMOVE);
     }
 
