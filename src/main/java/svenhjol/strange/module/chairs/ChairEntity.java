@@ -52,10 +52,10 @@ public class ChairEntity extends Entity {
         super.tick();
         var pos = blockPosition();
         var state = level.getBlockState(pos);
+        var block = state.getBlock();
 
         if (!level.isClientSide) {
             var stateAbove = level.getBlockState(pos.above());
-            var block = state.getBlock();
 
             if (!(block instanceof StairBlock)) {
 
@@ -75,13 +75,13 @@ public class ChairEntity extends Entity {
                 LogHelper.debug(getClass(), "Removing because no passengers");
 
             }
-        } else {
-            if (!isRemoved() && Chairs.restrictRotation) {
-                var passenger = getFirstPassenger();
-                if (passenger instanceof Player player) {
-                    var facing = state.getValue(StairBlock.FACING).getOpposite();
-                    player.setYRot(facing.toYRot());
-                }
+        }
+
+        if (!isRemoved() && block instanceof StairBlock && Chairs.restrictRotation) {
+            var passenger = getFirstPassenger();
+            if (passenger instanceof Player player) {
+                var facing = state.getValue(StairBlock.FACING).getOpposite();
+                player.setYRot(facing.toYRot());
             }
         }
     }
