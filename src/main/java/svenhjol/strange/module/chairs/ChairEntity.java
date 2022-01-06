@@ -70,10 +70,12 @@ public class ChairEntity extends Entity {
         }
 
         if (!isRemoved()) {
-            var passenger = getFirstPassenger();
-            if (passenger instanceof Player player) {
-                var facing = state.getValue(StairBlock.FACING).getOpposite();
-                player.setYRot(facing.toYRot());
+            if (Chairs.restrictRotation) {
+                var passenger = getFirstPassenger();
+                if (passenger instanceof Player player) {
+                    var facing = state.getValue(StairBlock.FACING).getOpposite();
+                    player.setYRot(facing.toYRot());
+                }
             }
         }
     }

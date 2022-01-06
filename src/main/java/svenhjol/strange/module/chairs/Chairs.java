@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.annotation.Config;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -24,6 +25,9 @@ import svenhjol.strange.Strange;
 @CommonModule(mod = Strange.MOD_ID, description = "Experimental! While holding no items, right-click on any stairs block to sit down.")
 public class Chairs extends CharmModule {
     public static EntityType<ChairEntity> CHAIR;
+
+    @Config(name = "Restrict rotation", description = "If true, the seated player will sit facing the direction of the stairs and not be able to rotate.")
+    public static boolean restrictRotation = true;
 
     @Override
     public void register() {
