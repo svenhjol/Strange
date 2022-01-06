@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -57,14 +58,18 @@ public class Chairs extends CharmModule {
 
             if (block instanceof StairBlock
                 && state.getValue(StairBlock.HALF) == Half.BOTTOM
-                && (stateAbove.isAir() || stateAbove.getMaterial().isLiquid())
+                && !stateAbove.isCollisionShapeFullBlock(level, pos.above())
             ) {
                 var chair = new ChairEntity(level, pos);
                 level.addFreshEntity(chair);
+                LogHelper.debug(getClass(), "Added new chair entity");
 
                 var result = player.startRiding(chair);
+                LogHelper.debug(getClass(), "Player is now riding");
                 if (result) {
                     player.moveTo(chair.getX(), chair.getY(), chair.getZ());
+                    player.setPos(chair.getX(), chair.getY(), chair.getZ());
+                    LogHelper.debug(getClass(), "Moved player to chair pos");
                 }
 
                 return InteractionResult.SUCCESS;

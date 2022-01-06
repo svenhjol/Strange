@@ -10,6 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.StairBlock;
+import svenhjol.charm.helper.LogHelper;
 
 public class ChairEntity extends Entity {
     public ChairEntity(EntityType<? extends ChairEntity> type, Level level) {
@@ -49,28 +50,33 @@ public class ChairEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-
         var pos = blockPosition();
         var state = level.getBlockState(pos);
-        var stateAbove = level.getBlockState(pos.above());
-        var block = state.getBlock();
 
-        if (!(block instanceof StairBlock)) {
-            unRide();
-            remove(RemovalReason.DISCARDED);
-        }
+        if (!level.isClientSide) {
+            var stateAbove = level.getBlockState(pos.above());
+            var block = state.getBlock();
 
-        if (!stateAbove.isAir() && !stateAbove.getMaterial().isLiquid()) {
-            unRide();
-            remove(RemovalReason.DISCARDED);
-        }
+            if (!(block instanceof StairBlock)) {
 
-        if (!hasExactlyOnePlayerPassenger()) {
-            remove(RemovalReason.DISCARDED);
-        }
+                unRide();
+                remove(RemovalReason.DISCARDED);
+                LogHelper.debug(getClass(), "Removing because no longer a stairs block");
 
-        if (!isRemoved()) {
-            if (Chairs.restrictRotation) {
+            } else if (stateAbove.isCollisionShapeFullBlock(level, pos.above())) {
+
+                unRide();
+                remove(RemovalReason.DISCARDED);
+                LogHelper.debug(getClass(), "Removing because block above is invalid");
+
+            } else if (!hasExactlyOnePlayerPassenger()) {
+
+                remove(RemovalReason.DISCARDED);
+                LogHelper.debug(getClass(), "Removing because no passengers");
+
+            }
+        } else {
+            if (!isRemoved() && Chairs.restrictRotation) {
                 var passenger = getFirstPassenger();
                 if (passenger instanceof Player player) {
                     var facing = state.getValue(StairBlock.FACING).getOpposite();
