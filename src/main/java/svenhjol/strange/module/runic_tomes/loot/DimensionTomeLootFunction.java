@@ -2,7 +2,6 @@ package svenhjol.strange.module.runic_tomes.loot;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +13,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.dimensions.Dimensions;
-import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
-import svenhjol.strange.module.mirror_dimension.MirrorDimension;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
@@ -45,30 +42,32 @@ public class DimensionTomeLootFunction extends LootItemConditionalFunction {
         }
 
         if (DimensionHelper.isNether(level)) {
+
             dimension = DimensionHelper.getDimension(Level.NETHER);
-        } else if (DimensionHelper.isEnd(level)) {
-
-            // in the End you can find tomes for overworld, nether and end
-            ResourceKey<Level> key;
-            float f = random.nextFloat();
-
-            if (f < 0.33F) {
-                key = Level.END;
-            } else if (f < 0.66F) {
-                key = Level.NETHER;
-            } else {
-                key = Level.OVERWORLD;
-            }
-            dimension =  DimensionHelper.getDimension(key);
 
         } else if (Strange.LOADER.isEnabled(Dimensions.class)) {
 
-            // limit the dimension tomes to their respective dimensions
-            if (DimensionHelper.isDimension(level, MirrorDimension.ID)) {
-                dimension = random.nextBoolean() ? MirrorDimension.ID : Level.OVERWORLD.location();
-            } else if (DimensionHelper.isDimension(level, FloatingIslandsDimension.ID)) {
-                dimension = random.nextBoolean() ? FloatingIslandsDimension.ID : Level.OVERWORLD.location();
+            ResourceLocation fallback;
+            var f = random.nextFloat();
+
+            if (f < 0.33F) {
+                fallback = Level.OVERWORLD.location();
+            } else if (f < 0.66F) {
+                fallback = Level.NETHER.location();
+            } else {
+                fallback = Level.END.location();
             }
+
+            // Limit dimension tomes to their respective dimensions.
+            for (ResourceLocation dim : Dimensions.DIMENSIONS) {
+                if (DimensionHelper.isDimension(level, dim)) {
+                    dimension = random.nextBoolean() ? dim : fallback;
+                }
+            }
+        }
+
+        if (dimension == null) {
+            return stack;
         }
 
         String runes = knowledge.dimensionBranch.get(dimension);
