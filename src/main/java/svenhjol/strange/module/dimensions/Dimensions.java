@@ -22,6 +22,7 @@ import java.util.*;
 @CommonModule(mod = Strange.MOD_ID, description = "Supports additional dimensions and their unique effects.\n" +
     "If this feature is disabled, all custom dimensions will be disabled.")
 public class Dimensions extends CharmModule {
+    public static final List<ResourceLocation> DIMENSIONS = new ArrayList<>();
     public static final Map<ResourceLocation, Integer> FOG_COLOR = new HashMap<>();
     public static final Map<ResourceLocation, Integer> SKY_COLOR = new HashMap<>();
     public static final Map<ResourceLocation, Integer> GRASS_COLOR = new HashMap<>();

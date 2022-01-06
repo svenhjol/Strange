@@ -152,6 +152,8 @@ public class MirrorDimension extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
+        Dimensions.DIMENSIONS.add(ID);
+
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerTickEvents.END_WORLD_TICK.register(this::handleWorldTick);
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);

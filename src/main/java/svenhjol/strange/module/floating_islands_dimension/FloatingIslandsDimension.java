@@ -44,6 +44,8 @@ public class FloatingIslandsDimension extends CharmModule {
 
     @Override
     public void runWhenEnabled() {
+        Dimensions.DIMENSIONS.add(ID);
+
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         PlayerTickCallback.EVENT.register(this::handlePlayerTick);
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(this::handlePlayerChangeDimension);
