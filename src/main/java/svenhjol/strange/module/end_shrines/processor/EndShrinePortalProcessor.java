@@ -42,13 +42,13 @@ public class EndShrinePortalProcessor extends StructureProcessor {
 
         if (type.isEmpty()) {
             var id = new ResourceLocation(type);
-            if (EndShrines.DESTINATIONS.contains(id)) {
+            if (EndShrines.VALID_DESTINATIONS.contains(id)) {
                 dimension = id;
             }
         }
 
         if (dimension == null) {
-            dimension = EndShrines.DESTINATIONS.get(random.nextInt(EndShrines.DESTINATIONS.size()));
+            dimension = EndShrines.VALID_DESTINATIONS.get(random.nextInt(EndShrines.VALID_DESTINATIONS.size()));
         }
 
         var nbt = new CompoundTag();

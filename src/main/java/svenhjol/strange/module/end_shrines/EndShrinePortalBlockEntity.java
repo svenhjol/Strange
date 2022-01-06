@@ -3,12 +3,12 @@ package svenhjol.strange.module.end_shrines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import svenhjol.charm.block.CharmSyncedBlockEntity;
 
 import javax.annotation.Nullable;
 
-public class EndShrinePortalBlockEntity extends BlockEntity {
+public class EndShrinePortalBlockEntity extends CharmSyncedBlockEntity {
     public static final String DIMENSION_TAG = "Dimension";
 
     public @Nullable ResourceLocation dimension;
@@ -31,9 +31,5 @@ public class EndShrinePortalBlockEntity extends BlockEntity {
         if (dimension != null) {
             tag.putString(DIMENSION_TAG, dimension.toString());
         }
-    }
-
-    public int getColor() {
-        return 0xFFFFFF; // TODO: color depending on dimension
     }
 }

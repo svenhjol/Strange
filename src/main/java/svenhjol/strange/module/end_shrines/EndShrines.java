@@ -43,7 +43,7 @@ public class EndShrines extends CharmModule {
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
     public static StructureProcessorType<EndShrinePortalProcessor> END_SHRINE_PORTAL_PROCESSOR;
 
-    public static List<ResourceLocation> DESTINATIONS = new ArrayList<>();
+    public static List<ResourceLocation> VALID_DESTINATIONS = new ArrayList<>();
     public static List<String> BIOMES;
 
     public static List<String> additionalBiomes = List.of();
@@ -70,14 +70,14 @@ public class EndShrines extends CharmModule {
     public void runWhenEnabled() {
         AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
 
-        DESTINATIONS.add(Level.OVERWORLD.location());
+        VALID_DESTINATIONS.add(Level.OVERWORLD.location());
 
         if (Strange.LOADER.isEnabled(MirrorDimension.class)) {
-            DESTINATIONS.add(MirrorDimension.ID);
+            VALID_DESTINATIONS.add(MirrorDimension.ID);
         }
 
         if (Strange.LOADER.isEnabled(FloatingIslandsDimension.class)) {
-            DESTINATIONS.add(FloatingIslandsDimension.ID);
+            VALID_DESTINATIONS.add(FloatingIslandsDimension.ID);
         }
 
         // Add the End Shrine structure to the biomes in the config.

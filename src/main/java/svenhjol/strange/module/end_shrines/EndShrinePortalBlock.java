@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -98,8 +99,8 @@ public class EndShrinePortalBlock extends CharmBlockWithEntity {
     }
 
     @Nullable
-    public EndShrinePortalBlockEntity getBlockEntity(Level world, BlockPos pos) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+    public EndShrinePortalBlockEntity getBlockEntity(Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof EndShrinePortalBlockEntity))
             return null;
 
@@ -108,10 +109,24 @@ public class EndShrinePortalBlock extends CharmBlockWithEntity {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
-        double d = (double)pos.getX() + random.nextDouble();
-        double e = (double)pos.getY() + 0.8;
-        double f = (double)pos.getZ() + random.nextDouble();
-        level.addParticle(ParticleTypes.SMOKE, d, e, f, 0.0, 0.0, 0.0);
+        double x = (double)pos.getX() + random.nextDouble();
+        double y = (double)pos.getY() + 0.8;
+        double z = (double)pos.getZ() + random.nextDouble();
+
+        var endShrine = getBlockEntity(level, pos);
+        if (endShrine != null && endShrine.dimension != null && EndShrines.VALID_DESTINATIONS.contains(endShrine.dimension)) {
+            var index = EndShrines.VALID_DESTINATIONS.indexOf(endShrine.dimension);
+            if (index < DyeColor.values().length) {
+                var dyeColor = DyeColor.byId(index);
+                if (dyeColor != null) {
+                    var color = dyeColor.getFireworkColor();
+                    double r = (double)(color >> 16 & 0xFF) / 255.0;
+                    double g = (double)(color >> 8 & 0xFF) / 255.0;
+                    double b = (double)(color & 0xFF) / 255.0;
+                    level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, x, y, z, r, g, b);
+                }
+            }
+        }
     }
 
     @Override
