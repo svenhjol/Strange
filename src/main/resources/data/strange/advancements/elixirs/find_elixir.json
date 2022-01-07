@@ -1,0 +1,30 @@
+{
+  "parent": "strange:core/potions",
+  "display": {
+    "icon": {
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:night_vision\"}"
+    },
+    "title": {
+      "translate": "advancements.strange.find_elixir.title"
+    },
+    "description": {
+      "translate": "advancements.strange.find_elixir.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "found_elixir": {
+      "trigger": "charm:action_performed",
+      "conditions": { "action": "strange:find_elixir" }
+    }
+  },
+  "requirements": [
+    [
+      "found_elixir"
+    ]
+  ]
+}

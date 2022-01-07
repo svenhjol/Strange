@@ -39,7 +39,10 @@ public class ElixirsLootFunction extends LootItemConditionalFunction {
         }
 
         var potion = Elixirs.POTIONS.get(random.nextInt(Elixirs.POTIONS.size()));
-        return potion.getPotionItem();
+        var out = potion.getPotionItem();
+        out.getOrCreateTag().putBoolean(Elixirs.ELIXIR_TAG, true);
+
+        return out;
     }
 
     @Override
