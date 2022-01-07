@@ -132,7 +132,7 @@ public class Relics extends CharmModule {
     }
 
     private void handlePlayerTick(Player player) {
-        if (player.level.isClientSide || player.level.getGameTime() % 50 == 0) return;
+        if (player.level.isClientSide || player.level.getGameTime() % 70 == 0) return;
         var serverPlayer = (ServerPlayer) player;
 
         if (CACHED_RELIC_ADVANCEMENT == null) {
