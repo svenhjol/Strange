@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
@@ -163,7 +164,7 @@ public class GatherComponent implements IQuestComponent {
             for (ItemStack inv : player.getInventory().items) {
                 if (remainder <= 0) continue;
 
-                if (stack.sameItem(inv)) {
+                if (stack.sameItem(inv) && !inv.isDamaged() && EnchantmentHelper.getEnchantments(inv).size() == 0) {
                     int decrement = Math.min(remainder, inv.getCount());
                     remainder -= decrement;
                     inv.shrink(decrement);
