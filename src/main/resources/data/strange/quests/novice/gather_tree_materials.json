@@ -7,7 +7,7 @@
   },
   "gather": {
     "items": {
-      "apple | oak_sapling": {
+      "oak_sapling": {
         "count": "4-8"
       },
       "stick": {

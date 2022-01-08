@@ -7,8 +7,13 @@
   },
   "gather": {
     "items": {
-      "apple | oak_sapling": {
-        "count": "3-6"
+      "oak_sapling": {
+        "count": "3-6",
+        "chance": 0.5
+      },
+      "apple": {
+        "count": "1-2",
+        "chance": 0.5
       },
       "wheat | wheat_seeds": {
         "count": "4-6"
