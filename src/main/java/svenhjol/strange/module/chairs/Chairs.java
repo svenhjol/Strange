@@ -27,8 +27,8 @@ import svenhjol.strange.Strange;
 public class Chairs extends CharmModule {
     public static EntityType<ChairEntity> CHAIR;
 
-    @Config(name = "Restrict rotation", description = "If true, the seated player will sit facing the direction of the stairs and not be able to rotate.")
-    public static boolean restrictRotation = true;
+    @Config(name = "Allow rotation", description = "If false, the seated player will sit facing the direction of the stairs and not be able to rotate.")
+    public static boolean allowRotation = true;
 
     @Override
     public void register() {

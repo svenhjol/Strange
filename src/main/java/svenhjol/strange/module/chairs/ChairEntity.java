@@ -77,7 +77,7 @@ public class ChairEntity extends Entity {
             }
         }
 
-        if (!isRemoved() && block instanceof StairBlock && Chairs.restrictRotation) {
+        if (!isRemoved() && block instanceof StairBlock && !Chairs.allowRotation) {
             var passenger = getFirstPassenger();
             if (passenger instanceof Player player) {
                 var facing = state.getValue(StairBlock.FACING).getOpposite();
