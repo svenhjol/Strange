@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "strange:blackstone_runestone",
+    "strange:deepslate_runestone",
+    "strange:nether_brick_runestone",
+    "strange:obsidian_runestone",
+    "strange:purpur_runestone",
+    "strange:stone_runestone"
+  ]
+}
