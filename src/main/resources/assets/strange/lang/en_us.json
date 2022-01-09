@@ -283,5 +283,7 @@
   "subtitles.strange.block.cask.interact": "Cask does nothing",
   "subtitles.strange.block.cask.name": "Cask named",
   "subtitles.strange.block.teleport.activate": "Teleport activates",
-  "subtitles.strange.player.screenshot.take": "Screenshot taken"
+  "subtitles.strange.player.screenshot.take": "Screenshot taken",
+  "subtitles.strange.item.runestone_dust.use": "Runestone dust used",
+  "subtitles.strange.villager.work_scrollkeeper": "Scrollkeeper works"
 }

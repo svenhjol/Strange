@@ -1,5 +1,7 @@
 package svenhjol.strange.module.scrollkeepers;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,6 +18,7 @@ import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.VillagerHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.quests.Quest;
 import svenhjol.strange.module.quests.Quests;
@@ -34,6 +37,7 @@ public class Scrollkeepers extends CharmModule {
     public static String VILLAGER_ID = "strange_scrollkeeper";
     public static VillagerProfession SCROLLKEEPER;
     public static PoiType POIT;
+    public static SoundEvent WORK_SCROLLKEEPER_SOUND;
 
     public static ServerSendSatisfied SERVER_SEND_SATISFIED;
     public static ServerReceiveCheckSatisfied SERVER_RECEIVE_CHECK_SATISFIED;
@@ -49,8 +53,9 @@ public class Scrollkeepers extends CharmModule {
 
     @Override
     public void register() {
+        WORK_SCROLLKEEPER_SOUND = CommonRegistry.sound(new ResourceLocation(Strange.MOD_ID, "work_scrollkeeper"));
         POIT = WorldHelper.addPointOfInterestType(WritingDesks.WRITING_DESK_BLOCK_ID, WritingDesks.WRITING_DESK, 1);
-        SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, SoundEvents.VILLAGER_WORK_LIBRARIAN);
+        SCROLLKEEPER = VillagerHelper.addProfession(VILLAGER_ID, POIT, WORK_SCROLLKEEPER_SOUND);
         addDependencyCheck(mod -> Strange.LOADER.isEnabled(Quests.class) && Strange.LOADER.isEnabled(WritingDesks.class));
     }
 

@@ -136,6 +136,23 @@
       }
     ]
   },
+  "work_scrollkeeper": {
+    "sounds": [
+      {
+        "name": "strange:writing_desk1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:writing_desk2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:writing_desk3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.villager.work_scrollkeeper"
+  },
   "cask_extract": {
     "sounds": [
       {
@@ -194,6 +211,12 @@
       "block/smithing_table/smithing_table3"
     ],
     "subtitle": "subtitles.strange.block.cask.name"
+  },
+  "runestone_dust": {
+    "sounds": [
+      "strange:runestone_dust"
+    ],
+    "subtitle": "subtitles.strange.item.runestone_dust.use"
   },
   "strange_teleport": {
     "sounds": [

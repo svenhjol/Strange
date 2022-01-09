@@ -3,7 +3,6 @@ package svenhjol.strange.module.runestone_dust;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -43,7 +42,7 @@ public class RunestoneDustItem extends CharmItem {
         // client
         if (level.isClientSide) {
             player.swing(hand);
-            level.playSound(player, x, y, z, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS, 1.0F, 1.0F);
+            level.playSound(player, x, y, z, RunestoneDust.RUNESTONE_DUST_SOUND, SoundSource.PLAYERS, 1.0F, 1.0F);
         }
 
         // server
