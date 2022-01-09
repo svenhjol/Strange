@@ -134,11 +134,14 @@ public class GatherComponent implements IQuestComponent {
             int sum = 0;
 
             for (int i = 0; i < invCopy.size(); i++) {
-                ItemStack invStack = invCopy.get(i);
-                if (invStack.isEmpty()) continue;
+                ItemStack inv = invCopy.get(i);
+                if (inv.isEmpty()) continue;
 
-                if (requiredStack.sameItem(invStack)) {
-                    sum += invStack.getCount();
+                if (requiredStack.sameItem(inv)
+                    && !inv.isDamaged()
+                    && EnchantmentHelper.getEnchantments(inv).size() == 0
+                ) {
+                    sum += inv.getCount();
                     satisfied.put(requiredStack, sum);
                     if (sum >= requiredCount) {
                         satisfied.put(requiredStack, requiredCount);
@@ -164,7 +167,10 @@ public class GatherComponent implements IQuestComponent {
             for (ItemStack inv : player.getInventory().items) {
                 if (remainder <= 0) continue;
 
-                if (stack.sameItem(inv) && !inv.isDamaged() && EnchantmentHelper.getEnchantments(inv).size() == 0) {
+                if (stack.sameItem(inv)
+                    && !inv.isDamaged()
+                    && EnchantmentHelper.getEnchantments(inv).size() == 0
+                ) {
                     int decrement = Math.min(remainder, inv.getCount());
                     remainder -= decrement;
                     inv.shrink(decrement);

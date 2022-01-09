@@ -36,6 +36,22 @@ public class RuneStringRenderer {
         this.unknownRune = String.valueOf(Runes.UNKNOWN_RUNE);
     }
 
+    public int getLeft() {
+        return left;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public int getWidth() {
+        return xMax * xOffset;
+    }
+
+    public int getHeight() {
+        return yMax * yOffset;
+    }
+
     public void setLeft(int left) {
         this.left = left;
     }

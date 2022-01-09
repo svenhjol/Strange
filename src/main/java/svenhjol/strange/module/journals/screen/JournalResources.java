@@ -13,6 +13,7 @@ public class JournalResources {
     public static final Component CLOSE;
     public static final Component DELETE_TOOLTIP;
     public static final Component GO_BACK;
+    public static final Component SAVE_AND_RETURN;
     public static final Component HOME_TOOLTIP;
     public static final Component JOURNAL;
     public static final Component KNOWLEDGE;
@@ -24,6 +25,10 @@ public class JournalResources {
     public static final Component BOOKMARKS;
     public static final Component BOOKMARKS_TOOLTIP;
     public static final Component MAKE_MAP_TOOLTIP;
+    public static final Component MAKE_MAP;
+    public static final Component HINT_MAP;
+    public static final Component HINT_PHOTO;
+    public static final Component HINT_RUNES;
     public static final Component NO_BIOMES;
     public static final Component NO_DIMENSIONS;
     public static final Component NO_BOOKMARKS;
@@ -63,6 +68,10 @@ public class JournalResources {
         CLOSE = new TranslatableComponent("gui.strange.journal.close");
         DELETE_TOOLTIP = new TranslatableComponent("gui.strange.journal.delete");
         GO_BACK = new TranslatableComponent("gui.strange.journal.go_back");
+        SAVE_AND_RETURN = new TranslatableComponent("gui.strange.journal.save_and_return");
+        HINT_MAP = new TranslatableComponent("gui.strange.journal.hint_map");
+        HINT_RUNES = new TranslatableComponent("gui.strange.journal.hint_runes");
+        HINT_PHOTO = new TranslatableComponent("gui.strange.journal.hint_photo");
         HOME_TOOLTIP = new TranslatableComponent("gui.strange.journal.home_tooltip");
         JOURNAL = new TranslatableComponent("gui.strange.journal.title");
         KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
@@ -71,6 +80,7 @@ public class JournalResources {
         LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
         LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
         LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
+        MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
         BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
         BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
         MAKE_MAP_TOOLTIP = new TranslatableComponent("gui.strange.journal.make_map_tooltip");

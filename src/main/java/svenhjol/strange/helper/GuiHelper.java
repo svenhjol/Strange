@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,12 +16,19 @@ import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GuiHelper {
     public static void addButtons(Screen screen, int screenWidth, Font font, List<ButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
         for (GuiHelper.ButtonDefinition b : buttons) {
             Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> screen.renderTooltip(p, font.split(b.tooltip, Math.max(screenWidth / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
-            screen.addRenderableWidget(new Button(x, y, buttonWidth, buttonHeight, b.name, b.action, tooltip));
+
+            var button = new Button(x, y, buttonWidth, buttonHeight, b.name, b.action, tooltip);
+            if (b.afterCreated != null) {
+                b.afterCreated.accept(button);
+            }
+
+            screen.addRenderableWidget(button);
 
             x += xOffset;
             y += yOffset;
@@ -30,7 +38,13 @@ public class GuiHelper {
     public static void addImageButtons(Screen screen, int screenWidth, Font font, List<ImageButtonDefinition> buttons, int x, int y, int xOffset, int yOffset, int buttonWidth, int buttonHeight) {
         for (GuiHelper.ImageButtonDefinition b : buttons) {
             Button.OnTooltip tooltip = b.tooltip != null ? (button, p, tx, ty) -> screen.renderTooltip(p, font.split(b.tooltip, Math.max(screenWidth / 2 - 43, 170)), tx, ty) : (button, p, tx, ty) -> {};
-            screen.addRenderableWidget(new ImageButton(x, y, buttonWidth, buttonHeight, b.texX, b.texY, b.texHoverOffset, b.texture, 256, 256, b.action, tooltip, TextComponent.EMPTY));
+
+            var button = new ImageButton(x, y, buttonWidth, buttonHeight, b.texX, b.texY, b.texHoverOffset, b.texture, 256, 256, b.action, tooltip, TextComponent.EMPTY);
+            if (b.afterCreated != null) {
+                b.afterCreated.accept(button);
+            }
+
+            screen.addRenderableWidget(button);
 
             x += xOffset;
             y += yOffset;
@@ -62,15 +76,21 @@ public class GuiHelper {
         public final Component name;
         public final Component tooltip;
         public final Button.OnPress action;
+        public final Consumer<AbstractButton> afterCreated;
 
         public ButtonDefinition(Button.OnPress action, @Nullable Component name) {
             this(action, name, null);
         }
 
         public ButtonDefinition(Button.OnPress action, @Nullable Component name, @Nullable Component tooltip) {
+            this(action, name, tooltip, null);
+        }
+
+        public ButtonDefinition(Button.OnPress action, @Nullable Component name, @Nullable Component tooltip, @Nullable Consumer<AbstractButton> afterCreated) {
             this.name = name;
             this.action = action;
             this.tooltip = tooltip;
+            this.afterCreated = afterCreated;
         }
     }
 
@@ -81,18 +101,24 @@ public class GuiHelper {
         public final int texX;
         public final int texY;
         public final int texHoverOffset;
+        public final Consumer<AbstractButton> afterCreated;
 
         public ImageButtonDefinition(Button.OnPress action, ResourceLocation texture, int texX, int texY, int texHoverOffset) {
             this(action, texture, texX, texY, texHoverOffset, null);
         }
 
         public ImageButtonDefinition(Button.OnPress action, ResourceLocation texture, int texX, int texY, int texHoverOffset, @Nullable Component tooltip) {
+            this(action, texture, texX, texY, texHoverOffset, tooltip, null);
+        }
+
+        public ImageButtonDefinition(Button.OnPress action, ResourceLocation texture, int texX, int texY, int texHoverOffset, @Nullable Component tooltip, @Nullable Consumer<AbstractButton> afterCreated) {
             this.action = action;
             this.tooltip = tooltip;
             this.texture = texture;
             this.texX = texX;
             this.texY = texY;
             this.texHoverOffset = texHoverOffset;
+            this.afterCreated = afterCreated;
         }
     }
 }

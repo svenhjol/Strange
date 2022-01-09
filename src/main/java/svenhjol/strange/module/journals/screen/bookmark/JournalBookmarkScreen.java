@@ -20,8 +20,8 @@ import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.photo.BookmarkPhoto;
-import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.journals.screen.JournalResources;
+import svenhjol.strange.module.journals.screen.JournalScreen;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
 
 import javax.annotation.Nonnull;
@@ -69,15 +69,12 @@ public class JournalBookmarkScreen extends JournalScreen {
 
         pageButtons.clear();
 
-        if (playerIsNearBookmark()) {
-            pageButtons.add(new ButtonDefinition(b -> takePhoto(), JournalResources.TAKE_PHOTO));
-        }
-
         pageButtons.add(new ButtonDefinition(b -> chooseIcon(), JournalResources.CHOOSE_ICON));
-        pageButtons.add(new ButtonDefinition(b -> save(), JournalResources.SAVE));
+        pageButtons.add(new ButtonDefinition(b -> takePhoto(), JournalResources.TAKE_PHOTO, JournalResources.HINT_PHOTO, b -> b.active = playerIsNearBookmark()));
+        pageButtons.add(new ButtonDefinition(b -> makeMap(), JournalResources.MAKE_MAP, JournalResources.HINT_MAP, b -> b.active = playerCanMakeMap()));
 
         bottomNavButtons.add(new GuiHelper.ImageButtonDefinition(b -> remove(), JournalResources.NAVIGATION, 20, 0, 18, JournalResources.DELETE_TOOLTIP));
-        bottomButtons.add(0, new ButtonDefinition(b -> save(), JournalResources.SAVE));
+        bottomButtons.add(0, new ButtonDefinition(b -> save(), JournalResources.GO_BACK));
 
         // add map icon if player has an empty map
         if (playerCanMakeMap()) {
@@ -108,7 +105,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         renderTitleIcon(BookmarksClient.getBookmarkIconItem(bookmark));
         renderPhoto(poseStack);
         renderDimensionName(poseStack);
-        renderRunes(poseStack);
+        renderRunes(poseStack, mouseX, mouseY);
 
         nameEditBox.render(poseStack, mouseX, mouseY, delta);
     }
@@ -118,7 +115,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         GuiHelper.drawCenteredString(poseStack, font, dimensionName, midX, top, secondaryColor);
     }
 
-    protected void renderRunes(PoseStack poseStack) {
+    protected void renderRunes(PoseStack poseStack, int mouseX, int mouseY) {
         var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
@@ -173,13 +170,6 @@ public class JournalBookmarkScreen extends JournalScreen {
         }
 
         return super.mouseClicked(x, y, button);
-    }
-
-    /**
-     * We need to resync the journal when leaving this page to go back to bookmarks.
-     */
-    protected void saveAndGoBack() {
-        save(); // save progress before changing screen
     }
 
     @Override
