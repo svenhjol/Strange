@@ -59,15 +59,17 @@ public class RunicTeleport implements ITeleportType {
         String runes = RunicTomeItem.getRunes(tome);
 
         var result = tryTeleport(player, runes, sacrifice, origin);
+        if (result == InteractionResult.SUCCESS) {
+            RunicTomes.triggerActivateTome(player);
+
+            // This allows the client to show particles for the runic tome.
+            SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNIC_TOME);
+        }
 
         if (result == InteractionResult.FAIL) {
             LogHelper.warn(getClass(), "Runic tome activation failed");
             WorldHelper.explode((ServerLevel)player.level, origin, 2.0F, Explosion.BlockInteraction.BREAK);
-            return;
         }
-
-        // This allows the client to show particles for the runic tome.
-        SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNIC_TOME);
     }
 
     private InteractionResult tryTeleport(ServerPlayer player, String runes, ItemStack sacrifice, BlockPos origin) {
@@ -104,7 +106,6 @@ public class RunicTeleport implements ITeleportType {
         result = handler.process();
 
         if (result) {
-            RunicTomes.triggerActivateTome(player);
             return InteractionResult.SUCCESS;
         }
 
