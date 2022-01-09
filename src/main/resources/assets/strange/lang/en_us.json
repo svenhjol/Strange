@@ -132,7 +132,7 @@
   "gui.strange.journal.bosses_defeated": "Bosses defeated: %s/%s",
   "gui.strange.journal.choose_icon": "Choose icon",
   "gui.strange.journal.close": "Close",
-  "gui.strange.journal.death_bookmark": "Death Bookmark",
+  "gui.strange.journal.death_bookmark": "Died here",
   "gui.strange.journal.delete": "Delete",
   "gui.strange.journal.dimension": "Dimension: %s",
   "gui.strange.journal.go_back": "Go back",
