@@ -66,7 +66,6 @@ public class RunicLecternMenu extends CharmContainerMenu {
 
                 if (level.getBlockEntity(pos) instanceof RunicLecternBlockEntity lectern) {
                     ItemStack tome = lectern.getTome();
-
                     inventory.placeItemBackInInventory(tome);
 
                     BlockState state = level.getBlockState(pos);
@@ -83,7 +82,6 @@ public class RunicLecternMenu extends CharmContainerMenu {
                     ItemStack tome = lectern.getTome();
                     ItemStack sacrifice = slots.get(0).getItem();
 
-                    RunicTomes.triggerActivateTome(serverPlayer);
                     ActivateRunicTomeCallback.EVENT.invoker().interact(serverPlayer, pos, tome, sacrifice);
 
                     if (!sacrifice.isEmpty()) {

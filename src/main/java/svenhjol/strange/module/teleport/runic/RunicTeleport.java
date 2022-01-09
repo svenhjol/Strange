@@ -21,6 +21,7 @@ import svenhjol.strange.module.knowledge.branch.StructureBranch;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
+import svenhjol.strange.module.runic_tomes.RunicTomes;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
 import svenhjol.strange.module.teleport.iface.ITeleportType;
 import svenhjol.strange.module.teleport.runic.handler.*;
@@ -102,7 +103,12 @@ public class RunicTeleport implements ITeleportType {
         // If process returns false it means that there was a soft fail of the teleport, for example, wrong item sacrifice.
         result = handler.process();
 
-        return result ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        if (result) {
+            RunicTomes.triggerActivateTome(player);
+            return InteractionResult.SUCCESS;
+        }
+
+        return InteractionResult.PASS;
     }
 
     public enum Type {

@@ -1,7 +1,6 @@
 package svenhjol.strange.module.writing_desks;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -146,8 +145,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         clearWrittenRunes(player);
 
         this.access.execute((level, pos) -> {
-            // TODO: this needs to be a custom sound effect
-            level.playSound(null, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, pos, WritingDesks.WRITING_DESK_SOUND, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             // Do the tome writing advancement.
             if (player instanceof ServerPlayer serverPlayer) {
@@ -191,6 +189,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             runes += String.valueOf((char)(i + Runes.FIRST_RUNE));
         }
 
+        serverPlayer.level.playSound(null, player.blockPosition(), WritingDesks.WRITING_DESK_SOUND, SoundSource.PLAYERS, 1.0F, 1.0F);
         WritingDesks.writtenRunes.put(uuid, runes);
         checkAndUpdateResult(serverPlayer);
 

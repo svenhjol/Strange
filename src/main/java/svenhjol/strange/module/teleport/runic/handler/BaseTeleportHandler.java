@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -21,11 +22,12 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.WorldHelper;
 import svenhjol.strange.Strange;
+import svenhjol.strange.module.journals.Journals;
+import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 import svenhjol.strange.module.teleport.Teleport;
-import svenhjol.strange.module.teleport.iface.ITicket;
 import svenhjol.strange.module.teleport.runic.RunicTeleportTicket;
 
 import java.util.Arrays;
@@ -76,8 +78,9 @@ public abstract class BaseTeleportHandler<V> {
         this.targetPos = targetPos;
         this.targetDimension = targetDimension;
 
+        entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 1));
+
         if (!checkPosAndDimension()) {
-            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 1));
             return false;
         }
 
@@ -102,15 +105,26 @@ public abstract class BaseTeleportHandler<V> {
     protected ItemOutcome checkSacrifice() {
         List<Item> items = RunestoneHelper.getItems(originDimension, runes);
         Item sacrificeItem = sacrifice.getItem();
-        Item mainItem = items.get(0);
 
-        if (sacrificeItem.equals(mainItem)) {
-            return ItemOutcome.SUCCESS;
-        } else if (items.contains(sacrificeItem)) {
-            return ItemOutcome.PARTIAL_SUCCESS;
+        if (!items.contains(sacrificeItem)) {
+            return ItemOutcome.FAIL;
         }
 
-        return ItemOutcome.FAIL;
+        if (entity instanceof ServerPlayer player) {
+            var journal = Journals.getJournal(player).orElse(null);
+            if (journal == null) return ItemOutcome.FAIL;
+
+            var unknownRunes = JournalHelper.countUnknownRunes(runes, journal);
+            if (unknownRunes == 0) {
+                return ItemOutcome.SUCCESS;
+            } else if (unknownRunes < items.size()) {
+                return ItemOutcome.PARTIAL_SUCCESS;
+            }
+
+            return ItemOutcome.FAIL;
+        }
+
+        return ItemOutcome.SUCCESS;
     }
 
     protected void doEffects(ItemOutcome result) {
@@ -124,9 +138,6 @@ public abstract class BaseTeleportHandler<V> {
         } else if (result == ItemOutcome.FAIL) {
             applyFailureEffect(random);
         }
-    }
-
-    private void onFail(ITicket ticket) {
     }
 
     protected void applyPositiveEffect() {

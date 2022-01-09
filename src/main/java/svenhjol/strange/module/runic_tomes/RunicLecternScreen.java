@@ -22,12 +22,15 @@ import svenhjol.strange.module.runes.client.RuneStringRenderer;
 import svenhjol.strange.module.runestones.RunestoneItemTooltip;
 import svenhjol.strange.module.runestones.helper.RunestoneHelper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @SuppressWarnings("ConstantConditions")
 public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Strange.MOD_ID, "textures/gui/runic_lectern.png");
+    public static final Component POSSIBLE_ITEMS;
 
     private int midX;
     private int midY;
@@ -36,10 +39,12 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     private ItemStack tome;
     private String runes;
-    private Item requiredItem;
+    private List<Item> potentialItems;
+    private NonNullList<ItemStack> items;
     private ResourceLocation dimension;
     private RuneStringRenderer runeStringRenderer;
     private boolean hasProvidedItem;
+    private int itemRandomTicks = 0;
 
     public RunicLecternScreen(RunicLecternMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -90,7 +95,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         if (tome == null) {
             tome = RunicTomesClient.tomeHolder.copy();
             runes = RunicTomeItem.getRunes(tome);
-            requiredItem = RunestoneHelper.getItem(dimension, runes);
+            potentialItems = RunestoneHelper.getItems(dimension, runes);
         }
 
         runeStringRenderer.render(poseStack, font, runes);
@@ -119,6 +124,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
     protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
         var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
+        if (potentialItems == null || potentialItems.isEmpty()) return;
 
         int top = midY - 28;
         int left = midX - 8;
@@ -126,22 +132,30 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         int right = midX + 8;
 
         if (!hasProvidedItem && mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) {
-            if (requiredItem == null) return;
+            List<Component> text = Lists.newArrayList();
 
             // If player hasn't learned enough runes then exit early.
             int unknown = JournalHelper.countUnknownRunes(runes, journal);
             if (unknown > 0) return;
 
-            List<Component> text = Lists.newArrayList();
-            NonNullList<ItemStack> items = NonNullList.create();
-            ItemStack stack = new ItemStack(requiredItem);
-            items.add(stack);
+            if (items == null || itemRandomTicks++ >= 100) {
 
-            text.add(new TranslatableComponent("gui.strange.clues.required_item"));
-            text.add(requiredItem.getName(stack));
+                // After 5 seconds delay, recreate the potential items list to be rendered in the tooltip.
+                items = NonNullList.create();
+                potentialItems.forEach(item -> items.add(new ItemStack(item)));
+
+                Collections.shuffle(items, new Random());
+
+                itemRandomTicks = 0;
+            }
+
+            // Create the tooltip showing multiple potential items.
+            text.add(POSSIBLE_ITEMS);
+            for (ItemStack item : items) {
+                text.add(item.getHoverName());
+            }
+
             renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
-
-            return;
         }
 
         super.renderTooltip(poseStack, mouseX, mouseY);
@@ -155,5 +169,9 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
     private void syncClickedButton(int r) {
         ClientHelper.getClient().ifPresent(mc -> mc.gameMode.handleInventoryButtonClick((this.menu).containerId, r));
+    }
+
+    static {
+        POSSIBLE_ITEMS = new TranslatableComponent("gui.strange.clues.possible_items");
     }
 }

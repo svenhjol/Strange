@@ -169,46 +169,24 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         // If the player hasn't learned enough runes then exit early.
         int unknown = JournalHelper.countUnknownRunes(discovery.getRunes(), journal);
-        if (unknown > potentialItems.size()) return;
+        if (unknown >= potentialItems.size()) return;
 
         if (items == null || itemRandomTicks++ >= 100) {
 
             // After 5 seconds delay, recreate the potential items list to be rendered in the tooltip.
             items = NonNullList.create();
-            NonNullList<ItemStack> sublist = NonNullList.create();
             potentialItems.forEach(item -> items.add(new ItemStack(item)));
 
-            if (unknown > 0) {
-
-                // Increase the number of potential items shown according to the number of unknown runes.
-                sublist.addAll(items.subList(0, Math.min(items.size(), unknown + 1)));
-                Collections.shuffle(sublist, new Random());
-
-            } else {
-
-                // If player knows all the runes then only show the required item.
-                sublist.addAll(items.subList(0, 1));
-            }
+            Collections.shuffle(items, new Random());
 
             potentialItems = null;
-            items = sublist;
             itemRandomTicks = 0;
         }
 
-        if (unknown > 0) {
-
-            // Create the tooltip showing multiple potential items.
-            text.add(POSSIBLE_ITEMS);
-            for (ItemStack item : items) {
-                text.add(item.getHoverName());
-            }
-
-        } else {
-
-            // Create tooltip for a single required item.
-            text.add(REQUIRED_ITEM);
-            text.add(items.get(0).getHoverName());
-
+        // Create the tooltip showing multiple potential items.
+        text.add(POSSIBLE_ITEMS);
+        for (ItemStack item : items) {
+            text.add(item.getHoverName());
         }
 
         // Render out the tooltip when the player is hovering over the slot.
