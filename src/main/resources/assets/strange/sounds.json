@@ -153,6 +153,23 @@
     ],
     "subtitle": "subtitles.strange.villager.work_scrollkeeper"
   },
+  "writing_desk": {
+    "sounds": [
+      {
+        "name": "strange:writing_desk1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:writing_desk2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:writing_desk3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.writing_desk.use"
+  },
   "cask_extract": {
     "sounds": [
       {

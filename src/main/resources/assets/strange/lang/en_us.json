@@ -285,5 +285,6 @@
   "subtitles.strange.block.teleport.activate": "Teleport activates",
   "subtitles.strange.player.screenshot.take": "Screenshot taken",
   "subtitles.strange.item.runestone_dust.use": "Runestone dust used",
-  "subtitles.strange.villager.work_scrollkeeper": "Scrollkeeper works"
+  "subtitles.strange.villager.work_scrollkeeper": "Scrollkeeper works",
+  "subtitles.strange.block.writing_desk.use": "Writing desk used"
 }
