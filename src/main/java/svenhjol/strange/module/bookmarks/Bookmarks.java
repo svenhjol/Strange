@@ -5,11 +5,14 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.annotation.Config;
+import svenhjol.charm.api.event.PlayerDieCallback;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.bookmarks.network.*;
@@ -32,10 +35,14 @@ public class Bookmarks extends CharmModule {
     @Config(name = "Maximum bookmarks", description = "The maximum number of bookmarks each player can create.")
     public static int maxBookmarksPerPlayer = 50;
 
+    @Config(name = "Death bookmark", description = "If true, a bookmark marking the player's death location will automatically be created.")
+    public static boolean createDeathBookmark = true;
+
     @Override
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+        PlayerDieCallback.EVENT.register(this::handlePlayerDie);
 
         SEND_BOOKMARKS = new ServerSendBookmarks();
         SEND_CREATED_BOOKMARK = new ServerSendCreatedBookmark();
@@ -48,6 +55,16 @@ public class Bookmarks extends CharmModule {
 
     public static Optional<BookmarkData> getBookmarks() {
         return Optional.ofNullable(bookmarkData);
+    }
+
+    private void handlePlayerDie(ServerPlayer player, DamageSource damageSource) {
+        if (!createDeathBookmark) return;
+
+        var bookmarks = Bookmarks.getBookmarks().orElse(null);
+        if (bookmarks == null) return;
+
+        var bookmark = bookmarks.addDeath(player);
+        Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(player.level.getServer(), bookmark);
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {

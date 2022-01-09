@@ -12,12 +12,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.api.event.PlayerDieCallback;
 import svenhjol.charm.api.event.PlayerLoadDataCallback;
 import svenhjol.charm.api.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.LogHelper;
@@ -26,7 +24,6 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.QuestEvents;
-import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.network.*;
@@ -71,7 +68,6 @@ public class Journals extends CharmModule {
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
         PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
-        PlayerDieCallback.EVENT.register(this::handlePlayerDie);
         QuestEvents.COMPLETE.register(this::handleQuestComplete);
 
         SERVER_SEND_JOURNAL = new ServerSendJournal();
@@ -80,14 +76,6 @@ public class Journals extends CharmModule {
         SERVER_SEND_HINT = new ServerSendHint();
         SERVER_RECEIVE_MAKE_MAP = new ServerReceiveMakeMap();
         SERVER_RECEIVE_OPEN_JOURNAL = new ServerReceiveOpenJournal();
-    }
-
-    private void handlePlayerDie(ServerPlayer player, DamageSource damageSource) {
-        var bookmarks = Bookmarks.getBookmarks().orElse(null);
-        if (bookmarks == null) return;
-
-        var bookmark = bookmarks.addDeath(player);
-        Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(player.level.getServer(), bookmark);
     }
 
     public static Optional<JournalData> getJournal(Player player) {
