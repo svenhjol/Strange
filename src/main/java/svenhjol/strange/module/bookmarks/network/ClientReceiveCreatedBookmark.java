@@ -18,6 +18,7 @@ public class ClientReceiveCreatedBookmark extends ClientReceiver {
     @Override
     public void handle(Minecraft client, FriendlyByteBuf buffer) {
         var tag = getCompoundTag(buffer).orElseThrow();
+        var startOpened = buffer.readBoolean();
         var branch = BookmarksClient.getBranch().orElseThrow();
 
         client.execute(() -> {
@@ -26,8 +27,10 @@ public class ClientReceiveCreatedBookmark extends ClientReceiver {
             LogHelper.debug(Strange.MOD_ID, getClass(), "New bookmark name is `" + bookmark.getName() + "`.");
 
             // If the current player is the one who created the bookmark then open the journal's bookmarks page.
+            // If startOpened is false, ignore this.
             if (client.player == null) return;
-            if (client.player.getUUID().equals(bookmark.getUuid())) {
+
+            if (startOpened && client.player.getUUID().equals(bookmark.getUuid())) {
                 client.setScreen(new JournalBookmarkScreen(bookmark));
             }
         });

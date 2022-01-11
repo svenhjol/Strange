@@ -10,7 +10,10 @@ import svenhjol.charm.network.ServerSender;
  */
 @Id("strange:created_bookmark")
 public class ServerSendCreatedBookmark extends ServerSender {
-    public void sendToAll(MinecraftServer server, Bookmark bookmark) {
-        sendToAll(server, buf -> buf.writeNbt(bookmark.save()));
+    public void sendToAll(MinecraftServer server, Bookmark bookmark, boolean startOpened) {
+        sendToAll(server, buf -> {
+            buf.writeNbt(bookmark.save());
+            buf.writeBoolean(startOpened);
+        });
     }
 }

@@ -27,7 +27,7 @@ public class ServerReceiveCreateBookmark extends ServerReceiver {
             try {
                 // When the bookmark has been created on the server side, send it to all connected players.
                 var bookmark = bookmarks.add(player);
-                Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(server, bookmark);
+                Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(server, bookmark, true);
 
             } catch (BookmarkException e) {
                 LogHelper.warn(getClass(), "Failed to register bookmark: " + e.getMessage());

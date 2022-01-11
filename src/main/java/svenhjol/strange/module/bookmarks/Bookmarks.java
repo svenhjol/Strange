@@ -64,7 +64,7 @@ public class Bookmarks extends CharmModule {
         if (bookmarks == null) return;
 
         var bookmark = bookmarks.addDeath(player);
-        Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(player.level.getServer(), bookmark);
+        Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(player.level.getServer(), bookmark, false);
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
