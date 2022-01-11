@@ -169,7 +169,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
 
         // If the player hasn't learned enough runes then exit early.
         int unknown = JournalHelper.countUnknownRunes(discovery.getRunes(), journal);
-        if (unknown >= potentialItems.size()) return;
+        if (unknown > 0) return;
 
         if (items == null || itemRandomTicks++ >= 100) {
 

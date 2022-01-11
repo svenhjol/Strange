@@ -117,11 +117,9 @@ public abstract class BaseTeleportHandler<V> {
             var unknownRunes = JournalHelper.countUnknownRunes(runes, journal);
             if (unknownRunes == 0) {
                 return ItemOutcome.SUCCESS;
-            } else if (unknownRunes < items.size()) {
-                return ItemOutcome.PARTIAL_SUCCESS;
             }
 
-            return ItemOutcome.FAIL;
+            return ItemOutcome.PARTIAL_SUCCESS;
         }
 
         return ItemOutcome.SUCCESS;

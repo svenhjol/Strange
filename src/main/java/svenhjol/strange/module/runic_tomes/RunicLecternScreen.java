@@ -86,6 +86,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
+        renderItemClue(poseStack, mouseX, mouseY);
 
         // if tome has been sent from the server, update screen props
         if (RunicTomesClient.tomeHolder == null) {
@@ -120,8 +121,7 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
         }
     }
 
-    @Override
-    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderItemClue(PoseStack poseStack, int mouseX, int mouseY) {
         var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
         if (potentialItems == null || potentialItems.isEmpty()) return;
@@ -157,8 +157,6 @@ public class RunicLecternScreen extends AbstractContainerScreen<RunicLecternMenu
 
             renderTooltip(poseStack, text, Optional.of(new RunestoneItemTooltip(items)), mouseX, mouseY);
         }
-
-        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     private void setupTextureShaders() {

@@ -45,6 +45,7 @@ public class RunicTeleport implements ITeleportType {
     private void handleActivateRunestone(ServerPlayer player, BlockPos origin, String runes, ItemStack sacrifice) {
         var result = tryTeleport(player, runes, sacrifice, origin);
 
+        // Outcomes are success, pass or fail. On fail, something really bad has gone wrong, so destroy the runestone.
         if (result == InteractionResult.FAIL) {
             LogHelper.warn(getClass(), "Runestone activation failed");
             WorldHelper.explode((ServerLevel) player.level, origin, 2.0F, Explosion.BlockInteraction.BREAK);
