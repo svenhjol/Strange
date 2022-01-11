@@ -1,12 +1,13 @@
 package svenhjol.strange.module.bookmarks;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import svenhjol.charm.helper.DimensionHelper;
+import svenhjol.charm.helper.StringHelper;
+import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +16,7 @@ public class BookmarkData extends SavedData {
     public BookmarkBranch branch;
 
     public BookmarkData(@Nullable ServerLevel level) {
-        this.setDirty();
+        setDirty();
         branch = new BookmarkBranch();
     }
 
@@ -23,21 +24,23 @@ public class BookmarkData extends SavedData {
         var bookmark = new Bookmark(player.getUUID(), player.blockPosition(), DimensionHelper.getDimension(player.level));
         branch.register(bookmark);
 
-        this.setDirty();
+        setDirty();
         return bookmark;
     }
 
     public Bookmark addDeath(Player player) throws BookmarkException {
+        var bookmarkName = StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.death_bookmark").orElse("Died here");
+
         var bookmark = new Bookmark(
             player.getUUID(),
-            new TranslatableComponent("gui.strange.journal.death_bookmark").getString(),
+            bookmarkName,
             player.blockPosition(),
             DimensionHelper.getDimension(player.getLevel()),
             DefaultIcon.DEATH.getId()
         );
         branch.register(bookmark);
 
-        this.setDirty();
+        setDirty();
         return bookmark;
     }
 
@@ -51,7 +54,7 @@ public class BookmarkData extends SavedData {
         existing.setName(bookmark.getName());
         existing.setIcon(bookmark.getIcon());
 
-        this.setDirty();
+        setDirty();
         return existing;
     }
 
@@ -64,7 +67,7 @@ public class BookmarkData extends SavedData {
         }
 
         branch.remove(runes);
-        this.setDirty();
+        setDirty();
     }
 
     @Override
