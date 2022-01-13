@@ -24,12 +24,12 @@ public class JournalChooseIconScreen extends JournalScreen {
         super(JournalResources.CHOOSE_ICON);
 
         this.bookmark = bookmark;
-        this.perRow = 8;
-        this.maxRows = 5;
-        this.xOffset = 20;
-        this.yOffset = 20;
+        this.perRow = 12;
+        this.maxRows = 9;
+        this.xOffset = 17;
+        this.yOffset = 17;
         this.left = width - ((perRow * xOffset) / 2) + 2;
-        this.top = 62;
+        this.top = 40;
     }
 
     @Override
