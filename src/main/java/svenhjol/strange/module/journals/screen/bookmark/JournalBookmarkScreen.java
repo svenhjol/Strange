@@ -38,17 +38,16 @@ public class JournalBookmarkScreen extends JournalScreen {
     protected int minPhotoDistance;
     protected int buttonWidth;
     protected int buttonHeight;
-    protected int knownColor = 0x997755;
     protected List<ButtonDefinition> pageButtons = new ArrayList<>();
     protected BookmarkPhoto photo;
     protected RuneStringRenderer runeStringRenderer;
 
     public JournalBookmarkScreen(@Nonnull Bookmark bookmark) {
-        super(new TextComponent(bookmark.getName()));
+        super(new TextComponent(bookmark.getName().substring(0, Math.min(bookmark.getName().length(), 36))));
 
         this.name = bookmark.getName();
         this.bookmark = bookmark.copy();
-        this.maxNameLength = 50;
+        this.maxNameLength = 60;
         this.minPhotoDistance = 10;
         this.dimensionName = new TranslatableComponent("gui.strange.journal.dimension", StringHelper.snakeToPretty(this.bookmark.getDimension().getPath(), true));
 
@@ -127,7 +126,7 @@ public class JournalBookmarkScreen extends JournalScreen {
             int z = pos.getZ();
             int top = 158;
 
-            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, knownColor);
+            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
             return;
         }
 

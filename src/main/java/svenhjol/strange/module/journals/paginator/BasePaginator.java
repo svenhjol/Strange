@@ -168,7 +168,7 @@ public abstract class BasePaginator<T> {
             var icon = getItemIcon(sublist.get(i));
 
             if (icon != null) {
-                itemRenderer.renderGuiItem(icon, x - (buttonWidth / 2) - 12, y + (i * yOffset) + 2);
+                itemRenderer.renderGuiItem(icon, x - (buttonWidth / 3) - 26, y + (i * yOffset) + 2);
             }
         }
 

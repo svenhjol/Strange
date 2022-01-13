@@ -135,16 +135,17 @@ public abstract class JournalScreen extends Screen {
     }
 
     protected void firstRender(PoseStack poseStack) {
-        if (!hasFirstRendered) {
-            renderNavigation();
-            renderBottomButtons();
-            hasFirstRendered = true;
-        }
+        renderNavigation();
+        renderBottomButtons();
+        hasFirstRendered = true;
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        firstRender(poseStack);
+        if (!hasFirstRendered) {
+            firstRender(poseStack);
+        }
+
         renderBackground(poseStack);
         renderTitle(poseStack, titleX, titleY, titleColor);
         super.render(poseStack, mouseX, mouseY, delta);
@@ -178,7 +179,7 @@ public abstract class JournalScreen extends Screen {
      * Renders an item to the left of the main title.
      */
     public void renderTitleIcon(ItemStack icon) {
-        int iconX = midX - 21 - ((this.title.getString().length() * 6) / 2);
+        int iconX = midX - 21 - Math.round((this.title.getString().length() * 6F) / 2.3F);
         itemRenderer.renderGuiItem(icon, iconX, titleY - 5);
     }
 

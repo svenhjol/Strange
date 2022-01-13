@@ -24,6 +24,7 @@ public abstract class JournalPaginatedScreen<T> extends JournalScreen {
         //  2. Consume a new page offset when the left or right page buttons are clicked.
         paginator = getPaginator();
         paginator.init(this, offset, midX, y, onClick(), onNewOffset());
+        paginator.setButtonWidth(180);
 
         addButtons();
         setViewedPage();
