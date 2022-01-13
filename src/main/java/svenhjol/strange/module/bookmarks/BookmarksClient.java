@@ -20,6 +20,7 @@ public class BookmarksClient extends CharmModule {
     public static ClientReceiveCreatedBookmark RECEIVE_CREATED_BOOKMARK;
     public static ClientReceiveRemovedBookmark RECEIVE_REMOVED_BOOKMARK;
     public static ClientReceiveUpdatedBookmark RECEIVE_UPDATED_BOOKMARK;
+    public static ClientReceiveCreateDeathBookmark RECEIVE_CREATE_DEATH_BOOKMARK;
 
     @Override
     public void runWhenEnabled() {
@@ -30,6 +31,7 @@ public class BookmarksClient extends CharmModule {
         RECEIVE_CREATED_BOOKMARK = new ClientReceiveCreatedBookmark();
         RECEIVE_REMOVED_BOOKMARK = new ClientReceiveRemovedBookmark();
         RECEIVE_UPDATED_BOOKMARK = new ClientReceiveUpdatedBookmark();
+        RECEIVE_CREATE_DEATH_BOOKMARK = new ClientReceiveCreateDeathBookmark();
     }
 
     public static Optional<BookmarkBranch> getBranch() {

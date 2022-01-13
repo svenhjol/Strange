@@ -4,6 +4,7 @@ import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import svenhjol.charm.enums.ICharmEnum;
 
 public enum DefaultIcon implements ICharmEnum {
@@ -24,5 +25,15 @@ public enum DefaultIcon implements ICharmEnum {
 
     public ResourceLocation getId() {
         return DefaultedRegistry.ITEM.getKey(item);
+    }
+
+    public static DefaultIcon forDimension(ResourceLocation res) {
+        if (res.equals(Level.NETHER.location())) {
+            return DefaultIcon.NETHER;
+        } else if (res.equals(Level.END.location())) {
+            return DefaultIcon.END;
+        } else {
+            return DefaultIcon.OVERWORLD;
+        }
     }
 }

@@ -23,13 +23,13 @@ public class ClientReceiveCreatedBookmark extends ClientReceiver {
 
         client.execute(() -> {
             var bookmark = Bookmark.load(tag);
-            branch.add(bookmark.getRunes(), bookmark);
+            var runes = bookmark.getRunes();
+            branch.add(runes, bookmark);
             LogHelper.debug(Strange.MOD_ID, getClass(), "New bookmark name is `" + bookmark.getName() + "`.");
 
-            // If the current player is the one who created the bookmark then open the journal's bookmarks page.
-            // If startOpened is false, ignore this.
             if (client.player == null) return;
 
+            // If server instructs client to automatically open the bookmark, set screen here.
             if (startOpened && client.player.getUUID().equals(bookmark.getUuid())) {
                 client.setScreen(new JournalBookmarkScreen(bookmark));
             }

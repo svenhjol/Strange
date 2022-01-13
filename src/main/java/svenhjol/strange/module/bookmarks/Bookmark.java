@@ -3,13 +3,9 @@ package svenhjol.strange.module.bookmarks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.runes.RuneHelper;
-import svenhjol.strange.module.runes.Runes;
 
-import java.util.Random;
 import java.util.UUID;
 
 public class Bookmark {
@@ -39,7 +35,7 @@ public class Bookmark {
             dim,
             DefaultIcon.OVERWORLD.getId()
         );
-        this.icon = getIconForDimension(dim);
+        this.icon = DefaultIcon.forDimension(dim).getId();
     }
 
     public Bookmark(UUID uuid, String name, BlockPos pos, ResourceLocation dim, ResourceLocation icon) {
@@ -49,8 +45,7 @@ public class Bookmark {
         this.dim = dim;
         this.icon = icon;
         this.isPrivate = true;
-
-        setRunesFromBlockPos();
+        this.runes = "";
     }
 
     public CompoundTag save() {
@@ -91,6 +86,14 @@ public class Bookmark {
         this.icon = icon;
     }
 
+    public void setPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public void setRunes(String runes) {
+        this.runes = runes;
+    }
+
     public String getName() {
         return name;
     }
@@ -117,23 +120,6 @@ public class Bookmark {
 
     public boolean isPrivate() {
         return isPrivate;
-    }
-
-    private void setRunesFromBlockPos() {
-        Bookmarks.getBookmarks().ifPresent(bookmarks -> {
-            Random random = new Random(pos.asLong());
-            runes = RuneHelper.uniqueRunes(bookmarks.branch, random, 0.6F, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
-        });
-    }
-
-    private ResourceLocation getIconForDimension(ResourceLocation dim) {
-        if (dim.equals(Level.NETHER.location())) {
-            return DefaultIcon.NETHER.getId();
-        } else if (dim.equals(Level.END.location())) {
-            return DefaultIcon.END.getId();
-        } else {
-            return DefaultIcon.OVERWORLD.getId();
-        }
     }
 
     public static Bookmark load(CompoundTag tag) {

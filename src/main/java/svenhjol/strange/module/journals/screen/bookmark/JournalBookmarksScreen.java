@@ -2,10 +2,14 @@ package svenhjol.strange.module.journals.screen.bookmark;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
+import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
+import svenhjol.strange.module.bookmarks.DefaultIcon;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.paginator.BookmarkPaginator;
@@ -68,6 +72,21 @@ public class JournalBookmarksScreen extends JournalPaginatedScreen<Bookmark> {
             return;
         }
 
-        BookmarksClient.SEND_CREATE_BOOKMARK.send();
+        // Generate a name and icon for the bookmark. Try and use the current biome.
+        String name;
+        ResourceLocation icon;
+
+        var level = minecraft.player.level;
+        var opt = level.getBiomeName(minecraft.player.blockPosition());
+
+        if (opt.isPresent()) {
+            String biomeName = StringHelper.snakeToPretty(opt.get().location().getPath(), true);
+            name = I18n.get("gui.strange.journal.biome_bookmark", biomeName);
+        } else {
+            name = I18n.get("gui.strange.journal.bookmark");
+        }
+
+        icon = DefaultIcon.forDimension(level.dimension().location()).getId();
+        BookmarksClient.SEND_CREATE_BOOKMARK.send(name, icon, true);
     }
 }

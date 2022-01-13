@@ -3,11 +3,11 @@ package svenhjol.strange.module.bookmarks;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import svenhjol.charm.annotation.CommonModule;
@@ -28,6 +28,7 @@ public class Bookmarks extends CharmModule {
     public static ServerSendCreatedBookmark SEND_CREATED_BOOKMARK;
     public static ServerSendRemovedBookmark SEND_REMOVED_BOOKMARK;
     public static ServerSendUpdatedBookmark SEND_UPDATED_BOOKMARK;
+    public static ServerSendCreateDeathBookmark SEND_CREATE_DEATH_BOOKMARK;
     public static ServerReceiveCreateBookmark RECEIVE_CREATE_BOOKMARK;
     public static ServerReceiveRemoveBookmark RECEIVE_REMOVE_BOOKMARK;
     public static ServerReceiveUpdateBookmark RECEIVE_UPDATE_BOOKMARK;
@@ -48,6 +49,7 @@ public class Bookmarks extends CharmModule {
         SEND_CREATED_BOOKMARK = new ServerSendCreatedBookmark();
         SEND_REMOVED_BOOKMARK = new ServerSendRemovedBookmark();
         SEND_UPDATED_BOOKMARK = new ServerSendUpdatedBookmark();
+        SEND_CREATE_DEATH_BOOKMARK = new ServerSendCreateDeathBookmark();
         RECEIVE_CREATE_BOOKMARK = new ServerReceiveCreateBookmark();
         RECEIVE_REMOVE_BOOKMARK = new ServerReceiveRemoveBookmark();
         RECEIVE_UPDATE_BOOKMARK = new ServerReceiveUpdateBookmark();
@@ -57,14 +59,9 @@ public class Bookmarks extends CharmModule {
         return Optional.ofNullable(bookmarkData);
     }
 
-    private void handlePlayerDie(ServerPlayer player, DamageSource damageSource) {
-        if (!createDeathBookmark) return;
-
-        var bookmarks = Bookmarks.getBookmarks().orElse(null);
-        if (bookmarks == null) return;
-
-        var bookmark = bookmarks.addDeath(player);
-        Bookmarks.SEND_CREATED_BOOKMARK.sendToAll(player.level.getServer(), bookmark, false);
+    private void handlePlayerDie(ServerPlayer player, Component deathMessage) {
+        if (!createDeathBookmark || player.level.isClientSide) return;
+        SEND_CREATE_DEATH_BOOKMARK.send(player, deathMessage);
     }
 
     private void handlePlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {

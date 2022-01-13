@@ -65,7 +65,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         initEditBox();
 
         photo = new BookmarkPhoto(minecraft, bookmark);
-        runeStringRenderer = new RuneStringRenderer(midX - 61, 158, 13, 15, 10, 4);
+        runeStringRenderer = new RuneStringRenderer(midX - 61, 158, 13, 14, 10, 4);
 
         pageButtons.clear();
 

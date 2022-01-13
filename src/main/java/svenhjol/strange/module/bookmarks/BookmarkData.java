@@ -6,8 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
 import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.charm.helper.StringHelper;
-import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +18,14 @@ public class BookmarkData extends SavedData {
         branch = new BookmarkBranch();
     }
 
+    public Bookmark add(Player player, Bookmark bookmark) {
+        BookmarkHelper.setRunesFromBlockPos(bookmark, 0.78F);
+        branch.register(bookmark);
+
+        setDirty();
+        return bookmark;
+    }
+
     public Bookmark add(Player player) throws BookmarkException {
         var bookmark = new Bookmark(player.getUUID(), player.blockPosition(), DimensionHelper.getDimension(player.level));
         branch.register(bookmark);
@@ -28,21 +34,25 @@ public class BookmarkData extends SavedData {
         return bookmark;
     }
 
-    public Bookmark addDeath(Player player) throws BookmarkException {
-        var bookmarkName = StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.death_bookmark").orElse("Died here");
-
-        var bookmark = new Bookmark(
-            player.getUUID(),
-            bookmarkName,
-            player.blockPosition(),
-            DimensionHelper.getDimension(player.getLevel()),
-            DefaultIcon.DEATH.getId()
-        );
-        branch.register(bookmark);
-
-        setDirty();
-        return bookmark;
-    }
+//    public Bookmark addDeath(Player player, DamageSource source) throws BookmarkException {
+//        source.get
+//        var bookmarkName = StringHelper.tryResolveLanguageKey(Strange.MOD_ID, "gui.strange.journal.death_bookmark").orElse("Died here");
+//
+//        var bookmark = new Bookmark(
+//            player.getUUID(),
+//            bookmarkName,
+//            player.blockPosition(),
+//            DimensionHelper.getDimension(player.getLevel()),
+//            DefaultIcon.DEATH.getId()
+//        );
+//        bookmark.setAutoPhoto(true);
+//        bookmark.setPrivate(true);
+//
+//        branch.register(bookmark);
+//
+//        setDirty();
+//        return bookmark;
+//    }
 
     public Bookmark update(Bookmark bookmark) throws BookmarkException {
         var runes = bookmark.getRunes();
