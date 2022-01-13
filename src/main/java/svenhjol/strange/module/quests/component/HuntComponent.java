@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.strange.module.quests.IQuestComponent;
 import svenhjol.strange.module.quests.Quest;
@@ -146,18 +147,21 @@ public class HuntComponent implements IQuestComponent {
 
     @Override
     public void entityKilled(LivingEntity entity, Entity attacker) {
-        if (!(attacker instanceof ServerPlayer player)) return;
+        if (attacker instanceof OwnableEntity owned) {
+            attacker = owned.getOwner();
+        }
+        if (attacker instanceof ServerPlayer player) {
+            if (quest.getOwner().equals(player.getUUID())) {
+                ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
 
-        if (quest.getOwner().equals(player.getUUID())) {
-            ResourceLocation id = Registry.ENTITY_TYPE.getKey(entity.getType());
+                if (entities.containsKey(id)) {
+                    int max = entities.get(id);
+                    int count = killed.getOrDefault(id, 0);
+                    killed.put(id, Math.min(max, count + 1));
 
-            if (entities.containsKey(id)) {
-                int max = entities.get(id);
-                int count = killed.getOrDefault(id, 0);
-                killed.put(id, Math.min(max, count + 1));
-
-                quest.setDirty();
-                quest.update(player);
+                    quest.setDirty();
+                    quest.update(player);
+                }
             }
         }
     }
