@@ -30,41 +30,48 @@ public class TakePhotoHandler {
         this.ticks = 0;
     }
 
-    public void tick(Minecraft client) {
+    public void tick(Minecraft mc) {
         if (bookmark == null) {
             ticks = 0;
             return;
         }
 
         // If the player clicks the mouse during the photo countdown then immediately take the photo.
-        if (ticks > 0 && client.options.keyAttack.isDown()) {
+        if (ticks > 0 && mc.options.keyAttack.isDown()) {
             ticks = MAX_TICKS;
         }
 
-        // There must be a valid player
-        if (client.player == null) return;
+        // There must be a valid player.
+        if (mc.player == null) return;
 
         if (++ticks >= MAX_TICKS) {
             var newBookmark = bookmark.copy();
-            String filename = "strange_" + newBookmark.getRunes() + ".png";
 
-            Screenshot.grab(
-                client.gameDirectory,
-                filename,
-                client.getMainRenderTarget(),
-                component -> {
-                    client.player.playSound(Journals.SCREENSHOT_SOUND, 1.0F, 1.0F);
-                    client.options.hideGui = false;
-
-                    client.execute(() -> {
-                        client.setScreen(new JournalBookmarkScreen(newBookmark));
-                        LogHelper.debug(Strange.MOD_ID, getClass(), "Screenshot taken for bookmark `" + newBookmark.getRunes() + "`");
-                    });
-                }
-            );
+            takePhoto(mc, newBookmark.getRunes(), () -> {
+                mc.player.playSound(Journals.SCREENSHOT_SOUND, 1.0F, 1.0F);
+                mc.options.hideGui = false;
+                mc.setScreen(new JournalBookmarkScreen(newBookmark));
+            });
 
             ticks = 0;
             bookmark = null;
         }
+    }
+
+    public static void takePhoto(Minecraft mc, String runes, Runnable onTake) {
+        String filename = "strange_" + runes + ".png";
+
+        // There must be a valid player.
+        if (mc.player == null) return;
+
+        Screenshot.grab(
+            mc.gameDirectory,
+            filename,
+            mc.getMainRenderTarget(),
+            component -> {
+                LogHelper.debug(Strange.MOD_ID, TakePhotoHandler.class, "Screenshot taken: `" + filename + "`");
+                mc.execute(onTake);
+            }
+        );
     }
 }
