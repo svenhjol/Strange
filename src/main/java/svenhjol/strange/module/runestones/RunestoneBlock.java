@@ -75,7 +75,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
 
             // Drop runestone dust if enabled. Fortune affects number of drops.
             if (Strange.LOADER.isEnabled(RunestoneDust.class)) {
-                var drops = 1 + level.random.nextInt((EnchantmentsHelper.getFortune(player) * 2) + 2);
+                var drops = 1 + level.random.nextInt((EnchantmentsHelper.getFortune(player) * 3) + 3);
                 for (int i = 0; i < drops; i++) {
                     level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(RunestoneDust.RUNESTONE_DUST)));
                 }
