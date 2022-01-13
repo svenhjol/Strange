@@ -19,7 +19,7 @@ public class BookmarkData extends SavedData {
     }
 
     public Bookmark add(Player player, Bookmark bookmark) {
-        BookmarkHelper.setRunesFromBlockPos(bookmark, 0.78F);
+        BookmarkHelper.setRunesFromBlockPos(bookmark, 0.8F);
         branch.register(bookmark);
 
         setDirty();

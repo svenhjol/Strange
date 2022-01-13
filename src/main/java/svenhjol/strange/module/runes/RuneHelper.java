@@ -122,7 +122,7 @@ public class RuneHelper {
             out.append((char)chr);
 
             // The difficulty also increases the length of the string.
-            if (out.length() > minLength && i / (float)maxLength > difficulty) {
+            if (out.length() >= minLength && i / (float)maxLength > difficulty) {
                 break;
             }
         }
