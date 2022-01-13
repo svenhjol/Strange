@@ -30,8 +30,8 @@ public class RuneStringRenderer {
         this.yOffset = yOffset;
         this.xMax = xMax;
         this.yMax = yMax;
-        this.knownColor = 0x997755;
-        this.unknownColor = 0xC0B0A0;
+        this.knownColor = 0x908080;
+        this.unknownColor = 0xC4B4A4;
         this.withShadow = false;
         this.unknownRune = String.valueOf(Runes.UNKNOWN_RUNE);
     }
