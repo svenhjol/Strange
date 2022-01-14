@@ -1,5 +1,6 @@
 package svenhjol.strange.module.discoveries;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
@@ -18,7 +19,7 @@ public class DiscoveryHelper {
      * If the location is the spawn point then an existing discovery will try to be returned.
      */
     @Nullable
-    public static Discovery getOrCreate(UUID discoverer, ResourceLocation dimension, Random random, float difficulty, @Nullable ResourceLocation location) {
+    public static Discovery getOrCreate(UUID discoverer, ResourceLocation dimension, BlockPos pos, Random random, float difficulty, @Nullable ResourceLocation location) {
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return null;
 
@@ -50,6 +51,7 @@ public class DiscoveryHelper {
         var runes = RuneHelper.uniqueRunes(discoveries.branch, random, difficulty, Runes.MIN_PHRASE_LENGTH, Runes.MAX_PHRASE_LENGTH);
         var discovery = new Discovery(runes, location);
 
+        discovery.setPos(pos);
         discovery.setDifficulty(difficulty);
         discovery.setDimension(dimension);
         discovery.setPlayer(discoverer);
