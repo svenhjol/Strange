@@ -20,6 +20,7 @@ import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 import svenhjol.strange.module.knowledge.branch.StructureBranch;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
+import svenhjol.strange.module.runestones.Runestones;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 import svenhjol.strange.module.runic_tomes.event.ActivateRunicTomeCallback;
@@ -45,15 +46,19 @@ public class RunicTeleport implements ITeleportType {
     private void handleActivateRunestone(ServerPlayer player, BlockPos origin, String runes, ItemStack sacrifice) {
         var result = tryTeleport(player, runes, sacrifice, origin);
 
-        // Outcomes are success, pass or fail. On fail, something really bad has gone wrong, so destroy the runestone.
+        // Outcomes are success, pass or fail.
+
+        // On success trigger the advancement and send instructions to client to display particles.
+        if (result == InteractionResult.SUCCESS) {
+            Runestones.triggerActivatedRunestone(player);
+            SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNESTONE);
+        }
+
+        // On fail, something has gone badly wrong, so destroy the runestone.
         if (result == InteractionResult.FAIL) {
             LogHelper.warn(getClass(), "Runestone activation failed");
             WorldHelper.explode((ServerLevel) player.level, origin, 2.0F, Explosion.BlockInteraction.BREAK);
-            return;
         }
-
-        // This allows the client to show particles for the runestone.
-        SEND_RUNIC_TELEPORT_EFFECT.send(player, origin, Type.RUNESTONE);
     }
 
     private void handleActivateRunicTome(ServerPlayer player, BlockPos origin, ItemStack tome, ItemStack sacrifice) {

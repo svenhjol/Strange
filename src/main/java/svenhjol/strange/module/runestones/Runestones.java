@@ -3,7 +3,6 @@ package svenhjol.strange.module.runestones;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +12,6 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,7 +23,6 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.api.event.ActivateRunestoneCallback;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
@@ -90,14 +87,9 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
-        ActivateRunestoneCallback.EVENT.register(this::handleActivateRunestone);
 
         SERVER_SEND_RUNESTONE_ITEMS = new ServerSendRunestoneItems();
         SERVER_SEND_RUNESTONE_CLUES = new ServerSendRunestoneClues();
-    }
-
-    private void handleActivateRunestone(ServerPlayer player, BlockPos pos, String runes, ItemStack stack) {
-        triggerActivatedRunestone(player);
     }
 
     public static void triggerLookedAtRunestone(ServerPlayer player) {
