@@ -8,6 +8,7 @@
   },
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
+    "curse_of_glowing.IncreaseMobAwarenessMixin",
     "dimensions.CaptureEntityCreatingPlatformMixin",
     "dimensions.ConfigurableBiomeEffectsMixin",
     "dimensions.ConfigurableRainMixin",
