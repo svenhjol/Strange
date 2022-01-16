@@ -1,13 +1,13 @@
-package svenhjol.strange.module.curse_of_glowing;
+package svenhjol.strange.module.curse_of_detecting;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import svenhjol.charm.enchantment.CharmEnchantment;
 import svenhjol.charm.loader.CharmModule;
 
-public class CurseOfGlowingEnch extends CharmEnchantment {
-    public CurseOfGlowingEnch(CharmModule module) {
-        super(module, "glowing_curse", Rarity.UNCOMMON, EnchantmentCategory.VANISHABLE, EquipmentSlot.values());
+public class CurseOfDetectingEnch extends CharmEnchantment {
+    public CurseOfDetectingEnch(CharmModule module) {
+        super(module, "detecting_curse", Rarity.RARE, EnchantmentCategory.VANISHABLE, EquipmentSlot.values());
     }
 
     @Override
