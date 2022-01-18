@@ -1,5 +1,16 @@
 [
   {
+    "processor_type": "minecraft:rule",
+    "rules": [
+      {
+        "comment": "// Replace end portal blocks with end shrine portal blocks",
+        "location_predicate": {"predicate_type": "minecraft:always_true"},
+        "input_predicate": {"block": "end_portal", "predicate_type": "minecraft:block_match"},
+        "output_state": {"Name": "strange:end_shrine_portal"}
+      }
+    ]
+  },
+  {
     "comment": "// Bypass strange's ignore_blocks",
     "processor_type": "minecraft:block_ignore",
     "blocks": [{"Name": "strange:ignore_block"}]
