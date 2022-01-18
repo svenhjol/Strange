@@ -62,6 +62,8 @@ public class Runestones extends CharmModule {
     public static ServerSendRunestoneItems SERVER_SEND_RUNESTONE_ITEMS;
     public static ServerSendRunestoneClues SERVER_SEND_RUNESTONE_CLUES;
 
+    public static double reuseChance = 0.2D;
+
     @Config(name = "Travel distance in blocks", description = "Maximum number of blocks that you will be teleported via a runestone.")
     public static int maxDistance = 5000;
 
@@ -193,7 +195,7 @@ public class Runestones extends CharmModule {
                     List<ResourceLocation> destinations = definition.getDestinations().stream()
                         .map(ResourceLocation::new)
                         .filter(r -> WorldHelper.isStructure(r) || WorldHelper.isBiome(r))
-                        .collect(Collectors.toList());
+                        .toList();
 
                     LinkedList<ResourceLocation> entries = DESTINATIONS.get(dimension);
                     for (int i = 0; i < destinations.size(); i++) {

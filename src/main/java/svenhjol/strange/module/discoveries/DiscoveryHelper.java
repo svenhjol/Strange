@@ -9,9 +9,8 @@ import svenhjol.strange.module.runes.Runes;
 import svenhjol.strange.module.runestones.Runestones;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiscoveryHelper {
     /**
@@ -40,6 +39,18 @@ public class DiscoveryHelper {
             return discovery;
 
         } else {
+
+            // Chance to re-use an existing discovery.
+            if (random.nextDouble() < Runestones.reuseChance) {
+                List<Discovery> existing = discoveries.all().stream().filter(d -> Math.abs(d.getDifficulty() - difficulty) < 0.1F).collect(Collectors.toList());
+                if (!existing.isEmpty()) {
+                    Collections.shuffle(existing, random);
+                    var discovery = existing.get(0);
+
+                    LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Reusing discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
+                    return discovery;
+                }
+            }
 
             // Generate a destination from the difficulty.  If it's still null then bail.
             location = getDestination(dimension, random, difficulty);
