@@ -20,6 +20,7 @@ accessible method net/minecraft/world/entity/npc/Villager shouldIncreaseLevel ()
 accessible method net/minecraft/world/entity/npc/Villager increaseMerchantCareer ()V
 accessible method net/minecraft/world/entity/monster/hoglin/HoglinAi setAvoidTarget (Lnet/minecraft/world/entity/monster/hoglin/Hoglin;Lnet/minecraft/world/entity/LivingEntity;)V
 accessible method net/minecraft/world/item/BundleItem getContents (Lnet/minecraft/world/item/ItemStack;)Ljava/util/stream/Stream;
+accessible method net/minecraft/client/gui/Gui drawBackdrop (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/gui/Font;III)V
 
 # Inaccessible fields
 accessible field net/minecraft/client/renderer/RenderBuffers fixedBuffers Ljava/util/SortedMap;
@@ -58,6 +59,8 @@ accessible field net/minecraft/client/player/LocalPlayer ambientSoundHandlers Lj
 accessible field net/minecraft/client/resources/sounds/BiomeAmbientSoundsHandler previousBiome Lnet/minecraft/world/level/biome/Biome;
 accessible field net/minecraft/client/resources/sounds/BiomeAmbientSoundsHandler loopSounds Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;
 accessible field net/minecraft/client/sounds/MusicManager nextSongDelay I
+accessible field net/minecraft/client/gui/Gui screenWidth I
+accessible field net/minecraft/client/gui/Gui screenHeight I
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType ARMOR_ENTITY_GLINT Lnet/minecraft/client/renderer/RenderType;
 mutable    field net/minecraft/client/renderer/RenderType GLINT_DIRECT Lnet/minecraft/client/renderer/RenderType;
