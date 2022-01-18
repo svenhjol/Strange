@@ -22,7 +22,7 @@ import svenhjol.strange.Strange;
 /**
  * Inspired by Quark's SitInStairs module.
  */
-@CommonModule(mod = Strange.MOD_ID, description = "Experimental! While holding no items, right-click on any stairs block to sit down.")
+@CommonModule(mod = Strange.MOD_ID, description = "Experimental! Right-click (with empty hand) on any stairs block to sit down. ")
 public class Chairs extends CharmModule {
     public static EntityType<ChairEntity> CHAIR;
 
@@ -42,7 +42,6 @@ public class Chairs extends CharmModule {
 
     private InteractionResult handleUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide
-            && player.getOffhandItem().isEmpty()
             && player.getMainHandItem().isEmpty()
             && !player.isPassenger()
             && !player.isCrouching()
