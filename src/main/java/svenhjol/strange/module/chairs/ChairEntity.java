@@ -5,9 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.StairBlock;
 import svenhjol.charm.helper.LogHelper;
@@ -76,13 +76,26 @@ public class ChairEntity extends Entity {
 
             }
         }
+    }
 
-        if (!isRemoved() && block instanceof StairBlock && !Chairs.allowRotation) {
-            var passenger = getFirstPassenger();
-            if (passenger instanceof Player player) {
-                var facing = state.getValue(StairBlock.FACING).getOpposite();
-                player.setYRot(facing.toYRot());
-            }
-        }
+    @Override
+    public void positionRider(Entity entity) {
+        if (!hasPassenger(entity)) return;
+        super.positionRider(entity);
+        clampRotation(entity);
+    }
+
+    @Override
+    public void onPassengerTurned(Entity entity) {
+        clampRotation(entity);
+    }
+
+    private void clampRotation(Entity entity) {
+        entity.setYBodyRot(this.getYRot());
+        float f = Mth.wrapDegrees(entity.getYRot() - this.getYRot());
+        float g = Mth.clamp(f, -105.0f, 105.0f);
+        entity.yRotO += g - f;
+        entity.setYRot(entity.getYRot() + g - f);
+        entity.setYHeadRot(entity.getYRot());
     }
 }
