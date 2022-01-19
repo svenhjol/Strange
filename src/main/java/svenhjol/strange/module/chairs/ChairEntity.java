@@ -20,6 +20,9 @@ public class ChairEntity extends Entity {
     public ChairEntity(Level level, BlockPos pos) {
         super(Chairs.CHAIR, level);
         setPos(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+
+        var facing = level.getBlockState(pos).getValue(StairBlock.FACING).getOpposite();
+        setYRot(facing.toYRot());
     }
 
     @Override
