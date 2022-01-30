@@ -15,7 +15,15 @@ public class VaultsFeature extends RandomHeightJigsawFeature {
 
     private static boolean checkLocation(PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
-        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
-        return worldgenRandom.nextInt(10) < 1;
+
+        var x = context.chunkPos().x;
+        var z = context.chunkPos().z;
+
+        if (x < 100 && z < 100) {
+            return false;
+        }
+
+        worldgenRandom.setLargeFeatureSeed(context.seed(), x, z);
+        return worldgenRandom.nextInt(25) < 1;
     }
 }

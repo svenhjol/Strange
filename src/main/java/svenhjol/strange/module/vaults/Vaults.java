@@ -35,8 +35,8 @@ import java.util.List;
  *
  * //replace stone,cobblestone,mossy_cobblestone,cracked_stone_bricks,mossy_stone_bricks,andesite,gravel stone_bricks
  */
-@CommonModule(mod = Strange.MOD_ID, description = "Vaults are large underground structures found in the Mirror dimension by default.\n" +
-    "They contain rare loot and Relics can be found in chests within the large rooms.")
+@CommonModule(mod = Strange.MOD_ID, description = "Vaults are large underground structures containing rare loot.\n" +
+    "Relics can be found in chests within the large vault rooms.")
 public class Vaults extends CharmModule {
     public static final ResourceLocation STRUCTURE_ID = new ResourceLocation(Strange.MOD_ID, "vaults");
     public static final ResourceLocation STARTS = new ResourceLocation(Strange.MOD_ID, "vaults/starts");
@@ -49,7 +49,7 @@ public class Vaults extends CharmModule {
     public static int vaultsSize = 7;
 
     public static List<String> dimensionWhitelist = List.of(
-        "strange:mirror"
+        "minecraft:overworld", "strange:mirror"
     );
 
     public static List<String> biomeCategories = List.of(
