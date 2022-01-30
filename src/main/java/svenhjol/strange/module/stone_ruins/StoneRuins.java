@@ -8,6 +8,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -23,6 +25,7 @@ import svenhjol.strange.init.StrangeEvents;
 import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,6 +47,8 @@ public class StoneRuins extends CharmModule {
     public static List<String> biomeCatgories = List.of(
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
     );
+
+    public static List<Block> surfaceBlocks = new ArrayList<>();
 
     public static List<String> dimensionBlacklist = new ArrayList<>();
 
@@ -71,7 +76,9 @@ public class StoneRuins extends CharmModule {
         ServerWorldEvents.LOAD.register(StrangeEvents.WORLD_LOAD_PHASE, this::handleWorldLoad);
         AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
 
-        // TODO: register overworld specific loot
+        surfaceBlocks.addAll(Arrays.asList(
+            Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.STONE_BRICKS, Blocks.CRACKED_STONE_BRICKS, Blocks.MOSSY_STONE_BRICKS, Blocks.CHISELED_STONE_BRICKS
+        ));
 
         for (String configCategory : biomeCatgories) {
             Biome.BiomeCategory category = BiomeHelper.getBiomeCategoryByName(configCategory);
