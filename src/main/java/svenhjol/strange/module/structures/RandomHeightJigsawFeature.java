@@ -26,6 +26,10 @@ import java.util.function.Predicate;
  */
 public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureFeature<JigsawConfiguration> {
     public RandomHeightJigsawFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation, boolean relativeToBottom, Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> checkLocation) {
+        this(codec, starts, size, startY, variation, relativeToBottom, checkLocation, PostPlacementProcessor.NONE);
+    }
+
+    public RandomHeightJigsawFeature(Codec<JigsawConfiguration> codec, ResourceLocation starts, int size, int startY, int variation, boolean relativeToBottom, Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> checkLocation, PostPlacementProcessor postPlacement) {
         super(codec, context -> {
             if (!checkLocation.test(context)) {
                 return Optional.empty();
@@ -78,6 +82,6 @@ public abstract class RandomHeightJigsawFeature extends NoiseAffectingStructureF
             }
 
             return generator;
-        }, PostPlacementProcessor.NONE);
+        }, postPlacement);
     }
 }
