@@ -34,6 +34,7 @@ import svenhjol.strange.init.StrangeEvents;
 import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.vaults.loot.VaultLibraryLootFunction;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,11 +63,11 @@ public class Vaults extends CharmModule {
 
     public static int vaultsSize = 7;
 
-    public static List<String> dimensionWhitelist = List.of(
+    public static List<String> dimensionWhitelist = Arrays.asList(
         "minecraft:overworld"
     );
 
-    public static List<String> biomeCategories = List.of(
+    public static List<String> biomeCategories = Arrays.asList(
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
     );
 
