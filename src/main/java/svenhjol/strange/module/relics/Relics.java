@@ -197,7 +197,7 @@ public class Relics extends CharmModule {
 
         if (types.isEmpty()) return;
 
-        var random = new Random(id.hashCode());
+        var random = new Random();
         var type = types.get(random.nextInt(types.size()));
 
         switch (type) {
