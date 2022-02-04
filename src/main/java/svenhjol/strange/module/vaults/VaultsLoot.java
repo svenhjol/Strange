@@ -7,4 +7,5 @@ public class VaultsLoot {
     public static final ResourceLocation VAULTS_LARGE_ROOM = new ResourceLocation(Strange.MOD_ID, "vaults/vaults_large_room");
     public static final ResourceLocation VAULTS_ROOM = new ResourceLocation(Strange.MOD_ID, "vaults/vaults_room");
     public static final ResourceLocation VAULTS_CORRIDOR = new ResourceLocation(Strange.MOD_ID, "vaults/vaults_corridor");
+    public static final ResourceLocation VAULTS_LIBRARY = new ResourceLocation(Strange.MOD_ID, "vaults/vaults_library");
 }
