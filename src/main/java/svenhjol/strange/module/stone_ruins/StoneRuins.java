@@ -43,13 +43,15 @@ public class StoneRuins extends CharmModule {
 
     public static int ruinSize = 5;
 
-    public static List<String> biomeCatgories = List.of(
+    public static List<String> biomeCatgories = new ArrayList<>(Arrays.asList(
         "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
-    );
+    ));
 
     public static List<Block> surfaceBlocks = new ArrayList<>();
 
-    public static List<String> dimensionBlacklist = new ArrayList<>();
+    public static List<String> dimensionWhitelist = new ArrayList<>(Arrays.asList(
+        "minecraft:overworld"
+    ));
 
     @Override
     public void register() {
@@ -85,20 +87,13 @@ public class StoneRuins extends CharmModule {
                 BiomeHelper.addStructureToBiomeCategory(CONFIGURED_FEATURE, category);
             }
         }
-
-        // We don't want to try and generate these kinds of ruins in the Nether or End.
-        // Force add them to the blacklist to prevent generation and adding of destinations to runestones.
-        dimensionBlacklist.addAll(List.of(
-            Level.NETHER.location().toString(),
-            Level.END.location().toString()
-        ));
     }
 
     /**
      * Remove the ruins from structure generation for blacklisted dimensions.
      */
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-        if (dimensionBlacklist.contains(level.dimension().location().toString())) {
+        if (!dimensionWhitelist.contains(level.dimension().location().toString())) {
             WorldHelper.removeStructures(level, List.of(STONE_RUIN_FEATURE));
         }
     }
@@ -107,7 +102,7 @@ public class StoneRuins extends CharmModule {
      * Add the ruins as a runestone destination to valid dimensions.
      */
     private void handleAddRunestoneDestination(Level level, LinkedList<ResourceLocation> destinations) {
-        if (!dimensionBlacklist.contains(level.dimension().location().toString())) {
+        if (dimensionWhitelist.contains(level.dimension().location().toString())) {
             if (!destinations.contains(STRUCTURE_ID)) {
                 int size = destinations.size();
                 int index = Math.max(0, Math.round(size * 0.85F));
