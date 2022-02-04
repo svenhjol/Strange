@@ -19,14 +19,15 @@ public class PotionOfRecallLootFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         var level = context.getLevel();
         var random = context.getRandom();
+        var isOverworld = DimensionHelper.isOverworld(level);
 
-        // 50% chance of not generating at all.
-        if (random.nextFloat() > 0.5F) {
+        // This shouldn't generate in the overworld.
+        if (PotionOfRecall.onlyOutsideOverworld && isOverworld) {
             return stack;
         }
 
-        // If the config value onlyOutsideOverworld is set, test the current dimension is not the overworld.
-        if (PotionOfRecall.onlyOutsideOverworld && DimensionHelper.isOverworld(level)) {
+        // 50% chance of not generating at all.
+        if (random.nextFloat() > 0.5F) {
             return stack;
         }
 

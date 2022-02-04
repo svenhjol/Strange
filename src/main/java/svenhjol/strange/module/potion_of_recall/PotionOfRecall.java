@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.helper.ModHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
@@ -30,7 +31,7 @@ public class PotionOfRecall extends CharmModule {
     public static final ResourceLocation TRIGGER_TRAVEL_TO_SPAWN_POINT = new ResourceLocation(Strange.MOD_ID, "travel_to_spawn_point");
     private final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
 
-    public static boolean onlyOutsideOverworld = true;
+    public static boolean onlyOutsideOverworld = false;
 
     @Override
     public void register() {
@@ -42,6 +43,7 @@ public class PotionOfRecall extends CharmModule {
     @Override
     public void runWhenEnabled() {
         VALID_LOOT_TABLES.add(BuiltInLootTables.SIMPLE_DUNGEON);
+        onlyOutsideOverworld = ModHelper.isLoaded("strange_dimensions");
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
     }
 
