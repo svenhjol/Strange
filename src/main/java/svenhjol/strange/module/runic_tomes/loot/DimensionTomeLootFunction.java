@@ -10,14 +10,13 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.dimensions.Dimensions;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 
 import java.util.Random;
+import java.util.function.BiFunction;
 
 public class DimensionTomeLootFunction extends LootItemConditionalFunction {
     public DimensionTomeLootFunction(LootItemCondition[] conditions) {
@@ -32,38 +31,15 @@ public class DimensionTomeLootFunction extends LootItemConditionalFunction {
         ResourceLocation dimension = null;
 
         var knowledge = Knowledge.getKnowledge().orElse(null);
-
         if (knowledge == null) {
             return stack;
         }
 
-        if (random.nextFloat() > 0.66F) {
-            return stack;
-        }
-
-        if (DimensionHelper.isNether(level)) {
-
-            dimension = DimensionHelper.getDimension(Level.NETHER);
-
-        } else if (Strange.LOADER.isEnabled(Dimensions.class)) {
-
-            ResourceLocation fallback;
-            var f = random.nextFloat();
-
-            if (f < 0.33F) {
-                fallback = Level.OVERWORLD.location();
-            } else if (f < 0.66F) {
-                fallback = Level.NETHER.location();
-            } else {
-                fallback = Level.END.location();
-            }
-
-            // Limit dimension tomes to their respective dimensions.
-            for (ResourceLocation dim : Dimensions.DIMENSIONS) {
-                if (DimensionHelper.isDimension(level, dim)) {
-                    dimension = random.nextBoolean() ? dim : fallback;
-                }
-            }
+        for (BiFunction<Level, Random, ResourceLocation> callback : RunicTomes.DIMENSION_TOME_LOOT_CALLBACKS) {
+            var result = callback.apply(level, random);
+            if (result == null) continue;
+            dimension = result;
+            break;
         }
 
         if (dimension == null) {

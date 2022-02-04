@@ -8,13 +8,6 @@
   },
   "plugin": "svenhjol.strange.mixin.StrangeMixinConfigPlugin",
   "mixins": [
-    "dimensions.CaptureEntityCreatingPlatformMixin",
-    "dimensions.ConfigurableBiomeEffectsMixin",
-    "dimensions.ConfigurableRainMixin",
-    "dimensions.NoiseBasedChunkGeneratorMixin",
-    "dimensions.PreventEntityCreatingPlatformMixin",
-    "dimensions.PreventPlayerCreatingPlatformMixin",
-    "dimensions.WorldGenSettingsMixin",
     "helper.DeepCopyStructuresMixin",
     "potion_of_hogsbane.PreventAttackingAiMixin",
     "potion_of_hogsbane.PreventAttackingHoglinMixin",
@@ -26,8 +19,6 @@
     "colored_glints.GetCustomRenderLayersMixin",
     "colored_glints.GetElytraMixin",
     "colored_glints.GetItemMixin",
-    "dimensions.ConfigurableHorizonHeightMixin",
-    "dimensions.ConfigurablePrecipitationRenderingMixin",
     "helper.DisableExperimentalDialogMixin",
     "intercept_music.TryCustomMusicMixin"
   ]

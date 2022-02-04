@@ -22,7 +22,6 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
-import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,8 +90,7 @@ public class StoneRuins extends CharmModule {
         // Force add them to the blacklist to prevent generation and adding of destinations to runestones.
         dimensionBlacklist.addAll(List.of(
             Level.NETHER.location().toString(),
-            Level.END.location().toString(),
-            FloatingIslandsDimension.ID.toString()
+            Level.END.location().toString()
         ));
     }
 

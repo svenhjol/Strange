@@ -19,8 +19,6 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.module.end_shrines.processor.EndShrinePortalProcessor;
-import svenhjol.strange.module.floating_islands_dimension.FloatingIslandsDimension;
-import svenhjol.strange.module.mirror_dimension.MirrorDimension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,14 +69,6 @@ public class EndShrines extends CharmModule {
         AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
 
         VALID_DESTINATIONS.add(Level.OVERWORLD.location());
-
-        if (Strange.LOADER.isEnabled(MirrorDimension.class)) {
-            VALID_DESTINATIONS.add(MirrorDimension.ID);
-        }
-
-        if (Strange.LOADER.isEnabled(FloatingIslandsDimension.class)) {
-            VALID_DESTINATIONS.add(FloatingIslandsDimension.ID);
-        }
 
         // Add the End Shrine structure to the biomes in the config.
         BIOMES.addAll(additionalBiomes);

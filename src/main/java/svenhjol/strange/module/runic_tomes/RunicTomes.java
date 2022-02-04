@@ -32,6 +32,7 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
@@ -47,6 +48,7 @@ import svenhjol.strange.module.runic_tomes.loot.StructureTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Runic Tomes can be created on a writing desk and provide fast transport between locations.\n" +
     "They can also be found inside stronghold libraries.")
@@ -65,9 +67,10 @@ public class RunicTomes extends CharmModule {
     public static Map<String, RunicTomeItem> RUNIC_TOMES = new HashMap<>();
     public static List<String> VALID_BRANCHES;
 
-    private static final List<ResourceLocation> VALID_LOOT_FOR_BIOMES;
-    private static final List<ResourceLocation> VALID_LOOT_FOR_DIMENSIONS;
-    private static final List<ResourceLocation> VALID_LOOT_FOR_STRUCTURES;
+    public static final List<BiFunction<Level, Random, ResourceLocation>> DIMENSION_TOME_LOOT_CALLBACKS = new ArrayList<>();
+    public static final List<ResourceLocation> VALID_LOOT_FOR_BIOMES;
+    public static final List<ResourceLocation> VALID_LOOT_FOR_DIMENSIONS;
+    public static final List<ResourceLocation> VALID_LOOT_FOR_STRUCTURES;
 
     private static final ResourceLocation TRIGGER_ACTIVATE_TOME = new ResourceLocation(Strange.MOD_ID, "activate_tome");
 
@@ -90,6 +93,20 @@ public class RunicTomes extends CharmModule {
         UseBlockCallback.EVENT.register(this::handleUseBlock);
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         SERVER_SEND_SET_TOME = new ServerSendSetTome();
+
+        // Add a loot callback for tomes in the Nether and End.
+        DIMENSION_TOME_LOOT_CALLBACKS.add((level, random) -> {
+            if (DimensionHelper.isNether(level) && random.nextFloat() < 0.66F) {
+                return DimensionHelper.getDimension(Level.NETHER);
+            }
+            return null;
+        });
+        DIMENSION_TOME_LOOT_CALLBACKS.add((level, random) -> {
+            if (DimensionHelper.isEnd(level) && random.nextFloat() < 0.66F) {
+                return DimensionHelper.getDimension(random.nextBoolean() ? Level.END : Level.NETHER);
+            }
+            return null;
+        });
     }
 
     public static void triggerActivateTome(ServerPlayer player) {
