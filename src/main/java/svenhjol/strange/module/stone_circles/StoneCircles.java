@@ -49,9 +49,9 @@ public class StoneCircles extends CharmModule {
     ));
 
     @Config(name = "Biome category generation", description = "Biome categories that stone circles may generate in.")
-    public static List<String> biomeCategories = List.of(
+    public static List<String> biomeCategories = new ArrayList<>(Arrays.asList(
         "plains", "savanna", "icy", "desert", "swamp", "mountain", "nether", "the_end"
-    );
+    ));
 
     @Config(name = "Distance between stone circles", description = "Distance between stone circles. As a guide, ruined portals are 25.")
     public static int spacing = 24;
