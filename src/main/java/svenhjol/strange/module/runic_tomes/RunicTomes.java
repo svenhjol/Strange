@@ -27,10 +27,10 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.BlockHitResult;
+import org.apache.commons.lang3.function.TriFunction;
 import svenhjol.charm.annotation.CommonModule;
 import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.init.CharmAdvancements;
@@ -39,16 +39,12 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.bookmarks.BookmarkBranch;
 import svenhjol.strange.module.discoveries.DiscoveryBranch;
-import svenhjol.strange.module.knowledge.branch.BiomeBranch;
+import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
-import svenhjol.strange.module.knowledge.branch.StructureBranch;
-import svenhjol.strange.module.runic_tomes.loot.BiomeTomeLootFunction;
-import svenhjol.strange.module.runic_tomes.loot.DimensionTomeLootFunction;
-import svenhjol.strange.module.runic_tomes.loot.StructureTomeLootFunction;
+import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Runic Tomes can be created on a writing desk and provide fast transport between locations.\n" +
     "They can also be found inside stronghold libraries.")
@@ -60,17 +56,13 @@ public class RunicTomes extends CharmModule {
     public static RunicLecternBlock RUNIC_LECTERN;
     public static MenuType<RunicLecternMenu> RUNIC_LECTERN_MENU;
     public static BlockEntityType<RunicLecternBlockEntity> RUNIC_LECTERN_BLOCK_ENTITY;
-    public static LootItemFunctionType BIOME_TOME_LOOT;
-    public static LootItemFunctionType DIMENSION_TOME_LOOT;
-    public static LootItemFunctionType STRUCTURE_TOME_LOOT;
+    public static LootItemFunctionType RUNIC_TOME_LOOT;
 
     public static Map<String, RunicTomeItem> RUNIC_TOMES = new HashMap<>();
     public static List<String> VALID_BRANCHES;
 
-    public static final List<BiFunction<Level, Random, ResourceLocation>> DIMENSION_TOME_LOOT_CALLBACKS = new ArrayList<>();
-    public static final List<ResourceLocation> VALID_LOOT_FOR_BIOMES;
-    public static final List<ResourceLocation> VALID_LOOT_FOR_DIMENSIONS;
-    public static final List<ResourceLocation> VALID_LOOT_FOR_STRUCTURES;
+    public static final List<TriFunction<KnowledgeData, Level, Random, String>> RUNIC_TOME_LOOT_CALLBACKS = new ArrayList<>();
+    public static final List<ResourceLocation> VALID_LOOT_TABLES;
 
     private static final ResourceLocation TRIGGER_ACTIVATE_TOME = new ResourceLocation(Strange.MOD_ID, "activate_tome");
 
@@ -83,9 +75,9 @@ public class RunicTomes extends CharmModule {
         RUNIC_LECTERN = new RunicLecternBlock(this);
         RUNIC_LECTERN_MENU = CommonRegistry.menu(RUNIC_LECTERN_BLOCK_ID, RunicLecternMenu::new);
         RUNIC_LECTERN_BLOCK_ENTITY = CommonRegistry.blockEntity(RUNIC_LECTERN_BLOCK_ID, RunicLecternBlockEntity::new, RUNIC_LECTERN);
-        BIOME_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "biome_tome_loot"), new LootItemFunctionType(new BiomeTomeLootFunction.Serializer()));
-        DIMENSION_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "dimension_tome_loot"), new LootItemFunctionType(new DimensionTomeLootFunction.Serializer()));
-        STRUCTURE_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "structure_tome_loot"), new LootItemFunctionType(new StructureTomeLootFunction.Serializer()));
+//        BIOME_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "biome_tome_loot"), new LootItemFunctionType(new BiomeTomeLootFunction.Serializer()));
+        RUNIC_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "runic_tome_loot"), new LootItemFunctionType(new RunicTomeLootFunction.Serializer()));
+//        STRUCTURE_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "structure_tome_loot"), new LootItemFunctionType(new StructureTomeLootFunction.Serializer()));
     }
 
     @Override
@@ -94,18 +86,18 @@ public class RunicTomes extends CharmModule {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         SERVER_SEND_SET_TOME = new ServerSendSetTome();
 
-        // Add a loot callback for tomes in the Nether and End.
-        DIMENSION_TOME_LOOT_CALLBACKS.add((level, random) -> {
+        // Callback for dimension tomes.
+        RUNIC_TOME_LOOT_CALLBACKS.add((knowledge, level, random) -> {
+            ResourceLocation res = null;
+
             if (DimensionHelper.isNether(level) && random.nextFloat() < 0.66F) {
-                return DimensionHelper.getDimension(Level.NETHER);
+                res = DimensionHelper.getDimension(Level.NETHER);
             }
-            return null;
-        });
-        DIMENSION_TOME_LOOT_CALLBACKS.add((level, random) -> {
             if (DimensionHelper.isEnd(level) && random.nextFloat() < 0.66F) {
-                return DimensionHelper.getDimension(random.nextBoolean() ? Level.END : Level.NETHER);
+                res = DimensionHelper.getDimension(random.nextBoolean() ? Level.END : Level.NETHER);
             }
-            return null;
+
+            return res != null ? knowledge.dimensionBranch.get(res) : null;
         });
     }
 
@@ -148,19 +140,19 @@ public class RunicTomes extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
-        if (VALID_LOOT_FOR_BIOMES.contains(id)) {
-            buildLootPool(UniformGenerator.between(1, 2), new BiomeTomeLootFunction(new LootItemCondition[0]), supplier);
+//        if (VALID_LOOT_FOR_BIOMES.contains(id)) {
+//            buildLootPool(UniformGenerator.between(1, 2), new BiomeTomeLootFunction(new LootItemCondition[0]), supplier);
+//        }
+        if (VALID_LOOT_TABLES.contains(id)) {
+            buildLootPool(UniformGenerator.between(0, 2), new RunicTomeLootFunction(new LootItemCondition[0]), supplier);
         }
-        if (VALID_LOOT_FOR_DIMENSIONS.contains(id)) {
-            buildLootPool(ConstantValue.exactly(1), new DimensionTomeLootFunction(new LootItemCondition[0]), supplier);
-        }
-        if (VALID_LOOT_FOR_STRUCTURES.contains(id)) {
-            buildLootPool(UniformGenerator.between(1, 2), new StructureTomeLootFunction(new LootItemCondition[0]), supplier);
-        }
+//        if (VALID_LOOT_FOR_STRUCTURES.contains(id)) {
+//            buildLootPool(UniformGenerator.between(1, 2), new StructureTomeLootFunction(new LootItemCondition[0]), supplier);
+//        }
     }
 
     private void buildLootPool(NumberProvider rolls, LootItemConditionalFunction lootFunction, FabricLootSupplierBuilder supplier) {
-        FabricLootPoolBuilder builder = FabricLootPoolBuilder.builder()
+        var builder = FabricLootPoolBuilder.builder()
             .rolls(rolls)
             .with(LootItem.lootTableItem(Items.BOOK)
                 .setWeight(1)
@@ -171,20 +163,12 @@ public class RunicTomes extends CharmModule {
 
     static {
         VALID_BRANCHES = Arrays.asList(
-            BiomeBranch.NAME,
             BookmarkBranch.NAME,
             DimensionBranch.NAME,
-            DiscoveryBranch.NAME,
-            StructureBranch.NAME
+            DiscoveryBranch.NAME
         );
 
-        VALID_LOOT_FOR_DIMENSIONS = List.of(
-            BuiltInLootTables.STRONGHOLD_LIBRARY
-        );
-        VALID_LOOT_FOR_BIOMES = List.of(
-            BuiltInLootTables.STRONGHOLD_LIBRARY
-        );
-        VALID_LOOT_FOR_STRUCTURES = List.of(
+        VALID_LOOT_TABLES = List.of(
             BuiltInLootTables.STRONGHOLD_LIBRARY
         );
     }

@@ -2,7 +2,6 @@ package svenhjol.strange.module.runic_tomes.loot;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -10,16 +9,17 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import org.apache.commons.lang3.function.TriFunction;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.Knowledge;
+import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 
 import java.util.Random;
-import java.util.function.BiFunction;
 
-public class DimensionTomeLootFunction extends LootItemConditionalFunction {
-    public DimensionTomeLootFunction(LootItemCondition[] conditions) {
+public class RunicTomeLootFunction extends LootItemConditionalFunction {
+    public RunicTomeLootFunction(LootItemCondition[] conditions) {
         super(conditions);
     }
 
@@ -28,37 +28,30 @@ public class DimensionTomeLootFunction extends LootItemConditionalFunction {
         if (!Strange.LOADER.isEnabled(RunicTomes.class)) return stack;
         ServerLevel level = context.getLevel();
         Random random = context.getRandom();
-        ResourceLocation dimension = null;
+        String runes = null;
 
         var knowledge = Knowledge.getKnowledge().orElse(null);
         if (knowledge == null) {
             return stack;
         }
 
-        for (BiFunction<Level, Random, ResourceLocation> callback : RunicTomes.DIMENSION_TOME_LOOT_CALLBACKS) {
-            var result = callback.apply(level, random);
-            if (result == null) continue;
-            dimension = result;
-            break;
+        for (TriFunction<KnowledgeData, Level, Random, String> callback : RunicTomes.RUNIC_TOME_LOOT_CALLBACKS) {
+            runes = callback.apply(knowledge, level, random);
+            if (runes != null) break;
         }
 
-        if (dimension == null) {
-            return stack;
-        }
-
-        String runes = knowledge.dimensionBranch.get(dimension);
         return runes != null ? RunicTomeItem.create(runes) : stack;
     }
 
     @Override
     public LootItemFunctionType getType() {
-        return RunicTomes.DIMENSION_TOME_LOOT;
+        return RunicTomes.RUNIC_TOME_LOOT;
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<DimensionTomeLootFunction> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RunicTomeLootFunction> {
         @Override
-        public DimensionTomeLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
-            return new DimensionTomeLootFunction(conditions);
+        public RunicTomeLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
+            return new RunicTomeLootFunction(conditions);
         }
     }
 }
