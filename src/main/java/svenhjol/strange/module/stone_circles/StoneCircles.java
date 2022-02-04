@@ -23,6 +23,8 @@ import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
 import svenhjol.strange.module.runestones.Runestones;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,8 +43,10 @@ public class StoneCircles extends CharmModule {
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE_NETHER;
     public static ConfiguredStructureFeature<?, ?> STONE_CIRCLE_END;
 
-    @Config(name = "Dimension blacklist", description = "A list of dimensions that stone circles should not generate in.")
-    public static List<String> dimensionBlacklist = List.of();
+    @Config(name = "Dimension whitelist", description = "A list of dimensions that stone circles should generate in.")
+    public static List<String> dimensionWhitelist = new ArrayList<>(Arrays.asList(
+        "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"
+    ));
 
     @Config(name = "Biome category generation", description = "Biome categories that stone circles may generate in.")
     public static List<String> biomeCategories = List.of(
@@ -63,7 +67,7 @@ public class StoneCircles extends CharmModule {
         // register the structure feature with Fabric API
         FabricStructureBuilder.create(STRUCTURE_ID, STONE_CIRCLE_FEATURE)
             .step(GenerationStep.Decoration.SURFACE_STRUCTURES)
-            .defaultConfig(spacing, 8, 515122)
+            .defaultConfig(spacing, spacing / 3, 515122)
             .register();
 
         // register each structure feature type with Charm
@@ -98,7 +102,7 @@ public class StoneCircles extends CharmModule {
      * Remove the stone circle from structure generation for blacklisted dimensions.
      */
     private void handleWorldLoad(MinecraftServer server, ServerLevel level) {
-        if (dimensionBlacklist.contains(level.dimension().location().toString())) {
+        if (!dimensionWhitelist.contains(level.dimension().location().toString())) {
             WorldHelper.removeStructures(level, List.of(STONE_CIRCLE_FEATURE));
         }
     }
@@ -107,7 +111,7 @@ public class StoneCircles extends CharmModule {
      * Add the stone circle as a runestone destination to valid dimensions.
      */
     private void handleAddRunestoneDestination(Level level, LinkedList<ResourceLocation> destinations) {
-        if (!dimensionBlacklist.contains(level.dimension().location().toString())) {
+        if (dimensionWhitelist.contains(level.dimension().location().toString())) {
             if (!destinations.contains(STRUCTURE_ID)) {
                 destinations.add(0, STRUCTURE_ID);
             }
