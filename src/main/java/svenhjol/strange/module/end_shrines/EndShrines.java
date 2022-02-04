@@ -41,10 +41,11 @@ public class EndShrines extends CharmModule {
     public static ConfiguredStructureFeature<JigsawConfiguration, ? extends StructureFeature<JigsawConfiguration>> CONFIGURED_FEATURE;
     public static StructureProcessorType<EndShrinePortalProcessor> END_SHRINE_PORTAL_PROCESSOR;
 
-    public static List<ResourceLocation> VALID_DESTINATIONS = new ArrayList<>();
-    public static List<String> BIOMES;
-
-    public static List<String> additionalBiomes = List.of();
+    public static List<ResourceLocation> validDestinations = new ArrayList<>();
+    public static List<String> validBiomes = new ArrayList<>(Arrays.asList(
+        "small_end_islands"
+    ));
+    public static List<String> additionalBiomes = new ArrayList<>();
 
     @Override
     public void register() {
@@ -68,12 +69,12 @@ public class EndShrines extends CharmModule {
     public void runWhenEnabled() {
         AddRunestoneDestinationCallback.EVENT.register(this::handleAddRunestoneDestination);
 
-        VALID_DESTINATIONS.add(Level.OVERWORLD.location());
+        validDestinations.add(Level.OVERWORLD.location());
 
         // Add the End Shrine structure to the biomes in the config.
-        BIOMES.addAll(additionalBiomes);
+        validBiomes.addAll(additionalBiomes);
 
-        for (String allowedBiome : BIOMES) {
+        for (String allowedBiome : validBiomes) {
             var biome = BuiltinRegistries.BIOME.get(new ResourceLocation(allowedBiome));
             if (biome == null) continue;
 
@@ -86,11 +87,5 @@ public class EndShrines extends CharmModule {
         if (DimensionHelper.isEnd(level)) {
             destinations.add(STRUCTURE_ID);
         }
-    }
-
-    static {
-        BIOMES = new ArrayList<>(Arrays.asList(
-            "small_end_islands"
-        ));
     }
 }

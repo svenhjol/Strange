@@ -114,8 +114,8 @@ public class EndShrinePortalBlock extends CharmBlockWithEntity {
         double z = (double)pos.getZ() + random.nextDouble();
 
         var endShrine = getBlockEntity(level, pos);
-        if (endShrine != null && endShrine.dimension != null && EndShrines.VALID_DESTINATIONS.contains(endShrine.dimension)) {
-            var index = EndShrines.VALID_DESTINATIONS.indexOf(endShrine.dimension);
+        if (endShrine != null && endShrine.dimension != null && EndShrines.validDestinations.contains(endShrine.dimension)) {
+            var index = EndShrines.validDestinations.indexOf(endShrine.dimension);
             if (index < DyeColor.values().length) {
                 var dyeColor = DyeColor.byId(index);
                 if (dyeColor != null) {
