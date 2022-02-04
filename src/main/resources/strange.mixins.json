@@ -12,7 +12,8 @@
     "potion_of_hogsbane.PreventAttackingAiMixin",
     "potion_of_hogsbane.PreventAttackingHoglinMixin",
     "relics.PreserveHighestLevelEnchantmentsMixin",
-    "scrollkeepers.InteractWithVillagerMixin"
+    "scrollkeepers.InteractWithVillagerMixin",
+    "teleport.CaptureEntityCreatingPlatformMixin"
   ],
   "client": [
     "colored_glints.GetArmorStackMixin",
