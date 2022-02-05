@@ -8,7 +8,7 @@ import java.util.*;
 
 public abstract class RuneBranch<R, V> {
     public RuneBranch() {
-        Runes.addBranch(this);
+        setDirty();
     }
 
     protected final Map<String, V> data = new HashMap<>();
@@ -54,20 +54,29 @@ public abstract class RuneBranch<R, V> {
 
     public void add(String runes, V value) {
         data.put(runes, value);
+        setDirty();
     }
 
     public V remove(String runes) {
-        return data.remove(runes);
+        var removed = data.remove(runes);
+        setDirty();
+        return removed;
     }
 
     public void clear() {
         data.clear();
+        setDirty();
     }
 
     public void save(CompoundTag mainTag) {
         CompoundTag tag = new CompoundTag();
         data.forEach((runes, value) -> tag.put(runes, getValueTag(value)));
         mainTag.put(getBranchName(), tag);
+        setDirty();
+    }
+
+    public void setDirty() {
+        Runes.updateBranch(this);
     }
 
     public abstract V register(R type);

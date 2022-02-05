@@ -29,7 +29,7 @@ public class Runes extends CharmModule {
         ArgumentTypes.register("rune", RuneArgType.class, new EmptyArgumentSerializer<>(RuneArgType::new));
     }
 
-    public static void addBranch(RuneBranch<?, ?> branch) {
+    public static void updateBranch(RuneBranch<?, ?> branch) {
         BRANCHES.put(branch.getBranchName(), branch);
         LogHelper.debug(Strange.MOD_ID, Runes.class, "Updated branch `" + branch.getBranchName() + "`.");
     }
