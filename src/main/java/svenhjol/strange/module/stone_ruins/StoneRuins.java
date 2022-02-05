@@ -22,6 +22,7 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
+import svenhjol.strange.module.runic_tomes.RunicTomes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +88,8 @@ public class StoneRuins extends CharmModule {
                 BiomeHelper.addStructureToBiomeCategory(CONFIGURED_FEATURE, category);
             }
         }
+
+        RunicTomes.interestingDestinations.put(STRUCTURE_ID.toString(), 0.5F);
     }
 
     /**
