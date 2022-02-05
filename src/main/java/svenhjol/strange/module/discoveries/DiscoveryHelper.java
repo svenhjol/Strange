@@ -18,7 +18,7 @@ public class DiscoveryHelper {
      * If the location is the spawn point then an existing discovery will try to be returned.
      */
     @Nullable
-    public static Discovery getOrCreate(UUID discoverer, ResourceLocation dimension, BlockPos pos, Random random, float difficulty, @Nullable ResourceLocation location) {
+    public static Discovery getOrCreate(float difficulty, ResourceLocation dimension, BlockPos pos, Random random, @Nullable ResourceLocation location, @Nullable UUID discoverer) {
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return null;
 
@@ -65,12 +65,13 @@ public class DiscoveryHelper {
         discovery.setPos(pos);
         discovery.setDifficulty(difficulty);
         discovery.setDimension(dimension);
-        discovery.setPlayer(discoverer);
 
-        discoveries.add(discovery);
+        if (discoverer != null) {
+            discovery.setPlayer(discoverer);
+        }
+
         LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Registered discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
-
-        return discovery;
+        return discoveries.add(discovery);
     }
 
     /**

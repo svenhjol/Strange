@@ -133,7 +133,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             float difficulty = runestone.difficulty;
 
             // Try and generate a discovery from this location and difficulty, then update the runestone's runes to match it.
-            Discovery discovery = DiscoveryHelper.getOrCreate(player.getUUID(), dimension, pos, random, difficulty, location);
+            Discovery discovery = DiscoveryHelper.getOrCreate(difficulty, dimension, pos, random, location, player.getUUID());
             if (discovery == null) return false;
 
             runestone.runes = discovery.getRunes();
