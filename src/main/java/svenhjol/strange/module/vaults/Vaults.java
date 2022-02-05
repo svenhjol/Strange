@@ -31,6 +31,7 @@ import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
+import svenhjol.strange.module.runic_tomes.RunicTomes;
 import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.vaults.loot.VaultLibraryLootFunction;
 
@@ -102,6 +103,8 @@ public class Vaults extends CharmModule {
                 BiomeHelper.addStructureToBiomeCategory(CONFIGURED_FEATURE, category);
             }
         }
+
+        RunicTomes.interestingDestinations.put(STRUCTURE_ID.toString(), 1.0F);
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
