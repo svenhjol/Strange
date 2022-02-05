@@ -10,15 +10,20 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.strange.module.relics.Relics;
 import svenhjol.strange.module.relics.helper.RelicHelper;
 
-public class ArmorRelicLootFunction extends LootItemConditionalFunction {
-    public ArmorRelicLootFunction(LootItemCondition[] conditions) {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class RelicLootFunction extends LootItemConditionalFunction {
+    public RelicLootFunction(LootItemCondition[] conditions) {
         super(conditions);
     }
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         var random = context.getRandom();
-        var relic = RelicHelper.getRandomItem(Relics.Type.ARMOR, random);
+
+        var values = new ArrayList<>(Arrays.asList(Relics.Type.values()));
+        var relic = RelicHelper.getRandomItem(values.get(random.nextInt(values.size())), random);
         if (relic == null) return stack;
 
         return RelicHelper.getStackWithDamage(relic, random);
@@ -26,14 +31,14 @@ public class ArmorRelicLootFunction extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Relics.ARMOR_LOOT_FUNCTION;
+        return Relics.LOOT_FUNCTION;
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<ArmorRelicLootFunction> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RelicLootFunction> {
 
         @Override
-        public ArmorRelicLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
-            return new ArmorRelicLootFunction(conditions);
+        public RelicLootFunction deserialize(JsonObject json, JsonDeserializationContext context, LootItemCondition[] conditions) {
+            return new RelicLootFunction(conditions);
         }
     }
 }

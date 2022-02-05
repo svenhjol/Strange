@@ -13,11 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -31,10 +29,7 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
-import svenhjol.strange.module.relics.loot.ArmorRelicLootFunction;
-import svenhjol.strange.module.relics.loot.ToolRelicLootFunction;
-import svenhjol.strange.module.relics.loot.WeaponRelicLootFunction;
-import svenhjol.strange.module.relics.loot.WeirdRelicLootFunction;
+import svenhjol.strange.module.relics.loot.RelicLootFunction;
 import svenhjol.strange.module.stone_ruins.StoneRuins;
 import svenhjol.strange.module.stone_ruins.StoneRuinsLoot;
 import svenhjol.strange.module.vaults.Vaults;
@@ -43,7 +38,10 @@ import svenhjol.strange.module.vaults.VaultsLoot;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Relics are items, weapons and armor with enchantments beyond normal limits.\n" +
     "They may also contain 'impossible' enchantment combinations.")
@@ -52,20 +50,9 @@ public class Relics extends CharmModule {
     public static final String RELIC_TAG = "strange_relic";
     public static final Map<Type, List<IRelicItem>> RELICS = new HashMap<>();
 
-    public static final List<ResourceLocation> TOOL_LOOT_TABLES = new ArrayList<>();
-    public static final List<ResourceLocation> WEAPON_LOOT_TABLES = new ArrayList<>();
-    public static final List<ResourceLocation> ARMOR_LOOT_TABLES = new ArrayList<>();
-    public static final List<ResourceLocation> WEIRD_LOOT_TABLES = new ArrayList<>();
-
-    public static final ResourceLocation TOOL_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "tool_relic_loot");
-    public static final ResourceLocation WEAPON_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "weapon_relic_loot");
-    public static final ResourceLocation ARMOR_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "armor_relic_loot");
-    public static final ResourceLocation WEIRD_LOOT_ID = new ResourceLocation(Strange.MOD_ID, "weird_relic_loot");
-
-    public static LootItemFunctionType TOOL_LOOT_FUNCTION;
-    public static LootItemFunctionType WEAPON_LOOT_FUNCTION;
-    public static LootItemFunctionType ARMOR_LOOT_FUNCTION;
-    public static LootItemFunctionType WEIRD_LOOT_FUNCTION;
+    public static final List<ResourceLocation> VALID_LOOT_TABLES = new ArrayList<>();
+    public static final ResourceLocation LOOT_ID = new ResourceLocation(Strange.MOD_ID, "tool_relic_loot");
+    public static LootItemFunctionType LOOT_FUNCTION;
 
     private static final ResourceLocation TRIGGER_FIND_RELIC = new ResourceLocation(Strange.MOD_ID, "find_relic");
     private static Advancement CACHED_RELIC_ADVANCEMENT = null;
@@ -82,10 +69,7 @@ public class Relics extends CharmModule {
 
     @Override
     public void register() {
-        TOOL_LOOT_FUNCTION = CommonRegistry.lootFunctionType(TOOL_LOOT_ID, new LootItemFunctionType(new ToolRelicLootFunction.Serializer()));
-        WEAPON_LOOT_FUNCTION = CommonRegistry.lootFunctionType(WEAPON_LOOT_ID, new LootItemFunctionType(new WeaponRelicLootFunction.Serializer()));
-        ARMOR_LOOT_FUNCTION = CommonRegistry.lootFunctionType(ARMOR_LOOT_ID, new LootItemFunctionType(new ArmorRelicLootFunction.Serializer()));
-        WEIRD_LOOT_FUNCTION = CommonRegistry.lootFunctionType(WEIRD_LOOT_ID, new LootItemFunctionType(new WeirdRelicLootFunction.Serializer()));
+        LOOT_FUNCTION = CommonRegistry.lootFunctionType(LOOT_ID, new LootItemFunctionType(new RelicLootFunction.Serializer()));
     }
 
     @Override
@@ -98,9 +82,7 @@ public class Relics extends CharmModule {
 
         // This adds the tools, weapons and armor to the vaults large room. "Weird" relics will be handled by rubble later.
         var defaultLootTable = vaultsEnabled ? VaultsLoot.VAULTS_LARGE_ROOM : (stoneRuinsEnabled ? StoneRuinsLoot.STONE_RUINS_ROOM : BuiltInLootTables.WOODLAND_MANSION);
-        TOOL_LOOT_TABLES.add(defaultLootTable);
-        WEAPON_LOOT_TABLES.add(defaultLootTable);
-        ARMOR_LOOT_TABLES.add(defaultLootTable);
+        VALID_LOOT_TABLES.add(defaultLootTable);
 
         try {
             List<String> classes = ClassHelper.getClassesInPackage(ITEM_NAMESPACE);
@@ -124,10 +106,7 @@ public class Relics extends CharmModule {
 
         for (var lootTable : additionalLootTables) {
             var table = new ResourceLocation(lootTable);
-            TOOL_LOOT_TABLES.add(table);
-            WEAPON_LOOT_TABLES.add(table);
-            ARMOR_LOOT_TABLES.add(table);
-            WEIRD_LOOT_TABLES.add(table);
+            VALID_LOOT_TABLES.add(table);
         }
     }
 
@@ -187,37 +166,15 @@ public class Relics extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootManager, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter setter) {
-        List<Type> types = new ArrayList<>();
-        FabricLootPoolBuilder builder = null;
+        if (VALID_LOOT_TABLES.contains(id)) {
+            var builder = FabricLootPoolBuilder.builder()
+                .rolls(ConstantValue.exactly(1))
+                .with(LootItem.lootTableItem(Items.DIAMOND)
+                    .setWeight(1)
+                    .apply(() -> new RelicLootFunction(new LootItemCondition[0])));
 
-        if (TOOL_LOOT_TABLES.contains(id)) types.add(Type.TOOL);
-        if (WEAPON_LOOT_TABLES.contains(id)) types.add(Type.WEAPON);
-        if (ARMOR_LOOT_TABLES.contains(id)) types.add(Type.ARMOR);
-        if (WEIRD_LOOT_TABLES.contains(id)) types.add(Type.WEIRD);
-
-        if (types.isEmpty()) return;
-
-        var random = new Random();
-        var type = types.get(random.nextInt(types.size()));
-
-        switch (type) {
-            case TOOL -> builder = getBuilder(Items.DIAMOND_PICKAXE, new ToolRelicLootFunction(new LootItemCondition[0]));
-            case WEAPON -> builder = getBuilder(Items.DIAMOND_SWORD, new WeaponRelicLootFunction(new LootItemCondition[0]));
-            case ARMOR -> builder = getBuilder(Items.DIAMOND_CHESTPLATE, new ArmorRelicLootFunction(new LootItemCondition[0]));
-            case WEIRD -> builder = getBuilder(Items.DIAMOND, new WeirdRelicLootFunction(new LootItemCondition[0]));
-        }
-
-        if (builder != null) {
             supplier.withPool(builder);
         }
-    }
-
-    private FabricLootPoolBuilder getBuilder(ItemLike defaultStack, LootItemConditionalFunction function) {
-        return FabricLootPoolBuilder.builder()
-            .rolls(ConstantValue.exactly(1))
-            .with(LootItem.lootTableItem(defaultStack)
-                .setWeight(1)
-                .apply(() -> function));
     }
 
     public enum Type {
