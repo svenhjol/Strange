@@ -45,7 +45,7 @@ public class StoneRuins extends CharmModule {
     public static int ruinSize = 5;
 
     public static List<String> biomeCatgories = new ArrayList<>(Arrays.asList(
-        "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
+        "plains", "desert", "mountain", "savanna", "forest", "icy", "mesa"
     ));
 
     public static List<Block> surfaceBlocks = new ArrayList<>();
