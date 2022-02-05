@@ -52,9 +52,11 @@ public class DiscoveryHelper {
                 }
             }
 
-            // Generate a destination from the difficulty.  If it's still null then bail.
-            location = getDestination(dimension, random, difficulty);
-            if (location == null) return null;
+            if (location == null) {
+                // Generate a destination from the difficulty.  If it's still null then bail.
+                location = getDestination(dimension, random, difficulty);
+                if (location == null) return null;
+            }
 
         }
 
