@@ -30,21 +30,21 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.BlockHitResult;
-import org.apache.commons.lang3.function.TriFunction;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.bookmarks.BookmarkBranch;
 import svenhjol.strange.module.discoveries.DiscoveryBranch;
-import svenhjol.strange.module.knowledge.KnowledgeData;
 import svenhjol.strange.module.knowledge.branch.DimensionBranch;
 import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.runic_tomes.network.ServerSendSetTome;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Runic Tomes can be created on a writing desk and provide fast transport between locations.\n" +
     "They can also be found inside stronghold libraries.")
@@ -60,10 +60,10 @@ public class RunicTomes extends CharmModule {
 
     public static Map<String, RunicTomeItem> RUNIC_TOMES = new HashMap<>();
     public static List<String> VALID_BRANCHES;
+    public static Map<String, Float> interestingDestinations = new HashMap<>();
+    public static Map<ResourceLocation, List<ResourceLocation>> dimensionTomes = new HashMap<>();
 
-    public static final List<TriFunction<KnowledgeData, Level, Random, String>> RUNIC_TOME_LOOT_CALLBACKS = new ArrayList<>();
     public static final List<ResourceLocation> VALID_LOOT_TABLES;
-
     private static final ResourceLocation TRIGGER_ACTIVATE_TOME = new ResourceLocation(Strange.MOD_ID, "activate_tome");
 
     @Override
@@ -75,9 +75,7 @@ public class RunicTomes extends CharmModule {
         RUNIC_LECTERN = new RunicLecternBlock(this);
         RUNIC_LECTERN_MENU = CommonRegistry.menu(RUNIC_LECTERN_BLOCK_ID, RunicLecternMenu::new);
         RUNIC_LECTERN_BLOCK_ENTITY = CommonRegistry.blockEntity(RUNIC_LECTERN_BLOCK_ID, RunicLecternBlockEntity::new, RUNIC_LECTERN);
-//        BIOME_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "biome_tome_loot"), new LootItemFunctionType(new BiomeTomeLootFunction.Serializer()));
         RUNIC_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "runic_tome_loot"), new LootItemFunctionType(new RunicTomeLootFunction.Serializer()));
-//        STRUCTURE_TOME_LOOT = CommonRegistry.lootFunctionType(new ResourceLocation(Strange.MOD_ID, "structure_tome_loot"), new LootItemFunctionType(new StructureTomeLootFunction.Serializer()));
     }
 
     @Override
@@ -86,19 +84,19 @@ public class RunicTomes extends CharmModule {
         LootTableLoadingCallback.EVENT.register(this::handleLootTables);
         SERVER_SEND_SET_TOME = new ServerSendSetTome();
 
-        // Callback for dimension tomes.
-        RUNIC_TOME_LOOT_CALLBACKS.add((knowledge, level, random) -> {
-            ResourceLocation res = null;
+        addDimensionTomes(Level.OVERWORLD.location(), Arrays.asList(Level.OVERWORLD.location(), Level.NETHER.location()));
+        addDimensionTomes(Level.NETHER.location(), Arrays.asList(Level.OVERWORLD.location(), Level.NETHER.location()));
+        addDimensionTomes(Level.END.location(), Arrays.asList(Level.OVERWORLD.location(), Level.NETHER.location(), Level.END.location()));
 
-            if (DimensionHelper.isNether(level) && random.nextFloat() < 0.66F) {
-                res = DimensionHelper.getDimension(Level.NETHER);
-            }
-            if (DimensionHelper.isEnd(level) && random.nextFloat() < 0.66F) {
-                res = DimensionHelper.getDimension(random.nextBoolean() ? Level.END : Level.NETHER);
-            }
+        addInterestingDestination("minecraft:stronghold", 0.8F);
+    }
 
-            return res != null ? knowledge.dimensionBranch.get(res) : null;
-        });
+    public static void addInterestingDestination(String location, float difficulty) {
+        interestingDestinations.put(location, difficulty);
+    }
+
+    public static void addDimensionTomes(ResourceLocation dimension, List<ResourceLocation> tomes) {
+        dimensionTomes.put(dimension, tomes);
     }
 
     public static void triggerActivateTome(ServerPlayer player) {
@@ -140,15 +138,9 @@ public class RunicTomes extends CharmModule {
     }
 
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
-//        if (VALID_LOOT_FOR_BIOMES.contains(id)) {
-//            buildLootPool(UniformGenerator.between(1, 2), new BiomeTomeLootFunction(new LootItemCondition[0]), supplier);
-//        }
         if (VALID_LOOT_TABLES.contains(id)) {
-            buildLootPool(UniformGenerator.between(0, 2), new RunicTomeLootFunction(new LootItemCondition[0]), supplier);
+            buildLootPool(UniformGenerator.between(0, 3), new RunicTomeLootFunction(new LootItemCondition[0]), supplier);
         }
-//        if (VALID_LOOT_FOR_STRUCTURES.contains(id)) {
-//            buildLootPool(UniformGenerator.between(1, 2), new StructureTomeLootFunction(new LootItemCondition[0]), supplier);
-//        }
     }
 
     private void buildLootPool(NumberProvider rolls, LootItemConditionalFunction lootFunction, FabricLootSupplierBuilder supplier) {
