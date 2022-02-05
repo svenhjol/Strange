@@ -24,6 +24,6 @@ public class VaultsFeature extends RandomHeightJigsawFeature {
         }
 
         worldgenRandom.setLargeFeatureSeed(context.seed(), x, z);
-        return worldgenRandom.nextInt(25) < 1;
+        return worldgenRandom.nextInt(15) < 1;
     }
 }

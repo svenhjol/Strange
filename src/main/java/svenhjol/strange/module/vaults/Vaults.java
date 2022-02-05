@@ -32,7 +32,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
 import svenhjol.strange.init.StrangeEvents;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
-import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.vaults.loot.VaultLibraryLootFunction;
 
 import java.util.ArrayList;
@@ -70,14 +69,14 @@ public class Vaults extends CharmModule {
     ));
 
     public static List<String> biomeCategories = new ArrayList<>(Arrays.asList(
-        "plains", "desert", "mountains", "savanna", "forest", "icy", "mesa"
+        "mountain"
     ));
 
     @Override
     public void register() {
         int size = Math.max(0, Math.min(10, vaultsSize));
 
-        VAULTS_FEATURE = new VaultsFeature(JigsawConfiguration.CODEC, STARTS, size, 8, 16);
+        VAULTS_FEATURE = new VaultsFeature(JigsawConfiguration.CODEC, STARTS, size, 0, 10);
         CONFIGURED_FEATURE = VAULTS_FEATURE.configured(new JigsawConfiguration(() -> PlainVillagePools.START, 0));
 
         FabricStructureBuilder.create(STRUCTURE_ID, VAULTS_FEATURE)
@@ -110,10 +109,10 @@ public class Vaults extends CharmModule {
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
         if (VaultsLoot.VAULTS_LIBRARY.equals(id)) {
             var builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformGenerator.between(1, 3))
+                .rolls(UniformGenerator.between(1, 2))
                 .with(LootItem.lootTableItem(Items.BOOK)
                     .setWeight(1)
-                    .apply(() -> new RunicTomeLootFunction(new LootItemCondition[0])));
+                    .apply(() -> new VaultLibraryLootFunction(new LootItemCondition[0])));
 
             supplier.withPool(builder);
         }
