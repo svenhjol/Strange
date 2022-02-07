@@ -64,7 +64,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         initEditBox();
 
         photo = new BookmarkPhoto(minecraft, bookmark);
-        runeStringRenderer = new RuneStringRenderer(midX - 61, 158, 13, 14, 10, 4);
+        runeStringRenderer = new RuneStringRenderer(midX - 61, 165, 13, 14, 10, 4);
 
         pageButtons.clear();
 
@@ -110,7 +110,7 @@ public class JournalBookmarkScreen extends JournalScreen {
     }
 
     protected void renderDimensionName(PoseStack poseStack) {
-        int top = 137;
+        int top = 133;
         GuiHelper.drawCenteredString(poseStack, font, dimensionName, midX, top, secondaryColor);
     }
 
@@ -118,17 +118,13 @@ public class JournalBookmarkScreen extends JournalScreen {
         var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return;
 
-        // When in creative mode just show the XYZ coordinates rather than the runes.
-        if (minecraft.player.isCreative()) {
-            BlockPos pos = bookmark.getBlockPos();
-            int x = pos.getX();
-            int y = pos.getY();
-            int z = pos.getZ();
-            int top = 158;
+        BlockPos pos = bookmark.getBlockPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        int top = 146;
 
-            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
-            return;
-        }
+        GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
 
         // Don't show anything if the player hasn't learned any runes.
         if (JournalHelper.getLearnedRunes(journal).isEmpty()) return;
