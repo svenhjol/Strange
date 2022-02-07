@@ -16,6 +16,7 @@ import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
+import svenhjol.strange.module.journals.Journals;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.PageTracker;
 import svenhjol.strange.module.journals.helper.JournalHelper;
@@ -124,7 +125,9 @@ public class JournalBookmarkScreen extends JournalScreen {
         int z = pos.getZ();
         int top = 146;
 
-        GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
+        if (Journals.showBookmarkCoordinates) {
+            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
+        }
 
         // Don't show anything if the player hasn't learned any runes.
         if (JournalHelper.getLearnedRunes(journal).isEmpty()) return;

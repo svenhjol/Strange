@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.annotation.CommonModule;
+import svenhjol.charm.annotation.Config;
 import svenhjol.charm.api.event.PlayerLoadDataCallback;
 import svenhjol.charm.api.event.PlayerSaveDataCallback;
 import svenhjol.charm.helper.LogHelper;
@@ -56,6 +57,9 @@ public class Journals extends CharmModule {
     public static ServerReceiveOpenJournal SERVER_RECEIVE_OPEN_JOURNAL;
 
     public static SoundEvent SCREENSHOT_SOUND;
+
+    @Config(name = "Show bookmark coordinates", description = "If true, shows the bookmark's XYZ coordinates.")
+    public static boolean showBookmarkCoordinates = true;
 
     @Override
     public void register() {
