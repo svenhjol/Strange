@@ -3,7 +3,6 @@ package svenhjol.strange.module.runes;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import svenhjol.charm.annotation.CommonModule;
-import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.command.arg.RuneArgType;
@@ -31,7 +30,6 @@ public class Runes extends CharmModule {
 
     public static void updateBranch(RuneBranch<?, ?> branch) {
         BRANCHES.put(branch.getBranchName(), branch);
-        LogHelper.debug(Strange.MOD_ID, Runes.class, "Updated branch `" + branch.getBranchName() + "`.");
     }
 
     public static Map<String, RuneBranch<?, ?>> getBranches() {
