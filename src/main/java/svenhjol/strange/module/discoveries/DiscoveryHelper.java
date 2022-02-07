@@ -2,6 +2,8 @@ package svenhjol.strange.module.discoveries;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneHelper;
@@ -18,9 +20,13 @@ public class DiscoveryHelper {
      * If the location is the spawn point then an existing discovery will try to be returned.
      */
     @Nullable
-    public static Discovery getOrCreate(float difficulty, ResourceLocation dimension, BlockPos pos, Random random, @Nullable ResourceLocation location, @Nullable UUID discoverer) {
+    public static Discovery getOrCreate(ServerLevel level, float difficulty, BlockPos pos, Random random, @Nullable ResourceLocation location, @Nullable UUID discoverer) {
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return null;
+
+        var server = level.getServer();
+        var dimension = level.dimension().location();
+        var time = level.getGameTime();
 
         if (location != null && location.equals(Runestones.SPAWN)) {
 
@@ -36,6 +42,8 @@ public class DiscoveryHelper {
 
             discoveries.add(discovery);
             LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Registered spawn point discovery `" + discovery.getRunes() + "`.");
+            syncDiscovery(server, discovery);
+
             return discovery;
 
         } else {
@@ -65,6 +73,7 @@ public class DiscoveryHelper {
         var discovery = new Discovery(runes, location);
 
         discovery.setPos(pos);
+        discovery.setTime(time);
         discovery.setDifficulty(difficulty);
         discovery.setDimension(dimension);
 
@@ -73,7 +82,16 @@ public class DiscoveryHelper {
         }
 
         LogHelper.debug(Strange.MOD_ID, DiscoveryHelper.class, "Registered discovery `" + discovery.getRunes() + " : " + discovery.getLocation() + "`.");
+        syncDiscovery(server, discovery);
+
         return discoveries.add(discovery);
+    }
+
+    /**
+     * Send the destination to all connected players to keep their copies in sync.
+     */
+    public static void syncDiscovery(MinecraftServer server, Discovery discovery) {
+        Discoveries.SERVER_SEND_ADD_DISCOVERY.sendToAll(server, discovery);
     }
 
     /**

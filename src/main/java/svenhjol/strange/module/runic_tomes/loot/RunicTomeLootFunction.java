@@ -52,7 +52,7 @@ public class RunicTomeLootFunction extends LootItemConditionalFunction {
             var location = new ResourceLocation(entry.getKey());
             var difficulty = entry.getValue();
 
-            var discovery = DiscoveryHelper.getOrCreate(difficulty, level.dimension().location(), pos, random, location, null);
+            var discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, null);
             if (discovery == null) continue;
 
             runes = discovery.getRunes();

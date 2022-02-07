@@ -1,7 +1,6 @@
 package svenhjol.strange.module.runestones;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import svenhjol.charm.block.CharmBlockWithEntity;
-import svenhjol.charm.helper.DimensionHelper;
 import svenhjol.charm.helper.EnchantmentsHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
@@ -107,7 +105,6 @@ public class RunestoneBlock extends CharmBlockWithEntity {
 
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return false;
-
         boolean generate = false;
 
         if (runestone.runes == null || runestone.runes.isEmpty()) {
@@ -126,25 +123,20 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         if (generate) {
-            Random random = new Random(pos.asLong());
-            ResourceLocation location = runestone.location;
-            ResourceLocation dimension = DimensionHelper.getDimension(level);
-
-            float difficulty = runestone.difficulty;
+            var random = new Random(pos.asLong());
+            var location = runestone.location;
+            var difficulty = runestone.difficulty;
 
             // Try and generate a discovery from this location and difficulty, then update the runestone's runes to match it.
-            Discovery discovery = DiscoveryHelper.getOrCreate(difficulty, dimension, pos, random, location, player.getUUID());
+            Discovery discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, player.getUUID());
             if (discovery == null) return false;
 
             runestone.runes = discovery.getRunes();
             runestone.setChanged();
-
-            // Send the destination to all connected players to keep their copies in sync.
-            Discoveries.SERVER_SEND_ADD_DISCOVERY.sendToAll(level.getServer(), discovery);
         }
 
         // At this point we should be able to fetch the discovery that matches the runestone's runes.
-        Discovery discovery = discoveries.get(runestone.runes);
+        var discovery = discoveries.get(runestone.runes);
 
         if (discovery == null) {
             LogHelper.warn(getClass(), "The runestone doesn't refer to a valid destination, giving up.");

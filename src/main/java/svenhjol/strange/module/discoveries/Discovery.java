@@ -17,6 +17,7 @@ public class Discovery {
     public static final String DIM_TAG = "Dim";
     public static final String PLAYER_TAG = "Player";
     public static final String DIFFICULTY_TAG = "Difficulty";
+    public static final String TIME_TAG = "Time";
 
     private final String runes;
     private final ResourceLocation location;
@@ -24,6 +25,7 @@ public class Discovery {
     private ResourceLocation dimension;
     private UUID player;
     private float difficulty;
+    private long time;
 
     private long cachedSeed;
 
@@ -57,6 +59,8 @@ public class Discovery {
             tag.putUUID(PLAYER_TAG, player);
         }
 
+        tag.putLong(TIME_TAG, time);
+
         return tag;
     }
 
@@ -74,6 +78,10 @@ public class Discovery {
 
     public void setPos(BlockPos pos) {
         this.pos = pos;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getRunes() {
@@ -98,6 +106,10 @@ public class Discovery {
 
     public UUID getPlayer() {
         return player;
+    }
+
+    public long getTime() {
+        return time;
     }
 
     @Nullable
@@ -126,6 +138,8 @@ public class Discovery {
         discovery.player = playerFromTag.isEmpty() ? null : tag.getUUID(PLAYER_TAG);
 
         discovery.difficulty = tag.getFloat(DIFFICULTY_TAG);
+
+        discovery.time = tag.getLong(TIME_TAG);
         return discovery;
     }
 }
