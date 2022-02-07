@@ -38,10 +38,7 @@ import svenhjol.strange.module.vaults.VaultsLoot;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CommonModule(mod = Strange.MOD_ID, description = "Relics are items, weapons and armor with enchantments beyond normal limits.\n" +
     "They may also contain 'impossible' enchantment combinations.")
@@ -66,6 +63,9 @@ public class Relics extends CharmModule {
 
     @Config(name = "Blacklist", description = "List of relic items that will not be loaded. See wiki for details.")
     public static List<String> configBlacklist = new ArrayList<>();
+
+    @Config(name = "Allow weird relics", description = "If true, allows the 'weird' set of relics that add enchantments to items that are not normally enchantable.")
+    public static boolean allowWeirdRelics = true;
 
     @Override
     public void register() {
@@ -181,6 +181,23 @@ public class Relics extends CharmModule {
         TOOL,
         WEAPON,
         ARMOR,
-        WEIRD
+        WEIRD;
+
+        public static List<Type> getTypes() {
+            return new ArrayList<>(Arrays.asList(values()));
+        }
+
+        public static List<Type> getTypesWithout(Type... without) {
+            List<Type> out = new ArrayList<>();
+            var exclude = new ArrayList<>(Arrays.asList(without));
+
+            for (Type type : values()) {
+                if (!exclude.contains(type)) {
+                    out.add(type);
+                }
+            }
+
+            return out;
+        }
     }
 }

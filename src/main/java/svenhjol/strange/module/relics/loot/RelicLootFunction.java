@@ -10,9 +10,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.strange.module.relics.Relics;
 import svenhjol.strange.module.relics.helper.RelicHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class RelicLootFunction extends LootItemConditionalFunction {
     public RelicLootFunction(LootItemCondition[] conditions) {
         super(conditions);
@@ -21,8 +18,7 @@ public class RelicLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         var random = context.getRandom();
-
-        var values = new ArrayList<>(Arrays.asList(Relics.Type.values()));
+        var values = Relics.allowWeirdRelics ? Relics.Type.getTypes() : Relics.Type.getTypesWithout(Relics.Type.WEIRD);
         var relic = RelicHelper.getRandomItem(values.get(random.nextInt(values.size())), random);
         if (relic == null) return stack;
 
