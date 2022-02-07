@@ -65,9 +65,7 @@ public class MiniJournal {
 
         this.childSections.put(Section.HOME, new MiniHomeScreen(this));
         this.childSections.put(Section.BOOKMARKS, new MiniBookmarksScreen(this));
-        this.childSections.put(Section.BIOMES, new MiniBiomesScreen(this));
         this.childSections.put(Section.DIMENSIONS, new MiniDimensionsScreen(this));
-        this.childSections.put(Section.STRUCTURES, new MiniStructuresScreen(this));
     }
 
     public void init(Minecraft minecraft) {
