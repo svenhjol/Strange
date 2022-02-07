@@ -10,6 +10,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import svenhjol.strange.module.relics.Relics;
 import svenhjol.strange.module.relics.helper.RelicHelper;
 
+import java.util.List;
+
 public class RelicLootFunction extends LootItemConditionalFunction {
     public RelicLootFunction(LootItemCondition[] conditions) {
         super(conditions);
@@ -18,8 +20,23 @@ public class RelicLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         var random = context.getRandom();
-        var values = Relics.allowWeirdRelics ? Relics.Type.getTypes() : Relics.Type.getTypesWithout(Relics.Type.WEIRD);
-        var relic = RelicHelper.getRandomItem(values.get(random.nextInt(values.size())), random);
+        List<Relics.Type> types;
+        Relics.Type type;
+
+        if (Relics.allowWeirdRelics) {
+            types = Relics.Type.getTypes();
+            type = types.get(random.nextInt(types.size()));
+
+            // Balance selection to favour weapons.
+            if (type.equals(Relics.Type.WEIRD) && random.nextFloat() < 0.7F) {
+                type = Relics.Type.WEAPON;
+            }
+        } else {
+            types = Relics.Type.getTypesWithout(Relics.Type.WEIRD);
+            type = types.get(random.nextInt(types.size()));
+        }
+
+        var relic = RelicHelper.getRandomItem(type, random);
         if (relic == null) return stack;
 
         return RelicHelper.getStackWithDamage(relic, random);

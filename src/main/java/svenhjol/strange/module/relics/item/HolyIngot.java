@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class AngeryPotato implements IRelicItem {
+public class HolyIngot implements IRelicItem {
     @Override
     public Relics.Type getType() {
         return Relics.Type.WEIRD;
@@ -22,7 +22,7 @@ public class AngeryPotato implements IRelicItem {
 
     @Override
     public DyeColor getColor() {
-        return DyeColor.ORANGE;
+        return DyeColor.LIGHT_GRAY;
     }
 
     @Override
@@ -38,19 +38,18 @@ public class AngeryPotato implements IRelicItem {
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
         HashMap<Enchantment, Integer> map = new HashMap<>();
-        map.put(Enchantments.KNOCKBACK, 2);
-        map.put(Enchantments.FIRE_ASPECT, 2);
+        map.put(Enchantments.SMITE, 8);
         return map;
     }
 
     @Override
     public TranslatableComponent getName(ItemStack itemStack) {
-        return new TranslatableComponent("item.strange.relics.angery_potato");
+        return new TranslatableComponent("item.strange.relics.holy_ingot");
     }
 
     @Override
     public ItemStack getItemStack() {
-        return new ItemStack(Items.POTATO);
+        return new ItemStack(Items.IRON_INGOT);
     }
 
     @Override
