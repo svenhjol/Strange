@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.annotation.ClientModule;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.loader.CharmModule;
+import svenhjol.strange.module.journals.helper.JournalClientHelper;
 import svenhjol.strange.module.journals.network.*;
 import svenhjol.strange.module.journals.photo.TakePhotoHandler;
 
@@ -32,7 +33,8 @@ public class JournalsClient extends CharmModule {
     public static PageTracker tracker;
     public static TakePhotoHandler photo;
 
-    private KeyMapping keyBinding;
+    private KeyMapping journalKeyBinding;
+    private KeyMapping bookmarkKeyBinding;
     public static boolean showJournalHint = false;
 
     @Override
@@ -52,7 +54,7 @@ public class JournalsClient extends CharmModule {
         CLIENT_SEND_MAKE_MAP = new ClientSendMakeMap();
         CLIENT_SEND_OPEN_JOURNAL = new ClientSendOpenJournal();
 
-        initKeybind();
+        initKeybindings();
     }
 
     public static Optional<JournalData> getJournal() {
@@ -64,12 +66,16 @@ public class JournalsClient extends CharmModule {
     }
 
     private void handleWorldTick(ClientLevel level) {
-        if (keyBinding == null || level == null) return;
+        if (journalKeyBinding == null || bookmarkKeyBinding == null || level == null) return;
 
         ClientHelper.getClient().ifPresent(mc -> {
-            while (keyBinding.consumeClick()) {
+            while (journalKeyBinding.consumeClick()) {
                 CLIENT_SEND_OPEN_JOURNAL.send();
                 mc.setScreen(tracker.getScreen());
+            }
+
+            while(bookmarkKeyBinding.consumeClick()) {
+                JournalClientHelper.addBookmark();
             }
 
             if (mc.player != null) {
@@ -80,14 +86,22 @@ public class JournalsClient extends CharmModule {
         });
     }
 
-    private void initKeybind() {
-        String name = "key.charm.open_journal";
+    private void initKeybindings() {
+        String openJournal = "key.strange.open_journal";
+        String newBookmark = "key.strange.new_bookmark";
         String category = "key.categories.inventory";
 
-        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            name,
+        journalKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            openJournal,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
+            category
+        ));
+
+        bookmarkKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            newBookmark,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_B,
             category
         ));
     }
@@ -96,7 +110,7 @@ public class JournalsClient extends CharmModule {
         if (showJournalHint) {
             getJournal().ifPresent(journal -> {
                 if (!journal.hasOpened()) {
-                    var key = keyBinding.saveString();
+                    var key = journalKeyBinding.saveString();
                     if (key.contains(".")) {
                         var split = key.split("\\.");
                         if (split.length > 0) {
