@@ -40,7 +40,7 @@ public class MiniDiscoveriesScreen extends BaseMiniScreen {
             var discoveries = JournalClientHelper.getFilteredDiscoveries(false);
             paginator = new DiscoveryPaginator(discoveries);
             setPaginatorDefaults(paginator);
-            paginator.setButtonWidth(94);
+            paginator.setButtonWidth(98);
             paginator.setOnItemHovered(discovery -> new TextComponent(DiscoveryHelper.getDiscoveryName(discovery)));
 
             paginator.init(screen, mini.offset, midX - 87, midY - 78, discovery -> {
