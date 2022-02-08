@@ -56,7 +56,7 @@ public class Discovery {
         }
 
         if (player != null) {
-            tag.putUUID(PLAYER_TAG, player);
+            tag.putString(PLAYER_TAG, player.toString());
         }
 
         tag.putLong(TIME_TAG, time);
@@ -123,23 +123,23 @@ public class Discovery {
     }
 
     public static Discovery load(CompoundTag tag) {
-        String runes = tag.getString(RUNES_TAG);
+        var runes = tag.getString(RUNES_TAG);
 
-        ResourceLocation location = new ResourceLocation(tag.getString(LOCATION_TAG));
-        Discovery discovery = new Discovery(runes, location);
+        var location = new ResourceLocation(tag.getString(LOCATION_TAG));
+        var discovery = new Discovery(runes, location);
 
-        String dimensionFromTag = tag.getString(DIM_TAG);
+        var dimensionFromTag = tag.getString(DIM_TAG);
         discovery.dimension = dimensionFromTag.isEmpty() ? null : new ResourceLocation(dimensionFromTag);
 
-        BlockPos pos = BlockPos.of(tag.getLong(POS_TAG));
+        var pos = BlockPos.of(tag.getLong(POS_TAG));
         discovery.pos = pos.equals(BlockPos.ZERO) ? null : pos;
 
-        String playerFromTag = tag.getString(PLAYER_TAG);
-        discovery.player = playerFromTag.isEmpty() ? null : tag.getUUID(PLAYER_TAG);
+        var playerFromTag = tag.getString(PLAYER_TAG);
+        discovery.player = playerFromTag.isEmpty() ? null : UUID.fromString(playerFromTag);
 
         discovery.difficulty = tag.getFloat(DIFFICULTY_TAG);
-
         discovery.time = tag.getLong(TIME_TAG);
+
         return discovery;
     }
 }

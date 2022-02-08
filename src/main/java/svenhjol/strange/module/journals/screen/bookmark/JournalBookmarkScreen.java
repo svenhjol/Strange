@@ -126,7 +126,7 @@ public class JournalBookmarkScreen extends JournalScreen {
         int top = 146;
 
         if (Journals.showBookmarkCoordinates) {
-            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor);
+            GuiHelper.drawCenteredString(poseStack, font, new TextComponent(x + " " + y + " " + z), midX, top, secondaryColor | 0x404040);
         }
 
         // Don't show anything if the player hasn't learned any runes.

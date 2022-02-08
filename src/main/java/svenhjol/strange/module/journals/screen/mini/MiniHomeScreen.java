@@ -26,8 +26,7 @@ public class MiniHomeScreen extends BaseMiniScreen {
 
         homeButtons = Arrays.asList(
             new ButtonDefinition(b -> mini.changeSection(Section.BOOKMARKS), JournalResources.BOOKMARKS),
-            new ButtonDefinition(b -> mini.changeSection(Section.BIOMES), JournalResources.LEARNED_BIOMES),
-            new ButtonDefinition(b -> mini.changeSection(Section.STRUCTURES), JournalResources.LEARNED_STRUCTURES),
+            new ButtonDefinition(b -> mini.changeSection(Section.DISCOVERIES), JournalResources.DISCOVERIES),
             new ButtonDefinition(b -> mini.changeSection(Section.DIMENSIONS), JournalResources.LEARNED_DIMENSIONS)
         );
     }

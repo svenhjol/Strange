@@ -16,6 +16,7 @@ import svenhjol.charm.helper.ClientHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.bookmarks.Bookmark;
+import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.journals.screen.mini.*;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class MiniJournal {
 
     public Section section;
     public Bookmark selectedBookmark;
+    public Discovery selectedDiscovery;
     public ResourceLocation selectedBiome;
     public ResourceLocation selectedStructure;
     public ResourceLocation selectedDimension;
@@ -65,6 +67,7 @@ public class MiniJournal {
 
         this.childSections.put(Section.HOME, new MiniHomeScreen(this));
         this.childSections.put(Section.BOOKMARKS, new MiniBookmarksScreen(this));
+        this.childSections.put(Section.DISCOVERIES, new MiniDiscoveriesScreen(this));
         this.childSections.put(Section.DIMENSIONS, new MiniDimensionsScreen(this));
     }
 
@@ -151,9 +154,10 @@ public class MiniJournal {
     public enum Section implements ICharmEnum {
         HOME,
         BOOKMARKS,
+        DIMENSIONS,
+        DISCOVERIES,
         BIOMES,
-        STRUCTURES,
-        DIMENSIONS
+        STRUCTURES
     }
 
     static {

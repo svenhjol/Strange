@@ -3,7 +3,6 @@ package svenhjol.strange.module.discoveries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
-import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.module.runes.RuneBranch;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Tier;
@@ -31,7 +30,7 @@ public class DiscoveryBranch extends RuneBranch<Discovery, Discovery> {
     @Override
     public @Nullable String getValueName(String runes) {
         var discovery = get(runes);
-        return discovery != null ? StringHelper.snakeToPretty(discovery.getLocation().getPath()) : null;
+        return discovery != null ? DiscoveryHelper.getDiscoveryName(discovery) : null;
     }
 
     @Override

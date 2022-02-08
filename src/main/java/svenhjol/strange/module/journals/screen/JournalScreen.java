@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
+import svenhjol.charm.helper.KeyboardHelper;
 import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.helper.GuiHelper.ButtonDefinition;
 import svenhjol.strange.helper.GuiHelper.ImageButtonDefinition;
@@ -247,6 +248,14 @@ public abstract class JournalScreen extends Screen {
 
     protected void dimensions() {
         minecraft.setScreen(new JournalDimensionsScreen());
+    }
+
+    protected void discoveries() {
+        discoveries(KeyboardHelper.isShiftClick());
+    }
+
+    protected void discoveries(boolean withIgnored) {
+        minecraft.setScreen(new JournalDiscoveriesScreen(withIgnored));
     }
 
     protected void quests() {

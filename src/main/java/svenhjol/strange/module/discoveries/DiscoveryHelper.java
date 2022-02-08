@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import svenhjol.charm.helper.LogHelper;
+import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneHelper;
 import svenhjol.strange.module.runes.Runes;
@@ -26,7 +27,7 @@ public class DiscoveryHelper {
 
         var server = level.getServer();
         var dimension = level.dimension().location();
-        var time = level.getGameTime();
+        var time = level.getDayTime();
 
         if (location != null && location.equals(Runestones.SPAWN)) {
 
@@ -116,5 +117,12 @@ public class DiscoveryHelper {
         }
 
         return destinations.get(index);
+    }
+
+    /**
+     * Convenience method for getting a formatted location name for discovery.
+     */
+    public static String getDiscoveryName(Discovery discovery) {
+        return StringHelper.snakeToPretty(discovery.getLocation().getPath());
     }
 }

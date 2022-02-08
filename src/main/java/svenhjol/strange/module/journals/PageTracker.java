@@ -81,6 +81,7 @@ public class PageTracker {
                 case BIOMES -> screen = new JournalBiomesScreen();
                 case DIMENSIONS -> screen = new JournalDimensionsScreen();
                 case STRUCTURES -> screen = new JournalStructuresScreen();
+                case DISCOVERIES -> screen = new JournalDiscoveriesScreen();
                 case QUESTS -> screen = new JournalQuestsScreen();
                 case KNOWLEDGE -> screen = new JournalKnowledgeScreen();
                 case RUNES -> screen = new JournalRunesScreen();
@@ -96,6 +97,7 @@ public class PageTracker {
                 case BOOKMARKS -> screen = new JournalBookmarksScreen();
                 case QUESTS -> screen = new JournalQuestsScreen();
                 case KNOWLEDGE -> screen = new JournalKnowledgeScreen();
+                case DISCOVERIES -> screen = new JournalDiscoveriesScreen();
                 default -> screen = new JournalHomeScreen();
             }
         }
@@ -116,6 +118,8 @@ public class PageTracker {
         DIMENSIONS,
         DIMENSION,
         STRUCTURES,
-        STRUCTURE
+        STRUCTURE,
+        DISCOVERIES,
+        DISCOVERY
     }
 }

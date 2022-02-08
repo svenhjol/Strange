@@ -18,10 +18,15 @@ public class JournalResources {
     public static final Component JOURNAL;
     public static final Component KNOWLEDGE;
     public static final Component KNOWLEDGE_TOOLTIP;
+    public static final Component IGNORE_TOOLTIP;
+    public static final Component UNIGNORE_TOOLTIP;
     public static final Component LEARNED_BIOMES;
     public static final Component LEARNED_DIMENSIONS;
     public static final Component LEARNED_RUNES;
     public static final Component LEARNED_STRUCTURES;
+    public static final Component DISCOVERIES;
+    public static final Component WITH_IGNORED;
+    public static final Component NOT_ENOUGH_RUNES;
     public static final Component BOOKMARKS;
     public static final Component BOOKMARKS_TOOLTIP;
     public static final Component MAKE_MAP_TOOLTIP;
@@ -76,11 +81,14 @@ public class JournalResources {
         JOURNAL = new TranslatableComponent("gui.strange.journal.title");
         KNOWLEDGE = new TranslatableComponent("gui.strange.journal.knowledge");
         KNOWLEDGE_TOOLTIP = new TranslatableComponent("gui.strange.journal.knowledge_tooltip");
+        IGNORE_TOOLTIP = new TranslatableComponent("gui.strange.journal.ignore_tooltip");
+        UNIGNORE_TOOLTIP = new TranslatableComponent("gui.strange.journal.unignore_tooltip");
         LEARNED_BIOMES = new TranslatableComponent("gui.strange.journal.learned_biomes");
         LEARNED_DIMENSIONS = new TranslatableComponent("gui.strange.journal.learned_dimensions");
         LEARNED_RUNES = new TranslatableComponent("gui.strange.journal.learned_runes");
         LEARNED_STRUCTURES = new TranslatableComponent("gui.strange.journal.learned_structures");
         MAKE_MAP = new TranslatableComponent("gui.strange.journal.make_map");
+        DISCOVERIES = new TranslatableComponent("gui.strange.journal.discoveries");
         BOOKMARKS = new TranslatableComponent("gui.strange.journal.bookmarks");
         BOOKMARKS_TOOLTIP = new TranslatableComponent("gui.strange.journal.bookmarks_tooltip");
         MAKE_MAP_TOOLTIP = new TranslatableComponent("gui.strange.journal.make_map_tooltip");
@@ -94,6 +102,8 @@ public class JournalResources {
         SAVE = new TranslatableComponent("gui.strange.journal.save");
         TAKE_PHOTO = new TranslatableComponent("gui.strange.journal.take_photo");
         TAKE_PHOTO_TOOLTIP = new TranslatableComponent("gui.strange.journal.take_photo_tooltip");
+        WITH_IGNORED = new TranslatableComponent("gui.strange.journal.with_ignored");
+        NOT_ENOUGH_RUNES = new TranslatableComponent("gui.strange.journal.not_enough_runes");
 
         REWARDS = new TranslatableComponent("gui.strange.journal.rewards");
         NO_REWARDS = new TranslatableComponent("gui.strange.journal.no_rewards");

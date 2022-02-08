@@ -10,8 +10,12 @@ import svenhjol.strange.module.bookmarks.Bookmark;
 import svenhjol.strange.module.bookmarks.Bookmarks;
 import svenhjol.strange.module.bookmarks.BookmarksClient;
 import svenhjol.strange.module.bookmarks.DefaultIcon;
+import svenhjol.strange.module.discoveries.Discovery;
+import svenhjol.strange.module.discoveries.DiscoveryClientHelper;
+import svenhjol.strange.module.journals.JournalsClient;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class JournalClientHelper {
@@ -45,5 +49,26 @@ public class JournalClientHelper {
 
         icon = DefaultIcon.forDimension(level.dimension().location()).getId();
         BookmarksClient.SEND_CREATE_BOOKMARK.send(name, icon, true);
+    }
+
+    public static List<Discovery> getFilteredDiscoveries(boolean withIgnored) {
+        var journal = JournalsClient.getJournal().orElse(null);
+        if (journal == null) return List.of();
+
+        var validDiscoveries = DiscoveryClientHelper.getPlayerDiscoveries();
+        var ignored = journal.getIgnoredDiscoveries();
+
+        return validDiscoveries.stream()
+            .filter(d -> withIgnored || !ignored.contains(d.getRunes()))
+            .filter(d -> JournalHelper.countUnknownRunes(d.getRunes(), journal) == 0)
+            .collect(Collectors.toList());
+    }
+
+    public static boolean hasIgnoredAnyDiscoveries() {
+        var journal = JournalsClient.getJournal().orElse(null);
+        if (journal == null) return false;
+
+        var ignored = journal.getIgnoredDiscoveries();
+        return ignored.size() > 0;
     }
 }

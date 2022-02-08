@@ -27,6 +27,8 @@ public class JournalsClient extends CharmModule {
     public static ClientReceiveHint CLIENT_RECEIVE_HINT;
     public static ClientSendMakeMap CLIENT_SEND_MAKE_MAP;
     public static ClientSendOpenJournal CLIENT_SEND_OPEN_JOURNAL;
+    public static ClientSendIgnoreDiscovery CLIENT_SEND_IGNORE_DISCOVERY;
+    public static ClientSendUnignoreDiscovery CLIENT_SEND_UNIGNORE_DISCOVERY;
 
     private static @Nullable JournalData journal;
 
@@ -53,6 +55,8 @@ public class JournalsClient extends CharmModule {
         CLIENT_RECEIVE_HINT = new ClientReceiveHint();
         CLIENT_SEND_MAKE_MAP = new ClientSendMakeMap();
         CLIENT_SEND_OPEN_JOURNAL = new ClientSendOpenJournal();
+        CLIENT_SEND_IGNORE_DISCOVERY = new ClientSendIgnoreDiscovery();
+        CLIENT_SEND_UNIGNORE_DISCOVERY = new ClientSendUnignoreDiscovery();
 
         initKeybindings();
     }

@@ -21,9 +21,8 @@ public class ClientReceiveJournal extends ClientReceiver {
 
             LogHelper.debug(Strange.MOD_ID, getClass(), "Journal: " +
                 journal.getLearnedRunes().size() + " learned runes, " +
-                journal.getLearnedBiomes().size() + " learned biomes, " +
                 journal.getLearnedDimensions().size() + " learned dimensions, " +
-                journal.getLearnedStructures().size() + " learned structures.");
+                journal.getIgnoredDiscoveries().size() + " ignored discoveries.");
         });
     }
 }

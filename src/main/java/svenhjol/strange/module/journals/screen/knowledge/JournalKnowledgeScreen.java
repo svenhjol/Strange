@@ -25,6 +25,7 @@ public class JournalKnowledgeScreen extends JournalScreen {
 
         pageButtons = Arrays.asList(
             new ButtonDefinition(b -> runes(), JournalResources.LEARNED_RUNES),
+            new ButtonDefinition(b -> discoveries(), JournalResources.DISCOVERIES),
             new ButtonDefinition(b -> dimensions(), JournalResources.LEARNED_DIMENSIONS)
         );
 

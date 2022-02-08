@@ -55,6 +55,8 @@ public class Journals extends CharmModule {
     public static ServerSendHint SERVER_SEND_HINT;
     public static ServerReceiveMakeMap SERVER_RECEIVE_MAKE_MAP;
     public static ServerReceiveOpenJournal SERVER_RECEIVE_OPEN_JOURNAL;
+    public static ServerReceiveIgnoreDiscovery SERVER_RECEIVE_IGNORE_DISCOVERY;
+    public static ServerReceiveUnignoreDiscovery SERVER_RECEIVE_UNIGNORE_DISCOVERY;
 
     public static SoundEvent SCREENSHOT_SOUND;
 
@@ -80,6 +82,8 @@ public class Journals extends CharmModule {
         SERVER_SEND_HINT = new ServerSendHint();
         SERVER_RECEIVE_MAKE_MAP = new ServerReceiveMakeMap();
         SERVER_RECEIVE_OPEN_JOURNAL = new ServerReceiveOpenJournal();
+        SERVER_RECEIVE_IGNORE_DISCOVERY = new ServerReceiveIgnoreDiscovery();
+        SERVER_RECEIVE_UNIGNORE_DISCOVERY = new ServerReceiveUnignoreDiscovery();
     }
 
     public static Optional<JournalData> getJournal(Player player) {

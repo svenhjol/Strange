@@ -15,10 +15,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.helper.ClientHelper;
 import svenhjol.charm.helper.DimensionHelper;
-import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.Discovery;
+import svenhjol.strange.module.discoveries.DiscoveryHelper;
 import svenhjol.strange.module.journals.JournalsClient;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.runes.client.RuneStringRenderer;
@@ -135,7 +135,7 @@ public class RunestoneScreen extends AbstractContainerScreen<RunestoneMenu> {
         } else if (unknown == 0) {
 
             // The player knows all the runes, there are no unknown. Show the full name of the location.
-            name = StringHelper.snakeToPretty(discovery.getLocation().getPath());
+            name = DiscoveryHelper.getDiscoveryName(discovery);
 
         } else {
 
