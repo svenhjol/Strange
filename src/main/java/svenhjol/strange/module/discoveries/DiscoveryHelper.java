@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.helper.StringHelper;
 import svenhjol.strange.Strange;
@@ -21,7 +22,7 @@ public class DiscoveryHelper {
      * If the location is the spawn point then an existing discovery will try to be returned.
      */
     @Nullable
-    public static Discovery getOrCreate(ServerLevel level, float difficulty, BlockPos pos, Random random, @Nullable ResourceLocation location, @Nullable UUID discoverer) {
+    public static Discovery getOrCreate(ServerLevel level, float difficulty, BlockPos pos, Random random, @Nullable ResourceLocation location, @Nullable Player discoverer) {
         var discoveries = Discoveries.getDiscoveries().orElse(null);
         if (discoveries == null) return null;
 

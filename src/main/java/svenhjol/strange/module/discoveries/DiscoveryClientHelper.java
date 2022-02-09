@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 
 public class DiscoveryClientHelper {
     /**
-     * Get list of discoveries that the player has found, including
-     * discoveries that do not belong to any player (e.g. spawn position).
-     *
+     * Get list of discoveries currently stored on the client.
      * This list includes discoveries the player hasn't yet learned runes for.
      * Use JournalClientHelper#getFilteredDiscoveries for a restricted list.
      */
-    public static List<Discovery> getPlayerDiscoveries() {
+    public static List<Discovery> getDiscoveries() {
         var discoveries = DiscoveriesClient.getBranch().orElse(null);
         if (discoveries == null) return List.of();
 
@@ -24,7 +22,6 @@ public class DiscoveryClientHelper {
         var all = discoveries.all();
 
         return all.values().stream()
-            .filter(d -> d.getPlayer() == null || d.getPlayer().equals(player.getUUID()))
             .sorted(Comparator.comparingLong(Discovery::getTime).reversed())
             .collect(Collectors.toList());
     }

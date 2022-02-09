@@ -24,7 +24,7 @@ public class JournalDiscoveryScreen extends JournalScreen {
     protected void init() {
         super.init();
         var len = discovery.getRunes().length();
-        int left = Math.min(len, 12) * 6;
+        var left = Math.min(len, 12) * 6;
 
         runeStringRenderer = new RuneStringRenderer(midX - left, 80, 13, 15, 12, 3);
         bottomButtons.add(0, new GuiHelper.ButtonDefinition(b -> discoveries(), JournalResources.GO_BACK));
@@ -47,16 +47,19 @@ public class JournalDiscoveryScreen extends JournalScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
-        renderDay(poseStack);
+        renderInfo(poseStack);
         renderRunes(poseStack);
     }
 
-    protected void renderDay(PoseStack poseStack) {
+    protected void renderInfo(PoseStack poseStack) {
         var time = discovery.getTime();
+        var player = discovery.getPlayer();
         if (time != 0) {
             var day = time / 24000L;
-            var component = new TranslatableComponent("gui.strange.journal.discovered_day", day);
-            GuiHelper.drawCenteredString(poseStack, font, component, midX, 34, secondaryColor | 0x303030);
+            var discoveredOn = new TranslatableComponent("gui.strange.journal.discovered_on", day);
+            var discoveredBy = new TranslatableComponent("gui.strange.journal.discovered_by", player);
+            GuiHelper.drawCenteredString(poseStack, font, discoveredOn, midX, 34, secondaryColor | 0x303030);
+            GuiHelper.drawCenteredString(poseStack, font, discoveredBy, midX, 46, secondaryColor | 0x303030);
         }
     }
 

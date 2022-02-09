@@ -17,6 +17,7 @@ import svenhjol.charm.helper.EnchantmentsHelper;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.InteractDiscoveryCallback;
 import svenhjol.strange.module.discoveries.Discoveries;
 import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.discoveries.DiscoveryHelper;
@@ -128,7 +129,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
             var difficulty = runestone.difficulty;
 
             // Try and generate a discovery from this location and difficulty, then update the runestone's runes to match it.
-            Discovery discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, player.getUUID());
+            Discovery discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, player);
             if (discovery == null) return false;
 
             runestone.runes = discovery.getRunes();
@@ -144,8 +145,7 @@ public class RunestoneBlock extends CharmBlockWithEntity {
         }
 
         // Inform the player's client that they looked at this specific runestone.
-        Runestones.triggerLookedAtRunestone(player);
-        Discoveries.SERVER_SEND_INTERACT_DISCOVERY.send(player, discovery);
+        InteractDiscoveryCallback.EVENT.invoker().interact(player, discovery);
         return true;
     }
 }

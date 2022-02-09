@@ -55,10 +55,12 @@ public class JournalClientHelper {
         var journal = JournalsClient.getJournal().orElse(null);
         if (journal == null) return List.of();
 
-        var validDiscoveries = DiscoveryClientHelper.getPlayerDiscoveries();
+        var validDiscoveries = DiscoveryClientHelper.getDiscoveries();
+        var discoveries = journal.getDiscoveries();
         var ignored = journal.getIgnoredDiscoveries();
 
         return validDiscoveries.stream()
+            .filter(d -> d.getTime() == 0 || d.getPlayer() == null || discoveries.contains(d.getRunes()))
             .filter(d -> withIgnored || !ignored.contains(d.getRunes()))
             .filter(d -> JournalHelper.countUnknownRunes(d.getRunes(), journal) == 0)
             .collect(Collectors.toList());

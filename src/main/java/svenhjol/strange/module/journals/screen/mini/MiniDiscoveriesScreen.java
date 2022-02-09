@@ -3,7 +3,10 @@ package svenhjol.strange.module.journals.screen.mini;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import svenhjol.strange.helper.GuiHelper;
 import svenhjol.strange.module.discoveries.DiscoveriesClient;
 import svenhjol.strange.module.discoveries.DiscoveryHelper;
 import svenhjol.strange.module.journals.helper.JournalClientHelper;
@@ -25,7 +28,9 @@ public class MiniDiscoveriesScreen extends BaseMiniScreen {
         super.init();
 
         if (mini.selectedDiscovery != null) {
-            runeStringRenderer = new RuneStringRenderer(journalMidX - 46, midY - 8, 9, 14, 10, 4);
+            var len = mini.selectedDiscovery.getRunes().length();
+            var left = Math.round(Math.min(len, 12) * 3F) + 8;
+            runeStringRenderer = new RuneStringRenderer(journalMidX - left, midY - 8, 9, 14, 10, 4);
 
             mini.addBackButton(b -> {
                 mini.selectedDiscovery = null;
@@ -41,7 +46,11 @@ public class MiniDiscoveriesScreen extends BaseMiniScreen {
             paginator = new DiscoveryPaginator(discoveries);
             setPaginatorDefaults(paginator);
             paginator.setButtonWidth(98);
-            paginator.setOnItemHovered(discovery -> new TextComponent(DiscoveryHelper.getDiscoveryName(discovery)));
+            paginator.setOnItemHovered(discovery -> {
+                var name = DiscoveryHelper.getDiscoveryName(discovery);
+                var day = discovery.getTime() / 24000L;
+                return new TextComponent(I18n.get("gui.strange.journal.discovery_with_day", name, day));
+            });
 
             paginator.init(screen, mini.offset, midX - 87, midY - 78, discovery -> {
                 mini.selectedDiscovery = discovery;
@@ -63,6 +72,18 @@ public class MiniDiscoveriesScreen extends BaseMiniScreen {
             var name = DiscoveryHelper.getDiscoveryName(mini.selectedDiscovery);
             mini.renderTitle(poseStack, new TextComponent(name), midY - 94);
             runeStringRenderer.render(poseStack, font, mini.selectedDiscovery.getRunes());
+
+            // Render the player and time discovered.
+            var time = mini.selectedDiscovery.getTime();
+            var player = mini.selectedDiscovery.getPlayer();
+            if (time != 0) {
+                var day = time / 24000L;
+                var discoveredOn = new TranslatableComponent("gui.strange.journal.discovered_on_short", day);
+                var discoveredBy = new TranslatableComponent("gui.strange.journal.discovered_by", player);
+                GuiHelper.drawCenteredString(poseStack, font, discoveredOn, journalMidX, midY - 82, mini.secondaryColor | 0x303030);
+                GuiHelper.drawCenteredString(poseStack, font, discoveredBy, journalMidX, midY - 70, mini.secondaryColor | 0x303030);
+            }
+
         } else {
             mini.renderTitle(poseStack, JournalResources.DISCOVERIES, midY - 94);
             paginator.render(poseStack, itemRenderer, font);

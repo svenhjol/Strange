@@ -22,7 +22,7 @@ public class DiscoveryPaginator extends BasePaginator<Discovery> {
 
         if (item.getTime() != 0L) {
             long time = item.getTime() / 24000L;
-            component = new TextComponent(I18n.get("gui.strange.journal.discovery_with_days", name, time));
+            component = new TextComponent(I18n.get("gui.strange.journal.discovery_with_day", name, time));
         } else {
             component = new TextComponent(name);
         }

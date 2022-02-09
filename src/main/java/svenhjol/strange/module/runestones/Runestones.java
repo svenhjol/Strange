@@ -24,6 +24,9 @@ import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
 import svenhjol.strange.api.event.AddRunestoneDestinationCallback;
+import svenhjol.strange.api.event.InteractDiscoveryCallback;
+import svenhjol.strange.module.discoveries.Discoveries;
+import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.runes.Tier;
 import svenhjol.strange.module.runestones.definition.CluesDefinition;
 import svenhjol.strange.module.runestones.definition.DestinationDefinition;
@@ -89,9 +92,15 @@ public class Runestones extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+        InteractDiscoveryCallback.EVENT.register(this::handleDiscoveryInteract);
 
         SERVER_SEND_RUNESTONE_ITEMS = new ServerSendRunestoneItems();
         SERVER_SEND_RUNESTONE_CLUES = new ServerSendRunestoneClues();
+    }
+
+    private void handleDiscoveryInteract(ServerPlayer player, Discovery discovery) {
+        Runestones.triggerLookedAtRunestone(player);
+        Discoveries.SERVER_SEND_INTERACT_DISCOVERY.send(player, discovery);
     }
 
     public static void triggerLookedAtRunestone(ServerPlayer player) {

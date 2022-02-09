@@ -18,12 +18,14 @@ public class JournalData {
     private static final String BIOMES_TAG = "Biomes";
     private static final String DIMENSIONS_TAG = "Dimensions";
     private static final String STRUCTURES_TAG = "Structures";
+    private static final String DISCOVERIES_TAG = "Discoveries";
     private static final String IGNORED_DISCOVERIES_TAG = "IgnoredDiscoveries";
     private static final String OPENED_JOURNAL_TAG = "OpenedJournal";
 
     private final List<ResourceLocation> biomes = new ArrayList<>();
     private final List<ResourceLocation> dimensions = new ArrayList<>();
     private final List<ResourceLocation> structures = new ArrayList<>();
+    private final List<String> discoveries = new ArrayList<>();
     private final List<String> ignoredDiscoveries = new ArrayList<>();
     private boolean openedJournal = false;
 
@@ -35,11 +37,13 @@ public class JournalData {
         ListTag biomesTag = new ListTag();
         ListTag dimensionsTag = new ListTag();
         ListTag structuresTag = new ListTag();
+        ListTag discoveriesTag = new ListTag();
         ListTag ignoredDiscoveriesTag = new ListTag();
 
         biomes.forEach(biome -> biomesTag.add(StringTag.valueOf(biome.toString())));
         dimensions.forEach(dimension -> dimensionsTag.add(StringTag.valueOf(dimension.toString())));
         structures.forEach(structure -> structuresTag.add(StringTag.valueOf(structure.toString())));
+        discoveries.forEach(runes -> discoveriesTag.add(StringTag.valueOf(runes)));
         ignoredDiscoveries.forEach(runes -> ignoredDiscoveriesTag.add(StringTag.valueOf(runes)));
 
         tag.putBoolean(OPENED_JOURNAL_TAG, openedJournal);
@@ -47,6 +51,7 @@ public class JournalData {
         tag.put(BIOMES_TAG, biomesTag);
         tag.put(DIMENSIONS_TAG, dimensionsTag);
         tag.put(STRUCTURES_TAG, structuresTag);
+        tag.put(DISCOVERIES_TAG, discoveriesTag);
         tag.put(IGNORED_DISCOVERIES_TAG, ignoredDiscoveriesTag);
 
         return tag;
@@ -70,6 +75,10 @@ public class JournalData {
 
     public List<ResourceLocation> getLearnedStructures() {
         return structures;
+    }
+
+    public List<String> getDiscoveries() {
+        return discoveries;
     }
 
     public List<String> getIgnoredDiscoveries() {
@@ -100,6 +109,13 @@ public class JournalData {
         }
     }
 
+    public void learnDiscovery(Discovery discovery) {
+        var runes = discovery.getRunes();
+        if (!discoveries.contains(runes)) {
+            discoveries.add(runes);
+        }
+    }
+
     public void ignoreDiscovery(Discovery discovery) {
         var runes = discovery.getRunes();
         if (!ignoredDiscoveries.contains(runes)) {
@@ -123,6 +139,7 @@ public class JournalData {
         ListTag biomesTag = tag.getList(BIOMES_TAG, 8);
         ListTag dimensionsTag = tag.getList(DIMENSIONS_TAG, 8);
         ListTag structuresTag = tag.getList(STRUCTURES_TAG, 8);
+        ListTag discoveriesTag = tag.getList(DISCOVERIES_TAG, 8);
         ListTag ignoredDiscoveriesTag = tag.getList(IGNORED_DISCOVERIES_TAG, 8);
 
         journal.runes = Arrays.stream(tag.getIntArray(RUNES_TAG)).boxed().collect(Collectors.toList());
@@ -141,6 +158,10 @@ public class JournalData {
             .map(Tag::getAsString)
             .map(s -> s.replace("\"", ""))
             .forEach(t -> journal.structures.add(new ResourceLocation(t)));
+
+        discoveriesTag.stream()
+            .map(Tag::getAsString)
+            .forEach(journal.discoveries::add);
 
         ignoredDiscoveriesTag.stream()
             .map(Tag::getAsString)

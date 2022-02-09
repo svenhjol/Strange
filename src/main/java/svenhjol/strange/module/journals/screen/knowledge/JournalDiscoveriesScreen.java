@@ -28,9 +28,8 @@ public class JournalDiscoveriesScreen extends JournalPaginatedScreen<Discovery> 
 
     @Override
     protected void init() {
-        super.init();
-
         hasIgnored = JournalClientHelper.hasIgnoredAnyDiscoveries();
+        super.init();
     }
 
     @Override
@@ -43,6 +42,13 @@ public class JournalDiscoveriesScreen extends JournalPaginatedScreen<Discovery> 
         var discoveries = JournalClientHelper.getFilteredDiscoveries(withIgnored);
         var paginator = new DiscoveryPaginator(discoveries);
         paginator.setButtonWidth(200);
+        paginator.setOnItemButtonRendered(
+            (discovery, button) -> JournalsClient.getJournal().ifPresent(
+                journal -> {
+                    if (journal.getIgnoredDiscoveries().contains(discovery.getRunes())) {
+                        button.setAlpha(0.5F);
+                    }
+        }));
         return paginator;
     }
 

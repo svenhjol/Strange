@@ -3,12 +3,12 @@ package svenhjol.strange.module.discoveries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import svenhjol.charm.helper.LogHelper;
 import svenhjol.strange.Strange;
 import svenhjol.strange.module.runes.RuneHelper;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class Discovery {
     public static final String RUNES_TAG = "Runes";
@@ -23,7 +23,7 @@ public class Discovery {
     private final ResourceLocation location;
     private BlockPos pos;
     private ResourceLocation dimension;
-    private UUID player;
+    private String player;
     private float difficulty;
     private long time;
 
@@ -72,8 +72,8 @@ public class Discovery {
         this.difficulty = difficulty;
     }
 
-    public void setPlayer(UUID player) {
-        this.player = player;
+    public void setPlayer(Player player) {
+        this.player = player.getScoreboardName();
     }
 
     public void setPos(BlockPos pos) {
@@ -104,7 +104,7 @@ public class Discovery {
         return difficulty;
     }
 
-    public UUID getPlayer() {
+    public String getPlayer() {
         return player;
     }
 
@@ -135,7 +135,7 @@ public class Discovery {
         discovery.pos = pos.equals(BlockPos.ZERO) ? null : pos;
 
         var playerFromTag = tag.getString(PLAYER_TAG);
-        discovery.player = playerFromTag.isEmpty() ? null : UUID.fromString(playerFromTag);
+        discovery.player = playerFromTag.isEmpty() ? null : playerFromTag;
 
         discovery.difficulty = tag.getFloat(DIFFICULTY_TAG);
         discovery.time = tag.getLong(TIME_TAG);

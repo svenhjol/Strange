@@ -24,7 +24,9 @@ import svenhjol.charm.init.CharmAdvancements;
 import svenhjol.charm.loader.CharmModule;
 import svenhjol.charm.registry.CommonRegistry;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.event.InteractDiscoveryCallback;
 import svenhjol.strange.api.event.QuestEvents;
+import svenhjol.strange.module.discoveries.Discovery;
 import svenhjol.strange.module.journals.definition.BookmarkIconsDefinition;
 import svenhjol.strange.module.journals.helper.JournalHelper;
 import svenhjol.strange.module.journals.network.*;
@@ -72,6 +74,7 @@ public class Journals extends CharmModule {
     public void runWhenEnabled() {
         ServerWorldEvents.LOAD.register(this::handleWorldLoad);
         ServerPlayConnectionEvents.JOIN.register(this::handlePlayerJoin);
+        InteractDiscoveryCallback.EVENT.register(this::handleDiscoveryInteract);
         PlayerLoadDataCallback.EVENT.register(this::handlePlayerLoadData);
         PlayerSaveDataCallback.EVENT.register(this::handlePlayerSaveData);
         QuestEvents.COMPLETE.register(this::handleQuestComplete);
@@ -84,6 +87,13 @@ public class Journals extends CharmModule {
         SERVER_RECEIVE_OPEN_JOURNAL = new ServerReceiveOpenJournal();
         SERVER_RECEIVE_IGNORE_DISCOVERY = new ServerReceiveIgnoreDiscovery();
         SERVER_RECEIVE_UNIGNORE_DISCOVERY = new ServerReceiveUnignoreDiscovery();
+    }
+
+    private void handleDiscoveryInteract(ServerPlayer player, Discovery discovery) {
+        getJournal(player).ifPresent(journal -> {
+            journal.learnDiscovery(discovery);
+            SERVER_SEND_JOURNAL.send(player);
+        });
     }
 
     public static Optional<JournalData> getJournal(Player player) {
