@@ -213,8 +213,8 @@ public class WritingDeskScreen extends AbstractContainerScreen<WritingDeskMenu> 
         int iy = 0;
 
         for (int rune = 0; rune < Runes.NUM_RUNES; rune++) {
-            int sx = left + (ix * inputRunesXOffset);
-            int sy = top + (iy * inputRunesYOffset);
+            int sx = left + (ix * inputRunesXOffset) - 2;
+            int sy = top + (iy * inputRunesYOffset) - 2;
 
             if (hasBook && hasInk && x > sx && x < sx + inputRunesXOffset && y > sy && y < sy + inputRunesYOffset) {
                 runeClicked(rune);
