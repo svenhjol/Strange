@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -16,6 +17,7 @@ import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
 
@@ -28,36 +30,16 @@ public class RunicTomeLootFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         if (!Strange.LOADER.isEnabled(RunicTomes.class)) return stack;
         var level = context.getLevel();
-        var random = context.getRandom();
-        var random1 = new Random();
-        String runes = null;
+        var contextRandom = context.getRandom();
+        var random = new Random();
+        String runes;
 
         var knowledge = Knowledge.getKnowledge().orElse(null);
         if (knowledge == null) {
             return stack;
         }
 
-        // Process interesting locations.
-        var discoveries = Discoveries.getDiscoveries().orElse(null);
-        if (discoveries == null) {
-            return stack;
-        }
-
-        var x = random1.nextInt(1000000) - 500000;
-        var z = random1.nextInt(1000000) - 500000;
-        var pos = new BlockPos(x, 0, z);
-
-        for (Map.Entry<String, Float> entry : RunicTomes.interestingDestinations.entrySet()) {
-            if (random1.nextFloat() > 0.33F) continue;
-            var location = new ResourceLocation(entry.getKey());
-            var difficulty = entry.getValue();
-
-            var discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, null);
-            if (discovery == null) continue;
-
-            runes = discovery.getRunes();
-            break;
-        }
+        runes = runesForInterestingLocations(level, random, 0.33F);
 
         // Process dimensions.
         if (runes == null) {
@@ -67,11 +49,34 @@ public class RunicTomeLootFunction extends LootItemConditionalFunction {
             }
 
             var tomes = RunicTomes.dimensionTomes.get(dimension);
-            var tome = tomes.get(random.nextInt(tomes.size()));
+            var tome = tomes.get(contextRandom.nextInt(tomes.size()));
             runes = knowledge.dimensionBranch.get(tome);
         }
 
         return runes != null ? RunicTomeItem.create(runes) : stack;
+    }
+
+    @Nullable
+    public static String runesForInterestingLocations(ServerLevel level, Random random, float chance) {
+        var discoveries = Discoveries.getDiscoveries().orElse(null);
+        if (discoveries == null) return null;
+
+        var x = random.nextInt(1000000) - 500000;
+        var z = random.nextInt(1000000) - 500000;
+        var pos = new BlockPos(x, 0, z);
+
+        for (Map.Entry<String, Float> entry : RunicTomes.interestingDestinations.entrySet()) {
+            if (random.nextFloat() > chance) continue;
+            var location = new ResourceLocation(entry.getKey());
+            var difficulty = entry.getValue();
+
+            var discovery = DiscoveryHelper.getOrCreate(level, difficulty, pos, random, location, null);
+            if (discovery == null) continue;
+
+            return discovery.getRunes();
+        }
+
+        return null;
     }
 
     @Override

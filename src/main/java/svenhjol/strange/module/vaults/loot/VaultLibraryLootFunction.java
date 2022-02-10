@@ -13,7 +13,10 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.module.knowledge.Knowledge;
 import svenhjol.strange.module.runic_tomes.RunicTomeItem;
 import svenhjol.strange.module.runic_tomes.RunicTomes;
+import svenhjol.strange.module.runic_tomes.loot.RunicTomeLootFunction;
 import svenhjol.strange.module.vaults.Vaults;
+
+import java.util.Random;
 
 public class VaultLibraryLootFunction extends LootItemConditionalFunction {
     public VaultLibraryLootFunction(LootItemCondition[] conditions) {
@@ -24,7 +27,8 @@ public class VaultLibraryLootFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         if (!Strange.LOADER.isEnabled(RunicTomes.class)) return stack;
         var level = context.getLevel();
-        var random = context.getRandom();
+        var contextRandom = context.getRandom();
+        var random = new Random();
         String runes;
 
         var knowledge = Knowledge.getKnowledge().orElse(null);
@@ -32,11 +36,16 @@ public class VaultLibraryLootFunction extends LootItemConditionalFunction {
             return stack;
         }
 
-        if (DimensionHelper.isOverworld(level)) {
-            runes = knowledge.dimensionBranch.get(random.nextBoolean() ? Level.OVERWORLD.location() : Level.NETHER.location());
-        } else {
-            var dimensions = knowledge.dimensionBranch.keys();
-            runes = dimensions.get(random.nextInt(dimensions.size()));
+        runes = RunicTomeLootFunction.runesForInterestingLocations(level, random, 0.23F);
+
+        if (runes == null) {
+            if (DimensionHelper.isOverworld(level)) {
+                var dimension = random.nextBoolean() ? Level.OVERWORLD.location() : Level.NETHER.location();
+                runes = knowledge.dimensionBranch.get(dimension);
+            } else {
+                var dimensions = knowledge.dimensionBranch.keys();
+                runes = dimensions.get(random.nextInt(dimensions.size()));
+            }
         }
 
         return runes != null ? RunicTomeItem.create(runes) : stack;

@@ -109,7 +109,7 @@ public class Vaults extends CharmModule {
     private void handleLootTables(ResourceManager resourceManager, LootTables lootTables, ResourceLocation id, FabricLootSupplierBuilder supplier, LootTableLoadingCallback.LootTableSetter lootTableSetter) {
         if (VaultsLoot.VAULTS_LIBRARY.equals(id)) {
             var builder = FabricLootPoolBuilder.builder()
-                .rolls(UniformGenerator.between(1, 2))
+                .rolls(UniformGenerator.between(1, 4))
                 .with(LootItem.lootTableItem(Items.BOOK)
                     .setWeight(1)
                     .apply(() -> new VaultLibraryLootFunction(new LootItemCondition[0])));
