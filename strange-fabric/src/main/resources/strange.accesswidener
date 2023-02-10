@@ -1,0 +1,7 @@
+accessWidener v1 named
+
+# Boat type CODEC and BY_ID
+accessible field net/minecraft/world/entity/vehicle/Boat$Type CODEC Lnet/minecraft/util/StringRepresentable$EnumCodec;
+mutable    field net/minecraft/world/entity/vehicle/Boat$Type CODEC Lnet/minecraft/util/StringRepresentable$EnumCodec;
+accessible field net/minecraft/world/entity/vehicle/Boat$Type BY_ID Ljava/util/function/IntFunction;
+mutable    field net/minecraft/world/entity/vehicle/Boat$Type BY_ID Ljava/util/function/IntFunction;

@@ -1,0 +1,129 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'maven-publish'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+// Load props from parent gradle.properties.
+def props = new Properties()
+file("common/gradle.properties").withInputStream { props.load(it) }
+
+archivesBaseName = "${props.mod_id}-fabric-${props.minecraft_version}"
+version = props.mod_version
+group = props.maven_group
+
+sourceSets {
+    main {
+        java {
+            srcDir "common/src/main/java"
+            srcDir "src/main/java"
+        }  
+        resources {
+            srcDir "common/src/main/resources"
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${props.minecraft_version}"
+    modImplementation "net.fabricmc:fabric-loader:${props.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${props.fabric_version}"
+
+    // Depend on Charm stuff.
+    modImplementation "svenhjol.charm:charm_api-fabric-${props.minecraft_version}:${props.api_version}"
+    modImplementation "svenhjol.charm:charm_core-fabric-${props.minecraft_version}:${props.core_version}"
+    modImplementation "svenhjol.charm:charm-fabric-${props.minecraft_version}:${props.charm_version}"
+
+    // This is required for javax.annotation.Nullable to work properly.
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // Required for TOML support.
+    implementation "com.moandjiezana.toml:toml4j:${props.toml4j_version}"
+    implementation "com.electronwill.night-config:core:${props.tomlnc_version}"
+    implementation "com.electronwill.night-config:toml:${props.tomlnc_version}"
+    include "com.moandjiezana.toml:toml4j:${props.toml4j_version}"
+    include "com.electronwill.night-config:core:${props.tomlnc_version}"
+    include "com.electronwill.night-config:toml:${props.tomlnc_version}"
+
+    mappings loom.layered {
+        officialMojangMappings()
+    }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/${props.mod_id}.accesswidener")
+}
+
+processResources {
+    inputs.property "version", props.mod_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": props.mod_version
+    }
+
+    filesMatching([props.mod_id + ".mixins.json", props.mod_id + ".fabric.mixins.json"]) {
+        expand "refmap_file": props.mod_id + "-fabric-${props.minecraft_version}" + "-refmap.json"
+    }
+    
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+
+    // Expand resource templates.
+    // TODO: generic build gradle.
+    filesMatching("**/*.template.json") {
+        JsonBuilder json = new JsonBuilder(new JsonSlurper().parseText(it.file.text))
+        String template = new JsonBuilder(json.content.template).toPrettyString()
+        def v = json.content.variants
+        Iterable<String> variants
+        if (v instanceof String) {
+            def f = file("${sourceSets.main.resources.srcDirs[1]}/META-INF/${v}.variants");
+            if (!f.exists()) {
+                throw new Exception("Can't find ${f.name}")
+            }
+            variants = f.readLines().findAll { !it.isEmpty() }
+        }
+        else variants = v
+        File dir = it.relativePath.parent.getFile(file("$buildDir/resources/main"))
+        dir.mkdirs()
+        String name = it.name.replace(".template.json", ".json")
+        String[] replacements = v instanceof String ? variants.remove(0).split(':') : ["VARIANT"]
+        for (variant in variants) {
+            Map<String, String> s = [replacements, variant.split(':', -1)].transpose().collectEntries()
+            def file = new File(dir, s.inject(name) { r, e -> r.replace(e.key, e.value) })
+            if (!file.exists()) {
+                file.createNewFile()
+                file.text = s.inject(template) { r, e -> r.replace(e.key, e.value) }
+            }
+        }
+        it.exclude()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+}
+
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

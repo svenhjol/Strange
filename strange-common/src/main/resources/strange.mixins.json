@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "svenhjol.strange.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "${refmap_file}",
+  "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
+  "mixins": [
+    "boat_type_enum.BoatTypeMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
