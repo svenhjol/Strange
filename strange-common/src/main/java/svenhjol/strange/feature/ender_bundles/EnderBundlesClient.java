@@ -36,6 +36,7 @@ public class EnderBundlesClient extends CharmFeature {
     private static final int CHECK_TICKS_SLOW = 60;
     private static final int CHECK_TICKS_FAST = 5;
     private static final int LEFT = 76;
+    private static final int TOP = 66;
     public static float CACHED_AMOUNT_FILLED = 0F;
     public static Supplier<String> OPEN_BUNDLE_KEY;
 
@@ -97,12 +98,10 @@ public class EnderBundlesClient extends CharmFeature {
         if (client.player == null) return;
         if (!(screen instanceof InventoryScreen inventoryScreen)) return;
 
-        int leftPos = ((AbstractContainerScreenAccessor)inventoryScreen).getLeftPos();
-        int midY = inventoryScreen.height / 2;
+        var leftPos = ((AbstractContainerScreenAccessor)inventoryScreen).getLeftPos();
+        var midY = inventoryScreen.height / 2;
 
-        midY += PortableCrafting.hasCraftingTable(client.player) ? 18 : 0;
-
-        this.enderButton = new ImageButton(leftPos + LEFT, midY - 66, 20, 18, 20, 0, 19, CoreResources.INVENTORY_BUTTONS,
+        this.enderButton = new ImageButton(leftPos + LEFT, midY - TOP, 20, 18, 20, 0, 19, CoreResources.INVENTORY_BUTTONS,
             click -> openEnderBundle());
 
         this.enderButton.visible = EnderBundles.hasEnderBundle(client.player);
@@ -126,9 +125,21 @@ public class EnderBundlesClient extends CharmFeature {
             this.enderButton.visible = EnderBundles.hasEnderBundle(client.player);
         }
 
+        if (!enderButton.visible) {
+            // Don't bother doing any further processing.
+            return;
+        }
+
         // Re-render when recipe is opened/closed.
         var x = ((AbstractContainerScreenAccessor)screen).getLeftPos();
-        enderButton.setPosition(x + LEFT, enderButton.getY());
+        var y = (screen.height / 2) - TOP;
+        enderButton.setPosition(x + LEFT, y);
+
+        // Adjust position if portable crafting is present.
+        if (PortableCrafting.hasCraftingTable(client.player)) {
+            y = ((screen.height / 2) + 19) - TOP;
+            enderButton.setPosition(x + LEFT, y);
+        }
     }
 
     private void handleKeyPress(String id) {
