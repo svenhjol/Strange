@@ -32,7 +32,7 @@ public class BoatTypeMixin {
 
     static {
         for (var boatTypeEnum : BoatTypeEnums.BOAT_TYPE_ENUMS) {
-            addVariant(boatTypeEnum.toUpperCase(Locale.ROOT), Blocks.OAK_PLANKS, boatTypeEnum.toLowerCase(Locale.ROOT));
+            addStrangeVariant(boatTypeEnum.toUpperCase(Locale.ROOT), Blocks.OAK_PLANKS, boatTypeEnum.toLowerCase(Locale.ROOT));
         }
     }
 
@@ -41,7 +41,10 @@ public class BoatTypeMixin {
         throw new AssertionError();
     }
 
-    private static void addVariant(String newName, Block block, String typeName) {
+    /**
+     * Change the method name so it doesn't collide with Charm's BoatTypeMixin.
+     */
+    private static void addStrangeVariant(String newName, Block block, String typeName) {
         List<Boat.Type> variants = new ArrayList<>(Arrays.asList(BoatTypeMixin.$VALUES));
         variants.add(invokeInit(newName.toUpperCase(Locale.ROOT), variants.get(variants.size() - 1).ordinal() + 1, block, typeName));
         BoatTypeMixin.$VALUES = variants.toArray(new Boat.Type[0]);
