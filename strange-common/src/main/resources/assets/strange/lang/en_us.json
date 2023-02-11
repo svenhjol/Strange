@@ -21,6 +21,9 @@
   "block.strange.ebony_wood": "Ebony Wood",
   "block.strange.stripped_ebony_log": "Stripped Ebony Log",
   "block.strange.stripped_ebony_wood": "Stripped Ebony Wood",
+  "container.strange.ender_bundle": "Ender Bundle",
   "item.strange.ebony_boat": "Ebony Boat",
-  "item.strange.ebony_chest_boat": "Ebony Boat with Chest"
+  "item.strange.ebony_chest_boat": "Ebony Boat with Chest",
+  "item.strange.ender_bundle": "Ender Bundle",
+  "key.charm.open_ender_bundle": "Open Ender bundle"
 }
