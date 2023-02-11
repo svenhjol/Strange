@@ -6,7 +6,8 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
-    "boat_type_enum.BoatTypeMixin"
+    "boat_type_enum.BoatTypeMixin",
+    "deepslate_dungeons.MonsterRoomFeatureMixin"
   ],
   "client": [
   ],
