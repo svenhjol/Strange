@@ -6,8 +6,12 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "accessor.MineshaftCorridorAccessor",
+    "accessor.MineshaftPieceAccessor",
+    "accessor.StructurePieceAccessor",
     "boat_type_enum.BoatTypeMixin",
-    "deepslate_dungeons.MonsterRoomFeatureMixin"
+    "deepslate_dungeons.MonsterRoomFeatureMixin",
+    "improved_mineshafts.MineshaftPiecesMixin"
   ],
   "client": [
   ],

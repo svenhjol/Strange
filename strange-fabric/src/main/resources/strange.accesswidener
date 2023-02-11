@@ -1,5 +1,8 @@
 accessWidener v1 named
 
+# Classes
+accessible class net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces$MineShaftPiece
+
 # Boat type CODEC and BY_ID
 accessible field net/minecraft/world/entity/vehicle/Boat$Type CODEC Lnet/minecraft/util/StringRepresentable$EnumCodec;
 mutable    field net/minecraft/world/entity/vehicle/Boat$Type CODEC Lnet/minecraft/util/StringRepresentable$EnumCodec;
