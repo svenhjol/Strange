@@ -20,7 +20,7 @@ public class EnderBundlesNetwork {
     }
 
     @Packet(
-        id = "charm:request_ender_inventory",
+        id = "strange:request_ender_inventory",
         direction = PacketDirection.CLIENT_TO_SERVER,
         description = "An empty packet sent from the client to instruct the server to send updated Ender inventory."
     )
@@ -33,7 +33,7 @@ public class EnderBundlesNetwork {
     }
 
     @Packet(
-        id = "charm:open_ender_inventory",
+        id = "strange:open_ender_inventory",
         direction = PacketDirection.CLIENT_TO_SERVER,
         description = "An empty packet sent from the client to instruct the server to open the Ender inventory."
     )
@@ -46,7 +46,7 @@ public class EnderBundlesNetwork {
     }
 
     @Packet(
-        id = "charm:send_ender_inventory",
+        id = "strange:send_ender_inventory",
         direction = PacketDirection.SERVER_TO_CLIENT,
         description = "The player's Ender inventory encoded as a list of items to be updated on the client."
     )

@@ -17,7 +17,7 @@ public class WaypointsNetwork {
     }
 
     @Packet(
-        id = "charm:waypoint_info",
+        id = "strange:waypoint_info",
         direction = PacketDirection.SERVER_TO_CLIENT,
         description = "Send the title and color of the waypoint to the client."
     )
@@ -64,7 +64,7 @@ public class WaypointsNetwork {
     }
 
     @Packet(
-        id = "charm:flush_waypoint",
+        id = "strange:flush_waypoint",
         direction = PacketDirection.SERVER_TO_CLIENT,
         description = "Remove the last seen title and color on the client."
     )

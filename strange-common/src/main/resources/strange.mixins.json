@@ -12,7 +12,9 @@
     "boat_type_enum.BoatTypeMixin",
     "deepslate_dungeons.MonsterRoomFeatureMixin",
     "improved_mineshafts.MineshaftPiecesMixin",
-    "respawn_anchors_work_everywhere.RespawnAnchorBlockMixin"
+    "respawn_anchors_work_everywhere.RespawnAnchorBlockMixin",
+    "totem_of_preserving.ExplosionMixin",
+    "totem_of_preserving.LevelMixin"
   ],
   "client": [
   ],
