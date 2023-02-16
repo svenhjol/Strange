@@ -8,11 +8,14 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.Charm;
 import svenhjol.charm_api.event.PlayerInventoryDropEvent;
 import svenhjol.charm_api.iface.IClearsTotemInventories;
+import svenhjol.charm_api.iface.IGetsInventoryItem;
 import svenhjol.charm_api.iface.IHasTotemInventories;
 import svenhjol.charm_core.annotation.Configurable;
 import svenhjol.charm_core.annotation.Feature;
@@ -26,13 +29,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Feature(mod = Charm.MOD_ID, description = "The player's inventory items will be preserved in the Totem of Preserving upon death.")
-public class TotemOfPreserving extends CharmFeature implements IHasTotemInventories, IClearsTotemInventories {
+public class TotemOfPreserving extends CharmFeature implements IHasTotemInventories, IClearsTotemInventories, IGetsInventoryItem {
     private static final String ID = "totem_of_preserving";
     private static final String HOLDER_ID = "totem_of_preserving_holder";
     private static final ResourceLocation ADVANCEMENT = Charm.makeId("used_totem_of_preserving");
@@ -40,6 +44,9 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
     public static Supplier<TotemBlock> BLOCK;
     public static Supplier<TotemBlock.BlockItem> BLOCK_ITEM;
     public static Supplier<BlockEntityType<TotemBlockEntity>> BLOCK_ENTITY;
+
+    @Configurable(name = "Grave mode", description = "If true, a Totem of Preserving will always appear even if the player doesn't have a totem in their inventory.")
+    public static boolean graveMode = false;
 
     @Configurable(name = "Owner only", description = "If true, only the owner of the totem may retrieve items.")
     public static boolean ownerOnly = false;
@@ -55,6 +62,36 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
         BLOCK_ENTITY = Strange.REGISTRY.blockEntity(ID, () -> TotemBlockEntity::new, List.of(BLOCK));
 
         CharmApi.registerProvider(this);
+    }
+
+
+    @Override
+    public List<BiFunction<Player, ItemLike, ItemStack>> getInventoryItem() {
+        return List.of(
+            // Main hand check.
+            (player, item) -> {
+                var stack = player.getMainHandItem();
+                return stack.is((Item) item) ? stack : ItemStack.EMPTY;
+            },
+
+            // Off-hand check.
+            (player, item) -> {
+                var stack = player.getOffhandItem();
+                return stack.is((Item) item) ? stack : ItemStack.EMPTY;
+            },
+
+            // Main inventory check.
+            (player, item) -> {
+                var inventory = player.getInventory();
+                var slotMatchingItem = inventory.findSlotMatchingItem(new ItemStack(item));
+
+                if (slotMatchingItem > 0) {
+                    return inventory.getItem(slotMatchingItem);
+                }
+
+                return ItemStack.EMPTY;
+            }
+        );
     }
 
     @Override
@@ -93,6 +130,28 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
         }
 
         var serverPlayer = (ServerPlayer) player;
+
+        var checks = CharmApi.getProviderData(IGetsInventoryItem.class,
+            provider -> provider.getInventoryItem().stream());
+
+        if (!graveMode) {
+            ItemStack totem = null;
+
+            for (var check : checks) {
+                var result = check.apply(player, ITEM.get());
+                if (!result.isEmpty()) {
+                    totem = result;
+                    break;
+                }
+            }
+
+            if (totem == null) {
+                Charm.LOG.debug(getClass(), "GraveMode = false, no totem found in inventory, giving up.");
+                return InteractionResult.PASS;
+            }
+
+            totem.setCount(0);
+        }
 
         // Add all inventories.
         List<ItemStack> items = new ArrayList<>();
