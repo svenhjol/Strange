@@ -18,10 +18,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import svenhjol.charm.Charm;
 import svenhjol.charm_core.base.CharmBlockItem;
 import svenhjol.charm_core.base.CharmBlockWithEntity;
 import svenhjol.charm_core.base.CharmFeature;
+import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -55,14 +55,14 @@ public class TotemBlock extends CharmBlockWithEntity {
             && level.getBlockEntity(pos) instanceof TotemBlockEntity totem
             && !level.isClientSide) {
 
-            Charm.LOG.debug(getClass(), "Something wants to overwrite the totem block, emergency item drop!");
+            Strange.LOG.debug(getClass(), "Something wants to overwrite the totem block, emergency item drop!");
             var items = totem.getItems();
             for (var stack : items) {
                 var itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
                 level.addFreshEntity(itemEntity);
             }
         }
-        Charm.LOG.debug(getClass(), "Going to remove a totem block");
+        Strange.LOG.debug(getClass(), "Going to remove a totem block");
         super.onRemove(blockState, level, pos, state, bl);
     }
 
@@ -78,16 +78,16 @@ public class TotemBlock extends CharmBlockWithEntity {
             var dimension = serverLevel.dimension().location();
 
             // Create a new totem item and give it to player.
-            Charm.LOG.debug(getClass(), "Player has interacted with totem holder block at pos: " + pos + ", player: " + player);
+            Strange.LOG.debug(getClass(), "Player has interacted with totem holder block at pos: " + pos + ", player: " + player);
             var totemItem = new ItemStack(TotemOfPreserving.ITEM.get());
             TotemItem.setItems(totemItem, totem.getItems());
             TotemItem.setMessage(totemItem, totem.getMessage());
 
-            Charm.LOG.debug(getClass(), "Adding totem item to player's inventory: " + player);
+            Strange.LOG.debug(getClass(), "Adding totem item to player's inventory: " + player);
             player.getInventory().placeItemBackInInventory(totemItem);
 
             // Remove the totem block.
-            Charm.LOG.debug(getClass(), "Removing totem holder block and block entity: " + pos);
+            Strange.LOG.debug(getClass(), "Removing totem holder block and block entity: " + pos);
             ProtectedPositions.remove(dimension, pos);
             level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }

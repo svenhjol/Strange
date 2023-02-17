@@ -10,13 +10,16 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import svenhjol.charm.Charm;
 import svenhjol.charm_core.base.CharmFeature;
 import svenhjol.charm_core.base.CharmItem;
 import svenhjol.charm_core.helper.ItemNbtHelper;
 import svenhjol.charm_core.helper.TextHelper;
+import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -44,7 +47,11 @@ public class TotemItem extends CharmItem {
 
         var items = getItems(totem);
 
-        if (!player.isSpectator() && !player.isCreative()) {
+        if (!TotemOfPreserving.graveMode) {
+            // When not in grave mode, clear the totem of items and message so it can be used again.
+            clearTotem(totem);
+        } else if (!player.isSpectator() && !player.isCreative()) {
+            // When in grave mode, destroy the totem with some effects.
             totem.shrink(1);
 
             if (level.isClientSide()) {
@@ -83,7 +90,7 @@ public class TotemItem extends CharmItem {
 
         if (!items.isEmpty()) {
             var size = items.size();
-            var str = size == 1 ? "totem.charm.preserving.item" : "totem.charm.preserving.items";
+            var str = size == 1 ? "gui.strange.totem_of_preserving.item" : "gui.strange.totem_of_preserving.items";
             tooltip.add(TextHelper.literal(I18n.get(str, size)));
         }
 
@@ -102,7 +109,7 @@ public class TotemItem extends CharmItem {
         for (var key : keys) {
             var tag = itemsTag.get(key);
             if (tag == null) {
-                Charm.LOG.warn(TotemItem.class, "Missing item with key " + key);
+                Strange.LOG.warn(TotemItem.class, "Missing item with key " + key);
                 continue;
             }
             var stack = ItemStack.of((CompoundTag)tag);
@@ -110,6 +117,11 @@ public class TotemItem extends CharmItem {
         }
 
         return items;
+    }
+
+    public static void clearTotem(ItemStack totem) {
+        totem.removeTagKey(ITEMS_TAG);
+        totem.removeTagKey(MESSAGE_TAG);
     }
 
     public static boolean hasItems(ItemStack totem) {

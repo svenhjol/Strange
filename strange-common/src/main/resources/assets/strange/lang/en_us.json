@@ -24,6 +24,8 @@
   "block.strange.totem_of_preserving_holder": "Totem of Preserving",
   "container.strange.ender_bundle": "Ender Bundle",
   "gui.strange.totem_of_preserving.deathpos": "Your totem is near %s %s %s",
+  "gui.strange.totem_of_preserving.item": "Preserving one item",
+  "gui.strange.totem_of_preserving.items": "Preserving %s items",
   "item.strange.ebony_boat": "Ebony Boat",
   "item.strange.ebony_chest_boat": "Ebony Boat with Chest",
   "item.strange.ender_bundle": "Ender Bundle",

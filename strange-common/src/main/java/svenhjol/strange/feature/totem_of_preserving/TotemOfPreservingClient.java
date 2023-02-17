@@ -1,6 +1,8 @@
 package svenhjol.strange.feature.totem_of_preserving;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
 import svenhjol.charm_core.annotation.ClientFeature;
 import svenhjol.charm_core.base.CharmFeature;
 import svenhjol.strange.Strange;
@@ -20,5 +22,13 @@ public class TotemOfPreservingClient extends CharmFeature {
     public void register() {
         StrangeClient.REGISTRY.blockEntityRenderer(TotemOfPreserving.BLOCK_ENTITY, () -> TotemBlockEntityRenderer::new);
         StrangeClient.REGISTRY.blockRenderType(TotemOfPreserving.BLOCK, RenderType::translucent);
+
+        if (isEnabled()) {
+            StrangeClient.REGISTRY.itemTab(
+                TotemOfPreserving.ITEM,
+                CreativeModeTabs.COMBAT,
+                Items.TOTEM_OF_UNDYING
+            );
+        }
     }
 }

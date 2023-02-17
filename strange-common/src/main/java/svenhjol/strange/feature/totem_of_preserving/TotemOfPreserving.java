@@ -8,7 +8,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -71,25 +70,28 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
             // Main hand check.
             (player, item) -> {
                 var stack = player.getMainHandItem();
-                return stack.is((Item) item) ? stack : ItemStack.EMPTY;
+                return stack.getItem() == item ? stack : ItemStack.EMPTY;
             },
 
             // Off-hand check.
             (player, item) -> {
                 var stack = player.getOffhandItem();
-                return stack.is((Item) item) ? stack : ItemStack.EMPTY;
+                return stack.getItem() == item ? stack : ItemStack.EMPTY;
             },
 
             // Main inventory check.
             (player, item) -> {
                 var inventory = player.getInventory();
-                var slotMatchingItem = inventory.findSlotMatchingItem(new ItemStack(item));
+                var found = ItemStack.EMPTY;
 
-                if (slotMatchingItem > 0) {
-                    return inventory.getItem(slotMatchingItem);
+                for (int i = 0; i < inventory.items.size(); ++i) {
+                    if (!((inventory.items.get(i)).isEmpty() && inventory.items.get(i).getItem() == item)) {
+                        found = inventory.items.get(i);
+                        break;
+                    }
                 }
 
-                return ItemStack.EMPTY;
+                return found;
             }
         );
     }
@@ -146,11 +148,11 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
             }
 
             if (totem == null) {
-                Charm.LOG.debug(getClass(), "GraveMode = false, no totem found in inventory, giving up.");
+                Strange.LOG.debug(getClass(), "GraveMode = false, no totem found in inventory, giving up.");
                 return InteractionResult.PASS;
             }
 
-            totem.setCount(0);
+            totem.shrink(1);
         }
 
         // Add all inventories.
@@ -164,7 +166,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
 
         // Don't spawn if there are no items to add.
         if (items.isEmpty()) {
-            Charm.LOG.debug(getClass(), "No items found to store in totem, giving up.");
+            Strange.LOG.debug(getClass(), "No items found to store in totem, giving up.");
             return InteractionResult.PASS;
         }
 
@@ -203,14 +205,14 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
 
         // Adjust for void.
         if (pos.getY() < minHeight) {
-            Charm.LOG.debug(getClass(), "(Void check) Adjusting, new pos: " + pos);
+            Strange.LOG.debug(getClass(), "(Void check) Adjusting, new pos: " + pos);
             pos = new BlockPos(pos.getX(), level.getSeaLevel(), pos.getZ());
         }
 
         if (state.isAir() || fluid.is(FluidTags.WATER)) {
 
             // Air and water are valid spawn positions.
-            Charm.LOG.debug(getClass(), "(Standard check) Found an air/water block to spawn in: " + pos);
+            Strange.LOG.debug(getClass(), "(Standard check) Found an air/water block to spawn in: " + pos);
             spawnPos = pos;
 
         } else if (fluid.is(FluidTags.LAVA)) {
@@ -226,7 +228,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
                 if (tryFluid.is(FluidTags.LAVA)) continue;
 
                 if (tryState.isAir() || tryFluid.is(FluidTags.WATER)) {
-                    Charm.LOG.debug(getClass(), "(Lava check) Found an air/water block to spawn in after checking " + tries + " times: " + pos);
+                    Strange.LOG.debug(getClass(), "(Lava check) Found an air/water block to spawn in after checking " + tries + " times: " + pos);
                     spawnPos = tryPos;
                 }
 
@@ -235,7 +237,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
 
             // If that failed, replace the lava with the totem.
             if (spawnPos == null) {
-                Charm.LOG.debug(getClass(), "(Lava check) Going to replace lava with totem at: " + pos);
+                Strange.LOG.debug(getClass(), "(Lava check) Going to replace lava with totem at: " + pos);
                 spawnPos = pos;
             }
 
@@ -252,7 +254,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
 
                 if (tryPos.getY() >= maxHeight) continue;
                 if (tryState.isAir() || tryFluid.is(FluidTags.WATER)) {
-                    Charm.LOG.debug(getClass(), "(Solid check) Found an air/water block to spawn in, direction: " + direction + ", pos: " + pos);
+                    Strange.LOG.debug(getClass(), "(Solid check) Found an air/water block to spawn in, direction: " + direction + ", pos: " + pos);
                     spawnPos = tryPos;
                     break;
                 }
@@ -278,7 +280,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
                 var tryState = level.getBlockState(tryPos);
                 var tryFluid = level.getFluidState(tryPos);
                 if (tryState.isAir() || tryFluid.is(FluidTags.WATER)) {
-                    Charm.LOG.debug(getClass(), "(Distance check) Found an air/water block to spawn in after checking " + tries + " times: " + pos);
+                    Strange.LOG.debug(getClass(), "(Distance check) Found an air/water block to spawn in after checking " + tries + " times: " + pos);
                     spawnPos = tryPos;
                     break;
                 }
@@ -287,13 +289,13 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
         }
 
         if (spawnPos == null) {
-            Charm.LOG.debug(getClass(), "Could not find a block to spawn totem, giving up.");
+            Strange.LOG.debug(getClass(), "Could not find a block to spawn totem, giving up.");
             return false;
         }
 
         level.setBlockAndUpdate(spawnPos, BLOCK.get().defaultBlockState());
         if (!(level.getBlockEntity(spawnPos) instanceof TotemBlockEntity totem)) {
-            Charm.LOG.debug(getClass(), "Not a valid block entity at pos, giving up. Pos: " + pos);
+            Strange.LOG.debug(getClass(), "Not a valid block entity at pos, giving up. Pos: " + pos);
             return false;
         }
 
@@ -305,7 +307,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
         ProtectedPositions.add(level.dimension().location(), spawnPos);
         AdvancementHandler.trigger(ADVANCEMENT, player);
 
-        Charm.LOG.info(getClass(), "Spawned a totem at: " + spawnPos);
+        Strange.LOG.info(getClass(), "Spawned a totem at: " + spawnPos);
 
         // Show the death position as chat message.
         if (showDeathPosition) {
@@ -313,7 +315,7 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
             var y = spawnPos.getY();
             var z = spawnPos.getZ();
 
-            player.displayClientMessage(TextHelper.translatable("gui.charm.totem_of_preserving.deathpos", x, y, z), false);
+            player.displayClientMessage(TextHelper.translatable("gui.strange.totem_of_preserving.deathpos", x, y, z), false);
         }
 
         return true;
