@@ -16,6 +16,7 @@ import svenhjol.charm_api.event.PlayerInventoryDropEvent;
 import svenhjol.charm_api.iface.IClearsTotemInventories;
 import svenhjol.charm_api.iface.IGetsInventoryItem;
 import svenhjol.charm_api.iface.IHasTotemInventories;
+import svenhjol.charm_api.iface.IRemovesRecipes;
 import svenhjol.charm_core.annotation.Configurable;
 import svenhjol.charm_core.annotation.Feature;
 import svenhjol.charm_core.base.CharmFeature;
@@ -35,7 +36,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Feature(mod = Charm.MOD_ID, description = "The player's inventory items will be preserved in the Totem of Preserving upon death.")
-public class TotemOfPreserving extends CharmFeature implements IHasTotemInventories, IClearsTotemInventories, IGetsInventoryItem {
+public class TotemOfPreserving extends CharmFeature implements IHasTotemInventories, IClearsTotemInventories, IGetsInventoryItem, IRemovesRecipes {
     private static final String ID = "totem_of_preserving";
     private static final String HOLDER_ID = "totem_of_preserving_holder";
     private static final ResourceLocation ADVANCEMENT = Charm.makeId("used_totem_of_preserving");
@@ -319,5 +320,13 @@ public class TotemOfPreserving extends CharmFeature implements IHasTotemInventor
         }
 
         return true;
+    }
+
+    @Override
+    public List<ResourceLocation> getRecipesToRemove() {
+        if (graveMode) {
+            return List.of(Strange.makeId("totem_of_preserving/totem_of_preserving"));
+        }
+        return List.of();
     }
 }
