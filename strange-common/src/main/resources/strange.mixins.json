@@ -6,6 +6,7 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "accessor.ItemsForEmeraldsAccessor",
     "accessor.MineshaftCorridorAccessor",
     "accessor.MineshaftPieceAccessor",
     "accessor.StructurePieceAccessor",
@@ -14,7 +15,10 @@
     "improved_mineshafts.MineshaftPiecesMixin",
     "respawn_anchors_work_everywhere.RespawnAnchorBlockMixin",
     "totem_of_preserving.ExplosionMixin",
-    "totem_of_preserving.LevelMixin"
+    "totem_of_preserving.LevelMixin",
+    "villager_tweaks.EnchantmentMixin",
+    "villager_tweaks.FarmBlockMixin",
+    "villager_tweaks.VillagerMixin"
   ],
   "client": [
   ],
