@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -33,6 +34,7 @@ import java.util.function.Supplier;
     "Ebony trees can be found in savanna biomes.")
 public class EbonyWood extends CharmFeature implements IProvidesWandererTrades, IRemovesRecipes {
     static Supplier<WoodType> WOOD_TYPE;
+    static Supplier<BlockSetType> BLOCK_SET_TYPE;
     static Supplier<CharmDoorBlock> DOOR_BLOCK;
     static Supplier<CharmTrapdoorBlock> TRAPDOOR_BLOCK;
     static Supplier<CharmLeavesBlock> LEAVES_BLOCK;
@@ -49,6 +51,7 @@ public class EbonyWood extends CharmFeature implements IProvidesWandererTrades, 
         var material = EbonyMaterial.EBONY;
         var registry = Strange.REGISTRY;
 
+        BLOCK_SET_TYPE = registry.blockSetType(material);
         WOOD_TYPE = Wood.registerWoodType(registry, material);
         DOOR_BLOCK = Wood.registerDoor(registry, this, material).getFirst();
         TRAPDOOR_BLOCK = Wood.registerTrapdoor(registry, this, material).getFirst();
@@ -64,9 +67,11 @@ public class EbonyWood extends CharmFeature implements IProvidesWandererTrades, 
         Wood.registerPlanksSlabsAndStairs(registry, this, material);
         Wood.registerPressurePlate(registry, this, material);
         Wood.registerSign(registry, this, material);
+        Wood.registerHangingSign(registry, this, material);
 
         Wood.registerBarrel(registry, material);
         Wood.registerBookshelf(registry, material);
+        Wood.registerChiseledBookshelf(registry, material);
         Wood.registerChest(registry, material);
         Wood.registerTrappedChest(registry, material);
         Wood.registerLadder(registry, material);

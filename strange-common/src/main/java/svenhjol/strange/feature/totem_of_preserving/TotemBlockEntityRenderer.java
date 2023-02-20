@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class TotemBlockEntityRenderer<T extends TotemBlockEntity> implements BlockEntityRenderer<T> {
@@ -24,7 +24,8 @@ public class TotemBlockEntityRenderer<T extends TotemBlockEntity> implements Blo
         poseStack.translate(0.5F, 0.5F, 0.5F);
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
-        var itemRenderer = Minecraft.getInstance().getItemRenderer();
+        var minecraft = Minecraft.getInstance();
+        var itemRenderer = minecraft.getItemRenderer();
         if (itemRenderer == null) return;
 
         entity.rotateTicks += 0.25F;
@@ -33,7 +34,7 @@ public class TotemBlockEntityRenderer<T extends TotemBlockEntity> implements Blo
         }
 
         poseStack.mulPose(Axis.YP.rotationDegrees(entity.rotateTicks));
-        itemRenderer.renderStatic(stack, ItemTransforms.TransformType.FIXED, 255, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.hashCode());
+        itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, 255, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, minecraft.level, entity.hashCode());
         poseStack.popPose();
     }
 }
