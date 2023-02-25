@@ -5,9 +5,8 @@ import svenhjol.charm_core.fabric.base.BaseFabricInitializer;
 import svenhjol.strange_archaeology.StrangeArchaeology;
 
 public class FabricModInitializer implements ModInitializer {
-    private StrangeArchaeology mod;
-
     public static final Initializer INIT = new Initializer();
+    private StrangeArchaeology mod;
 
     @Override
     public void onInitialize() {
