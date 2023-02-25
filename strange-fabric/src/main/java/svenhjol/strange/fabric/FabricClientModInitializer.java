@@ -7,10 +7,14 @@ import svenhjol.strange.StrangeClient;
 
 public class FabricClientModInitializer implements ClientModInitializer {
     public static final ClientInitializer INIT = new ClientInitializer();
-    private StrangeClient mod;
+    private static StrangeClient mod;
 
     @Override
     public void onInitializeClient() {
+        initStrangeClient();
+    }
+
+    public static void initStrangeClient() {
         if (mod == null) {
             // Always init Core Client first.
             svenhjol.charm_core.fabric.FabricClientModInitializer.initCharmCoreClient();
