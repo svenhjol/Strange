@@ -27,3 +27,4 @@ create_symlinks() {
 }
 
 create_symlinks strange
+create_symlinks archaeology

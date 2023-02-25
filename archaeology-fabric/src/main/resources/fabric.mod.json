@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "strange",
+  "version": "${version}",
+
+  "name": "Strange Archaeology",
+  "description": "An experimental addon for Strange.",
+  "authors": [
+    "svenhjol"
+  ],
+
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "mixins": [
+    "strange_archaeology.mixins.json",
+    "strange_archaeology.fabric.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "svenhjol.strange_archaeology.fabric.FabricModInitializer"
+    ],
+    "client": [
+      "svenhjol.strange_archaeology.fabric.FabricClientModInitializer"
+    ]
+  },
+  "accessWidener": "strange_archaeology.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.14",
+    "strange": "5.0.0",
+    "minecraft": "1.19.4-pre1",
+    "java": ">=17"
+  }
+}

@@ -1,0 +1,8 @@
+.DS_Store
+.gradle
+.idea
+/build/
+/common
+/run/
+/libs/*.jar
+/src/main/resources/META-INF/jarjar/*.jar
