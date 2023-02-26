@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "strange",
+  "id": "strange_archaeology",
   "version": "${version}",
 
   "name": "Strange Archaeology",
@@ -28,7 +28,7 @@
   "depends": {
     "fabricloader": ">=0.14.14",
     "strange": "5.0.0",
-    "minecraft": "1.19.4-pre1",
+    "minecraft": "1.19.4-beta.1",
     "java": ">=17"
   }
 }

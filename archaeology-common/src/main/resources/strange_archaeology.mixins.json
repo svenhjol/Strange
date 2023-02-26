@@ -8,6 +8,7 @@
   "mixins": [
   ],
   "client": [
+    "stone_chests.SheetsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

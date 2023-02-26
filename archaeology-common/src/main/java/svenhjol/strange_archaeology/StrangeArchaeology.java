@@ -1,5 +1,6 @@
 package svenhjol.strange_archaeology;
 
+import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm_core.annotation.Feature;
 import svenhjol.charm_core.iface.IInitializer;
 import svenhjol.charm_core.iface.ILoader;
@@ -21,5 +22,9 @@ public class StrangeArchaeology {
 
     public void run() {
         LOADER.run();
+    }
+    
+    public static ResourceLocation makeId(String id) {
+        return !id.contains(":") ? new ResourceLocation(MOD_ID, id) : new ResourceLocation(id);
     }
 }

@@ -1,0 +1,8 @@
+{
+  "template": {
+    "textures": {
+      "particle": "STONE_SRC:block/STONE_BLOCK"
+    }
+  },
+  "variants": "chest"
+}

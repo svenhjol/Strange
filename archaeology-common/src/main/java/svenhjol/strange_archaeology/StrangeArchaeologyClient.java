@@ -6,7 +6,7 @@ import svenhjol.charm_core.iface.IClientRegistry;
 import svenhjol.charm_core.iface.ILoader;
 
 public class StrangeArchaeologyClient {
-    public static final String MOD_ID = "strange";
+    public static final String MOD_ID = "strange_archaeology";
     public static final String PREFIX = "svenhjol." + MOD_ID;
     public static final String FEATURE_PREFIX = PREFIX + ".feature";
     public static ILoader LOADER;
