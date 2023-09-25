@@ -46,5 +46,37 @@
         "stream": true
       }
     ]
+  },
+  "music_disc.menu1": {
+    "sounds": [
+      {
+        "name": "music/menu/menu1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.menu2": {
+    "sounds": [
+      {
+        "name": "music/menu/menu2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.menu3": {
+    "sounds": [
+      {
+        "name": "music/menu/menu3",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.menu4": {
+    "sounds": [
+      {
+        "name": "music/menu/menu4",
+        "stream": true
+      }
+    ]
   }
 }

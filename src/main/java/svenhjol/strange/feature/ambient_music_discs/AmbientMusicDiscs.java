@@ -21,7 +21,11 @@ public class AmbientMusicDiscs extends CharmFeature {
         "creative3",
         "creative4",
         "creative5",
-        "creative6"
+        "creative6",
+        "menu1",
+        "menu2",
+        "menu3",
+        "menu4"
     );
 
     @Configurable(name = "Attenuation support", description = "If true, ambient music discs will get quieter as the player moves away from the jukebox. EXPERIMENTAL!")
