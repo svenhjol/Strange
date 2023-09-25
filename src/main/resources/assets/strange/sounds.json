@@ -1,0 +1,50 @@
+{
+  "music_disc.creative1": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.creative2": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.creative3": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative3",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.creative4": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative4",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.creative5": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative5",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.creative6": {
+    "sounds": [
+      {
+        "name": "music/game/creative/creative6",
+        "stream": true
+      }
+    ]
+  }
+}

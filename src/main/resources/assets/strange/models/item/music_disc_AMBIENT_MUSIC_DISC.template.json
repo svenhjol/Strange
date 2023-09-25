@@ -1,0 +1,10 @@
+{
+  "template":
+    {
+      "parent": "minecraft:item/template_music_disc",
+      "textures": {
+        "layer0": "strange:item/music_disc_AMBIENT_MUSIC_DISC"
+    }
+  },
+  "variants": "ambient_music_disc"
+}

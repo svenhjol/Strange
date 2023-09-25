@@ -8,6 +8,8 @@
   "mixins": [
   ],
   "client": [
+    "ambient_music_discs.LevelRendererMixin",
+    "ambient_music_discs.OggAudioStreamMixin"
   ],
   "injectors": {
     "defaultRequire": 1
