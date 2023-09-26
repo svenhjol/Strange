@@ -32,5 +32,11 @@
   "item.strange.music_disc_rubedo": "Music Disc",
   "item.strange.music_disc_rubedo.desc": "Lena Raine - Rubedo",
   "item.strange.music_disc_so_below": "Music Disc",
-  "item.strange.music_disc_so_below.desc": "Lena Raine - So Below"
+  "item.strange.music_disc_so_below.desc": "Lena Raine - So Below",
+  "item.strange.music_disc_credits": "Music Disc",
+  "item.strange.music_disc_credits.desc": "C418 - Alpha",
+  "item.strange.music_disc_dragon": "Music Disc",
+  "item.strange.music_disc_dragon.desc": "C418 - Ender Dragon",
+  "item.strange.music_disc_end": "Music Disc",
+  "item.strange.music_disc_end.desc": "C418 - The End"
 }
