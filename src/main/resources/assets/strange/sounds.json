@@ -1,4 +1,12 @@
 {
+  "music_disc.chrysopoeia": {
+    "sounds": [
+      {
+        "name": "music/game/nether/crimson_forest/chrysopoeia",
+        "stream": true
+      }
+    ]
+  },
   "music_disc.creative1": {
     "sounds": [
       {
@@ -75,6 +83,54 @@
     "sounds": [
       {
         "name": "music/menu/menu4",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nether1": {
+    "sounds": [
+      {
+        "name": "music/game/nether/nether1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nether2": {
+    "sounds": [
+      {
+        "name": "music/game/nether/nether2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nether3": {
+    "sounds": [
+      {
+        "name": "music/game/nether/nether3",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nether4": {
+    "sounds": [
+      {
+        "name": "music/game/nether/nether4",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.rubedo": {
+    "sounds": [
+      {
+        "name": "music/game/nether/nether_wastes/rubedo",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.so_below": {
+    "sounds": [
+      {
+        "name": "music/game/nether/soulsand_valley/so_below",
         "stream": true
       }
     ]

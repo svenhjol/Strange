@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "strange:music_disc_chrysopoeia",
     "strange:music_disc_creative1",
     "strange:music_disc_creative2",
     "strange:music_disc_creative3",
@@ -10,6 +11,12 @@
     "strange:music_disc_menu1",
     "strange:music_disc_menu2",
     "strange:music_disc_menu3",
-    "strange:music_disc_menu4"
+    "strange:music_disc_menu4",
+    "strange:music_disc_nether1",
+    "strange:music_disc_nether2",
+    "strange:music_disc_nether3",
+    "strange:music_disc_nether4",
+    "strange:music_disc_rubedo",
+    "strange:music_disc_so_below"
   ]
 }

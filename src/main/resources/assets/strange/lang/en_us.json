@@ -1,4 +1,6 @@
 {
+  "item.strange.music_disc_chrysopoeia": "Music Disc",
+  "item.strange.music_disc_chrysopoeia.desc": "Lena Raine - Chrysopoeia",
   "item.strange.music_disc_creative1": "Music Disc",
   "item.strange.music_disc_creative1.desc": "C418 - Biome Fest",
   "item.strange.music_disc_creative2": "Music Disc",
@@ -18,5 +20,17 @@
   "item.strange.music_disc_menu3": "Music Disc",
   "item.strange.music_disc_menu3.desc": "C418 - Beginning 2",
   "item.strange.music_disc_menu4": "Music Disc",
-  "item.strange.music_disc_menu4.desc": "C418 - Floating Trees"
+  "item.strange.music_disc_menu4.desc": "C418 - Floating Trees",
+  "item.strange.music_disc_nether1": "Music Disc",
+  "item.strange.music_disc_nether1.desc": "C418 - Concrete Halls",
+  "item.strange.music_disc_nether2": "Music Disc",
+  "item.strange.music_disc_nether2.desc": "C418 - Dead Voxel",
+  "item.strange.music_disc_nether3": "Music Disc",
+  "item.strange.music_disc_nether3.desc": "C418 - Warmth",
+  "item.strange.music_disc_nether4": "Music Disc",
+  "item.strange.music_disc_nether4.desc": "C418 - Ballad of the Cats",
+  "item.strange.music_disc_rubedo": "Music Disc",
+  "item.strange.music_disc_rubedo.desc": "Lena Raine - Rubedo",
+  "item.strange.music_disc_so_below": "Music Disc",
+  "item.strange.music_disc_so_below.desc": "Lena Raine - So Below"
 }
