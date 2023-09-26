@@ -158,5 +158,29 @@
         "stream": true
       }
     ]
+  },
+  "music_disc.axolotl": {
+    "sounds": [
+      {
+        "name": "music/game/water/axolotl",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.dragon_fish": {
+    "sounds": [
+      {
+        "name": "music/game/water/dragon_fish",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.shuniji": {
+    "sounds": [
+      {
+        "name": "music/game/water/shuniji",
+        "stream": true
+      }
+    ]
   }
 }

@@ -16,6 +16,7 @@ public class AmbientMusicDiscs extends CharmFeature {
     public static Map<String, Supplier<AmbientRecordItem>> items = new HashMap<>();
     public static Map<String, Supplier<SoundEvent>> sounds = new HashMap<>();
     public static final List<String> TRACKS = List.of(
+        "axolotl",
         "chrysopoeia",
         "creative1",
         "creative2",
@@ -25,6 +26,7 @@ public class AmbientMusicDiscs extends CharmFeature {
         "creative6",
         "credits",
         "dragon",
+        "dragon_fish",
         "end",
         "menu1",
         "menu2",
@@ -35,6 +37,7 @@ public class AmbientMusicDiscs extends CharmFeature {
         "nether3",
         "nether4",
         "rubedo",
+        "shuniji",
         "so_below"
     );
 

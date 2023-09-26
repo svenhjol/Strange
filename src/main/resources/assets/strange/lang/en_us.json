@@ -38,5 +38,11 @@
   "item.strange.music_disc_dragon": "Music Disc",
   "item.strange.music_disc_dragon.desc": "C418 - Ender Dragon",
   "item.strange.music_disc_end": "Music Disc",
-  "item.strange.music_disc_end.desc": "C418 - The End"
+  "item.strange.music_disc_end.desc": "C418 - The End",
+  "item.strange.music_disc_axolotl": "Music Disc",
+  "item.strange.music_disc_axolotl.desc": "C418 - Axolotl",
+  "item.strange.music_disc_dragon_fish": "Music Disc",
+  "item.strange.music_disc_dragon_fish.desc": "C418 - Dragon Fish",
+  "item.strange.music_disc_shuniji": "Music Disc",
+  "item.strange.music_disc_shuniji.desc": "C418 - Shuniji"
 }
