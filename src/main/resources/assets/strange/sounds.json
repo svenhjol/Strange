@@ -10,7 +10,7 @@
   "music_disc.aerie": {
     "sounds": [
       {
-        "name": "music/game/aerie",
+        "name": "music/game/swamp/aerie",
         "stream": true
       }
     ]
@@ -66,7 +66,7 @@
   "music_disc.firebugs": {
     "sounds": [
       {
-        "name": "music/game/firebugs",
+        "name": "music/game/swamp/firebugs",
         "stream": true
       }
     ]
@@ -90,7 +90,7 @@
   "music_disc.labyrinthine": {
     "sounds": [
       {
-        "name": "music/game/labyrinthine",
+        "name": "music/game/swamp/labyrinthine",
         "stream": true
       }
     ]
