@@ -10,7 +10,7 @@ import svenhjol.strange.StrangeClient;
 import java.util.Collections;
 import java.util.LinkedList;
 
-@ClientFeature(mod = StrangeClient.MOD_ID, canBeDisabled = false)
+@ClientFeature(mod = StrangeClient.MOD_ID)
 public class AmbientMusicDiscsClient extends CharmFeature {
     public static ResourceLocation soundHolder = null;
 
