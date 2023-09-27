@@ -7,6 +7,9 @@ import svenhjol.charmony.annotation.ClientFeature;
 import svenhjol.charmony.base.CharmFeature;
 import svenhjol.strange.StrangeClient;
 
+import java.util.Collections;
+import java.util.LinkedList;
+
 @ClientFeature(mod = StrangeClient.MOD_ID, canBeDisabled = false)
 public class AmbientMusicDiscsClient extends CharmFeature {
     public static ResourceLocation soundHolder = null;
@@ -15,7 +18,10 @@ public class AmbientMusicDiscsClient extends CharmFeature {
     public void runWhenEnabled() {
         var registry = StrangeClient.instance().registry();
 
-        AmbientMusicDiscs.TRACKS.forEach(track -> {
+        var tracks = new LinkedList<>(AmbientMusicDiscs.TRACKS);
+        Collections.reverse(tracks);
+
+        tracks.forEach(track -> {
             var item = AmbientMusicDiscs.items.getOrDefault(track, null);
             if (item == null) return;
             registry.itemTab(item, CreativeModeTabs.TOOLS_AND_UTILITIES, Items.MUSIC_DISC_PIGSTEP);

@@ -1,4 +1,132 @@
 {
+  "music_disc.a_familiar_room": {
+    "sounds": [
+      {
+        "name": "music/game/a_familiar_room",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.aerie": {
+    "sounds": [
+      {
+        "name": "music/game/swamp/aerie",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.an_ordinary_day": {
+    "sounds": [
+      {
+        "name": "music/game/an_ordinary_day",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.ancestry": {
+    "sounds": [
+      {
+        "name": "music/game/ancestry",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.bromeliad": {
+    "sounds": [
+      {
+        "name": "music/game/bromeliad",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.comforting_memories": {
+    "sounds": [
+      {
+        "name": "music/game/comforting_memories",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.crescent_dunes": {
+    "sounds": [
+      {
+        "name": "music/game/crescent_dunes",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.echo_in_the_wind": {
+    "sounds": [
+      {
+        "name": "music/game/echo_in_the_wind",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.firebugs": {
+    "sounds": [
+      {
+        "name": "music/game/swamp/firebugs",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.floating_dream": {
+    "sounds": [
+      {
+        "name": "music/game/floating_dream",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.infinite_amethyst": {
+    "sounds": [
+      {
+        "name": "music/game/infinite_amethyst",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.labyrinthine": {
+    "sounds": [
+      {
+        "name": "music/game/swamp/labyrinthine",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.left_to_bloom": {
+    "sounds": [
+      {
+        "name": "music/game/left_to_bloom",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.one_more_day": {
+    "sounds": [
+      {
+        "name": "music/game/one_more_day",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.stand_tall": {
+    "sounds": [
+      {
+        "name": "music/game/stand_tall",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.wending": {
+    "sounds": [
+      {
+        "name": "music/game/wending",
+        "stream": true
+      }
+    ]
+  },
   "music_disc.calm1": {
     "sounds": [
       {
