@@ -6,16 +6,14 @@ import svenhjol.charmony.annotation.Feature;
 import svenhjol.charmony.base.CharmFeature;
 import svenhjol.strange.Strange;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Feature(mod = Strange.MOD_ID, description = "Music discs for each track of the Minecraft soundtrack.")
 public class AmbientMusicDiscs extends CharmFeature {
-    public static Map<String, Supplier<AmbientRecordItem>> items = new HashMap<>();
-    public static Map<String, Supplier<SoundEvent>> sounds = new HashMap<>();
-    public static final List<String> TRACKS = List.of(
+    public static Map<String, Supplier<AmbientRecordItem>> items = new LinkedHashMap<>();
+    public static Map<String, Supplier<SoundEvent>> sounds = new LinkedHashMap<>();
+    public static final List<String> TRACKS = new LinkedList<>(List.of(
         "a_familiar_room",
         "aerie",
         "an_ordinary_day",
@@ -67,7 +65,7 @@ public class AmbientMusicDiscs extends CharmFeature {
         "so_below",
         "stand_tall",
         "wending"
-    );
+    ));
 
     @Configurable(name = "Attenuation support", description = "If true, ambient music discs will get quieter as the player moves away from the jukebox. EXPERIMENTAL!")
     public static boolean doExperimentalAttenuation = true;
