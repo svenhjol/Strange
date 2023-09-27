@@ -1,4 +1,28 @@
 {
+  "music_disc.calm1": {
+    "sounds": [
+      {
+        "name": "music/game/calm1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.calm2": {
+    "sounds": [
+      {
+        "name": "music/game/calm2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.calm3": {
+    "sounds": [
+      {
+        "name": "music/game/calm3",
+        "stream": true
+      }
+    ]
+  },
   "music_disc.chrysopoeia": {
     "sounds": [
       {
@@ -51,6 +75,38 @@
     "sounds": [
       {
         "name": "music/game/creative/creative6",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.hal1": {
+    "sounds": [
+      {
+        "name": "music/game/hal1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.hal2": {
+    "sounds": [
+      {
+        "name": "music/game/hal2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.hal3": {
+    "sounds": [
+      {
+        "name": "music/game/hal3",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.hal4": {
+    "sounds": [
+      {
+        "name": "music/game/hal4",
         "stream": true
       }
     ]
@@ -115,6 +171,46 @@
     "sounds": [
       {
         "name": "music/game/nether/nether4",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nuance1": {
+    "sounds": [
+      {
+        "name": "music/game/nuance1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.nuance2": {
+    "sounds": [
+      {
+        "name": "music/game/nuance2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.piano1": {
+    "sounds": [
+      {
+        "name": "music/game/piano1",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.piano2": {
+    "sounds": [
+      {
+        "name": "music/game/piano2",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.piano3": {
+    "sounds": [
+      {
+        "name": "music/game/piano3",
         "stream": true
       }
     ]
