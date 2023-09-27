@@ -127,7 +127,7 @@
       }
     ]
   },
-  "music_disc.calm1": {
+  "music_disc.minecraft": {
     "sounds": [
       {
         "name": "music/game/calm1",
@@ -135,7 +135,7 @@
       }
     ]
   },
-  "music_disc.calm2": {
+  "music_disc.clark": {
     "sounds": [
       {
         "name": "music/game/calm2",
@@ -143,7 +143,7 @@
       }
     ]
   },
-  "music_disc.calm3": {
+  "music_disc.sweden": {
     "sounds": [
       {
         "name": "music/game/calm3",
@@ -159,7 +159,7 @@
       }
     ]
   },
-  "music_disc.creative1": {
+  "music_disc.biome_fest": {
     "sounds": [
       {
         "name": "music/game/creative/creative1",
@@ -167,7 +167,7 @@
       }
     ]
   },
-  "music_disc.creative2": {
+  "music_disc.blind_spots": {
     "sounds": [
       {
         "name": "music/game/creative/creative2",
@@ -175,7 +175,7 @@
       }
     ]
   },
-  "music_disc.creative3": {
+  "music_disc.haunt_muskie": {
     "sounds": [
       {
         "name": "music/game/creative/creative3",
@@ -183,7 +183,7 @@
       }
     ]
   },
-  "music_disc.creative4": {
+  "music_disc.aria_math": {
     "sounds": [
       {
         "name": "music/game/creative/creative4",
@@ -191,7 +191,7 @@
       }
     ]
   },
-  "music_disc.creative5": {
+  "music_disc.dreiton": {
     "sounds": [
       {
         "name": "music/game/creative/creative5",
@@ -199,7 +199,7 @@
       }
     ]
   },
-  "music_disc.creative6": {
+  "music_disc.taswell": {
     "sounds": [
       {
         "name": "music/game/creative/creative6",
@@ -207,7 +207,7 @@
       }
     ]
   },
-  "music_disc.hal1": {
+  "music_disc.subwoofer_lullaby": {
     "sounds": [
       {
         "name": "music/game/hal1",
@@ -215,7 +215,7 @@
       }
     ]
   },
-  "music_disc.hal2": {
+  "music_disc.living_mice": {
     "sounds": [
       {
         "name": "music/game/hal2",
@@ -223,7 +223,7 @@
       }
     ]
   },
-  "music_disc.hal3": {
+  "music_disc.haggstrom": {
     "sounds": [
       {
         "name": "music/game/hal3",
@@ -231,7 +231,7 @@
       }
     ]
   },
-  "music_disc.hal4": {
+  "music_disc.danny": {
     "sounds": [
       {
         "name": "music/game/hal4",
@@ -239,7 +239,7 @@
       }
     ]
   },
-  "music_disc.menu1": {
+  "music_disc.mutation": {
     "sounds": [
       {
         "name": "music/menu/menu1",
@@ -247,7 +247,7 @@
       }
     ]
   },
-  "music_disc.menu2": {
+  "music_disc.moog_city_2": {
     "sounds": [
       {
         "name": "music/menu/menu2",
@@ -255,7 +255,7 @@
       }
     ]
   },
-  "music_disc.menu3": {
+  "music_disc.beginning_2": {
     "sounds": [
       {
         "name": "music/menu/menu3",
@@ -263,7 +263,7 @@
       }
     ]
   },
-  "music_disc.menu4": {
+  "music_disc.floating_trees": {
     "sounds": [
       {
         "name": "music/menu/menu4",
@@ -271,7 +271,7 @@
       }
     ]
   },
-  "music_disc.nether1": {
+  "music_disc.concrete_halls": {
     "sounds": [
       {
         "name": "music/game/nether/nether1",
@@ -279,7 +279,7 @@
       }
     ]
   },
-  "music_disc.nether2": {
+  "music_disc.dead_voxel": {
     "sounds": [
       {
         "name": "music/game/nether/nether2",
@@ -287,7 +287,7 @@
       }
     ]
   },
-  "music_disc.nether3": {
+  "music_disc.warmth": {
     "sounds": [
       {
         "name": "music/game/nether/nether3",
@@ -295,7 +295,7 @@
       }
     ]
   },
-  "music_disc.nether4": {
+  "music_disc.ballad_of_the_cats": {
     "sounds": [
       {
         "name": "music/game/nether/nether4",
@@ -303,7 +303,7 @@
       }
     ]
   },
-  "music_disc.nuance1": {
+  "music_disc.key": {
     "sounds": [
       {
         "name": "music/game/nuance1",
@@ -311,7 +311,7 @@
       }
     ]
   },
-  "music_disc.nuance2": {
+  "music_disc.oxygene": {
     "sounds": [
       {
         "name": "music/game/nuance2",
@@ -319,7 +319,7 @@
       }
     ]
   },
-  "music_disc.piano1": {
+  "music_disc.dry_hands": {
     "sounds": [
       {
         "name": "music/game/piano1",
@@ -327,7 +327,7 @@
       }
     ]
   },
-  "music_disc.piano2": {
+  "music_disc.wet_hands": {
     "sounds": [
       {
         "name": "music/game/piano2",
@@ -335,7 +335,7 @@
       }
     ]
   },
-  "music_disc.piano3": {
+  "music_disc.mice_on_venus": {
     "sounds": [
       {
         "name": "music/game/piano3",
@@ -367,7 +367,7 @@
       }
     ]
   },
-  "music_disc.dragon": {
+  "music_disc.end_boss": {
     "sounds": [
       {
         "name": "music/game/end/boss",
