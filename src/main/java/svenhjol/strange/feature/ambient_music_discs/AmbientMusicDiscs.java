@@ -16,11 +16,17 @@ public class AmbientMusicDiscs extends CharmFeature {
     public static Map<String, Supplier<AmbientRecordItem>> items = new HashMap<>();
     public static Map<String, Supplier<SoundEvent>> sounds = new HashMap<>();
     public static final List<String> TRACKS = List.of(
+        "a_familiar_room",
+        "aerie",
+        "an_ordinary_day",
+        "ancestry",
         "axolotl",
+        "bromeliad",
         "calm1",
         "calm2",
         "calm3",
         "chrysopoeia",
+        "comforting_memories",
         "creative1",
         "creative2",
         "creative3",
@@ -28,13 +34,20 @@ public class AmbientMusicDiscs extends CharmFeature {
         "creative5",
         "creative6",
         "credits",
+        "crescent_dunes",
         "dragon",
         "dragon_fish",
+        "echo_in_the_wind",
         "end",
+        "firebugs",
+        "floating_dream",
         "hal1",
         "hal2",
         "hal3",
         "hal4",
+        "infinite_amethyst",
+        "labyrinthine",
+        "left_to_bloom",
         "menu1",
         "menu2",
         "menu3",
@@ -45,12 +58,15 @@ public class AmbientMusicDiscs extends CharmFeature {
         "nether2",
         "nether3",
         "nether4",
+        "one_more_day",
         "piano1",
         "piano2",
         "piano3",
         "rubedo",
         "shuniji",
-        "so_below"
+        "so_below",
+        "stand_tall",
+        "wending"
     );
 
     @Configurable(name = "Attenuation support", description = "If true, ambient music discs will get quieter as the player moves away from the jukebox. EXPERIMENTAL!")
