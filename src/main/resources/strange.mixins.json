@@ -6,10 +6,13 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "enchantable_horse_armor.EnchantmentMixin",
+    "enchantable_horse_armor.HorseMixin"
   ],
   "client": [
     "ambient_music_discs.LevelRendererMixin",
-    "ambient_music_discs.OggAudioStreamMixin"
+    "ambient_music_discs.OggAudioStreamMixin",
+    "enchantable_horse_armor.HorseArmorLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
