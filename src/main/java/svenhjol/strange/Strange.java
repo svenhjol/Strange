@@ -1,20 +1,25 @@
 package svenhjol.strange;
 
-import svenhjol.charmony.base.DefaultMod;
+import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony.common.CommonMod;
+import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscs;
+import svenhjol.strange.feature.raid_horns.RaidHorns;
 
-public class Strange extends DefaultMod {
-    public static final String MOD_ID = "strange";
-    private static Strange instance;
+import java.util.List;
 
-    public static Strange instance() {
-        if (instance == null) {
-            instance = new Strange();
-        }
-        return instance;
-    }
+public class Strange extends CommonMod {
+    public static final String ID = "strange";
 
     @Override
     public String modId() {
-        return MOD_ID;
+        return ID;
+    }
+
+    @Override
+    public List<Class<? extends CommonFeature>> features() {
+        return List.of(
+            AmbientMusicDiscs.class,
+            RaidHorns.class
+        );
     }
 }

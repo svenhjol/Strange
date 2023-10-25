@@ -1,20 +1,24 @@
 package svenhjol.strange;
 
-import svenhjol.charmony.base.DefaultClientMod;
+import svenhjol.charmony.client.ClientFeature;
+import svenhjol.charmony.client.ClientMod;
+import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscsClient;
+import svenhjol.strange.feature.raid_horns.RaidHornsClient;
 
-public class StrangeClient extends DefaultClientMod {
-    public static final String MOD_ID = "strange";
-    private static StrangeClient instance;
+import java.util.List;
 
-    public static StrangeClient instance() {
-        if (instance == null) {
-            instance = new StrangeClient();
-        }
-        return instance;
-    }
+public class StrangeClient extends ClientMod {
 
     @Override
     public String modId() {
-        return MOD_ID;
+        return Strange.ID;
+    }
+
+    @Override
+    public List<Class<? extends ClientFeature>> features() {
+        return List.of(
+            AmbientMusicDiscsClient.class,
+            RaidHornsClient.class
+        );
     }
 }

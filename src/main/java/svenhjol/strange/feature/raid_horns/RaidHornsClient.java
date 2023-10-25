@@ -5,32 +5,26 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import svenhjol.charmony.annotation.ClientFeature;
-import svenhjol.charmony.base.CharmFeature;
-import svenhjol.strange.Strange;
-import svenhjol.strange.StrangeClient;
+import svenhjol.charmony.client.ClientFeature;
+import svenhjol.charmony.common.CommonFeature;
 
-import java.util.List;
-import java.util.function.BooleanSupplier;
-
-@SuppressWarnings("deprecation")
-@ClientFeature
-public class RaidHornsClient extends CharmFeature {
+public class RaidHornsClient extends ClientFeature {
     @Override
-    public List<BooleanSupplier> checks() {
-        return List.of(() -> Strange.instance().loader().isEnabled(RaidHorns.class));
+    public Class<? extends CommonFeature> commonFeature() {
+        return RaidHorns.class;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void register() {
-        var registry = StrangeClient.instance().registry();
+        var registry = mod().registry();
         registry.itemProperties("minecraft:tooting",
             RaidHorns.item, () -> this::handleTooting);
     }
 
     @Override
     public void runWhenEnabled() {
-        var registry = StrangeClient.instance().registry();
+        var registry = mod().registry();
         registry.itemTab(
             RaidHorns.item,
             CreativeModeTabs.TOOLS_AND_UTILITIES,

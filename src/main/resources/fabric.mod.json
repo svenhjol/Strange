@@ -5,7 +5,8 @@
   "name": "Strange",
   "description": "Charm, but stranger.",
   "authors": [
-    "svenhjol"
+    "svenhjol",
+    "Coranthes"
   ],
   "icon": "icon.png",
   "license": "MIT",
@@ -19,6 +20,9 @@
     ],
     "client": [
       "svenhjol.strange.fabric.ClientInitalizer"
+    ],
+    "modmenu": [
+      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
     ]
   },
   "accessWidener": "strange.accesswidener",
@@ -27,5 +31,17 @@
     "charmony": ">=${charmony_version}",
     "minecraft": "${minecraft_version}",
     "java": ">=17"
+  },
+  "contact": {
+    "homepage": "https://svenhjol.github.io/Strange",
+    "sources": "https://github.com/svenhjol/Strange"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
   }
 }

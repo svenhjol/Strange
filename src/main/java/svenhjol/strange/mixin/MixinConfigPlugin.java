@@ -1,11 +1,11 @@
 package svenhjol.strange.mixin;
 
+import svenhjol.charmony.base.CharmonyMixinConfigPlugin;
 import svenhjol.strange.Strange;
-import svenhjol.charmony.base.CharmMixinConfigPlugin;
 
-public class MixinConfigPlugin extends CharmMixinConfigPlugin {
+public class MixinConfigPlugin extends CharmonyMixinConfigPlugin {
     @Override
     protected String getModId() {
-        return Strange.MOD_ID;
+        return Strange.ID;
     }
 }

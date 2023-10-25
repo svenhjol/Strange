@@ -2,15 +2,15 @@ package svenhjol.strange.feature.ambient_music_discs;
 
 import net.minecraft.sounds.SoundEvent;
 import svenhjol.charmony.annotation.Configurable;
-import svenhjol.charmony.annotation.Feature;
-import svenhjol.charmony.base.CharmFeature;
-import svenhjol.strange.Strange;
+import svenhjol.charmony.common.CommonFeature;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-@Feature(mod = Strange.MOD_ID, description = "Music discs for each track of the Minecraft soundtrack.")
-public class AmbientMusicDiscs extends CharmFeature {
+public class AmbientMusicDiscs extends CommonFeature {
     public static Map<String, Supplier<AmbientRecordItem>> items = new LinkedHashMap<>();
     public static Map<String, Supplier<SoundEvent>> sounds = new LinkedHashMap<>();
     public static final List<String> TRACKS = new LinkedList<>(List.of(
@@ -71,8 +71,13 @@ public class AmbientMusicDiscs extends CharmFeature {
     public static boolean doExperimentalAttenuation = true;
 
     @Override
+    public String description() {
+        return "Music discs for each track of the Minecraft soundtrack.";
+    }
+
+    @Override
     public void register() {
-        var registry = Strange.instance().registry();
+        var registry = mod().registry();
 
         TRACKS.forEach(track -> sounds.put(track, registry.soundEvent("music_disc." + track)));
         TRACKS.forEach(track -> items.put(track, registry.item("music_disc_" + track,

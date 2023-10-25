@@ -14,19 +14,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.PatrolSpawner;
-import svenhjol.charmony.annotation.Feature;
-import svenhjol.charmony.base.CharmFeature;
+import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony_api.CharmonyApi;
 import svenhjol.charmony_api.event.EntityKilledDropEvent;
 import svenhjol.charmony_api.iface.IWandererTrade;
 import svenhjol.charmony_api.iface.IWandererTradeProvider;
-import svenhjol.strange.Strange;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-@Feature(mod = Strange.MOD_ID, description = "Raid horns are sometimes dropped from raid leaders and can be used to call off raids or summon pillagers.")
-public class RaidHorns extends CharmFeature implements IWandererTradeProvider {
+public class RaidHorns extends CommonFeature implements IWandererTradeProvider {
     public static Supplier<RaidHornItem> item;
     public static Supplier<SoundEvent> callPatrolSound;
     public static Supplier<SoundEvent> callOffRaidSound;
@@ -37,8 +34,13 @@ public class RaidHorns extends CharmFeature implements IWandererTradeProvider {
     public static final int WANDERER_TRADE_COST = 30; // Number of emeralds a WT charges.
 
     @Override
+    public String description() {
+        return "Raid horns are sometimes dropped from raid leaders and can be used to call off raids or summon pillagers.";
+    }
+
+    @Override
     public void register() {
-        var registry = Strange.instance().registry();
+        var registry = mod().registry();
 
         item = registry.item("raid_horn", () -> new RaidHornItem(this));
         callPatrolSound = registry.soundEvent("raid_horn_call_patrol");

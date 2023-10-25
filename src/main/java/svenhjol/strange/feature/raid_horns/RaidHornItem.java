@@ -10,16 +10,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import svenhjol.charmony.base.CharmFeature;
-import svenhjol.charmony.base.CharmItem;
+import svenhjol.charmony.base.CharmonyItem;
+import svenhjol.charmony.common.CommonFeature;
 
 import java.util.function.Supplier;
 
-public class RaidHornItem extends CharmItem {
+public class RaidHornItem extends CharmonyItem {
     private static final float RANGE = 256.0F; // Matches goat horns.
     private static final int DURATION = 140; // Matches goat horns.
 
-    public RaidHornItem(CharmFeature feature) {
+    public RaidHornItem(CommonFeature feature) {
         super(feature, new Properties()
             .durability(RaidHorns.DURABILITY));
     }
