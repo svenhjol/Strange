@@ -4,12 +4,17 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.annotation.Configurable;
 import svenhjol.charmony.base.CharmonyConfig;
 import svenhjol.charmony.base.DefaultFeature;
+import svenhjol.charmony.base.Log;
 import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.client.ClientFeature;
+import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.charmony.iface.IClientMod;
 import svenhjol.charmony.iface.ICommonMod;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
@@ -19,27 +24,34 @@ import java.util.*;
 
 /**
  * Use Charm's ModMenuPlugin as the default.
- * ModMenuConfig v1.0.0
+ * ModMenuConfig v1.0.1
  */
-public class StrangeModMenuPlugin implements ModMenuApi {
-    public ICommonMod mod() {
-        return Mods.common(Strange.ID);
-    }
-
+public class StrangeModMenuPlugin<F extends DefaultFeature> implements ModMenuApi {
     public String modId() {
         return Strange.ID;
     }
 
+    public Optional<IClientMod> client() {
+        return Mods.optionalClient(modId());
+    }
+
+    public Optional<ICommonMod> common() {
+        return Mods.optionalCommon(modId());
+    }
+
     public ILog log() {
-        return mod().log();
+        return Mods.optionalCommon(modId()).map(ICommonMod::log).orElse(new Log(modId()));
     }
 
-    public CharmonyConfig config() {
-        return (CharmonyConfig) mod().config();
-    }
+    @SuppressWarnings("unchecked")
+    public List<F> getFeatures() {
+        List<DefaultFeature> features = new ArrayList<>();
 
-    public List<? extends DefaultFeature> getFeatures() {
-        return mod().loader().getFeatures();
+        common().ifPresent(m -> features.addAll(m.loader().getFeatures()));
+        client().ifPresent(m -> features.addAll(m.loader().getFeatures()));
+
+        features.sort(Comparator.comparing(DefaultFeature::name));
+        return (List<F>) features;
     }
 
     @SuppressWarnings("unchecked")
@@ -50,25 +62,36 @@ public class StrangeModMenuPlugin implements ModMenuApi {
                 .setTitle(TextHelper.translatable("cloth." + modId() + ".title"));
 
             var features = new LinkedList<>(getFeatures());
-            features.sort(Comparator.comparing(DefaultFeature::name));
+            features.sort(Comparator.comparing(F::name));
 
             // Serialise the config into the config file. This is called after all variables are updated.
-            builder.setSavingRunnable(() -> config().writeConfig(features));
+            builder.setSavingRunnable(() -> {
+                List<CommonFeature> commonFeatures = new LinkedList<>();
+                List<ClientFeature> clientFeatures = new LinkedList<>();
 
-            builder.setGlobalized(true);
-            builder.setGlobalizedExpanded(false);
+                for (F feature : features) {
+                    if (feature instanceof CommonFeature common) {
+                        commonFeatures.add(common);
+                    } else if (feature instanceof ClientFeature client) {
+                        clientFeatures.add(client);
+                    }
+                }
+
+                common().ifPresent(m -> m.config().writeConfig(commonFeatures));
+                client().ifPresent(m -> m.config().writeConfig(clientFeatures));
+            });
+
+            var category = builder.getOrCreateCategory(TextHelper.translatable("cloth.category." + modId() + ".title"));
 
             for (var feature : features) {
+                SubCategoryBuilder subcategory = null;
                 var enabled = false;
                 var name = feature.name();
                 var description = feature.description();
                 var properties = getFeatureConfigProperties(feature);
 
                 if (feature.canBeDisabled()) {
-                    var category = builder.getOrCreateCategory(Component.literal(name));
-                    category.addEntry(builder.entryBuilder()
-                        .startTextDescription(Component.literal(description))
-                        .build());
+                    subcategory = startSubcategory(builder, name, description);
 
                     var toggleFeatureName = TextHelper.translatable("cloth.category." + modId() + ".feature_enabled", name);
                     var defaultValue = feature.isEnabledByDefault();
@@ -81,12 +104,15 @@ public class StrangeModMenuPlugin implements ModMenuApi {
 
                     if (featureEntryBuilder != null) {
                         featureEntryBuilder.requireRestart();
-                        category.addEntry(featureEntryBuilder.build());
+                        subcategory.add(featureEntryBuilder.build());
                     }
                 }
 
                 for (Map.Entry<Field, Object> entry : properties.entrySet()) {
-                    var category = builder.getOrCreateCategory(Component.literal(name));
+                    if (subcategory == null) {
+                        subcategory = startSubcategory(builder, name, description);
+                    }
+
                     var prop = entry.getKey();
                     var value = entry.getValue();
 
@@ -137,8 +163,12 @@ public class StrangeModMenuPlugin implements ModMenuApi {
 
                     if (fieldBuilder != null) {
                         fieldBuilder.requireRestart(requireRestart);
-                        category.addEntry(fieldBuilder.build());
+                        subcategory.add(fieldBuilder.build());
                     }
+                }
+
+                if (subcategory != null) {
+                    category.addEntry(subcategory.build());
                 }
             }
 
@@ -146,7 +176,7 @@ public class StrangeModMenuPlugin implements ModMenuApi {
         };
     }
 
-    private Map<Field, Object> getFeatureConfigProperties(DefaultFeature feature) {
+    private Map<Field, Object> getFeatureConfigProperties(F feature) {
         Map<Field, Object> properties = new LinkedHashMap<>();
 
         // Get and set feature config options
@@ -179,5 +209,14 @@ public class StrangeModMenuPlugin implements ModMenuApi {
         return CharmonyConfig.
             getDefaultFieldValues()
             .getOrDefault(prop, null);
+    }
+
+    private SubCategoryBuilder startSubcategory(ConfigBuilder builder, String name, String description) {
+        var subcategory = builder.entryBuilder().startSubCategory(Component.literal(name));
+        subcategory.add(builder.entryBuilder()
+            .startTextDescription(Component.literal(description))
+            .build());
+
+        return subcategory;
     }
 }

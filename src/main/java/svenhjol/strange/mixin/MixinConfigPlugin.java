@@ -5,7 +5,7 @@ import svenhjol.strange.Strange;
 
 public class MixinConfigPlugin extends CharmonyMixinConfigPlugin {
     @Override
-    protected String getModId() {
+    protected String modId() {
         return Strange.ID;
     }
 }
