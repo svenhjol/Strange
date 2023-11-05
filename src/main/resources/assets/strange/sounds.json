@@ -453,5 +453,18 @@
       }
     ],
     "subtitle": "subtitles.strange.item.raid_horn.squeak"
+  },
+  "waypoint_broadcast": {
+    "sounds": [
+      {
+        "name": "strange:waypoint_broadcast1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:waypoint_broadcast2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.waypoint.broadcast"
   }
 }

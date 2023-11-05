@@ -5,6 +5,7 @@ import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.common.CommonMod;
 import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscs;
 import svenhjol.strange.feature.raid_horns.RaidHorns;
+import svenhjol.strange.feature.waypoints.Waypoints;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class Strange extends CommonMod {
         return List.of(
             AmbientMusicDiscs.class,
             PiglinPointing.class,
-            RaidHorns.class
+            RaidHorns.class,
+            Waypoints.class
         );
     }
 }
