@@ -35,7 +35,7 @@ public class PiglinPointing extends CommonFeature {
     @Override
     public void register() {
         entityDataIsPointing = SynchedEntityData.defineId(Piglin.class, EntityDataSerializers.BOOLEAN);
-        pointingAtTarget = MemoryModuleType.register("charm_pointing_at_target");
+        pointingAtTarget = MemoryModuleType.register("strange_pointing_at_target");
 
         registerDirectionBartering(StrangeTags.PIGLIN_BARTERS_FOR_BASTIONS, StrangeTags.PIGLIN_BASTION_LOCATED);
         registerDirectionBartering(StrangeTags.PIGLIN_BARTERS_FOR_FORTRESSES, StrangeTags.PIGLIN_FORTRESS_LOCATED);
