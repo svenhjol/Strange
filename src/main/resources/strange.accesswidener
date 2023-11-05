@@ -1,5 +1,12 @@
 accessWidener v1 named
 
+# PiglinPointing
+accessible method net/minecraft/world/entity/monster/piglin/PiglinAi holdInOffhand (Lnet/minecraft/world/entity/monster/piglin/Piglin;Lnet/minecraft/world/item/ItemStack;)V
+accessible method net/minecraft/world/entity/monster/piglin/PiglinAi admireGoldItem (Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/entity/ai/memory/MemoryModuleType register (Ljava/lang/String;)Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;
+accessible field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
+mutable field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
+
 # Raid horns
 accessible field net/minecraft/server/level/ServerLevel customSpawners Ljava/util/List;
 accessible field net/minecraft/world/level/levelgen/PatrolSpawner nextTick I

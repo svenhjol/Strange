@@ -1,5 +1,6 @@
 package svenhjol.strange;
 
+import svenhjol.strange.feature.piglin_pointing.PiglinPointing;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.common.CommonMod;
 import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscs;
@@ -19,6 +20,7 @@ public class Strange extends CommonMod {
     public List<Class<? extends CommonFeature>> features() {
         return List.of(
             AmbientMusicDiscs.class,
+            PiglinPointing.class,
             RaidHorns.class
         );
     }

@@ -6,10 +6,13 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "piglin_pointing.PiglinAiMixin",
+    "piglin_pointing.PiglinMixin",
   ],
   "client": [
     "ambient_music_discs.LevelRendererMixin",
-    "ambient_music_discs.OggAudioStreamMixin"
+    "ambient_music_discs.OggAudioStreamMixin",
+    "piglin_pointing.PiglinModelMixin",
   ],
   "injectors": {
     "defaultRequire": 1
