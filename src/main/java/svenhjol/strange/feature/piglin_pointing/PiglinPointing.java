@@ -28,8 +28,8 @@ public class PiglinPointing extends CommonFeature {
     @Override
     public String description() {
         return """
-            Piglins turn and point in the rough direction of a nether fortress if given a block of nether bricks,
-            or bastions if given a block of polished blackstone bricks.""";
+            Piglins turn and point in the rough direction of a nether fortress if given a chiseled nether bricks block,
+            or bastions if given a gilded blackstone block.""";
     }
 
     @Override
