@@ -64,7 +64,7 @@ public class PiglinPointing extends CommonFeature {
 
             for (var pair : DIRECTION_BARTERING) {
                 if (stack.is(pair.getFirst())) {
-                    target = level.findNearestMapStructure(pair.getSecond(), source, 500, false);
+                    target = level.findNearestMapStructure(pair.getSecond(), source, 100, false);
                 }
             }
 
