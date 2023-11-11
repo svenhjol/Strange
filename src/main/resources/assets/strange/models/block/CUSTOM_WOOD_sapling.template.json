@@ -1,0 +1,9 @@
+{
+  "template": {
+    "parent": "minecraft:block/cross",
+    "textures": {
+      "cross": "NAMESPACE:block/CUSTOM_WOOD_sapling"
+    }
+  },
+  "variants": "custom_wood"
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "strange:core/decoration",
+  "display": {
+    "icon": {
+      "item": "strange:ebony_planks"
+    },
+    "title": {
+      "translate": "advancements.strange.obtain_ebony_log.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtain_ebony_log.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtained_ebony_log": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["strange:ebony_log"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtained_ebony_log"
+    ]
+  ]
+}

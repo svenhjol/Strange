@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "strange:ebony_planks"
+    },
+    "X": {
+      "item": "strange:ebony_slab"
+    }
+  },
+  "pattern": [
+    "###",
+    "XXX",
+    "###"
+  ],
+  "result": {
+    "item": "charm:chiseled_ebony_bookshelf"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "strange:ebony_wood/ebony_chest"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_planks": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "strange:ebony_planks"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_planks",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "strange:ebony_wood/ebony_chest"
+    ]
+  }
+}

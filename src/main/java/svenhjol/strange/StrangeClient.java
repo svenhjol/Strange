@@ -1,5 +1,6 @@
 package svenhjol.strange;
 
+import svenhjol.strange.feature.ebony_wood.EbonyWoodClient;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointingClient;
 import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.client.ClientMod;
@@ -20,6 +21,7 @@ public class StrangeClient extends ClientMod {
     public List<Class<? extends ClientFeature>> features() {
         return List.of(
             AmbientMusicDiscsClient.class,
+            EbonyWoodClient.class,
             PiglinPointingClient.class,
             RaidHornsClient.class,
             WaypointsClient.class

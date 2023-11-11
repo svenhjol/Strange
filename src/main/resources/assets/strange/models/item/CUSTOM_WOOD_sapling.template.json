@@ -1,0 +1,9 @@
+{
+  "template": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "NAMESPACE:block/CUSTOM_WOOD_sapling"
+    }
+  },
+  "variants": "custom_wood"
+}

@@ -1,0 +1,10 @@
+{
+  "template": {
+    "variants": {
+      "": {
+        "model": "NAMESPACE:block/CUSTOM_WOOD_sapling"
+      }
+    }
+  },
+  "variants": "custom_wood"
+}

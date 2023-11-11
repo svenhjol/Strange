@@ -6,13 +6,14 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "enums.boat_type_enum.BoatTypeMixin",
     "piglin_pointing.PiglinAiMixin",
-    "piglin_pointing.PiglinMixin",
+    "piglin_pointing.PiglinMixin"
   ],
   "client": [
     "ambient_music_discs.LevelRendererMixin",
     "ambient_music_discs.OggAudioStreamMixin",
-    "piglin_pointing.PiglinModelMixin",
+    "piglin_pointing.PiglinModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
