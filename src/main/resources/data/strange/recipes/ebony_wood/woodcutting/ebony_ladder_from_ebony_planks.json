@@ -3,6 +3,6 @@
   "ingredient": {
     "item": "strange:ebony_planks"
   },
-  "result": "charm:ebony_ladder",
+  "result": "strange:ebony_ladder",
   "count": 3
 }

@@ -10,22 +10,15 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.feature.custom_wood.CustomWood;
+import svenhjol.charmony.feature.variant_wood.VariantWood;
 import svenhjol.charmony_api.CharmonyApi;
-import svenhjol.charmony_api.iface.*;
+import svenhjol.charmony_api.iface.IVariantWoodMaterial;
 import svenhjol.strange.Strange;
 import svenhjol.strange.StrangeTags;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-public class EbonyWood extends CommonFeature implements
-    IVariantBarrelProvider,
-    IVariantBookshelfProvider,
-    IVariantChestProvider,
-    IVariantChestBoatProvider,
-    IVariantChiseledBookshelfProvider,
-    IVariantLadderProvider
-{
+public class EbonyWood extends CommonFeature {
     static Supplier<BlockSetType> blockSetType;
     static Supplier<WoodType> woodType;
     static IVariantWoodMaterial material;
@@ -51,45 +44,16 @@ public class EbonyWood extends CommonFeature implements
         TREE_PLACEMENT = ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Strange.ID, "ebony_tree"));
         TREES_PLACEMENT = ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Strange.ID, "ebony_trees"));
 
-        CustomWood.registerWood(this, mod().registry(), new EbonyWoodDefinition());
+        CustomWood.registerWood(mod().registry(), new EbonyWoodDefinition());
+        VariantWood.registerWood(mod().registry(), material);
 
         CharmonyApi.registerProvider(this);
-        CharmonyApi.registerProvider(new EbonyWoodRecipeProvider());
+        CharmonyApi.registerProvider(new EbonyWoodDataProvider());
     }
 
     @Override
     public void runWhenEnabled() {
         mod().registry().biomeAddition("ebony_trees",
             holder -> holder.is(StrangeTags.GROWS_EBONY_TREES), GenerationStep.Decoration.VEGETAL_DECORATION, TREES_PLACEMENT);
-    }
-
-    @Override
-    public List<IVariantMaterial> getVariantBarrels() {
-        return List.of(material);
-    }
-
-    @Override
-    public List<IVariantMaterial> getVariantBookshelves() {
-        return List.of(material);
-    }
-
-    @Override
-    public List<IVariantMaterial> getVariantChests() {
-        return List.of(material);
-    }
-
-    @Override
-    public List<IVariantMaterial> getVariantChiseledBookshelves() {
-        return List.of(material);
-    }
-
-    @Override
-    public List<IVariantMaterial> getVariantLadders() {
-        return List.of(material);
-    }
-
-    @Override
-    public List<IVariantChestBoatDefinition> getVariantChestBoatDefinitions() {
-        return List.of(new EbonyChestBoatDefinition());
     }
 }

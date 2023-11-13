@@ -1,5 +1,6 @@
 package svenhjol.strange;
 
+import net.minecraft.resources.ResourceLocation;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.common.CommonMod;
@@ -15,6 +16,7 @@ import java.util.List;
 public class Strange extends CommonMod {
     public static final String ID = "strange";
     public static final String CHARM_ID = "charm";
+    public static final String CHARMONY_ID = "charmony";
 
     @Override
     public String modId() {
@@ -33,8 +35,7 @@ public class Strange extends CommonMod {
         );
     }
 
-    public static boolean isCharmFeatureEnabled(String featureName) {
-        return Mods.optionalCommon(CHARM_ID).map(
-            charm -> charm.loader().isEnabled(featureName)).orElse(false);
+    public static boolean isFeatureEnabled(ResourceLocation feature) {
+        return Mods.common(ID).loader().isEnabled(feature);
     }
 }
