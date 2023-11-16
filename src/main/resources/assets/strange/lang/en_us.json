@@ -37,6 +37,8 @@
   "cloth.strange.title": "Strange configuration",
   "cloth.category.strange.title": "Strange",
   "cloth.category.strange.feature_enabled": "%s enabled",
+  "gui.strange.cask.portions": "Number of bottles: %s",
+  "gui.strange.cask.only_contains_water": "Only contains water",
   "item.strange.ebony_boat": "Ebony Boat",
   "item.strange.ebony_chest_boat": "Ebony Boat with Chest",
   "item.strange.home_brew": "Home Brew",

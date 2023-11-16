@@ -1,9 +1,11 @@
 package svenhjol.strange.feature.casks;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,6 +44,7 @@ import svenhjol.charmony.feature.advancements.Advancements;
 import svenhjol.charmony.iface.IFuelProvider;
 import svenhjol.strange.Strange;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -86,8 +90,8 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                     // Take a bottle of liquid from the cask using a glass bottle.
                     var out = cask.take();
                     if (out != null) {
-                        player.getInventory().add(out);
                         held.shrink(1);
+                        player.getInventory().add(out);
 
                         if (cask.portions > 0) {
                             // TODO: custom sounds
@@ -97,7 +101,7 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 1.0F);
                         }
 
-                        if (cask.portions > 1 && cask.effects.size() > 1) {
+                        if (cask.effects.size() > 1) {
                             triggerTookLiquidFromCask(player);
                         }
                     }
@@ -111,6 +115,8 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                         level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.6F, 1.0F);
                         level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
 
+                        held.shrink(1);
+
                         // give the glass bottle back to the player
                         player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
 
@@ -121,8 +127,6 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                         if (cask.portions > 1 && cask.effects.size() > 1) {
                             triggerAddedLiquidToCask(player);
                         }
-
-                        held.shrink(1);
                     }
                 }
             }
@@ -133,6 +137,16 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
         return InteractionResult.PASS;
     }
 
+//    @Override
+//    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+//        var blockEntity = level.getBlockEntity(pos);
+//        if (blockEntity instanceof CaskBlockEntity cask) {
+//            if (!level.isClientSide && )
+//        }
+//
+//        super.playerWillDestroy(level, pos, state, player);
+//    }
+
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (level.getBlockEntity(pos) instanceof CaskBlockEntity cask) {
@@ -140,13 +154,13 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                 cask.name = itemStack.getHoverName().getContents().toString();
             }
 
-            // Try restore contents from tag
-            var tag = itemStack.getTag();
-            if (tag != null && tag.contains(Casks.STORED_POTIONS_TAG)) {
-                cask.load(tag.getCompound(Casks.STORED_POTIONS_TAG));
-            }
-
-            cask.setChanged();
+//            // Try restore contents from tag
+//            var tag = itemStack.getTag();
+//            if (tag != null && tag.contains(Casks.STORED_POTIONS_TAG)) {
+//                cask.load(tag.getCompound(Casks.STORED_POTIONS_TAG));
+//            }
+//
+//            cask.setChanged();
         }
 
         super.setPlacedBy(level, pos, state, placer, itemStack);
@@ -252,6 +266,26 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
         }
     }
 
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag tooltipFlag) {
+        var tag = BlockItem.getBlockEntityData(stack);
+        if (tag != null) {
+            var blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Casks.block.get().defaultBlockState(), tag);
+            if (blockEntity instanceof CaskBlockEntity cask) {
+                list.add(Component.translatable("gui.strange.cask.portions", cask.portions).withStyle(ChatFormatting.AQUA));
+
+                if (!cask.effects.isEmpty()) {
+                    for (var effect : cask.effects) {
+                        BuiltInRegistries.MOB_EFFECT.getOptional(effect).ifPresent(
+                            mobEffect -> list.add(Component.translatable(mobEffect.getDescriptionId()).withStyle(ChatFormatting.BLUE)));
+                    }
+                } else {
+                    list.add(Component.translatable("gui.strange.cask.only_contains_water").withStyle(ChatFormatting.BLUE));
+                }
+            }
+        }
+    }
+
     void createWaterParticle(Level level, BlockPos pos) {
         var random = level.getRandom();
 
@@ -286,18 +320,18 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
     }
 
     static {
-        X1 = Block.box(1.0D, 0.0D, 4.0D, 15.0D, 16.0D, 12.0D);
-        X2 = Block.box(1.0D, 1.0D, 2.0D, 15.0D, 15.0D, 14.0D);
-        X3 = Block.box(1.0D, 2.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        X4 = Block.box(1.0D, 4.0D, 0.0D, 15.0D, 12.0D, 16.0D);
-        Y1 = Block.box(4.0D, 1.0D, 0.0D, 12.0D, 15.0D, 16.0D);
-        Y2 = Block.box(2.0D, 1.0D, 1.0D, 14.0D, 15.0D, 15.0D);
-        Y3 = Block.box(1.0D, 1.0D, 2.0D, 15.0D, 15.0D, 14.0D);
-        Y4 = Block.box(0.0D, 1.0D, 4.0D, 16.0D, 15.0D, 12.0D);
-        Z1 = Block.box(4.0D, 0.0D, 1.0D, 12.0D, 16.0D, 15.0D);
-        Z2 = Block.box(2.0D, 1.0D, 1.0D, 14.0D, 15.0D, 15.0D);
-        Z3 = Block.box(1.0D, 2.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        Z4 = Block.box(0.0D, 4.0D, 1.0D, 16.0D, 12.0D, 15.0D);
+        X1 = Block.box(1.0d, 0.0d, 4.0d, 15.0d, 16.0d, 12.0d);
+        X2 = Block.box(1.0d, 1.0d, 2.0d, 15.0d, 15.0d, 14.0d);
+        X3 = Block.box(1.0d, 2.0d, 1.0d, 15.0d, 14.0d, 15.0d);
+        X4 = Block.box(1.0d, 4.0d, 0.0d, 15.0d, 12.0d, 16.0d);
+        Y1 = Block.box(4.0d, 1.0d, 0.0d, 12.0d, 15.0d, 16.0d);
+        Y2 = Block.box(2.0d, 1.0d, 1.0d, 14.0d, 15.0d, 15.0d);
+        Y3 = Block.box(1.0d, 1.0d, 2.0d, 15.0d, 15.0d, 14.0d);
+        Y4 = Block.box(0.0d, 1.0d, 4.0d, 16.0d, 15.0d, 12.0d);
+        Z1 = Block.box(4.0d, 0.0d, 1.0d, 12.0d, 16.0d, 15.0d);
+        Z2 = Block.box(2.0d, 1.0d, 1.0d, 14.0d, 15.0d, 15.0d);
+        Z3 = Block.box(1.0d, 2.0d, 1.0d, 15.0d, 14.0d, 15.0d);
+        Z4 = Block.box(0.0d, 4.0d, 1.0d, 16.0d, 12.0d, 15.0d);
         X_SHAPE = Shapes.or(X1, X2, X3, X4);
         Y_SHAPE = Shapes.or(Y1, Y2, Y3, Y4);
         Z_SHAPE = Shapes.or(Z1, Z2, Z3, Z4);

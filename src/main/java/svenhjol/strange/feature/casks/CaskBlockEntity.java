@@ -111,19 +111,26 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CaskBlockEntity cask) {
         var input = cask.items.get(0);
+        var output = cask.items.get(1);
 
-        if (input.is(Items.GLASS_BOTTLE) && cask.items.get(1).isEmpty()) {
+        if (input.is(Items.GLASS_BOTTLE) && output.isEmpty()) {
             var out = cask.take();
             if (out != null) {
                 cask.items.set(1, out);
-                input.shrink(1);
+                cask.setChanged();
+            } else {
+                cask.items.set(1, new ItemStack(Items.GLASS_BOTTLE));
             }
-        } else if (input.is(Items.POTION) && cask.items.get(1).isEmpty()) {
+            input.shrink(1);
+        } else if (input.is(Items.POTION) && output.isEmpty()) {
             var result = cask.add(input);
             if (result) {
                 cask.items.set(1, new ItemStack(Items.GLASS_BOTTLE));
-                input.shrink(1);
+                cask.setChanged();
+            } else {
+                cask.items.set(1, input);
             }
+            input.shrink(1);
         }
     }
 
@@ -352,16 +359,21 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
 
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
-        return canPlaceItem(slot, stack);
+        return items.get(slot).isEmpty() && canPlaceItem(slot, stack);
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
-        return canPlaceItem(slot, stack);
+        return !items.get(slot).isEmpty() && canPlaceItem(slot, stack);
     }
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 1;
     }
 }

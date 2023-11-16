@@ -1,0 +1,58 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "portions",
+                  "target": "BlockEntityTag.portions"
+                },
+                {
+                  "op": "replace",
+                  "source": "effects",
+                  "target": "BlockEntityTag.effects"
+                },
+                {
+                  "op": "replace",
+                  "source": "duration",
+                  "target": "BlockEntityTag.duration"
+                },
+                {
+                  "op": "replace",
+                  "source": "amplifier",
+                  "target": "BlockEntityTag.amplifier"
+                },
+                {
+                  "op": "replace",
+                  "source": "dilutions",
+                  "target": "BlockEntityTag.dilutions"
+                },
+                {
+                  "op": "replace",
+                  "source": "name",
+                  "target": "BlockEntityTag.name"
+                }
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "strange:cask"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "strange:blocks/cask"
+}

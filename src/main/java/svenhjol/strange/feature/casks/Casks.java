@@ -1,20 +1,12 @@
 package svenhjol.strange.feature.casks;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charmony.annotation.Configurable;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.charmony_api.event.BlockBreakEvent;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -50,28 +42,28 @@ public class Casks extends CommonFeature {
 
     @Override
     public void runWhenEnabled() {
-        BlockBreakEvent.INSTANCE.handle(this::handleBlockBreak);
+//        BlockBreakEvent.INSTANCE.handle(this::handleBlockBreak);
     }
 
-    private boolean handleBlockBreak(Level level, BlockPos pos, BlockState state, Player player) {
-        if (level.getBlockEntity(pos) instanceof CaskBlockEntity cask) {
-            var out = new ItemStack(block.get());
-
-            if (preserveContents && cask.portions > 0) {
-                var tag = new CompoundTag();
-                cask.saveAdditional(tag);
-                out.getOrCreateTag().put(STORED_POTIONS_TAG, tag);
-            }
-
-            if (!cask.name.isEmpty()) {
-                out.setHoverName(Component.literal(cask.name));
-            }
-
-            level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, out));
-        }
-
-        return true;
-    }
+//    private boolean handleBlockBreak(Level level, BlockPos pos, BlockState state, Player player) {
+//        if (level.getBlockEntity(pos) instanceof CaskBlockEntity cask) {
+//            var out = new ItemStack(block.get());
+//
+//            if (preserveContents && cask.portions > 0) {
+//                var tag = new CompoundTag();
+//                cask.saveAdditional(tag);
+//                out.getOrCreateTag().put(STORED_POTIONS_TAG, tag);
+//            }
+//
+//            if (!cask.name.isEmpty()) {
+//                out.setHoverName(Component.literal(cask.name));
+//            }
+//
+//            level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, out));
+//        }
+//
+//        return true;
+//    }
 
     public static ItemStack getFilledWaterBottle(int amount) {
         var out = new ItemStack(Items.POTION, amount);
