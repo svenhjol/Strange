@@ -1,0 +1,35 @@
+{
+  "parent": "strange:core/decoration",
+  "display": {
+    "icon": {
+      "item": "strange:cask"
+    },
+    "title": {
+      "translate": "advancements.strange.obtain_cask.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtain_cask.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtained_cask": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["strange:cask"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtained_cask"
+    ]
+  ]
+}

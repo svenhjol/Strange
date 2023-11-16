@@ -5,6 +5,7 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.common.CommonMod;
 import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscs;
+import svenhjol.strange.feature.casks.Casks;
 import svenhjol.strange.feature.core.Core;
 import svenhjol.strange.feature.ebony_wood.EbonyWood;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointing;
@@ -28,6 +29,7 @@ public class Strange extends CommonMod {
     public List<Class<? extends CommonFeature>> features() {
         return List.of(
             AmbientMusicDiscs.class,
+            Casks.class,
             Core.class,
             EbonyWood.class,
             PiglinPointing.class,

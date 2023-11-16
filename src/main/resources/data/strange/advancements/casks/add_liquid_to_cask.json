@@ -1,0 +1,31 @@
+{
+  "parent": "strange:casks/obtain_cask",
+  "display": {
+    "icon": {
+      "item": "minecraft:glass_bottle"
+    },
+    "title": {
+      "translate": "advancements.strange.add_liquid_to_cask.title"
+    },
+    "description": {
+      "translate": "advancements.strange.add_liquid_to_cask.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "added_liquid_to_cask": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "strange:added_liquid_to_cask"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "added_liquid_to_cask"
+    ]
+  ]
+}

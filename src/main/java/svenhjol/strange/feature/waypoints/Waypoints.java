@@ -33,8 +33,9 @@ public class Waypoints extends CommonFeature {
 
     @Override
     public void register() {
-        broadcastSound = mod().registry().soundEvent("waypoint_broadcast");
-        WaypointsNetwork.register();
+        var registry = mod().registry();
+        broadcastSound = registry.soundEvent("waypoint_broadcast");
+        WaypointsNetwork.register(registry);
     }
 
     @Override

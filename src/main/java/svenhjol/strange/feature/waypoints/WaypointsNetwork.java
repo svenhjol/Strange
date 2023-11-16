@@ -7,13 +7,13 @@ import net.minecraft.world.item.DyeColor;
 import svenhjol.charmony.annotation.Packet;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.enums.PacketDirection;
+import svenhjol.charmony.iface.ICommonRegistry;
 import svenhjol.charmony.iface.IPacketRequest;
 import svenhjol.charmony.iface.IServerNetwork;
 import svenhjol.strange.Strange;
 
 public class WaypointsNetwork {
-    public static void register() {
-        var registry = Mods.common(Strange.ID).registry();
+    public static void register(ICommonRegistry registry) {
         registry.packet(new WaypointInfo(), () -> WaypointsClient::handleWaypointInfo);
         registry.packet(new FlushWaypoint(), () -> WaypointsClient::handleFlushWaypoint);
     }
