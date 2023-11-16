@@ -1,6 +1,8 @@
 package svenhjol.strange.feature.casks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,11 +13,16 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -26,13 +33,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CaskBlockEntity extends BlockEntity {
+public class CaskBlockEntity extends BlockEntity implements Container, WorldlyContainer {
     public static final String PORTIONS_TAG = "portions";
     public static final String EFFECTS_TAG = "effects";
     public static final String DURATIONS_TAG = "duration";
     public static final String AMPLIFIERS_TAG = "amplifier";
     public static final String DILUTIONS_TAG = "dilutions";
     public static final String NAME_TAG = "name";
+    private static final int[] SLOTS_FOR_UP = new int[]{0};
+    private static final int[] SLOTS_FOR_DOWN = new int[]{1};
 
     int portions = 0;
     String name = "";
@@ -40,42 +49,45 @@ public class CaskBlockEntity extends BlockEntity {
     Map<ResourceLocation, Integer> amplifiers = new HashMap<>();
     Map<ResourceLocation, Integer> dilutions = new HashMap<>();
     List<ResourceLocation> effects = new ArrayList<>();
+    NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 
     public CaskBlockEntity(BlockPos pos, BlockState state) {
         super(Casks.blockEntity.get(), pos, state);
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(CompoundTag tag) {
+        super.load(tag);
 
-        this.name = nbt.getString(NAME_TAG);
-        this.portions = nbt.getInt(PORTIONS_TAG);
+        this.name = tag.getString(NAME_TAG);
+        this.portions = tag.getInt(PORTIONS_TAG);
         this.effects = new ArrayList<>();
         this.durations = new HashMap<>();
         this.amplifiers = new HashMap<>();
         this.dilutions = new HashMap<>();
 
-        ListTag list = nbt.getList(EFFECTS_TAG, 8);
+        ListTag list = tag.getList(EFFECTS_TAG, 8);
         list.stream()
             .map(Tag::getAsString)
             .map(i -> i.replace("\"", "")) // madness
             .forEach(item -> this.effects.add(new ResourceLocation(item)));
 
-        CompoundTag durations = nbt.getCompound(DURATIONS_TAG);
-        CompoundTag amplifiers = nbt.getCompound(AMPLIFIERS_TAG);
-        CompoundTag dilutions = nbt.getCompound(DILUTIONS_TAG);
+        CompoundTag durations = tag.getCompound(DURATIONS_TAG);
+        CompoundTag amplifiers = tag.getCompound(AMPLIFIERS_TAG);
+        CompoundTag dilutions = tag.getCompound(DILUTIONS_TAG);
         this.effects.forEach(effect -> {
             this.durations.put(effect, durations.getInt(effect.toString()));
             this.amplifiers.put(effect, amplifiers.getInt(effect.toString()));
             this.dilutions.put(effect, dilutions.getInt(effect.toString()));
         });
+
+        ContainerHelper.loadAllItems(tag, items);
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
-        nbt.putString(NAME_TAG, this.name);
-        nbt.putInt(PORTIONS_TAG, this.portions);
+    public void saveAdditional(CompoundTag tag) {
+        tag.putString(NAME_TAG, this.name);
+        tag.putInt(PORTIONS_TAG, this.portions);
 
         CompoundTag durations = new CompoundTag();
         CompoundTag amplifiers = new CompoundTag();
@@ -89,10 +101,30 @@ public class CaskBlockEntity extends BlockEntity {
             dilutions.putInt(effect.toString(), this.dilutions.get(effect));
         });
 
-        nbt.put(EFFECTS_TAG, effects);
-        nbt.put(DURATIONS_TAG, durations);
-        nbt.put(AMPLIFIERS_TAG, amplifiers);
-        nbt.put(DILUTIONS_TAG, dilutions);
+        tag.put(EFFECTS_TAG, effects);
+        tag.put(DURATIONS_TAG, durations);
+        tag.put(AMPLIFIERS_TAG, amplifiers);
+        tag.put(DILUTIONS_TAG, dilutions);
+
+        ContainerHelper.saveAllItems(tag, items);
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, CaskBlockEntity cask) {
+        var input = cask.items.get(0);
+
+        if (input.is(Items.GLASS_BOTTLE) && cask.items.get(1).isEmpty()) {
+            var out = cask.take();
+            if (out != null) {
+                cask.items.set(1, out);
+                input.shrink(1);
+            }
+        } else if (input.is(Items.POTION) && cask.items.get(1).isEmpty()) {
+            var result = cask.add(input);
+            if (result) {
+                cask.items.set(1, new ItemStack(Items.GLASS_BOTTLE));
+                input.shrink(1);
+            }
+        }
     }
 
     public boolean add(ItemStack input) {
@@ -174,8 +206,6 @@ public class CaskBlockEntity extends BlockEntity {
             });
 
             setChanged();
-
-            input.shrink(1);
             return true;
         }
 
@@ -183,51 +213,71 @@ public class CaskBlockEntity extends BlockEntity {
     }
 
     @Nullable
-    public ItemStack take(ItemStack container) {
-        // might support other containers in future
-        if (container.getItem() != Items.GLASS_BOTTLE) {
-            return null;
-        }
-
+    public ItemStack take() {
         if (this.portions > 0) {
-            // create a potion from the cask's contents
-            ItemStack bottle = Casks.getFilledWaterBottle(1);
-            List<MobEffectInstance> effects = new ArrayList<>();
-
-            for (ResourceLocation effectId : this.effects) {
-                BuiltInRegistries.MOB_EFFECT.getOptional(effectId).ifPresent(statusEffect -> {
-                    int duration = this.durations.get(effectId);
-                    int amplifier = this.amplifiers.get(effectId);
-                    int dilution = this.dilutions.get(effectId);
-
-                    effects.add(new MobEffectInstance(statusEffect, duration / dilution, amplifier));
-                });
-            }
-
-            Component bottleName;
-
-            if (!effects.isEmpty()) {
-                PotionUtils.setCustomEffects(bottle, effects);
-                if (!name.isEmpty()) {
-                    bottleName = Component.literal(name);
-                } else {
-                    bottleName = Component.translatable("item.strange.home_brew");
-                }
-                bottle.setHoverName(bottleName);
-            }
-
-            container.shrink(1);
-
-            // if no more portions in the cask, flush out the cask data
-            if (--portions <= 0) {
-                this.flush();
-            }
-
-            setChanged();
+            var bottle = getPortion();
+            removePortion();
             return bottle;
         }
 
         return null;
+    }
+
+    private ItemStack getPortion() {
+        // create a potion from the cask's contents
+        var bottle = Casks.getFilledWaterBottle(1);
+        List<MobEffectInstance> effects = new ArrayList<>();
+
+        for (ResourceLocation effectId : this.effects) {
+            BuiltInRegistries.MOB_EFFECT.getOptional(effectId).ifPresent(statusEffect -> {
+                int duration = this.durations.get(effectId);
+                int amplifier = this.amplifiers.get(effectId);
+                int dilution = this.dilutions.get(effectId);
+
+                effects.add(new MobEffectInstance(statusEffect, duration / dilution, amplifier));
+            });
+        }
+
+        Component bottleName;
+
+        if (!effects.isEmpty()) {
+            PotionUtils.setCustomEffects(bottle, effects);
+            if (!name.isEmpty()) {
+                bottleName = Component.literal(name);
+            } else {
+                bottleName = Component.translatable("item.strange.home_brew");
+            }
+            bottle.setHoverName(bottleName);
+        }
+
+        return bottle;
+    }
+
+    private void removePortion() {
+        // if no more portions in the cask, flush out the cask data
+        if (--portions <= 0) {
+            this.flush();
+        }
+
+        setChanged();
+    }
+
+    private void flush() {
+        this.effects = new ArrayList<>();
+        this.durations = new HashMap<>();
+        this.dilutions = new HashMap<>();
+        this.amplifiers = new HashMap<>();
+        this.portions = 0;
+
+        setChanged();
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
@@ -242,20 +292,76 @@ public class CaskBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void setChanged() {
-        super.setChanged();
-        if (level != null) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+    public int getContainerSize() {
+        return items.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (var item : items) {
+            if (!item.isEmpty()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public ItemStack getItem(int i) {
+        if (i >= 0 && i < items.size()) {
+            return items.get(i);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack removeItem(int i, int j) {
+        return ContainerHelper.removeItem(items, i, j);
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int i) {
+        return ContainerHelper.takeItem(items, i);
+    }
+
+    @Override
+    public void setItem(int i, ItemStack stack) {
+        if (i >= 0 && i < items.size()) {
+            items.set(i, stack);
         }
     }
 
-    private void flush() {
-        this.effects = new ArrayList<>();
-        this.durations = new HashMap<>();
-        this.dilutions = new HashMap<>();
-        this.amplifiers = new HashMap<>();
-        this.portions = 0;
+    @Override
+    public boolean stillValid(Player player) {
+        return Container.stillValidBlockEntity(this, player);
+    }
 
-        setChanged();
+    @Override
+    public void clearContent() {
+        items.clear();
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        if (direction == Direction.UP) {
+            return SLOTS_FOR_UP;
+        }
+        if (direction == Direction.DOWN) {
+            return SLOTS_FOR_DOWN;
+        }
+        return new int[]{};
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
+        return canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION);
     }
 }

@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -82,9 +84,10 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                 } else if (held.getItem() == Items.GLASS_BOTTLE) {
 
                     // Take a bottle of liquid from the cask using a glass bottle.
-                    var out = cask.take(held);
+                    var out = cask.take();
                     if (out != null) {
                         player.getInventory().add(out);
+                        held.shrink(1);
 
                         if (cask.portions > 0) {
                             // TODO: custom sounds
@@ -118,6 +121,8 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                         if (cask.portions > 1 && cask.effects.size() > 1) {
                             triggerAddedLiquidToCask(player);
                         }
+
+                        held.shrink(1);
                     }
                 }
             }
@@ -151,6 +156,15 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CaskBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntity) {
+        if (level.isClientSide) {
+            return null;
+        }
+        return CaskBlock.createTickerHelper(blockEntity, Casks.blockEntity.get(), CaskBlockEntity::serverTick);
     }
 
     @Override
