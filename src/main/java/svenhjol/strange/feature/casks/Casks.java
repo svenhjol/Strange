@@ -36,7 +36,7 @@ public class Casks extends CommonFeature {
         blockItem = registry.item(BLOCK_ID, () -> new CaskBlock.BlockItem(block));
         blockEntity = registry.blockEntity(BLOCK_ID, () -> CaskBlockEntity::new, List.of(block));
 
-        // Casks can be burned in a furnace
+        // Casks can be burned for fuel
         registry.fuel(block);
 
         // Network packets

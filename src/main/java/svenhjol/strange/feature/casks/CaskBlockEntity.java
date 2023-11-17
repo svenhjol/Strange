@@ -128,7 +128,7 @@ public class CaskBlockEntity extends BlockEntity implements
                 cask.items.set(1, new ItemStack(Items.GLASS_BOTTLE));
             }
             input.shrink(1);
-        } else if (input.is(Items.POTION) && output.isEmpty()) {
+        } else if (Casks.isValidPotion(input) && output.isEmpty()) {
             var result = cask.add(input);
             if (result) {
                 cask.items.set(1, new ItemStack(Items.GLASS_BOTTLE));
@@ -141,7 +141,7 @@ public class CaskBlockEntity extends BlockEntity implements
     }
 
     public boolean add(ItemStack input) {
-        if (!input.is(Items.POTION)) {
+        if (!Casks.isValidPotion(input)) {
             return false;
         }
 
@@ -161,28 +161,23 @@ public class CaskBlockEntity extends BlockEntity implements
 
             // potions without effects just dilute the mix
             if (potion != Potions.WATER || !customEffects.isEmpty()) {
-                List<MobEffectInstance> currentEffects = customEffects.isEmpty() && !potion.getEffects().isEmpty() ? potion.getEffects() : customEffects;
+                var currentEffects = customEffects.isEmpty() && !potion.getEffects().isEmpty() ? potion.getEffects() : customEffects;
 
                 // strip out immediate effects and other weird things
                 currentEffects = currentEffects.stream()
                     .filter(e -> e.getDuration() > 1)
                     .collect(Collectors.toList());
 
-                if (currentEffects.isEmpty()) {
-                    return false;
-                }
-
                 currentEffects.forEach(effect -> {
-                    boolean changedAmplifier = false;
-
-                    int duration = effect.getDuration();
-                    int amplifier = effect.getAmplifier();
-
+                    var changedAmplifier = false;
+                    var duration = effect.getDuration();
+                    var amplifier = effect.getAmplifier();
                     var type = effect.getEffect();
                     var effectId = BuiltInRegistries.MOB_EFFECT.getKey(type);
 
-                    if (effectId == null)
+                    if (effectId == null) {
                         return;
+                    }
 
                     if (!effects.contains(effectId)) {
                         effects.add(effectId);
@@ -197,7 +192,7 @@ public class CaskBlockEntity extends BlockEntity implements
                     if (!durations.containsKey(effectId)) {
                         durations.put(effectId, duration);
                     } else {
-                        int existingDuration = durations.get(effectId);
+                        var existingDuration = durations.get(effectId);
                         if (changedAmplifier) {
                             durations.put(effectId, duration);
                         } else {
