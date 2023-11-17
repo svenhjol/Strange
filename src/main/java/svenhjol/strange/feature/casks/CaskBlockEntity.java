@@ -114,6 +114,7 @@ public class CaskBlockEntity extends BlockEntity implements
         ContainerHelper.saveAllItems(tag, items);
     }
 
+    @SuppressWarnings("unused")
     public static void serverTick(Level level, BlockPos pos, BlockState state, CaskBlockEntity cask) {
         var input = cask.items.get(0);
         var output = cask.items.get(1);
@@ -269,11 +270,8 @@ public class CaskBlockEntity extends BlockEntity implements
 
         if (!effects.isEmpty()) {
             PotionUtils.setCustomEffects(bottle, effects);
-            if (name != null) {
-                bottleName = name;
-            } else {
-                bottleName = Component.translatable("item.strange.home_brew");
-            }
+
+            bottleName = name == null ? Component.translatable("item.strange.home_brew") : name;
             bottle.setHoverName(bottleName);
         }
 
