@@ -84,7 +84,7 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                     level.playSound(null, pos, Casks.nameSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
                     held.shrink(1);
 
-                } else if (held.getItem() == Items.GLASS_BOTTLE) {
+                } else if (held.is(Items.GLASS_BOTTLE)) {
 
                     // Take a bottle of liquid from the cask using a glass bottle.
                     var out = cask.take();
@@ -98,7 +98,7 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                         }
                     }
 
-                } else if (held.getItem() == Items.POTION) {
+                } else if (Casks.isValidPotion(held)) {
 
                     // Add a bottle of liquid to the cask using a filled glass bottle.
                     var result = cask.add(held);

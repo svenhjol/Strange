@@ -389,7 +389,7 @@ public class CaskBlockEntity extends BlockEntity implements
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION);
+        return stack.is(Items.GLASS_BOTTLE) || Casks.isValidPotion(stack);
     }
 
     @Override

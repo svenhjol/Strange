@@ -25,6 +25,9 @@ public class Casks extends CommonFeature {
     @Configurable(name = "Maximum bottles", description = "Maximum number of bottles a cask can hold.")
     public static int maxPortions = 64;
 
+    @Configurable(name = "Allow splash and lingering", description = "If true, splash and lingering potions may be added to a cask.")
+    public static boolean allowSplashAndLingering = false;
+
     @Override
     public void register() {
         var registry = mod().registry();
@@ -50,5 +53,15 @@ public class Casks extends CommonFeature {
         var out = new ItemStack(Items.POTION, amount);
         PotionUtils.setPotion(out, Potions.WATER);
         return out;
+    }
+
+    public static boolean isValidPotion(ItemStack potion) {
+        boolean valid = potion.is(Items.POTION);
+
+        if (!valid && allowSplashAndLingering) {
+            valid = potion.is(Items.LINGERING_POTION) || potion.is(Items.SPLASH_POTION);
+        }
+
+        return valid;
     }
 }
