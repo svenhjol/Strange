@@ -13,8 +13,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CaskBlockEntity extends BlockEntity implements Container, WorldlyContainer {
+public class CaskBlockEntity extends BlockEntity implements
+    Container, WorldlyContainer, Nameable {
     public static final String PORTIONS_TAG = "portions";
     public static final String EFFECTS_TAG = "effects";
     public static final String DURATIONS_TAG = "duration";
@@ -44,7 +47,7 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
     private static final int[] SLOTS_FOR_DOWN = new int[]{1};
 
     int portions = 0;
-    String name = "";
+    Component name;
     Map<ResourceLocation, Integer> durations = new HashMap<>();
     Map<ResourceLocation, Integer> amplifiers = new HashMap<>();
     Map<ResourceLocation, Integer> dilutions = new HashMap<>();
@@ -59,7 +62,7 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        this.name = tag.getString(NAME_TAG);
+        this.name = Component.Serializer.fromJson(tag.getString(NAME_TAG));
         this.portions = tag.getInt(PORTIONS_TAG);
         this.effects = new ArrayList<>();
         this.durations = new HashMap<>();
@@ -86,7 +89,9 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.putString(NAME_TAG, this.name);
+        if (this.name != null) {
+            tag.putString(NAME_TAG, Component.Serializer.toJson(this.name));
+        }
         tag.putInt(PORTIONS_TAG, this.portions);
 
         CompoundTag durations = new CompoundTag();
@@ -212,6 +217,10 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
                 }
             });
 
+            if (level != null) {
+                level.playSound(null, getBlockPos(), Casks.addSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            }
+
             setChanged();
             return true;
         }
@@ -224,6 +233,17 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
         if (this.portions > 0) {
             var bottle = getPortion();
             removePortion();
+
+            // Play sound
+            if (level != null) {
+                var pos = getBlockPos();
+                if (portions > 0) {
+                    level.playSound(null, pos, Casks.takeSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+                } else {
+                    level.playSound(null, pos, Casks.emptySound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+                }
+            }
+
             return bottle;
         }
 
@@ -249,8 +269,8 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
 
         if (!effects.isEmpty()) {
             PotionUtils.setCustomEffects(bottle, effects);
-            if (!name.isEmpty()) {
-                bottleName = Component.literal(name);
+            if (name != null) {
+                bottleName = name;
             } else {
                 bottleName = Component.translatable("item.strange.home_brew");
             }
@@ -375,5 +395,28 @@ public class CaskBlockEntity extends BlockEntity implements Container, WorldlyCo
     @Override
     public int getMaxStackSize() {
         return 1;
+    }
+
+    @Override
+    public Component getName() {
+        if (name != null) {
+            return name;
+        }
+        return this.getDefaultName();
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName() {
+        return this.name;
+    }
+
+    Component getDefaultName() {
+        return Component.translatable("container.strange.cask");
     }
 }

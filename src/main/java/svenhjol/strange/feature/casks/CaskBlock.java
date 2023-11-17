@@ -5,9 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -78,11 +78,10 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                 if (held.getItem() == Items.NAME_TAG && held.hasCustomHoverName()) {
 
                     // Name the cask using a name tag.
-                    cask.name = held.getHoverName().getContents().toString();
+                    cask.name = held.getHoverName();
                     cask.setChanged();
 
-                    // TODO: custom sound
-                    level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.85F, 1.1F);
+                    level.playSound(null, pos, Casks.nameSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
                     held.shrink(1);
 
                 } else if (held.getItem() == Items.GLASS_BOTTLE) {
@@ -90,16 +89,9 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                     // Take a bottle of liquid from the cask using a glass bottle.
                     var out = cask.take();
                     if (out != null) {
-                        held.shrink(1);
                         player.getInventory().add(out);
 
-                        if (cask.portions > 0) {
-                            // TODO: custom sounds
-                            level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.6F, 1.0F);
-                            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.7F, 1.0F);
-                        } else {
-                            level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 1.0F);
-                        }
+                        held.shrink(1);
 
                         if (cask.effects.size() > 1) {
                             triggerTookLiquidFromCask(player);
@@ -111,10 +103,6 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                     // Add a bottle of liquid to the cask using a filled glass bottle.
                     var result = cask.add(held);
                     if (result) {
-                        // TODO: custom sounds
-                        level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.6F, 1.0F);
-                        level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.9F, 0.9F);
-
                         held.shrink(1);
 
                         // give the glass bottle back to the player
@@ -129,38 +117,20 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                         }
                     }
                 }
-            }
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         return InteractionResult.PASS;
     }
 
-//    @Override
-//    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-//        var blockEntity = level.getBlockEntity(pos);
-//        if (blockEntity instanceof CaskBlockEntity cask) {
-//            if (!level.isClientSide && )
-//        }
-//
-//        super.playerWillDestroy(level, pos, state, player);
-//    }
-
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (level.getBlockEntity(pos) instanceof CaskBlockEntity cask) {
             if (itemStack.hasCustomHoverName()) {
-                cask.name = itemStack.getHoverName().getContents().toString();
+                cask.name = itemStack.getHoverName();
             }
-
-//            // Try restore contents from tag
-//            var tag = itemStack.getTag();
-//            if (tag != null && tag.contains(Casks.STORED_POTIONS_TAG)) {
-//                cask.load(tag.getCompound(Casks.STORED_POTIONS_TAG));
-//            }
-//
-//            cask.setChanged();
         }
 
         super.setPlacedBy(level, pos, state, placer, itemStack);
@@ -244,8 +214,33 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag tooltipFlag) {
+        var tag = BlockItem.getBlockEntityData(stack);
+        if (tag != null) {
+
+            // Dumb hack, don't know why "id" isn't serialized via the loot table drop yet.
+            // Without it the call to BlockEntity.loadStatic fails.
+            tag.put("id", StringTag.valueOf("strange:cask"));
+
+            var blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Casks.block.get().defaultBlockState(), tag);
+            if (blockEntity instanceof CaskBlockEntity cask && cask.portions > 0) {
+                list.add(Component.translatable("gui.strange.cask.portions", cask.portions).withStyle(ChatFormatting.AQUA));
+
+                if (!cask.effects.isEmpty()) {
+                    for (var effect : cask.effects) {
+                        BuiltInRegistries.MOB_EFFECT.getOptional(effect).ifPresent(
+                            mobEffect -> list.add(Component.translatable(mobEffect.getDescriptionId()).withStyle(ChatFormatting.BLUE)));
+                    }
+                } else {
+                    list.add(Component.translatable("gui.strange.cask.only_contains_water").withStyle(ChatFormatting.BLUE));
+                }
+            }
+        }
+    }
+
+    @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(1) == 0) {
+        if (random.nextDouble() < 0.7d) {
             var blockEntity = level.getBlockEntity(pos);
 
             if (blockEntity instanceof CaskBlockEntity cask && cask.portions > 0) {
@@ -261,26 +256,6 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
                 } else {
                     // Create particles for each effect color
                     effects.forEach(effect -> createEffectParticle(level, pos, effect));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag tooltipFlag) {
-        var tag = BlockItem.getBlockEntityData(stack);
-        if (tag != null) {
-            var blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Casks.block.get().defaultBlockState(), tag);
-            if (blockEntity instanceof CaskBlockEntity cask) {
-                list.add(Component.translatable("gui.strange.cask.portions", cask.portions).withStyle(ChatFormatting.AQUA));
-
-                if (!cask.effects.isEmpty()) {
-                    for (var effect : cask.effects) {
-                        BuiltInRegistries.MOB_EFFECT.getOptional(effect).ifPresent(
-                            mobEffect -> list.add(Component.translatable(mobEffect.getDescriptionId()).withStyle(ChatFormatting.BLUE)));
-                    }
-                } else {
-                    list.add(Component.translatable("gui.strange.cask.only_contains_water").withStyle(ChatFormatting.BLUE));
                 }
             }
         }

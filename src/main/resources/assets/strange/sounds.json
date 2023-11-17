@@ -1,4 +1,52 @@
 {
+  "cask_add": {
+    "sounds": [
+      {
+        "name": "strange:cask_add1",
+        "volume": 0.7
+      },
+      {
+        "name": "strange:cask_add2",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cask.add"
+  },
+  "cask_empty": {
+    "sounds": [
+      {
+        "name": "strange:cask_empty1",
+        "volume": 0.7
+      },
+      {
+        "name": "strange:cask_empty2",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cask.empty"
+  },
+  "cask_name": {
+    "sounds": [
+      {
+        "name": "strange:cask_name",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cask.name"
+  },
+  "cask_take": {
+    "sounds": [
+      {
+        "name": "strange:cask_take1",
+        "volume": 0.7
+      },
+      {
+        "name": "strange:cask_take2",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cask.take"
+  },
   "music_disc.a_familiar_room": {
     "sounds": [
       {
