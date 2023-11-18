@@ -7,6 +7,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,8 +33,9 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charmony.base.CharmonyBlockItem;
 import svenhjol.charmony.base.CharmonyBlockWithEntity;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.strange.feature.cooking_pots.CookingPotContainers.*;
 
-public class CookingPotBlock extends CharmonyBlockWithEntity {
+public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyContainerHolder {
     static IntegerProperty PORTIONS = IntegerProperty.create("portions", 0, CookingPots.getMaxPortions());
     static final VoxelShape RAY_TRACE_SHAPE;
     static final VoxelShape OUTLINE_SHAPE;
@@ -55,31 +59,45 @@ public class CookingPotBlock extends CharmonyBlockWithEntity {
         var blockEntity = level.getBlockEntity(pos);
 
         if (blockEntity instanceof CookingPotBlockEntity pot) {
-            if (held.is(Items.WATER_BUCKET) && pot.canAddWaterBucket()) {
+            if (held.is(Items.WATER_BUCKET) && pot.canAddWater()) {
 
                 // Add a water bucket to the pot.
                 state = state.setValue(PORTIONS, CookingPots.getMaxPortions());
                 level.setBlock(pos, state, 2);
                 level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-                player.getInventory().add(new ItemStack(Items.BUCKET));
-                held.shrink(1);
+
+                if (!player.getAbilities().instabuild) {
+                    player.getInventory().add(new ItemStack(Items.BUCKET));
+                    held.shrink(1);
+                }
 
             } else if (held.is(Items.POTION)
                 && PotionUtils.getPotion(held) == Potions.WATER
-                && pot.canAddWaterBottle()) {
+                && pot.canAddWater()) {
 
                 // Add a bottle of water. Increase portions by 1.
                 state = state.setValue(PORTIONS, state.getValue(PORTIONS) + 1);
                 level.setBlock(pos, state, 2);
-                player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
-                held.shrink(1);
+
+                if (!player.getAbilities().instabuild) {
+                    player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
+                    held.shrink(1);
+                }
 
             } else if (held.isEdible()) {
 
                 // Add a food item to the pot.
                 var result = pot.add(held);
                 if (result) {
-                    held.shrink(1);
+
+                    // Let nearby players know an item was added to the pot
+                    if (!level.isClientSide) {
+                        CookingPotsNetwork.AddedToCookingPot.send(level, pos);
+                    }
+
+                    if (!player.getAbilities().instabuild) {
+                        held.shrink(1);
+                    }
                 }
 
             } else if (held.is(Items.BOWL)) {
@@ -88,7 +106,9 @@ public class CookingPotBlock extends CharmonyBlockWithEntity {
                 var out = pot.take();
                 if (!out.isEmpty()) {
                     player.getInventory().add(out);
-                    held.shrink(1);
+                    if (!player.getAbilities().instabuild) {
+                        held.shrink(1);
+                    }
                 }
             }
 
@@ -141,6 +161,14 @@ public class CookingPotBlock extends CharmonyBlockWithEntity {
         }
 
         return portions;
+    }
+
+    @Override
+    public WorldlyContainer getContainer(BlockState state, LevelAccessor level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof CookingPotBlockEntity pot && pot.canAddFood()) {
+            return new InputContainer(level, pos, state);
+        }
+        return new EmptyContainer();
     }
 
     @Override

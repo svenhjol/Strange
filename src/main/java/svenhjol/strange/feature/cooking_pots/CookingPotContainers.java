@@ -6,6 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
@@ -15,11 +16,13 @@ public class CookingPotContainers {
         implements WorldlyContainer {
         private final LevelAccessor level;
         private final BlockPos pos;
+        private final BlockState state;
 
-        public InputContainer(LevelAccessor level, BlockPos pos) {
+        public InputContainer(LevelAccessor level, BlockPos pos, BlockState state) {
             super(1);
             this.level = level;
             this.pos = pos;
+            this.state = state;
         }
 
         @Override
@@ -52,8 +55,9 @@ public class CookingPotContainers {
         public void setChanged() {
             var stack = this.getItem(0);
             if (!stack.isEmpty()) {
-                if (this.level.getBlockEntity(this.pos) instanceof CookingPotBlockEntity cookingPot) {
-                    cookingPot.add(stack);
+                if (this.level.getBlockEntity(this.pos) instanceof CookingPotBlockEntity pot) {
+                    pot.add(stack);
+                    this.level.setBlock(pos, state, 3);
                     this.removeItemNoUpdate(0);
                 }
             }

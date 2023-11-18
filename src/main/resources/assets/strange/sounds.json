@@ -47,6 +47,23 @@
     ],
     "subtitle": "subtitles.strange.block.cask.take"
   },
+  "cooking_pot_add": {
+    "sounds": [
+      {
+        "name": "strange:cooking_pot_add1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:cooking_pot_add2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:cooking_pot_add3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cooking_pot.add"
+  },
   "cooking_pot_ambient": {
     "sounds": [
       {

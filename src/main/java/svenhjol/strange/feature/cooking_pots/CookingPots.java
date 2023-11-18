@@ -20,6 +20,7 @@ public class CookingPots extends CommonFeature {
     static Supplier<CookingPotBlock.BlockItem> blockItem;
     static Supplier<BlockEntityType<CookingPotBlockEntity>> blockEntity;
     static Supplier<MixedStewItem> mixedStewItem;
+    static Supplier<SoundEvent> addSound;
     static Supplier<SoundEvent> ambientSound;
     static FoodProperties mixedStewFoodProperties;
 
@@ -65,7 +66,10 @@ public class CookingPots extends CommonFeature {
             .saturationMod((float)saturationPerStew)
             .build();
 
+        addSound = registry.soundEvent("cooking_pot_add");
         ambientSound = registry.soundEvent("cooking_pot_ambient");
+
+        CookingPotsNetwork.register(registry);
     }
 
     public static int getStewStackSize() {

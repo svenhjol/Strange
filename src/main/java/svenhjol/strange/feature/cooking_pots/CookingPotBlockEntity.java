@@ -6,20 +6,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import svenhjol.strange.feature.cooking_pots.CookingPotContainers.EmptyContainer;
-import svenhjol.strange.feature.cooking_pots.CookingPotContainers.InputContainer;
 
 import javax.annotation.Nullable;
 
-public class CookingPotBlockEntity extends BlockEntity implements
-    WorldlyContainerHolder, Nameable {
+public class CookingPotBlockEntity extends BlockEntity implements Nameable {
     static final String HUNGER_TAG = "hunger";
     static final String SATURATION_TAG = "saturation";
     static final String NAME_TAG = "name";
@@ -59,11 +54,7 @@ public class CookingPotBlockEntity extends BlockEntity implements
             && !hasFinishedCooking();
     }
 
-    public boolean canAddWaterBottle() {
-        return !isFull() && !hasFinishedCooking();
-    }
-
-    public boolean canAddWaterBucket() {
+    public boolean canAddWater() {
         return !isFull() && !hasFinishedCooking();
     }
 
@@ -109,6 +100,8 @@ public class CookingPotBlockEntity extends BlockEntity implements
 
                 this.hunger += hunger + 1;
                 this.saturation += saturation + 0.1f;
+
+                level.playSound(null, getBlockPos(), CookingPots.addSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
 
                 setChanged();
                 return true;
@@ -185,23 +178,15 @@ public class CookingPotBlockEntity extends BlockEntity implements
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-        }
+//        if (level != null) {
+//            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+//        }
     }
 
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public WorldlyContainer getContainer(BlockState state, LevelAccessor level, BlockPos pos) {
-        if (canAddFood()) {
-            return new InputContainer(level, pos);
-        }
-        return new EmptyContainer();
     }
 
     @Override
