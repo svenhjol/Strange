@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "portions=0": { "model": "strange:block/cooking_pot" },
+    "portions=1": { "model": "strange:block/cooking_pot_level1" },
+    "portions=2": { "model": "strange:block/cooking_pot_level2" },
+    "portions=3": { "model": "strange:block/cooking_pot_level3" },
+    "portions=4": { "model": "strange:block/cooking_pot_level4" },
+    "portions=5": { "model": "strange:block/cooking_pot_level5" },
+    "portions=6": { "model": "strange:block/cooking_pot_level6" }
+  }
+}

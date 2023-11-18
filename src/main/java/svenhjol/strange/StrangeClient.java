@@ -1,6 +1,7 @@
 package svenhjol.strange;
 
 import svenhjol.strange.feature.casks.CasksClient;
+import svenhjol.strange.feature.cooking_pots.CookingPotsClient;
 import svenhjol.strange.feature.ebony_wood.EbonyWoodClient;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointingClient;
 import svenhjol.charmony.client.ClientFeature;
@@ -23,6 +24,7 @@ public class StrangeClient extends ClientMod {
         return List.of(
             AmbientMusicDiscsClient.class,
             CasksClient.class,
+            CookingPotsClient.class,
             EbonyWoodClient.class,
             PiglinPointingClient.class,
             RaidHornsClient.class,

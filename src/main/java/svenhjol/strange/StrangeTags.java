@@ -5,9 +5,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class StrangeTags {
+    public static final TagKey<Block> COOKING_HEAT_SOURCES = TagKey.create(Registries.BLOCK,
+        new ResourceLocation(Strange.ID, "cooking_heat_sources"));
+
     public static final TagKey<Biome> GROWS_EBONY_TREES = TagKey.create(Registries.BIOME,
         new ResourceLocation(Strange.ID, "grows_ebony_trees"));
 
