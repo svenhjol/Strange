@@ -38,7 +38,7 @@ public class CookingPots extends CommonFeature {
             All negative and positive effects will be removed from the food added to the pot.""";
     }
 
-    public static int getNumberOfPortions() {
+    public static int getMaxPortions() {
         return Math.max(1, Math.min(64, portions));
     }
 }

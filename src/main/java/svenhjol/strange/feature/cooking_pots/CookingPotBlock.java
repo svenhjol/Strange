@@ -2,6 +2,7 @@ package svenhjol.strange.feature.cooking_pots;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,8 +19,9 @@ import svenhjol.charmony.base.CharmonyBlockWithEntity;
 import svenhjol.charmony.common.CommonFeature;
 
 public class CookingPotBlock extends CharmonyBlockWithEntity {
-    static IntegerProperty PORTIONS = IntegerProperty.create("portions", 0, CookingPots.getNumberOfPortions() - 1);
+    static IntegerProperty PORTIONS = IntegerProperty.create("portions", 0, CookingPots.getMaxPortions() - 1);
     static BooleanProperty HAS_FIRE = BooleanProperty.create("has_fire");
+    static BooleanProperty READY = BooleanProperty.create("ready");
 
     static final VoxelShape RAY_TRACE_SHAPE;
     static final VoxelShape OUTLINE_SHAPE;
@@ -57,6 +59,26 @@ public class CookingPotBlock extends CharmonyBlockWithEntity {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(PORTIONS, HAS_FIRE);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        var portions = state.getValue(PORTIONS);
+        var ready = state.getValue(READY);
+
+        if (!ready || portions == 0) {
+            return 0;
+        }
+
+        var maxPortions = CookingPots.getMaxPortions();
+        return Math.round(((float)portions / maxPortions) * 16);
     }
 
     static {
