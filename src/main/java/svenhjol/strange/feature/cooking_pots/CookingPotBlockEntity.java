@@ -27,4 +27,16 @@ public class CookingPotBlockEntity extends BlockEntity {
         hunger = tag.getInt(HUNGER_TAG);
         saturation = tag.getDouble(SATURATION_TAG);
     }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
+        if (this.name != null) {
+            tag.putString(NAME_TAG, Component.Serializer.toJson(this.name));
+        }
+
+        tag.putInt(HUNGER_TAG, hunger);
+        tag.putDouble(SATURATION_TAG, saturation);
+    }
 }
