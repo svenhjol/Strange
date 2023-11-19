@@ -82,6 +82,7 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
                 // Add a bottle of water. Increase portions by 1.
                 state = state.setValue(PORTIONS, state.getValue(PORTIONS) + 1);
                 level.setBlock(pos, state, 2);
+                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
 
                 if (!player.getAbilities().instabuild) {
                     player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
