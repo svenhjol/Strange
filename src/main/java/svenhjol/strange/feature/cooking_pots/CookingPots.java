@@ -22,6 +22,7 @@ public class CookingPots extends CommonFeature {
     static Supplier<MixedStewItem> mixedStewItem;
     static Supplier<SoundEvent> addSound;
     static Supplier<SoundEvent> ambientSound;
+    static Supplier<SoundEvent> takeSound;
     static FoodProperties mixedStewFoodProperties;
 
     @Configurable(
@@ -68,6 +69,7 @@ public class CookingPots extends CommonFeature {
 
         addSound = registry.soundEvent("cooking_pot_add");
         ambientSound = registry.soundEvent("cooking_pot_ambient");
+        takeSound = registry.soundEvent("cooking_pot_take");
 
         CookingPotsNetwork.register(registry);
     }

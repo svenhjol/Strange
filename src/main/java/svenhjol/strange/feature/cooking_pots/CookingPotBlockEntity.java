@@ -88,11 +88,12 @@ public class CookingPotBlockEntity extends BlockEntity {
             if (level != null) {
                 var pos = getBlockPos();
                 var state = getBlockState();
+                var random = level.getRandom();
                 var hunger = food.getNutrition();
                 var saturation = food.getSaturationModifier();
 
-                this.hunger += hunger + 1;
-                this.saturation += saturation + 0.07f;
+                this.hunger += hunger + random.nextInt(1);
+                this.saturation += saturation + (random.nextFloat() * 0.1f);
 
                 if (hasFinishedCooking()) {
                     state = state.setValue(CookingPotBlock.COOKING_STATUS, CookingStatus.COOKED);
@@ -101,12 +102,12 @@ public class CookingPotBlockEntity extends BlockEntity {
                 }
 
                 level.setBlock(pos, state, 3);
-                level.playSound(null, pos, CookingPots.addSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
 
                 setChanged();
 
                 // Let nearby players know an item was added to the pot
                 if (!level.isClientSide) {
+                    level.playSound(null, pos, CookingPots.addSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
                     CookingPotsNetwork.AddedToCookingPot.send(level, pos);
                 }
 
@@ -127,7 +128,9 @@ public class CookingPotBlockEntity extends BlockEntity {
 
             removePortion();
 
-            // TODO: sound
+            if (!level.isClientSide) {
+                level.playSound(null, getBlockPos(), CookingPots.takeSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
+            }
 
             return bowl;
         }

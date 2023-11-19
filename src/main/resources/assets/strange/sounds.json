@@ -77,6 +77,23 @@
     ],
     "subtitle": "subtitles.strange.block.cooking_pot.ambient"
   },
+  "cooking_pot_take": {
+    "sounds": [
+      {
+        "name": "strange:cooking_pot_take1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:cooking_pot_take2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:cooking_pot_take3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.cooking_pot.take"
+  },
   "music_disc.a_familiar_room": {
     "sounds": [
       {
