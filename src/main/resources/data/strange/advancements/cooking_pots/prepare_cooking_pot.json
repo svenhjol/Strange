@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "added_food_to_pot": {
+    "added_food_to_cooking_pot": {
       "trigger": "charmony_action_performed",
       "conditions": {
         "action": "strange:added_food_to_cooking_pot"
