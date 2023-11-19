@@ -60,12 +60,13 @@ public class CookingPots extends CommonFeature {
         block = registry.block(BLOCK_ID, () -> new CookingPotBlock(this));
         blockItem = registry.item(BLOCK_ID, CookingPotBlock.BlockItem::new);
         blockEntity = registry.blockEntity(BLOCK_ID, () -> CookingPotBlockEntity::new, List.of(block));
-        mixedStewItem = registry.item(MIXED_STEW_ID, MixedStewItem::new);
 
         mixedStewFoodProperties = new FoodProperties.Builder()
             .nutrition(hungerPerStew)
             .saturationMod((float)saturationPerStew)
             .build();
+
+        mixedStewItem = registry.item(MIXED_STEW_ID, MixedStewItem::new);
 
         addSound = registry.soundEvent("cooking_pot_add");
         ambientSound = registry.soundEvent("cooking_pot_ambient");
