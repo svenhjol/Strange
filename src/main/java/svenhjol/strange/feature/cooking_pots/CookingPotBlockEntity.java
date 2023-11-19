@@ -163,7 +163,7 @@ public class CookingPotBlockEntity extends BlockEntity {
         var portions = state.getValue(CookingPotBlock.PORTIONS) - 1;
         state = state.setValue(CookingPotBlock.PORTIONS, portions);
 
-        if (CookingPots.isEmpty(state)) {
+        if (isEmpty()) {
             flush();
         } else {
             level.setBlock(pos, state, 2);

@@ -175,7 +175,7 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
         super.animateTick(state, level, pos, random);
 
         if (level.getBlockEntity(pos) instanceof CookingPotBlockEntity pot) {
-            if (pot.hasFire() && !CookingPots.isEmpty(state)) {
+            if (pot.hasFire() && !pot.isEmpty()) {
                 int portions = state.getValue(PORTIONS);
 
                 if (random.nextInt(1) == 0) {
@@ -190,7 +190,7 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
                     level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(),
                         CookingPots.ambientSound.get(),
                         SoundSource.BLOCKS,
-                        0.2f + (0.25f * random.nextFloat()),
+                        0.15f + (0.15f * random.nextFloat()),
                         random.nextFloat() * 0.7f + 0.6f, false);
                 }
             }
