@@ -1,5 +1,5 @@
 {
-  "parent": "strange:core/decoration",
+  "parent": "strange:core/tools",
   "display": {
     "icon": {
       "item": "strange:cask"
