@@ -57,7 +57,6 @@ public class CookingPotContainers {
             if (!stack.isEmpty()) {
                 if (this.level.getBlockEntity(this.pos) instanceof CookingPotBlockEntity pot) {
                     pot.add(stack);
-                    this.level.setBlock(pos, state, 3);
                     this.removeItemNoUpdate(0);
                 }
             }

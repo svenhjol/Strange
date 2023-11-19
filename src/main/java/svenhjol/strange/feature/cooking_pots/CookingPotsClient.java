@@ -32,24 +32,26 @@ public class CookingPotsClient extends ClientFeature {
 
     private int handleBlockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
         if (tintIndex == 0) {
-            if (level != null && level.getBlockEntity(pos) instanceof CookingPotBlockEntity pot) {
-                if (pot.hasFinishedCooking()) {
-                    return 0x5a2200;
-                } else if (pot.hunger > 0 || pot.saturation > 0) {
-                    return 0x806030;
-                }
-            }
-
-            return 0x0088cc;
+            return switch (state.getValue(CookingPotBlock.COOKING_STATUS)) {
+                case COOKED -> 0x502800;
+                case IN_PROGRESS -> 0x806030;
+                case NONE -> 0x0088cc;
+            };
         }
         return -1;
     }
 
     public static void handleAddedToCookingPot(AddedToCookingPot message, Player player) {
         var minecraft = Minecraft.getInstance();
+        var level = minecraft.level;
 
-        if (minecraft.level != null) {
-            createParticles(minecraft.level, message.getPos());
+        if (level != null) {
+            var pos = message.getPos();
+            var state = level.getBlockState(pos);
+            createParticles(level, pos);
+            level.updateNeighborsAt(pos, state.getBlock());
+            level.setBlocksDirty(pos, state, state);
+            level.sendBlockUpdated(pos, state, state, 2);
         }
     }
 

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,10 +34,12 @@ import org.jetbrains.annotations.Nullable;
 import svenhjol.charmony.base.CharmonyBlockItem;
 import svenhjol.charmony.base.CharmonyBlockWithEntity;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.strange.feature.cooking_pots.CookingPotContainers.*;
+import svenhjol.strange.feature.cooking_pots.CookingPotContainers.EmptyContainer;
+import svenhjol.strange.feature.cooking_pots.CookingPotContainers.InputContainer;
 
 public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyContainerHolder {
     static IntegerProperty PORTIONS = IntegerProperty.create("portions", 0, CookingPots.getMaxPortions());
+    static EnumProperty<CookingStatus> COOKING_STATUS = EnumProperty.create("cooking_status", CookingStatus.class);
     static final VoxelShape RAY_TRACE_SHAPE;
     static final VoxelShape OUTLINE_SHAPE;
 
@@ -49,7 +52,8 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
             .noOcclusion());
 
         registerDefaultState(defaultBlockState()
-            .setValue(PORTIONS, 0));
+            .setValue(PORTIONS, 0)
+            .setValue(COOKING_STATUS, CookingStatus.NONE));
     }
 
     @SuppressWarnings("deprecation")
@@ -89,11 +93,6 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
                 // Add a food item to the pot.
                 var result = pot.add(held);
                 if (result) {
-
-                    // Let nearby players know an item was added to the pot
-                    if (!level.isClientSide) {
-                        CookingPotsNetwork.AddedToCookingPot.send(level, pos);
-                    }
 
                     if (!player.getAbilities().instabuild) {
                         held.shrink(1);
@@ -138,7 +137,7 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PORTIONS);
+        builder.add(PORTIONS, COOKING_STATUS);
     }
 
     @SuppressWarnings("deprecation")

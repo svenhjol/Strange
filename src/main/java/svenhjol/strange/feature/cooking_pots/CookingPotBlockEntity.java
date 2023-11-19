@@ -2,24 +2,20 @@ package svenhjol.strange.feature.cooking_pots;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public class CookingPotBlockEntity extends BlockEntity implements Nameable {
+public class CookingPotBlockEntity extends BlockEntity {
     static final String HUNGER_TAG = "hunger";
     static final String SATURATION_TAG = "saturation";
-    static final String NAME_TAG = "name";
 
-    Component name;
     int hunger = 0;
     float saturation = 0.0f;
 
@@ -31,7 +27,6 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        name = Component.Serializer.fromJson(tag.getString(NAME_TAG));
         hunger = tag.getInt(HUNGER_TAG);
         saturation = tag.getFloat(SATURATION_TAG);
     }
@@ -39,10 +34,6 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-
-        if (this.name != null) {
-            tag.putString(NAME_TAG, Component.Serializer.toJson(this.name));
-        }
 
         tag.putInt(HUNGER_TAG, hunger);
         tag.putDouble(SATURATION_TAG, saturation);
@@ -95,15 +86,30 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
 
         if (this.hunger <= CookingPots.getMaxHunger() || this.saturation <= CookingPots.getMaxSaturation()) {
             if (level != null) {
+                var pos = getBlockPos();
+                var state = getBlockState();
                 var hunger = food.getNutrition();
                 var saturation = food.getSaturationModifier();
 
                 this.hunger += hunger + 1;
-                this.saturation += saturation + 0.1f;
+                this.saturation += saturation + 0.07f;
 
-                level.playSound(null, getBlockPos(), CookingPots.addSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
+                if (hasFinishedCooking()) {
+                    state = state.setValue(CookingPotBlock.COOKING_STATUS, CookingStatus.COOKED);
+                } else {
+                    state = state.setValue(CookingPotBlock.COOKING_STATUS, CookingStatus.IN_PROGRESS);
+                }
+
+                level.setBlock(pos, state, 3);
+                level.playSound(null, pos, CookingPots.addSound.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
 
                 setChanged();
+
+                // Let nearby players know an item was added to the pot
+                if (!level.isClientSide) {
+                    CookingPotsNetwork.AddedToCookingPot.send(level, pos);
+                }
+
                 return true;
             }
         }
@@ -137,7 +143,9 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
 
         var pos = getBlockPos();
         var state = getBlockState();
-        state = state.setValue(CookingPotBlock.PORTIONS, 0);
+        state = state
+            .setValue(CookingPotBlock.PORTIONS, 0)
+            .setValue(CookingPotBlock.COOKING_STATUS, CookingStatus.NONE);
 
         level.setBlock(pos, state, 2);
         setChanged();
@@ -162,12 +170,15 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
 
     private ItemStack getPortion() {
         var bowl = new ItemStack(CookingPots.mixedStewItem.get());
-
-        if (name != null) {
-            bowl.setHoverName(name);
-        }
-
         return bowl;
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
@@ -175,40 +186,9 @@ public class CookingPotBlockEntity extends BlockEntity implements Nameable {
         return saveWithoutMetadata();
     }
 
-    @Override
-    public void setChanged() {
-        super.setChanged();
-//        if (level != null) {
-//            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-//        }
-    }
-
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public Component getName() {
-        if (name != null) {
-            return name;
-        }
-        return this.getDefaultName();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName() {
-        return this.name;
-    }
-
-    Component getDefaultName() {
-        return Component.translatable("container.strange.cooking_pot");
     }
 }
