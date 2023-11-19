@@ -21,7 +21,7 @@
       "conditions": {
         "items": [
           {
-            "items": ["strange:cask"]
+            "items": ["strange:cooking_pot"]
           }
         ]
       }
