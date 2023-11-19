@@ -1,8 +1,10 @@
 {
   "advancements.strange.root.title": "Strange",
-  "advancements.strange.root.description": "Charm, but Stranger.",
+  "advancements.strange.root.description": "Charm, but Stranger",
   "advancements.strange.decoration.title": "Decoration",
   "advancements.strange.decoration.description": "Make things prettier",
+  "advancements.strange.tools.title": "Tools",
+  "advancements.strange.tools.description": "Gear, storage and more",
   "advancements.strange.obtain_ebony_log.title": "Dark Mode",
   "advancements.strange.obtain_ebony_log.description": "Find a log from an ebony tree",
   "advancements.strange.obtain_cask.title": "Hold my beer",

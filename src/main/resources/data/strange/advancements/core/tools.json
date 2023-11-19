@@ -1,0 +1,31 @@
+{
+  "parent": "strange:core/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.strange.tools.title"
+    },
+    "description": {
+      "translate": "advancements.strange.tools.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "player_joined": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "strange:player_joined"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "player_joined"
+    ]
+  ]
+}
