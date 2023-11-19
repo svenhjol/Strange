@@ -16,34 +16,16 @@
     "hidden": false
   },
   "criteria": {
-    "lit_fire_under_pot": {
-      "trigger": "charmony_action_performed",
-      "conditions": {
-        "action": "strange:lit_fire_under_pot"
-      }
-    },
-    "filled_pot_with_water": {
-      "trigger": "charmony_action_performed",
-      "conditions": {
-        "action": "strange:filled_pot_with_water"
-      }
-    },
     "added_food_to_pot": {
       "trigger": "charmony_action_performed",
       "conditions": {
-        "action": "strange:added_food_to_pot"
+        "action": "strange:added_food_to_cooking_pot"
       }
     }
   },
   "requirements": [
     [
-      "lit_fire_under_pot"
-    ],
-    [
-      "filled_pot_with_water"
-    ],
-    [
-      "added_food_to_pot"
+      "added_food_to_cooking_pot"
     ]
   ]
 }

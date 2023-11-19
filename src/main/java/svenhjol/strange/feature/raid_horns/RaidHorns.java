@@ -1,6 +1,7 @@
 package svenhjol.strange.feature.raid_horns;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BiomeTags;
@@ -15,10 +16,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.PatrolSpawner;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony.feature.advancements.Advancements;
 import svenhjol.charmony_api.CharmonyApi;
 import svenhjol.charmony_api.event.EntityKilledDropEvent;
 import svenhjol.charmony_api.iface.IWandererTrade;
 import svenhjol.charmony_api.iface.IWandererTradeProvider;
+import svenhjol.strange.Strange;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -145,5 +148,9 @@ public class RaidHorns extends CommonFeature implements IWandererTradeProvider {
                 return WANDERER_TRADE_COST;
             }
         });
+    }
+
+    public static void triggerCalledOffRaid(Player player) {
+        Advancements.trigger(new ResourceLocation(Strange.ID, "called_off_raid"), player);
     }
 }

@@ -1,12 +1,16 @@
 package svenhjol.strange.feature.cooking_pots;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import svenhjol.charmony.annotation.Configurable;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony.feature.advancements.Advancements;
+import svenhjol.strange.Strange;
 import svenhjol.strange.StrangeTags;
 
 import java.util.List;
@@ -107,5 +111,13 @@ public class CookingPots extends CommonFeature {
         }
 
         return valid;
+    }
+
+    public static void triggerAddedFoodToCookingPot(Player player) {
+        Advancements.trigger(new ResourceLocation(Strange.ID, "added_food_to_cooking_pot"), player);
+    }
+
+    public static void triggerTookFoodFromCookingPot(Player player) {
+        Advancements.trigger(new ResourceLocation(Strange.ID, "took_food_from_cooking_pot"), player);
     }
 }

@@ -40,14 +40,13 @@ public class RaidHornItem extends CharmonyItem {
                 if (raid != null) {
                     raid.stop();
                     sound = RaidHorns.callOffRaidSound;
-                    // TODO: advancement.
+                    RaidHorns.triggerCalledOffRaid(player);
                 }
             } else {
                 // Try and summon pillagers.
                 var result = RaidHorns.trySpawnPillagers(serverLevel, pos);
                 if (result) {
                     sound = RaidHorns.callPatrolSound;
-                    // TODO: advancement.
                 }
             }
 

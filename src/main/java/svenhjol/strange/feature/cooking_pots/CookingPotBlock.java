@@ -98,6 +98,8 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
                     if (!player.getAbilities().instabuild) {
                         held.shrink(1);
                     }
+
+                    CookingPots.triggerAddedFoodToCookingPot(player);
                 }
 
             } else if (held.is(Items.BOWL)) {
@@ -109,6 +111,8 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
                     if (!player.getAbilities().instabuild) {
                         held.shrink(1);
                     }
+
+                    CookingPots.triggerTookFoodFromCookingPot(player);
                 }
             }
 
