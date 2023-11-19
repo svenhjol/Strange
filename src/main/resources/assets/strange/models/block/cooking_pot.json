@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "strange:block/cooking_pot_side",
+    "particle": "minecraft:block/copper_block",
     "top": "strange:block/cooking_pot_top",
     "bottom": "strange:block/cooking_pot_bottom",
     "side": "strange:block/cooking_pot_side",
