@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class CookingPots extends CommonFeature {
-    public static final int MAX_PORTIONS = 6;
+    public static final int MAX_PORTIONS = 8;
     static final String BLOCK_ID = "cooking_pot";
     static final String MIXED_STEW_ID = "mixed_stew";
     static Supplier<CookingPotBlock> block;

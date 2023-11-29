@@ -52,6 +52,22 @@
       "when": {
         "portions": "6"
       }
+    },
+    {
+      "apply": {
+        "model": "strange:block/cooking_pot_level7"
+      },
+      "when": {
+        "portions": "7"
+      }
+    },
+    {
+      "apply": {
+        "model": "strange:block/cooking_pot_level8"
+      },
+      "when": {
+        "portions": "8"
+      }
     }
   ]
 }
