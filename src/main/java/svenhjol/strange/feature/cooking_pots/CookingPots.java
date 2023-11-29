@@ -48,7 +48,7 @@ public class CookingPots extends CommonFeature {
         description = """
             Maximum stack size of stew obtained from the cooking pot."""
     )
-    public static int stewStackSize = 16;
+    public static int stewStackSize = 64;
 
     @Override
     public String description() {
