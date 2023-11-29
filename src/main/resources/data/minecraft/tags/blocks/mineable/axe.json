@@ -1,6 +1,25 @@
 {
   "replace": false,
   "values": [
-    "strange:cask"
+    "strange:cask",
+    "strange:ebony_barrel",
+    "strange:ebony_bookshelf",
+    "strange:ebony_button",
+    "strange:ebony_chest",
+    "strange:ebony_door",
+    "strange:ebony_fence",
+    "strange:ebony_fence_gate",
+    "strange:ebony_ladder",
+    "strange:ebony_log",
+    "strange:ebony_planks",
+    "strange:ebony_pressure_plate",
+    "strange:ebony_sign",
+    "strange:ebony_slab",
+    "strange:ebony_stairs",
+    "strange:ebony_trapdoor",
+    "strange:ebony_wood",
+    "strange:stripped_ebony_log",
+    "strange:stripped_ebony_wood",
+    "strange:trapped_ebony_chest"
   ]
 }
