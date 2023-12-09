@@ -89,6 +89,8 @@ public class CaskBlockEntity extends BlockEntity implements
 
     @Override
     public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
         if (this.name != null) {
             tag.putString(NAME_TAG, Component.Serializer.toJson(this.name));
         }
