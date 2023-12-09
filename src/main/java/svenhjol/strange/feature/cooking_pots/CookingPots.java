@@ -61,7 +61,7 @@ public class CookingPots extends CommonFeature {
     public void register() {
         var registry = mod().registry();
 
-        block = registry.block(BLOCK_ID, () -> new CookingPotBlock(this));
+        block = registry.block(BLOCK_ID, CookingPotBlock::new);
         blockItem = registry.item(BLOCK_ID, CookingPotBlock.BlockItem::new);
         blockEntity = registry.blockEntity(BLOCK_ID, () -> CookingPotBlockEntity::new, List.of(block));
 

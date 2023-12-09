@@ -40,7 +40,7 @@ public class Casks extends CommonFeature {
     public void register() {
         var registry = mod().registry();
 
-        block = registry.block(BLOCK_ID, () -> new CaskBlock(this));
+        block = registry.block(BLOCK_ID, CaskBlock::new);
         blockItem = registry.item(BLOCK_ID, () -> new CaskBlock.BlockItem(block));
         blockEntity = registry.blockEntity(BLOCK_ID, () -> CaskBlockEntity::new, List.of(block));
 

@@ -45,7 +45,7 @@ public class RaidHorns extends CommonFeature implements IWandererTradeProvider {
     public void register() {
         var registry = mod().registry();
 
-        item = registry.item("raid_horn", () -> new RaidHornItem(this));
+        item = registry.item("raid_horn", RaidHornItem::new);
         callPatrolSound = registry.soundEvent("raid_horn_call_patrol");
         callOffRaidSound = registry.soundEvent("raid_horn_call_off_raid");
         failSound = registry.soundEvent("raid_horn_squeak");

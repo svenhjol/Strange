@@ -22,12 +22,12 @@ public enum EbonyMaterial implements IVariantWoodMaterial {
     }
 
     @Override
-    public BlockSetType getBlockSetType() {
+    public BlockSetType blockSetType() {
         return EbonyWood.blockSetType.get();
     }
 
     @Override
-    public WoodType getWoodType() {
+    public WoodType woodType() {
         return EbonyWood.woodType.get();
     }
 

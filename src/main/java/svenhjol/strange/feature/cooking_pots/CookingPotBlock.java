@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.cooking_pots;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -17,9 +18,11 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -33,18 +36,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charmony.base.CharmonyBlockItem;
 import svenhjol.charmony.base.CharmonyBlockWithEntity;
-import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.feature.cooking_pots.CookingPotContainers.EmptyContainer;
 import svenhjol.strange.feature.cooking_pots.CookingPotContainers.InputContainer;
 
 public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyContainerHolder {
     static IntegerProperty PORTIONS = IntegerProperty.create("portions", 0, CookingPots.getMaxPortions());
     static EnumProperty<CookingStatus> COOKING_STATUS = EnumProperty.create("cooking_status", CookingStatus.class);
+    static final MapCodec<CookingPotBlock> CODEC = simpleCodec(CookingPotBlock::new);
     static final VoxelShape RAY_TRACE_SHAPE;
     static final VoxelShape OUTLINE_SHAPE;
 
-    public CookingPotBlock(CommonFeature feature) {
-        super(feature, Properties.of()
+    public CookingPotBlock() {
+        this(Properties.of()
             .requiresCorrectToolForDrops()
             .strength(2.0f)
             .mapColor(MapColor.COLOR_ORANGE)
@@ -54,6 +57,15 @@ public class CookingPotBlock extends CharmonyBlockWithEntity implements WorldlyC
         registerDefaultState(defaultBlockState()
             .setValue(PORTIONS, 0)
             .setValue(COOKING_STATUS, CookingStatus.NONE));
+    }
+
+    private CookingPotBlock(BlockBehaviour.Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @SuppressWarnings("deprecation")

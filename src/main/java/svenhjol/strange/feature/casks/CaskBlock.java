@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.casks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,13 +22,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -39,7 +38,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charmony.base.CharmonyBlockItem;
 import svenhjol.charmony.base.CharmonyBlockWithEntity;
-import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.feature.advancements.Advancements;
 import svenhjol.charmony.iface.IFuelProvider;
 import svenhjol.strange.Strange;
@@ -50,6 +48,7 @@ import java.util.function.Supplier;
 
 public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider {
     static final DirectionProperty FACING = BlockStateProperties.FACING;
+    static final MapCodec<CaskBlock> CODEC = simpleCodec(CaskBlock::new);
     static final VoxelShape X1, X2, X3, X4;
     static final VoxelShape Y1, Y2, Y3, Y4;
     static final VoxelShape Z1, Z2, Z3, Z4;
@@ -58,13 +57,22 @@ public class CaskBlock extends CharmonyBlockWithEntity implements IFuelProvider 
     static final VoxelShape Z_SHAPE;
     static final int FUEL_TIME = 300;
 
-    public CaskBlock(CommonFeature feature) {
-        super(feature, Properties.of()
+    public CaskBlock() {
+        this(Properties.of()
             .strength(2.5f)
             .sound(SoundType.WOOD));
 
         registerDefaultState(defaultBlockState()
             .setValue(FACING, Direction.NORTH));
+    }
+
+    private CaskBlock(BlockBehaviour.Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @SuppressWarnings("deprecation")
