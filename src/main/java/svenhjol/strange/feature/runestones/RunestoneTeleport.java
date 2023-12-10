@@ -140,7 +140,7 @@ public class RunestoneTeleport {
             new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Runestones.protectionDuration, 1)
         ));
         if (Runestones.dizzyEffect) {
-            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration, 1));
+            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration, 2));
         }
         effects.forEach(player::addEffect);
 
