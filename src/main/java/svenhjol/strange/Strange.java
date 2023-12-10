@@ -12,6 +12,7 @@ import svenhjol.strange.feature.ebony_wood.EbonyWood;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointing;
 import svenhjol.strange.feature.raid_horns.RaidHorns;
 import svenhjol.strange.feature.respawn_anchors_work_everywhere.RespawnAnchorsWorkEverywhere;
+import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.waypoints.Waypoints;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class Strange extends CommonMod {
             PiglinPointing.class,
             RaidHorns.class,
             RespawnAnchorsWorkEverywhere.class,
+            Runestones.class,
             Waypoints.class
         );
     }

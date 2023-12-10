@@ -1,0 +1,11 @@
+{
+  "template": {
+    "parent": "minecraft:block/orientable",
+    "textures": {
+      "front": "strange:block/RUNESTONE_runestone_empty",
+      "side": "strange:block/RUNESTONE_runestone_side",
+      "top": "strange:block/RUNESTONE_runestone_top"
+    }
+  },
+  "variants": "runestone"
+}

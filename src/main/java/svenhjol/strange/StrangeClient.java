@@ -8,6 +8,7 @@ import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.client.ClientMod;
 import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscsClient;
 import svenhjol.strange.feature.raid_horns.RaidHornsClient;
+import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.waypoints.WaypointsClient;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class StrangeClient extends ClientMod {
             EbonyWoodClient.class,
             PiglinPointingClient.class,
             RaidHornsClient.class,
+            RunestonesClient.class,
             WaypointsClient.class
         );
     }

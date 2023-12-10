@@ -15,6 +15,18 @@ public class StrangeTags {
     public static final TagKey<Biome> GROWS_EBONY_TREES = TagKey.create(Registries.BIOME,
         new ResourceLocation(Strange.ID, "grows_ebony_trees"));
 
+    public static final TagKey<Biome> NETHER_RUNESTONE_BIOMES = TagKey.create(Registries.BIOME,
+        new ResourceLocation(Strange.ID, "nether_runestone_biomes"));
+
+    public static final TagKey<Structure> NETHER_RUNESTONE_STRUCTURES = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "nether_runestone_structures"));
+
+    public static final TagKey<Biome> OVERWORLD_RUNESTONE_BIOMES = TagKey.create(Registries.BIOME,
+        new ResourceLocation(Strange.ID, "overworld_runestone_biomes"));
+
+    public static final TagKey<Structure> OVERWORLD_RUNESTONE_STRUCTURES = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "overworld_runestone_structures"));
+
     public static final TagKey<Item> PIGLIN_BARTERS_FOR_BASTIONS = TagKey.create(Registries.ITEM,
         new ResourceLocation(Strange.ID, "piglin_barters_for_bastions"));
 

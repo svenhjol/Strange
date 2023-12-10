@@ -1,0 +1,6 @@
+{
+  "template": {
+    "parent": "strange:block/RUNESTONE_runestone"
+  },
+  "variants": "runestone"
+}

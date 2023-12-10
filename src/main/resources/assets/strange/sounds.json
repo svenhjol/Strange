@@ -549,6 +549,15 @@
     ],
     "subtitle": "subtitles.strange.item.raid_horn.squeak"
   },
+  "runestone_travel": {
+    "sounds": [
+      {
+        "name": "strange:runestone_travel",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.runestone.travel"
+  },
   "waypoint_broadcast": {
     "sounds": [
       {
