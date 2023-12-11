@@ -1,12 +1,12 @@
 package svenhjol.strange;
 
+import svenhjol.charmony.client.ClientFeature;
+import svenhjol.charmony.client.ClientMod;
+import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscsClient;
 import svenhjol.strange.feature.casks.CasksClient;
 import svenhjol.strange.feature.cooking_pots.CookingPotsClient;
 import svenhjol.strange.feature.ebony_wood.EbonyWoodClient;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointingClient;
-import svenhjol.charmony.client.ClientFeature;
-import svenhjol.charmony.client.ClientMod;
-import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscsClient;
 import svenhjol.strange.feature.raid_horns.RaidHornsClient;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.waypoints.WaypointsClient;

@@ -317,10 +317,13 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
     }
 
     private boolean tryTeleport(ServerPlayer player, RunestoneBlockEntity runestone) {
+        runestone.discovered = player.getScoreboardName();
+        runestone.setChanged();
+
         var teleport = new RunestoneTeleport(player, runestone.target);
         teleport.teleport();
-
         Runestones.TELEPORTS.put(player.getUUID(), teleport);
+
         return true;
     }
 

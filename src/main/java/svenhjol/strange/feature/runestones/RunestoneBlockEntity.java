@@ -10,9 +10,11 @@ public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
     public static final String DESTINATION_TAG = "destination";
     public static final String TYPE_TAG = "type";
     public static final String TARGET_TAG = "target";
+    public static final String DISCOVERED_TAG = "discovered";
     public ResourceLocation destination;
     public DestinationType type;
     public BlockPos target;
+    public String discovered;
 
     @Override
     public void load(CompoundTag tag) {
@@ -34,6 +36,10 @@ public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
         if (tag.contains(TARGET_TAG)) {
             this.target = BlockPos.of(tag.getLong(TARGET_TAG));
         }
+
+        if (tag.contains(DISCOVERED_TAG)) {
+            this.discovered = tag.getString(DISCOVERED_TAG);
+        }
     }
 
     @Override
@@ -50,6 +56,10 @@ public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
 
         if (target != null) {
             tag.putLong(TARGET_TAG, target.asLong());
+        }
+
+        if (discovered != null) {
+            tag.putString(DISCOVERED_TAG, discovered);
         }
     }
 

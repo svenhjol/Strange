@@ -2,13 +2,17 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.charmony_api.event.ServerStartEvent;
 import svenhjol.strange.Strange;
@@ -38,6 +42,8 @@ public class Runestones extends CommonFeature {
     @Override
     public void register() {
         var registry = mod().registry();
+
+        RunestonesNetwork.register(registry);
 
         blockEntity = registry.blockEntity("runestone", () -> RunestoneBlockEntity::new);
         travelSound = registry.soundEvent("runestone_travel");
@@ -100,6 +106,19 @@ public class Runestones extends CommonFeature {
     public void runWhenEnabled() {
         ServerStartEvent.INSTANCE.handle(this::handleServerStart);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+        EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
+    }
+
+    /**
+     * Send the level seed to the logged-in player.
+     */
+    private void handleEntityJoin(Entity entity, Level level) {
+        if (entity instanceof ServerPlayer player) {
+            var serverLevel = (ServerLevel)level;
+            var seed = serverLevel.getSeed();
+            RunestonesNetwork.SentLevelSeed.send(player, seed);
+            RunestoneHelper.CACHED_RUNIC_NAMES.clear();
+        }
     }
 
     /**
