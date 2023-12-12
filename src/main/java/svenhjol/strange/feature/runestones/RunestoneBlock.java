@@ -3,13 +3,9 @@ package svenhjol.strange.feature.runestones;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,27 +16,24 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import svenhjol.charmony.base.CharmonyBlockItem;
 import svenhjol.charmony.base.CharmonyBlockWithEntity;
 import svenhjol.charmony.base.Mods;
-import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.Strange;
 
 import java.util.function.Supplier;
 
 public class RunestoneBlock extends CharmonyBlockWithEntity {
-    static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
     static final MapCodec<RunestoneBlock> CODEC = simpleCodec(RunestoneBlock::new);
 
@@ -92,7 +85,7 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
                 }
 
                 if (state.getValue(ACTIVATED)) {
-                    if (player instanceof ServerPlayer serverPlayer && !tryTeleport(serverPlayer, runestone)) {
+                    if (player instanceof ServerPlayer serverPlayer && !Runestones.tryTeleport(serverPlayer, runestone)) {
                         return explode(level, pos);
                     }
 
@@ -120,7 +113,7 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
                     held.shrink(1);
                 }
 
-                if (level instanceof ServerLevel serverLevel && !tryLocate(serverLevel, runestone)) {
+                if (level instanceof ServerLevel serverLevel && !Runestones.tryLocate(serverLevel, runestone)) {
                     return explode(level, pos);
                 }
 
@@ -134,62 +127,10 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
         return super.use(state, level, pos, player, hand, hitResult);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack itemStack) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone) {
-            var log = Mods.common(Strange.ID).log();
-
-            if (state.getBlock() instanceof RunestoneBlock block) {
-                if (Runestones.BLOCK_DEFINITIONS.containsKey(block)) {
-                    var definition = Runestones.BLOCK_DEFINITIONS.get(block);
-                    var opt = definition.getDestination().apply(level, pos);
-                    var registryAccess = level.registryAccess();
-                    var random = level.getRandom();
-
-                    if (opt.isPresent()) {
-                        var tag = opt.get();
-                        if (tag.registry() == Registries.BIOME) {
-                            var biomeTag = (TagKey<Biome>) tag;
-                            var biomeRegistry = registryAccess.registryOrThrow(biomeTag.registry());
-                            var destinations = TagHelper.getValues(biomeRegistry, biomeTag)
-                                .stream().map(biomeRegistry::getKey).toList();
-
-                            if (destinations.isEmpty()) {
-                                log.warn(getClass(), "Empty biome destinations for runestone at pos " + pos);
-                                return;
-                            }
-
-                            runestone.destination = destinations.get(random.nextInt(destinations.size()));
-                            runestone.type = DestinationType.BIOME;
-                            log.debug(getClass(), "Set biome " + runestone.destination + " for runestone at pos " + pos);
-
-                        } else if (tag.registry() == Registries.STRUCTURE) {
-                            var structureTag = (TagKey<Structure>) tag;
-                            var structureRegistry = registryAccess.registryOrThrow(structureTag.registry());
-                            var destinations = TagHelper.getValues(structureRegistry, structureTag)
-                                .stream().map(structureRegistry::getKey).toList();
-
-                            if (destinations.isEmpty()) {
-                                log.warn(getClass(), "Empty structure destinations for runestone at pos " + pos);
-                                return;
-                            }
-
-                            runestone.destination = destinations.get(random.nextInt(destinations.size()));
-                            runestone.type = DestinationType.STRUCTURE;
-                            log.debug(getClass(), "Set structure " + runestone.destination + " for runestone at pos " + pos);
-
-                        }
-                    } else {
-                        log.warn(getClass(), "Failed to run getDestination on runestone at " + pos);
-                    }
-                } else {
-                    log.warn(getClass(), "No definition found for runestone block " + block + " at pos " + pos);
-                }
-            }
-        }
-
         super.setPlacedBy(level, pos, state, entity, itemStack);
+        Runestones.prepareRunestone(level, pos);
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
@@ -265,64 +206,6 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
             log.warn(getClass(), "Runestone has no destination at pos " + pos);
             return false;
         }
-
-        return true;
-    }
-
-    private boolean tryLocate(ServerLevel level, RunestoneBlockEntity runestone) {
-        var log = Mods.common(Strange.ID).log();
-        var pos = runestone.getBlockPos();
-        var random = RandomSource.create(pos.asLong());
-        var target = RunestoneHelper.addRandomOffset(level, pos, random, 1000, 2000);
-        var registryAccess = level.registryAccess();
-
-        switch (runestone.type) {
-            case BIOME -> {
-                var result = level.findClosestBiome3d(x -> x.is(runestone.destination), target, 6400, 32, 64);
-                if (result == null) {
-                    log.warn(getClass(), "Could not locate biome for " + runestone.destination);
-                    return false;
-                }
-
-                runestone.target = result.getFirst();
-            }
-            case STRUCTURE -> {
-                var structureRegistry = registryAccess.registryOrThrow(Registries.STRUCTURE);
-                var structure = structureRegistry.get(runestone.destination);
-                if (structure == null) {
-                    log.warn(getClass(), "Could not get registered structure for " + runestone.destination);
-                    return false;
-                }
-
-                // Wrap structure in holder and holderset so that it's in the right format for find
-                var set = HolderSet.direct(Holder.direct(structure));
-                var result = level.getChunkSource().getGenerator()
-                    .findNearestMapStructure(level, set, target, 100, false);
-
-                if (result == null) {
-                    log.warn(getClass(), "Could not locate structure for " + runestone.destination);
-                    return false;
-                }
-
-                runestone.target = result.getFirst();
-            }
-            default -> {
-                log.warn(getClass(), "Not a valid destination type for runestone at " + pos);
-                return false;
-            }
-        }
-
-        runestone.setChanged();
-        return true;
-    }
-
-    private boolean tryTeleport(ServerPlayer player, RunestoneBlockEntity runestone) {
-        runestone.discovered = player.getScoreboardName();
-        runestone.setChanged();
-
-        var teleport = new RunestoneTeleport(player, runestone.target);
-        teleport.teleport();
-        Runestones.TELEPORTS.put(player.getUUID(), teleport);
 
         return true;
     }
