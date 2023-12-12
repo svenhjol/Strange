@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:mangrove_swamp",
+    "minecraft:cherry_grove",
+    "minecraft:frozen_peaks",
+    "minecraft:deep_dark",
+    "minecraft:ice_spikes",
+    "minecraft:mushroom_fields"
+  ]
+}

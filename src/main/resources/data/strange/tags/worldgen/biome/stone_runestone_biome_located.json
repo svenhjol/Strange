@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:savanna",
+    "minecraft:desert",
+    "minecraft:badlands",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:snowy_taiga",
+    "minecraft:lush_caves",
+    "minecraft:jungle",
+    "minecraft:flower_forest",
+    "minecraft:dark_forest",
+    "minecraft:swamp"
+  ]
+}

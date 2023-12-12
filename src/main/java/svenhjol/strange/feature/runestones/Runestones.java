@@ -76,9 +76,9 @@ public class Runestones extends CommonFeature {
                     TagKey<?> tag;
 
                     if (random.nextDouble() < 0.25d) {
-                        tag = StrangeTags.OVERWORLD_RUNESTONE_BIOMES;
+                        tag = StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
                     } else {
-                        tag = StrangeTags.OVERWORLD_RUNESTONE_STRUCTURES;
+                        tag = StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
                     }
 
                     return Optional.of(tag);
@@ -100,9 +100,9 @@ public class Runestones extends CommonFeature {
                     TagKey<?> tag;
 
                     if (random.nextDouble() < 0.33d) {
-                        tag = StrangeTags.NETHER_RUNESTONE_BIOMES;
+                        tag = StrangeTags.BLACKSTONE_RUNESTONE_BIOME_LOCATED;
                     } else {
-                        tag = StrangeTags.NETHER_RUNESTONE_STRUCTURES;
+                        tag = StrangeTags.BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED;
                     }
 
                     return Optional.of(tag);
