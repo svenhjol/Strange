@@ -9,8 +9,8 @@ import svenhjol.charmony.helper.TextHelper;
 
 public class RunestoneHudRenderer {
     static final int MAX_FADE_TICKS = 200;
-    static final int MIN_BACKOFF_TICKS = 10;
-    static final int MAX_BACKOFF_TICKS = 20;
+    static final int MIN_BACKOFF_TICKS = 5;
+    static final int MAX_BACKOFF_TICKS = 10;
 
     boolean isValid = false;
     boolean textShadow;
@@ -29,9 +29,9 @@ public class RunestoneHudRenderer {
     public RunestoneHudRenderer() {
         fadeInSpeed = 4;
         fadeOutSpeed = 10;
-        runeNameColor = 0x7f7f7f;
-        nameColor = 0xeff5ff;
-        discoveredColor = 0x9fafbf;
+        runeNameColor = 0x9f9f9f;
+        nameColor = 0xf8f8ff;
+        discoveredColor = 0xafbfcf;
         textShadow = true;
     }
 
@@ -119,6 +119,7 @@ public class RunestoneHudRenderer {
     public boolean isValid(Player player) {
         var level = player.level();
         var lookedAt = RunestoneHelper.getBlockLookedAt(player);
+        var isCreative = player.getAbilities().instabuild;
 
         if (level.getBlockEntity(lookedAt) instanceof RunestoneBlockEntity runestone) {
             if (runestone.destination == null) {
@@ -128,7 +129,7 @@ public class RunestoneHudRenderer {
             // Always generate the runic name for this location.
             this.runeName = RunestoneHelper.getRunicName(runestone.type, runestone.destination);
 
-            if (runestone.discovered != null) {
+            if (isCreative || runestone.discovered != null) {
                 this.discovered = runestone.discovered;
                 this.name = RunestoneHelper.getLocaleKey(runestone.type, runestone.destination);
             } else {
