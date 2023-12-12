@@ -133,7 +133,7 @@ public class StoneCircleDefinitions {
 
             @Override
             public double runestoneChance() {
-                return 0.33d;
+                return 0.5d;
             }
 
             @Override

@@ -31,7 +31,7 @@ public interface IStoneCircleDefinition extends StringRepresentable {
     }
 
     default double runestoneChance() {
-        return 0.5d;
+        return 0.72d;
     }
 
     default BlockPos ceilingReposition(WorldGenLevel level, BlockPos pos) {

@@ -13,10 +13,13 @@ public class StrangeTags {
         new ResourceLocation(Strange.ID, "blackstone_pillar_blocks"));
 
     public static final TagKey<Biome> BLACKSTONE_RUNESTONE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
-        new ResourceLocation(Strange.ID, "blackstone_runestone_biome_located"));
+        new ResourceLocation(Strange.ID, "runestone_biome_located/blackstone"));
 
     public static final TagKey<Structure> BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
-        new ResourceLocation(Strange.ID, "blackstone_runestone_structure_located"));
+        new ResourceLocation(Strange.ID, "runestone_structure_located/blackstone"));
+
+    public static final TagKey<Structure> BLACKSTONE_RUNESTONE_CIRCLE_LOCATED = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "runestone_structure_located/blackstone_circle"));
 
     public static final TagKey<Block> COOKING_HEAT_SOURCES = TagKey.create(Registries.BLOCK,
         new ResourceLocation(Strange.ID, "cooking_heat_sources"));
@@ -28,10 +31,13 @@ public class StrangeTags {
         new ResourceLocation(Strange.ID, "obsidian_pillar_blocks"));
 
     public static final TagKey<Biome> OBSIDIAN_RUNESTONE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
-        new ResourceLocation(Strange.ID, "obsidian_runestone_biome_located"));
+        new ResourceLocation(Strange.ID, "runestone_biome_located/obsidian"));
 
     public static final TagKey<Structure> OBSIDIAN_RUNESTONE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
-        new ResourceLocation(Strange.ID, "obsidian_runestone_structure_located"));
+        new ResourceLocation(Strange.ID, "runestone_structure_located/obsidian"));
+
+    public static final TagKey<Structure> OBSIDIAN_RUNESTONE_CIRCLE_LOCATED = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "runestone_structure_located/obsidian_circle"));
 
     public static final TagKey<Item> PIGLIN_BARTERS_FOR_BASTIONS = TagKey.create(Registries.ITEM,
         new ResourceLocation(Strange.ID, "piglin_barters_for_bastions"));
@@ -52,15 +58,18 @@ public class StrangeTags {
         new ResourceLocation(Strange.ID, "stone_pillar_blocks"));
 
     public static final TagKey<Biome> STONE_RUNESTONE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
-        new ResourceLocation(Strange.ID, "stone_runestone_biome_located"));
+        new ResourceLocation(Strange.ID, "runestone_biome_located/stone"));
 
     public static final TagKey<Biome> STONE_RUNESTONE_RARE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
-        new ResourceLocation(Strange.ID, "stone_runestone_rare_biome_located"));
+        new ResourceLocation(Strange.ID, "runestone_biome_located/stone_rare"));
 
     public static final TagKey<Structure> STONE_RUNESTONE_RARE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
-        new ResourceLocation(Strange.ID, "stone_runestone_rare_structure_located"));
+        new ResourceLocation(Strange.ID, "runestone_structure_located/stone_rare"));
 
     public static final TagKey<Structure> STONE_RUNESTONE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
-        new ResourceLocation(Strange.ID, "stone_runestone_structure_located"));
+        new ResourceLocation(Strange.ID, "runestone_structure_located/stone"));
+
+    public static final TagKey<Structure> STONE_RUNESTONE_CIRCLE_LOCATED = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "runestone_structure_located/stone_circle"));
 
 }
