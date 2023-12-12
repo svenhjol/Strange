@@ -7,13 +7,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelAccessor;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public interface IRunestoneDefinition {
     Supplier<RunestoneBlock> block();
 
-    BiFunction<LevelAccessor, BlockPos, Optional<TagKey<?>>> getDestination();
+    Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos);
 
     default Supplier<ItemLike> activationItem() {
         return () -> Items.ENDER_EYE;

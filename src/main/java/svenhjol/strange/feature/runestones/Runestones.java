@@ -92,7 +92,7 @@ public class Runestones extends CommonFeature {
         }
 
         var definition = Runestones.BLOCK_DEFINITIONS.get(block);
-        var opt = definition.getDestination().apply(level, pos);
+        var opt = definition.getDestination(level, pos);
         var registryAccess = level.registryAccess();
         var random = level.getRandom();
 
