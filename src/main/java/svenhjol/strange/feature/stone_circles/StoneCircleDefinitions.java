@@ -108,5 +108,38 @@ public class StoneCircleDefinitions {
                 return runestonesEnabled ? Optional.of(Runestones.blackstoneBlock) : Optional.empty();
             }
         });
+
+        // End stone circles.
+        StoneCircles.registerDefinition(new IStoneCircleDefinition() {
+            @Override
+            public String name() {
+                return "obsidian";
+            }
+
+            @Override
+            public TagKey<Block> pillarBlocks() {
+                return StrangeTags.OBSIDIAN_PILLAR_BLOCKS;
+            }
+
+            @Override
+            public Pair<Integer, Integer> pillarHeight() {
+                return Pair.of(4, 6);
+            }
+
+            @Override
+            public Pair<Integer, Integer> radius() {
+                return Pair.of(8, 16);
+            }
+
+            @Override
+            public double runestoneChance() {
+                return 0.33d;
+            }
+
+            @Override
+            public Optional<Supplier<RunestoneBlock>> runestoneBlock() {
+                return runestonesEnabled ? Optional.of(Runestones.obsidianBlock) : Optional.empty();
+            }
+        });
     }
 }

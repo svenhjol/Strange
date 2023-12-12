@@ -24,6 +24,15 @@ public class StrangeTags {
     public static final TagKey<Biome> GROWS_EBONY_TREES = TagKey.create(Registries.BIOME,
         new ResourceLocation(Strange.ID, "grows_ebony_trees"));
 
+    public static final TagKey<Block> OBSIDIAN_PILLAR_BLOCKS = TagKey.create(Registries.BLOCK,
+        new ResourceLocation(Strange.ID, "obsidian_pillar_blocks"));
+
+    public static final TagKey<Biome> OBSIDIAN_RUNESTONE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
+        new ResourceLocation(Strange.ID, "obsidian_runestone_biome_located"));
+
+    public static final TagKey<Structure> OBSIDIAN_RUNESTONE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "obsidian_runestone_structure_located"));
+
     public static final TagKey<Item> PIGLIN_BARTERS_FOR_BASTIONS = TagKey.create(Registries.ITEM,
         new ResourceLocation(Strange.ID, "piglin_barters_for_bastions"));
 

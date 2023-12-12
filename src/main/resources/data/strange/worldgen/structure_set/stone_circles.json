@@ -13,6 +13,10 @@
     {
       "structure": "strange:stone_circle_blackstone",
       "weight": 1
+    },
+    {
+      "structure": "strange:stone_circle_obsidian",
+      "weight": 1
     }
   ]
 }

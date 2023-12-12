@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class RunestoneDefinitions {
     public static void init() {
-        // Register overworld stone runestone.
+        // Stone runestone.
         Runestones.registerDefinition(new IRunestoneDefinition() {
             @Override
             public Supplier<RunestoneBlock> block() {
@@ -36,7 +36,7 @@ public class RunestoneDefinitions {
             }
         });
 
-        // Register nether blackstone runestone.
+        // Blackstone runestone.
         Runestones.registerDefinition(new IRunestoneDefinition() {
             @Override
             public Supplier<RunestoneBlock> block() {
@@ -52,6 +52,28 @@ public class RunestoneDefinitions {
                     tag = StrangeTags.BLACKSTONE_RUNESTONE_BIOME_LOCATED;
                 } else {
                     tag = StrangeTags.BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED;
+                }
+
+                return Optional.of(tag);
+            }
+        });
+
+        // Obsidian runestone.
+        Runestones.registerDefinition(new IRunestoneDefinition() {
+            @Override
+            public Supplier<RunestoneBlock> block() {
+                return Runestones.obsidianBlock;
+            }
+
+            @Override
+            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos) {
+                var random = level.getRandom();
+                TagKey<?> tag;
+
+                if (random.nextDouble() < 0.33d) {
+                    tag = StrangeTags.OBSIDIAN_RUNESTONE_BIOME_LOCATED;
+                } else {
+                    tag = StrangeTags.OBSIDIAN_RUNESTONE_STRUCTURE_LOCATED;
                 }
 
                 return Optional.of(tag);

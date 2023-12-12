@@ -57,6 +57,7 @@ public class RunestoneTeleport {
 
         var level = player.level();
         var pos = player.blockPosition();
+        var seaLevel = level.getSeaLevel();
 
         if (!level.dimensionType().hasCeiling()) {
             var surface = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
@@ -64,73 +65,77 @@ public class RunestoneTeleport {
 
             if (level.getBlockState(surface.below()).isSolidRender(level, surface.below())) {
                 reposition(surface);
+                return;
+            } else {
+                log.debug(getClass(), "Unable to place player on surface, falling back to checks");
             }
         } else {
-            var seaLevel = level.getSeaLevel();
             var surface = RunestoneHelper.getSurfacePos(level, pos, Math.min(seaLevel + 40, level.getHeight() - 20));
 
             if (surface != null) {
                 reposition(surface);
                 return;
+            } else {
+                log.debug(getClass(), "Unable to place player in an air space, falling back to checks");
             }
-
-            var mutable = new BlockPos.MutableBlockPos();
-            mutable.set(pos.getX(), seaLevel + 12, pos.getZ());
-
-            var surfaceBlock = getSurfaceBlockForDimension();
-            var validFloor = false;
-            var validCurrent = false;
-            var validAbove = false;
-
-            // Check blocks below for solid ground or water
-            for (int tries = 0; tries < 24; tries++) {
-                var above = level.getBlockState(mutable.above());
-                var current = level.getBlockState(mutable);
-                var below = level.getBlockState(mutable.below());
-
-                validFloor = below.isSolidRender(level, mutable.below()) || level.isWaterAt(mutable.below());
-                validCurrent = current.isAir() || level.isWaterAt(mutable);
-                validAbove = above.isAir() || level.isWaterAt(mutable.above());
-
-                if (validFloor && validCurrent && validAbove) {
-                    log.debug(getClass(), "Found valid calculated position "  + mutable + " after " + tries + " tries");
-                    reposition(mutable);
-                    return;
-                }
-
-                mutable.move(Direction.DOWN);
-            }
-
-            if (!validFloor) {
-                makePlatform(mutable.below(), surfaceBlock);
-            }
-            if (!validCurrent) {
-                level.setBlock(mutable, Blocks.AIR.defaultBlockState(), 2);
-                log.debug(getClass(), "Made air space at " + mutable);
-
-                // Check each cardinal point for lava
-                for (var direction : Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-                    var relative = mutable.relative(direction);
-                    var state = level.getBlockState(relative);
-
-                    if (state.is(Blocks.LAVA)) {
-                        makeWall(relative, surfaceBlock);
-                    }
-                }
-            }
-            if (!validAbove) {
-                log.debug(getClass(), "Made air space at " + mutable);
-                level.setBlock(mutable.above(), Blocks.AIR.defaultBlockState(), 2);
-            }
-
-            // Check that lava doesn't pour down into the new gap
-            var relative = mutable.above(2);
-            if (level.getBlockState(relative).is(Blocks.LAVA)) {
-                makePlatform(relative, surfaceBlock);
-            }
-
-            reposition(mutable);
         }
+
+        var mutable = new BlockPos.MutableBlockPos();
+        mutable.set(pos.getX(), seaLevel + 12, pos.getZ());
+
+        var surfaceBlock = getSurfaceBlockForDimension();
+        var validFloor = false;
+        var validCurrent = false;
+        var validAbove = false;
+
+        // Check blocks below for solid ground or water
+        for (int tries = 0; tries < 24; tries++) {
+            var above = level.getBlockState(mutable.above());
+            var current = level.getBlockState(mutable);
+            var below = level.getBlockState(mutable.below());
+
+            validFloor = below.isSolidRender(level, mutable.below()) || level.isWaterAt(mutable.below());
+            validCurrent = current.isAir() || level.isWaterAt(mutable);
+            validAbove = above.isAir() || level.isWaterAt(mutable.above());
+
+            if (validFloor && validCurrent && validAbove) {
+                log.debug(getClass(), "Found valid calculated position "  + mutable + " after " + tries + " tries");
+                reposition(mutable);
+                return;
+            }
+
+            mutable.move(Direction.DOWN);
+        }
+
+        if (!validFloor) {
+            makePlatform(mutable.below(), surfaceBlock);
+        }
+        if (!validCurrent) {
+            level.setBlock(mutable, Blocks.AIR.defaultBlockState(), 2);
+            log.debug(getClass(), "Made air space at " + mutable);
+
+            // Check each cardinal point for lava
+            for (var direction : Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
+                var relative = mutable.relative(direction);
+                var state = level.getBlockState(relative);
+
+                if (state.is(Blocks.LAVA)) {
+                    makeWall(relative, surfaceBlock);
+                }
+            }
+        }
+        if (!validAbove) {
+            log.debug(getClass(), "Made air space at " + mutable);
+            level.setBlock(mutable.above(), Blocks.AIR.defaultBlockState(), 2);
+        }
+
+        // Check that lava doesn't pour down into the new gap
+        var relative = mutable.above(2);
+        if (level.getBlockState(relative).is(Blocks.LAVA)) {
+            makePlatform(relative, surfaceBlock);
+        }
+
+        reposition(mutable);
     }
 
     public void teleport() {
