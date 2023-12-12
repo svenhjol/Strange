@@ -65,10 +65,12 @@ public class RunestoneHudRenderer {
         int y = 70;
         int lineHeight = 14;
         var minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) return;
 
         if (ticksFade == 0) return;
         if (name == null || name.isEmpty()) return;
 
+        var isCreative = minecraft.player.getAbilities().instabuild;
         var gui = minecraft.gui;
         var font = minecraft.font;
         var midX = (int)(gui.screenWidth / 2.0F);
@@ -83,6 +85,10 @@ public class RunestoneHudRenderer {
 
         runeName = TextHelper.translatable(this.runeName).withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
         runeNameLength = runeName.getString().length() * 5;
+
+        if (isCreative && this.discovered == null) {
+            this.discovered = "Creative mode";
+        }
 
         if (this.discovered != null) {
             name = TextHelper.translatable(this.name);
