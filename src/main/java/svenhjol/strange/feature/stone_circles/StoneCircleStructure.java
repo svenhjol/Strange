@@ -64,16 +64,9 @@ public class StoneCircleStructure extends Structure {
 
     private int findSuitableY(ChunkGenerator chunkGenerator, LevelHeightAccessor levelHeight, RandomSource random, RandomState randomState, int x, int z) {
         var min = levelHeight.getMinBuildHeight() + 15;
-        int y;
-
-        y = chunkGenerator.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, levelHeight, randomState);
-
+        var y = chunkGenerator.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, levelHeight, randomState);
         var column = chunkGenerator.getBaseColumn(x, z, levelHeight, randomState);
         var heightMap = Heightmap.Types.WORLD_SURFACE_WG;
-
-//        if (hasCeiling) {
-//            y = Mth.randomBetweenInclusive(random, y - 80, y - 40);
-//        }
 
         int surface;
         for (surface = y; surface > min; --surface) {

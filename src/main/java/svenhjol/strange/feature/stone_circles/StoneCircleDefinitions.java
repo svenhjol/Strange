@@ -1,8 +1,11 @@
 package svenhjol.strange.feature.stone_circles;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import svenhjol.charmony.base.Mods;
 import svenhjol.strange.Strange;
 import svenhjol.strange.StrangeTags;
@@ -66,6 +69,38 @@ public class StoneCircleDefinitions {
             @Override
             public Pair<Integer, Integer> radius() {
                 return Pair.of(5, 10);
+            }
+
+            @Override
+            public BlockPos ceilingReposition(WorldGenLevel level, BlockPos pos) {
+                var foundSpace = false;
+                var min = level.getMinBuildHeight() + 15;
+                var random = level.getRandom();
+                var maxTries = 8;
+
+                for (int tries = 1; tries <= maxTries; tries++) {
+                    var x = pos.getX() + random.nextInt(tries * 2) - tries;
+                    var z = pos.getZ() + random.nextInt(tries * 2) - tries;
+
+                    for (int i = pos.getY() - 15; i > min; i--) {
+                        var checkPos = new BlockPos(x, i, z);
+                        var checkState = level.getBlockState(checkPos);
+                        var checkBelowState = level.getBlockState(checkPos.below());
+
+                        if (checkState.isAir() && (checkBelowState.canOcclude() || checkBelowState.getFluidState().is(Fluids.LAVA))) {
+                            pos = checkPos;
+                            foundSpace = true;
+                            break;
+                        }
+                    }
+
+                    if (foundSpace) break;
+                }
+
+                if (!foundSpace) {
+                    pos = IStoneCircleDefinition.super.ceilingReposition(level, pos);
+                }
+                return pos;
             }
 
             @Override

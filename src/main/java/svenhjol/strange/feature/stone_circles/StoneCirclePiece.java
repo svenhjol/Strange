@@ -48,8 +48,9 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                             RandomSource random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
 
         var log = Mods.common(Strange.ID).log();
-        var maxCheckSurface = 5; // If the surface Y value is this many blocks higher than starting Y, don't generate
-        var minCheckSurface = -15; // If the surface Y value is this many blocks lower than starting Y, don't generate
+        var jaggednessTolerance = definition.jaggednessTolerance();
+        var maxJaggedness = jaggednessTolerance / 2; // If the surface Y value is this many blocks higher than starting Y, don't generate
+        var minJaggedness = -(jaggednessTolerance / 2); // If the surface Y value is this many blocks lower than starting Y, don't generate
         var minRadius = definition.radius().getFirst();
         var maxRadius = definition.radius().getSecond();
         var radius = random.nextInt(maxRadius - minRadius) + minRadius;
@@ -59,42 +60,14 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         var degrees = random.nextFloat() < 0.15f ? 45 + random.nextInt(5) - 10 : 45;
         var runestoneBlock = definition.runestoneBlock().map(Supplier::get).orElse(null);
         var generatedRunestones = 0;
-        var maxRunestones = 7; // TODO: config
-        var runestoneChance = 1.0d; // TODO: config
+        var maxRunestones = definition.maxRunestones();
+        var runestoneChance = definition.runestoneChance();
         var generatedAnything = false;
 
-        // Avoid stone circles being placed on the roof of the dimension. Find a valid space below.
+        // Avoid stone circles being placed on the roof of the dimension.
+        // Delegate to the definition to reposition the stone circle.
         if (level.dimensionType().hasCeiling()) {
-            var foundSpace = false;
-            var min = level.getMinBuildHeight() + 15;
-            var maxTries = 8;
-
-            // Allow more jagged terrain.
-            maxCheckSurface = 15;
-            minCheckSurface = -20;
-
-            for (int tries = 1; tries <= maxTries; tries++) {
-                var x = blockPos.getX() + random.nextInt(tries * 2) - tries;
-                var z = blockPos.getZ() + random.nextInt(tries * 2) - tries;
-
-                for (int i = blockPos.getY() - 15; i > min; i--) {
-                    var checkPos = new BlockPos(x, i, z);
-                    var checkState = level.getBlockState(checkPos);
-                    var checkBelowState = level.getBlockState(checkPos.below());
-
-                    if (checkState.isAir() && (checkBelowState.canOcclude() || checkBelowState.getFluidState().is(Fluids.LAVA))) {
-                        blockPos = checkPos;
-                        foundSpace = true;
-                        break;
-                    }
-                }
-
-                if (foundSpace) break;
-            }
-
-            if (!foundSpace) {
-                blockPos = new BlockPos(blockPos.getX(), min, blockPos.getZ()); // Some default.
-            }
+            blockPos = definition.ceilingReposition(level, blockPos);
         }
 
         // Generate pillars in a rough circle.
@@ -102,7 +75,7 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
             var x = (int)(radius * Math.cos(i * Math.PI / 180));
             var z = (int)(radius * Math.sin(i * Math.PI / 180));
 
-            for (int s = maxCheckSurface; s > minCheckSurface; s--) {
+            for (int s = maxJaggedness; s > minJaggedness; s--) {
                 var checkPos = blockPos.offset(x, s, z);
                 var checkUpPos = checkPos.above();
                 var checkState = level.getBlockState(checkPos);

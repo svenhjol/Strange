@@ -23,7 +23,6 @@ public class StoneCircles extends CommonFeature {
     @Override
     public void register() {
         var registry = mod().registry();
-
         StoneCircleDefinitions.init();
 
         definitionsCodec = StringRepresentable.fromValues(
