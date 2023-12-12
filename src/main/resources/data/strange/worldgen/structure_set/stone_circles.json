@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 10016006,
+    "separation": 15,
+    "spacing": 30
+  },
+  "structures": [
+    {
+      "structure": "strange:stone_circle_stone",
+      "weight": 1
+    },
+    {
+      "structure": "strange:stone_circle_blackstone",
+      "weight": 1
+    }
+  ]
+}
