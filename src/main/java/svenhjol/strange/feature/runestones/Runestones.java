@@ -25,23 +25,22 @@ import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.charmony_api.event.ServerStartEvent;
 import svenhjol.strange.Strange;
-import svenhjol.strange.StrangeTags;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class Runestones extends CommonFeature {
     static final String STONE_ID = "stone_runestone";
     static final String BLACKSTONE_ID = "blackstone_runestone";
+    static final String OBSIDIAN_ID = "obsidian_runestone";
     public static Supplier<RunestoneBlock> stoneBlock;
     public static Supplier<RunestoneBlock> blackstoneBlock;
-    static Supplier<RunestoneBlock.BlockItem> stoneBlockItem;
-    static Supplier<RunestoneBlock.BlockItem> blackstoneBlockItem;
+    public static Supplier<RunestoneBlock> obsidianBlock;
     static Supplier<BlockEntityType<RunestoneBlockEntity>> blockEntity;
     static Supplier<SoundEvent> travelSound;
     static final List<IRunestoneDefinition> DEFINITIONS = new ArrayList<>();
     static final Map<RunestoneBlock, IRunestoneDefinition> BLOCK_DEFINITIONS = new HashMap<>();
+    static final List<Supplier<RunestoneBlock.BlockItem>> BLOCK_ITEMS = new LinkedList<>();
     static final Map<UUID, RunestoneTeleport> TELEPORTS = new HashMap<>();
 
     public static boolean dizzyEffect = true;
@@ -58,61 +57,14 @@ public class Runestones extends CommonFeature {
         travelSound = registry.soundEvent("runestone_travel");
 
         stoneBlock = registry.block(STONE_ID, RunestoneBlock::new);
-        stoneBlockItem = registry.item(STONE_ID, () -> new RunestoneBlock.BlockItem(stoneBlock));
         blackstoneBlock = registry.block(BLACKSTONE_ID, RunestoneBlock::new);
-        blackstoneBlockItem = registry.item(BLACKSTONE_ID, () -> new RunestoneBlock.BlockItem(blackstoneBlock));
+        obsidianBlock = registry.block(OBSIDIAN_ID, RunestoneBlock::new);
 
-        // Register overworld stone runestone.
-        registerDefinition(new IRunestoneDefinition() {
-            @Override
-            public Supplier<RunestoneBlock> block() {
-                return stoneBlock;
-            }
+        BLOCK_ITEMS.add(registry.item(STONE_ID, () -> new RunestoneBlock.BlockItem(stoneBlock)));
+        BLOCK_ITEMS.add(registry.item(BLACKSTONE_ID, () -> new RunestoneBlock.BlockItem(blackstoneBlock)));
+        BLOCK_ITEMS.add(registry.item(OBSIDIAN_ID, () -> new RunestoneBlock.BlockItem(obsidianBlock)));
 
-            @Override
-            public BiFunction<LevelAccessor, BlockPos, Optional<TagKey<?>>> getDestination() {
-                return (level, pos) -> {
-                    var random = level.getRandom();
-                    TagKey<?> tag;
-
-                    if (random.nextDouble() < 0.25d) {
-                        tag = random.nextDouble() < 0.25d
-                            ? StrangeTags.STONE_RUNESTONE_RARE_BIOME_LOCATED
-                            : StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
-                    } else {
-                        tag = random.nextDouble() < 0.25d
-                            ? StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED
-                            : StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
-                    }
-
-                    return Optional.of(tag);
-                };
-            }
-        });
-
-        // Register nether blackstone runestone.
-        registerDefinition(new IRunestoneDefinition() {
-            @Override
-            public Supplier<RunestoneBlock> block() {
-                return blackstoneBlock;
-            }
-
-            @Override
-            public BiFunction<LevelAccessor, BlockPos, Optional<TagKey<?>>> getDestination() {
-                return (level, pos) -> {
-                    var random = level.getRandom();
-                    TagKey<?> tag;
-
-                    if (random.nextDouble() < 0.33d) {
-                        tag = StrangeTags.BLACKSTONE_RUNESTONE_BIOME_LOCATED;
-                    } else {
-                        tag = StrangeTags.BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED;
-                    }
-
-                    return Optional.of(tag);
-                };
-            }
-        });
+        RunestoneDefinitions.init();
     }
 
     @Override
@@ -121,7 +73,6 @@ public class Runestones extends CommonFeature {
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
     }
-
 
     @SuppressWarnings("unchecked")
     public static void prepareRunestone(LevelAccessor level, BlockPos pos) {

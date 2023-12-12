@@ -28,8 +28,9 @@ public class RunestonesClient extends ClientFeature {
     public void runWhenEnabled() {
         var registry = mod().registry();
 
-        registry.itemTab(Runestones.blackstoneBlockItem, CreativeModeTabs.FUNCTIONAL_BLOCKS, Items.LODESTONE);
-        registry.itemTab(Runestones.stoneBlockItem, CreativeModeTabs.FUNCTIONAL_BLOCKS, Items.LODESTONE);
+        for (var blockItem : Runestones.BLOCK_ITEMS) {
+            registry.itemTab(blockItem, CreativeModeTabs.FUNCTIONAL_BLOCKS, Items.LODESTONE);
+        }
 
         HudRenderEvent.INSTANCE.handle(this::handleHudRender);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
