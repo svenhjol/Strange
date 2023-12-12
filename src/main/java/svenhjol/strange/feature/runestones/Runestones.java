@@ -76,9 +76,13 @@ public class Runestones extends CommonFeature {
                     TagKey<?> tag;
 
                     if (random.nextDouble() < 0.25d) {
-                        tag = StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
+                        tag = random.nextDouble() < 0.25d
+                            ? StrangeTags.STONE_RUNESTONE_RARE_BIOME_LOCATED
+                            : StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
                     } else {
-                        tag = StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
+                        tag = random.nextDouble() < 0.25d
+                            ? StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED
+                            : StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
                     }
 
                     return Optional.of(tag);
@@ -183,6 +187,7 @@ public class Runestones extends CommonFeature {
 
         runestone.setChanged();
 
+        random.nextInt();
         var directions = List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
         state = state.setValue(RunestoneBlock.FACING, directions.get(random.nextInt(directions.size())));
         level.setBlock(pos, state, 2);

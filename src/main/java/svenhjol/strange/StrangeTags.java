@@ -45,6 +45,12 @@ public class StrangeTags {
     public static final TagKey<Biome> STONE_RUNESTONE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
         new ResourceLocation(Strange.ID, "stone_runestone_biome_located"));
 
+    public static final TagKey<Biome> STONE_RUNESTONE_RARE_BIOME_LOCATED = TagKey.create(Registries.BIOME,
+        new ResourceLocation(Strange.ID, "stone_runestone_rare_biome_located"));
+
+    public static final TagKey<Structure> STONE_RUNESTONE_RARE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
+        new ResourceLocation(Strange.ID, "stone_runestone_rare_structure_located"));
+
     public static final TagKey<Structure> STONE_RUNESTONE_STRUCTURE_LOCATED = TagKey.create(Registries.STRUCTURE,
         new ResourceLocation(Strange.ID, "stone_runestone_structure_located"));
 
