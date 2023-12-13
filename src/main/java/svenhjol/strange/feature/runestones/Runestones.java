@@ -46,7 +46,7 @@ public class Runestones extends CommonFeature {
 
     public static boolean dizzyEffect = true;
 
-    public static int protectionDuration = 5;
+    public static int protectionDuration = 3;
 
     @Override
     public void register() {
