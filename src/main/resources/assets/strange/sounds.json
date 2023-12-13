@@ -225,7 +225,7 @@
   "music_disc.minecraft": {
     "sounds": [
       {
-        "name": "music/game/calm1",
+        "name": "music/game/minecraft",
         "stream": true
       }
     ]
@@ -233,7 +233,7 @@
   "music_disc.clark": {
     "sounds": [
       {
-        "name": "music/game/calm2",
+        "name": "music/game/clark",
         "stream": true
       }
     ]
@@ -241,7 +241,7 @@
   "music_disc.sweden": {
     "sounds": [
       {
-        "name": "music/game/calm3",
+        "name": "music/game/sweden",
         "stream": true
       }
     ]
@@ -257,7 +257,7 @@
   "music_disc.biome_fest": {
     "sounds": [
       {
-        "name": "music/game/creative/creative1",
+        "name": "music/game/creative/biome_fest",
         "stream": true
       }
     ]
@@ -265,7 +265,7 @@
   "music_disc.blind_spots": {
     "sounds": [
       {
-        "name": "music/game/creative/creative2",
+        "name": "music/game/creative/blind_spots",
         "stream": true
       }
     ]
@@ -273,7 +273,7 @@
   "music_disc.haunt_muskie": {
     "sounds": [
       {
-        "name": "music/game/creative/creative3",
+        "name": "music/game/creative/haunt_muskie",
         "stream": true
       }
     ]
@@ -281,7 +281,7 @@
   "music_disc.aria_math": {
     "sounds": [
       {
-        "name": "music/game/creative/creative4",
+        "name": "music/game/creative/aria_math",
         "stream": true
       }
     ]
@@ -289,7 +289,7 @@
   "music_disc.dreiton": {
     "sounds": [
       {
-        "name": "music/game/creative/creative5",
+        "name": "music/game/creative/dreiton",
         "stream": true
       }
     ]
@@ -297,7 +297,7 @@
   "music_disc.taswell": {
     "sounds": [
       {
-        "name": "music/game/creative/creative6",
+        "name": "music/game/creative/taswell",
         "stream": true
       }
     ]
@@ -305,7 +305,7 @@
   "music_disc.subwoofer_lullaby": {
     "sounds": [
       {
-        "name": "music/game/hal1",
+        "name": "music/game/subwoofer_lullaby",
         "stream": true
       }
     ]
@@ -313,7 +313,7 @@
   "music_disc.living_mice": {
     "sounds": [
       {
-        "name": "music/game/hal2",
+        "name": "music/game/living_mice",
         "stream": true
       }
     ]
@@ -321,7 +321,7 @@
   "music_disc.haggstrom": {
     "sounds": [
       {
-        "name": "music/game/hal3",
+        "name": "music/game/haggstrom",
         "stream": true
       }
     ]
@@ -329,7 +329,7 @@
   "music_disc.danny": {
     "sounds": [
       {
-        "name": "music/game/hal4",
+        "name": "music/game/danny",
         "stream": true
       }
     ]
@@ -337,7 +337,7 @@
   "music_disc.mutation": {
     "sounds": [
       {
-        "name": "music/menu/menu1",
+        "name": "music/menu/mutation",
         "stream": true
       }
     ]
@@ -345,7 +345,7 @@
   "music_disc.moog_city_2": {
     "sounds": [
       {
-        "name": "music/menu/menu2",
+        "name": "music/menu/moog_city_2",
         "stream": true
       }
     ]
@@ -353,7 +353,7 @@
   "music_disc.beginning_2": {
     "sounds": [
       {
-        "name": "music/menu/menu3",
+        "name": "music/menu/beginning_2",
         "stream": true
       }
     ]
@@ -361,7 +361,7 @@
   "music_disc.floating_trees": {
     "sounds": [
       {
-        "name": "music/menu/menu4",
+        "name": "music/menu/floating_trees",
         "stream": true
       }
     ]
@@ -369,7 +369,7 @@
   "music_disc.concrete_halls": {
     "sounds": [
       {
-        "name": "music/game/nether/nether1",
+        "name": "music/game/nether/concrete_halls",
         "stream": true
       }
     ]
@@ -377,7 +377,7 @@
   "music_disc.dead_voxel": {
     "sounds": [
       {
-        "name": "music/game/nether/nether2",
+        "name": "music/game/nether/dead_voxel",
         "stream": true
       }
     ]
@@ -385,7 +385,7 @@
   "music_disc.warmth": {
     "sounds": [
       {
-        "name": "music/game/nether/nether3",
+        "name": "music/game/nether/warmth",
         "stream": true
       }
     ]
@@ -393,7 +393,7 @@
   "music_disc.ballad_of_the_cats": {
     "sounds": [
       {
-        "name": "music/game/nether/nether4",
+        "name": "music/game/nether/ballad_of_the_cats",
         "stream": true
       }
     ]
@@ -401,7 +401,7 @@
   "music_disc.key": {
     "sounds": [
       {
-        "name": "music/game/nuance1",
+        "name": "music/game/key",
         "stream": true
       }
     ]
@@ -409,7 +409,7 @@
   "music_disc.oxygene": {
     "sounds": [
       {
-        "name": "music/game/nuance2",
+        "name": "music/game/oxygene",
         "stream": true
       }
     ]
@@ -417,7 +417,7 @@
   "music_disc.dry_hands": {
     "sounds": [
       {
-        "name": "music/game/piano1",
+        "name": "music/game/dry_hands",
         "stream": true
       }
     ]
@@ -425,7 +425,7 @@
   "music_disc.wet_hands": {
     "sounds": [
       {
-        "name": "music/game/piano2",
+        "name": "music/game/wet_hands",
         "stream": true
       }
     ]
@@ -433,7 +433,7 @@
   "music_disc.mice_on_venus": {
     "sounds": [
       {
-        "name": "music/game/piano3",
+        "name": "music/game/mice_on_venus",
         "stream": true
       }
     ]
@@ -457,7 +457,7 @@
   "music_disc.credits": {
     "sounds": [
       {
-        "name": "music/game/end/credits",
+        "name": "music/game/end/alpha",
         "stream": true
       }
     ]
@@ -473,7 +473,7 @@
   "music_disc.end": {
     "sounds": [
       {
-        "name": "music/game/end/end",
+        "name": "music/game/end/the_end",
         "stream": true
       }
     ]
