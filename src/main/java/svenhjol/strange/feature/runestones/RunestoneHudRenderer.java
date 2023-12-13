@@ -68,7 +68,6 @@ public class RunestoneHudRenderer {
         if (minecraft.player == null) return;
 
         if (ticksFade == 0) return;
-        if (name == null || name.isEmpty()) return;
 
         var isCreative = minecraft.player.getAbilities().instabuild;
         var gui = minecraft.gui;
