@@ -38,7 +38,7 @@ public class RunestoneDefinitions {
                     if (random.nextDouble() < 0.12d) {
                         tag = StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED;
                     } else {
-                        if (stoneCirclesEnabled && random.nextDouble() < 0.4d) {
+                        if (stoneCirclesEnabled && random.nextDouble() < 0.2d) {
                             tag = StrangeTags.STONE_RUNESTONE_CIRCLE_LOCATED;
                         } else {
                             tag = StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
