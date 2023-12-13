@@ -141,11 +141,12 @@ public class RunestoneTeleport {
     public void teleport() {
         // Add protection and dizziness effects to the teleporting player.
         var effects = new ArrayList<>(Arrays.asList(
-            new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Runestones.protectionDuration, 1),
-            new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Runestones.protectionDuration, 1)
+            new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Runestones.protectionDuration * 20, 1),
+            new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Runestones.protectionDuration * 20, 1),
+            new MobEffectInstance(MobEffects.REGENERATION, Runestones.protectionDuration * 20, 1)
         ));
         if (Runestones.dizzyEffect) {
-            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration, 2));
+            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration * 20, 3));
         }
         effects.forEach(player::addEffect);
 
