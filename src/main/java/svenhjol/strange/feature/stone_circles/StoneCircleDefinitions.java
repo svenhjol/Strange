@@ -107,7 +107,7 @@ public class StoneCircleDefinitions {
                     var x = pos.getX() + random.nextInt(tries * 2) - tries;
                     var z = pos.getZ() + random.nextInt(tries * 2) - tries;
 
-                    for (int i = pos.getY() - 15; i > min; i--) {
+                    for (int i = pos.getY() - 30; i > min; i--) {
                         var checkPos = new BlockPos(x, i, z);
                         var checkState = level.getBlockState(checkPos);
                         var checkBelowState = level.getBlockState(checkPos.below());
