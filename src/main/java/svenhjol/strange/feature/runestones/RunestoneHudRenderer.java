@@ -29,7 +29,7 @@ public class RunestoneHudRenderer {
     public RunestoneHudRenderer() {
         fadeInSpeed = 4;
         fadeOutSpeed = 10;
-        runeNameColor = 0x9f9f9f;
+        runeNameColor = 0xbfaf9f;
         nameColor = 0xf8f8ff;
         discoveredColor = 0xafbfcf;
         textShadow = true;
@@ -96,27 +96,28 @@ public class RunestoneHudRenderer {
             discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", this.discovered);
             discoveredLength = discovered.getString().length() * 5;
         } else {
-            name = Component.empty();
-            nameLength = 0;
+            name = TextHelper.literal("???");
+            nameLength = name.getString().length() * 5;
             discovered = Component.empty();
             discoveredLength = 0;
         }
 
         if (nameLength > 0) {
-            int lx = (int) (midX - (float) (nameLength / 2) - 2) + 5;
+            int lx = (int) (midX - (float) (nameLength / 2) - 2) + 3;
             guiGraphics.drawString(font, name, lx, y, nameColor | alpha, textShadow);
-            y += lineHeight;
-        }
-
-        if (runeNameLength > 0) {
-            int lx = (int) (midX - (float) (runeNameLength / 2) - 2);
-            guiGraphics.drawString(font, runeName, lx, y, runeNameColor | alpha, textShadow);
             y += lineHeight;
         }
 
         if (discoveredLength > 0) {
             int lx = (int) (midX - (float) (discoveredLength / 2) - 2);
             guiGraphics.drawString(font, discovered, lx, y, discoveredColor | alpha, textShadow);
+            y += lineHeight;
+        }
+
+        if (runeNameLength > 0) {
+            int lx = (int) (midX - (float) (runeNameLength / 2) - 2) - 3;
+            guiGraphics.drawString(font, runeName, lx, y, runeNameColor | alpha, textShadow);
+            y += lineHeight;
         }
 
         doFadeTicks();
