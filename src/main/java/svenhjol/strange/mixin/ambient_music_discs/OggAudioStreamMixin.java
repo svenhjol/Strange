@@ -36,8 +36,8 @@ public class OggAudioStreamMixin {
     private void hookInit(InputStream inputStream, CallbackInfo ci, MemoryStack memoryStack, IntBuffer intBuffer, IntBuffer intBuffer2, STBVorbisInfo sTBVorbisInfo) {
         if (AmbientMusicDiscs.doExperimentalAttenuation && AmbientMusicDiscsClient.soundHolder != null) {
             var sampleRate = sTBVorbisInfo.sample_rate();
-            if (sampleRate > 44100) {
-                sampleRate = 44100; // 48k sounds are b0rk when doubled
+            if (sampleRate == 44100) {
+                sampleRate = 48000;
             }
             this.audioFormat = new AudioFormat(
                 sampleRate * 2, 16, 1, true, false
