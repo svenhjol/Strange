@@ -44,6 +44,16 @@ public class StoneCircleDefinitions {
             }
 
             @Override
+            public Pair<Integer, Integer> degrees() {
+                return Pair.of(40, 50);
+            }
+
+            @Override
+            public int circleJitter() {
+                return 1;
+            }
+
+            @Override
             public Optional<Supplier<RunestoneBlock>> runestoneBlock() {
                 return runestonesEnabled ? Optional.of(Runestones.stoneBlock) : Optional.empty();
             }
@@ -69,6 +79,21 @@ public class StoneCircleDefinitions {
             @Override
             public Pair<Integer, Integer> radius() {
                 return Pair.of(5, 10);
+            }
+
+            @Override
+            public Pair<Integer, Integer> degrees() {
+                return Pair.of(30, 45);
+            }
+
+            @Override
+            public int circleJitter() {
+                return 2;
+            }
+
+            @Override
+            public int terrainHeightTolerance() {
+                return 40;
             }
 
             @Override
@@ -132,8 +157,18 @@ public class StoneCircleDefinitions {
             }
 
             @Override
+            public Pair<Integer, Integer> degrees() {
+                return Pair.of(35, 55);
+            }
+
+            @Override
             public double runestoneChance() {
                 return 0.5d;
+            }
+
+            @Override
+            public int maxRunestones() {
+                return 10;
             }
 
             @Override

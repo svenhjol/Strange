@@ -48,16 +48,19 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
                             RandomSource random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
 
         var log = Mods.common(Strange.ID).log();
-        var jaggednessTolerance = definition.jaggednessTolerance();
-        var maxJaggedness = jaggednessTolerance / 2; // If the surface Y value is this many blocks higher than starting Y, don't generate
-        var minJaggedness = -(jaggednessTolerance / 2); // If the surface Y value is this many blocks lower than starting Y, don't generate
+        var terrainHeightTolerance = definition.terrainHeightTolerance();
+        var maxHeightTolerance = terrainHeightTolerance / 2; // If the surface Y value is this many blocks higher than starting Y, don't generate
+        var minHeightTolerance = -(terrainHeightTolerance / 2); // If the surface Y value is this many blocks lower than starting Y, don't generate
         var minRadius = definition.radius().getFirst();
         var maxRadius = definition.radius().getSecond();
         var radius = random.nextInt(maxRadius - minRadius) + minRadius;
         var minPillarHeight = definition.pillarHeight().getFirst();
         var maxPillarHeight = definition.pillarHeight().getSecond();
         var pillarBlocks = getPillarBlocks(level);
-        var degrees = random.nextFloat() < 0.15f ? 45 + random.nextInt(5) - 10 : 45;
+        var minDegrees = definition.degrees().getFirst();
+        var maxDegrees = definition.degrees().getSecond();
+        var degrees = minDegrees + (random.nextInt((maxDegrees - minDegrees) + 1));
+        var circleJitter = definition.circleJitter();
         var runestoneBlock = definition.runestoneBlock().map(Supplier::get).orElse(null);
         var generatedRunestones = 0;
         var maxRunestones = definition.maxRunestones();
@@ -71,11 +74,12 @@ public class StoneCirclePiece extends ScatteredFeaturePiece {
         }
 
         // Generate pillars in a rough circle.
-        for (int i = 0; i < 360; i += degrees) {
+        for (int i = 0; i < 360; i += degrees + (circleJitter > 0 ? random.nextInt(circleJitter + 1) - circleJitter : 0)) {
+            if (360 - i < minDegrees) continue;
             var x = (int)(radius * Math.cos(i * Math.PI / 180));
             var z = (int)(radius * Math.sin(i * Math.PI / 180));
 
-            for (int s = maxJaggedness; s > minJaggedness; s--) {
+            for (int s = maxHeightTolerance; s > minHeightTolerance; s--) {
                 var checkPos = blockPos.offset(x, s, z);
                 var checkUpPos = checkPos.above();
                 var checkState = level.getBlockState(checkPos);

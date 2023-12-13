@@ -26,8 +26,16 @@ public interface IStoneCircleDefinition extends StringRepresentable {
         return Pair.of(6, 15);
     }
 
+    default Pair<Integer, Integer> degrees() {
+        return Pair.of(45, 45);
+    }
+
+    default int circleJitter() {
+        return 0;
+    }
+
     default int maxRunestones() {
-        return 6;
+        return 8;
     }
 
     default double runestoneChance() {
@@ -38,7 +46,7 @@ public interface IStoneCircleDefinition extends StringRepresentable {
         return new BlockPos(pos.getX(), level.getMinBuildHeight() + 15, pos.getZ());
     }
 
-    default int jaggednessTolerance() {
+    default int terrainHeightTolerance() {
         return 20;
     }
 
