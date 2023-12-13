@@ -11,6 +11,9 @@ import svenhjol.charmony_api.event.HudRenderEvent;
 import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.strange.feature.runestones.RunestonesNetwork.SentLevelSeed;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class RunestonesClient extends ClientFeature {
     public static final ResourceLocation ILLAGER_GLYPHS = new ResourceLocation("minecraft", "illageralt");
     public static final Style ILLAGER_GLYPHS_STYLE = Style.EMPTY.withFont(ILLAGER_GLYPHS);
@@ -28,7 +31,10 @@ public class RunestonesClient extends ClientFeature {
     public void runWhenEnabled() {
         var registry = mod().registry();
 
-        for (var blockItem : Runestones.BLOCK_ITEMS) {
+        var blockItems = new ArrayList<>(Runestones.BLOCK_ITEMS);
+        Collections.reverse(blockItems);
+
+        for (var blockItem : blockItems) {
             registry.itemTab(blockItem, CreativeModeTabs.FUNCTIONAL_BLOCKS, Items.LODESTONE);
         }
 

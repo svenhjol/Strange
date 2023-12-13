@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,7 +41,7 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
     public RunestoneBlock() {
         this(Properties.ofFullCopy(Blocks.STONE)
             .pushReaction(PushReaction.DESTROY)
-            .lightLevel(state -> state.getValue(ACTIVATED) ? 8 : 0));
+            .lightLevel(state -> state.getValue(ACTIVATED) ? 12 : 0));
     }
 
     private RunestoneBlock(Properties properties) {
@@ -108,6 +109,7 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
 
                 state = state.setValue(ACTIVATED, true);
                 level.setBlockAndUpdate(pos, state);
+                level.playSound(null, pos, Runestones.activateSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
 
                 if (!player.getAbilities().instabuild) {
                     held.shrink(1);
@@ -162,7 +164,7 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
         var particle = ParticleTypes.PORTAL;
         var dist = 3.0d;
 
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 3; i++) {
             level.addParticle(particle, pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d,
                 (dist / 2) - (random.nextDouble() * dist), random.nextDouble() - 0.25d, (dist / 2) - (random.nextDouble() * dist));
         }

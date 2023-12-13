@@ -2,6 +2,7 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import svenhjol.charmony.base.Mods;
 import svenhjol.strange.Strange;
@@ -24,22 +25,24 @@ public class RunestoneDefinitions {
             }
 
             @Override
-            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos) {
-                var random = level.getRandom();
+            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos, RandomSource random) {
                 TagKey<?> tag;
 
                 if (random.nextDouble() < 0.25d) {
-                    tag = random.nextDouble() < 0.25d
-                        ? StrangeTags.STONE_RUNESTONE_RARE_BIOME_LOCATED
-                        : StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
-                } else {
-                    var d = random.nextDouble();
-                    if (d < 0.12d) {
-                        tag = StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED;
-                    } else if (d < 0.4d && stoneCirclesEnabled) {
-                        tag = StrangeTags.STONE_RUNESTONE_CIRCLE_LOCATED;
+                    if (random.nextDouble() < 0.12d) {
+                        tag = StrangeTags.STONE_RUNESTONE_RARE_BIOME_LOCATED;
                     } else {
-                        tag = StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
+                        tag = StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
+                    }
+                } else {
+                    if (random.nextDouble() < 0.12d) {
+                        tag = StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED;
+                    } else {
+                        if (stoneCirclesEnabled && random.nextDouble() < 0.4d) {
+                            tag = StrangeTags.STONE_RUNESTONE_CIRCLE_LOCATED;
+                        } else {
+                            tag = StrangeTags.STONE_RUNESTONE_STRUCTURE_LOCATED;
+                        }
                     }
                 }
 
@@ -55,14 +58,13 @@ public class RunestoneDefinitions {
             }
 
             @Override
-            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos) {
-                var random = level.getRandom();
+            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos, RandomSource random) {
                 TagKey<?> tag;
 
                 if (random.nextDouble() < 0.33d) {
                     tag = StrangeTags.BLACKSTONE_RUNESTONE_BIOME_LOCATED;
                 } else {
-                    if (random.nextDouble() < 0.2d && stoneCirclesEnabled) {
+                    if (stoneCirclesEnabled && random.nextDouble() < 0.2d) {
                         tag = StrangeTags.BLACKSTONE_RUNESTONE_CIRCLE_LOCATED;
                     } else {
                         tag = StrangeTags.BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED;
@@ -81,14 +83,13 @@ public class RunestoneDefinitions {
             }
 
             @Override
-            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos) {
-                var random = level.getRandom();
+            public Optional<TagKey<?>> getDestination(LevelAccessor level, BlockPos pos, RandomSource random) {
                 TagKey<?> tag;
 
                 if (random.nextDouble() < 0.33d) {
                     tag = StrangeTags.OBSIDIAN_RUNESTONE_BIOME_LOCATED;
                 } else {
-                    if (random.nextDouble() < 0.33d && stoneCirclesEnabled) {
+                    if (stoneCirclesEnabled && random.nextDouble() < 0.33d) {
                         tag = StrangeTags.OBSIDIAN_RUNESTONE_CIRCLE_LOCATED;
                     } else {
                         tag = StrangeTags.OBSIDIAN_RUNESTONE_STRUCTURE_LOCATED;

@@ -208,6 +208,7 @@
   "subtitles.strange.block.cooking_pot.add": "Cooking pot fills up",
   "subtitles.strange.block.cooking_pot.ambient": "Cooking pot simmers",
   "subtitles.strange.block.cooking_pot.take": "Cooking pot empties",
+  "subtitles.strange.block.runestone.activate": "Runestone activates",
   "subtitles.strange.block.runestone.travel": "Runestone teleports",
   "subtitles.strange.block.waypoint.broadcast": "Waypoint broadcasts",
   "subtitles.strange.item.raid_horn.squeak": "Horn fails",

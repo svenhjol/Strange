@@ -37,11 +37,12 @@ public class Runestones extends CommonFeature {
     public static Supplier<RunestoneBlock> blackstoneBlock;
     public static Supplier<RunestoneBlock> obsidianBlock;
     static Supplier<BlockEntityType<RunestoneBlockEntity>> blockEntity;
-    static Supplier<SoundEvent> travelSound;
     static final List<IRunestoneDefinition> DEFINITIONS = new ArrayList<>();
     static final Map<RunestoneBlock, IRunestoneDefinition> BLOCK_DEFINITIONS = new HashMap<>();
     static final List<Supplier<RunestoneBlock.BlockItem>> BLOCK_ITEMS = new LinkedList<>();
     static final Map<UUID, RunestoneTeleport> TELEPORTS = new HashMap<>();
+    static Supplier<SoundEvent> travelSound;
+    static Supplier<SoundEvent> activateSound;
 
     public static boolean dizzyEffect = true;
 
@@ -54,6 +55,7 @@ public class Runestones extends CommonFeature {
         RunestonesNetwork.register(registry);
 
         blockEntity = registry.blockEntity("runestone", () -> RunestoneBlockEntity::new);
+        activateSound = registry.soundEvent("runestone_activate");
         travelSound = registry.soundEvent("runestone_travel");
 
         stoneBlock = registry.block(STONE_ID, RunestoneBlock::new);
@@ -76,6 +78,10 @@ public class Runestones extends CommonFeature {
 
     @SuppressWarnings("unchecked")
     public static void prepareRunestone(LevelAccessor level, BlockPos pos) {
+        if (level.isClientSide()) {
+            return;
+        }
+
         if (!(level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone)) {
             return;
         }
@@ -91,10 +97,10 @@ public class Runestones extends CommonFeature {
             return;
         }
 
+        var random = RandomSource.create(pos.asLong());
         var definition = Runestones.BLOCK_DEFINITIONS.get(block);
-        var opt = definition.getDestination(level, pos);
+        var opt = definition.getDestination(level, pos, random);
         var registryAccess = level.registryAccess();
-        var random = level.getRandom();
 
         if (opt.isEmpty()) {
             log.warn(RunestoneBlock.class, "Failed to run getDestination on runestone at " + pos);

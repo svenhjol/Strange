@@ -549,6 +549,23 @@
     ],
     "subtitle": "subtitles.strange.item.raid_horn.squeak"
   },
+  "runestone_activate": {
+    "sounds": [
+      {
+        "name": "strange:runestone_activate1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:runestone_activate2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:runestone_activate3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.runestone.activate"
+  },
   "runestone_travel": {
     "sounds": [
       {
