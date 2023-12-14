@@ -77,38 +77,28 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
         var log = Mods.common(Strange.ID).log();
 
         if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone && state.getBlock() instanceof RunestoneBlock block) {
-            if (Runestones.BLOCK_DEFINITIONS.containsKey(block)) {
+            if (state.getValue(ACTIVATED)) {
+                if (player instanceof ServerPlayer serverPlayer && !Runestones.tryTeleport(serverPlayer, runestone)) {
+                    return explode(level, pos);
+                }
+
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+
+            if (!level.isClientSide && Runestones.BLOCK_DEFINITIONS.containsKey(block)) {
                 var definition = Runestones.BLOCK_DEFINITIONS.get(block);
                 var activationItem = (Item)definition.activationItem().get();
+
+                if (!held.is(activationItem)) {
+                    return InteractionResult.CONSUME;
+                }
 
                 if (!isValid(runestone)) {
                     return explode(level, pos);
                 }
 
-                if (state.getValue(ACTIVATED)) {
-                    if (player instanceof ServerPlayer serverPlayer && !Runestones.tryTeleport(serverPlayer, runestone)) {
-                        return explode(level, pos);
-                    }
-
-                    return InteractionResult.sidedSuccess(level.isClientSide);
-                }
-
-                if (!held.is(activationItem)) {
-                    return InteractionResult.PASS;
-                }
-
-                if (runestone.type == null) {
-                    log.warn(getClass(), "Runestone has no type at pos " + pos);
-                    return explode(level, pos);
-                }
-
-                if (runestone.destination == null) {
-                    log.warn(getClass(), "Runestone has no destination at pos " + pos);
-                    return explode(level, pos);
-                }
-
                 state = state.setValue(ACTIVATED, true);
-                level.setBlockAndUpdate(pos, state);
+                level.setBlock(pos, state, 2);
                 level.playSound(null, pos, Runestones.activateSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
 
                 if (!player.getAbilities().instabuild) {
@@ -119,14 +109,12 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
                     return explode(level, pos);
                 }
 
-                return InteractionResult.sidedSuccess(level.isClientSide);
-
-            } else {
-                return explode(level, pos);
+                runestone.setChanged();
+                return InteractionResult.CONSUME;
             }
         }
 
-        return super.use(state, level, pos, player, hand, hitResult);
+        return InteractionResult.CONSUME;
     }
 
     @Override
