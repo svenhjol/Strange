@@ -57,6 +57,8 @@
   "gui.strange.cask.portions": "Number of bottles: %s",
   "gui.strange.cask.only_contains_water": "Only contains water",
   "gui.strange.runestone.discovered_by": "Discovered by %s",
+  "gui.strange.runestone.unsure": "%s?",
+  "gui.strange.runestone.unknown": "???",
   "item.strange.ebony_boat": "Ebony Boat",
   "item.strange.ebony_chest_boat": "Ebony Boat with Chest",
   "item.strange.home_brew": "Home Brew",

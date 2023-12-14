@@ -9,6 +9,7 @@ import svenhjol.strange.feature.ebony_wood.EbonyWoodClient;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointingClient;
 import svenhjol.strange.feature.raid_horns.RaidHornsClient;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.waypoints.WaypointsClient;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class StrangeClient extends ClientMod {
             PiglinPointingClient.class,
             RaidHornsClient.class,
             RunestonesClient.class,
+            TravelJournalClient.class,
             WaypointsClient.class
         );
     }

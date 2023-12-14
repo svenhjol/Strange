@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.travel_journal.TravelJournal;
 
 public class RunestoneHudRenderer {
     static final int MAX_FADE_TICKS = 200;
@@ -15,13 +16,13 @@ public class RunestoneHudRenderer {
     boolean isValid = false;
     boolean textShadow;
     int nameColor;
-    int runeNameColor;
+    int runesColor;
     int discoveredColor;
     int fadeInSpeed;
     int fadeOutSpeed;
-    String runeName = "";
-    String name = "";
-    String discovered = "";
+    MutableComponent runes;
+    MutableComponent name;
+    MutableComponent discovered;
     int ticks = 0;
     int ticksFade = 0;
     int ticksBackoff = MIN_BACKOFF_TICKS;
@@ -29,7 +30,7 @@ public class RunestoneHudRenderer {
     public RunestoneHudRenderer() {
         fadeInSpeed = 4;
         fadeOutSpeed = 10;
-        runeNameColor = 0xbfaf9f;
+        runesColor = 0xbfaf9f;
         nameColor = 0xf8f8ff;
         discoveredColor = 0xafbfcf;
         textShadow = true;
@@ -65,41 +66,21 @@ public class RunestoneHudRenderer {
         int y = 70;
         int lineHeight = 14;
         var minecraft = Minecraft.getInstance();
-        if (minecraft.player == null) return;
 
         if (ticksFade == 0) return;
 
-        var isCreative = minecraft.player.getAbilities().instabuild;
         var gui = minecraft.gui;
         var font = minecraft.font;
-        var midX = (int)(gui.screenWidth / 2.0F);
+        var midX = (int)(gui.screenWidth / 2.0f);
         var alpha = Math.max(4, Math.min(MAX_FADE_TICKS, ticksFade)) << 24 & 0xff000000;
 
         int nameLength;
-        int runeNameLength;
+        int runesLength;
         int discoveredLength;
-        MutableComponent name;
-        MutableComponent runeName;
-        MutableComponent discovered;
 
-        runeName = TextHelper.translatable(this.runeName).withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
-        runeNameLength = runeName.getString().length() * 5;
-
-        if (isCreative && this.discovered == null) {
-            this.discovered = "Creative mode";
-        }
-
-        if (this.discovered != null) {
-            name = TextHelper.translatable(this.name);
-            nameLength = name.getString().length() * 5;
-            discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", this.discovered);
-            discoveredLength = discovered.getString().length() * 5;
-        } else {
-            name = TextHelper.literal("???");
-            nameLength = name.getString().length() * 5;
-            discovered = Component.empty();
-            discoveredLength = 0;
-        }
+        runesLength = runes.getString().length() * 5;
+        nameLength = name.getString().length() * 5;
+        discoveredLength = discovered.getString().length() * 5;
 
         if (nameLength > 0) {
             int lx = (int) (midX - (float) (nameLength / 2) - 2) + 3;
@@ -113,9 +94,9 @@ public class RunestoneHudRenderer {
             y += lineHeight;
         }
 
-        if (runeNameLength > 0) {
-            int lx = (int) (midX - (float) (runeNameLength / 2) - 2) - 3;
-            guiGraphics.drawString(font, runeName, lx, y, runeNameColor | alpha, textShadow);
+        if (runesLength > 0) {
+            int lx = (int) (midX - (float) (runesLength / 2) - 2) - 3;
+            guiGraphics.drawString(font, runes, lx, y, runesColor | alpha, textShadow);
             y += lineHeight;
         }
 
@@ -128,18 +109,35 @@ public class RunestoneHudRenderer {
         var isCreative = player.getAbilities().instabuild;
 
         if (level.getBlockEntity(lookedAt) instanceof RunestoneBlockEntity runestone) {
+            this.discovered = Component.empty();
+
             if (runestone.destination == null) {
                 return false;
             }
 
-            // Always generate the runic name for this location.
-            this.runeName = RunestoneHelper.getRunicName(runestone.type, runestone.destination);
+            this.runes = TextHelper.literal(RunestoneHelper.getRunicName(runestone.type, runestone.destination))
+                .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
 
-            if (isCreative || runestone.discovered != null) {
-                this.discovered = runestone.discovered;
-                this.name = RunestoneHelper.getLocaleKey(runestone.type, runestone.destination);
+            if (runestone.discovered == null && isCreative) {
+                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination));
+                this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", "Creative mode");
+                return true;
+            }
+
+            if (runestone.discovered != null) {
+                // Show the "Discovered by" message.
+                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination));
+                this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
-                this.discovered = null;
+                // If the player has learned the runes for this destination, show the name with a "?" at the end.
+                var learned = TravelJournal.getLearned(player);
+                var hasLearned = learned.isPresent() && learned.get().learned(runestone.destination);
+
+                if (hasLearned) {
+                    this.name = TextHelper.translatable("gui.strange.runestone.unsure", TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination)));
+                } else {
+                    this.name = TextHelper.translatable("gui.strange.runestone.unknown");
+                }
             }
 
             return true;

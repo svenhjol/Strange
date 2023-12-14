@@ -25,6 +25,7 @@ import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.charmony_api.event.ServerStartEvent;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.travel_journal.TravelJournal;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -200,6 +201,10 @@ public class Runestones extends CommonFeature {
     public static boolean tryTeleport(ServerPlayer player, RunestoneBlockEntity runestone) {
         runestone.discovered = player.getScoreboardName();
         runestone.setChanged();
+
+        TravelJournal.getLearned(player).ifPresent(
+            learned -> learned.learn(runestone.destination));
+        TravelJournal.sync(player);
 
         var teleport = new RunestoneTeleport(player, runestone.target);
         teleport.teleport();
