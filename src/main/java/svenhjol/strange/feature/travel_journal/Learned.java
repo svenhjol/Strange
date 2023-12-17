@@ -11,31 +11,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Learned {
-    public static final String DESTINATIONS_TAG = "destinations";
-    private List<ResourceLocation> destinations = new ArrayList<>();
+    public static final String LOCATIONS_TAG = "locations";
+    private List<ResourceLocation> locations = new ArrayList<>();
 
     public void learn(ResourceLocation id) {
-        if (!learned(id)) {
-            destinations.add(id);
+        if (!hasLearned(id)) {
+            locations.add(id);
         }
     }
 
-    public boolean learned(ResourceLocation id) {
-        return destinations.contains(id);
+    public boolean hasLearned(ResourceLocation id) {
+        return locations.contains(id);
     }
 
     public CompoundTag save() {
         var tag = new CompoundTag();
         var list = new ListTag();
-        destinations.forEach(destination -> list.add(StringTag.valueOf(destination.toString())));
-        tag.put(DESTINATIONS_TAG, list);
+        locations.forEach(location -> list.add(StringTag.valueOf(location.toString())));
+        tag.put(LOCATIONS_TAG, list);
         return tag;
     }
 
     public static Learned load(CompoundTag tag) {
         var learned = new Learned();
-        var list = tag.getList(DESTINATIONS_TAG, 8);
-        learned.destinations = list.stream()
+        var list = tag.getList(LOCATIONS_TAG, 8);
+        learned.locations = list.stream()
             .map(Tag::getAsString)
             .map(ResourceLocation::new)
             .collect(Collectors.toCollection(ArrayList::new));
