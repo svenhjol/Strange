@@ -204,7 +204,7 @@ public class Runestones extends CommonFeature {
 
         TravelJournal.getLearned(player).ifPresent(
             learned -> learned.learn(runestone.destination));
-        TravelJournal.sync(player);
+        TravelJournal.syncLearned(player);
 
         var teleport = new RunestoneTeleport(player, runestone.target);
         teleport.teleport();
