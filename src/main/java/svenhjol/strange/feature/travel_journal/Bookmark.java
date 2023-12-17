@@ -61,7 +61,7 @@ public class Bookmark {
     public static Bookmark playerDefault(Player player) {
         var biomeName = TextHelper.translatable(TravelJournalHelper.getPlayerBiomeLocaleKey(player));
         var bookmarkName = TextHelper.translatable(
-            "gui.strange.bookmarks.default_name", biomeName).getString();
+            "gui.strange.travel_journal.bookmarks.default_name", biomeName).getString();
 
         var dimension = TravelJournalHelper.getPlayerDimension(player);
         return new Bookmark(bookmarkName, player.blockPosition(), dimension);

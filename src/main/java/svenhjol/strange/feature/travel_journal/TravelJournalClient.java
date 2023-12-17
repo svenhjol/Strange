@@ -12,10 +12,12 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MakeNewBookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncBookmarks;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
+import svenhjol.strange.feature.travel_journal.client.HomeScreen;
 
 import java.util.function.Supplier;
 
 public class TravelJournalClient extends ClientFeature {
+    static Supplier<String> openJournalKey;
     static Supplier<String> newBookmarkKey;
     static long lastBookmarkTimestamp;
     @Override
@@ -25,7 +27,10 @@ public class TravelJournalClient extends ClientFeature {
 
     @Override
     public void register() {
-        newBookmarkKey = mod().registry().key("new_bookmark",
+        var registry = mod().registry();
+        openJournalKey = registry.key("open_journal",
+            () -> new KeyMapping("key.strange.open_journal", GLFW.GLFW_KEY_J, "key.categories.misc"));
+        newBookmarkKey = registry.key("new_bookmark",
             () -> new KeyMapping("key.strange.new_bookmark", GLFW.GLFW_KEY_B, "key.categories.misc"));
     }
 
@@ -55,14 +60,27 @@ public class TravelJournalClient extends ClientFeature {
             return;
         }
 
-        if (minecraft.level.getGameTime() - lastBookmarkTimestamp < 10) {
-            return;
+        if (id.equals(openJournalKey.get())) {
+            openJournal();
         }
 
         if (id.equals(newBookmarkKey.get())) {
+            if (minecraft.level.getGameTime() - lastBookmarkTimestamp < 10) {
+                return;
+            }
+
             lastBookmarkTimestamp = minecraft.level.getGameTime();
             makeNewBookmark();
         }
+    }
+
+    private void openJournal() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.level == null) {
+            return;
+        }
+
+        minecraft.setScreen(new HomeScreen());
     }
 
     private void makeNewBookmark() {
