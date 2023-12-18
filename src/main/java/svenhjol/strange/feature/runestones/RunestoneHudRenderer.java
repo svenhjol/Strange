@@ -111,30 +111,30 @@ public class RunestoneHudRenderer {
         if (level.getBlockEntity(lookedAt) instanceof RunestoneBlockEntity runestone) {
             this.discovered = Component.empty();
 
-            if (runestone.destination == null) {
+            if (runestone.location == null) {
                 return false;
             }
 
-            this.runes = TextHelper.literal(RunestoneHelper.getRunicName(runestone.type, runestone.destination))
+            this.runes = TextHelper.literal(RunestoneHelper.getRunicName(runestone.location))
                 .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
 
             if (runestone.discovered == null && isCreative) {
-                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination));
+                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.location));
                 this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", "Creative mode");
                 return true;
             }
 
             if (runestone.discovered != null) {
                 // Show the "Discovered by" message.
-                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination));
+                this.name = TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.location));
                 this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
                 // If the player has learned the runes for this destination, show the name with a "?" at the end.
                 var learned = TravelJournal.getLearned(player);
-                var hasLearned = learned.isPresent() && learned.get().hasLearned(runestone.destination);
+                var hasLearned = learned.isPresent() && learned.get().hasLearned(runestone.location);
 
                 if (hasLearned) {
-                    this.name = TextHelper.translatable("gui.strange.runestone.unsure", TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.type, runestone.destination)));
+                    this.name = TextHelper.translatable("gui.strange.runestone.unsure", TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.location)));
                 } else {
                     this.name = TextHelper.translatable("gui.strange.runestone.unknown");
                 }

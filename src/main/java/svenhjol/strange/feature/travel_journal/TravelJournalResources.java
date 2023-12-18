@@ -19,6 +19,8 @@ public class TravelJournalResources {
     public static final WidgetSprites SAVE_TO_MAP_BUTTON = makeButton("save_to_map");
     public static final WidgetSprites SCREENSHOT_BUTTON = makeButton("screenshot");
     public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
+    public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
+    public static final WidgetSprites PREVIOUS_PAGE_BUTTON = makeButton("previous_page");
     public static final Component HOME_TITLE = TextHelper.translatable("gui.strange.travel_journal.travel_journal");
     public static final Component LEARNED_TITLE = TextHelper.translatable("gui.strange.travel_journal.learned");
     public static final Component BOOKMARKS_TITLE = TextHelper.translatable("gui.strange.travel_journal.bookmarks");

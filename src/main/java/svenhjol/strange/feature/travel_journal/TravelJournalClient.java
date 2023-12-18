@@ -20,6 +20,7 @@ public class TravelJournalClient extends ClientFeature {
     static Supplier<String> openJournalKey;
     static Supplier<String> newBookmarkKey;
     static long lastBookmarkTimestamp;
+
     @Override
     public Class<? extends CommonFeature> commonFeature() {
         return TravelJournal.class;
@@ -40,7 +41,7 @@ public class TravelJournalClient extends ClientFeature {
     }
 
     public static void handleSyncLearned(SyncLearned message, Player player) {
-        logDebugMessage("Received learned from server");
+        logDebugMessage("Received learned from server with " + message.getLearned().getLocations().size() + " location(s)");
         TravelJournal.LEARNED.put(player.getUUID(), message.getLearned());
     }
 

@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -61,26 +60,26 @@ public class RunestoneHelper {
         return raycast.getBlockPos();
     }
 
-    public static String getLocaleKey(DestinationType type, ResourceLocation destination) {
-        var namespace = destination.getNamespace();
-        var path = destination.getPath();
+    public static String getLocaleKey(Location location) {
+        var namespace = location.id().getNamespace();
+        var path = location.id().getPath();
 
-        return switch (type) {
+        return switch (location.type()) {
             case BIOME -> "biome." + namespace + "." + path;
             case STRUCTURE -> "structure." + namespace + "." + path;
         };
     }
 
-    public static String getRunicName(DestinationType type, ResourceLocation destination) {
+    public static String getRunicName(Location location) {
         if (!RunestonesClient.hasReceivedSeed) {
-            return "???";
+            throw new RuntimeException("Client has not received the level seed");
         }
 
-        var combined = type.name().substring(0, 2) + destination.getPath();
+        var combined = location.type().name().substring(0, 2) + location.id().getPath();
 
         if (!CACHED_RUNIC_NAMES.containsKey(combined)) {
             var random = RandomSource.create(RunestonesClient.seed);
-            CACHED_RUNIC_NAMES.put(combined, generateRunes(combined, 18, random));
+            CACHED_RUNIC_NAMES.put(combined, generateRunes(combined, 16, random));
         }
 
         return CACHED_RUNIC_NAMES.get(combined);

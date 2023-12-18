@@ -43,31 +43,29 @@ public abstract class BaseScreen extends Screen {
     }
 
     protected void openHome(Button button) {
-        if (!(this instanceof HomeScreen)) {
-            Minecraft.getInstance().setScreen(new HomeScreen());
-        }
+        Minecraft.getInstance().setScreen(new HomeScreen());
     }
 
     protected void openBookmarks(Button button) {
-        if (!(this instanceof BookmarksScreen)) {
-            Minecraft.getInstance().setScreen(new BookmarksScreen());
-        }
+        Minecraft.getInstance().setScreen(new BookmarksScreen());
     }
 
     protected void openLearned(Button button) {
-        if (!(this instanceof LearnedScreen)) {
-            Minecraft.getInstance().setScreen(new LearnedScreen());
-        }
+        this.openLearned(1);
+    }
+
+    protected void openLearned(int page) {
+        Minecraft.getInstance().setScreen(new LearnedScreen(page));
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTitle(guiGraphics, midX, midY - 80);
+        renderTitle(guiGraphics, midX, midY - 85);
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
-        drawCenteredString(guiGraphics, getTitle(), x, y, 0x555555, false);
+        drawCenteredString(guiGraphics, getTitle(), x, y, 0xa05f50, false);
     }
 
     @Override
@@ -130,6 +128,28 @@ public abstract class BaseScreen extends Screen {
         static Component TEXT = TravelJournalResources.LEARNED_BUTTON_TEXT;
 
         protected LearnedShortcutButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+        }
+    }
+
+    static class NextPageButton extends ImageButton {
+        static int WIDTH = 20;
+        static int HEIGHT = 19;
+        static WidgetSprites SPRITES = TravelJournalResources.NEXT_PAGE_BUTTON;
+        static Component TEXT = Component.empty();
+
+        protected NextPageButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+        }
+    }
+
+    static class PreviousPageButton extends ImageButton {
+        static int WIDTH = 20;
+        static int HEIGHT = 19;
+        static WidgetSprites SPRITES = TravelJournalResources.PREVIOUS_PAGE_BUTTON;
+        static Component TEXT = Component.empty();
+
+        protected PreviousPageButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
         }
     }

@@ -98,8 +98,9 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
                 }
 
                 state = state.setValue(ACTIVATED, true);
-                level.setBlock(pos, state, 2);
+                level.setBlock(pos, state, 3);
                 level.playSound(null, pos, Runestones.activateSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+                runestone.setChanged();
 
                 if (!player.getAbilities().instabuild) {
                     held.shrink(1);
@@ -187,13 +188,8 @@ public class RunestoneBlock extends CharmonyBlockWithEntity {
         var log = Mods.common(Strange.ID).log();
         var pos = runestone.getBlockPos();
 
-        if (runestone.type == null) {
-            log.warn(getClass(), "Runestone has no type at pos " + pos);
-            return false;
-        }
-
-        if (runestone.destination == null) {
-            log.warn(getClass(), "Runestone has no destination at pos " + pos);
+        if (runestone.location == null) {
+            log.warn(getClass(), "Runestone has no location data at pos " + pos);
             return false;
         }
 

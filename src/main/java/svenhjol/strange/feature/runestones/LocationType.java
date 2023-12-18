@@ -1,6 +1,6 @@
 package svenhjol.strange.feature.runestones;
 
-public enum DestinationType {
+public enum LocationType {
     BIOME,
-    STRUCTURE;
+    STRUCTURE
 }

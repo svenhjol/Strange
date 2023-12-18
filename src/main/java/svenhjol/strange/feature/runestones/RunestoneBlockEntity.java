@@ -2,17 +2,15 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charmony.base.CharmonySyncedBlockEntity;
 
 public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
-    public static final String DESTINATION_TAG = "destination";
-    public static final String TYPE_TAG = "type";
+    public static final String LOCATION_TAG = "location";
     public static final String TARGET_TAG = "target";
     public static final String DISCOVERED_TAG = "discovered";
-    public ResourceLocation destination;
-    public DestinationType type;
+
+    public Location location;
     public BlockPos target;
     public String discovered;
 
@@ -20,17 +18,8 @@ public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        if (tag.contains(DESTINATION_TAG)) {
-            this.destination = new ResourceLocation(tag.getString(DESTINATION_TAG));
-        }
-
-        if (tag.contains(TYPE_TAG)) {
-            var type = tag.getString(TYPE_TAG);
-            try {
-                this.type = DestinationType.valueOf(type);
-            } catch (IllegalArgumentException e) {
-                this.type = null;
-            }
+        if (tag.contains(LOCATION_TAG)) {
+            this.location = Location.load(tag.getCompound(LOCATION_TAG));
         }
 
         if (tag.contains(TARGET_TAG)) {
@@ -46,12 +35,8 @@ public class RunestoneBlockEntity extends CharmonySyncedBlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
-        if (destination != null) {
-            tag.putString(DESTINATION_TAG, destination.toString());
-        }
-
-        if (type != null) {
-            tag.putString(TYPE_TAG, type.name());
+        if (location != null) {
+            tag.put(LOCATION_TAG, location.save());
         }
 
         if (target != null) {

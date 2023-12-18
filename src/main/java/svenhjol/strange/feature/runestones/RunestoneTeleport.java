@@ -2,16 +2,20 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.helper.WorldHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
 
@@ -19,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RunestoneTeleport {
-    static final int PROCESS_AFTER = 10;
-    static final int INVALIDATE_AFTER = 100;
+    static final int REPOSITION_TICKS = 10;
     private final ServerPlayer player;
+    private final ServerLevel level;
     private final Vec3 target;
     private final ILog log;
     private int ticks = 0;
@@ -29,6 +33,7 @@ public class RunestoneTeleport {
 
     public RunestoneTeleport(ServerPlayer player, BlockPos target) {
         this.player = player;
+        this.level = (ServerLevel)player.level();
         this.target = target.getCenter();
         this.log = Mods.common(Strange.ID).log();
     }
@@ -40,15 +45,7 @@ public class RunestoneTeleport {
 
         ticks++;
 
-        if (ticks < PROCESS_AFTER) {
-            return;
-        }
-
-        if (ticks > INVALIDATE_AFTER) {
-            log.warn(getClass(), "Teleport process timed out for " + player);
-            valid = false;
-            return;
-        }
+        if (ticks < 20) return;
 
         if (player.isRemoved()) {
             valid = false;
@@ -56,18 +53,22 @@ public class RunestoneTeleport {
         }
 
         var level = player.level();
-        var pos = player.blockPosition();
         var seaLevel = level.getSeaLevel();
+        var pos = new BlockPos((int)target.x, seaLevel, (int)target.z);
 
         if (!level.dimensionType().hasCeiling()) {
             var surface = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
             log.debug(getClass(), "Found a valid surface position " + surface);
+            var posBelow = surface.below();
+            var stateBelow = level.getBlockState(posBelow);
 
-            if (level.getBlockState(surface.below()).isSolidRender(level, surface.below())) {
-                reposition(surface);
+            if (!(stateBelow.isAir() && !stateBelow.getFluidState().is(Fluids.LAVA))
+                || stateBelow.getFluidState().is(Fluids.WATER)
+                || stateBelow.getFluidState().is(Fluids.FLOWING_WATER)) {
+                reposition(surface.above());
                 return;
             } else {
-                log.debug(getClass(), "Unable to place player on surface, falling back to checks");
+                log.debug(getClass(), "Unable to place player on surface because state=" + stateBelow + ", falling back to checks");
             }
         } else {
             var surface = RunestoneHelper.getSurfacePos(level, pos, Math.min(seaLevel + 40, level.getHeight() - 20));
@@ -81,7 +82,7 @@ public class RunestoneTeleport {
         }
 
         var mutable = new BlockPos.MutableBlockPos();
-        mutable.set(pos.getX(), seaLevel + 12, pos.getZ());
+        mutable.set(pos.getX(), seaLevel + 24, pos.getZ());
 
         var surfaceBlock = getSurfaceBlockForDimension();
         var validFloor = false;
@@ -89,7 +90,7 @@ public class RunestoneTeleport {
         var validAbove = false;
 
         // Check blocks below for solid ground or water
-        for (int tries = 0; tries < 24; tries++) {
+        for (int tries = 0; tries < 48; tries++) {
             var above = level.getBlockState(mutable.above());
             var current = level.getBlockState(mutable);
             var below = level.getBlockState(mutable.below());
@@ -138,7 +139,7 @@ public class RunestoneTeleport {
         reposition(mutable);
     }
 
-    public void teleport() {
+    public void init() {
         // Add protection and dizziness effects to the teleporting player.
         var effects = new ArrayList<>(Arrays.asList(
             new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Runestones.protectionDuration * 20, 1),
@@ -154,13 +155,23 @@ public class RunestoneTeleport {
         player.level().playSound(null, player.blockPosition(), Runestones.travelSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
 
         // Do the teleport to the location - repositioning comes later.
+        if (!player.getAbilities().instabuild) {
+            player.setInvulnerable(true);
+        }
         player.teleportToWithTicket(target.x, target.y, target.z);
+
         valid = true;
     }
 
     private void reposition(BlockPos pos) {
         player.moveTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
         player.teleportTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
+//        player.teleportTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
+
+        if (!player.getAbilities().instabuild) {
+            player.setInvulnerable(false);
+        }
+
         valid = false;
     }
 
@@ -199,5 +210,33 @@ public class RunestoneTeleport {
 
     public boolean isValid() {
         return valid;
+    }
+
+    public void addForcedChunk() {
+        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
+        var chunkPos = new ChunkPos(blockPos);
+
+        // try a couple of times I guess?
+        var result = false;
+        for (int i = 0; i <= 2; i++) {
+            result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), true);
+            if (result) break;
+        }
+
+        if (result) {
+            log.debug(WorldHelper.class, "Force loaded chunk " + chunkPos);
+        }
+    }
+
+    public void removeForcedChunk() {
+        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
+        var chunkPos = new ChunkPos(blockPos);
+
+        var result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), false);
+        if (!result) {
+            log.debug(WorldHelper.class, "Forced chunk was already removed.");
+        } else {
+            log.debug(WorldHelper.class, "Unloaded forced chunk " + chunkPos);
+        }
     }
 }

@@ -26,6 +26,7 @@ import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.charmony_api.event.ServerStartEvent;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -121,9 +122,8 @@ public class Runestones extends CommonFeature {
                 return;
             }
 
-            runestone.destination = destinations.get(random.nextInt(destinations.size()));
-            runestone.type = DestinationType.BIOME;
-            log.debug(RunestoneBlock.class, "Set biome " + runestone.destination + " for runestone at pos " + pos);
+            runestone.location = new Location(LocationType.BIOME, destinations.get(random.nextInt(destinations.size())));
+            log.debug(RunestoneBlock.class, "Set biome " + runestone.location.id() + " for runestone at pos " + pos);
 
         } else if (tag.registry() == Registries.STRUCTURE) {
 
@@ -137,9 +137,8 @@ public class Runestones extends CommonFeature {
                 return;
             }
 
-            runestone.destination = destinations.get(random.nextInt(destinations.size()));
-            runestone.type = DestinationType.STRUCTURE;
-            log.debug(RunestoneBlock.class, "Set structure " + runestone.destination + " for runestone at pos " + pos);
+            runestone.location = new Location(LocationType.STRUCTURE, destinations.get(random.nextInt(destinations.size())));
+            log.debug(RunestoneBlock.class, "Set structure " + runestone.location.id() + " for runestone at pos " + pos);
 
         }
 
@@ -158,11 +157,11 @@ public class Runestones extends CommonFeature {
         var target = RunestoneHelper.addRandomOffset(level, pos, random, 1000, 2000);
         var registryAccess = level.registryAccess();
 
-        switch (runestone.type) {
+        switch (runestone.location.type()) {
             case BIOME -> {
-                var result = level.findClosestBiome3d(x -> x.is(runestone.destination), target, 6400, 32, 64);
+                var result = level.findClosestBiome3d(x -> x.is(runestone.location.id()), target, 6400, 32, 64);
                 if (result == null) {
-                    log.warn(Runestones.class, "Could not locate biome for " + runestone.destination);
+                    log.warn(Runestones.class, "Could not locate biome for " + runestone.location.id());
                     return false;
                 }
 
@@ -170,9 +169,9 @@ public class Runestones extends CommonFeature {
             }
             case STRUCTURE -> {
                 var structureRegistry = registryAccess.registryOrThrow(Registries.STRUCTURE);
-                var structure = structureRegistry.get(runestone.destination);
+                var structure = structureRegistry.get(runestone.location.id());
                 if (structure == null) {
-                    log.warn(Runestones.class, "Could not get registered structure for " + runestone.destination);
+                    log.warn(Runestones.class, "Could not get registered structure for " + runestone.location.id());
                     return false;
                 }
 
@@ -182,7 +181,7 @@ public class Runestones extends CommonFeature {
                     .findNearestMapStructure(level, set, target, 100, false);
 
                 if (result == null) {
-                    log.warn(Runestones.class, "Could not locate structure for " + runestone.destination);
+                    log.warn(Runestones.class, "Could not locate structure for " + runestone.location.id());
                     return false;
                 }
 
@@ -202,14 +201,15 @@ public class Runestones extends CommonFeature {
         runestone.discovered = player.getScoreboardName();
         runestone.setChanged();
 
-        TravelJournal.getLearned(player).ifPresent(
-            learned -> learned.learn(runestone.destination));
-        TravelJournal.syncLearned(player);
+        TravelJournal.getLearned(player).ifPresent(learned -> {
+            learned.learn(runestone.location);
+            SyncLearned.send(player, learned);
+        });
 
         var teleport = new RunestoneTeleport(player, runestone.target);
-        teleport.teleport();
-        Runestones.TELEPORTS.put(player.getUUID(), teleport);
+        teleport.init();
 
+        Runestones.TELEPORTS.put(player.getUUID(), teleport);
         return true;
     }
 
@@ -252,6 +252,7 @@ public class Runestones extends CommonFeature {
             if (teleport.isValid()) {
                 teleport.tick();
             } else {
+                mod().log().debug(getClass(), "Teleport ticket no longer valid, removing for " + uuid);
                 TELEPORTS.remove(uuid);
             }
         }

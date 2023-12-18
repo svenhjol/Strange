@@ -14,6 +14,7 @@ import svenhjol.charmony_api.event.PlayerSaveDataEvent;
 import svenhjol.strange.feature.travel_journal.Bookmarks.AddBookmarkResult;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MakeNewBookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.NotifyNewBookmarkResult;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
 
 import java.io.File;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class TravelJournal extends CommonFeature {
         PlayerSaveDataEvent.INSTANCE.handle(this::handlePlayerSaveData);
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
     }
+
     public static Optional<Learned> getLearned(Player player) {
         return Optional.ofNullable(LEARNED.get(player.getUUID()));
     }
@@ -54,7 +56,7 @@ public class TravelJournal extends CommonFeature {
 
     public static void syncLearned(ServerPlayer player) {
         getLearned(player).ifPresent(
-            learned -> TravelJournalNetwork.SyncLearned.send(player, learned));
+            learned -> SyncLearned.send(player, learned));
     }
 
     public static void syncBookmarks(ServerPlayer player) {
