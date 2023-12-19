@@ -11,6 +11,10 @@ public class Bookmarks {
     public static final String BOOKMARKS_TAG = "bookmarks";
     private List<Bookmark> bookmarks = new ArrayList<>();
 
+    public List<Bookmark> getBookmarks() {
+        return bookmarks;
+    }
+
     public AddBookmarkResult add(Bookmark bookmark) {
         if (bookmarks.size() > 128) {
             return AddBookmarkResult.FULL;

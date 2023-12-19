@@ -2,19 +2,21 @@ package svenhjol.strange.feature.travel_journal.client;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class HomeScreen extends BaseScreen {
     public HomeScreen() {
         super(TravelJournalResources.HOME_TITLE);
+        PageTracker.Screen.HOME.set();
     }
 
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), midY - 10, b -> {}));
-        addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), midY + 15, b -> {}));
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),midY + 105, b -> onClose()));
+        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), 60, this::openBookmarks));
+        addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), 85, this::openLearned));
+        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),220, b -> onClose()));
 
         initShortcuts();
     }

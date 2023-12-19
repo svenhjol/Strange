@@ -59,11 +59,20 @@
   "gui.strange.runestone.discovered_by": "Discovered by %s",
   "gui.strange.runestone.unsure": "%s?",
   "gui.strange.runestone.unknown": "???",
+  "gui.strange.travel_journal.back": "Back",
   "gui.strange.travel_journal.bookmarks.default_name": "Location in %s",
   "gui.strange.travel_journal.bookmarks": "Bookmarks",
+  "gui.strange.travel_journal.change_name": "Change Name",
+  "gui.strange.travel_journal.change_icon": "Change Icon",
   "gui.strange.travel_journal.close": "Close",
+  "gui.strange.travel_journal.delete": "Delete",
   "gui.strange.travel_journal.learned": "Known runes",
   "gui.strange.travel_journal.home": "home",
+  "gui.strange.travel_journal.next_page": "Next Page",
+  "gui.strange.travel_journal.previous_page": "Previous Page",
+  "gui.strange.travel_journal.save_to_bookmark": "Save to Bookmark",
+  "gui.strange.travel_journal.save_to_map": "Save to Map",
+  "gui.strange.travel_journal.take_screenshot": "Take Photo",
   "gui.strange.travel_journal.travel_journal": "Travel Journal",
   "item.strange.ebony_boat": "Ebony Boat",
   "item.strange.ebony_chest_boat": "Ebony Boat with Chest",
@@ -223,5 +232,6 @@
   "subtitles.strange.block.waypoint.broadcast": "Waypoint broadcasts",
   "subtitles.strange.item.raid_horn.squeak": "Horn fails",
   "subtitles.strange.item.raid_horn.call_patrol": "Horn calls patrol",
-  "subtitles.strange.item.raid_horn.call_off_raid": "Horn calls off raid"
+  "subtitles.strange.item.raid_horn.call_off_raid": "Horn calls off raid",
+  "subtitles.strange.player.screenshot.take": "Photo taken"
 }

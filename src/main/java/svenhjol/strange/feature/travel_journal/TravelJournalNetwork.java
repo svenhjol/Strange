@@ -17,6 +17,7 @@ public class TravelJournalNetwork {
         registry.packet(new SyncBookmarks(), () -> TravelJournalClient::handleSyncBookmarks);
         registry.packet(new NotifyNewBookmarkResult(), () -> TravelJournalClient::handleNotifyNewBookmarkResult);
         registry.packet(new MakeNewBookmark(), () -> TravelJournal::handleMakeNewBookmark);
+        registry.packet(new MadeNewBookmark(), () -> TravelJournalClient::handleMadeNewBookmark);
     }
 
     static IServerNetwork serverNetwork() {
@@ -138,6 +139,39 @@ public class TravelJournalNetwork {
 
         public static void send() {
             Mods.client(Strange.ID).network().send(new MakeNewBookmark());
+        }
+    }
+
+    @Packet(
+        id = "strange:made_new_bookmark",
+        direction = PacketDirection.SERVER_TO_CLIENT,
+        description = "The new bookmark created on the server, sent to the client."
+    )
+    public static class MadeNewBookmark implements IPacketRequest {
+        private Bookmark bookmark;
+        private MadeNewBookmark() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeNbt(bookmark.save());
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            var tag = buf.readNbt();
+            if (tag != null) {
+                this.bookmark = Bookmark.load(tag);
+            }
+        }
+
+        public Bookmark getBookmark() {
+            return bookmark;
+        }
+
+        public static void send(ServerPlayer player, Bookmark bookmark) {
+            var message = new MadeNewBookmark();
+            message.bookmark = bookmark;
+            serverNetwork().send(message, player);
         }
     }
 }

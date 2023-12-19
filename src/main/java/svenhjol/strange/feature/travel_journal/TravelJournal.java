@@ -2,6 +2,7 @@ package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -11,7 +12,7 @@ import svenhjol.charmony.event.PlayerSaveDataCallback;
 import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerLoadDataEvent;
 import svenhjol.charmony_api.event.PlayerSaveDataEvent;
-import svenhjol.strange.feature.travel_journal.Bookmarks.AddBookmarkResult;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MadeNewBookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MakeNewBookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.NotifyNewBookmarkResult;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
@@ -21,17 +22,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class TravelJournal extends CommonFeature {
     public static final String BOOKMARKS_TAG = "bookmarks";
     public static final String LEARNED_TAG = "learned";
     public static final Map<UUID, Bookmarks> BOOKMARKS = new HashMap<>();
     public static final Map<UUID, Learned> LEARNED = new HashMap<>();
+    static Supplier<SoundEvent> screenshotSound;
+
+    public static boolean renderCoordinates = true;
 
     @Override
     public void register() {
         var registry = mod().registry();
         TravelJournalNetwork.register(registry);
+
+        screenshotSound = registry.soundEvent("screenshot");
     }
 
     @Override
@@ -98,13 +105,16 @@ public class TravelJournal extends CommonFeature {
     public static void handleMakeNewBookmark(MakeNewBookmark message, Player player) {
         getBookmarks(player).ifPresent(bookmarks -> {
             var serverPlayer = (ServerPlayer)player;
-            var result = bookmarks.add(Bookmark.playerDefault(player));
+            var newBookmark = Bookmark.playerDefault(player);
+            var result = bookmarks.add(newBookmark);
 
-            if (result == AddBookmarkResult.SUCCESS) {
-                syncBookmarks(serverPlayer);
-            }
-
+            // Always update the client with the result of the bookmark creation.
             NotifyNewBookmarkResult.send(serverPlayer, result);
+
+            if (result == Bookmarks.AddBookmarkResult.SUCCESS) {
+                // Send the new bookmark to the client.
+                MadeNewBookmark.send(serverPlayer, newBookmark);
+            }
         });
     }
 }

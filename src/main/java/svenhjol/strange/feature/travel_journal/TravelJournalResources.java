@@ -21,13 +21,23 @@ public class TravelJournalResources {
     public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
     public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
     public static final WidgetSprites PREVIOUS_PAGE_BUTTON = makeButton("previous_page");
+    public static final WidgetSprites EDIT_BUTTON = makeButton("edit");
     public static final Component HOME_TITLE = TextHelper.translatable("gui.strange.travel_journal.travel_journal");
     public static final Component LEARNED_TITLE = TextHelper.translatable("gui.strange.travel_journal.learned");
     public static final Component BOOKMARKS_TITLE = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
     public static final Component BOOKMARKS_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
     public static final Component CLOSE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.close");
+    public static final Component BACK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.back");
     public static final Component HOME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.home");
+    public static final Component TAKE_SCREENSHOT_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_screenshot");
+    public static final Component CHANGE_NAME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_name");
+    public static final Component CHANGE_ICON_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_icon");
+    public static final Component DELETE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.delete");
     public static final Component LEARNED_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.learned");
+    public static final Component NEXT_PAGE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.next_page");
+    public static final Component PREVIOUS_PAGE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.previous_page");
+    public static final Component SAVE_TO_MAP_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save_to_map");
+    public static final Component SAVE_TO_BOOKMARK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save_to_bookmark");
 
     static WidgetSprites makeButton(String name) {
         var instance = Mods.client(Strange.ID);

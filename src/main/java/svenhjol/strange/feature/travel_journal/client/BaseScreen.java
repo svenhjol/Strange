@@ -5,15 +5,18 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.iface.ILog;
+import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public abstract class BaseScreen extends Screen {
     protected int midX;
-    protected int midY;
     protected int backgroundWidth;
     protected int backgroundHeight;
 
@@ -30,16 +33,15 @@ public abstract class BaseScreen extends Screen {
         }
 
         midX = width / 2;
-        midY = height / 2;
 
         backgroundWidth = TravelJournalResources.JOURNAL_BACKGROUND_DIM.getFirst();
         backgroundHeight = TravelJournalResources.JOURNAL_BACKGROUND_DIM.getSecond();
     }
 
     protected void initShortcuts() {
-        addRenderableWidget(new HomeShortcutButton(midX + 120, midY - 80, this::openHome));
-        addRenderableWidget(new BookmarksShortcutButton(midX + 120, midY - 62, this::openBookmarks));
-        addRenderableWidget(new LearnedShortcutButton(midX + 120, midY - 44, this::openLearned));
+        addRenderableWidget(new HomeShortcutButton(midX + 120, 40, this::openHome));
+        addRenderableWidget(new BookmarksShortcutButton(midX + 120, 57, this::openBookmarks));
+        addRenderableWidget(new LearnedShortcutButton(midX + 120, 74, this::openLearned));
     }
 
     protected void openHome(Button button) {
@@ -48,6 +50,10 @@ public abstract class BaseScreen extends Screen {
 
     protected void openBookmarks(Button button) {
         Minecraft.getInstance().setScreen(new BookmarksScreen());
+    }
+
+    protected void openBookmarks(int page) {
+        Minecraft.getInstance().setScreen(new BookmarksScreen(page));
     }
 
     protected void openLearned(Button button) {
@@ -61,7 +67,7 @@ public abstract class BaseScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTitle(guiGraphics, midX, midY - 85);
+        renderTitle(guiGraphics, midX, 30);
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
@@ -73,7 +79,7 @@ public abstract class BaseScreen extends Screen {
         super.renderBackground(guiGraphics, mouseX, mouseY, delta);
 
         int x = (this.width - this.backgroundWidth) / 2;
-        int y = (this.height - this.backgroundHeight) / 2;
+        int y = 10;
         guiGraphics.blit(getBackgroundTexture(), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 
@@ -90,12 +96,33 @@ public abstract class BaseScreen extends Screen {
         guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, dropShadow);
     }
 
+    protected static ILog log() {
+        return Mods.client(Strange.ID).log();
+    }
+
     static class CloseButton extends Button {
         static int WIDTH = 110;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.CLOSE_BUTTON_TEXT;
         public CloseButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class BackButton extends Button {
+        static int WIDTH = 110;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.BACK_BUTTON_TEXT;
+        public BackButton(int x, int y, Button.OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class EditButton extends Button {
+        static int HEIGHT = 20;
+
+        protected EditButton(int x, int y, int width, OnPress onPress, Component text) {
+            super(x, y, width, HEIGHT, text, onPress, DEFAULT_NARRATION);
         }
     }
 
@@ -106,7 +133,8 @@ public abstract class BaseScreen extends Screen {
         static Component TEXT = TravelJournalResources.HOME_BUTTON_TEXT;
 
         protected HomeShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
@@ -117,7 +145,8 @@ public abstract class BaseScreen extends Screen {
         static Component TEXT = TravelJournalResources.BOOKMARKS_BUTTON_TEXT;
 
         protected BookmarksShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
@@ -128,7 +157,8 @@ public abstract class BaseScreen extends Screen {
         static Component TEXT = TravelJournalResources.LEARNED_BUTTON_TEXT;
 
         protected LearnedShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
@@ -136,10 +166,11 @@ public abstract class BaseScreen extends Screen {
         static int WIDTH = 20;
         static int HEIGHT = 19;
         static WidgetSprites SPRITES = TravelJournalResources.NEXT_PAGE_BUTTON;
-        static Component TEXT = Component.empty();
+        static Component TEXT = TravelJournalResources.NEXT_PAGE_BUTTON_TEXT;
 
         protected NextPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
@@ -147,10 +178,11 @@ public abstract class BaseScreen extends Screen {
         static int WIDTH = 20;
         static int HEIGHT = 19;
         static WidgetSprites SPRITES = TravelJournalResources.PREVIOUS_PAGE_BUTTON;
-        static Component TEXT = Component.empty();
+        static Component TEXT = TravelJournalResources.PREVIOUS_PAGE_BUTTON_TEXT;
 
         protected PreviousPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress, TEXT);
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 }

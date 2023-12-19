@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
@@ -19,12 +20,13 @@ public class LearnedScreen extends BaseScreen {
     public LearnedScreen(int page) {
         super(TravelJournalResources.LEARNED_TITLE);
         this.page = page;
+        PageTracker.Screen.LEARNED.set();
     }
 
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),midY + 105, b -> onClose()));
+        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),220, b -> onClose()));
         initShortcuts();
 
         renderedPaginationButtons = false;
@@ -64,8 +66,8 @@ public class LearnedScreen extends BaseScreen {
                 var runes = TextHelper.literal(RunestoneHelper.getRunicName(location))
                     .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
 
-                guiGraphics.drawString(font, name, midX - 110 + (x * 115), midY - 65 + (y * 24), 0x272422, false);
-                guiGraphics.drawString(font, runes, midX - 110 + (x * 115), midY - 55 + (y * 24), 0xbfb7b5, false);
+                guiGraphics.drawString(font, name, midX - 110 + (x * 115), 65 + (y * 24), 0x272422, false);
+                guiGraphics.drawString(font, runes, midX - 110 + (x * 115), 55 + (y * 24), 0xbfb7b5, false);
 
                 index++;
             }
@@ -73,10 +75,10 @@ public class LearnedScreen extends BaseScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, midY + 75, b -> openLearned(page - 1)));
+                addRenderableWidget(new PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
             }
             if (page < pages || index < locations.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, midY + 75, b -> openLearned(page + 1)));
+                addRenderableWidget(new NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
             }
 
             renderedPaginationButtons = true;

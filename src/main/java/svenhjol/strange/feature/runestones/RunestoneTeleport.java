@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RunestoneTeleport {
-    static final int REPOSITION_TICKS = 10;
+    static final int REPOSITION_TICKS = 20; // TODO: configurable
     private final ServerPlayer player;
     private final ServerLevel level;
     private final Vec3 target;
@@ -45,7 +45,7 @@ public class RunestoneTeleport {
 
         ticks++;
 
-        if (ticks < 20) return;
+        if (ticks < REPOSITION_TICKS) return;
 
         if (player.isRemoved()) {
             valid = false;

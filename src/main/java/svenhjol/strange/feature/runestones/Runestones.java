@@ -252,7 +252,7 @@ public class Runestones extends CommonFeature {
             if (teleport.isValid()) {
                 teleport.tick();
             } else {
-                mod().log().debug(getClass(), "Teleport ticket no longer valid, removing for " + uuid);
+                mod().log().debug(getClass(), "Removing completed teleport for " + uuid);
                 TELEPORTS.remove(uuid);
             }
         }

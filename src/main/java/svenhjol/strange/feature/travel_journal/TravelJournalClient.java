@@ -7,12 +7,11 @@ import org.lwjgl.glfw.GLFW;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony_api.event.ClientTickEvent;
 import svenhjol.charmony_api.event.KeyPressEvent;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MakeNewBookmark;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncBookmarks;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
-import svenhjol.strange.feature.travel_journal.client.HomeScreen;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.*;
+import svenhjol.strange.feature.travel_journal.client.BookmarkScreen;
 
 import java.util.function.Supplier;
 
@@ -20,6 +19,7 @@ public class TravelJournalClient extends ClientFeature {
     static Supplier<String> openJournalKey;
     static Supplier<String> newBookmarkKey;
     static long lastBookmarkTimestamp;
+    static Screenshot screenshot = null;
 
     @Override
     public Class<? extends CommonFeature> commonFeature() {
@@ -29,6 +29,7 @@ public class TravelJournalClient extends ClientFeature {
     @Override
     public void register() {
         var registry = mod().registry();
+
         openJournalKey = registry.key("open_journal",
             () -> new KeyMapping("key.strange.open_journal", GLFW.GLFW_KEY_J, "key.categories.misc"));
         newBookmarkKey = registry.key("new_bookmark",
@@ -38,6 +39,7 @@ public class TravelJournalClient extends ClientFeature {
     @Override
     public void runWhenEnabled() {
         KeyPressEvent.INSTANCE.handle(this::handleKeyPress);
+        ClientTickEvent.INSTANCE.handle(this::handleClientTick);
     }
 
     public static void handleSyncLearned(SyncLearned message, Player player) {
@@ -50,9 +52,23 @@ public class TravelJournalClient extends ClientFeature {
         TravelJournal.BOOKMARKS.put(player.getUUID(), message.getBookmarks());
     }
 
-    public static void handleNotifyNewBookmarkResult(TravelJournalNetwork.NotifyNewBookmarkResult message, Player player) {
+    public static void handleNotifyNewBookmarkResult(NotifyNewBookmarkResult message, Player player) {
         var result = message.getResult();
         logDebugMessage("Received new bookmark result " + result);
+    }
+
+    private void handleClientTick(Minecraft minecraft) {
+        if (screenshot != null) {
+            if (!screenshot.isValid()) {
+                logDebugMessage("Removing completed screenshot");
+                var bookmark = screenshot.getBookmark();
+                screenshot = null;
+
+                minecraft.setScreen(new BookmarkScreen(bookmark));
+            } else {
+                screenshot.tick();
+            }
+        }
     }
 
     private void handleKeyPress(String id) {
@@ -81,7 +97,12 @@ public class TravelJournalClient extends ClientFeature {
             return;
         }
 
-        minecraft.setScreen(new HomeScreen());
+        if (PageTracker.screen == null) {
+            PageTracker.Screen.HOME.open();
+        } else {
+            PageTracker.screen.open();
+        }
+
     }
 
     private void makeNewBookmark() {
@@ -89,7 +110,19 @@ public class TravelJournalClient extends ClientFeature {
         MakeNewBookmark.send();
     }
 
+    public static void initScreenshot(Bookmark bookmark) {
+        screenshot = new Screenshot(bookmark);
+        Minecraft.getInstance().setScreen(null);
+    }
+
     private static void logDebugMessage(String message) {
         Mods.client(Strange.ID).log().debug(TravelJournalClient.class, message);
+    }
+
+    public static void handleMadeNewBookmark(MadeNewBookmark message, Player player) {
+        var bookmark = message.getBookmark();
+
+        // Now we have the bookmark, take a screenshot for it.
+        initScreenshot(bookmark);
     }
 }

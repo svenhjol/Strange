@@ -1,9 +1,11 @@
 package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import svenhjol.charmony.helper.TextHelper;
 
 public class Bookmark {
@@ -56,6 +58,15 @@ public class Bookmark {
         bookmark.item = ResourceLocation.tryParse(tag.getString(ITEM_TAG));
 
         return bookmark;
+    }
+
+    public Bookmark copy() {
+        var tag = this.save();
+        return load(tag);
+    }
+
+    public ItemStack getItemStack() {
+        return new ItemStack(BuiltInRegistries.ITEM.get(item));
     }
 
     public static Bookmark playerDefault(Player player) {

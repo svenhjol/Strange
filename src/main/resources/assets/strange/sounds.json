@@ -575,6 +575,15 @@
     ],
     "subtitle": "subtitles.strange.block.runestone.travel"
   },
+  "screenshot": {
+    "sounds": [
+      {
+        "name": "strange:screenshot",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.screenshot.take"
+  },
   "waypoint_broadcast": {
     "sounds": [
       {
