@@ -5,6 +5,7 @@ import net.minecraft.nbt.ListTag;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Bookmarks {
@@ -13,6 +14,10 @@ public class Bookmarks {
 
     public List<Bookmark> getBookmarks() {
         return bookmarks;
+    }
+
+    public Optional<Bookmark> get(String id) {
+        return bookmarks.stream().filter(b -> b.id.equals(id)).findFirst();
     }
 
     public AddBookmarkResult add(Bookmark bookmark) {
@@ -28,9 +33,27 @@ public class Bookmarks {
         return AddBookmarkResult.SUCCESS;
     }
 
-    public void remove(Bookmark bookmark) {
-        var found = bookmarks.stream().filter(b -> b.id.equals(bookmark.id)).findFirst();
-        found.ifPresent(b -> bookmarks.remove(b));
+    public UpdateBookmarkResult update(Bookmark bookmark) {
+        var opt = get(bookmark.id);
+        if (opt.isEmpty()) {
+            return UpdateBookmarkResult.NOT_FOUND;
+        }
+
+        var found = opt.get();
+        found.name = bookmark.name;
+        found.item = bookmark.item;
+
+        return UpdateBookmarkResult.SUCCESS;
+    }
+
+    public DeleteBookmarkResult delete(Bookmark bookmark) {
+        var opt = get(bookmark.id);
+        if (opt.isEmpty()) {
+            return DeleteBookmarkResult.NOT_FOUND;
+        }
+
+        bookmarks.remove(opt.get());
+        return DeleteBookmarkResult.SUCCESS;
     }
 
     public CompoundTag save() {
@@ -55,6 +78,16 @@ public class Bookmarks {
     public enum AddBookmarkResult {
         DUPLICATE,
         FULL,
+        SUCCESS
+    }
+
+    public enum UpdateBookmarkResult {
+        NOT_FOUND,
+        SUCCESS
+    }
+
+    public enum DeleteBookmarkResult {
+        NOT_FOUND,
         SUCCESS;
     }
 }

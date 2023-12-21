@@ -25,11 +25,16 @@ public class TravelJournalResources {
     public static final Component HOME_TITLE = TextHelper.translatable("gui.strange.travel_journal.travel_journal");
     public static final Component LEARNED_TITLE = TextHelper.translatable("gui.strange.travel_journal.learned");
     public static final Component BOOKMARKS_TITLE = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
+    public static final Component CHANGE_ICON_TITLE = TextHelper.translatable("gui.strange.travel_journal.change_icon");
+    public static final Component CHANGE_NAME_TITLE = TextHelper.translatable("gui.strange.travel_journal.change_name");
     public static final Component BOOKMARKS_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
     public static final Component CLOSE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.close");
     public static final Component BACK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.back");
     public static final Component HOME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.home");
+    public static final Component SAVE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save");
+    public static final Component CANCEL_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.cancel");
     public static final Component TAKE_SCREENSHOT_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_screenshot");
+    public static final Component TAKE_NEW_SCREENSHOT_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_new_screenshot");
     public static final Component CHANGE_NAME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_name");
     public static final Component CHANGE_ICON_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_icon");
     public static final Component DELETE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.delete");

@@ -39,9 +39,17 @@ public abstract class BaseScreen extends Screen {
     }
 
     protected void initShortcuts() {
-        addRenderableWidget(new HomeShortcutButton(midX + 120, 40, this::openHome));
-        addRenderableWidget(new BookmarksShortcutButton(midX + 120, 57, this::openBookmarks));
-        addRenderableWidget(new LearnedShortcutButton(midX + 120, 74, this::openLearned));
+        int yoffset = 30;
+        int lineHeight = 17;
+
+        addRenderableWidget(new HomeShortcutButton(midX + 120, yoffset, this::openHome));
+        yoffset += lineHeight;
+
+        addRenderableWidget(new BookmarksShortcutButton(midX + 120, yoffset, this::openBookmarks));
+        yoffset += lineHeight;
+
+        addRenderableWidget(new LearnedShortcutButton(midX + 120, yoffset, this::openLearned));
+        yoffset += lineHeight;
     }
 
     protected void openHome(Button button) {
@@ -67,7 +75,7 @@ public abstract class BaseScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTitle(guiGraphics, midX, 30);
+        renderTitle(guiGraphics, midX, 24);
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
@@ -79,7 +87,7 @@ public abstract class BaseScreen extends Screen {
         super.renderBackground(guiGraphics, mouseX, mouseY, delta);
 
         int x = (this.width - this.backgroundWidth) / 2;
-        int y = 10;
+        int y = 5;
         guiGraphics.blit(getBackgroundTexture(), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 
@@ -114,6 +122,24 @@ public abstract class BaseScreen extends Screen {
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.BACK_BUTTON_TEXT;
         public BackButton(int x, int y, Button.OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class SaveButton extends Button {
+        static int WIDTH = 110;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.SAVE_BUTTON_TEXT;
+        public SaveButton(int x, int y, Button.OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class CancelButton extends Button {
+        static int WIDTH = 110;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.CANCEL_BUTTON_TEXT;
+        public CancelButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }

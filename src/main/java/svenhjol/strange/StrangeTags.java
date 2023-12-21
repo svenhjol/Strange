@@ -21,6 +21,9 @@ public class StrangeTags {
     public static final TagKey<Structure> BLACKSTONE_RUNESTONE_CIRCLE_LOCATED = TagKey.create(Registries.STRUCTURE,
         new ResourceLocation(Strange.ID, "runestone_structure_located/blackstone_circle"));
 
+    public static final TagKey<Item> BOOKMARK_ICONS = TagKey.create(Registries.ITEM,
+        new ResourceLocation(Strange.ID, "bookmark_icons"));
+
     public static final TagKey<Block> COOKING_HEAT_SOURCES = TagKey.create(Registries.BLOCK,
         new ResourceLocation(Strange.ID, "cooking_heat_sources"));
 

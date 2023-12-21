@@ -22,7 +22,7 @@ public class Bookmark {
     public ResourceLocation item;
 
     public Bookmark(String name, BlockPos pos, ResourceLocation dim) {
-        this(TravelJournalHelper.randomId(), name, pos, dim, TravelJournalHelper.defaultItem());
+        this(TravelJournalHelper.randomId(), name, pos, dim, TravelJournalHelper.defaultItem(dim));
     }
 
     public Bookmark(String id, String name, BlockPos pos, ResourceLocation dim,

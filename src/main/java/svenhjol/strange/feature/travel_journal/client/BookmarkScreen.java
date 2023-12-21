@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.*;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestDeleteBookmark;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,21 +56,18 @@ public class BookmarkScreen extends BaseScreen {
     protected void initShortcuts() {
         super.initShortcuts();
         int yoffset = 91;
+        int lineHeight = 17;
 
-        if (isNearby) {
-            addRenderableWidget(new TakeScreenshotShortcutButton(midX + 120, yoffset, b -> TravelJournalClient.initScreenshot(bookmark)));
-            yoffset += 17;
-        }
         if (hasMap) {
             addRenderableWidget(new SaveToMapShortcutButton(midX + 120, yoffset, b -> {}));
-            yoffset += 17;
+            yoffset += lineHeight;
         }
         if (hasPaper) {
             addRenderableWidget(new SaveToBookmarkShortcutButton(midX + 120, yoffset, b -> {}));
-            yoffset += 17;
+            yoffset += lineHeight;
         }
 
-        addRenderableWidget(new DeleteShortcutButton(midX + 120, 174, b -> {}));
+        addRenderableWidget(new DeleteShortcutButton(midX + 120, yoffset, b -> delete()));
     }
 
     @Override
@@ -77,31 +75,40 @@ public class BookmarkScreen extends BaseScreen {
         super.render(guiGraphics, mouseX, mouseY, delta);
 
         // Item in top left.
-        guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 26);
+        guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 20);
 
-        int yoffset = 46;
+        int yoffset = 36;
 
         if (TravelJournal.renderCoordinates) {
             renderCoords(guiGraphics, yoffset);
+            yoffset += 16;
+        } else {
+            renderDimensionName(guiGraphics, yoffset);
             yoffset += 16;
         }
 
         if (hasScreenshot) {
             renderScreenshot(guiGraphics, (int)(yoffset * 2.4));
-            yoffset += 90;
+            yoffset += 83;
         }
 
         if (!renderedEditButtons) {
             if (!hasScreenshot && isNearby) {
-                addRenderableWidget(new TakeScreenshotButton(midX - (TakeScreenshotButton.WIDTH / 2), yoffset,
+                addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yoffset,
                     b -> TravelJournalClient.initScreenshot(bookmark)));
                 yoffset += 21;
             }
 
-            addRenderableWidget(new ChangeNameButton(midX - (ChangeNameButton.WIDTH / 2), yoffset, b -> {}));
+            addRenderableWidget(new ChangeNameButton(midX - (ChangeNameButton.WIDTH / 2), yoffset, this::openChangeNameScreen));
             yoffset += 21;
 
-            addRenderableWidget(new ChangeIconButton(midX - (ChangeIconButton.WIDTH / 2), yoffset, b -> {}));
+            addRenderableWidget(new ChangeIconButton(midX - (ChangeIconButton.WIDTH / 2), yoffset, this::openChangeIconScreen));
+            yoffset += 21;
+
+            if (hasScreenshot && isNearby) {
+                addRenderableWidget(new TakeNewPhotoButton(midX - (TakeNewPhotoButton.WIDTH / 2), yoffset,
+                    b -> TravelJournalClient.initScreenshot(bookmark)));
+            }
         }
 
         renderedEditButtons = true;
@@ -109,9 +116,17 @@ public class BookmarkScreen extends BaseScreen {
 
     protected void renderCoords(GuiGraphics guiGraphics, int y) {
         var pos = bookmark.pos;
-        var str = pos.getX() + " " + pos.getY() + " " + pos.getZ();
+        var dim = bookmark.dim;
+        var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
         var len = str.length() * 6;
-        guiGraphics.drawString(font, str, midX - (len / 2), y, 0x878482, false);
+        guiGraphics.drawString(font, str, midX - (len / 2), y, 0x8a8785, false);
+    }
+
+    protected void renderDimensionName(GuiGraphics guiGraphics, int y) {
+        var dim = bookmark.dim;
+        var str = TravelJournalHelper.getNiceDimensionName(dim);
+        var len = str.length();
+        guiGraphics.drawString(font, str, midX - (len / 2), y, 0x8a8785, false);
     }
 
     protected void renderScreenshot(GuiGraphics guiGraphics, int y) {
@@ -168,6 +183,18 @@ public class BookmarkScreen extends BaseScreen {
         return new File(screenshotsDirectory, bookmark.id + ".png");
     }
 
+    protected void openChangeNameScreen(Button button) {
+        Minecraft.getInstance().setScreen(new ChangeBookmarkNameScreen(bookmark));
+    }
+
+    protected void openChangeIconScreen(Button button) {
+        Minecraft.getInstance().setScreen(new ChangeBookmarkIconScreen(bookmark));
+    }
+
+    protected void delete() {
+        RequestDeleteBookmark.send(bookmark);
+    }
+
     protected boolean isNearby() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
@@ -196,11 +223,20 @@ public class BookmarkScreen extends BaseScreen {
         return minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
     }
 
-    static class TakeScreenshotButton extends Button {
+    static class TakePhotoButton extends Button {
         static int WIDTH = 100;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.TAKE_SCREENSHOT_BUTTON_TEXT;
-        public TakeScreenshotButton(int x, int y, Button.OnPress onPress) {
+        public TakePhotoButton(int x, int y, Button.OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class TakeNewPhotoButton extends Button {
+        static int WIDTH = 100;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.TAKE_NEW_SCREENSHOT_BUTTON_TEXT;
+        public TakeNewPhotoButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }

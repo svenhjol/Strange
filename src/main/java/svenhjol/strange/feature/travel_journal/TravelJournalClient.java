@@ -3,6 +3,7 @@ package svenhjol.strange.feature.travel_journal;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.client.ClientFeature;
@@ -12,7 +13,10 @@ import svenhjol.charmony_api.event.KeyPressEvent;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.*;
 import svenhjol.strange.feature.travel_journal.client.BookmarkScreen;
+import svenhjol.strange.feature.travel_journal.client.BookmarksScreen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class TravelJournalClient extends ClientFeature {
@@ -20,6 +24,7 @@ public class TravelJournalClient extends ClientFeature {
     static Supplier<String> newBookmarkKey;
     static long lastBookmarkTimestamp;
     static Screenshot screenshot = null;
+    public static final List<Item> BOOKMARK_ICONS = new ArrayList<>();
 
     @Override
     public Class<? extends CommonFeature> commonFeature() {
@@ -52,9 +57,40 @@ public class TravelJournalClient extends ClientFeature {
         TravelJournal.BOOKMARKS.put(player.getUUID(), message.getBookmarks());
     }
 
-    public static void handleNotifyNewBookmarkResult(NotifyNewBookmarkResult message, Player player) {
+    public static void handleNotifyNewBookmarkResult(NotifyAddBookmarkResult message, Player player) {
         var result = message.getResult();
-        logDebugMessage("Received new bookmark result " + result);
+        logDebugMessage("Received add bookmark result " + result);
+    }
+
+    public static void handleNotifyUpdateBookmarkResult(NotifyUpdateBookmarkResult message, Player player) {
+        var result = message.getResult();
+        logDebugMessage("Received update bookmark result " + result);
+    }
+
+    public static void handleNotifyDeleteBookmarkResult(NotifyDeleteBookmarkResult message, Player player) {
+        var result = message.getResult();
+        logDebugMessage("Received update bookmark result " + result);
+
+        if (result == Bookmarks.DeleteBookmarkResult.SUCCESS) {
+            // Trigger a page redirect back to all bookmarks.
+            Minecraft.getInstance().setScreen(new BookmarksScreen());
+        }
+    }
+
+    public static void handleNewBookmark(SendNewBookmark message, Player player) {
+        var bookmark = message.getBookmark();
+
+        // Now we have the bookmark, take a screenshot for it.
+        initScreenshot(bookmark);
+    }
+
+    public static void handleChangedBookmark(SendChangedBookmark message, Player player) {
+        Minecraft.getInstance().setScreen(new BookmarkScreen(message.getBookmark()));
+    }
+
+    public static void handleSendItemIcons(SendItemIcons message, Player player) {
+        BOOKMARK_ICONS.clear();
+        BOOKMARK_ICONS.addAll(message.getIcons());
     }
 
     private void handleClientTick(Minecraft minecraft) {
@@ -102,12 +138,15 @@ public class TravelJournalClient extends ClientFeature {
         } else {
             PageTracker.screen.open();
         }
-
     }
 
     private void makeNewBookmark() {
         logDebugMessage("Sending new bookmark packet to server");
-        MakeNewBookmark.send();
+        RequestNewBookmark.send();
+    }
+
+    public static void changeBookmark(Bookmark bookmark) {
+        RequestChangeBookmark.send(bookmark);
     }
 
     public static void initScreenshot(Bookmark bookmark) {
@@ -117,12 +156,5 @@ public class TravelJournalClient extends ClientFeature {
 
     private static void logDebugMessage(String message) {
         Mods.client(Strange.ID).log().debug(TravelJournalClient.class, message);
-    }
-
-    public static void handleMadeNewBookmark(MadeNewBookmark message, Player player) {
-        var bookmark = message.getBookmark();
-
-        // Now we have the bookmark, take a screenshot for it.
-        initScreenshot(bookmark);
     }
 }

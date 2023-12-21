@@ -42,7 +42,7 @@ public class BookmarksScreen extends BaseScreen {
     }
 
     protected void renderBookmarks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        var rows = 6;
+        var rows = 7;
         var perPage = rows;
 
         var bookmarks = getBookmarks();
@@ -58,10 +58,10 @@ public class BookmarksScreen extends BaseScreen {
             var name = bookmark.name;
 
             if (!renderedEditButtons) {
-                addRenderableWidget(new EditButton(midX - 87, 55 + (y * 24), 190, b -> openBookmark(bookmark), TextHelper.literal(name)));
+                addRenderableWidget(new EditButton(midX - 87, 39 + (y * 21), 190, b -> openBookmark(bookmark), TextHelper.literal(name)));
             }
 
-            guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 57 + (y * 24));
+            guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 41 + (y * 21));
             index++;
         }
 
@@ -69,10 +69,10 @@ public class BookmarksScreen extends BaseScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, 75, b -> openBookmarks(page - 1)));
+                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> openBookmarks(page - 1)));
             }
             if (page < pages || index < bookmarks.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, 75, b -> openBookmarks(page + 1)));
+                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> openBookmarks(page + 1)));
             }
             renderedPaginationButtons = true;
         }

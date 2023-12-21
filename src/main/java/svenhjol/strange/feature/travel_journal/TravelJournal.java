@@ -1,6 +1,8 @@
 package svenhjol.strange.feature.travel_journal;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -9,13 +11,15 @@ import net.minecraft.world.level.Level;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.event.PlayerLoadDataCallback;
 import svenhjol.charmony.event.PlayerSaveDataCallback;
+import svenhjol.charmony.helper.TagHelper;
 import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerLoadDataEvent;
 import svenhjol.charmony_api.event.PlayerSaveDataEvent;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MadeNewBookmark;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.MakeNewBookmark;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.NotifyNewBookmarkResult;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
+import svenhjol.strange.StrangeTags;
+import svenhjol.strange.feature.travel_journal.Bookmarks.AddBookmarkResult;
+import svenhjol.strange.feature.travel_journal.Bookmarks.DeleteBookmarkResult;
+import svenhjol.strange.feature.travel_journal.Bookmarks.UpdateBookmarkResult;
+import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.*;
 
 import java.io.File;
 import java.util.HashMap;
@@ -102,19 +106,63 @@ public class TravelJournal extends CommonFeature {
         return new File(playerDataDir + "/" + uuid.toString() + "_strange_travel_journal.dat");
     }
 
-    public static void handleMakeNewBookmark(MakeNewBookmark message, Player player) {
+    public static void handleRequestNewBookmark(RequestNewBookmark message, Player player) {
         getBookmarks(player).ifPresent(bookmarks -> {
             var serverPlayer = (ServerPlayer)player;
             var newBookmark = Bookmark.playerDefault(player);
             var result = bookmarks.add(newBookmark);
 
             // Always update the client with the result of the bookmark creation.
-            NotifyNewBookmarkResult.send(serverPlayer, result);
+            NotifyAddBookmarkResult.send(serverPlayer, result);
 
-            if (result == Bookmarks.AddBookmarkResult.SUCCESS) {
+            if (result == AddBookmarkResult.SUCCESS) {
                 // Send the new bookmark to the client.
-                MadeNewBookmark.send(serverPlayer, newBookmark);
+                SendNewBookmark.send(serverPlayer, newBookmark);
             }
+        });
+    }
+
+    public static void handleRequestChangeBookmark(RequestChangeBookmark message, Player player) {
+        getBookmarks(player).ifPresent(bookmarks -> {
+            var bookmark = message.getBookmark();
+            var serverPlayer = (ServerPlayer)player;
+            var result = bookmarks.update(bookmark);
+
+            // Always update the client with the result of the bookmark update.
+            NotifyUpdateBookmarkResult.send(serverPlayer, result);
+
+            if (result == UpdateBookmarkResult.SUCCESS) {
+                // Sync the new state with the client.
+                syncBookmarks(serverPlayer);
+
+                // Send the updated bookmark back to the client.
+                SendChangedBookmark.send(serverPlayer, bookmark);
+            }
+        });
+
+    }
+
+    public static void handleRequestItemIcons(RequestItemIcons message, Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            var level = (ServerLevel)serverPlayer.level();
+            var itemRegistry = level.registryAccess().registryOrThrow(Registries.ITEM);
+            var bookmarkIcons = TagHelper.getValues(itemRegistry, StrangeTags.BOOKMARK_ICONS);
+            TravelJournalNetwork.SendItemIcons.send(serverPlayer, bookmarkIcons);
+        }
+    }
+
+    public static void handleRequestDeleteBookmark(RequestDeleteBookmark message, Player player) {
+        getBookmarks(player).ifPresent(bookmarks -> {
+            var serverPlayer = (ServerPlayer)player;
+            var result = bookmarks.delete(message.getBookmark());
+
+            if (result == DeleteBookmarkResult.SUCCESS) {
+                // Sync the new state with the client.
+                syncBookmarks(serverPlayer);
+            }
+
+            // Always update the client with the result of the bookmark deletion.
+            NotifyDeleteBookmarkResult.send(serverPlayer, result);
         });
     }
 }
