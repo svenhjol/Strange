@@ -72,6 +72,8 @@
   "gui.strange.travel_journal.home": "Home",
   "gui.strange.travel_journal.new_bookmark": "New Bookmark",
   "gui.strange.travel_journal.next_page": "Next Page",
+  "gui.strange.travel_journal.no_learned_locations.heading": "No locations learned yet.",
+  "gui.strange.travel_journal.no_learned_locations.body": "Activate a runestone and use it to travel to a new location. The runes for the locations you have discovered will appear on this page. Discovered runestone locations are shown when looking at the runestone block.",
   "gui.strange.travel_journal.previous_page": "Previous Page",
   "gui.strange.travel_journal.save": "Save",
   "gui.strange.travel_journal.save_to_bookmark": "Save to Bookmark",

@@ -44,6 +44,8 @@ public class TravelJournalResources {
     public static final Component PREVIOUS_PAGE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.previous_page");
     public static final Component SAVE_TO_MAP_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save_to_map");
     public static final Component SAVE_TO_BOOKMARK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save_to_bookmark");
+    public static final Component NO_LEARNED_LOCATIONS_HEADING_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.heading");
+    public static final Component NO_LEARNED_LOCATIONS_BODY_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.body");
 
     static WidgetSprites makeButton(String name) {
         var instance = Mods.client(Strange.ID);

@@ -55,21 +55,25 @@ public class LearnedScreen extends BaseScreen {
         var pages = locations.size() / perPage;
         var index = (page - 1) * perPage;
 
-        for (var x = 0; x < columns; x++) {
-            for (var y = 0; y < rows; y++) {
-                if (index >= locations.size()) {
-                    continue;
+        if (locations.isEmpty()) {
+            renderNoLocations(guiGraphics);
+        } else {
+            for (var x = 0; x < columns; x++) {
+                for (var y = 0; y < rows; y++) {
+                    if (index >= locations.size()) {
+                        continue;
+                    }
+
+                    var location = locations.get(index);
+                    var name = TextHelper.translatable(RunestoneHelper.getLocaleKey(location));
+                    var runes = TextHelper.literal(RunestoneHelper.getRunicName(location))
+                        .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
+
+                    guiGraphics.drawString(font, name, midX - 110 + (x * 115), 40 + (y * 24), 0x272422, false);
+                    guiGraphics.drawString(font, runes, midX - 110 + (x * 115), 50 + (y * 24), 0xbfb7b5, false);
+
+                    index++;
                 }
-
-                var location = locations.get(index);
-                var name = TextHelper.translatable(RunestoneHelper.getLocaleKey(location));
-                var runes = TextHelper.literal(RunestoneHelper.getRunicName(location))
-                    .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
-
-                guiGraphics.drawString(font, name, midX - 110 + (x * 115), 40 + (y * 24), 0x272422, false);
-                guiGraphics.drawString(font, runes, midX - 110 + (x * 115), 50 + (y * 24), 0xbfb7b5, false);
-
-                index++;
             }
         }
 
@@ -83,5 +87,10 @@ public class LearnedScreen extends BaseScreen {
 
             renderedPaginationButtons = true;
         }
+    }
+
+    protected void renderNoLocations(GuiGraphics guiGraphics) {
+        drawCenteredString(guiGraphics, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
+        guiGraphics.drawWordWrap(font, TravelJournalResources.NO_LEARNED_LOCATIONS_BODY_TEXT, midX - 100, 63, 200, 0x8f8785);
     }
 }
