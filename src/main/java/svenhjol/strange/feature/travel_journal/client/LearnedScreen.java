@@ -66,8 +66,8 @@ public class LearnedScreen extends BaseScreen {
                 var runes = TextHelper.literal(RunestoneHelper.getRunicName(location))
                     .withStyle(RunestonesClient.ILLAGER_GLYPHS_STYLE);
 
-                guiGraphics.drawString(font, name, midX - 110 + (x * 115), 65 + (y * 24), 0x272422, false);
-                guiGraphics.drawString(font, runes, midX - 110 + (x * 115), 55 + (y * 24), 0xbfb7b5, false);
+                guiGraphics.drawString(font, name, midX - 110 + (x * 115), 40 + (y * 24), 0x272422, false);
+                guiGraphics.drawString(font, runes, midX - 110 + (x * 115), 50 + (y * 24), 0xbfb7b5, false);
 
                 index++;
             }
