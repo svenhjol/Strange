@@ -2,6 +2,7 @@ package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import org.lwjgl.glfw.GLFW;
@@ -9,6 +10,7 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony_api.event.ClientTickEvent;
+import svenhjol.charmony_api.event.HudRenderEvent;
 import svenhjol.charmony_api.event.KeyPressEvent;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.*;
@@ -45,6 +47,13 @@ public class TravelJournalClient extends ClientFeature {
     public void runWhenEnabled() {
         KeyPressEvent.INSTANCE.handle(this::handleKeyPress);
         ClientTickEvent.INSTANCE.handle(this::handleClientTick);
+        HudRenderEvent.INSTANCE.handle(this::handleHudRender);
+    }
+
+    private void handleHudRender(GuiGraphics guiGraphics, float tickDelta) {
+        if (screenshot != null && screenshot.isValid()) {
+            screenshot.renderCountdown(guiGraphics);
+        }
     }
 
     public static void handleSyncLearned(SyncLearned message, Player player) {
