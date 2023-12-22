@@ -9,18 +9,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.charmony.helper.TagHelper;
 import svenhjol.charmony_api.event.EntityJoinEvent;
 import svenhjol.charmony_api.event.PlayerTickEvent;
 import svenhjol.charmony_api.event.ServerStartEvent;
@@ -78,7 +74,6 @@ public class Runestones extends CommonFeature {
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
     }
 
-    @SuppressWarnings("unchecked")
     public static void prepareRunestone(LevelAccessor level, BlockPos pos) {
         if (level.isClientSide()) {
             return;
@@ -101,47 +96,15 @@ public class Runestones extends CommonFeature {
 
         var random = RandomSource.create(pos.asLong());
         var definition = Runestones.BLOCK_DEFINITIONS.get(block);
-        var opt = definition.getDestination(level, pos, random);
-        var registryAccess = level.registryAccess();
+        var opt = definition.getLocation(level, pos, random);
 
         if (opt.isEmpty()) {
-            log.warn(RunestoneBlock.class, "Failed to run getDestination on runestone at " + pos);
+            log.warn(RunestoneBlock.class, "Failed to get a location on runestone at " + pos);
             return;
         }
 
-        var tag = opt.get();
-        if (tag.registry() == Registries.BIOME) {
-
-            var biomeTag = (TagKey<Biome>) tag;
-            var biomeRegistry = registryAccess.registryOrThrow(biomeTag.registry());
-            var destinations = TagHelper.getValues(biomeRegistry, biomeTag)
-                .stream().map(biomeRegistry::getKey).toList();
-
-            if (destinations.isEmpty()) {
-                log.warn(RunestoneBlock.class, "Empty biome destinations for runestone at pos " + pos);
-                return;
-            }
-
-            runestone.location = new Location(LocationType.BIOME, destinations.get(random.nextInt(destinations.size())));
-            log.debug(RunestoneBlock.class, "Set biome " + runestone.location.id() + " for runestone at pos " + pos);
-
-        } else if (tag.registry() == Registries.STRUCTURE) {
-
-            var structureTag = (TagKey<Structure>) tag;
-            var structureRegistry = registryAccess.registryOrThrow(structureTag.registry());
-            var destinations = TagHelper.getValues(structureRegistry, structureTag)
-                .stream().map(structureRegistry::getKey).toList();
-
-            if (destinations.isEmpty()) {
-                log.warn(RunestoneBlock.class, "Empty structure destinations for runestone at pos " + pos);
-                return;
-            }
-
-            runestone.location = new Location(LocationType.STRUCTURE, destinations.get(random.nextInt(destinations.size())));
-            log.debug(RunestoneBlock.class, "Set structure " + runestone.location.id() + " for runestone at pos " + pos);
-
-        }
-
+        runestone.location = opt.get();
+        log.debug(RunestoneBlock.class, "Set biome " + runestone.location.id() + " for runestone at pos " + pos);
         runestone.setChanged();
 
         random.nextInt();

@@ -1,6 +1,9 @@
 package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -8,12 +11,11 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.Strange;
 
 import javax.annotation.Nullable;
-import java.util.Locale;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class RunestoneHelper {
     static final char FIRST_RUNE = 'a';
@@ -159,5 +161,27 @@ public class RunestoneHelper {
         }
 
         return new BlockPos(pos.getX(), surface, pos.getZ());
+    }
+
+    /**
+     * Helper method to get all values of a given tag.
+     */
+    public static <T> List<ResourceLocation> getValues(RegistryAccess registryAccess, TagKey<T> tag) {
+        var registry = registryAccess.registryOrThrow(tag.registry());
+        return TagHelper.getValues(registry, tag)
+            .stream().map(registry::getKey).toList();
+    }
+
+    /**
+     * Helper method to get a location from a given tag.
+     */
+    public static <T> Optional<Location> getRandomLocation(RegistryAccess registryAccess, TagKey<T> tag, LocationType type, RandomSource random) {
+        var values = getValues(registryAccess, tag);
+        if (!values.isEmpty()) {
+            var location = new Location(type, values.get(random.nextInt(values.size())));
+            return Optional.of(location);
+        }
+
+        return Optional.empty();
     }
 }
