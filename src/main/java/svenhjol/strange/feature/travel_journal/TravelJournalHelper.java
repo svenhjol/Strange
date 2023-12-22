@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.travel_journal;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +47,10 @@ public class TravelJournalHelper {
             pieces[i] = TextHelper.capitalize(pieces[i]);
         }
         return String.join(" ", pieces);
+    }
+
+    public static String getNiceCoordinates(BlockPos pos) {
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
     }
 
     public static ResourceLocation getPlayerDimension(Player player) {
