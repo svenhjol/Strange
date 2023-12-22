@@ -35,7 +35,7 @@ public class TravelJournal extends CommonFeature {
     public static final Map<UUID, Learned> LEARNED = new HashMap<>();
     static Supplier<SoundEvent> screenshotSound;
 
-    public static boolean renderCoordinates = true;
+    public static boolean showCoordinates = true;
 
     @Override
     public void register() {
