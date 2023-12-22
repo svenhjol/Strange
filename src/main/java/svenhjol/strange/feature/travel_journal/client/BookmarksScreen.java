@@ -2,11 +2,10 @@ package svenhjol.strange.feature.travel_journal.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.travel_journal.Bookmark;
-import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.TravelJournal;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.feature.travel_journal.*;
 
 import java.util.List;
 
@@ -48,6 +47,10 @@ public class BookmarksScreen extends BaseScreen {
         var bookmarks = getBookmarks();
         var pages = bookmarks.size() / perPage;
         var index = (page - 1) * perPage;
+
+        if (bookmarks.isEmpty()) {
+            addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH / 2), 45, b -> TravelJournalClient.makeNewBookmark()));
+        }
 
         for (var y = 0; y < rows; y++) {
             if (index >= bookmarks.size()) {
@@ -94,5 +97,15 @@ public class BookmarksScreen extends BaseScreen {
 
     protected void openBookmark(Bookmark bookmark) {
         Minecraft.getInstance().setScreen(new BookmarkScreen(bookmark));
+    }
+
+    static class NewBookmarkButton extends Button {
+        static int WIDTH = 100;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.NEW_BOOKMARK_BUTTON_TEXT;
+
+        protected NewBookmarkButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
     }
 }

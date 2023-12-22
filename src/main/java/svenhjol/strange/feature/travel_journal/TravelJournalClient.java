@@ -140,7 +140,7 @@ public class TravelJournalClient extends ClientFeature {
         }
     }
 
-    private void makeNewBookmark() {
+    public static void makeNewBookmark() {
         logDebugMessage("Sending new bookmark packet to server");
         RequestNewBookmark.send();
     }

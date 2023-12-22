@@ -42,7 +42,9 @@ public class TravelJournalHelper {
     public static String getNiceDimensionName(ResourceLocation dim) {
         var path = dim.getPath();
         var pieces = path.split("_");
-        pieces[0] = TextHelper.capitalize(pieces[0]);
+        for (int i = 0; i < pieces.length; i++) {
+            pieces[i] = TextHelper.capitalize(pieces[i]);
+        }
         return String.join(" ", pieces);
     }
 

@@ -118,15 +118,13 @@ public class BookmarkScreen extends BaseScreen {
         var pos = bookmark.pos;
         var dim = bookmark.dim;
         var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
-        var len = str.length() * 6;
-        guiGraphics.drawString(font, str, midX - (len / 2), y, 0x8a8785, false);
+        drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
     protected void renderDimensionName(GuiGraphics guiGraphics, int y) {
         var dim = bookmark.dim;
         var str = TravelJournalHelper.getNiceDimensionName(dim);
-        var len = str.length();
-        guiGraphics.drawString(font, str, midX - (len / 2), y, 0x8a8785, false);
+        drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
     protected void renderScreenshot(GuiGraphics guiGraphics, int y) {
