@@ -2,7 +2,8 @@ package svenhjol.strange.feature.travel_journal.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
@@ -12,6 +13,7 @@ public class ChangeBookmarkNameScreen extends BaseScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected EditBox nameEditBox;
+    protected int doubleClickTicks = 0;
 
     public ChangeBookmarkNameScreen(Bookmark bookmark) {
         super(TravelJournalResources.CHANGE_NAME_TITLE);
@@ -25,7 +27,7 @@ public class ChangeBookmarkNameScreen extends BaseScreen {
         addRenderableWidget(new SaveButton(midX + 5,220, b -> save()));
         addRenderableWidget(new CancelButton(midX - (CancelButton.WIDTH + 5), 220, b -> back()));
 
-        nameEditBox = new EditBox(font, (width / 2) - 72, 38, 149, 12,
+        nameEditBox = new EditBox(font, midX - 74, 38, 148, 12,
             TextHelper.translatable("gui.strange.travel_journal.edit_name"));
 
         nameEditBox.setFocused(true);
@@ -34,12 +36,33 @@ public class ChangeBookmarkNameScreen extends BaseScreen {
         nameEditBox.setTextColorUneditable(-1);
         nameEditBox.setBordered(true);
         nameEditBox.setMaxLength(32);
-        nameEditBox.setResponder(val -> this.updatedBookmark.name = val);
-        nameEditBox.setValue(this.updatedBookmark.name);
+        nameEditBox.setResponder(val -> updatedBookmark.name = val);
+        nameEditBox.setValue(updatedBookmark.name);
         nameEditBox.setEditable(true);
 
         addRenderableWidget(nameEditBox);
         setFocused(nameEditBox);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        var xa = midX - 74;
+        var ya = 38;
+        var xb = midX + 74;
+        var yb = 38 + 12;
+
+        if (mouseX > xa && mouseX < xb
+            && mouseY > ya && mouseY < yb) {
+            if (doubleClickTicks == 0) {
+                doubleClickTicks = 1;
+            } else {
+                nameEditBox.setCursorPosition(updatedBookmark.name.length());
+                nameEditBox.setHighlightPos(0);
+                doubleClickTicks = 0;
+                return true;
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -59,10 +82,16 @@ public class ChangeBookmarkNameScreen extends BaseScreen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
         nameEditBox.render(guiGraphics, mouseX, mouseY, delta);
+
+        if (doubleClickTicks > 0 && ++doubleClickTicks >= 40) {
+            doubleClickTicks = 0;
+        }
     }
 
     protected void save() {
-        TravelJournalClient.changeBookmark(updatedBookmark);
+        if (!updatedBookmark.name.isEmpty()) {
+            TravelJournalClient.changeBookmark(updatedBookmark);
+        }
     }
 
     protected void back() {
