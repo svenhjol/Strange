@@ -2,14 +2,24 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.phys.Vec3;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.Strange;
@@ -22,6 +32,8 @@ public class RunestoneHelper {
     static final char LAST_RUNE = 'z';
     static final int NUM_RUNES = 26;
     static final Map<String, String> CACHED_RUNIC_NAMES = new WeakHashMap<>();
+    public static final ResourceLocation SPAWN_POINT_ID = new ResourceLocation(Strange.ID, "spawn_point");
+    public static final Location SPAWN_POINT_LOCATION = new Location(LocationType.PLAYER, SPAWN_POINT_ID);
 
     public static BlockPos addRandomOffset(Level level, BlockPos pos, RandomSource random, int min, int max) {
         var n = random.nextInt(max - min) + min;
@@ -69,6 +81,7 @@ public class RunestoneHelper {
         return switch (location.type()) {
             case BIOME -> "biome." + namespace + "." + path;
             case STRUCTURE -> "structure." + namespace + "." + path;
+            case PLAYER -> "player." + namespace + "." + path;
         };
     }
 
@@ -163,6 +176,14 @@ public class RunestoneHelper {
         return new BlockPos(pos.getX(), surface, pos.getZ());
     }
 
+    public static ResourceLocation getDimensionId(Level level) {
+        return level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getKey(level.dimensionType());
+    }
+
+    public static ResourceLocation getDimensionId(ResourceKey<Level> key) {
+        return key.location();
+    }
+
     /**
      * Helper method to get all values of a given tag.
      */
@@ -183,5 +204,73 @@ public class RunestoneHelper {
         }
 
         return Optional.empty();
+    }
+
+    public static void changeDimension(ServerPlayer serverPlayer, ServerLevel newDimension, Vec3 pos) {
+        serverPlayer.isChangingDimension = true;
+        var currentDimension = serverPlayer.serverLevel();
+        var levelData = newDimension.getLevelData();
+
+        serverPlayer.connection.send(new ClientboundRespawnPacket(serverPlayer.createCommonSpawnInfo(newDimension), (byte)3));
+        serverPlayer.connection.send(new ClientboundChangeDifficultyPacket(levelData.getDifficulty(), levelData.isDifficultyLocked()));
+
+        var playerList = currentDimension.getServer().getPlayerList();
+        playerList.sendPlayerPermissionLevel(serverPlayer);
+        currentDimension.removePlayerImmediately(serverPlayer, Entity.RemovalReason.CHANGED_DIMENSION);
+        serverPlayer.unsetRemoved();
+
+        var delta = serverPlayer.getDeltaMovement();
+        var yRot = serverPlayer.getYRot();
+        var xRot = serverPlayer.getXRot();
+        var portalInfo = new PortalInfo(pos, delta, yRot, xRot);
+
+        serverPlayer.setServerLevel(newDimension);
+        serverPlayer.connection.teleport(portalInfo.pos.x, portalInfo.pos.y, portalInfo.pos.z, portalInfo.yRot, portalInfo.xRot);
+        serverPlayer.connection.resetPosition();
+
+        newDimension.addDuringPortalTeleport(serverPlayer);
+
+        serverPlayer.connection.send(new ClientboundPlayerAbilitiesPacket(serverPlayer.getAbilities()));
+        playerList.sendLevelInfo(serverPlayer, newDimension);
+        playerList.sendAllPlayerInfo(serverPlayer);
+
+        for (MobEffectInstance effect : serverPlayer.getActiveEffects()) {
+            serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effect));
+        }
+
+        serverPlayer.connection.send(new ClientboundLevelEventPacket(1032, BlockPos.ZERO, 0, false));
+        serverPlayer.lastSentExp = -1;
+        serverPlayer.lastSentHealth = -1.0f;
+        serverPlayer.lastSentFood = -1;
+    }
+
+    public static void addForcedChunk(ServerLevel level, Vec3 target) {
+        var log = Mods.common(Strange.ID).log();
+        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
+        var chunkPos = new ChunkPos(blockPos);
+
+        // try a couple of times I guess?
+        var result = false;
+        for (int i = 0; i <= 2; i++) {
+            result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), true);
+            if (result) break;
+        }
+
+        if (result) {
+            log.debug(RunestoneHelper.class, "Force loaded chunk " + chunkPos);
+        }
+    }
+
+    public void removeForcedChunk(ServerLevel level, Vec3 target) {
+        var log = Mods.common(Strange.ID).log();
+        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
+        var chunkPos = new ChunkPos(blockPos);
+
+        var result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), false);
+        if (!result) {
+            log.debug(RunestoneHelper.class, "Forced chunk was already removed.");
+        } else {
+            log.debug(RunestoneHelper.class, "Unloaded forced chunk " + chunkPos);
+        }
     }
 }

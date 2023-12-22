@@ -31,6 +31,7 @@ public class RunestoneDefinitions {
                 Optional<Location> location;
 
                 if (random.nextDouble() < 0.25d) {
+                    // Biome
                     TagKey<Biome> tag;
                     if (random.nextDouble() < 0.12d) {
                         tag = StrangeTags.STONE_RUNESTONE_RARE_BIOME_LOCATED;
@@ -38,7 +39,8 @@ public class RunestoneDefinitions {
                         tag = StrangeTags.STONE_RUNESTONE_BIOME_LOCATED;
                     }
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.BIOME, random);
-                } else {
+                } else if (random.nextDouble() < 0.75d) {
+                    // Structure
                     TagKey<Structure> tag;
                     if (random.nextDouble() < 0.12d) {
                         tag = StrangeTags.STONE_RUNESTONE_RARE_STRUCTURE_LOCATED;
@@ -50,6 +52,9 @@ public class RunestoneDefinitions {
                         }
                     }
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.STRUCTURE, random);
+                } else {
+                    // Player
+                    location = Optional.of(RunestoneHelper.SPAWN_POINT_LOCATION);
                 }
 
                 return location;
@@ -68,9 +73,11 @@ public class RunestoneDefinitions {
                 Optional<Location> location;
 
                 if (random.nextDouble() < 0.33d) {
+                    // Biome
                     var tag = StrangeTags.BLACKSTONE_RUNESTONE_BIOME_LOCATED;
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.BIOME, random);
-                } else {
+                } else if (random.nextDouble() < 0.75d) {
+                    // Structure
                     TagKey<Structure> tag;
                     if (stoneCirclesEnabled && random.nextDouble() < 0.2d) {
                         tag = StrangeTags.BLACKSTONE_RUNESTONE_CIRCLE_LOCATED;
@@ -78,6 +85,9 @@ public class RunestoneDefinitions {
                         tag = StrangeTags.BLACKSTONE_RUNESTONE_STRUCTURE_LOCATED;
                     }
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.STRUCTURE, random);
+                } else {
+                    // Player
+                    location = Optional.of(RunestoneHelper.SPAWN_POINT_LOCATION);
                 }
 
                 return location;
@@ -96,9 +106,11 @@ public class RunestoneDefinitions {
                 Optional<Location> location;
 
                 if (random.nextDouble() < 0.33d) {
+                    // Biome
                     var tag = StrangeTags.OBSIDIAN_RUNESTONE_BIOME_LOCATED;
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.BIOME, random);
-                } else {
+                } else if (random.nextDouble() < 0.75d) {
+                    // Structure
                     TagKey<Structure> tag;
                     if (stoneCirclesEnabled && random.nextDouble() < 0.33d) {
                         tag = StrangeTags.OBSIDIAN_RUNESTONE_CIRCLE_LOCATED;
@@ -106,6 +118,9 @@ public class RunestoneDefinitions {
                         tag = StrangeTags.OBSIDIAN_RUNESTONE_STRUCTURE_LOCATED;
                     }
                     location = RunestoneHelper.getRandomLocation(level.registryAccess(), tag, LocationType.STRUCTURE, random);
+                } else {
+                    // Player
+                    location = Optional.of(RunestoneHelper.SPAWN_POINT_LOCATION);
                 }
 
                 return location;

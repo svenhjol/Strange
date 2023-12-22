@@ -20,6 +20,13 @@ accessible field net/minecraft/server/level/ServerLevel customSpawners Ljava/uti
 accessible field net/minecraft/world/level/levelgen/PatrolSpawner nextTick I
 accessible method net/minecraft/world/level/levelgen/PatrolSpawner spawnPatrolMember (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;Z)Z
 
+# Runestones
+accessible field net/minecraft/server/level/ServerPlayer isChangingDimension Z
+accessible field net/minecraft/server/level/ServerPlayer lastSentExp I
+accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
+accessible field net/minecraft/server/level/ServerPlayer lastSentFood I
+accessible method net/minecraft/world/entity/Entity unsetRemoved ()V
+
 # Waypoints
 accessible field net/minecraft/client/gui/Gui screenWidth I
 accessible method net/minecraft/client/gui/Gui drawBackdrop (Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;III)V

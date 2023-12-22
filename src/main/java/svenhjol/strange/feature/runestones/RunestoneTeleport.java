@@ -2,12 +2,12 @@ package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +15,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charmony.base.Mods;
-import svenhjol.charmony.helper.WorldHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
 
@@ -26,16 +25,25 @@ public class RunestoneTeleport {
     static final int REPOSITION_TICKS = 20; // TODO: configurable
     private final ServerPlayer player;
     private final ServerLevel level;
-    private final Vec3 target;
     private final ILog log;
-    private int ticks = 0;
+    private Vec3 target;
+    private ResourceKey<Level> dimension;
+    private boolean useExactPosition = false;
     private boolean valid = false;
+    private int ticks = 0;
 
-    public RunestoneTeleport(ServerPlayer player, BlockPos target) {
+    public RunestoneTeleport(ServerPlayer player, RunestoneBlockEntity runestone) {
+        this.log = Mods.common(Strange.ID).log();
+
         this.player = player;
         this.level = (ServerLevel)player.level();
-        this.target = target.getCenter();
-        this.log = Mods.common(Strange.ID).log();
+
+        this.setTargetAndDimension(runestone);
+        this.valid = true;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     public void tick() {
@@ -45,10 +53,60 @@ public class RunestoneTeleport {
 
         ticks++;
 
+        if (ticks < 10) return;
+
+        if (ticks == 10) {
+            teleport();
+            return;
+        }
+
         if (ticks < REPOSITION_TICKS) return;
 
         if (player.isRemoved()) {
             valid = false;
+            return;
+        }
+
+        reposition();
+    }
+
+    private void teleport() {
+        // Add protection and dizziness effects to the teleporting player.
+        var effects = new ArrayList<>(Arrays.asList(
+            new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Runestones.protectionDuration * 20, 1),
+            new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Runestones.protectionDuration * 20, 1),
+            new MobEffectInstance(MobEffects.REGENERATION, Runestones.protectionDuration * 20, 1)
+        ));
+        if (Runestones.dizzyEffect) {
+            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration * 20, 3));
+        }
+        effects.forEach(player::addEffect);
+
+        // Play teleportation sound.
+        player.level().playSound(null, player.blockPosition(), Runestones.travelSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+
+        // Do the teleport to the location - repositioning comes later.
+        if (!player.getAbilities().instabuild) {
+            player.setInvulnerable(true);
+        }
+
+        if (level.dimension() != dimension) {
+            var server = level.getServer();
+            var newDimension = server.getLevel(dimension);
+            if (newDimension != null) {
+                RunestoneHelper.changeDimension(player, newDimension, target);
+                valid = true;
+            }
+            return;
+        }
+
+        player.teleportToWithTicket(target.x, target.y, target.z);
+        valid = true;
+    }
+
+    private void reposition() {
+        if (useExactPosition) {
+            move(new BlockPos((int)target.x, (int)target.y, (int)target.z));
             return;
         }
 
@@ -65,7 +123,7 @@ public class RunestoneTeleport {
             if (!(stateBelow.isAir() && !stateBelow.getFluidState().is(Fluids.LAVA))
                 || stateBelow.getFluidState().is(Fluids.WATER)
                 || stateBelow.getFluidState().is(Fluids.FLOWING_WATER)) {
-                reposition(surface.above());
+                move(surface.above());
                 return;
             } else {
                 log.debug(getClass(), "Unable to place player on surface because state=" + stateBelow + ", falling back to checks");
@@ -74,7 +132,7 @@ public class RunestoneTeleport {
             var surface = RunestoneHelper.getSurfacePos(level, pos, Math.min(seaLevel + 40, level.getHeight() - 20));
 
             if (surface != null) {
-                reposition(surface);
+                move(surface);
                 return;
             } else {
                 log.debug(getClass(), "Unable to place player in an air space, falling back to checks");
@@ -101,7 +159,7 @@ public class RunestoneTeleport {
 
             if (validFloor && validCurrent && validAbove) {
                 log.debug(getClass(), "Found valid calculated position "  + mutable + " after " + tries + " tries");
-                reposition(mutable);
+                move(mutable);
                 return;
             }
 
@@ -136,37 +194,12 @@ public class RunestoneTeleport {
             makePlatform(relative, surfaceBlock);
         }
 
-        reposition(mutable);
+        move(mutable);
     }
 
-    public void init() {
-        // Add protection and dizziness effects to the teleporting player.
-        var effects = new ArrayList<>(Arrays.asList(
-            new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Runestones.protectionDuration * 20, 1),
-            new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Runestones.protectionDuration * 20, 1),
-            new MobEffectInstance(MobEffects.REGENERATION, Runestones.protectionDuration * 20, 1)
-        ));
-        if (Runestones.dizzyEffect) {
-            effects.add(new MobEffectInstance(MobEffects.CONFUSION, Runestones.protectionDuration * 20, 3));
-        }
-        effects.forEach(player::addEffect);
-
-        // Play teleportation sound.
-        player.level().playSound(null, player.blockPosition(), Runestones.travelSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
-
-        // Do the teleport to the location - repositioning comes later.
-        if (!player.getAbilities().instabuild) {
-            player.setInvulnerable(true);
-        }
-        player.teleportToWithTicket(target.x, target.y, target.z);
-
-        valid = true;
-    }
-
-    private void reposition(BlockPos pos) {
+    private void move(BlockPos pos) {
         player.moveTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
         player.teleportTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
-//        player.teleportTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
 
         if (!player.getAbilities().instabuild) {
             player.setInvulnerable(false);
@@ -208,35 +241,22 @@ public class RunestoneTeleport {
         return state;
     }
 
-    public boolean isValid() {
-        return valid;
-    }
+    private void setTargetAndDimension(RunestoneBlockEntity runestone) {
+        if (runestone.location.id().equals(RunestoneHelper.SPAWN_POINT_ID)) {
+            // Handle player spawn point runestone.
+            this.dimension = player.getRespawnDimension();
 
-    public void addForcedChunk() {
-        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
-        var chunkPos = new ChunkPos(blockPos);
-
-        // try a couple of times I guess?
-        var result = false;
-        for (int i = 0; i <= 2; i++) {
-            result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), true);
-            if (result) break;
-        }
-
-        if (result) {
-            log.debug(WorldHelper.class, "Force loaded chunk " + chunkPos);
-        }
-    }
-
-    public void removeForcedChunk() {
-        var blockPos = new BlockPos((int) target.x, (int) target.y, (int) target.z);
-        var chunkPos = new ChunkPos(blockPos);
-
-        var result = level.setChunkForced(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ(), false);
-        if (!result) {
-            log.debug(WorldHelper.class, "Forced chunk was already removed.");
+            var respawnPosition = player.getRespawnPosition();
+            if (respawnPosition != null) {
+                this.useExactPosition = true;
+                this.target = respawnPosition.getCenter();
+            } else {
+                this.target = level.getSharedSpawnPos().getCenter();
+            }
         } else {
-            log.debug(WorldHelper.class, "Unloaded forced chunk " + chunkPos);
+            // All standard runestones just use the same dimension and fixed target pos.
+            this.dimension = level.dimension();
+            this.target = runestone.target.getCenter();
         }
     }
 }

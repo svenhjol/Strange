@@ -150,6 +150,11 @@ public class Runestones extends CommonFeature {
 
                 runestone.target = result.getFirst();
             }
+            case PLAYER -> {
+                if (runestone.location.id().equals(RunestoneHelper.SPAWN_POINT_ID)) {
+                    runestone.target = null; // Player targets are dynamic.
+                }
+            }
             default -> {
                 log.warn(Runestones.class, "Not a valid destination type for runestone at " + pos);
                 return false;
@@ -169,9 +174,7 @@ public class Runestones extends CommonFeature {
             SyncLearned.send(player, learned);
         });
 
-        var teleport = new RunestoneTeleport(player, runestone.target);
-        teleport.init();
-
+        var teleport = new RunestoneTeleport(player, runestone);
         Runestones.TELEPORTS.put(player.getUUID(), teleport);
         return true;
     }
