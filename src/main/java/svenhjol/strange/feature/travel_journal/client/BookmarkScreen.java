@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -79,7 +80,7 @@ public class BookmarkScreen extends BaseScreen {
 
         int yoffset = 36;
 
-        if (TravelJournal.renderCoordinates) {
+        if (TravelJournal.showCoordinates) {
             renderCoords(guiGraphics, yoffset);
             yoffset += 16;
         } else {
@@ -117,7 +118,7 @@ public class BookmarkScreen extends BaseScreen {
     protected void renderCoords(GuiGraphics guiGraphics, int y) {
         var pos = bookmark.pos;
         var dim = bookmark.dim;
-        var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+        var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + TravelJournalHelper.getNiceCoordinates(pos);
         drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
@@ -173,6 +174,26 @@ public class BookmarkScreen extends BaseScreen {
             guiGraphics.blit(registeredTexture, (int)(midX / 0.66f) - 114, y, 0, 0, 228, 200);
             pose.popPose();
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (TravelJournal.showCoordinates
+            && mouseX > midX - 100 && mouseX < midX + 100
+            && mouseY > 36 && mouseY < 46) {
+            var minecraft = Minecraft.getInstance();
+            String formattedPos = TravelJournalHelper.getNiceCoordinates(bookmark.pos);
+            String chatMessage;
+
+            if (minecraft.player != null && minecraft.player.getAbilities().instabuild) {
+                chatMessage = "/tp " + formattedPos;
+            } else {
+                chatMessage = bookmark.name + ": " + formattedPos;
+            }
+
+            minecraft.setScreen(new ChatScreen(chatMessage));
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     protected File getScreenshotFile() {
