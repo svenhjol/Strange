@@ -2,6 +2,9 @@ package svenhjol.strange.feature.travel_journal.client;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import svenhjol.charmony.base.Mods;
+import svenhjol.strange.Strange;
+import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
@@ -14,8 +17,16 @@ public class HomeScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), 60, this::openBookmarks));
-        addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), 85, this::openLearned));
+        int yoffset = 45;
+
+        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), yoffset, this::openBookmarks));
+        yoffset += 24;
+
+        if (Mods.common(Strange.ID).loader().isEnabled(Runestones.class)) {
+            addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), yoffset, this::openLearned));
+            yoffset += 24;
+        }
+
         addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),220, b -> onClose()));
 
         initShortcuts();

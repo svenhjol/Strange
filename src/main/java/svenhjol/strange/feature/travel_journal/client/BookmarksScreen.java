@@ -48,7 +48,7 @@ public class BookmarksScreen extends BaseScreen {
         var pages = bookmarks.size() / perPage;
         var index = (page - 1) * perPage;
 
-        if (bookmarks.isEmpty()) {
+        if (bookmarks.isEmpty() && !renderedEditButtons) {
             addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH / 2), 45, b -> TravelJournalClient.makeNewBookmark()));
         }
 

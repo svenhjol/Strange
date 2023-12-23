@@ -575,14 +575,31 @@
     ],
     "subtitle": "subtitles.strange.block.runestone.travel"
   },
-  "screenshot": {
+  "travel_journal_interact": {
     "sounds": [
       {
-        "name": "strange:screenshot",
+        "name": "strange:travel_journal_interact1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:travel_journal_interact2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:travel_journal_interact3",
         "volume": 1.0
       }
     ],
-    "subtitle": "subtitles.strange.player.screenshot.take"
+    "subtitle": "subtitles.strange.player.travel_journal.interact"
+  },
+  "travel_journal_photo": {
+    "sounds": [
+      {
+        "name": "strange:photo",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.travel_journal.photo"
   },
   "waypoint_broadcast": {
     "sounds": [

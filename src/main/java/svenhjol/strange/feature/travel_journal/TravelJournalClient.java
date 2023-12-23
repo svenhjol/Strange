@@ -25,7 +25,7 @@ public class TravelJournalClient extends ClientFeature {
     static Supplier<String> openJournalKey;
     static Supplier<String> newBookmarkKey;
     static long lastBookmarkTimestamp;
-    static Screenshot screenshot = null;
+    static Photo photo = null;
     public static final List<Item> BOOKMARK_ICONS = new ArrayList<>();
 
     @Override
@@ -51,8 +51,8 @@ public class TravelJournalClient extends ClientFeature {
     }
 
     private void handleHudRender(GuiGraphics guiGraphics, float tickDelta) {
-        if (screenshot != null && screenshot.isValid()) {
-            screenshot.renderCountdown(guiGraphics);
+        if (photo != null && photo.isValid()) {
+            photo.renderCountdown(guiGraphics);
         }
     }
 
@@ -89,8 +89,8 @@ public class TravelJournalClient extends ClientFeature {
     public static void handleNewBookmark(SendNewBookmark message, Player player) {
         var bookmark = message.getBookmark();
 
-        // Now we have the bookmark, take a screenshot for it.
-        initScreenshot(bookmark);
+        // Now we have the bookmark, take a photo for it.
+        initPhoto(bookmark);
     }
 
     public static void handleChangedBookmark(SendChangedBookmark message, Player player) {
@@ -103,15 +103,15 @@ public class TravelJournalClient extends ClientFeature {
     }
 
     private void handleClientTick(Minecraft minecraft) {
-        if (screenshot != null) {
-            if (!screenshot.isValid()) {
-                logDebugMessage("Removing completed screenshot");
-                var bookmark = screenshot.getBookmark();
-                screenshot = null;
+        if (photo != null) {
+            if (!photo.isValid()) {
+                logDebugMessage("Removing completed photo");
+                var bookmark = photo.getBookmark();
+                photo = null;
 
                 minecraft.setScreen(new BookmarkScreen(bookmark));
             } else {
-                screenshot.tick();
+                photo.tick();
             }
         }
     }
@@ -147,6 +147,10 @@ public class TravelJournalClient extends ClientFeature {
         } else {
             PageTracker.screen.open();
         }
+
+        if (minecraft.player != null) {
+            minecraft.player.playSound(TravelJournal.interactSound.get(), 0.5f, 1.0f);
+        }
     }
 
     public static void makeNewBookmark() {
@@ -158,8 +162,8 @@ public class TravelJournalClient extends ClientFeature {
         RequestChangeBookmark.send(bookmark);
     }
 
-    public static void initScreenshot(Bookmark bookmark) {
-        screenshot = new Screenshot(bookmark);
+    public static void initPhoto(Bookmark bookmark) {
+        photo = new Photo(bookmark);
         Minecraft.getInstance().setScreen(null);
     }
 

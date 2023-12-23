@@ -1,21 +1,20 @@
 package svenhjol.strange.feature.travel_journal;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.charmony.base.Mods;
 import svenhjol.strange.Strange;
 
-public class Screenshot {
+public class Photo {
     private final Bookmark bookmark;
     private int ticks;
     private boolean valid;
-    private boolean isTakingScreenshot;
+    private boolean isTakingPhoto;
 
-    public Screenshot(Bookmark bookmark) {
+    public Photo(Bookmark bookmark) {
         this.bookmark = bookmark;
         this.valid = true;
-        this.isTakingScreenshot = false;
+        this.isTakingPhoto = false;
     }
 
     public void tick() {
@@ -36,7 +35,7 @@ public class Screenshot {
             return;
         }
 
-        takeScreenshot();
+        takePhoto();
     }
 
     public void finish() {
@@ -52,25 +51,25 @@ public class Screenshot {
         return bookmark;
     }
 
-    private void takeScreenshot() {
+    private void takePhoto() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
             return;
         }
 
-        if (isTakingScreenshot) {
+        if (isTakingPhoto) {
             return;
         }
 
-        isTakingScreenshot = true;
+        isTakingPhoto = true;
 
         net.minecraft.client.Screenshot.grab(
             minecraft.gameDirectory,
             bookmark.id + ".png",
             minecraft.getMainRenderTarget(),
             component -> {
-                minecraft.player.playSound(TravelJournal.screenshotSound.get(), 1.0f, 1.0f);
-                Mods.client(Strange.ID).log().debug(getClass(), "Screenshot taken");
+                minecraft.player.playSound(TravelJournal.photoSound.get(), 1.0f, 1.0f);
+                Mods.client(Strange.ID).log().debug(getClass(), "Photo taken");
                 finish();
             }
         );

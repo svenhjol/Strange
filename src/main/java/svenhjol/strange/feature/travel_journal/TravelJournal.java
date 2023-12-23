@@ -33,7 +33,8 @@ public class TravelJournal extends CommonFeature {
     public static final String LEARNED_TAG = "learned";
     public static final Map<UUID, Bookmarks> BOOKMARKS = new HashMap<>();
     public static final Map<UUID, Learned> LEARNED = new HashMap<>();
-    static Supplier<SoundEvent> screenshotSound;
+    public static Supplier<SoundEvent> interactSound;
+    public static Supplier<SoundEvent> photoSound;
 
     public static boolean showCoordinates = true;
 
@@ -42,7 +43,8 @@ public class TravelJournal extends CommonFeature {
         var registry = mod().registry();
         TravelJournalNetwork.register(registry);
 
-        screenshotSound = registry.soundEvent("screenshot");
+        interactSound = registry.soundEvent("travel_journal_interact");
+        photoSound = registry.soundEvent("travel_journal_photo");
     }
 
     @Override
@@ -139,7 +141,6 @@ public class TravelJournal extends CommonFeature {
                 SendChangedBookmark.send(serverPlayer, bookmark);
             }
         });
-
     }
 
     public static void handleRequestItemIcons(RequestItemIcons message, Player player) {

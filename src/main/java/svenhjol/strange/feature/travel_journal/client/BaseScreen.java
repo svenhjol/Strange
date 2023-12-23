@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public abstract class BaseScreen extends Screen {
@@ -89,6 +90,15 @@ public abstract class BaseScreen extends Screen {
         int x = (this.width - this.backgroundWidth) / 2;
         int y = 5;
         guiGraphics.blit(getBackgroundTexture(), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+    }
+
+    @Override
+    public void onClose() {
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            player.playSound(TravelJournal.interactSound.get(), 0.5f, 1.0f);
+        }
+        super.onClose();
     }
 
     protected ResourceLocation getBackgroundTexture() {

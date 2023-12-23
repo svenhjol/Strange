@@ -17,7 +17,7 @@ public class TravelJournalResources {
     public static final WidgetSprites QUEST_BUTTON = makeButton("quest");
     public static final WidgetSprites SAVE_TO_BOOKMARK_BUTTON = makeButton("save_to_bookmark");
     public static final WidgetSprites SAVE_TO_MAP_BUTTON = makeButton("save_to_map");
-    public static final WidgetSprites SCREENSHOT_BUTTON = makeButton("screenshot");
+    public static final WidgetSprites PHOTO_BUTTON = makeButton("photo");
     public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
     public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
     public static final WidgetSprites PREVIOUS_PAGE_BUTTON = makeButton("previous_page");
@@ -34,8 +34,8 @@ public class TravelJournalResources {
     public static final Component HOME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.home");
     public static final Component SAVE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save");
     public static final Component CANCEL_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.cancel");
-    public static final Component TAKE_SCREENSHOT_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_screenshot");
-    public static final Component TAKE_NEW_SCREENSHOT_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_new_screenshot");
+    public static final Component TAKE_PHOTO_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_photo");
+    public static final Component TAKE_NEW_PHOTO_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.take_new_photo");
     public static final Component CHANGE_NAME_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_name");
     public static final Component CHANGE_ICON_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.change_icon");
     public static final Component DELETE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.delete");

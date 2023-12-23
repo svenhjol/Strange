@@ -24,7 +24,7 @@ import java.io.RandomAccessFile;
 
 public class BookmarkScreen extends BaseScreen {
     protected Bookmark bookmark;
-    protected boolean hasScreenshot;
+    protected boolean hasPhoto;
     protected boolean hasMap;
     protected boolean hasPaper;
     protected boolean isNearby;
@@ -45,7 +45,7 @@ public class BookmarkScreen extends BaseScreen {
         addRenderableWidget(new BackButton(midX - (BackButton.WIDTH + 5), 220, this::openBookmarks));
 
         renderedEditButtons = false;
-        hasScreenshot = getScreenshotFile().exists();
+        hasPhoto = getScreenshotFile().exists();
         hasMap = hasMap();
         hasPaper = hasPaper();
         isNearby = isNearby();
@@ -88,15 +88,15 @@ public class BookmarkScreen extends BaseScreen {
             yoffset += 16;
         }
 
-        if (hasScreenshot) {
-            renderScreenshot(guiGraphics, (int)(yoffset * 2.4));
+        if (hasPhoto) {
+            renderPhoto(guiGraphics, (int)(yoffset * 2.4));
             yoffset += 83;
         }
 
         if (!renderedEditButtons) {
-            if (!hasScreenshot && isNearby) {
+            if (!hasPhoto && isNearby) {
                 addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yoffset,
-                    b -> TravelJournalClient.initScreenshot(bookmark)));
+                    b -> TravelJournalClient.initPhoto(bookmark)));
                 yoffset += 21;
             }
 
@@ -106,9 +106,9 @@ public class BookmarkScreen extends BaseScreen {
             addRenderableWidget(new ChangeIconButton(midX - (ChangeIconButton.WIDTH / 2), yoffset, this::openChangeIconScreen));
             yoffset += 21;
 
-            if (hasScreenshot && isNearby) {
+            if (hasPhoto && isNearby) {
                 addRenderableWidget(new TakeNewPhotoButton(midX - (TakeNewPhotoButton.WIDTH / 2), yoffset,
-                    b -> TravelJournalClient.initScreenshot(bookmark)));
+                    b -> TravelJournalClient.initPhoto(bookmark)));
             }
         }
 
@@ -128,8 +128,8 @@ public class BookmarkScreen extends BaseScreen {
         drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
-    protected void renderScreenshot(GuiGraphics guiGraphics, int y) {
-        if (!hasScreenshot) {
+    protected void renderPhoto(GuiGraphics guiGraphics, int y) {
+        if (!hasPhoto) {
             return;
         }
 
@@ -161,7 +161,7 @@ public class BookmarkScreen extends BaseScreen {
             } catch (Exception e) {
 
                 log().error(this.getClass(), "Failure loading screenshot");
-                hasScreenshot = false;
+                hasPhoto = false;
                 registeredTexture = null;
             }
         }
@@ -245,7 +245,7 @@ public class BookmarkScreen extends BaseScreen {
     static class TakePhotoButton extends Button {
         static int WIDTH = 100;
         static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_SCREENSHOT_BUTTON_TEXT;
+        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
         public TakePhotoButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -254,7 +254,7 @@ public class BookmarkScreen extends BaseScreen {
     static class TakeNewPhotoButton extends Button {
         static int WIDTH = 100;
         static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_NEW_SCREENSHOT_BUTTON_TEXT;
+        static Component TEXT = TravelJournalResources.TAKE_NEW_PHOTO_BUTTON_TEXT;
         public TakeNewPhotoButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -278,13 +278,13 @@ public class BookmarkScreen extends BaseScreen {
         }
     }
 
-    static class TakeScreenshotShortcutButton extends ImageButton {
+    static class TakePhotoShortcutButton extends ImageButton {
         static int WIDTH = 20;
         static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.SCREENSHOT_BUTTON;
-        static Component TEXT = TravelJournalResources.TAKE_SCREENSHOT_BUTTON_TEXT;
+        static WidgetSprites SPRITES = TravelJournalResources.PHOTO_BUTTON;
+        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
 
-        protected TakeScreenshotShortcutButton(int x, int y, OnPress onPress) {
+        protected TakePhotoShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }
