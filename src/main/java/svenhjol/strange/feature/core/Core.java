@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.feature.advancements.Advancements;
-import svenhjol.charmony_api.event.PlayerLoginEvent;
+import svenhjol.charmony.api.event.PlayerLoginEvent;
 import svenhjol.strange.Strange;
 
 public class Core extends CommonFeature {

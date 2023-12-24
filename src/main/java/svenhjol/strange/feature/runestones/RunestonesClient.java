@@ -7,8 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.client.ClientFeature;
-import svenhjol.charmony_api.event.HudRenderEvent;
-import svenhjol.charmony_api.event.PlayerTickEvent;
+import svenhjol.charmony.api.event.HudRenderEvent;
+import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.strange.feature.runestones.RunestonesNetwork.SentLevelSeed;
 
 import java.util.ArrayList;

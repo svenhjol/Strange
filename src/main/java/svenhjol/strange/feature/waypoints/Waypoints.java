@@ -9,8 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.charmony_api.event.PlayerLoginEvent;
-import svenhjol.charmony_api.event.PlayerTickEvent;
+import svenhjol.charmony.api.event.PlayerLoginEvent;
+import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.strange.feature.waypoints.WaypointsNetwork.WaypointInfo;
 
 import java.util.HashMap;

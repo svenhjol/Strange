@@ -1,10 +1,10 @@
 package svenhjol.strange.feature.ebony_wood;
 
 import net.minecraft.resources.ResourceLocation;
-import svenhjol.charmony_api.iface.IConditionalAdvancement;
-import svenhjol.charmony_api.iface.IConditionalAdvancementProvider;
-import svenhjol.charmony_api.iface.IConditionalRecipe;
-import svenhjol.charmony_api.iface.IConditionalRecipeProvider;
+import svenhjol.charmony.api.iface.IConditionalAdvancement;
+import svenhjol.charmony.api.iface.IConditionalAdvancementProvider;
+import svenhjol.charmony.api.iface.IConditionalRecipe;
+import svenhjol.charmony.api.iface.IConditionalRecipeProvider;
 import svenhjol.strange.Strange;
 
 import java.util.List;

@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.charmony_api.event.HudRenderEvent;
+import svenhjol.charmony.api.event.HudRenderEvent;
 
 public class WaypointsClient extends ClientFeature {
     private static DyeColor lastSeenColor; // Cached color of the last message.

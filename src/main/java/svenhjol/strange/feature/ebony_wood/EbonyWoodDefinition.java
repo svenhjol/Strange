@@ -1,7 +1,7 @@
 package svenhjol.strange.feature.ebony_wood;
 
 import svenhjol.charmony.iface.ICustomWoodDefinition;
-import svenhjol.charmony_api.iface.IVariantWoodMaterial;
+import svenhjol.charmony.api.iface.IVariantWoodMaterial;
 
 public class EbonyWoodDefinition implements ICustomWoodDefinition {
     @Override

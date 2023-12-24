@@ -11,8 +11,8 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.feature.custom_wood.CustomWood;
 import svenhjol.charmony.feature.variant_wood.VariantWood;
-import svenhjol.charmony_api.CharmonyApi;
-import svenhjol.charmony_api.iface.IVariantWoodMaterial;
+import svenhjol.charmony.api.CharmonyApi;
+import svenhjol.charmony.api.iface.IVariantWoodMaterial;
 import svenhjol.strange.Strange;
 import svenhjol.strange.StrangeTags;
 
