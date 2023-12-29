@@ -20,6 +20,9 @@
     ],
     "client": [
       "svenhjol.strange.fabric.ClientInitalizer"
+    ],
+    "modmenu": [
+      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
     ]
   },
   "accessWidener": "strange.accesswidener",
