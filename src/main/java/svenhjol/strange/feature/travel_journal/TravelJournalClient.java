@@ -38,7 +38,7 @@ public class TravelJournalClient extends ClientFeature {
         var registry = mod().registry();
 
         openJournalKey = registry.key("open_journal",
-            () -> new KeyMapping("key.strange.open_journal", GLFW.GLFW_KEY_T, "key.categories.misc"));
+            () -> new KeyMapping("key.strange.open_journal", GLFW.GLFW_KEY_J, "key.categories.misc"));
         newBookmarkKey = registry.key("new_bookmark",
             () -> new KeyMapping("key.strange.new_bookmark", GLFW.GLFW_KEY_B, "key.categories.misc"));
     }
