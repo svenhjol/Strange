@@ -1,35 +1,11 @@
 {
   "template": {
     "variants": {
-      "facing=east,activated=false": {
-        "model": "strange:block/RUNESTONE_runestone",
-        "y": 90
-      },
-      "facing=east,activated=true": {
-        "model": "strange:block/RUNESTONE_runestone_activated",
-        "y": 90
-      },
-      "facing=north,activated=false": {
+      "activated=false": {
         "model": "strange:block/RUNESTONE_runestone"
       },
-      "facing=north,activated=true": {
+      "activated=true": {
         "model": "strange:block/RUNESTONE_runestone_activated"
-      },
-      "facing=south,activated=false": {
-        "model": "strange:block/RUNESTONE_runestone",
-        "y": 180
-      },
-      "facing=south,activated=true": {
-        "model": "strange:block/RUNESTONE_runestone_activated",
-        "y": 180
-      },
-      "facing=west,activated=false": {
-        "model": "strange:block/RUNESTONE_runestone",
-        "y": 270
-      },
-      "facing=west,activated=true": {
-        "model": "strange:block/RUNESTONE_runestone_activated",
-        "y": 270
       }
     }
   },

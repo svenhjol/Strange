@@ -1,10 +1,14 @@
 {
   "template": {
-    "parent": "minecraft:block/orientable",
+    "parent": "minecraft:block/cube",
     "textures": {
-      "front": "strange:block/RUNESTONE_runestone_empty",
-      "side": "strange:block/RUNESTONE_runestone_side",
-      "top": "strange:block/RUNESTONE_runestone_top"
+      "north": "strange:block/RUNESTONE_runestone_side1",
+      "east": "strange:block/RUNESTONE_runestone_side2",
+      "south": "strange:block/RUNESTONE_runestone_side3",
+      "west": "strange:block/RUNESTONE_runestone_side4",
+      "up": "strange:block/RUNESTONE_runestone_empty",
+      "down": "strange:block/RUNESTONE_runestone_bottom",
+      "particle": "strange:block/RUNESTONE_runestone_bottom"
     }
   },
   "variants": "runestone"

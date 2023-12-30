@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.runestones;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -15,11 +14,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import svenhjol.charmony.base.Mods;
-import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.api.event.EntityJoinEvent;
 import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.charmony.api.event.ServerStartEvent;
+import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
@@ -106,11 +105,6 @@ public class Runestones extends CommonFeature {
         runestone.location = opt.get();
         log.debug(RunestoneBlock.class, "Set biome " + runestone.location.id() + " for runestone at pos " + pos);
         runestone.setChanged();
-
-        random.nextInt();
-        var directions = List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
-        state = state.setValue(RunestoneBlock.FACING, directions.get(random.nextInt(directions.size())));
-        level.setBlock(pos, state, 2);
     }
 
     public static boolean tryLocate(ServerLevel level, RunestoneBlockEntity runestone) {
