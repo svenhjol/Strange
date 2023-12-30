@@ -10,6 +10,7 @@ import svenhjol.strange.feature.cooking_pots.CookingPots;
 import svenhjol.strange.feature.core.Core;
 import svenhjol.strange.feature.ebony_wood.EbonyWood;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointing;
+import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.raid_horns.RaidHorns;
 import svenhjol.strange.feature.respawn_anchors_work_everywhere.RespawnAnchorsWorkEverywhere;
 import svenhjol.strange.feature.runestones.Runestones;
@@ -38,6 +39,7 @@ public class Strange extends CommonMod {
             Core.class,
             EbonyWood.class,
             PiglinPointing.class,
+            Quests.class,
             RaidHorns.class,
             RespawnAnchorsWorkEverywhere.class,
             Runestones.class,
