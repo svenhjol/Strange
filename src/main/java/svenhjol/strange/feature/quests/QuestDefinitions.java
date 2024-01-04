@@ -3,8 +3,6 @@ package svenhjol.strange.feature.quests;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.quests.type.GatherType;
-import svenhjol.strange.feature.quests.type.HuntType;
 
 import java.util.List;
 
@@ -23,29 +21,13 @@ public class QuestDefinitions {
     static IQuestDefinition makeGather(VillagerProfession profession, int level, List<String> pools) {
         return new IQuestDefinition() {
             @Override
-            public GatherType type() { return GatherType.instance(); }
+            public QuestType type() { return QuestType.GATHER; }
 
             @Override
-            public List<VillagerProfession> professions() { return List.of(profession); }
+            public VillagerProfession profession() { return profession; }
 
             @Override
-            public List<Integer> levels() { return List.of(level); }
-
-            @Override
-            public List<ResourceLocation> pools() { return pools.stream().map(QuestDefinitions::makePool).toList(); }
-        };
-    }
-
-    static IQuestDefinition makeHunt(VillagerProfession profession, int level, List<String> pools) {
-        return new IQuestDefinition() {
-            @Override
-            public HuntType type() { return HuntType.instance(); }
-
-            @Override
-            public List<VillagerProfession> professions() { return List.of(profession); }
-
-            @Override
-            public List<Integer> levels() { return List.of(level); }
+            public int level() { return level; }
 
             @Override
             public List<ResourceLocation> pools() { return pools.stream().map(QuestDefinitions::makePool).toList(); }

@@ -1,34 +1,87 @@
 package svenhjol.strange.feature.quests;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.npc.VillagerProfession;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.List;
 
-public class Quest {
-    protected IQuestDefinition definition;
-    protected RandomSource random;
-    protected Map<ResourceLocation, Integer> required = new HashMap<>();
-    protected Map<ResourceLocation, Integer> completed = new HashMap<>();
+public abstract class Quest<T> {
+    static final String TYPE_TAG = "type";
+    static final String PROFESSION_TAG = "profession";
 
-    public Quest(IQuestDefinition definition) {
-        this.random = RandomSource.create();
-        this.definition = definition;
+    protected @Nullable ServerPlayer player;
 
+    protected QuestType type;
+
+    protected VillagerProfession profession;
+
+    protected abstract Registry<T> registry();
+
+    protected abstract ResourceKey<Registry<T>> resourceKey();
+
+    public abstract List<? extends Criteria> criteria();
+
+    public boolean satisfied() {
+        return criteria().stream().allMatch(Criteria::satisfied);
+    }
+
+    public TagKey<T> tag(ResourceLocation id) {
+        return TagKey.create(resourceKey(), id);
+    }
+
+    public static <Q extends Quest<?>> Q create(IQuestDefinition definition) {
         var type = definition.type();
-        var pool = definition.randomPool(random);
-        var values = new ArrayList<>(type.tagValueIds(pool));
-        var amount = random.nextInt(2) + 10;
-        var selection = Math.min(values.size(), random.nextInt(2) + 1);
 
-        Collections.shuffle(values);
-        for (int i = 0; i < selection; i++) {
-            var requirement = values.get(i);
-            required.put(requirement, amount / selection);
-            completed.put(requirement, 0);
-        }
+        var quest = type.<Q>instance();
+        quest.make(definition);
+        return quest;
+    }
+
+    public static <Q extends Quest<?>> Q load(CompoundTag tag) {
+        var type = QuestType.valueOf(tag.getString(TYPE_TAG));
+        var profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(PROFESSION_TAG)));
+
+        var quest = type.<Q>instance();
+        quest.type = type;
+        quest.profession = profession;
+
+        quest.loadAdditional(tag);
+        return quest;
+    }
+
+    public void save(CompoundTag tag) {
+        tag.putString(TYPE_TAG, type.name());
+        tag.putString(PROFESSION_TAG, BuiltInRegistries.VILLAGER_PROFESSION.getKey(this.profession).toString());
+
+        saveAdditional(tag);
+    }
+
+    public void tick(ServerPlayer player) {
+        this.player = player;
+    }
+
+    protected abstract void make(IQuestDefinition definition);
+
+    public void loadAdditional(CompoundTag tag) {
+    }
+
+    public void saveAdditional(CompoundTag tag) {
+    }
+
+    public interface Criteria {
+        boolean satisfied();
+
+        int total();
+
+        int remaining();
+
+        void complete();
     }
 }

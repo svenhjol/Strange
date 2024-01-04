@@ -7,11 +7,11 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import java.util.List;
 
 public interface IQuestDefinition {
-    IQuestType<?> type();
+    QuestType type();
 
-    List<VillagerProfession> professions();
+    VillagerProfession profession();
 
-    List<Integer> levels();
+    int level();
 
     List<ResourceLocation> pools();
 
