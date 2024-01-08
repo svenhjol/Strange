@@ -60,6 +60,7 @@
   "gui.strange.runestone.unsure": "%s?",
   "gui.strange.runestone.unknown": "???",
   "gui.strange.quests.quest_offers": "Quest Offers",
+  "gui.strange.quests.start_quest": "Start Quest",
   "gui.strange.quests.quests": "Quests",
   "gui.strange.travel_journal.back": "Back",
   "gui.strange.travel_journal.bookmarks.default_name": "Location in %s",

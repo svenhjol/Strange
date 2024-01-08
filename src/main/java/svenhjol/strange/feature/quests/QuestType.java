@@ -11,6 +11,7 @@ public enum QuestType {
         this.clazz = clazz;
     }
 
+    @SuppressWarnings("unchecked")
     public <Q extends Quest<?>> Q instance() {
         Q quest;
 

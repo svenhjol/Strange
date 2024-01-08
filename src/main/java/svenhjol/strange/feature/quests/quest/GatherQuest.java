@@ -14,6 +14,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.IQuestDefinition;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class GatherQuest extends Quest<Item> {
     static final int MAX_SELECTION = 3;
     static final int MAX_REQUIRED_PER_LEVEL = 10;
     static final String ITEMS_TAG = "items";
-    static final List<GatherItem> ITEMS = new ArrayList<>();
+    final List<GatherItem> items = new ArrayList<>();
 
     @Override
     protected Registry<Item> registry() {
@@ -37,24 +38,24 @@ public class GatherQuest extends Quest<Item> {
 
     @Override
     public List<? extends Criteria> criteria() {
-        return ITEMS;
+        return items;
     }
 
     @Override
     public void loadAdditional(CompoundTag tag) {
-        ITEMS.clear();
+        items.clear();
         var list = tag.getList(ITEMS_TAG, 10);
         for (Tag t : list) {
             var item = new GatherItem();
             item.load((CompoundTag)t);
-            ITEMS.add(item);
+            items.add(item);
         }
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
         var list = new ListTag();
-        for (GatherItem item : ITEMS) {
+        for (GatherItem item : items) {
             var t = new CompoundTag();
             item.save(t);
             list.add(t);
@@ -64,6 +65,8 @@ public class GatherQuest extends Quest<Item> {
 
     @Override
     protected void make(IQuestDefinition definition) {
+        this.type = QuestType.GATHER;
+
         var random = RandomSource.create();
         var pool = definition.randomPool(random);
         List<ResourceLocation> values = new ArrayList<>();
@@ -78,7 +81,7 @@ public class GatherQuest extends Quest<Item> {
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
-            ITEMS.add(new GatherItem(values.get(i), amount / selection));
+            items.add(new GatherItem(values.get(i), amount / selection));
         }
     }
 
