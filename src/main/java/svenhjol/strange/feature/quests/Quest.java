@@ -26,10 +26,12 @@ public abstract class Quest<T> {
 
     protected abstract ResourceKey<Registry<T>> resourceKey();
 
-    public abstract List<? extends Criteria> criteria();
+    public abstract List<? extends Requirement> requirements();
+
+    public abstract List<? extends Reward> rewards();
 
     public boolean satisfied() {
-        return criteria().stream().allMatch(Criteria::satisfied);
+        return requirements().stream().allMatch(Requirement::satisfied);
     }
 
     public TagKey<T> tag(ResourceLocation id) {
@@ -75,7 +77,7 @@ public abstract class Quest<T> {
     public void saveAdditional(CompoundTag tag) {
     }
 
-    public interface Criteria {
+    public interface Requirement {
         boolean satisfied();
 
         int total();
@@ -83,5 +85,22 @@ public abstract class Quest<T> {
         int remaining();
 
         void complete();
+
+        void load(CompoundTag tag);
+
+        void save(CompoundTag tag);
+    }
+
+    public interface Reward {
+        RewardType type();
+
+        void load(CompoundTag tag);
+
+        void save(CompoundTag tag);
+    }
+
+    public enum RewardType {
+        ITEM,
+        EXPERIENCE_LEVEL
     }
 }

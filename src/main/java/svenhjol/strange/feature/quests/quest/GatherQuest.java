@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.IQuestDefinition;
@@ -22,9 +23,15 @@ import java.util.List;
 
 public class GatherQuest extends Quest<Item> {
     static final int MAX_SELECTION = 3;
-    static final int MAX_REQUIRED_PER_LEVEL = 10;
-    static final String ITEMS_TAG = "items";
+    static final int MAX_REQUIREMENTS_PER_LEVEL = 10;
+    static final int MAX_REWARD_ITEMS = 2;
+    static final String REQUIRED_ITEMS_TAG = "required";
+    static final String REWARD_ITEMS_TAG = "reward_items";
+    static final String REWARD_XP_TAG = "reward_xp";
+
     final List<GatherItem> items = new ArrayList<>();
+    final List<RewardItem> rewardItems = new ArrayList<>();
+    final List<RewardXp> rewardXp = new ArrayList<>();
 
     @Override
     protected Registry<Item> registry() {
@@ -37,18 +44,42 @@ public class GatherQuest extends Quest<Item> {
     }
 
     @Override
-    public List<? extends Criteria> criteria() {
+    public List<? extends Requirement> requirements() {
         return items;
+    }
+
+    @Override
+    public List<? extends Reward> rewards() {
+        List<Reward> rewards = new ArrayList<>();
+        rewards.addAll(rewardItems);
+        rewards.addAll(rewardXp);
+        return rewards;
     }
 
     @Override
     public void loadAdditional(CompoundTag tag) {
         items.clear();
-        var list = tag.getList(ITEMS_TAG, 10);
+        var list = tag.getList(REQUIRED_ITEMS_TAG, 10);
         for (Tag t : list) {
             var item = new GatherItem();
             item.load((CompoundTag)t);
             items.add(item);
+        }
+
+        rewardItems.clear();
+        list = tag.getList(REWARD_ITEMS_TAG, 10);
+        for (Tag t : list) {
+            var item = new RewardItem();
+            item.load((CompoundTag)t);
+            rewardItems.add(item);
+        }
+
+        rewardXp.clear();
+        list = tag.getList(REWARD_XP_TAG, 10);
+        for (Tag t : list) {
+            var xp = new RewardXp();
+            xp.load((CompoundTag)t);
+            rewardXp.add(xp);
         }
     }
 
@@ -60,7 +91,23 @@ public class GatherQuest extends Quest<Item> {
             item.save(t);
             list.add(t);
         }
-        tag.put(ITEMS_TAG, list);
+        tag.put(REQUIRED_ITEMS_TAG, list);
+
+        list = new ListTag();
+        for (RewardItem item : rewardItems) {
+            var t = new CompoundTag();
+            item.save(t);
+            list.add(t);
+        }
+        tag.put(REWARD_ITEMS_TAG, list);
+
+        list = new ListTag();
+        for (RewardXp xp : rewardXp) {
+            var t = new CompoundTag();
+            xp.save(t);
+            list.add(t);
+        }
+        tag.put(REWARD_XP_TAG, list);
     }
 
     @Override
@@ -68,16 +115,21 @@ public class GatherQuest extends Quest<Item> {
         this.type = QuestType.GATHER;
 
         var random = RandomSource.create();
-        var pool = definition.randomPool(random);
+        makeRequirements(definition, random);
+        makeRewards(definition, random);
+    }
+
+    protected void makeRequirements(IQuestDefinition definition, RandomSource random) {
+        var requirement = definition.randomRequirement(random);
         List<ResourceLocation> values = new ArrayList<>();
 
-        for (Item item : TagHelper.getValues(registry(), tag(pool))) {
+        for (Item item : TagHelper.getValues(registry(), tag(requirement))) {
             values.add(registry().getKey(item));
         }
 
         Collections.shuffle(values);
 
-        var amount = MAX_REQUIRED_PER_LEVEL * definition.level();
+        var amount = MAX_REQUIREMENTS_PER_LEVEL * definition.level();
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
@@ -85,26 +137,106 @@ public class GatherQuest extends Quest<Item> {
         }
     }
 
-    public class GatherItem implements Quest.Criteria {
+    protected void makeRewards(IQuestDefinition definition, RandomSource random) {
+        var reward = definition.randomReward(random);
+        var maxRewardStackSize = definition.maxRewardStackSize();
+        List<ResourceLocation> values = new ArrayList<>();
+
+        for (Item item : TagHelper.getValues(registry(), tag(reward))) {
+            values.add(registry().getKey(item));
+        }
+
+        Collections.shuffle(values);
+
+        var selection = Math.min(values.size(), MAX_REWARD_ITEMS);
+        for (int i = 0; i < selection; i++) {
+            var itemId = values.get(i);
+            var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId),
+                random.nextIntBetweenInclusive(Math.max(1, maxRewardStackSize - 2), maxRewardStackSize));
+
+            rewardItems.add(new RewardItem(stack));
+        }
+
+        var xp = new RewardXp(definition.experience());
+        rewardXp.add(xp);
+    }
+
+    public class RewardItem implements Reward {
+        static final String ITEM_TAG = "item";
+
+        public ItemStack item;
+
+        public RewardItem() {}
+
+        public RewardItem(ItemStack item) {
+            this.item = item;
+        }
+
+        @Override
+        public RewardType type() {
+            return RewardType.ITEM;
+        }
+
+        @Override
+        public void load(CompoundTag tag) {
+            item = ItemStack.of(tag);
+        }
+
+        @Override
+        public void save(CompoundTag tag) {
+            var itemTag = new CompoundTag();
+            item.save(itemTag);
+            tag.put(ITEM_TAG, itemTag);
+        }
+    }
+
+    public class RewardXp implements Reward {
+        static final String TOTAL_TAG = "total";
+        public int total;
+
+        public RewardXp() {}
+
+        public RewardXp(int total) {
+            this.total = total;
+        }
+
+        @Override
+        public RewardType type() {
+            return RewardType.EXPERIENCE_LEVEL;
+        }
+
+        @Override
+        public void load(CompoundTag tag) {
+            total = tag.getInt(TOTAL_TAG);
+        }
+
+        @Override
+        public void save(CompoundTag tag) {
+            tag.putInt(TOTAL_TAG, total);
+        }
+    }
+
+    public class GatherItem implements Requirement {
         static final String ITEM_TAG = "item";
         static final String TOTAL_TAG = "total";
 
         public ResourceLocation item;
         public int total;
 
-        public GatherItem() {
-        }
+        public GatherItem() {}
 
         public GatherItem(ResourceLocation item, int total) {
             this.item = item;
             this.total = total;
         }
 
+        @Override
         public void load(CompoundTag tag) {
             item = ResourceLocation.tryParse(tag.getString(ITEM_TAG));
             total = tag.getInt(TOTAL_TAG);
         }
 
+        @Override
         public void save(CompoundTag tag) {
             tag.putString(ITEM_TAG, item.toString());
             tag.putInt(TOTAL_TAG, total);
