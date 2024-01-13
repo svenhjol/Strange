@@ -84,6 +84,7 @@ public class Quests extends CommonFeature {
 
     public static void handleRequestVillagerQuests(RequestVillagerQuests message, Player player) {
         var level = player.level();
+        var random = level.getRandom();
         var gameTime = level.getGameTime();
         var villagerUuid = message.getVillagerUuid();
         var serverPlayer = (ServerPlayer)player;
@@ -110,10 +111,14 @@ public class Quests extends CommonFeature {
         // Generate new quests for this villager
         quests.clear();
 
-        var definitions = QuestHelper.getDefinitions(villagerData.getProfession(), villagerData.getLevel());
-        Collections.shuffle(definitions);
+        var definitions = QuestHelper.getDefinitionsUpToLevel(villagerData.getProfession(), villagerData.getLevel(), 5, random);
+        if (definitions.isEmpty()) {
+            NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.EMPTY);
+            return;
+        }
 
-        var newQuests = QuestHelper.makeQuests(definitions, maxVillagerQuests);
+        var newQuests = QuestHelper.makeQuests(definitions);
+
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
 
