@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
 
 import java.util.ArrayList;
@@ -16,12 +17,15 @@ public class QuestHelper {
 
     public static List<Quest<?>> makeQuests(List<IQuestDefinition> definitions, int max) {
         List<Quest<?>> quests = new ArrayList<>();
+        List<IQuestDefinition> sublist = new ArrayList<>();
+        var random = RandomSource.create();
 
         if (!definitions.isEmpty()) {
-            definitions = definitions.subList(0, Math.min(definitions.size(), max));
+            sublist = definitions.subList(0, Math.min(definitions.size(), max));
         }
 
-        for (IQuestDefinition def : definitions) {
+        for (int i = 0; i < max; i++) {
+            var def = sublist.get(random.nextInt(sublist.size()));
             quests.add(Quest.create(def));
         }
 

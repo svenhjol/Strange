@@ -22,6 +22,10 @@ public abstract class Quest<T> {
 
     protected VillagerProfession profession;
 
+    public QuestType type() {
+        return type;
+    }
+
     protected abstract Registry<T> registry();
 
     protected abstract ResourceKey<Registry<T>> resourceKey();
@@ -41,7 +45,7 @@ public abstract class Quest<T> {
     public static <Q extends Quest<?>> Q create(IQuestDefinition definition) {
         var type = definition.type();
 
-        var quest = type.<Q>instance();
+        var quest = type.<Q>makeQuest();
         quest.make(definition);
         return quest;
     }
@@ -50,7 +54,7 @@ public abstract class Quest<T> {
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
         var profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(PROFESSION_TAG)));
 
-        var quest = type.<Q>instance();
+        var quest = type.<Q>makeQuest();
         quest.type = type;
         quest.profession = profession;
 

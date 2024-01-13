@@ -23,7 +23,6 @@ import java.util.List;
 
 public class GatherQuest extends Quest<Item> {
     static final int MAX_SELECTION = 3;
-    static final int MAX_REQUIREMENTS_PER_LEVEL = 10;
     static final int MAX_REWARD_ITEMS = 2;
     static final String REQUIRED_ITEMS_TAG = "required";
     static final String REWARD_ITEMS_TAG = "reward_items";
@@ -121,28 +120,32 @@ public class GatherQuest extends Quest<Item> {
 
     protected void makeRequirements(IQuestDefinition definition, RandomSource random) {
         var requirement = definition.randomRequirement(random);
+        var requiredItem = requirement.getFirst();
+        var requiredSize = requirement.getSecond();
         List<ResourceLocation> values = new ArrayList<>();
 
-        for (Item item : TagHelper.getValues(registry(), tag(requirement))) {
+        for (Item item : TagHelper.getValues(registry(), tag(requiredItem))) {
             values.add(registry().getKey(item));
         }
 
         Collections.shuffle(values);
 
-        var amount = MAX_REQUIREMENTS_PER_LEVEL * definition.level();
+        var amount = requiredSize * definition.level();
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
-            items.add(new GatherItem(values.get(i), amount / selection));
+            var stack = new ItemStack(BuiltInRegistries.ITEM.get(values.get(i)));
+            items.add(new GatherItem(stack, amount / selection));
         }
     }
 
     protected void makeRewards(IQuestDefinition definition, RandomSource random) {
         var reward = definition.randomReward(random);
-        var maxRewardStackSize = definition.maxRewardStackSize();
+        var rewardItem = reward.getFirst();
+        var rewardSize = reward.getSecond();
         List<ResourceLocation> values = new ArrayList<>();
 
-        for (Item item : TagHelper.getValues(registry(), tag(reward))) {
+        for (Item item : TagHelper.getValues(registry(), tag(rewardItem))) {
             values.add(registry().getKey(item));
         }
 
@@ -152,7 +155,7 @@ public class GatherQuest extends Quest<Item> {
         for (int i = 0; i < selection; i++) {
             var itemId = values.get(i);
             var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId),
-                random.nextIntBetweenInclusive(Math.max(1, maxRewardStackSize - 2), maxRewardStackSize));
+                random.nextIntBetweenInclusive(Math.max(1, rewardSize - 2), rewardSize));
 
             rewardItems.add(new RewardItem(stack));
         }
@@ -220,25 +223,27 @@ public class GatherQuest extends Quest<Item> {
         static final String ITEM_TAG = "item";
         static final String TOTAL_TAG = "total";
 
-        public ResourceLocation item;
+        public ItemStack item;
         public int total;
 
         public GatherItem() {}
 
-        public GatherItem(ResourceLocation item, int total) {
+        public GatherItem(ItemStack item, int total) {
             this.item = item;
             this.total = total;
         }
 
         @Override
         public void load(CompoundTag tag) {
-            item = ResourceLocation.tryParse(tag.getString(ITEM_TAG));
+            item = ItemStack.of(tag);
             total = tag.getInt(TOTAL_TAG);
         }
 
         @Override
         public void save(CompoundTag tag) {
-            tag.putString(ITEM_TAG, item.toString());
+            var itemTag = new CompoundTag();
+            item.save(itemTag);
+            tag.put(ITEM_TAG, itemTag);
             tag.putInt(TOTAL_TAG, total);
         }
 
@@ -263,19 +268,18 @@ public class GatherQuest extends Quest<Item> {
             }
 
             var remainder = total;
-            var stack = registry().get(item);
             var inventory = new ArrayList<>(player.getInventory().items);
 
-            for (var item : inventory) {
+            for (var invItem : inventory) {
                 if (remainder <= 0) continue;
 
-                if (item.is(stack)
-                    && !item.isDamaged()
-                    && EnchantmentHelper.getEnchantments(item).isEmpty()
+                if (invItem.is(item.getItem())
+                    && !invItem.isDamaged()
+                    && EnchantmentHelper.getEnchantments(invItem).isEmpty()
                 ) {
-                    var decrement = Math.min(remainder, item.getCount());
+                    var decrement = Math.min(remainder, invItem.getCount());
                     remainder -= decrement;
-                    item.shrink(decrement);
+                    invItem.shrink(decrement);
                 }
             }
 
@@ -289,18 +293,17 @@ public class GatherQuest extends Quest<Item> {
             }
 
             var remainder = total;
-            var stack = registry().get(item);
 
-            for (var item : player.getInventory().items) {
+            for (var invItem : player.getInventory().items) {
                 if (remainder <= 0) continue;
 
-                if (item.is(stack)
-                    && !item.isDamaged()
-                    && EnchantmentHelper.getEnchantments(item).isEmpty()
+                if (invItem.is(item.getItem())
+                    && !invItem.isDamaged()
+                    && EnchantmentHelper.getEnchantments(invItem).isEmpty()
                 ) {
-                    var decrement = Math.min(remainder, item.getCount());
+                    var decrement = Math.min(remainder, invItem.getCount());
                     remainder -= decrement;
-                    item.shrink(decrement);
+                    invItem.shrink(decrement);
                 }
             }
         }

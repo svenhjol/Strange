@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -15,11 +16,9 @@ public interface IQuestDefinition {
 
     int level();
 
-    List<ResourceLocation> requirements();
+    List<Pair<ResourceLocation, Integer>> requirements();
 
-    List<ResourceLocation> rewards();
-
-    int maxRewardStackSize();
+    List<Pair<ResourceLocation, Integer>> rewards();
 
     default int experience() {
         return level() * XP_MULTIPLIER_PER_LEVEL;
@@ -29,11 +28,11 @@ public interface IQuestDefinition {
         return 0;
     }
 
-    default ResourceLocation randomRequirement(RandomSource random) {
+    default Pair<ResourceLocation, Integer> randomRequirement(RandomSource random) {
         return requirements().get(random.nextInt(requirements().size()));
     }
 
-    default ResourceLocation randomReward(RandomSource random) {
+    default Pair<ResourceLocation, Integer> randomReward(RandomSource random) {
         return rewards().get(random.nextInt(rewards().size()));
     }
 }
