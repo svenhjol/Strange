@@ -182,7 +182,7 @@ public class GatherQuest extends Quest<Item> {
 
         @Override
         public void load(CompoundTag tag) {
-            item = ItemStack.of(tag);
+            item = ItemStack.of(tag.getCompound(ITEM_TAG));
         }
 
         @Override
@@ -235,7 +235,7 @@ public class GatherQuest extends Quest<Item> {
 
         @Override
         public void load(CompoundTag tag) {
-            item = ItemStack.of(tag);
+            item = ItemStack.of(tag.getCompound(ITEM_TAG));
             total = tag.getInt(TOTAL_TAG);
         }
 

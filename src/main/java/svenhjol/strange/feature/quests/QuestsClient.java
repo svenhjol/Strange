@@ -85,15 +85,18 @@ public class QuestsClient extends ClientFeature {
 
         RequestVillagerQuests.send(villagerUuid);
 
-        questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 100,
-            b -> openQuestOffers(villagerUuid));
+        questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 100, b -> {
+            screen.onClose();
+            openQuestOffers(villagerUuid);
+        });
         questsButton.visible = false;
 
         ScreenHelper.addRenderableWidget(merchantScreen, questsButton);
     }
 
     protected void openQuestOffers(UUID villagerUuid) {
-        Minecraft.getInstance().setScreen(new QuestOffersScreen(villagerUuid));
+        var minecraft = Minecraft.getInstance();
+        minecraft.setScreen(new QuestOffersScreen(villagerUuid));
     }
 
     public static void handleSyncPlayerQuests(SyncPlayerQuests message, Player player) {

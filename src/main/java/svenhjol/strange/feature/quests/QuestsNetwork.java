@@ -65,6 +65,18 @@ public class QuestsNetwork {
     public static class SyncVillagerQuests extends SyncQuests {
         protected UUID villagerUuid;
 
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            super.encode(buf);
+            buf.writeUUID(villagerUuid);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            super.decode(buf);
+            villagerUuid = buf.readUUID();
+        }
+
         public static void send(ServerPlayer player, List<Quest<?>> quests, UUID villagerUuid) {
             var message = new SyncVillagerQuests();
             message.quests = quests;
