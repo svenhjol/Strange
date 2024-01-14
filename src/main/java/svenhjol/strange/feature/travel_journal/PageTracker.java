@@ -13,11 +13,12 @@ public class PageTracker {
         HOME(HomeScreen::new),
         BOOKMARKS(BookmarksScreen::new),
         BOOKMARK(() -> bookmark == null ? new BookmarksScreen() : new BookmarkScreen(bookmark)),
-        LEARNED(LearnedScreen::new);
+        LEARNED(LearnedScreen::new),
+        QUESTS(QuestsScreen::new);
 
-        private final Supplier<BaseScreen> screen;
+        private final Supplier<BaseTravelJournalScreen> screen;
 
-        Screen(Supplier<BaseScreen> screen) {
+        Screen(Supplier<BaseTravelJournalScreen> screen) {
             this.screen = screen;
         }
 

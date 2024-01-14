@@ -8,16 +8,12 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.QuestsNetwork;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     boolean rendereredOfferButtons = false;
 
     public GatherQuestRenderer() {
-    }
-
-    @Override
-    public int getOfferHeight() {
-        return 74;
     }
 
     @Override
@@ -100,6 +96,16 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
             screen.addRenderableWidget(button);
             rendereredOfferButtons = true;
         }
+    }
+
+    @Override
+    public void renderTravelJournal(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+        var midX = screen.width / 2;
+        var font = screen.font;
+        var xOffset = -120;
+        var titleColor = 0x202020;
+
+        guiGraphics.drawString(font, makeTitle(), midX + xOffset + 15, yOffset, titleColor, false);
     }
 
     protected Component makeTitle() {

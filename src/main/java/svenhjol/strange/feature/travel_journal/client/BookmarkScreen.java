@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 
-public class BookmarkScreen extends BaseScreen {
+public class BookmarkScreen extends BaseTravelJournalScreen {
     protected Bookmark bookmark;
     protected boolean hasPhoto;
     protected boolean hasMap;

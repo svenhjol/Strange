@@ -70,8 +70,12 @@ public class Quests extends CommonFeature {
             .remove(quest);
     }
 
-    public static Optional<Quest<?>> getQuest(ServerPlayer player, String questId) {
-        return PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of())
+    public static List<Quest<?>> getQuests(Player player) {
+        return PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of());
+    }
+
+    public static Optional<Quest<?>> getQuest(Player player, String questId) {
+        return getQuests(player)
             .stream().filter(q -> q.id().equals(questId))
             .findFirst();
     }

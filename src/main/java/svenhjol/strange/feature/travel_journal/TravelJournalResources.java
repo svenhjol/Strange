@@ -14,7 +14,7 @@ public class TravelJournalResources {
     public static final WidgetSprites BOOKMARKS_BUTTON = makeButton("bookmarks");
     public static final WidgetSprites HOME_BUTTON = makeButton("home");
     public static final WidgetSprites LEARNED_BUTTON = makeButton("learned");
-    public static final WidgetSprites QUEST_BUTTON = makeButton("quest");
+    public static final WidgetSprites QUESTS_BUTTON = makeButton("quests");
     public static final WidgetSprites SAVE_TO_BOOKMARK_BUTTON = makeButton("save_to_bookmark");
     public static final WidgetSprites SAVE_TO_MAP_BUTTON = makeButton("save_to_map");
     public static final WidgetSprites PHOTO_BUTTON = makeButton("photo");
@@ -25,9 +25,11 @@ public class TravelJournalResources {
     public static final Component HOME_TITLE = TextHelper.translatable("gui.strange.travel_journal.travel_journal");
     public static final Component LEARNED_TITLE = TextHelper.translatable("gui.strange.travel_journal.learned");
     public static final Component BOOKMARKS_TITLE = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
+    public static final Component QUESTS_TITLE = TextHelper.translatable("gui.strange.travel_journal.quests");
     public static final Component CHANGE_ICON_TITLE = TextHelper.translatable("gui.strange.travel_journal.change_icon");
     public static final Component CHANGE_NAME_TITLE = TextHelper.translatable("gui.strange.travel_journal.change_name");
     public static final Component BOOKMARKS_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.bookmarks");
+    public static final Component QUESTS_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.quests");
     public static final Component NEW_BOOKMARK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.new_bookmark");
     public static final Component CLOSE_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.close");
     public static final Component BACK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.back");
@@ -46,6 +48,7 @@ public class TravelJournalResources {
     public static final Component SAVE_TO_BOOKMARK_BUTTON_TEXT = TextHelper.translatable("gui.strange.travel_journal.save_to_bookmark");
     public static final Component NO_LEARNED_LOCATIONS_HEADING_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.heading");
     public static final Component NO_LEARNED_LOCATIONS_BODY_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.body");
+    public static final Component NO_QUESTS_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_quests");
 
     static WidgetSprites makeButton(String name) {
         var instance = Mods.client(Strange.ID);

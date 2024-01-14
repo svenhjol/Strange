@@ -10,7 +10,7 @@ import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestItemIcons;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class ChangeBookmarkIconScreen extends BaseScreen {
+public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected ChangeBookmarkIconScreen(Bookmark bookmark) {

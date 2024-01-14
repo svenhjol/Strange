@@ -40,8 +40,11 @@ public class QuestOffersScreen extends Screen {
 
     @Override
     protected void init() {
+        super.init();
+
         midX = width / 2;
         var yOffset = 40;
+
         for (BaseQuestRenderer<?> renderer : renderers) {
             renderer.initOffer(this, yOffset);
             yOffset += renderer.getOfferHeight();

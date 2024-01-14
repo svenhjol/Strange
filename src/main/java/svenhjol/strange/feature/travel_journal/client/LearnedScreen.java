@@ -9,7 +9,7 @@ import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class LearnedScreen extends BaseScreen {
+public class LearnedScreen extends BaseTravelJournalScreen {
     boolean renderedPaginationButtons = false;
     int page;
 

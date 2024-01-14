@@ -9,7 +9,7 @@ import svenhjol.strange.feature.travel_journal.*;
 
 import java.util.List;
 
-public class BookmarksScreen extends BaseScreen {
+public class BookmarksScreen extends BaseTravelJournalScreen {
     int page;
     boolean renderedPaginationButtons = false;
     boolean renderedEditButtons = false;

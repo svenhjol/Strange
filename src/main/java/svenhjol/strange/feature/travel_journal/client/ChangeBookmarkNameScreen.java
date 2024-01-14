@@ -3,13 +3,12 @@ package svenhjol.strange.feature.travel_journal.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
-import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class ChangeBookmarkNameScreen extends BaseScreen {
+public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected EditBox nameEditBox;

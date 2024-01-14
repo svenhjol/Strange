@@ -13,15 +13,17 @@ import net.minecraft.resources.ResourceLocation;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.quests.Quests;
+import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public abstract class BaseScreen extends Screen {
+public abstract class BaseTravelJournalScreen extends Screen {
     protected int midX;
     protected int backgroundWidth;
     protected int backgroundHeight;
 
-    protected BaseScreen(Component component) {
+    protected BaseTravelJournalScreen(Component component) {
         super(component);
     }
 
@@ -40,17 +42,25 @@ public abstract class BaseScreen extends Screen {
     }
 
     protected void initShortcuts() {
-        int yoffset = 30;
-        int lineHeight = 17;
+        var yOffset = 30;
+        var lineHeight = 17;
+        var loader = Mods.common(Strange.ID).loader();
 
-        addRenderableWidget(new HomeShortcutButton(midX + 120, yoffset, this::openHome));
-        yoffset += lineHeight;
+        addRenderableWidget(new HomeShortcutButton(midX + 120, yOffset, this::openHome));
+        yOffset += lineHeight;
 
-        addRenderableWidget(new BookmarksShortcutButton(midX + 120, yoffset, this::openBookmarks));
-        yoffset += lineHeight;
+        addRenderableWidget(new BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
+        yOffset += lineHeight;
 
-        addRenderableWidget(new LearnedShortcutButton(midX + 120, yoffset, this::openLearned));
-        yoffset += lineHeight;
+        if (loader.isEnabled(Runestones.class)) {
+            addRenderableWidget(new LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
+            yOffset += lineHeight;
+        }
+
+        if (loader.isEnabled(Quests.class)) {
+            addRenderableWidget(new QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
+            yOffset += lineHeight;
+        }
     }
 
     protected void openHome(Button button) {
@@ -63,6 +73,14 @@ public abstract class BaseScreen extends Screen {
 
     protected void openBookmarks(int page) {
         Minecraft.getInstance().setScreen(new BookmarksScreen(page));
+    }
+
+    protected void openQuests(Button button) {
+        Minecraft.getInstance().setScreen(new QuestsScreen());
+    }
+
+    protected void openQuests(int page) {
+        Minecraft.getInstance().setScreen(new QuestsScreen(page));
     }
 
     protected void openLearned(Button button) {
@@ -193,6 +211,18 @@ public abstract class BaseScreen extends Screen {
         static Component TEXT = TravelJournalResources.LEARNED_BUTTON_TEXT;
 
         protected LearnedShortcutButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
+    static class QuestsShortcutButton extends ImageButton {
+        static int WIDTH = 20;
+        static int HEIGHT = 18;
+        static WidgetSprites SPRITES = TravelJournalResources.QUESTS_BUTTON;
+        static Component TEXT = TravelJournalResources.QUESTS_BUTTON_TEXT;
+
+        protected QuestsShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }
