@@ -29,13 +29,15 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var font = screen.font;
         var xOffset = -155;
         var titleColor = 0xf0f0f0;
-        var requirementColor = 0xd0d0d0;
+        var requirementColor = 0xc0c0c0;
         var rewardColor = 0xa0ffa0;
 
-        guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, 0x40ffffff);
-
+        // Scroll icon and title
         guiGraphics.blitSprite(QuestResources.LEVEL_TO_SCROLL.get(quest.villagerLevel()), midX + xOffset - 5, yOffset - 5, 16, 16);
         guiGraphics.drawString(font, makeTitle(), midX + xOffset + 15, yOffset, titleColor);
+
+        // Box around the quest details
+        guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, 0x40ffffff);
 
         // "Requires:"
         guiGraphics.drawString(font, QuestResources.GATHER_REQUIREMENT_TEXT, midX + xOffset + 2, yOffset + 21, requirementColor);
