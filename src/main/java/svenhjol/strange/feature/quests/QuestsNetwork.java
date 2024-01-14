@@ -16,6 +16,7 @@ import svenhjol.charmony.iface.ICommonRegistry;
 import svenhjol.charmony.iface.IPacketRequest;
 import svenhjol.charmony.iface.IServerNetwork;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.quests.Quests.AcceptQuestResult;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.util.UUID;
 public class QuestsNetwork {
     public static void register(ICommonRegistry registry) {
         registry.packet(new NotifyVillagerQuestsResult(), () -> QuestsClient::handleNotifyVillagerQuestsResult);
+        registry.packet(new NotifyAcceptQuestResult(), () -> QuestsClient::handleAcceptQuestResult);
         registry.packet(new SyncPlayerQuests(), () -> QuestsClient::handleSyncPlayerQuests);
         registry.packet(new SyncVillagerQuests(), () -> QuestsClient::handleSyncVillagerQuests);
         registry.packet(new RequestVillagerQuests(), () -> Quests::handleRequestVillagerQuests);
+        registry.packet(new AcceptQuest(), () -> Quests::handleAcceptQuest);
     }
 
     @Packet(
@@ -56,6 +59,45 @@ public class QuestsNetwork {
         public static void send(UUID villagerUuid) {
             var message = new RequestVillagerQuests();
             message.villagerUuid = villagerUuid;
+            clientSender().send(message);
+        }
+    }
+
+    @Packet(
+        id = "strange:accept_quest",
+        direction = PacketDirection.CLIENT_TO_SERVER,
+        description = "Quest ID and villager UUID sent from client to server when player accepts the quest."
+    )
+    public static class AcceptQuest implements IPacketRequest {
+        private UUID villagerUuid;
+        private String questId;
+
+        private AcceptQuest() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUUID(villagerUuid);
+            buf.writeUtf(questId);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            villagerUuid = buf.readUUID();
+            questId = buf.readUtf();
+        }
+
+        public UUID getVillagerUuid() {
+            return villagerUuid;
+        }
+
+        public String getQuestId() {
+            return questId;
+        }
+
+        public static void send(UUID villagerUuid, String questId) {
+            var message = new AcceptQuest();
+            message.villagerUuid = villagerUuid;
+            message.questId = questId;
             clientSender().send(message);
         }
     }
@@ -111,7 +153,72 @@ public class QuestsNetwork {
         }
     }
 
-    private static abstract class SyncQuests implements IPacketRequest {
+    @Packet(
+        id = "strange:notify_villager_quests_result",
+        direction = PacketDirection.SERVER_TO_CLIENT,
+        description = "Notify the client about the result of the villager quests request."
+    )
+    public static class NotifyVillagerQuestsResult implements IPacketRequest {
+        private VillagerQuestsResult result;
+
+        private NotifyVillagerQuestsResult() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeEnum(result);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            this.result = buf.readEnum(VillagerQuestsResult.class);
+        }
+
+        public VillagerQuestsResult getResult() {
+            return result;
+        }
+
+        public static void send(ServerPlayer player, VillagerQuestsResult result) {
+            var message = new NotifyVillagerQuestsResult();
+            message.result = result;
+            serverSender().send(message, player);
+        }
+    }
+
+    @Packet(
+        id = "strange:notify_accept_quest_result",
+        direction = PacketDirection.SERVER_TO_CLIENT,
+        description = "Notify the client about the result of accepting the quest."
+    )
+    public static class NotifyAcceptQuestResult implements IPacketRequest {
+        private AcceptQuestResult result;
+
+        private NotifyAcceptQuestResult() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeEnum(result);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            this.result = buf.readEnum(AcceptQuestResult.class);
+        }
+
+        public AcceptQuestResult getResult() {
+            return result;
+        }
+
+        public static void send(ServerPlayer player, AcceptQuestResult result) {
+            var message = new NotifyAcceptQuestResult();
+            message.result = result;
+            serverSender().send(message, player);
+        }
+    }
+
+    /**
+     * Abstraction for syncing quests for villagers/players.
+     */
+    static abstract class SyncQuests implements IPacketRequest {
         static final String QUESTS_TAG = "quests";
 
         protected List<Quest<?>> quests = new ArrayList<>();
@@ -144,37 +251,6 @@ public class QuestsNetwork {
 
         public List<Quest<?>> getQuests() {
             return quests;
-        }
-    }
-
-    @Packet(
-        id = "strange:notify_villager_quests_result",
-        direction = PacketDirection.SERVER_TO_CLIENT,
-        description = "Notify the client about the result of the villager quests request."
-    )
-    public static class NotifyVillagerQuestsResult implements IPacketRequest {
-        private VillagerQuestsResult result;
-
-        private NotifyVillagerQuestsResult() {}
-
-        @Override
-        public void encode(FriendlyByteBuf buf) {
-            buf.writeEnum(result);
-        }
-
-        @Override
-        public void decode(FriendlyByteBuf buf) {
-            this.result = buf.readEnum(VillagerQuestsResult.class);
-        }
-
-        public VillagerQuestsResult getResult() {
-            return result;
-        }
-
-        public static void send(ServerPlayer player, VillagerQuestsResult result) {
-            var message = new NotifyVillagerQuestsResult();
-            message.result = result;
-            serverSender().send(message, player);
         }
     }
 

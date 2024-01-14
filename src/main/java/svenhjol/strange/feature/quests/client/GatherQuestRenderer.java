@@ -1,10 +1,12 @@
 package svenhjol.strange.feature.quests.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestResources;
+import svenhjol.strange.feature.quests.QuestsNetwork;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
@@ -31,6 +33,9 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var titleColor = 0xf0f0f0;
         var requirementColor = 0xc0c0c0;
         var rewardColor = 0xa0ffa0;
+
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
 
         // Scroll icon and title
         guiGraphics.blitSprite(QuestResources.LEVEL_TO_SCROLL.get(quest.villagerLevel()), midX + xOffset - 5, yOffset - 5, 16, 16);
@@ -88,6 +93,8 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
         if (!rendereredOfferButtons) {
             var button = new QuestOffersScreen.AcceptQuestButton(midX + 83, yOffset + 26, b -> {
+                QuestsNetwork.AcceptQuest.send(quest.villagerUuid(), quest.id());
+                screen.onClose();
             });
 
             screen.addRenderableWidget(button);

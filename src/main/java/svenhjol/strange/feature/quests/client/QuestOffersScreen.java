@@ -1,13 +1,16 @@
 package svenhjol.strange.feature.quests.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.Quests;
 
@@ -66,6 +69,13 @@ public class QuestOffersScreen extends Screen {
         static Component TEXT = QuestResources.ACCEPT_QUEST_BUTTON_TEXT;
         public AcceptQuestButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+
+            // If player is at max quests, disable the button and show a tooltip.
+            var player = Minecraft.getInstance().player;
+            if (player != null && QuestHelper.hasMaxQuests(player)) {
+                active = false;
+                setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
+            }
         }
     }
 

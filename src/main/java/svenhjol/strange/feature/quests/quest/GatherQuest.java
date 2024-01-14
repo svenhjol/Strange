@@ -8,6 +8,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,11 +17,13 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.IQuestDefinition;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.QuestType;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class GatherQuest extends Quest<Item> {
     static final int MAX_SELECTION = 3;
@@ -110,10 +114,13 @@ public class GatherQuest extends Quest<Item> {
     }
 
     @Override
-    protected void make(IQuestDefinition definition) {
+    protected void make(IQuestDefinition definition, UUID villagerUuid) {
+        this.id = makeId();
         this.type = QuestType.GATHER;
+        this.status = Status.NOT_STARTED;
         this.villagerProfession = definition.profession();
         this.villagerLevel = definition.level();
+        this.villagerUuid = villagerUuid;
 
         var random = RandomSource.create();
         makeRequirements(definition, random);
@@ -183,6 +190,14 @@ public class GatherQuest extends Quest<Item> {
         }
 
         @Override
+        public void complete() {
+            if (player == null) return;
+            var items = rewardItems.stream().map(i -> i.item).toList();
+            QuestHelper.getNearbyVillager(player.level(), player.blockPosition(), villagerUuid).ifPresent(
+                villager -> QuestHelper.throwItemsAtPlayer(villager, player, items));
+        }
+
+        @Override
         public void load(CompoundTag tag) {
             item = ItemStack.of(tag.getCompound(ITEM_TAG));
         }
@@ -208,6 +223,13 @@ public class GatherQuest extends Quest<Item> {
         @Override
         public RewardType type() {
             return RewardType.EXPERIENCE_LEVEL;
+        }
+
+        @Override
+        public void complete() {
+            if (player == null) return;
+            player.giveExperienceLevels(total);
+            player.level().playLocalSound(player, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
         }
 
         @Override

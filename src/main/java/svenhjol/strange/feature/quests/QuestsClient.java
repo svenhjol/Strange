@@ -22,13 +22,9 @@ import svenhjol.charmony.helper.ScreenHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
-import svenhjol.strange.feature.quests.QuestsNetwork.NotifyVillagerQuestsResult;
-import svenhjol.strange.feature.quests.QuestsNetwork.RequestVillagerQuests;
-import svenhjol.strange.feature.quests.QuestsNetwork.SyncPlayerQuests;
-import svenhjol.strange.feature.quests.QuestsNetwork.SyncVillagerQuests;
+import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.client.QuestOffersScreen;
 
-import java.util.List;
 import java.util.UUID;
 
 public class QuestsClient extends ClientFeature {
@@ -79,12 +75,6 @@ public class QuestsClient extends ClientFeature {
 
         var midX = merchantScreen.width / 2;
         var midY = merchantScreen.height / 2;
-        var playerUuid = minecraft.player.getUUID();
-
-        // Player at max quests?
-        if (Quests.PLAYER_QUESTS.getOrDefault(playerUuid, List.of()).size() >= Quests.maxPlayerQuests) {
-            return;
-        }
 
         RequestVillagerQuests.send(villagerUuid);
 
@@ -92,7 +82,7 @@ public class QuestsClient extends ClientFeature {
             screen.onClose();
             openQuestOffers(villagerUuid, villagerProfession, villagerLevel);
         });
-        questsButton.visible = false;
+        questsButton.active = false;
 
         ScreenHelper.addRenderableWidget(merchantScreen, questsButton);
     }
@@ -108,10 +98,6 @@ public class QuestsClient extends ClientFeature {
         Quests.PLAYER_QUESTS.put(uuid, quests);
     }
 
-    public static ILog log() {
-        return Mods.client(Strange.ID).log();
-    }
-
     public static void handleSyncVillagerQuests(SyncVillagerQuests message, Player player) {
         var uuid = message.getVillagerUuid();
         var quests = message.getQuests();
@@ -122,8 +108,16 @@ public class QuestsClient extends ClientFeature {
     public static void handleNotifyVillagerQuestsResult(NotifyVillagerQuestsResult message, Player player) {
         var result = message.getResult();
         if (result == VillagerQuestsResult.SUCCESS) {
-            questsButton.visible = true;
+            questsButton.active = true;
         }
+    }
+
+    public static void handleAcceptQuestResult(NotifyAcceptQuestResult message, Player player) {
+        // TODO: toast or something
+    }
+
+    public static ILog log() {
+        return Mods.client(Strange.ID).log();
     }
 
     static class QuestsButton extends Button {
