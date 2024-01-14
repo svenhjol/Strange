@@ -99,31 +99,33 @@ public class Quests extends CommonFeature {
 
         var villager = opt.get();
         var villagerData = villager.getVillagerData();
+        var villagerProfession = villagerData.getProfession();
+        var villagerLevel = villagerData.getLevel();
         var lastRefresh = VILLAGER_QUESTS_REFRESH.get(villagerUuid);
         var quests = VILLAGER_QUESTS.getOrDefault(villagerUuid, new ArrayList<>());
 
-        if (lastRefresh != null && lastRefresh - gameTime < 24000) {
+        if (lastRefresh != null && gameTime - lastRefresh < 80) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.SUCCESS);
-            SyncVillagerQuests.send(serverPlayer, quests, villagerUuid);
+            SyncVillagerQuests.send(serverPlayer, quests, villagerUuid, villagerProfession);
             return;
         }
 
         // Generate new quests for this villager
         quests.clear();
 
-        var definitions = QuestHelper.getDefinitionsUpToLevel(villagerData.getProfession(), villagerData.getLevel(), 5, random);
+        var definitions = QuestHelper.makeDefinitionsForVillager(villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.EMPTY);
             return;
         }
 
-        var newQuests = QuestHelper.makeQuests(definitions);
+        var newQuests = QuestHelper.makeQuestsFromDefinitions(definitions);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
 
         NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.SUCCESS);
-        SyncVillagerQuests.send(serverPlayer, newQuests, villagerUuid);
+        SyncVillagerQuests.send(serverPlayer, newQuests, villagerUuid, villagerProfession);
     }
 
     public enum VillagerQuestsResult {

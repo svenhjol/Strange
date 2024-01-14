@@ -112,6 +112,8 @@ public class GatherQuest extends Quest<Item> {
     @Override
     protected void make(IQuestDefinition definition) {
         this.type = QuestType.GATHER;
+        this.villagerProfession = definition.profession();
+        this.villagerLevel = definition.level();
 
         var random = RandomSource.create();
         makeRequirements(definition, random);

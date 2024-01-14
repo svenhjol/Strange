@@ -1,10 +1,13 @@
 package svenhjol.strange.feature.quests;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.charmony.annotation.Packet;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.enums.PacketDirection;
@@ -64,23 +67,27 @@ public class QuestsNetwork {
     )
     public static class SyncVillagerQuests extends SyncQuests {
         protected UUID villagerUuid;
+        protected VillagerProfession profession;
 
         @Override
         public void encode(FriendlyByteBuf buf) {
             super.encode(buf);
             buf.writeUUID(villagerUuid);
+            buf.writeUtf(BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession).toString());
         }
 
         @Override
         public void decode(FriendlyByteBuf buf) {
             super.decode(buf);
             villagerUuid = buf.readUUID();
+            profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(buf.readUtf()));
         }
 
-        public static void send(ServerPlayer player, List<Quest<?>> quests, UUID villagerUuid) {
+        public static void send(ServerPlayer player, List<Quest<?>> quests, UUID villagerUuid, VillagerProfession profession) {
             var message = new SyncVillagerQuests();
             message.quests = quests;
             message.villagerUuid = villagerUuid;
+            message.profession = profession;
 
             serverSender().send(message, player);
         }

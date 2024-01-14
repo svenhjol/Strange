@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
@@ -14,7 +15,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
     @Override
     public int getOfferHeight() {
-        return 65;
+        return 74;
     }
 
     @Override
@@ -27,16 +28,25 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var midX = screen.width / 2;
         var font = screen.font;
         var xOffset = -155;
+        var titleColor = 0xf0f0f0;
         var requirementColor = 0xd0d0d0;
         var rewardColor = 0xa0ffa0;
 
-        guiGraphics.renderOutline(midX + xOffset - 5, yOffset - 5, 320, 46, 0x40ffffff);
+        guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, 0x40ffffff);
 
-        // Title: "You provide:"
-        guiGraphics.drawString(font, QuestResources.GATHER_REQUIREMENT_TEXT, midX + xOffset + 4, yOffset + 4, requirementColor);
+        guiGraphics.blitSprite(QuestResources.LEVEL_TO_SCROLL.get(quest.villagerLevel()), midX + xOffset - 5, yOffset - 5, 16, 16);
+        guiGraphics.drawString(font, makeTitle(), midX + xOffset + 15, yOffset, titleColor);
 
-        var xo = midX + xOffset + 80;
-        var yo = yOffset;
+        // "Requires:"
+        guiGraphics.drawString(font, QuestResources.GATHER_REQUIREMENT_TEXT, midX + xOffset + 2, yOffset + 21, requirementColor);
+
+        // "Rewards:"
+        guiGraphics.drawString(font, QuestResources.GATHER_REWARD_TEXT, midX + xOffset + 2, yOffset + 41, rewardColor);
+
+        var xt = Math.max(font.width(QuestResources.GATHER_REQUIREMENT_TEXT), font.width(QuestResources.GATHER_REWARD_TEXT));
+
+        var xo = midX + xOffset + xt + 14;
+        var yo = yOffset + 18;
         for (var requirement : quest.requirements()) {
             if (requirement instanceof GatherQuest.GatherItem i) {
                 var label = TextHelper.translatable("gui.strange.quests.gather_amount", i.total);
@@ -54,11 +64,8 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
             }
         }
 
-        // Title: "You receive:"
-        guiGraphics.drawString(font, QuestResources.GATHER_REWARD_TEXT, midX + xOffset + 4, yOffset + 23, rewardColor);
-
-        xo = midX + xOffset + 80;
-        yo = yOffset + 20;
+        xo = midX + xOffset + xt + 14;
+        yo = yOffset + 38;
 
         for (var reward : quest.rewards()) {
             if (reward instanceof GatherQuest.RewardItem i) {
@@ -78,11 +85,17 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         }
 
         if (!rendereredOfferButtons) {
-            var button = new QuestOffersScreen.AcceptQuestButton(midX + 83, yOffset + 8, b -> {
+            var button = new QuestOffersScreen.AcceptQuestButton(midX + 83, yOffset + 26, b -> {
             });
 
             screen.addRenderableWidget(button);
             rendereredOfferButtons = true;
         }
+    }
+
+    protected Component makeTitle() {
+        return TextHelper.translatable(QuestResources.QUEST_TITLE_KEY,
+            TextHelper.translatable("merchant.level." + quest.villagerLevel()),
+            TextHelper.translatable("gui.strange.quests.gathering"));
     }
 }

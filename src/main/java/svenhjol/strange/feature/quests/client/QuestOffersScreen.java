@@ -3,7 +3,10 @@ package svenhjol.strange.feature.quests.client;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.Quests;
@@ -14,12 +17,16 @@ import java.util.UUID;
 
 public class QuestOffersScreen extends Screen {
     protected UUID villagerUuid;
+    protected VillagerProfession villagerProfession;
+    protected int villagerLevel;
     protected List<BaseQuestRenderer<?>> renderers = new ArrayList<>();
     protected int midX;
 
-    public QuestOffersScreen(UUID villagerUuid) {
-        super(QuestResources.QUEST_OFFERS_TITLE);
+    public QuestOffersScreen(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
+        super(makeTitle(villagerProfession));
         this.villagerUuid = villagerUuid;
+        this.villagerProfession = villagerProfession;
+        this.villagerLevel = villagerLevel;
 
         var quests = Quests.VILLAGER_QUESTS.getOrDefault(villagerUuid, List.of());
         for (Quest<?> quest : quests) {
@@ -42,6 +49,9 @@ public class QuestOffersScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
 
+        // Render title
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 0xffffff);
+
         var yOffset = 40;
         for (int i = 0; i < renderers.size(); i++) {
             var renderer = renderers.get(i);
@@ -57,5 +67,12 @@ public class QuestOffersScreen extends Screen {
         public AcceptQuestButton(int x, int y, Button.OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
+    }
+
+    static Component makeTitle(VillagerProfession profession) {
+        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
+        var key = registry.getKey(profession);
+        return TextHelper.translatable(QuestResources.QUEST_OFFERS_TITLE_KEY,
+            TextHelper.translatable("entity." + key.getNamespace() + ".villager." + key.getPath()));
     }
 }

@@ -14,13 +14,15 @@ import java.util.List;
 
 public abstract class Quest<T> {
     static final String TYPE_TAG = "type";
-    static final String PROFESSION_TAG = "profession";
+    static final String VILLAGER_PROFESSION_TAG = "villager_profession";
+    static final String VILLAGER_LEVEL_TAG = "villager_level";
 
     protected @Nullable ServerPlayer player;
 
     protected QuestType type;
 
-    protected VillagerProfession profession;
+    protected VillagerProfession villagerProfession;
+    protected int villagerLevel;
 
     public QuestType type() {
         return type;
@@ -52,11 +54,13 @@ public abstract class Quest<T> {
 
     public static <Q extends Quest<?>> Q load(CompoundTag tag) {
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
-        var profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(PROFESSION_TAG)));
+        var villagerProfession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(VILLAGER_PROFESSION_TAG)));
+        var villagerLevel = tag.getInt(VILLAGER_LEVEL_TAG);
 
         var quest = type.<Q>makeQuest();
         quest.type = type;
-        quest.profession = profession;
+        quest.villagerProfession = villagerProfession;
+        quest.villagerLevel = villagerLevel;
 
         quest.loadAdditional(tag);
         return quest;
@@ -64,7 +68,8 @@ public abstract class Quest<T> {
 
     public void save(CompoundTag tag) {
         tag.putString(TYPE_TAG, type.name());
-        tag.putString(PROFESSION_TAG, BuiltInRegistries.VILLAGER_PROFESSION.getKey(this.profession).toString());
+        tag.putString(VILLAGER_PROFESSION_TAG, BuiltInRegistries.VILLAGER_PROFESSION.getKey(this.villagerProfession).toString());
+        tag.putInt(VILLAGER_LEVEL_TAG, villagerLevel);
 
         saveAdditional(tag);
     }
@@ -79,6 +84,14 @@ public abstract class Quest<T> {
     }
 
     public void saveAdditional(CompoundTag tag) {
+    }
+
+    public VillagerProfession villagerProfession() {
+        return villagerProfession;
+    }
+
+    public int villagerLevel() {
+        return villagerLevel;
     }
 
     public interface Requirement {

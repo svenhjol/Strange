@@ -16,17 +16,26 @@ public class QuestHelper {
             .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static List<IQuestDefinition> getDefinitionsUpToLevel(VillagerProfession profession, int level, int max, RandomSource random) {
+    public static List<IQuestDefinition> makeDefinitionsForVillager(VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
             .filter(d -> d.profession() == profession)
-            .filter(d -> d.level() <= level)
+            .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
             .collect(Collectors.toCollection(ArrayList::new));
 
+        if (definitions.isEmpty()) {
+            return List.of();
+        }
+
         Util.shuffle(definitions, random);
-        return definitions.subList(0, Math.min(definitions.size(), max));
+        var sublist = definitions.subList(0, Math.min(definitions.size(), numberOfDefinitions));
+
+        while (sublist.size() < numberOfDefinitions) {
+            sublist.add(definitions.get(random.nextInt(definitions.size())));
+        }
+        return sublist;
     }
 
-    public static List<Quest<?>> makeQuests(List<IQuestDefinition> definitions) {
+    public static List<Quest<?>> makeQuestsFromDefinitions(List<IQuestDefinition> definitions) {
         List<Quest<?>> quests = new ArrayList<>();
 
         for (IQuestDefinition definition : definitions) {

@@ -8,7 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -33,6 +34,8 @@ import java.util.UUID;
 public class QuestsClient extends ClientFeature {
     static Button questsButton;
     static UUID villagerUuid;
+    static VillagerProfession villagerProfession;
+    static int villagerLevel;
 
     @Override
     public Class<? extends CommonFeature> commonFeature() {
@@ -47,9 +50,13 @@ public class QuestsClient extends ClientFeature {
 
     private InteractionResult handleEntityUse(Player player, Level level, InteractionHand hand, Entity entity, EntityHitResult hitResult) {
         villagerUuid = null;
+        villagerProfession = null;
+        villagerLevel = 1;
 
-        if (entity instanceof AbstractVillager villager) {
+        if (entity instanceof Villager villager) {
             villagerUuid = villager.getUUID();
+            villagerProfession = villager.getVillagerData().getProfession();
+            villagerLevel = villager.getVillagerData().getLevel();
         }
 
         return InteractionResult.PASS;
@@ -72,10 +79,6 @@ public class QuestsClient extends ClientFeature {
 
         var midX = merchantScreen.width / 2;
         var midY = merchantScreen.height / 2;
-
-        var menu = merchantScreen.getMenu();
-        var trader = menu.trader;
-
         var playerUuid = minecraft.player.getUUID();
 
         // Player at max quests?
@@ -87,16 +90,15 @@ public class QuestsClient extends ClientFeature {
 
         questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 100, b -> {
             screen.onClose();
-            openQuestOffers(villagerUuid);
+            openQuestOffers(villagerUuid, villagerProfession, villagerLevel);
         });
         questsButton.visible = false;
 
         ScreenHelper.addRenderableWidget(merchantScreen, questsButton);
     }
 
-    protected void openQuestOffers(UUID villagerUuid) {
-        var minecraft = Minecraft.getInstance();
-        minecraft.setScreen(new QuestOffersScreen(villagerUuid));
+    protected void openQuestOffers(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
+        Minecraft.getInstance().setScreen(new QuestOffersScreen(villagerUuid, villagerProfession, villagerLevel));
     }
 
     public static void handleSyncPlayerQuests(SyncPlayerQuests message, Player player) {
