@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
@@ -52,9 +51,6 @@ public class QuestOffersScreen extends Screen {
             renderer.initPagedOffer(this, yOffset);
             yOffset += renderer.getPagedOfferHeight();
         }
-
-        backgroundWidth = 400;
-        backgroundHeight = QuestResources.VILLAGER_OFFERS_BACKGROUND_DIM.getSecond();
     }
 
     @Override
@@ -72,10 +68,6 @@ public class QuestOffersScreen extends Screen {
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
         drawCenteredString(guiGraphics, getTitle(), x, y, 0xa05f50, false);
-    }
-
-    protected ResourceLocation getBackgroundTexture() {
-        return QuestResources.VILLAGER_OFFERS_BACKGROUND;
     }
 
     /**
