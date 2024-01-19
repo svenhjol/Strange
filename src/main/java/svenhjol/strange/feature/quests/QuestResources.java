@@ -18,6 +18,7 @@ public class QuestResources {
     public static final ResourceLocation JOURNEYMAN_SCROLL = new ResourceLocation(Strange.ID, "scroll/journeyman_scroll");
     public static final ResourceLocation EXPERT_SCROLL = new ResourceLocation(Strange.ID, "scroll/expert_scroll");
     public static final ResourceLocation MASTER_SCROLL = new ResourceLocation(Strange.ID, "scroll/master_scroll");
+    public static final ResourceLocation TICK = new ResourceLocation(Strange.ID, "quest/tick");
     public static final String QUEST_OFFERS_TITLE_KEY = "gui.strange.quests.quest_offers";
     public static final String QUEST_TITLE_KEY = "gui.strange.quests.quest_title";
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();

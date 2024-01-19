@@ -292,7 +292,11 @@ public class GatherQuest extends Quest<Item> {
             }
 
             var remainder = total;
-            var inventory = new ArrayList<>(player.getInventory().items);
+
+            List<ItemStack> inventory = new ArrayList<>();
+            for (var stack : player.getInventory().items) {
+                inventory.add(stack.copy());
+            }
 
             for (var invItem : inventory) {
                 if (remainder <= 0) continue;

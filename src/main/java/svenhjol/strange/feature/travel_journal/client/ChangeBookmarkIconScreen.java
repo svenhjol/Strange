@@ -26,7 +26,7 @@ public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
         // Ask the server for an updated list of item icons.
         RequestItemIcons.send();
 
-        addRenderableWidget(new CancelButton(midX - (CancelButton.WIDTH / 2), 220, this::back));
+        addRenderableWidget(new Buttons.CancelButton(midX - (Buttons.CancelButton.WIDTH / 2), 220, this::back));
     }
 
     @Override

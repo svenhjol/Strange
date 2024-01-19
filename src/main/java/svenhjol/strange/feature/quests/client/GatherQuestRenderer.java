@@ -8,21 +8,37 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.QuestsNetwork;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
+import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.Buttons.ScrollImageButton;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
-    boolean rendereredOfferButtons = false;
+    boolean renderedButtons = false;
 
-    public GatherQuestRenderer() {
+    public GatherQuestRenderer() {}
+
+    @Override
+    public void initOffered(Screen screen, int yOffset) {
+        renderedButtons = false;
     }
 
     @Override
-    public void initOffer(Screen screen, int yOffset) {
-        rendereredOfferButtons = false;
+    public void initPaged(BaseTravelJournalScreen screen, int yOffset) {
+        renderedButtons = false;
     }
 
     @Override
-    public void renderOffer(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public int getOfferedHeight() {
+        return super.getOfferedHeight();
+    }
+
+    @Override
+    public int getPagedHeight() {
+        return 40;
+    }
+
+    @Override
+    public void renderOffered(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
         var midX = screen.width / 2;
         var font = screen.font;
         var xOffset = -155;
@@ -52,7 +68,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var yo = yOffset + 18;
         for (var requirement : quest.requirements()) {
             if (requirement instanceof GatherQuest.GatherItem i) {
-                var label = TextHelper.translatable("gui.strange.quests.gather_amount", i.total);
+                var label = TextHelper.translatable("gui.strange.quests.gather_amount", i.total());
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, requirementColor);
                 var width = font.width(label);
 
@@ -87,25 +103,62 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
             }
         }
 
-        if (!rendereredOfferButtons) {
+        if (!renderedButtons) {
             var button = new QuestOffersScreen.AcceptQuestButton(midX + 83, yOffset + 26, b -> {
                 QuestsNetwork.AcceptQuest.send(quest.villagerUuid(), quest.id());
                 screen.onClose();
             });
 
             screen.addRenderableWidget(button);
-            rendereredOfferButtons = true;
+            renderedButtons = true;
         }
     }
 
     @Override
-    public void renderTravelJournal(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void renderPaged(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
         var midX = screen.width / 2;
         var font = screen.font;
-        var xOffset = -120;
+        var xOffset = -105;
         var titleColor = 0x202020;
+        var requirementColor = 0x303030;
+        var satisfiedColor = 0x308030;
 
-        guiGraphics.drawString(font, makeTitle(), midX + xOffset + 15, yOffset, titleColor, false);
+        guiGraphics.drawString(font, makeTitle(), midX + xOffset, yOffset, titleColor, false);
+
+        var xo = midX + xOffset;
+        var yo = yOffset + 12;
+        for (var requirement : quest.requirements()) {
+            if (requirement instanceof GatherQuest.GatherItem i) {
+                var label = TextHelper.translatable("gui.strange.quests.gather_remaining", Math.max(0, i.total() - i.remaining()), i.total());
+
+                guiGraphics.drawString(font, label, xo + 4, yo + 4, i.satisfied() ? satisfiedColor : requirementColor, false);
+                var width = font.width(label);
+
+                guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, i.satisfied() ? 0x24008800 : 0x24000000);
+                guiGraphics.renderFakeItem(i.item, xo + 7 + width, yo);
+
+                if (mouseX >= xo && mouseX <= xo + 25 + width
+                    && mouseY >= yo - 1 && mouseY <= yo + 17) {
+                    guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                }
+                xo += 27 + width;
+            }
+        }
+
+        if (quest.satisfied()) {
+            guiGraphics.blitSprite(QuestResources.TICK, xo + 2, yo + 3, 9, 9);
+            if (mouseX >= xo + 2 && mouseX <= xo + 11
+                && mouseY >= yo + 3 && mouseY <= yo + 12) {
+                guiGraphics.renderTooltip(font, TextHelper.translatable("gui.strange.quests.satisfied"), xo, yo + 20);
+            }
+        }
+
+        if (!renderedButtons) {
+            var sprites = TravelJournalResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
+            var button = new ScrollImageButton(sprites, midX + 88, yOffset + 11, b -> {}, TravelJournalResources.UPDATE_QUEST);
+            screen.addRenderableWidget(button);
+            renderedButtons = true;
+        }
     }
 
     protected Component makeTitle() {

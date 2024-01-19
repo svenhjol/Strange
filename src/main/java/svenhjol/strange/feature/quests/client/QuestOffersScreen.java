@@ -46,8 +46,8 @@ public class QuestOffersScreen extends Screen {
         var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initOffer(this, yOffset);
-            yOffset += renderer.getOfferHeight();
+            renderer.initOffered(this, yOffset);
+            yOffset += renderer.getOfferedHeight();
         }
     }
 
@@ -61,8 +61,8 @@ public class QuestOffersScreen extends Screen {
         var yOffset = 40;
         for (int i = 0; i < renderers.size(); i++) {
             var renderer = renderers.get(i);
-            renderer.renderOffer(this, guiGraphics, yOffset, mouseX, mouseY);
-            yOffset += renderer.getOfferHeight();
+            renderer.renderOffered(this, guiGraphics, yOffset, mouseX, mouseY);
+            yOffset += renderer.getOfferedHeight();
         }
     }
 

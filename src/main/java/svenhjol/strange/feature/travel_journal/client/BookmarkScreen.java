@@ -41,8 +41,8 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new CloseButton(midX + 5,220, b -> onClose()));
-        addRenderableWidget(new BackButton(midX - (BackButton.WIDTH + 5), 220, this::openBookmarks));
+        addRenderableWidget(new Buttons.CloseButton(midX + 5,220, b -> onClose()));
+        addRenderableWidget(new Buttons.BackButton(midX - (Buttons.BackButton.WIDTH + 5), 220, this::openBookmarks));
 
         renderedEditButtons = false;
         hasPhoto = getScreenshotFile().exists();
@@ -68,6 +68,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
             yoffset += lineHeight;
         }
 
+        yoffset += 70;
         addRenderableWidget(new DeleteShortcutButton(midX + 120, yoffset, b -> delete()));
     }
 

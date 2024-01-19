@@ -4,9 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -46,19 +43,19 @@ public abstract class BaseTravelJournalScreen extends Screen {
         var lineHeight = 17;
         var loader = Mods.common(Strange.ID).loader();
 
-        addRenderableWidget(new HomeShortcutButton(midX + 120, yOffset, this::openHome));
+        addRenderableWidget(new Buttons.HomeShortcutButton(midX + 120, yOffset, this::openHome));
         yOffset += lineHeight;
 
-        addRenderableWidget(new BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
+        addRenderableWidget(new Buttons.BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
         yOffset += lineHeight;
 
         if (loader.isEnabled(Runestones.class)) {
-            addRenderableWidget(new LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
+            addRenderableWidget(new Buttons.LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
             yOffset += lineHeight;
         }
 
         if (loader.isEnabled(Quests.class)) {
-            addRenderableWidget(new QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
+            addRenderableWidget(new Buttons.QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
             yOffset += lineHeight;
         }
     }
@@ -134,121 +131,5 @@ public abstract class BaseTravelJournalScreen extends Screen {
 
     protected static ILog log() {
         return Mods.client(Strange.ID).log();
-    }
-
-    static class CloseButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CLOSE_BUTTON_TEXT;
-        public CloseButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class BackButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.BACK_BUTTON_TEXT;
-        public BackButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class SaveButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.SAVE_BUTTON_TEXT;
-        public SaveButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class CancelButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CANCEL_BUTTON_TEXT;
-        public CancelButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class EditButton extends Button {
-        static int HEIGHT = 20;
-
-        protected EditButton(int x, int y, int width, OnPress onPress, Component text) {
-            super(x, y, width, HEIGHT, text, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class HomeShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.HOME_BUTTON;
-        static Component TEXT = TravelJournalResources.HOME_BUTTON_TEXT;
-
-        protected HomeShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class BookmarksShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.BOOKMARKS_BUTTON;
-        static Component TEXT = TravelJournalResources.BOOKMARKS_BUTTON_TEXT;
-
-        protected BookmarksShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class LearnedShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.LEARNED_BUTTON;
-        static Component TEXT = TravelJournalResources.LEARNED_BUTTON_TEXT;
-
-        protected LearnedShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class QuestsShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.QUESTS_BUTTON;
-        static Component TEXT = TravelJournalResources.QUESTS_BUTTON_TEXT;
-
-        protected QuestsShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class NextPageButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 19;
-        static WidgetSprites SPRITES = TravelJournalResources.NEXT_PAGE_BUTTON;
-        static Component TEXT = TravelJournalResources.NEXT_PAGE_BUTTON_TEXT;
-
-        protected NextPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class PreviousPageButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 19;
-        static WidgetSprites SPRITES = TravelJournalResources.PREVIOUS_PAGE_BUTTON;
-        static Component TEXT = TravelJournalResources.PREVIOUS_PAGE_BUTTON_TEXT;
-
-        protected PreviousPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
     }
 }

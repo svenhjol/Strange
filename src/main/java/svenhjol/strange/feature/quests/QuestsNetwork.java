@@ -30,6 +30,7 @@ public class QuestsNetwork {
         registry.packet(new SyncPlayerQuests(), () -> QuestsClient::handleSyncPlayerQuests);
         registry.packet(new SyncVillagerQuests(), () -> QuestsClient::handleSyncVillagerQuests);
         registry.packet(new RequestVillagerQuests(), () -> Quests::handleRequestVillagerQuests);
+        registry.packet(new RequestPlayerQuests(), () -> Quests::handleRequestPlayerQuests);
         registry.packet(new AcceptQuest(), () -> Quests::handleAcceptQuest);
     }
 
@@ -60,6 +61,19 @@ public class QuestsNetwork {
             var message = new RequestVillagerQuests();
             message.villagerUuid = villagerUuid;
             clientSender().send(message);
+        }
+    }
+
+    @Packet(
+        id = "strange:request_player_quests",
+        direction = PacketDirection.CLIENT_TO_SERVER,
+        description = "Empty packet sent from the client to request the server to send all quests for the player."
+    )
+    public static class RequestPlayerQuests implements IPacketRequest {
+        private RequestPlayerQuests() {}
+
+        public static void send() {
+            clientSender().send(new RequestPlayerQuests());
         }
     }
 

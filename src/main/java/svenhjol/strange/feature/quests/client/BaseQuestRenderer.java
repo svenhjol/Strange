@@ -7,38 +7,37 @@ import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
 public abstract class BaseQuestRenderer<Q> {
     Q quest;
 
-    public BaseQuestRenderer() {
+    public BaseQuestRenderer() {}
+
+    public Q quest() {
+        return quest;
     }
 
     public void setQuest(Q quest) {
         this.quest = quest;
     }
 
-    public int getOfferHeight() {
+    public int getOfferedHeight() {
         return 74;
     }
 
-    public int getTravelJournalHeight() {
+    public int getPagedHeight() {
         return 74;
     }
 
-    public void initOffer(Screen screen, int yOffset) {
-        // extend me
+    public void initOffered(Screen screen, int yOffset) {
+        // no op
     }
 
-    public void initTravelJournal(BaseTravelJournalScreen screen, int yOffset) {
-        // extend me
+    public void initPaged(BaseTravelJournalScreen screen, int yOffset) {
+        // no op
     }
 
-    public void renderOffer(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
-        // extend me
+    public void renderOffered(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+        // no op
     }
 
-    public void renderTravelJournal(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
-        // extend me
-    }
-
-    public Q quest() {
-        return quest;
+    public void renderPaged(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+        // no op
     }
 }

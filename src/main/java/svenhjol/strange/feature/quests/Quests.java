@@ -55,7 +55,7 @@ public class Quests extends CommonFeature {
     }
 
     public static void syncQuests(ServerPlayer player) {
-        SyncPlayerQuests.send(player, PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of()));
+        SyncPlayerQuests.send(player, getQuests(player));
     }
 
     public static void addQuest(ServerPlayer player, Quest<?> quest) {
@@ -133,6 +133,10 @@ public class Quests extends CommonFeature {
 
         NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.SUCCESS);
         SyncVillagerQuests.send(serverPlayer, newQuests, villagerUuid, villagerProfession);
+    }
+
+    public static void handleRequestPlayerQuests(RequestPlayerQuests message, Player player) {
+        syncQuests((ServerPlayer)player);
     }
 
     public static void handleAcceptQuest(QuestsNetwork.AcceptQuest message, Player player) {

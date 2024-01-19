@@ -38,11 +38,11 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initTravelJournal(this, yOffset);
-            yOffset += renderer.getTravelJournalHeight();
+            renderer.initPaged(this, yOffset);
+            yOffset += renderer.getPagedHeight();
         }
 
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2), 220, b -> onClose()));
+        addRenderableWidget(new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), 220, b -> onClose()));
         initShortcuts();
 
         renderedButtons = false;
@@ -72,18 +72,18 @@ public class QuestsScreen extends BaseTravelJournalScreen {
             }
 
             var renderer = renderers.get(index);
-            renderer.renderTravelJournal(this, guiGraphics, yOffset, mouseX, mouseY);
-            yOffset += renderer.getTravelJournalHeight();
+            renderer.renderPaged(this, guiGraphics, yOffset, mouseX, mouseY);
+            yOffset += renderer.getPagedHeight();
 
             index++;
         }
 
         if (!renderedButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> openQuests(page - 1)));
+                addRenderableWidget(new Buttons.PreviousPageButton(midX - 30, 185, b -> openQuests(page - 1)));
             }
             if (page < pages || index < renderers.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> openQuests(page + 1)));
+                addRenderableWidget(new Buttons.NextPageButton(midX + 10, 185, b -> openQuests(page + 1)));
             }
             renderedButtons = true;
         }
