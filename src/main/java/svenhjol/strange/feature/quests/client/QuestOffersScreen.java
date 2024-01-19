@@ -1,13 +1,12 @@
 package svenhjol.strange.feature.quests.client;
 
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.Quests;
+import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,16 +59,6 @@ public class QuestOffersScreen extends Screen {
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
-        drawCenteredString(guiGraphics, getTitle(), x, y, 0xa05f50, false);
-    }
-
-    /**
-     * Version of drawCenteredString that allows specifying of drop shadow.
-     * @see GuiGraphics#drawCenteredString(Font, Component, int, int, int)
-     * TODO: move to helper to avoid dupes
-     */
-    protected void drawCenteredString(GuiGraphics guiGraphics, Component component, int x, int y, int color, boolean dropShadow) {
-        var formattedCharSequence = component.getVisualOrderText();
-        guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, dropShadow);
+        GuiHelper.drawCenteredString(guiGraphics, font, getTitle(), x, y, 0xa05f50, false);
     }
 }
