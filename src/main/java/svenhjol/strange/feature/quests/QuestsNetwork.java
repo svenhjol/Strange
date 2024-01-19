@@ -16,6 +16,7 @@ import svenhjol.charmony.iface.ICommonRegistry;
 import svenhjol.charmony.iface.IPacketRequest;
 import svenhjol.charmony.iface.IServerNetwork;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.quests.Quests.AbandonQuestResult;
 import svenhjol.strange.feature.quests.Quests.AcceptQuestResult;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 
@@ -27,11 +28,13 @@ public class QuestsNetwork {
     public static void register(ICommonRegistry registry) {
         registry.packet(new NotifyVillagerQuestsResult(), () -> QuestsClient::handleNotifyVillagerQuestsResult);
         registry.packet(new NotifyAcceptQuestResult(), () -> QuestsClient::handleAcceptQuestResult);
+        registry.packet(new NotifyAbandonQuestResult(), () -> QuestsClient::handleAbandonQuestResult);
         registry.packet(new SyncPlayerQuests(), () -> QuestsClient::handleSyncPlayerQuests);
         registry.packet(new SyncVillagerQuests(), () -> QuestsClient::handleSyncVillagerQuests);
         registry.packet(new RequestVillagerQuests(), () -> Quests::handleRequestVillagerQuests);
         registry.packet(new RequestPlayerQuests(), () -> Quests::handleRequestPlayerQuests);
         registry.packet(new AcceptQuest(), () -> Quests::handleAcceptQuest);
+        registry.packet(new AbandonQuest(), () -> Quests::handleAbandonQuest);
     }
 
     @Packet(
@@ -111,6 +114,37 @@ public class QuestsNetwork {
         public static void send(UUID villagerUuid, String questId) {
             var message = new AcceptQuest();
             message.villagerUuid = villagerUuid;
+            message.questId = questId;
+            clientSender().send(message);
+        }
+    }
+
+    @Packet(
+        id = "strange:abandon_quest",
+        direction = PacketDirection.CLIENT_TO_SERVER,
+        description = "Quest ID sent from client to server when player abandons the quest."
+    )
+    public static class AbandonQuest implements IPacketRequest {
+        private String questId;
+
+        private AbandonQuest() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUtf(questId);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            questId = buf.readUtf();
+        }
+
+        public String getQuestId() {
+            return questId;
+        }
+
+        public static void send(String questId) {
+            var message = new AbandonQuest();
             message.questId = questId;
             clientSender().send(message);
         }
@@ -224,6 +258,37 @@ public class QuestsNetwork {
 
         public static void send(ServerPlayer player, AcceptQuestResult result) {
             var message = new NotifyAcceptQuestResult();
+            message.result = result;
+            serverSender().send(message, player);
+        }
+    }
+
+    @Packet(
+        id = "strange:notify_abandon_quest_result",
+        direction = PacketDirection.SERVER_TO_CLIENT,
+        description = "Notify the client about the result of abandoning the quest."
+    )
+    public static class NotifyAbandonQuestResult implements IPacketRequest {
+        private AbandonQuestResult result;
+
+        private NotifyAbandonQuestResult() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeEnum(result);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            this.result = buf.readEnum(AbandonQuestResult.class);
+        }
+
+        public AbandonQuestResult getResult() {
+            return result;
+        }
+
+        public static void send(ServerPlayer player, AbandonQuestResult result) {
+            var message = new NotifyAbandonQuestResult();
             message.result = result;
             serverSender().send(message, player);
         }

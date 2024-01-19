@@ -6,6 +6,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.Quests;
+import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;
@@ -40,7 +41,10 @@ public class QuestOffersScreen extends Screen {
         var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initPagedOffer(this, yOffset);
+            var quest = renderer.quest();
+            renderer.initPagedOffer(this,
+                b -> AcceptQuest.send(quest.villagerUuid(), quest.id()),
+                yOffset);
             yOffset += renderer.getPagedOfferHeight();
         }
     }

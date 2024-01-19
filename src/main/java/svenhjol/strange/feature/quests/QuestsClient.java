@@ -24,6 +24,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.client.QuestOffersScreen;
+import svenhjol.strange.feature.travel_journal.PageTracker;
+import svenhjol.strange.feature.travel_journal.client.QuestScreen;
+import svenhjol.strange.feature.travel_journal.client.QuestsScreen;
 
 import java.util.UUID;
 
@@ -113,7 +116,25 @@ public class QuestsClient extends ClientFeature {
     }
 
     public static void handleAcceptQuestResult(NotifyAcceptQuestResult message, Player player) {
-        // TODO: toast or something
+        var minecraft = Minecraft.getInstance();
+
+        if (message.getResult().equals(Quests.AcceptQuestResult.SUCCESS)) {
+            if (minecraft.screen instanceof QuestOffersScreen) {
+                // TODO: toast
+                minecraft.setScreen(null);
+            }
+        }
+    }
+
+    public static void handleAbandonQuestResult(NotifyAbandonQuestResult message, Player player) {
+        var minecraft = Minecraft.getInstance();
+
+        if (message.getResult().equals(Quests.AbandonQuestResult.SUCCESS)) {
+            if (minecraft.screen instanceof QuestScreen) {
+                PageTracker.quest = null;
+                minecraft.setScreen(new QuestsScreen());
+            }
+        }
     }
 
     public static ILog log() {

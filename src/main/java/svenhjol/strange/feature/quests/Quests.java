@@ -139,7 +139,7 @@ public class Quests extends CommonFeature {
         syncQuests((ServerPlayer)player);
     }
 
-    public static void handleAcceptQuest(QuestsNetwork.AcceptQuest message, Player player) {
+    public static void handleAcceptQuest(AcceptQuest message, Player player) {
         var level = player.level();
         var questId = message.getQuestId();
         var villagerUuid = message.getVillagerUuid();
@@ -185,6 +185,31 @@ public class Quests extends CommonFeature {
         // Add this quest to the player's quests.
         var quest = opt.get();
         addQuest(serverPlayer, quest);
+        NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.SUCCESS);
+    }
+
+    public static void handleAbandonQuest(AbandonQuest message, Player player) {
+        var serverPlayer = (ServerPlayer)player;
+        var quests = getQuests(player);
+        var questId = message.getQuestId();
+
+        // Player even has quests?
+        if (quests.isEmpty()) {
+            NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.NO_QUESTS);
+            return;
+        }
+
+        // Player has this quest?
+        var opt = quests.stream().filter(q -> q.id.equals(questId)).findFirst();
+        if (opt.isEmpty()) {
+            NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.NO_QUEST);
+            return;
+        }
+
+        // Remove this quest from the player's quests.
+        var quest = opt.get();
+        removeQuest(serverPlayer, quest);
+        NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.SUCCESS);
     }
 
     public enum VillagerQuestsResult {
@@ -200,6 +225,12 @@ public class Quests extends CommonFeature {
         MAX_QUESTS,
         ALREADY_ON_QUEST,
         VILLAGER_HAS_NO_QUESTS,
+        SUCCESS
+    }
+
+    public enum AbandonQuestResult {
+        NO_QUESTS,
+        NO_QUEST,
         SUCCESS
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.Screen;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.QuestResources;
-import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
 import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.AcceptButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.ScrollImageButton;
@@ -23,15 +22,17 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     int requirementBackgroundColor;
     int satisfiedBackgroundColor;
     int rewardBackgroundColor;
+    Button.OnPress onAccept;
     Button.OnPress onUpdate;
     Button.OnPress onAbandon;
 
     public GatherQuestRenderer() {}
 
     @Override
-    public void initPagedOffer(Screen screen, int yOffset) {
+    public void initPagedOffer(Screen screen, Button.OnPress onAccept, int yOffset) {
         init(screen);
         darkMode();
+        this.onAccept = onAccept;
     }
 
     @Override
@@ -83,7 +84,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
     @Override
     public int getPagedActiveHeight() {
-        return super.getPagedOfferHeight();
+        return super.getPagedActiveHeight();
     }
 
     /**
@@ -118,11 +119,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         renderRewards(screen, guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var button = new AcceptButton(midX + 83, yOffset + 26, b -> {
-                AcceptQuest.send(quest.villagerUuid(), quest.id());
-                screen.onClose();
-            });
-
+            var button = new AcceptButton(midX + 83, yOffset + 26, onAccept);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
@@ -156,8 +153,9 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         renderRewards(screen, guiGraphics, -105, 92, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var button = new AbandonButton(midX - (AbandonButton.WIDTH / 2), 120, b -> {});
-
+            var button = new AbandonButton(midX - (AbandonButton.WIDTH / 2), 170, onAbandon);
+            screen.addRenderableWidget(button);
+            renderedButtons = true;
         }
     }
 

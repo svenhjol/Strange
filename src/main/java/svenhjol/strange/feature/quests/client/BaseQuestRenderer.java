@@ -26,7 +26,7 @@ public abstract class BaseQuestRenderer<Q extends Quest<?>> {
         return 40;
     }
 
-    public void initPagedOffer(Screen screen, int yOffset) {
+    public void initPagedOffer(Screen screen, Button.OnPress onAccept, int yOffset) {
         // no op
     }
 
