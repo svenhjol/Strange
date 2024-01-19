@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.travel_journal.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,6 +13,7 @@ import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.helper.GuiHelper;
 
 public abstract class BaseTravelJournalScreen extends Screen {
     protected int midX;
@@ -95,7 +95,7 @@ public abstract class BaseTravelJournalScreen extends Screen {
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
-        drawCenteredString(guiGraphics, getTitle(), x, y, 0xa05f50, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, getTitle(), x, y, 0xa05f50, false);
     }
 
     @Override
@@ -118,16 +118,6 @@ public abstract class BaseTravelJournalScreen extends Screen {
 
     protected ResourceLocation getBackgroundTexture() {
         return TravelJournalResources.JOURNAL_BACKGROUND;
-    }
-
-    /**
-     * Version of drawCenteredString that allows specifying of drop shadow.
-     * @see GuiGraphics#drawCenteredString(Font, Component, int, int, int)
-     * TODO: move to helper to avoid dupes
-     */
-    protected void drawCenteredString(GuiGraphics guiGraphics, Component component, int x, int y, int color, boolean dropShadow) {
-        var formattedCharSequence = component.getVisualOrderText();
-        guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, dropShadow);
     }
 
     protected static ILog log() {

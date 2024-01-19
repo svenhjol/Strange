@@ -8,6 +8,7 @@ import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.helper.GuiHelper;
 
 public class LearnedScreen extends BaseTravelJournalScreen {
     boolean renderedPaginationButtons = false;
@@ -90,7 +91,7 @@ public class LearnedScreen extends BaseTravelJournalScreen {
     }
 
     protected void renderNoLocations(GuiGraphics guiGraphics) {
-        drawCenteredString(guiGraphics, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
         guiGraphics.drawWordWrap(font, TravelJournalResources.NO_LEARNED_LOCATIONS_BODY_TEXT, midX - 100, 63, 200, 0x8f8785);
     }
 }

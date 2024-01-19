@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.*;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestDeleteBookmark;
+import svenhjol.strange.helper.GuiHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -120,13 +121,13 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         var pos = bookmark.pos;
         var dim = bookmark.dim;
         var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + TravelJournalHelper.getNiceCoordinates(pos);
-        drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
     protected void renderDimensionName(GuiGraphics guiGraphics, int y) {
         var dim = bookmark.dim;
         var str = TravelJournalHelper.getNiceDimensionName(dim);
-        drawCenteredString(guiGraphics, Component.literal(str), midX, y, 0x8a8785, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
     protected void renderPhoto(GuiGraphics guiGraphics, int y) {

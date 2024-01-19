@@ -7,6 +7,7 @@ import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,6 @@ public class QuestsScreen extends BaseTravelJournalScreen {
     }
 
     protected void renderNoQuests(GuiGraphics guiGraphics) {
-        drawCenteredString(guiGraphics, TravelJournalResources.NO_QUESTS_TEXT, midX, 50, 0x2f2725, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, TravelJournalResources.NO_QUESTS_TEXT, midX, 50, 0x2f2725, false);
     }
 }
