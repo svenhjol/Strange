@@ -7,7 +7,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class HomeScreen extends BaseTravelJournalScreen {
     public HomeScreen() {

@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestItemIcons;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;

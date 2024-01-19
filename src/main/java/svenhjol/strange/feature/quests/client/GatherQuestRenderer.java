@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
-import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.AcceptButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.ScrollImageButton;

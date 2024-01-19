@@ -24,6 +24,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.client.QuestOffersScreen;
+import svenhjol.strange.feature.quests.client.QuestResources;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.QuestScreen;
 import svenhjol.strange.feature.travel_journal.client.QuestsScreen;

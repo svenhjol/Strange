@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.*;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;

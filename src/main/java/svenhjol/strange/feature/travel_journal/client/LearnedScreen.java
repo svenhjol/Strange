@@ -7,7 +7,6 @@ import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 public class LearnedScreen extends BaseTravelJournalScreen {

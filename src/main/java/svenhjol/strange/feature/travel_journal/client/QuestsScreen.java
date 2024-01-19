@@ -6,7 +6,6 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;

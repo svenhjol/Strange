@@ -12,7 +12,6 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 public abstract class BaseTravelJournalScreen extends Screen {

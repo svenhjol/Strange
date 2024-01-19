@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.travel_journal.client;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.components.WidgetSprites;

@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
-import svenhjol.strange.feature.quests.QuestResources;
 
 public class QuestButtons {
     public static class AbandonButton extends Button {

@@ -1,11 +1,11 @@
-package svenhjol.strange.feature.quests;
+package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 
 import java.util.HashMap;
 import java.util.Map;
