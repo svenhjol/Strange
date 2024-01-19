@@ -2,9 +2,9 @@ package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.quests.Quest;
 
-public abstract class BaseQuestRenderer<Q> {
+public abstract class BaseQuestRenderer<Q extends Quest<?>> {
     Q quest;
 
     public BaseQuestRenderer() {}
@@ -17,27 +17,35 @@ public abstract class BaseQuestRenderer<Q> {
         this.quest = quest;
     }
 
-    public int getOfferedHeight() {
+    public int getPagedOfferedHeight() {
         return 74;
     }
 
-    public int getPagedHeight() {
-        return 74;
+    public int getPagedActiveHeight() {
+        return 40;
     }
 
-    public void initOffered(Screen screen, int yOffset) {
+    public void initPagedOffered(Screen screen, int yOffset) {
         // no op
     }
 
-    public void initPaged(BaseTravelJournalScreen screen, int yOffset) {
+    public void initPagedActive(Screen screen, int yOffset) {
         // no op
     }
 
-    public void renderOffered(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void initSelectedActive(Screen screen) {
         // no op
     }
 
-    public void renderPaged(BaseTravelJournalScreen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void renderPagedOffered(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+        // no op
+    }
+
+    public void renderPagedActive(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+        // no op
+    }
+
+    public void renderSelectedActive(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY) {
         // no op
     }
 }

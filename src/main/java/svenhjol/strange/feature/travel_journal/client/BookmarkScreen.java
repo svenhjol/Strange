@@ -28,7 +28,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     protected boolean hasMap;
     protected boolean hasPaper;
     protected boolean isNearby;
-    protected boolean renderedEditButtons;
+    protected boolean renderedButtons;
     protected ResourceLocation registeredTexture = null;
 
     public BookmarkScreen(Bookmark bookmark) {
@@ -44,7 +44,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         addRenderableWidget(new Buttons.CloseButton(midX + 5,220, b -> onClose()));
         addRenderableWidget(new Buttons.BackButton(midX - (Buttons.BackButton.WIDTH + 5), 220, this::openBookmarks));
 
-        renderedEditButtons = false;
+        renderedButtons = false;
         hasPhoto = getScreenshotFile().exists();
         hasMap = hasMap();
         hasPaper = hasPaper();
@@ -94,7 +94,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
             yoffset += 83;
         }
 
-        if (!renderedEditButtons) {
+        if (!renderedButtons) {
             if (!hasPhoto && isNearby) {
                 addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yoffset,
                     b -> TravelJournalClient.initPhoto(bookmark)));
@@ -113,7 +113,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
             }
         }
 
-        renderedEditButtons = true;
+        renderedButtons = true;
     }
 
     protected void renderCoords(GuiGraphics guiGraphics, int y) {

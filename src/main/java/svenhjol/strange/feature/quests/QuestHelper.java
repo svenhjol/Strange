@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.Villager;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import svenhjol.charmony.helper.TextHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,5 +70,11 @@ public class QuestHelper {
     public static boolean hasMaxQuests(Player player) {
         var quests = Quests.PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of());
         return quests.size() >= Quests.maxPlayerQuests;
+    }
+
+    public static Component makeTitle(Quest<?> quest) {
+        return TextHelper.translatable(QuestResources.QUEST_TITLE_KEY,
+            TextHelper.translatable("merchant.level." + quest.villagerLevel()),
+            quest.type().getTypeName());
     }
 }

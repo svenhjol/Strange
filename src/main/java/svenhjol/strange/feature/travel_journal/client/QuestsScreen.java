@@ -38,8 +38,8 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initPaged(this, yOffset);
-            yOffset += renderer.getPagedHeight();
+            renderer.initPagedActive(this, yOffset);
+            yOffset += renderer.getPagedActiveHeight();
         }
 
         addRenderableWidget(new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), 220, b -> onClose()));
@@ -72,8 +72,8 @@ public class QuestsScreen extends BaseTravelJournalScreen {
             }
 
             var renderer = renderers.get(index);
-            renderer.renderPaged(this, guiGraphics, yOffset, mouseX, mouseY);
-            yOffset += renderer.getPagedHeight();
+            renderer.renderPagedActive(this, guiGraphics, yOffset, mouseX, mouseY);
+            yOffset += renderer.getPagedActiveHeight();
 
             index++;
         }
