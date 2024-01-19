@@ -193,7 +193,7 @@ public class GatherQuest extends Quest<Item> {
         public void complete() {
             if (player == null) return;
             var items = rewardItems.stream().map(i -> i.item).toList();
-            QuestHelper.getNearbyQuestGiver(player.level(), player.blockPosition(), villagerUuid).ifPresent(
+            QuestHelper.getNearbyMatchingVillager(player.level(), player.blockPosition(), villagerUuid).ifPresent(
                 villager -> QuestHelper.throwItemsAtPlayer(villager, player, items));
         }
 
@@ -331,7 +331,10 @@ public class GatherQuest extends Quest<Item> {
                 ) {
                     var decrement = Math.min(remainder, invItem.getCount());
                     remainder -= decrement;
-                    invItem.shrink(decrement);
+
+                    if (!player.getAbilities().instabuild) {
+                        invItem.shrink(decrement);
+                    }
                 }
             }
         }

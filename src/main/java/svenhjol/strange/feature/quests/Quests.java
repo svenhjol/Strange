@@ -1,8 +1,12 @@
 package svenhjol.strange.feature.quests;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import svenhjol.charmony.api.event.EntityJoinEvent;
@@ -24,6 +28,40 @@ public class Quests extends CommonFeature {
 
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
+
+    public static boolean tryComplete(ServerPlayer player, Villager villager) {
+        var quests = getQuests(player);
+        for (var quest : quests) {
+            if (!quest.satisfied()) {
+                continue;
+            }
+
+            var villagerUuid = quest.villagerUuid();
+            var villagerProfession = quest.villagerProfession();
+            var villagerData = villager.getVillagerData();
+            var matchesQuestGiver = villagerUuid.equals(villager.getUUID());
+            var matchesProfession = villagerProfession.equals(villagerData.getProfession());
+
+            if (!matchesQuestGiver && !matchesProfession) {
+                continue;
+            }
+
+            if (matchesProfession) {
+                quest.villagerUuid = villager.getUUID();
+            }
+
+            var level = (ServerLevel)player.level();
+            var pos = player.blockPosition();
+
+            level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
+            quest.complete();
+            removeQuest(player, quest);
+            syncQuests(player);
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     public void register() {
@@ -98,7 +136,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyQuestGiver(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_VILLAGER);
             return;
@@ -158,7 +196,7 @@ public class Quests extends CommonFeature {
         }
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyQuestGiver(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.NO_VILLAGER);
             return;
@@ -185,6 +223,7 @@ public class Quests extends CommonFeature {
         // Add this quest to the player's quests.
         var quest = opt.get();
         addQuest(serverPlayer, quest);
+        syncQuests(serverPlayer);
         NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.SUCCESS);
     }
 

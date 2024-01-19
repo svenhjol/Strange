@@ -58,12 +58,12 @@ public class QuestHelper {
         return quests;
     }
 
-    public static Optional<Villager> getNearbyQuestGiver(Level level, BlockPos pos, UUID villagerUuid) {
+    public static Optional<Villager> getNearbyMatchingVillager(Level level, BlockPos pos, UUID villagerUuid) {
         var nearby = level.getEntitiesOfClass(Villager.class, new AABB(pos).inflate(8.0d));
         return nearby.stream().filter(e -> e.getUUID().equals(villagerUuid)).findFirst();
     }
 
-    public static List<Villager> getNearbyValidProfessions(Level level, BlockPos pos, VillagerProfession profession) {
+    public static List<Villager> getNearbyMatchingProfessions(Level level, BlockPos pos, VillagerProfession profession) {
         var nearby = level.getEntitiesOfClass(Villager.class, new AABB(pos).inflate(8.0d));
         return nearby.stream()
             .filter(e -> e.getVillagerData().getProfession().equals(profession))

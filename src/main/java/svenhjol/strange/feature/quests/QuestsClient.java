@@ -163,11 +163,16 @@ public class QuestsClient extends ClientFeature {
 
         quests.forEach(quest -> {
             if (quest.satisfied()) {
-                var opt = QuestHelper.getNearbyQuestGiver(level, pos, quest.villagerUuid());
-                if (opt.isPresent()) {
+                var opt = QuestHelper.getNearbyMatchingVillager(level, pos, quest.villagerUuid());
+                if (opt.isPresent() && !questGivers.contains(opt.get())) {
                     questGivers.add(opt.get());
-                } else {
-                    receivers.addAll(QuestHelper.getNearbyValidProfessions(level, pos, quest.villagerProfession()));
+                }
+
+                var matching = QuestHelper.getNearbyMatchingProfessions(level, pos, quest.villagerProfession());
+                for (Villager matched : matching) {
+                    if (!matched.getUUID().equals(quest.villagerUuid()) && !receivers.contains(matched)) {
+                        receivers.add(matched);
+                    }
                 }
             }
         });
