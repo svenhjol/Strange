@@ -25,6 +25,7 @@ public class QuestScreen extends BaseTravelJournalScreen {
         addRenderableWidget(new TravelJournalButtons.CloseButton(midX + 5,220, b -> onClose()));
         addRenderableWidget(new TravelJournalButtons.BackButton(midX - (TravelJournalButtons.BackButton.WIDTH + 5), 220, this::openQuests));
         renderer.initSelectedActive(this, b -> QuestsNetwork.AbandonQuest.send(quest.id()));
+        initShortcuts();
     }
 
     @Override
