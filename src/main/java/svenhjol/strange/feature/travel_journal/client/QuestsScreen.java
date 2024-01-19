@@ -39,11 +39,13 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initPagedActive(this, yOffset);
+            renderer.initPagedActive(this,
+                b -> Minecraft.getInstance().setScreen(new QuestScreen(renderer.quest())),
+                yOffset);
             yOffset += renderer.getPagedActiveHeight();
         }
 
-        addRenderableWidget(new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), 220, b -> onClose()));
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2), 220, b -> onClose()));
         initShortcuts();
 
         renderedButtons = false;
@@ -81,10 +83,10 @@ public class QuestsScreen extends BaseTravelJournalScreen {
 
         if (!renderedButtons) {
             if (page > 1) {
-                addRenderableWidget(new Buttons.PreviousPageButton(midX - 30, 185, b -> openQuests(page - 1)));
+                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 185, b -> openQuests(page - 1)));
             }
             if (page < pages || index < renderers.size()) {
-                addRenderableWidget(new Buttons.NextPageButton(midX + 10, 185, b -> openQuests(page + 1)));
+                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 185, b -> openQuests(page + 1)));
             }
             renderedButtons = true;
         }

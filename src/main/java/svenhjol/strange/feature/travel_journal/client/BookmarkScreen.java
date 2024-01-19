@@ -42,8 +42,8 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new Buttons.CloseButton(midX + 5,220, b -> onClose()));
-        addRenderableWidget(new Buttons.BackButton(midX - (Buttons.BackButton.WIDTH + 5), 220, this::openBookmarks));
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX + 5,220, b -> onClose()));
+        addRenderableWidget(new TravelJournalButtons.BackButton(midX - (TravelJournalButtons.BackButton.WIDTH + 5), 220, this::openBookmarks));
 
         renderedButtons = false;
         hasPhoto = getScreenshotFile().exists();

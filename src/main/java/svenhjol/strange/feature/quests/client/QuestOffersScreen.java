@@ -1,17 +1,12 @@
 package svenhjol.strange.feature.quests.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestHelper;
-import svenhjol.strange.feature.quests.QuestResources;
 import svenhjol.strange.feature.quests.Quests;
 
 import java.util.ArrayList;
@@ -24,8 +19,6 @@ public class QuestOffersScreen extends Screen {
     protected int villagerLevel;
     protected List<BaseQuestRenderer<?>> renderers = new ArrayList<>();
     protected int midX;
-    protected int backgroundWidth;
-    protected int backgroundHeight;
 
     public QuestOffersScreen(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
         super(QuestHelper.makeVillagerTitle(villagerProfession));
@@ -78,21 +71,5 @@ public class QuestOffersScreen extends Screen {
     protected void drawCenteredString(GuiGraphics guiGraphics, Component component, int x, int y, int color, boolean dropShadow) {
         var formattedCharSequence = component.getVisualOrderText();
         guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, dropShadow);
-    }
-
-    static class AcceptQuestButton extends Button {
-        static int WIDTH = 70;
-        static int HEIGHT = 20;
-        static Component TEXT = QuestResources.ACCEPT_QUEST_BUTTON_TEXT;
-        public AcceptQuestButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-
-            // If player is at max quests, disable the button and show a tooltip.
-            var player = Minecraft.getInstance().player;
-            if (player != null && QuestHelper.hasMaxQuests(player)) {
-                active = false;
-                setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
-            }
-        }
     }
 }

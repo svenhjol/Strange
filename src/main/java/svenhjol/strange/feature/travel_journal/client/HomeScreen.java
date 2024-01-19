@@ -35,7 +35,7 @@ public class HomeScreen extends BaseTravelJournalScreen {
             yOffset += lineHeight;
         }
 
-        addRenderableWidget(new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2),220, b -> onClose()));
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2),220, b -> onClose()));
 
         initShortcuts();
     }

@@ -27,7 +27,7 @@ public class LearnedScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2),220, b -> onClose()));
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2),220, b -> onClose()));
         initShortcuts();
 
         renderedPaginationButtons = false;
@@ -80,10 +80,10 @@ public class LearnedScreen extends BaseTravelJournalScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new Buttons.PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
+                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
             }
             if (page < pages || index < locations.size()) {
-                addRenderableWidget(new Buttons.NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
+                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
             }
 
             renderedPaginationButtons = true;

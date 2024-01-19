@@ -33,7 +33,6 @@ public abstract class BaseTravelJournalScreen extends Screen {
         }
 
         midX = width / 2;
-
         backgroundWidth = TravelJournalResources.JOURNAL_BACKGROUND_DIM.getFirst();
         backgroundHeight = TravelJournalResources.JOURNAL_BACKGROUND_DIM.getSecond();
     }
@@ -43,19 +42,19 @@ public abstract class BaseTravelJournalScreen extends Screen {
         var lineHeight = 17;
         var loader = Mods.common(Strange.ID).loader();
 
-        addRenderableWidget(new Buttons.HomeShortcutButton(midX + 120, yOffset, this::openHome));
+        addRenderableWidget(new TravelJournalButtons.HomeShortcutButton(midX + 120, yOffset, this::openHome));
         yOffset += lineHeight;
 
-        addRenderableWidget(new Buttons.BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
+        addRenderableWidget(new TravelJournalButtons.BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
         yOffset += lineHeight;
 
         if (loader.isEnabled(Runestones.class)) {
-            addRenderableWidget(new Buttons.LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
+            addRenderableWidget(new TravelJournalButtons.LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
             yOffset += lineHeight;
         }
 
         if (loader.isEnabled(Quests.class)) {
-            addRenderableWidget(new Buttons.QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
+            addRenderableWidget(new TravelJournalButtons.QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
             yOffset += lineHeight;
         }
     }

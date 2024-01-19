@@ -7,11 +7,12 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class Buttons {
+public class TravelJournalButtons {
     public static class CloseButton extends Button {
         static int WIDTH = 110;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.CLOSE_BUTTON_TEXT;
+
         public CloseButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -21,6 +22,7 @@ public class Buttons {
         static int WIDTH = 110;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.BACK_BUTTON_TEXT;
+
         public BackButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -30,6 +32,7 @@ public class Buttons {
         static int WIDTH = 110;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.SAVE_BUTTON_TEXT;
+
         public SaveButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -39,6 +42,7 @@ public class Buttons {
         static int WIDTH = 110;
         static int HEIGHT = 20;
         static Component TEXT = TravelJournalResources.CANCEL_BUTTON_TEXT;
+
         public CancelButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
@@ -97,16 +101,6 @@ public class Buttons {
         public QuestsShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class ScrollImageButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-
-        public ScrollImageButton(WidgetSprites sprites, int x, int y, OnPress onPress, Component tooltip) {
-            super(x, y, WIDTH, HEIGHT, sprites, onPress);
-            setTooltip(Tooltip.create(tooltip));
         }
     }
 

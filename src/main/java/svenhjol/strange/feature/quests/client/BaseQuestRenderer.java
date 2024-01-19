@@ -1,6 +1,7 @@
 package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import svenhjol.strange.feature.quests.Quest;
 
@@ -29,11 +30,11 @@ public abstract class BaseQuestRenderer<Q extends Quest<?>> {
         // no op
     }
 
-    public void initPagedActive(Screen screen, int yOffset) {
+    public void initPagedActive(Screen screen, Button.OnPress onUpdate, int yOffset) {
         // no op
     }
 
-    public void initSelectedActive(Screen screen) {
+    public void initSelectedActive(Screen screen, Button.OnPress onAbandon) {
         // no op
     }
 

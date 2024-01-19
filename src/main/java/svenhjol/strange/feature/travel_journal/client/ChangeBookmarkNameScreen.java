@@ -23,8 +23,8 @@ public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new Buttons.SaveButton(midX + 5,220, b -> save()));
-        addRenderableWidget(new Buttons.CancelButton(midX - (Buttons.CancelButton.WIDTH + 5), 220, b -> back()));
+        addRenderableWidget(new TravelJournalButtons.SaveButton(midX + 5,220, b -> save()));
+        addRenderableWidget(new TravelJournalButtons.CancelButton(midX - (TravelJournalButtons.CancelButton.WIDTH + 5), 220, b -> back()));
 
         nameEditBox = new EditBox(font, midX - 74, 38, 148, 12,
             TextHelper.translatable("gui.strange.travel_journal.edit_name"));

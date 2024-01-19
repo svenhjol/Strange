@@ -8,9 +8,6 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.Strange;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class TravelJournalResources {
     public static final ResourceLocation JOURNAL_BACKGROUND = new ResourceLocation(Strange.ID, "textures/gui/travel_journal.png");
     public static final Pair<Integer, Integer> JOURNAL_BACKGROUND_DIM = Pair.of(256, 208);
@@ -57,8 +54,6 @@ public class TravelJournalResources {
     public static final Component NO_LEARNED_LOCATIONS_HEADING_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.heading");
     public static final Component NO_LEARNED_LOCATIONS_BODY_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_learned_locations.body");
     public static final Component NO_QUESTS_TEXT = TextHelper.translatable("gui.strange.travel_journal.no_quests");
-    public static final Component UPDATE_QUEST = TextHelper.translatable("gui.strange.travel_journal.update_quest");
-    public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
 
     static WidgetSprites makeButton(String name) {
         var instance = Mods.client(Strange.ID);
@@ -68,11 +63,4 @@ public class TravelJournalResources {
             instance.id("widget/travel_journal/" + name + "_button_highlighted"));
     }
 
-    static {
-        LEVEL_TO_SCROLL_BUTTON.put(1, NOVICE_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(2, APPRENTICE_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(3, JOURNEYMAN_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(4, EXPERT_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(5, MASTER_SCROLL_BUTTON);
-    }
 }

@@ -2,15 +2,16 @@ package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.QuestResources;
-import svenhjol.strange.feature.quests.QuestsNetwork;
+import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
+import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
+import svenhjol.strange.feature.quests.client.QuestButtons.AcceptButton;
+import svenhjol.strange.feature.quests.client.QuestButtons.ScrollImageButton;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
-import svenhjol.strange.feature.travel_journal.client.Buttons;
-import svenhjol.strange.feature.travel_journal.client.QuestScreen;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     boolean renderedButtons = false;
@@ -22,6 +23,8 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     int requirementBackgroundColor;
     int satisfiedBackgroundColor;
     int rewardBackgroundColor;
+    Button.OnPress onUpdate;
+    Button.OnPress onAbandon;
 
     public GatherQuestRenderer() {}
 
@@ -32,15 +35,17 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     }
 
     @Override
-    public void initPagedActive(Screen screen, int yOffset) {
+    public void initPagedActive(Screen screen, Button.OnPress onUpdate, int yOffset) {
         init(screen);
         lightMode();
+        this.onUpdate = onUpdate;
     }
 
     @Override
-    public void initSelectedActive(Screen screen) {
+    public void initSelectedActive(Screen screen, Button.OnPress onAbandon) {
         init(screen);
         lightMode();
+        this.onAbandon = onAbandon;
     }
 
     /**
@@ -113,8 +118,8 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         renderRewards(screen, guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var button = new QuestOffersScreen.AcceptQuestButton(midX + 83, yOffset + 26, b -> {
-                QuestsNetwork.AcceptQuest.send(quest.villagerUuid(), quest.id());
+            var button = new AcceptButton(midX + 83, yOffset + 26, b -> {
+                AcceptQuest.send(quest.villagerUuid(), quest.id());
                 screen.onClose();
             });
 
@@ -132,10 +137,8 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         renderRequirements(screen, guiGraphics, -105, yOffset + 12, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var sprites = TravelJournalResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
-            var button = new Buttons.ScrollImageButton(sprites, midX + 88, yOffset + 11, b -> {
-                Minecraft.getInstance().setScreen(new QuestScreen(quest));
-            }, TravelJournalResources.UPDATE_QUEST);
+            var sprites = QuestResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
+            var button = new ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestResources.UPDATE_QUEST_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
@@ -151,6 +154,11 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
         guiGraphics.drawString(screen.font, QuestResources.GATHER_REWARD_TEXT, midX - 105, 80, titleColor, false);
         renderRewards(screen, guiGraphics, -105, 92, mouseX, mouseY);
+
+        if (!renderedButtons) {
+            var button = new AbandonButton(midX - (AbandonButton.WIDTH / 2), 120, b -> {});
+
+        }
     }
 
     /**
