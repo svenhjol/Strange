@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -72,7 +73,14 @@ public class QuestHelper {
         return quests.size() >= Quests.maxPlayerQuests;
     }
 
-    public static Component makeTitle(Quest<?> quest) {
+    public static Component makeVillagerTitle(VillagerProfession profession) {
+        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
+        var key = registry.getKey(profession);
+        return TextHelper.translatable(QuestResources.QUEST_OFFERS_TITLE_KEY,
+            TextHelper.translatable("entity." + key.getNamespace() + ".villager." + key.getPath()));
+    }
+
+    public static Component makeQuestTitle(Quest<?> quest) {
         return TextHelper.translatable(QuestResources.QUEST_TITLE_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             quest.type().getTypeName());

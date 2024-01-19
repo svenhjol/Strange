@@ -17,7 +17,7 @@ public abstract class BaseQuestRenderer<Q extends Quest<?>> {
         this.quest = quest;
     }
 
-    public int getPagedOfferedHeight() {
+    public int getPagedOfferHeight() {
         return 74;
     }
 
@@ -25,7 +25,7 @@ public abstract class BaseQuestRenderer<Q extends Quest<?>> {
         return 40;
     }
 
-    public void initPagedOffered(Screen screen, int yOffset) {
+    public void initPagedOffer(Screen screen, int yOffset) {
         // no op
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseQuestRenderer<Q extends Quest<?>> {
         // no op
     }
 
-    public void renderPagedOffered(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void renderPagedOffer(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
         // no op
     }
 

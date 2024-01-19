@@ -102,9 +102,9 @@ public abstract class BaseTravelJournalScreen extends Screen {
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.renderBackground(guiGraphics, mouseX, mouseY, delta);
 
-        int x = (this.width - this.backgroundWidth) / 2;
+        int x = (width - backgroundWidth) / 2;
         int y = 5;
-        guiGraphics.blit(getBackgroundTexture(), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        guiGraphics.blit(getBackgroundTexture(), x, y, 0, 0, backgroundWidth, backgroundHeight);
     }
 
     @Override
@@ -122,7 +122,8 @@ public abstract class BaseTravelJournalScreen extends Screen {
 
     /**
      * Version of drawCenteredString that allows specifying of drop shadow.
-     * @see GuiGraphics#drawCenteredString(Font, Component, int, int, int) 
+     * @see GuiGraphics#drawCenteredString(Font, Component, int, int, int)
+     * TODO: move to helper to avoid dupes
      */
     protected void drawCenteredString(GuiGraphics guiGraphics, Component component, int x, int y, int color, boolean dropShadow) {
         var formattedCharSequence = component.getVisualOrderText();

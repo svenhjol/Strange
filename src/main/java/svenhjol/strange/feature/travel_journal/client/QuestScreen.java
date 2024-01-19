@@ -11,7 +11,7 @@ public class QuestScreen extends BaseTravelJournalScreen {
     protected BaseQuestRenderer<Quest<?>> renderer;
 
     public QuestScreen(Quest<?> quest) {
-        super(QuestHelper.makeTitle(quest));
+        super(QuestHelper.makeQuestTitle(quest));
         this.quest = quest;
         PageTracker.quest = quest;
         PageTracker.Screen.QUEST.set();
