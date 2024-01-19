@@ -98,7 +98,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestHelper.getNearbyQuestGiver(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_VILLAGER);
             return;
@@ -158,7 +158,7 @@ public class Quests extends CommonFeature {
         }
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestHelper.getNearbyQuestGiver(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.NO_VILLAGER);
             return;

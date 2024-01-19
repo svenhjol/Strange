@@ -193,7 +193,7 @@ public class GatherQuest extends Quest<Item> {
         public void complete() {
             if (player == null) return;
             var items = rewardItems.stream().map(i -> i.item).toList();
-            QuestHelper.getNearbyVillager(player.level(), player.blockPosition(), villagerUuid).ifPresent(
+            QuestHelper.getNearbyQuestGiver(player.level(), player.blockPosition(), villagerUuid).ifPresent(
                 villager -> QuestHelper.throwItemsAtPlayer(villager, player, items));
         }
 

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import svenhjol.charmony.api.event.EntityUseEvent;
+import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.charmony.api.event.ScreenSetupEvent;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.client.ClientFeature;
@@ -29,6 +31,8 @@ import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.QuestScreen;
 import svenhjol.strange.feature.travel_journal.client.QuestsScreen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class QuestsClient extends ClientFeature {
@@ -46,6 +50,13 @@ public class QuestsClient extends ClientFeature {
     public void runWhenEnabled() {
         ScreenSetupEvent.INSTANCE.handle(this::handleScreenSetup);
         EntityUseEvent.INSTANCE.handle(this::handleEntityUse);
+        PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+    }
+
+    private void handlePlayerTick(Player player) {
+        if (player.level().isClientSide && player.level().getGameTime() % 15 == 0) {
+            showInterestedVillagers(player);
+        }
     }
 
     private InteractionResult handleEntityUse(Player player, Level level, InteractionHand hand, Entity entity, EntityHitResult hitResult) {
@@ -140,6 +151,48 @@ public class QuestsClient extends ClientFeature {
 
     public static ILog log() {
         return Mods.client(Strange.ID).log();
+    }
+
+    private void showInterestedVillagers(Player player) {
+        var level = player.level();
+        var pos = player.blockPosition();
+
+        var quests = Quests.getQuests(player);
+        List<Villager> receivers = new ArrayList<>();
+        List<Villager> questGivers = new ArrayList<>();
+
+        quests.forEach(quest -> {
+            if (quest.satisfied()) {
+                var opt = QuestHelper.getNearbyQuestGiver(level, pos, quest.villagerUuid());
+                if (opt.isPresent()) {
+                    questGivers.add(opt.get());
+                } else {
+                    receivers.addAll(QuestHelper.getNearbyValidProfessions(level, pos, quest.villagerProfession()));
+                }
+            }
+        });
+
+        receivers.forEach(villager -> {
+            var spread = 0.75d;
+            var villagerPos = villager.position();
+            for (int i = 0; i < 3; i++) {
+                var px = villagerPos.x() + (Math.random() - 0.5d) * spread;
+                var py = villagerPos.y() + 2.25d + (Math.random() - 0.5d) * spread;
+                var pz = villagerPos.z() + (Math.random() - 0.5d) * spread;
+                level.addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0, 0, 0.12d);
+            }
+        });
+
+        questGivers.forEach(villager -> {
+            var spread = 0.55d;
+            var villagerPos = villager.position();
+            for (int i = 0; i < 2; i++) {
+                var px = villagerPos.x() + (Math.random() - 0.5d) * spread;
+                var py = villagerPos.y() + 2.6d + (Math.random() - 0.5d) * spread;
+                var pz = villagerPos.z() + (Math.random() - 0.5d) * spread;
+                level.addParticle(ParticleTypes.END_ROD, px, py, pz, 0, 0, 0.0d);
+            }
+        });
     }
 
     static class QuestsButton extends Button {
