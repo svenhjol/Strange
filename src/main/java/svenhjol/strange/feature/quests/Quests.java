@@ -202,6 +202,8 @@ public class Quests extends CommonFeature {
 
         // Add this quest to the player's quests.
         var quest = opt.get();
+        quest.start();
+
         addQuest(serverPlayer, quest);
         syncQuests(serverPlayer);
 
@@ -231,6 +233,7 @@ public class Quests extends CommonFeature {
         }
 
         var quest = opt.get();
+        quest.cancel();
 
         serverPlayer.level().playSound(null, serverPlayer.blockPosition(), abandonSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
