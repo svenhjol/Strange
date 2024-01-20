@@ -6,6 +6,8 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.Reward;
 
+import java.util.List;
+
 public class RewardItem implements Reward {
     static final String ITEM_TAG = "item";
 
@@ -36,10 +38,8 @@ public class RewardItem implements Reward {
         var player = quest.player();
         if (player == null) return;
 
-        var items = quest.rewardItems().stream().map(i -> i.item).toList();
-
         QuestHelper.getNearbyMatchingVillager(player.level(), player.blockPosition(), quest.villagerUuid()).ifPresent(
-            villager -> QuestHelper.throwItemsAtPlayer(villager, player, items));
+            villager -> QuestHelper.throwItemsAtPlayer(villager, player, List.of(item)));
     }
 
     @Override
