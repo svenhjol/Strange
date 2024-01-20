@@ -173,11 +173,6 @@ public class GatherQuest extends Quest<Item> {
         }
 
         @Override
-        public void start() {
-            // no op
-        }
-
-        @Override
         public void complete() {
             if (player == null) {
                 return;

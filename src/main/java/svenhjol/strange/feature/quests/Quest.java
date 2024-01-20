@@ -11,6 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -214,6 +216,10 @@ public abstract class Quest<T> {
         rewards().forEach(Reward::complete);
 
         status = Status.COMPLETED;
+    }
+
+    public void entityKilled(LivingEntity entity, DamageSource source) {
+        // no op
     }
 
     protected abstract void make(QuestDefinition definition, UUID villagerUuid);

@@ -6,11 +6,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import svenhjol.charmony.api.event.EntityJoinEvent;
+import svenhjol.charmony.api.event.EntityKilledEvent;
 import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.charmony.api.event.ServerStartEvent;
 import svenhjol.charmony.base.Mods;
@@ -52,7 +55,14 @@ public class Quests extends CommonFeature {
     public void runWhenEnabled() {
         ServerStartEvent.INSTANCE.handle(this::handleServerStart);
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
+        EntityKilledEvent.INSTANCE.handle(this::handleEntityKilled);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+    }
+
+    private void handleEntityKilled(LivingEntity entity, DamageSource source) {
+        if (source.getEntity() instanceof Player player && !player.level().isClientSide) {
+            getQuests(player).forEach(q -> q.entityKilled(entity, source));
+        }
     }
 
     private void handlePlayerTick(Player player) {
