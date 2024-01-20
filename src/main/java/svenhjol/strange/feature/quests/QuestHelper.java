@@ -22,22 +22,19 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class QuestHelper {
-    public static List<IQuestDefinition> getDefinitions(VillagerProfession profession, Integer level) {
-        return Quests.DEFINITIONS.stream()
-            .filter(d -> d.profession() == profession)
-            .filter(d -> d.level() == level)
-            .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public static List<IQuestDefinition> makeDefinitionsForVillager(VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
+    public static List<IQuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
             .filter(d -> d.profession() == profession)
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
+            .filter(d -> d.requiredLoyalty() <= Quests.getLoyalty(villagerUuid))
             .collect(Collectors.toCollection(ArrayList::new));
 
         if (definitions.isEmpty()) {
             return List.of();
         }
+
+        // Get epics separately.
+        var epics = definitions.stream().filter(IQuestDefinition::isEpic).toList();
 
         Util.shuffle(definitions, random);
         var sublist = definitions.subList(0, Math.min(definitions.size(), numberOfDefinitions));
@@ -45,6 +42,14 @@ public class QuestHelper {
         while (sublist.size() < numberOfDefinitions) {
             sublist.add(definitions.get(random.nextInt(definitions.size())));
         }
+
+        // Replace one of the definitions with the epic.
+        if (!epics.isEmpty() && sublist.stream().noneMatch(IQuestDefinition::isEpic)) {
+            var epic = random.nextInt(epics.size());
+            var index = random.nextInt(sublist.size());
+            sublist.set(index, epics.get(epic));
+        }
+
         return sublist;
     }
 

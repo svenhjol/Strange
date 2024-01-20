@@ -87,6 +87,10 @@ public class Quests extends CommonFeature {
         VILLAGER_LOYALTY.put(villagerUuid, current + amount);
     }
 
+    public static void resetLoyalty(UUID villagerUuid) {
+        VILLAGER_LOYALTY.put(villagerUuid, 0);
+    }
+
     public static int getLoyalty(UUID villagerUuid) {
         return VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0);
     }
@@ -147,7 +151,7 @@ public class Quests extends CommonFeature {
         // Generate new quests for this villager
         quests.clear();
 
-        var definitions = QuestHelper.makeDefinitionsForVillager(villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
+        var definitions = QuestHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_QUESTS_GENERATED);
             return;
@@ -290,14 +294,19 @@ public class Quests extends CommonFeature {
     private static void completeWithVillager(ServerPlayer player, Villager villager, Quest<?> quest) {
         var level = (ServerLevel)player.level();
         var pos = player.blockPosition();
+        var villagerUuid = villager.getUUID();
 
         level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
         level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-        increaseLoyalty(villager.getUUID(), 1);
+
+        if (quest.isEpic()) {
+            resetLoyalty(villagerUuid);
+        }
 
         quest.complete();
         removeQuest(player, quest);
         syncQuests(player);
+        increaseLoyalty(villagerUuid, 1);
     }
 
     public enum VillagerQuestsResult {

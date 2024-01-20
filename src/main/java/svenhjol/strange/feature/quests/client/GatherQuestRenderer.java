@@ -23,6 +23,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     int requirementBackgroundColor;
     int satisfiedBackgroundColor;
     int rewardBackgroundColor;
+    int offerBorderColor;
     Button.OnPress onAccept;
     Button.OnPress onUpdate;
     Button.OnPress onAbandon;
@@ -59,13 +60,14 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     }
 
     protected void darkMode() {
-        titleColor = 0xffffff;
-        requirementColor = 0xa0a0a0;
+        titleColor = quest.isEpic() ? 0xffe0a0 : 0xffffff;
+        requirementColor = quest.isEpic() ? 0xdfc080 : 0xa0a0a0;
         satisfiedColor = 0xa0ffa0;
         rewardColor = 0xa0ffff;
-        requirementBackgroundColor = 0x24a0a0a0;
+        requirementBackgroundColor = quest.isEpic() ? 0x24dfc080 : 0x24a0a0a0;
         satisfiedBackgroundColor = 0x24a0ffa0;
         rewardBackgroundColor = 0x24a0ffff;
+        offerBorderColor = quest.isEpic() ? 0x40ffe080 : 0x40a0a0a0;
     }
 
     protected void lightMode() {
@@ -105,7 +107,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         guiGraphics.drawString(font, QuestHelper.makeQuestTitle(quest), midX + xOffset + 15, yOffset, titleColor, false);
 
         // Box around the quest details
-        guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, 0x40a0a0a0);
+        guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, offerBorderColor);
 
         // "Requires:"
         guiGraphics.drawString(font, QuestResources.GATHER_REQUIREMENT_TEXT, midX + xOffset + 2, yOffset + 21, requirementColor, false);
