@@ -14,7 +14,7 @@ public class QuestResources {
     public static final Component QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
     public static final Component GATHER_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.gather_requirement");
     public static final Component GATHER_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.gather_reward");
-    public static final Component UPDATE_QUEST_TEXT = TextHelper.translatable("gui.strange.quests.update_quest");
+    public static final Component QUEST_INFO_TEXT = TextHelper.translatable("gui.strange.quests.quest_info");
     public static final Component ACCEPT_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.accept_quest");
     public static final Component ABANDON_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.abandon_quest");
     public static final ResourceLocation NOVICE_SCROLL = new ResourceLocation(Strange.ID, "scroll/novice_scroll");

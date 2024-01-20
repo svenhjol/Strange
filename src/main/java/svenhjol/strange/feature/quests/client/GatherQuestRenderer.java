@@ -136,7 +136,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
         if (!renderedButtons) {
             var sprites = QuestResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
-            var button = new ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestResources.UPDATE_QUEST_TEXT);
+            var button = new ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestResources.QUEST_INFO_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
