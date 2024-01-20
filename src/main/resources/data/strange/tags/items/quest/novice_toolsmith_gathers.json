@@ -2,8 +2,8 @@
   "replace": false,
   "values": [
     "stick",
-    "string",
     "charcoal",
-    "feather"
+    "gravel",
+    "cobblestone"
   ]
 }

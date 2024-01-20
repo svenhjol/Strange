@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "iron_ingot",
+    "gold_ingot",
+    "copper_ingot",
+    "stone_hoe",
+    "stone_axe",
+    "stone_pickaxe",
+    "stone_sword",
+    "stone_shovel",
+    "leather_helmet",
+    "leather_chestplate",
+    "leather_leggings",
+    "leather_boots"
+  ]
+}

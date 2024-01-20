@@ -8,7 +8,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import java.util.List;
 
 public interface IQuestDefinition {
-    int XP_MULTIPLIER_PER_LEVEL = 3;
+    double XP_MULTIPLIER_PER_LEVEL = 1.6d;
 
     QuestType type();
 
@@ -21,7 +21,7 @@ public interface IQuestDefinition {
     List<Pair<ResourceLocation, Integer>> rewards();
 
     default int experience() {
-        return level() * XP_MULTIPLIER_PER_LEVEL;
+        return (int)(level() * XP_MULTIPLIER_PER_LEVEL);
     }
 
     default int requiredLoyalty() {

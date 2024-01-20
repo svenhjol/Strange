@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.IQuestDefinition;
@@ -139,12 +140,11 @@ public class GatherQuest extends Quest<Item> {
 
         Collections.shuffle(values);
 
-        var amount = requiredSize * definition.level();
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
             var stack = new ItemStack(BuiltInRegistries.ITEM.get(values.get(i)));
-            items.add(new GatherItem(stack, amount / selection));
+            items.add(new GatherItem(stack, requiredSize / selection));
         }
     }
 
@@ -165,6 +165,13 @@ public class GatherQuest extends Quest<Item> {
             var itemId = values.get(i);
             var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId),
                 random.nextIntBetweenInclusive(Math.max(1, rewardSize - 2), rewardSize));
+
+            var allowTreasure = stack.is(Items.BOOK);
+            var enchantChance = 0.2d * villagerLevel();
+
+            if (random.nextDouble() < enchantChance) {
+                EnchantmentHelper.enchantItem(random, stack, villagerLevel(), allowTreasure);
+            }
 
             rewardItems.add(new RewardItem(stack));
         }
