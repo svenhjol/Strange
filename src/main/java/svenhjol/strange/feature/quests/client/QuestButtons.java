@@ -20,7 +20,7 @@ public class QuestButtons {
         }
     }
 
-    static class AcceptButton extends Button {
+    public static class AcceptButton extends Button {
         static int WIDTH = 70;
         static int HEIGHT = 20;
         static Component TEXT = QuestResources.ACCEPT_QUEST_BUTTON_TEXT;
@@ -34,6 +34,16 @@ public class QuestButtons {
                 active = false;
                 setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
             }
+        }
+    }
+
+    public static class QuestsButton extends Button {
+        public static int WIDTH = 110;
+        public static int HEIGHT = 20;
+
+        static Component TEXT = QuestResources.QUEST_BUTTON_TEXT;
+        public QuestsButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
 

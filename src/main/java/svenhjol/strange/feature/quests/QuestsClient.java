@@ -5,7 +5,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -23,13 +22,11 @@ import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.helper.ScreenHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
+import svenhjol.strange.feature.quests.client.QuestButtons.QuestsButton;
 import svenhjol.strange.feature.quests.client.QuestOffersScreen;
-import svenhjol.strange.feature.quests.client.QuestResources;
-import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.client.QuestScreen;
-import svenhjol.strange.feature.travel_journal.client.QuestsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,24 +125,16 @@ public class QuestsClient extends ClientFeature {
     }
 
     public static void handleAcceptQuestResult(NotifyAcceptQuestResult message, Player player) {
-        var minecraft = Minecraft.getInstance();
-
         if (message.getResult().equals(Quests.AcceptQuestResult.SUCCESS)) {
-            if (minecraft.screen instanceof QuestOffersScreen) {
-                // TODO: toast
-                minecraft.setScreen(null);
-            }
+            // Fire AcceptQuestEvent on the client side.
+            QuestEvents.ACCEPT_QUEST.invoke(player, message.getQuest());
         }
     }
 
     public static void handleAbandonQuestResult(NotifyAbandonQuestResult message, Player player) {
-        var minecraft = Minecraft.getInstance();
-
         if (message.getResult().equals(Quests.AbandonQuestResult.SUCCESS)) {
-            if (minecraft.screen instanceof QuestScreen) {
-                PageTracker.quest = null;
-                minecraft.setScreen(new QuestsScreen());
-            }
+            // Fire AbandonQuestEvent on the client side.
+            QuestEvents.ABANDON_QUEST.invoke(player, message.getQuest());
         }
     }
 
@@ -198,14 +187,5 @@ public class QuestsClient extends ClientFeature {
                 level.addParticle(ParticleTypes.END_ROD, px, py, pz, 0, 0, 0.0d);
             }
         });
-    }
-
-    static class QuestsButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = QuestResources.QUEST_BUTTON_TEXT;
-        public QuestsButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
     }
 }

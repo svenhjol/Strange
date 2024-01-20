@@ -15,6 +15,7 @@ import svenhjol.charmony.api.event.ServerStartEvent;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 
 import java.util.*;
@@ -185,34 +186,34 @@ public class Quests extends CommonFeature {
 
         // Player at max quests?
         if (QuestHelper.hasMaxQuests(player)) {
-            NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.MAX_QUESTS);
+            NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.MAX_QUESTS);
             return;
         }
 
         // Player already on this quest?
         if (getQuest(serverPlayer, questId).isPresent()) {
-            NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.ALREADY_ON_QUEST);
+            NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.ALREADY_ON_QUEST);
             return;
         }
 
         // Is villager nearby?
         var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
-            NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.NO_VILLAGER);
+            NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.NO_VILLAGER);
             return;
         }
 
         // Check that the villager has quests.
         var villagerQuests = VILLAGER_QUESTS.get(villagerUuid);
         if (villagerQuests == null || villagerQuests.isEmpty()) {
-            NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.VILLAGER_HAS_NO_QUESTS);
+            NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.VILLAGER_HAS_NO_QUESTS);
             return;
         }
 
         // Check that the villager quest ID is valid.
         var opt = villagerQuests.stream().filter(q -> q.id().equals(questId)).findFirst();
         if (opt.isEmpty()) {
-            NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.NO_QUEST);
+            NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.NO_QUEST);
             return;
         }
 
@@ -224,7 +225,12 @@ public class Quests extends CommonFeature {
         var quest = opt.get();
         addQuest(serverPlayer, quest);
         syncQuests(serverPlayer);
-        NotifyAcceptQuestResult.send(serverPlayer, AcceptQuestResult.SUCCESS);
+
+        // Fire the AcceptQuestEvent on the server side.
+        QuestEvents.ACCEPT_QUEST.invoke(player, quest);
+
+        // Update the client with the result.
+        NotifyAcceptQuestResult.send(serverPlayer, quest, AcceptQuestResult.SUCCESS);
     }
 
     public static void handleAbandonQuest(AbandonQuest message, Player player) {
@@ -234,21 +240,27 @@ public class Quests extends CommonFeature {
 
         // Player even has quests?
         if (quests.isEmpty()) {
-            NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.NO_QUESTS);
+            NotifyAbandonQuestResult.send(serverPlayer, null, AbandonQuestResult.NO_QUESTS);
             return;
         }
 
         // Player has this quest?
         var opt = quests.stream().filter(q -> q.id.equals(questId)).findFirst();
         if (opt.isEmpty()) {
-            NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.NO_QUEST);
+            NotifyAbandonQuestResult.send(serverPlayer, null, AbandonQuestResult.NO_QUEST);
             return;
         }
 
-        // Remove this quest from the player's quests.
         var quest = opt.get();
+
+        // Fire the AbandonQuestEvent on the server side.
+        QuestEvents.ABANDON_QUEST.invoke(player, quest);
+
+        // Remove this quest from the player's quests.
         removeQuest(serverPlayer, quest);
-        NotifyAbandonQuestResult.send(serverPlayer, AbandonQuestResult.SUCCESS);
+
+        // Update the client with the result.
+        NotifyAbandonQuestResult.send(serverPlayer, quest, AbandonQuestResult.SUCCESS);
     }
 
     public enum VillagerQuestsResult {

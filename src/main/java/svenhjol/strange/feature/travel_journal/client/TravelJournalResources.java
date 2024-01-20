@@ -15,11 +15,6 @@ public class TravelJournalResources {
     public static final WidgetSprites HOME_BUTTON = makeButton("home");
     public static final WidgetSprites LEARNED_BUTTON = makeButton("learned");
     public static final WidgetSprites QUESTS_BUTTON = makeButton("quests");
-    public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");
-    public static final WidgetSprites APPRENTICE_SCROLL_BUTTON = makeButton("apprentice_scroll");
-    public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");
-    public static final WidgetSprites EXPERT_SCROLL_BUTTON = makeButton("expert_scroll");
-    public static final WidgetSprites MASTER_SCROLL_BUTTON = makeButton("master_scroll");
     public static final WidgetSprites SAVE_TO_BOOKMARK_BUTTON = makeButton("save_to_bookmark");
     public static final WidgetSprites SAVE_TO_MAP_BUTTON = makeButton("save_to_map");
     public static final WidgetSprites PHOTO_BUTTON = makeButton("photo");
@@ -62,5 +57,4 @@ public class TravelJournalResources {
             instance.id("widget/travel_journal/" + name + "_button"),
             instance.id("widget/travel_journal/" + name + "_button_highlighted"));
     }
-
 }
