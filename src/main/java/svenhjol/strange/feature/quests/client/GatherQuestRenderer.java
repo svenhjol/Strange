@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
@@ -188,7 +190,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
             guiGraphics.blitSprite(QuestResources.TICK, xo + 2, yo + 3, 9, 9);
             if (mouseX >= xo + 2 && mouseX <= xo + 11
                 && mouseY >= yo + 3 && mouseY <= yo + 12) {
-                guiGraphics.renderTooltip(font, TextHelper.translatable("gui.strange.quests.satisfied"), xo, yo + 20);
+                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), xo, yo + 20);
             }
         }
     }
@@ -203,7 +205,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var yo = yOffset;
         for (var reward : quest.rewards()) {
             if (reward instanceof GatherQuest.RewardItem i) {
-                var label = TextHelper.translatable("gui.strange.quests.gather_amount", i.item.getCount());
+                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.item.getCount());
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
                 var width = font.width(label);
@@ -214,6 +216,21 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
                 if (mouseX >= xo && mouseX <= xo + 25 + width
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                }
+                xo += 27 + width;
+            }
+            if (reward instanceof GatherQuest.RewardXp i) {
+                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.total);
+
+                guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
+                var width = font.width(label);
+
+                guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, rewardBackgroundColor);
+                guiGraphics.renderFakeItem(new ItemStack(Items.EXPERIENCE_BOTTLE), xo + 7 + width, yo);
+
+                if (mouseX >= xo && mouseX <= xo + 25 + width
+                    && mouseY >= yo - 1 && mouseY <= yo + 17) {
+                    guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.REWARD_LEVELS_KEY, i.total), xo, yo + 27);
                 }
                 xo += 27 + width;
             }

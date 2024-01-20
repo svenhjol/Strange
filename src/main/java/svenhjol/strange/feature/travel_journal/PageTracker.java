@@ -17,7 +17,7 @@ public class PageTracker {
         BOOKMARK(() -> bookmark == null ? new BookmarksScreen() : new BookmarkScreen(bookmark)),
         LEARNED(LearnedScreen::new),
         QUESTS(QuestsScreen::new),
-        QUEST(() -> quest == null ? new QuestsScreen() : new QuestScreen(quest));
+        QUEST(() -> quest == null || quest.finished() ? new QuestsScreen() : new QuestScreen(quest));
 
         private final Supplier<BaseTravelJournalScreen> screen;
 

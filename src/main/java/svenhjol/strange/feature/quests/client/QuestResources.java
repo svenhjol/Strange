@@ -25,6 +25,9 @@ public class QuestResources {
     public static final ResourceLocation TICK = new ResourceLocation(Strange.ID, "quest/tick");
     public static final String QUEST_OFFERS_TITLE_KEY = "gui.strange.quests.quest_offers";
     public static final String QUEST_TITLE_KEY = "gui.strange.quests.quest_title";
+    public static final String AMOUNT_KEY = "gui.strange.quests.amount";
+    public static final String REWARD_LEVELS_KEY = "gui.strange.quests.reward_levels";
+    public static final String SATISFIED_KEY = "gui.strange.quests.satisfied";
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();
     public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
     public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");

@@ -190,6 +190,11 @@ public class GatherQuest extends Quest<Item> {
         }
 
         @Override
+        public void start() {
+            // no op
+        }
+
+        @Override
         public void complete() {
             if (player == null) return;
             var items = rewardItems.stream().map(i -> i.item).toList();
@@ -223,6 +228,11 @@ public class GatherQuest extends Quest<Item> {
         @Override
         public RewardType type() {
             return RewardType.EXPERIENCE_LEVEL;
+        }
+
+        @Override
+        public void start() {
+            // no op
         }
 
         @Override
@@ -312,6 +322,11 @@ public class GatherQuest extends Quest<Item> {
             }
 
             return Math.max(0, remainder);
+        }
+
+        @Override
+        public void start() {
+            // no op
         }
 
         @Override

@@ -24,6 +24,7 @@ public abstract class Quest<T> {
     static final String VILLAGER_UUID = "villager_uuid";
 
     protected @Nullable ServerPlayer player;
+
     protected String id;
 
     protected QuestType type;
@@ -55,6 +56,18 @@ public abstract class Quest<T> {
 
     public boolean satisfied() {
         return requirements().stream().allMatch(Requirement::satisfied);
+    }
+
+    public boolean finished() {
+        return status.equals(Status.CANCELLED) || status.equals(Status.COMPLETED);
+    }
+
+    public boolean inProgress() {
+        return status.equals(Status.STARTED);
+    }
+
+    public boolean notStarted() {
+        return status.equals(Status.NOT_STARTED);
     }
 
     public TagKey<T> tag(ResourceLocation id) {
@@ -154,6 +167,14 @@ public abstract class Quest<T> {
 
         int remaining();
 
+        /**
+         * Run when the quest is started.
+         */
+        void start();
+
+        /**
+         * Run when the quest is completed.
+         */
         void complete();
 
         void load(CompoundTag tag);
@@ -164,6 +185,14 @@ public abstract class Quest<T> {
     public interface Reward {
         RewardType type();
 
+        /**
+         * Run when the quest is started.
+         */
+        void start();
+
+        /**
+         * Run when the quest is completed.
+         */
         void complete();
 
         void load(CompoundTag tag);
