@@ -256,6 +256,9 @@
   "subtitles.strange.item.raid_horn.squeak": "Horn fails",
   "subtitles.strange.item.raid_horn.call_patrol": "Horn calls patrol",
   "subtitles.strange.item.raid_horn.call_off_raid": "Horn calls off raid",
+  "subtitles.strange.player.quest.accept": "Quest starts",
+  "subtitles.strange.player.quest.abandon": "Quest ends",
+  "subtitles.strange.player.quest.complete": "Quest completes",
   "subtitles.strange.player.travel_journal.interact": "Travel Journal opens",
   "subtitles.strange.player.travel_journal.photo": "Photo taken"
 }

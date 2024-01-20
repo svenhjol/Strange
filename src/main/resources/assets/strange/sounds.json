@@ -502,6 +502,33 @@
       }
     ]
   },
+  "quest_accept": {
+    "sounds": [
+      {
+        "name": "strange:quest_accept",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.quest.accept"
+  },
+  "quest_abandon": {
+    "sounds": [
+      {
+        "name": "strange:quest_abandon",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.quest.abandon"
+  },
+  "quest_complete": {
+    "sounds": [
+      {
+        "name": "strange:quest_complete",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.quest.complete"
+  },
   "raid_horn_call_off_raid": {
     "sounds": [
       {

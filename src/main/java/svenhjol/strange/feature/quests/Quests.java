@@ -3,6 +3,7 @@ package svenhjol.strange.feature.quests;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +20,7 @@ import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Quests extends CommonFeature {
@@ -26,48 +28,23 @@ public class Quests extends CommonFeature {
     public static final Map<UUID, List<Quest<?>>> PLAYER_QUESTS = new HashMap<>();
     public static final Map<UUID, List<Quest<?>>> VILLAGER_QUESTS = new HashMap<>();
     public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
+    static Supplier<SoundEvent> abandonSound;
+    static Supplier<SoundEvent> acceptSound;
+    static Supplier<SoundEvent> completeSound;
 
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
 
-    public static boolean tryComplete(ServerPlayer player, Villager villager) {
-        var quests = getQuests(player);
-        for (var quest : quests) {
-            if (!quest.satisfied()) {
-                continue;
-            }
-
-            var villagerUuid = quest.villagerUuid();
-            var villagerProfession = quest.villagerProfession();
-            var villagerData = villager.getVillagerData();
-            var matchesQuestGiver = villagerUuid.equals(villager.getUUID());
-            var matchesProfession = villagerProfession.equals(villagerData.getProfession());
-
-            if (!matchesQuestGiver && !matchesProfession) {
-                continue;
-            }
-
-            if (matchesProfession) {
-                quest.villagerUuid = villager.getUUID();
-            }
-
-            var level = (ServerLevel)player.level();
-            var pos = player.blockPosition();
-
-            level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
-            quest.complete();
-            removeQuest(player, quest);
-            syncQuests(player);
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public void register() {
+        var registry = mod().registry();
+
         QuestDefinitions.init();
-        QuestsNetwork.register(mod().registry());
+        QuestsNetwork.register(registry);
+
+        abandonSound = registry.soundEvent("quest_abandon");
+        acceptSound = registry.soundEvent("quest_accept");
+        completeSound = registry.soundEvent("quest_complete");
     }
 
     @Override
@@ -221,6 +198,8 @@ public class Quests extends CommonFeature {
         VILLAGER_QUESTS.put(villagerUuid, villagerQuests.stream().filter(q -> !q.id().equals(questId))
             .collect(Collectors.toCollection(ArrayList::new)));
 
+        level.playSound(null, serverPlayer.blockPosition(), acceptSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
         // Add this quest to the player's quests.
         var quest = opt.get();
         addQuest(serverPlayer, quest);
@@ -253,6 +232,8 @@ public class Quests extends CommonFeature {
 
         var quest = opt.get();
 
+        serverPlayer.level().playSound(null, serverPlayer.blockPosition(), abandonSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
         // Fire the AbandonQuestEvent on the server side.
         QuestEvents.ABANDON_QUEST.invoke(player, quest);
 
@@ -261,6 +242,42 @@ public class Quests extends CommonFeature {
 
         // Update the client with the result.
         NotifyAbandonQuestResult.send(serverPlayer, quest, AbandonQuestResult.SUCCESS);
+    }
+
+    public static boolean tryComplete(ServerPlayer player, Villager villager) {
+        var quests = getQuests(player);
+        for (var quest : quests) {
+            if (!quest.satisfied()) {
+                continue;
+            }
+
+            var villagerUuid = quest.villagerUuid();
+            var villagerProfession = quest.villagerProfession();
+            var villagerData = villager.getVillagerData();
+            var matchesQuestGiver = villagerUuid.equals(villager.getUUID());
+            var matchesProfession = villagerProfession.equals(villagerData.getProfession());
+
+            if (!matchesQuestGiver && !matchesProfession) {
+                continue;
+            }
+
+            if (matchesProfession) {
+                quest.villagerUuid = villager.getUUID();
+            }
+
+            var level = (ServerLevel)player.level();
+            var pos = player.blockPosition();
+
+            level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
+            level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
+            quest.complete();
+            removeQuest(player, quest);
+            syncQuests(player);
+            return true;
+        }
+
+        return false;
     }
 
     public enum VillagerQuestsResult {
