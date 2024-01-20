@@ -529,6 +529,15 @@
     ],
     "subtitle": "subtitles.strange.player.quest.complete"
   },
+  "quest_epic_complete": {
+    "sounds": [
+      {
+        "name": "strange:quest_epic_complete",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.quest.epic_complete"
+  },
   "raid_horn_call_off_raid": {
     "sounds": [
       {

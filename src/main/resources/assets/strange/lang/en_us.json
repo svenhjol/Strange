@@ -263,6 +263,7 @@
   "subtitles.strange.player.quest.accept": "Quest starts",
   "subtitles.strange.player.quest.abandon": "Quest ends",
   "subtitles.strange.player.quest.complete": "Quest completes",
+  "subtitles.strange.player.quest.epic_complete": "Epic quest completes",
   "subtitles.strange.player.travel_journal.interact": "Travel Journal opens",
   "subtitles.strange.player.travel_journal.photo": "Photo taken"
 }

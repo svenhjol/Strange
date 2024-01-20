@@ -35,6 +35,7 @@ public class Quests extends CommonFeature {
     static Supplier<SoundEvent> abandonSound;
     static Supplier<SoundEvent> acceptSound;
     static Supplier<SoundEvent> completeSound;
+    static Supplier<SoundEvent> epicCompleteSound;
 
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
@@ -49,6 +50,7 @@ public class Quests extends CommonFeature {
         abandonSound = registry.soundEvent("quest_abandon");
         acceptSound = registry.soundEvent("quest_accept");
         completeSound = registry.soundEvent("quest_complete");
+        epicCompleteSound = registry.soundEvent("quest_epic_complete");
     }
 
     @Override
@@ -307,10 +309,12 @@ public class Quests extends CommonFeature {
         var villagerUuid = villager.getUUID();
 
         level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
-        level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
         if (quest.isEpic()) {
+            level.playSound(null, pos, epicCompleteSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
             resetLoyalty(villagerUuid);
+        } else {
+            level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
         }
 
         quest.complete();
