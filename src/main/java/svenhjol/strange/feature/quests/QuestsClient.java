@@ -104,7 +104,7 @@ public class QuestsClient extends ClientFeature {
 
         RequestVillagerQuests.send(villagerUuid);
 
-        questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 100, b -> {
+        questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 92, b -> {
             screen.onClose();
             openQuestOffers(villagerUuid, villagerProfession, villagerLevel);
         });
