@@ -3,6 +3,7 @@ package svenhjol.strange.feature.quests.client;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.Strange;
@@ -14,6 +15,8 @@ public class QuestResources {
     public static final Component QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
     public static final Component GATHER_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.gather_requirement");
     public static final Component GATHER_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.gather_reward");
+    public static final Component HUNT_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.hunt_requirement");
+    public static final Component HUNT_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.hunt_reward");
     public static final Component QUEST_INFO_TEXT = TextHelper.translatable("gui.strange.quests.quest_info");
     public static final Component ACCEPT_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.accept_quest");
     public static final Component ABANDON_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.abandon_quest");
@@ -30,6 +33,7 @@ public class QuestResources {
     public static final String SATISFIED_KEY = "gui.strange.quests.satisfied";
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();
     public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
+    public static final Map<EntityType<?>, ResourceLocation> MOB_SPRITES = new HashMap<>();
     public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");
     public static final WidgetSprites APPRENTICE_SCROLL_BUTTON = makeButton("apprentice_scroll");
     public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");

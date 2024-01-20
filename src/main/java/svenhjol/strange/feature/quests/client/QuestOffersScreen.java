@@ -52,9 +52,9 @@ public class QuestOffersScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTitle(guiGraphics, midX, 24);
+        renderTitle(guiGraphics, midX, 10);
 
-        var yOffset = 40;
+        var yOffset = 30;
         for (int i = 0; i < renderers.size(); i++) {
             var renderer = renderers.get(i);
             renderer.renderPagedOffer(this, guiGraphics, yOffset, mouseX, mouseY);

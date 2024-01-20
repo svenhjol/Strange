@@ -5,6 +5,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import svenhjol.charmony.api.event.EntityUseEvent;
+import svenhjol.charmony.api.event.PlayerLoginEvent;
 import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.charmony.api.event.ScreenSetupEvent;
 import svenhjol.charmony.base.Mods;
@@ -27,6 +30,7 @@ import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.client.QuestButtons.QuestsButton;
 import svenhjol.strange.feature.quests.client.QuestOffersScreen;
+import svenhjol.strange.feature.quests.client.QuestResources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,16 @@ public class QuestsClient extends ClientFeature {
         ScreenSetupEvent.INSTANCE.handle(this::handleScreenSetup);
         EntityUseEvent.INSTANCE.handle(this::handleEntityUse);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+        PlayerLoginEvent.INSTANCE.handle(this::handlePlayerLogin);
+    }
+
+    private void handlePlayerLogin(Player player) {
+        // Load all the mob sprites.
+        QuestResources.MOB_SPRITES.clear();
+        BuiltInRegistries.ENTITY_TYPE.forEach(e -> {
+            var id = BuiltInRegistries.ENTITY_TYPE.getKey(e);
+            QuestResources.MOB_SPRITES.put(e, new ResourceLocation(id.getNamespace(), "mobs/" + id.getPath()));
+        });
     }
 
     private void handlePlayerTick(Player player) {

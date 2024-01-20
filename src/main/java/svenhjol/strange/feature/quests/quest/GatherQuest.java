@@ -15,7 +15,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
-import svenhjol.strange.feature.quests.QuestType;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class GatherQuest extends Quest<Item> {
     @Override
     protected void make(QuestDefinition definition, UUID villagerUuid) {
         this.id = makeId();
-        this.type = QuestType.GATHER;
+        this.type = definition.type();
         this.status = Status.NOT_STARTED;
         this.epic = definition.isEpic();
         this.villagerProfession = definition.profession();
