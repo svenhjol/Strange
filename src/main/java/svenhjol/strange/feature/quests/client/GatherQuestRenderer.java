@@ -12,8 +12,8 @@ import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.AcceptButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.ScrollImageButton;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
-import svenhjol.strange.feature.quests.quest.GatherQuest.RewardItem;
-import svenhjol.strange.feature.quests.quest.GatherQuest.RewardXp;
+import svenhjol.strange.feature.quests.reward.RewardItem;
+import svenhjol.strange.feature.quests.reward.RewardXp;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     boolean renderedButtons = false;
@@ -26,6 +26,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     int satisfiedBackgroundColor;
     int rewardBackgroundColor;
     int offerBorderColor;
+    String remainingKey;
     Button.OnPress onAccept;
     Button.OnPress onUpdate;
     Button.OnPress onAbandon;
@@ -35,21 +36,21 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     @Override
     public void initPagedOffer(Screen screen, Button.OnPress onAccept, int yOffset) {
         init(screen);
-        darkMode();
+        offerTheme();
         this.onAccept = onAccept;
     }
 
     @Override
     public void initPagedActive(Screen screen, Button.OnPress onUpdate, int yOffset) {
         init(screen);
-        lightMode();
+        activeTheme();
         this.onUpdate = onUpdate;
     }
 
     @Override
     public void initSelectedActive(Screen screen, Button.OnPress onAbandon) {
         init(screen);
-        lightMode();
+        activeTheme();
         this.onAbandon = onAbandon;
     }
 
@@ -61,7 +62,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         renderedButtons = false;
     }
 
-    protected void darkMode() {
+    protected void offerTheme() {
         titleColor = quest.isEpic() ? 0xffe0a0 : 0xffffff;
         requirementColor = quest.isEpic() ? 0xdfc080 : 0xa0a0a0;
         satisfiedColor = 0xa0ffa0;
@@ -70,9 +71,10 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         satisfiedBackgroundColor = 0x24a0ffa0;
         rewardBackgroundColor = 0x24a0ffff;
         offerBorderColor = quest.isEpic() ? 0x40ffe080 : 0x40a0a0a0;
+        remainingKey = "gui.strange.quests.amount";
     }
 
-    protected void lightMode() {
+    protected void activeTheme() {
         titleColor = 0x202020;
         requirementColor = 0x303030;
         satisfiedColor = 0x308030;
@@ -80,6 +82,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         requirementBackgroundColor = 0x24000000;
         satisfiedBackgroundColor = 0x24008000;
         rewardBackgroundColor = 0x24008080;
+        remainingKey = "gui.strange.quests.remaining";
     }
 
     @Override
@@ -174,7 +177,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var yo = yOffset;
         for (var requirement : quest.requirements()) {
             if (requirement instanceof GatherQuest.GatherItem i) {
-                var label = TextHelper.translatable("gui.strange.quests.gather_remaining", Math.max(0, i.total() - i.remaining()), i.total());
+                var label = TextHelper.translatable(remainingKey, Math.max(0, i.total() - i.remaining()), i.total());
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, i.satisfied() ? satisfiedColor : requirementColor, false);
                 var width = font.width(label);
