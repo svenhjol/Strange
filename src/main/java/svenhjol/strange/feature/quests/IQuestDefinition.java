@@ -28,6 +28,10 @@ public interface IQuestDefinition {
         return 0;
     }
 
+    default boolean isEpic() {
+        return false;
+    }
+
     default Pair<ResourceLocation, Integer> randomRequirement(RandomSource random) {
         return requirements().get(random.nextInt(requirements().size()));
     }

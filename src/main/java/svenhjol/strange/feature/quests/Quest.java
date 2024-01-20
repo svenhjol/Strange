@@ -19,6 +19,7 @@ public abstract class Quest<T> {
     static final String ID_TAG = "id";
     static final String TYPE_TAG = "type";
     static final String STATUS_TAG = "status";
+    static final String EPIC_TAG = "epic";
     static final String VILLAGER_PROFESSION_TAG = "villager_profession";
     static final String VILLAGER_LEVEL_TAG = "villager_level";
     static final String VILLAGER_UUID = "villager_uuid";
@@ -29,10 +30,10 @@ public abstract class Quest<T> {
 
     protected QuestType type;
     protected Status status;
-
     protected VillagerProfession villagerProfession;
     protected int villagerLevel;
     protected UUID villagerUuid;
+    protected boolean epic;
 
     public String id() {
         return id;
@@ -44,6 +45,10 @@ public abstract class Quest<T> {
 
     public Status status() {
         return status;
+    }
+
+    public boolean isEpic() {
+        return epic;
     }
 
     protected abstract Registry<T> registry();
@@ -86,6 +91,7 @@ public abstract class Quest<T> {
         var id = tag.getString(ID_TAG);
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
         var status = Status.valueOf(tag.getString(STATUS_TAG));
+        var epic = tag.getBoolean(EPIC_TAG);
         var villagerProfession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(VILLAGER_PROFESSION_TAG)));
         var villagerLevel = tag.getInt(VILLAGER_LEVEL_TAG);
         var villagerUuid = tag.getUUID(VILLAGER_UUID);
@@ -94,6 +100,7 @@ public abstract class Quest<T> {
         quest.id = id;
         quest.type = type;
         quest.status = status;
+        quest.epic = epic;
         quest.villagerProfession = villagerProfession;
         quest.villagerLevel = villagerLevel;
         quest.villagerUuid = villagerUuid;
@@ -106,6 +113,7 @@ public abstract class Quest<T> {
         tag.putString(ID_TAG, id);
         tag.putString(TYPE_TAG, type.name());
         tag.putString(STATUS_TAG, status().name());
+        tag.putBoolean(EPIC_TAG, epic);
         tag.putString(VILLAGER_PROFESSION_TAG, BuiltInRegistries.VILLAGER_PROFESSION.getKey(this.villagerProfession).toString());
         tag.putInt(VILLAGER_LEVEL_TAG, villagerLevel);
         tag.putUUID(VILLAGER_UUID, villagerUuid);

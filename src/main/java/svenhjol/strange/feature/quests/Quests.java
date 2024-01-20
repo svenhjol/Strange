@@ -28,6 +28,7 @@ public class Quests extends CommonFeature {
     public static final Map<UUID, List<Quest<?>>> PLAYER_QUESTS = new HashMap<>();
     public static final Map<UUID, List<Quest<?>>> VILLAGER_QUESTS = new HashMap<>();
     public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
+    public static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
     static Supplier<SoundEvent> abandonSound;
     static Supplier<SoundEvent> acceptSound;
     static Supplier<SoundEvent> completeSound;
@@ -81,6 +82,15 @@ public class Quests extends CommonFeature {
         quest.player = player;
     }
 
+    public static void increaseLoyalty(UUID villagerUuid, int amount) {
+        var current = getLoyalty(villagerUuid);
+        VILLAGER_LOYALTY.put(villagerUuid, current + amount);
+    }
+
+    public static int getLoyalty(UUID villagerUuid) {
+        return VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0);
+    }
+
     public static void removeQuest(ServerPlayer player, Quest<?> quest) {
         PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
             .remove(quest);
@@ -107,6 +117,7 @@ public class Quests extends CommonFeature {
     }
 
     public static void handleRequestVillagerQuests(RequestVillagerQuests message, Player player) {
+        var ticksToRefresh = 80; // TODO: test value, refresh quests every 4 seconds
         var level = player.level();
         var random = level.getRandom();
         var gameTime = level.getGameTime();
@@ -127,7 +138,7 @@ public class Quests extends CommonFeature {
         var lastRefresh = VILLAGER_QUESTS_REFRESH.get(villagerUuid);
         var quests = VILLAGER_QUESTS.getOrDefault(villagerUuid, new ArrayList<>());
 
-        if (lastRefresh != null && gameTime - lastRefresh < 80) {
+        if (lastRefresh != null && gameTime - lastRefresh < ticksToRefresh) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.SUCCESS);
             SyncVillagerQuests.send(serverPlayer, quests, villagerUuid, villagerProfession);
             return;
@@ -247,40 +258,46 @@ public class Quests extends CommonFeature {
         NotifyAbandonQuestResult.send(serverPlayer, quest, AbandonQuestResult.SUCCESS);
     }
 
+    /**
+     * Called by mixin when a player interacts with a villager.
+     * If any player quests can be completed by the villager then run that action here.
+     */
     public static boolean tryComplete(ServerPlayer player, Villager villager) {
         var quests = getQuests(player);
-        for (var quest : quests) {
-            if (!quest.satisfied()) {
-                continue;
+        var satisfied = quests.stream().filter(Quest::satisfied).toList();
+        if (satisfied.isEmpty()) return false;
+
+        var matchesQuestGiver = satisfied.stream().filter(q -> q.villagerUuid().equals(villager.getUUID())).toList();
+        if (!matchesQuestGiver.isEmpty()) {
+            for (Quest<?> quest : matchesQuestGiver) {
+                completeWithVillager(player, villager, quest);
             }
+            return true;
+        }
 
-            var villagerUuid = quest.villagerUuid();
-            var villagerProfession = quest.villagerProfession();
-            var villagerData = villager.getVillagerData();
-            var matchesQuestGiver = villagerUuid.equals(villager.getUUID());
-            var matchesProfession = villagerProfession.equals(villagerData.getProfession());
-
-            if (!matchesQuestGiver && !matchesProfession) {
-                continue;
-            }
-
-            if (matchesProfession) {
+        var matchesProfession = satisfied.stream().filter(q -> q.villagerProfession().equals(villager.getVillagerData().getProfession())).toList();
+        if (!matchesProfession.isEmpty()) {
+            for (Quest<?> quest : matchesProfession) {
                 quest.villagerUuid = villager.getUUID();
+                completeWithVillager(player, villager, quest);
             }
-
-            var level = (ServerLevel)player.level();
-            var pos = player.blockPosition();
-
-            level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
-            level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-
-            quest.complete();
-            removeQuest(player, quest);
-            syncQuests(player);
             return true;
         }
 
         return false;
+    }
+
+    private static void completeWithVillager(ServerPlayer player, Villager villager, Quest<?> quest) {
+        var level = (ServerLevel)player.level();
+        var pos = player.blockPosition();
+
+        level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
+        level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+        increaseLoyalty(villager.getUUID(), 1);
+
+        quest.complete();
+        removeQuest(player, quest);
+        syncQuests(player);
     }
 
     public enum VillagerQuestsResult {

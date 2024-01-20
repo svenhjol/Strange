@@ -119,6 +119,7 @@ public class GatherQuest extends Quest<Item> {
         this.id = makeId();
         this.type = QuestType.GATHER;
         this.status = Status.NOT_STARTED;
+        this.epic = definition.isEpic();
         this.villagerProfession = definition.profession();
         this.villagerLevel = definition.level();
         this.villagerUuid = villagerUuid;
@@ -166,10 +167,10 @@ public class GatherQuest extends Quest<Item> {
             var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId),
                 random.nextIntBetweenInclusive(Math.max(1, rewardSize - 2), rewardSize));
 
-            var allowTreasure = stack.is(Items.BOOK);
+            var allowTreasure = isEpic() || stack.is(Items.BOOK);
             var enchantChance = 0.2d * villagerLevel();
 
-            if (random.nextDouble() < enchantChance) {
+            if (isEpic() || random.nextDouble() < enchantChance) {
                 EnchantmentHelper.enchantItem(random, stack, villagerLevel(), allowTreasure);
             }
 
