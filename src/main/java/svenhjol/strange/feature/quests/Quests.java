@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Quests extends CommonFeature {
-    static final List<IQuestDefinition> DEFINITIONS = new ArrayList<>();
+    static final List<QuestDefinition> DEFINITIONS = new ArrayList<>();
     public static final Map<UUID, List<Quest<?>>> PLAYER_QUESTS = new HashMap<>();
     public static final Map<UUID, List<Quest<?>>> VILLAGER_QUESTS = new HashMap<>();
     public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
@@ -66,7 +66,7 @@ public class Quests extends CommonFeature {
         }
     }
 
-    public static void registerDefinition(IQuestDefinition definition) {
+    public static void registerDefinition(QuestDefinition definition) {
         Mods.common(Strange.ID).log().debug(Quests.class, "Registering definition " + definition);
         DEFINITIONS.add(definition);
     }

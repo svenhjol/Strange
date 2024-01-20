@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class QuestHelper {
-    public static List<IQuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
+    public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
             .filter(d -> d.profession() == profession)
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
@@ -34,7 +34,7 @@ public class QuestHelper {
         }
 
         // Get epics separately.
-        var epics = definitions.stream().filter(IQuestDefinition::isEpic).toList();
+        var epics = definitions.stream().filter(QuestDefinition::isEpic).toList();
 
         Util.shuffle(definitions, random);
         var sublist = definitions.subList(0, Math.min(definitions.size(), numberOfDefinitions));
@@ -44,7 +44,7 @@ public class QuestHelper {
         }
 
         // Replace one of the definitions with the epic.
-        if (!epics.isEmpty() && sublist.stream().noneMatch(IQuestDefinition::isEpic)) {
+        if (!epics.isEmpty() && sublist.stream().noneMatch(QuestDefinition::isEpic)) {
             var epic = random.nextInt(epics.size());
             var index = random.nextInt(sublist.size());
             sublist.set(index, epics.get(epic));
@@ -53,10 +53,10 @@ public class QuestHelper {
         return sublist;
     }
 
-    public static List<Quest<?>> makeQuestsFromDefinitions(List<IQuestDefinition> definitions, UUID villagerUuid) {
+    public static List<Quest<?>> makeQuestsFromDefinitions(List<QuestDefinition> definitions, UUID villagerUuid) {
         List<Quest<?>> quests = new ArrayList<>();
 
-        for (IQuestDefinition definition : definitions) {
+        for (QuestDefinition definition : definitions) {
             quests.add(Quest.create(definition, villagerUuid));
         }
 

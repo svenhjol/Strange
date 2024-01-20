@@ -12,6 +12,8 @@ import svenhjol.strange.feature.quests.client.QuestButtons.AbandonButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.AcceptButton;
 import svenhjol.strange.feature.quests.client.QuestButtons.ScrollImageButton;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
+import svenhjol.strange.feature.quests.quest.GatherQuest.RewardItem;
+import svenhjol.strange.feature.quests.quest.GatherQuest.RewardXp;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     boolean renderedButtons = false;
@@ -206,7 +208,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         var xo = midX + xOffset;
         var yo = yOffset;
         for (var reward : quest.rewards()) {
-            if (reward instanceof GatherQuest.RewardItem i) {
+            if (reward instanceof RewardItem i) {
                 var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.item.getCount());
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
@@ -221,7 +223,7 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
                 }
                 xo += 27 + width;
             }
-            if (reward instanceof GatherQuest.RewardXp i) {
+            if (reward instanceof RewardXp i) {
                 var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.total);
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);

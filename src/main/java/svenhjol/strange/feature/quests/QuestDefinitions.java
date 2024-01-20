@@ -22,8 +22,8 @@ public class QuestDefinitions {
 //        Quests.registerDefinition(makeHunt(VillagerProfession.FLETCHER, 2, List.of("apprentice_fletcher_hunt_mobs")));
     }
 
-    static IQuestDefinition makeGather(VillagerProfession profession, int level, List<Pair<String, Integer>> requirements, List<Pair<String, Integer>> rewards, boolean isEpic) {
-        return new IQuestDefinition() {
+    static QuestDefinition makeGather(VillagerProfession profession, int level, List<Pair<String, Integer>> requirements, List<Pair<String, Integer>> rewards, boolean isEpic) {
+        return new QuestDefinition() {
             @Override
             public QuestType type() { return QuestType.GATHER; }
 
@@ -45,7 +45,7 @@ public class QuestDefinitions {
 
             @Override
             public int experience() {
-                var def = IQuestDefinition.super.experience();
+                var def = QuestDefinition.super.experience();
                 return isEpic ? def * 2 : def;
             }
 

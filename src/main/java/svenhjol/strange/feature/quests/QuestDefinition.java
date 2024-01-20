@@ -7,7 +7,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 
 import java.util.List;
 
-public interface IQuestDefinition {
+public interface QuestDefinition {
     double XP_MULTIPLIER_PER_LEVEL = 1.6d;
 
     QuestType type();

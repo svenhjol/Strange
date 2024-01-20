@@ -79,7 +79,7 @@ public abstract class Quest<T> {
         return TagKey.create(resourceKey(), id);
     }
 
-    public static <Q extends Quest<?>> Q create(IQuestDefinition definition, UUID villagerUuid) {
+    public static <Q extends Quest<?>> Q create(QuestDefinition definition, UUID villagerUuid) {
         var type = definition.type();
 
         var quest = type.<Q>makeQuest();
@@ -144,7 +144,7 @@ public abstract class Quest<T> {
         status = Status.COMPLETED;
     }
 
-    protected abstract void make(IQuestDefinition definition, UUID villagerUuid);
+    protected abstract void make(QuestDefinition definition, UUID villagerUuid);
 
     protected String makeId() {
         return RandomStringUtils.randomAlphanumeric(8).toLowerCase(Locale.ROOT);
@@ -166,46 +166,6 @@ public abstract class Quest<T> {
 
     public UUID villagerUuid() {
         return villagerUuid;
-    }
-
-    public interface Requirement {
-        boolean satisfied();
-
-        int total();
-
-        int remaining();
-
-        /**
-         * Run when the quest is started.
-         */
-        void start();
-
-        /**
-         * Run when the quest is completed.
-         */
-        void complete();
-
-        void load(CompoundTag tag);
-
-        void save(CompoundTag tag);
-    }
-
-    public interface Reward {
-        RewardType type();
-
-        /**
-         * Run when the quest is started.
-         */
-        void start();
-
-        /**
-         * Run when the quest is completed.
-         */
-        void complete();
-
-        void load(CompoundTag tag);
-
-        void save(CompoundTag tag);
     }
 
     public enum Status {

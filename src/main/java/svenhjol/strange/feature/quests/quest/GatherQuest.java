@@ -16,10 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
-import svenhjol.strange.feature.quests.IQuestDefinition;
-import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestHelper;
-import svenhjol.strange.feature.quests.QuestType;
+import svenhjol.strange.feature.quests.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,7 +112,7 @@ public class GatherQuest extends Quest<Item> {
     }
 
     @Override
-    protected void make(IQuestDefinition definition, UUID villagerUuid) {
+    protected void make(QuestDefinition definition, UUID villagerUuid) {
         this.id = makeId();
         this.type = QuestType.GATHER;
         this.status = Status.NOT_STARTED;
@@ -129,7 +126,7 @@ public class GatherQuest extends Quest<Item> {
         makeRewards(definition, random);
     }
 
-    protected void makeRequirements(IQuestDefinition definition, RandomSource random) {
+    protected void makeRequirements(QuestDefinition definition, RandomSource random) {
         var requirement = definition.randomRequirement(random);
         var requiredItem = requirement.getFirst();
         var requiredSize = requirement.getSecond();
@@ -149,7 +146,7 @@ public class GatherQuest extends Quest<Item> {
         }
     }
 
-    protected void makeRewards(IQuestDefinition definition, RandomSource random) {
+    protected void makeRewards(QuestDefinition definition, RandomSource random) {
         var reward = definition.randomReward(random);
         var rewardItem = reward.getFirst();
         var rewardSize = reward.getSecond();
