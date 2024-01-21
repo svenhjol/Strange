@@ -6,12 +6,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +20,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.storage.loot.LootDataManager;
+import net.minecraft.world.level.storage.loot.LootPool;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.reward.RewardItem;
@@ -27,7 +30,7 @@ import svenhjol.strange.feature.quests.reward.RewardXp;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class Quest<T> {
+public abstract class Quest {
     static final int MAX_REWARD_ITEMS = 2; // TODO: hardcoded number of item rewards
     static final String ID_TAG = "id";
     static final String TYPE_TAG = "type";
@@ -68,10 +71,6 @@ public abstract class Quest<T> {
         return epic;
     }
 
-    protected abstract Registry<T> registry();
-
-    protected abstract ResourceKey<Registry<T>> resourceKey();
-
     public abstract List<? extends Requirement> requirements();
 
     public List<? extends Reward> rewards() {
@@ -109,10 +108,6 @@ public abstract class Quest<T> {
         return player;
     }
 
-    public TagKey<T> tag(ResourceLocation id) {
-        return TagKey.create(resourceKey(), id);
-    }
-
     public Registry<Item> itemRegistry() {
         return BuiltInRegistries.ITEM;
     }
@@ -121,15 +116,25 @@ public abstract class Quest<T> {
         return TagKey.create(Registries.ITEM, id);
     }
 
-    public static <Q extends Quest<?>> Q create(QuestDefinition definition, UUID villagerUuid) {
+
+    public Registry<EntityType<?>> entityRegistry() {
+        return BuiltInRegistries.ENTITY_TYPE;
+    }
+
+    public TagKey<EntityType<?>> entityTag(ResourceLocation id) {
+        return TagKey.create(Registries.ENTITY_TYPE, id);
+    }
+
+
+    public static <Q extends Quest> Q create(ResourceManager manager, QuestDefinition definition, UUID villagerUuid) {
         var type = definition.type();
 
         var quest = type.<Q>makeQuest();
-        quest.make(definition, villagerUuid);
+        quest.make(manager, definition, villagerUuid);
         return quest;
     }
 
-    public static <Q extends Quest<?>> Q load(CompoundTag tag) {
+    public static <Q extends Quest> Q load(CompoundTag tag) {
         var id = tag.getString(ID_TAG);
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
         var status = Status.valueOf(tag.getString(STATUS_TAG));
@@ -222,9 +227,27 @@ public abstract class Quest<T> {
         // no op
     }
 
-    protected abstract void make(QuestDefinition definition, UUID villagerUuid);
+    public Optional<LootPool.Builder> lootTableModify(LootDataManager manger, ResourceLocation id) {
+        return Optional.empty();
+    }
 
-    protected void makeRewards(QuestDefinition definition, RandomSource random) {
+    protected void make(ResourceManager manager, QuestDefinition definition, UUID villagerUuid) {
+        this.id = makeId();
+        this.type = definition.type();
+        this.status = Status.NOT_STARTED;
+        this.epic = definition.isEpic();
+        this.villagerProfession = definition.profession();
+        this.villagerLevel = definition.level();
+        this.villagerUuid = villagerUuid;
+
+        var random = RandomSource.create();
+        makeRequirements(manager, definition, random);
+        makeRewards(manager, definition, random);
+    }
+
+    protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random);
+
+    protected void makeRewards(ResourceManager manager, QuestDefinition definition, RandomSource random) {
         var reward = definition.randomReward(random);
         var rewardItem = reward.getFirst();
         var rewardSize = reward.getSecond();

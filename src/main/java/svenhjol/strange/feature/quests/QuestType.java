@@ -13,13 +13,13 @@ public enum QuestType {
     GATHER(GatherQuest.class, GatherQuestRenderer.class, TextHelper.translatable("gui.strange.quests.gather")),
     HUNT(HuntQuest.class, HuntQuestRenderer.class, TextHelper.translatable("gui.strange.quests.hunt"));
 
-    final Class<? extends Quest<?>> questClass;
-    final Class<? extends BaseQuestRenderer<? extends Quest<?>>> questRenderer;
+    final Class<? extends Quest> questClass;
+    final Class<? extends BaseQuestRenderer<? extends Quest>> questRenderer;
     final Component questTypeName;
 
     QuestType(
-        Class<? extends Quest<?>> questClass,
-        Class<? extends BaseQuestRenderer<? extends Quest<?>>> questRenderer,
+        Class<? extends Quest> questClass,
+        Class<? extends BaseQuestRenderer<? extends Quest>> questRenderer,
         Component questTypeName
     ) {
         this.questClass = questClass;
@@ -27,7 +27,7 @@ public enum QuestType {
         this.questTypeName = questTypeName;
     }
 
-    public <Q extends Quest<?>> Q makeQuest() {
+    public <Q extends Quest> Q makeQuest() {
         Q quest;
 
         try {
@@ -39,7 +39,7 @@ public enum QuestType {
         return quest;
     }
 
-    public <Q extends Quest<?>, R extends BaseQuestRenderer<Q>> R makeRenderer(Q quest) {
+    public <Q extends Quest, R extends BaseQuestRenderer<Q>> R makeRenderer(Q quest) {
         R renderer;
 
         try {

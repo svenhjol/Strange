@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 public class PageTracker {
     public static Screen screen;
     public static Bookmark bookmark;
-    public static Quest<?> quest;
+    public static Quest quest;
 
     public enum Screen {
         HOME(HomeScreen::new),

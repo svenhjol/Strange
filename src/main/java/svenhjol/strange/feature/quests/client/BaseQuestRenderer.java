@@ -13,7 +13,7 @@ import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
 
-public abstract class BaseQuestRenderer<Q extends Quest<?>> {
+public abstract class BaseQuestRenderer<Q extends Quest> {
     Q quest;
     boolean renderedButtons = false;
     int midX;

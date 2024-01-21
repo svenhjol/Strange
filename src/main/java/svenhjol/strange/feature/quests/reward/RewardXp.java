@@ -9,13 +9,13 @@ import svenhjol.strange.feature.quests.Reward;
 public class RewardXp implements Reward {
     static final String TOTAL_TAG = "total";
     public int total;
-    public Quest<?> quest;
+    public Quest quest;
 
-    public RewardXp(Quest<?> quest) {
+    public RewardXp(Quest quest) {
         this.quest = quest;
     }
 
-    public RewardXp(Quest<?> quest, int total) {
+    public RewardXp(Quest quest, int total) {
         this.quest = quest;
         this.total = total;
     }

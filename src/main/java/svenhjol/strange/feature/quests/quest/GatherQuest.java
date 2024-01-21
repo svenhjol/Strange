@@ -1,15 +1,12 @@
 package svenhjol.strange.feature.quests.quest;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.helper.TagHelper;
@@ -20,23 +17,12 @@ import svenhjol.strange.feature.quests.Requirement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-public class GatherQuest extends Quest<Item> {
+public class GatherQuest extends Quest {
     static final int MAX_SELECTION = 3;
     static final String REQUIRED_ITEMS_TAG = "required";
 
     final List<GatherItem> items = new ArrayList<>();
-
-    @Override
-    protected Registry<Item> registry() {
-        return BuiltInRegistries.ITEM;
-    }
-
-    @Override
-    protected ResourceKey<Registry<Item>> resourceKey() {
-        return Registries.ITEM;
-    }
 
     @Override
     public List<? extends Requirement> requirements() {
@@ -57,7 +43,7 @@ public class GatherQuest extends Quest<Item> {
     @Override
     public void saveAdditional(CompoundTag tag) {
         var list = new ListTag();
-        for (GatherItem item : items) {
+        for (var item : items) {
             var t = new CompoundTag();
             item.save(t);
             list.add(t);
@@ -66,37 +52,23 @@ public class GatherQuest extends Quest<Item> {
     }
 
     @Override
-    protected void make(QuestDefinition definition, UUID villagerUuid) {
-        this.id = makeId();
-        this.type = definition.type();
-        this.status = Status.NOT_STARTED;
-        this.epic = definition.isEpic();
-        this.villagerProfession = definition.profession();
-        this.villagerLevel = definition.level();
-        this.villagerUuid = villagerUuid;
-
-        var random = RandomSource.create();
-        makeRequirements(definition, random);
-        makeRewards(definition, random);
-    }
-
-    protected void makeRequirements(QuestDefinition definition, RandomSource random) {
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
         var requirement = definition.randomRequirement(random);
         var requiredItem = requirement.getFirst();
-        var requiredSize = requirement.getSecond();
+        var requiredAmount = requirement.getSecond();
         List<ResourceLocation> values = new ArrayList<>();
 
-        for (Item item : TagHelper.getValues(registry(), tag(requiredItem))) {
-            values.add(registry().getKey(item));
+        for (var item : TagHelper.getValues(itemRegistry(), itemTag(requiredItem))) {
+            values.add(itemRegistry().getKey(item));
         }
 
         Collections.shuffle(values);
 
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
-        for (int i = 0; i < selection; i++) {
+        for (var i = 0; i < selection; i++) {
             var stack = new ItemStack(BuiltInRegistries.ITEM.get(values.get(i)));
-            items.add(new GatherItem(stack, requiredSize / selection));
+            items.add(new GatherItem(stack, requiredAmount / selection));
         }
     }
 
@@ -107,7 +79,7 @@ public class GatherQuest extends Quest<Item> {
         public ItemStack item;
         public int total;
 
-        public GatherItem() {}
+        private GatherItem() {}
 
         public GatherItem(ItemStack item, int total) {
             this.item = item;
@@ -130,10 +102,6 @@ public class GatherQuest extends Quest<Item> {
 
         @Override
         public boolean satisfied() {
-            if (player == null) {
-                return false;
-            }
-
             return remaining() == 0;
         }
 
@@ -145,26 +113,27 @@ public class GatherQuest extends Quest<Item> {
         @Override
         public int remaining() {
             if (player == null) {
-                return total;
+                return total();
             }
 
-            var remainder = total;
+            var remainder = total();
 
-            List<ItemStack> inventory = new ArrayList<>();
-            for (var stack : player.getInventory().items) {
-                inventory.add(stack.copy());
-            }
+            if (remainder > 0) {
+                // Make safe copy of the player's inventory.
+                List<ItemStack> inventory = new ArrayList<>();
+                for (var stack : player.getInventory().items) {
+                    inventory.add(stack.copy());
+                }
 
-            for (var invItem : inventory) {
-                if (remainder <= 0) continue;
-
-                if (invItem.is(item.getItem())
-                    && !invItem.isDamaged()
-                    && EnchantmentHelper.getEnchantments(invItem).isEmpty()
-                ) {
-                    var decrement = Math.min(remainder, invItem.getCount());
-                    remainder -= decrement;
-                    invItem.shrink(decrement);
+                for (var invItem : inventory) {
+                    if (invItem.is(item.getItem())
+                        && !invItem.isDamaged()
+                        && EnchantmentHelper.getEnchantments(invItem).isEmpty()
+                    ) {
+                        var decrement = Math.min(remainder, invItem.getCount());
+                        remainder -= decrement;
+                        invItem.shrink(decrement);
+                    }
                 }
             }
 

@@ -1,40 +1,28 @@
 package svenhjol.strange.feature.quests.quest;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import svenhjol.charmony.helper.TagHelper;
-import svenhjol.strange.feature.quests.*;
+import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-public class HuntQuest extends Quest<EntityType<?>> {
+public class HuntQuest extends Quest {
     static final int MAX_SELECTION = 3;
     static final String REQUIRED_KILLS_TAG = "required";
 
     final List<HuntTarget> targets = new ArrayList<>();
-
-    @Override
-    protected Registry<EntityType<?>> registry() {
-        return BuiltInRegistries.ENTITY_TYPE;
-    }
-
-    @Override
-    protected ResourceKey<Registry<EntityType<?>>> resourceKey() {
-        return Registries.ENTITY_TYPE;
-    }
 
     @Override
     public List<? extends Requirement> requirements() {
@@ -69,35 +57,21 @@ public class HuntQuest extends Quest<EntityType<?>> {
     }
 
     @Override
-    protected void make(QuestDefinition definition, UUID villagerUuid) {
-        this.id = makeId();
-        this.type = definition.type();
-        this.status = Status.NOT_STARTED;
-        this.epic = definition.isEpic();
-        this.villagerProfession = definition.profession();
-        this.villagerLevel = definition.level();
-        this.villagerUuid = villagerUuid;
-
-        var random = RandomSource.create();
-        makeRequirements(definition, random);
-        makeRewards(definition, random);
-    }
-
-    protected void makeRequirements(QuestDefinition definition, RandomSource random) {
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
         var requirement = definition.randomRequirement(random);
         var requiredEntity = requirement.getFirst();
         var requiredTotal = requirement.getSecond();
         List<ResourceLocation> values = new ArrayList<>();
 
-        for (EntityType<?> entity : TagHelper.getValues(registry(), tag(requiredEntity))) {
-            values.add(registry().getKey(entity));
+        for (EntityType<?> entity : TagHelper.getValues(entityRegistry(), entityTag(requiredEntity))) {
+            values.add(entityRegistry().getKey(entity));
         }
 
         Collections.shuffle(values);
         var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
-            var entity = registry().get(values.get(i));
+            var entity = entityRegistry().get(values.get(i));
             targets.add(new HuntTarget(entity, requiredTotal / selection));
         }
     }
@@ -123,14 +97,14 @@ public class HuntQuest extends Quest<EntityType<?>> {
         public void load(CompoundTag tag) {
             var entityId = ResourceLocation.tryParse(tag.getString(ENTITY_TAG));
 
-            entity = registry().get(entityId);
+            entity = entityRegistry().get(entityId);
             total = tag.getInt(TOTAL_TAG);
             killed = tag.getInt(KILLED_TAG);
         }
 
         @Override
         public void save(CompoundTag tag) {
-            var entityId = registry().getKey(entity);
+            var entityId = entityRegistry().getKey(entity);
             if (entityId == null) {
                 throw new RuntimeException("Could not parse entity");
             }

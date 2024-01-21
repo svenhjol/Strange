@@ -27,7 +27,7 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         PageTracker.Screen.QUESTS.set();
 
         var quests = getQuests();
-        for (Quest<?> quest : quests) {
+        for (Quest quest : quests) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);
         }
@@ -92,7 +92,7 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         }
     }
 
-    protected List<Quest<?>> getQuests() {
+    protected List<Quest> getQuests() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
             return List.of();

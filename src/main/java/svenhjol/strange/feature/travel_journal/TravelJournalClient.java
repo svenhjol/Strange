@@ -57,7 +57,7 @@ public class TravelJournalClient extends ClientFeature {
         QuestEvents.ABANDON_QUEST.handle(this::handleAbandonQuest);
     }
 
-    private void handleAbandonQuest(Player player, Quest<?> quest) {
+    private void handleAbandonQuest(Player player, Quest quest) {
         if (!player.level().isClientSide) return;
         var minecraft = Minecraft.getInstance();
 
@@ -67,7 +67,7 @@ public class TravelJournalClient extends ClientFeature {
         }
     }
 
-    private void handleAcceptQuest(Player player, Quest<?> quest) {
+    private void handleAcceptQuest(Player player, Quest quest) {
         if (!player.level().isClientSide) return;
         var minecraft = Minecraft.getInstance();
 

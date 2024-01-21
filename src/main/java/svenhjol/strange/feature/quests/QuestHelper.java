@@ -4,6 +4,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.Villager;
@@ -53,11 +54,11 @@ public class QuestHelper {
         return sublist;
     }
 
-    public static List<Quest<?>> makeQuestsFromDefinitions(List<QuestDefinition> definitions, UUID villagerUuid) {
-        List<Quest<?>> quests = new ArrayList<>();
+    public static List<Quest> makeQuestsFromDefinitions(ResourceManager manager, List<QuestDefinition> definitions, UUID villagerUuid) {
+        List<Quest> quests = new ArrayList<>();
 
         for (QuestDefinition definition : definitions) {
-            quests.add(Quest.create(definition, villagerUuid));
+            quests.add(Quest.create(manager, definition, villagerUuid));
         }
 
         return quests;
@@ -93,7 +94,7 @@ public class QuestHelper {
             TextHelper.translatable("entity." + key.getNamespace() + ".villager." + key.getPath()));
     }
 
-    public static Component makeQuestTitle(Quest<?> quest) {
+    public static Component makeQuestTitle(Quest quest) {
         return TextHelper.translatable(QuestResources.QUEST_TITLE_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             quest.type().getTypeName());

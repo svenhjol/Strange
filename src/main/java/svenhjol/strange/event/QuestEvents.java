@@ -12,7 +12,7 @@ public class QuestEvents {
     public static class AcceptQuestEvent extends CharmEvent<AcceptQuestEvent.Handler> {
         private AcceptQuestEvent() {}
 
-        public void invoke(Player player, Quest<?> quest) {
+        public void invoke(Player player, Quest quest) {
             for (Handler handler : getHandlers()) {
                 handler.run(player, quest);
             }
@@ -20,14 +20,14 @@ public class QuestEvents {
 
         @FunctionalInterface
         public interface Handler {
-            void run(Player player, Quest<?> quest);
+            void run(Player player, Quest quest);
         }
     }
 
     public static class AbandonQuestEvent extends CharmEvent<AbandonQuestEvent.Handler> {
         private AbandonQuestEvent() {}
 
-        public void invoke(Player player, Quest<?> quest) {
+        public void invoke(Player player, Quest quest) {
             for (Handler handler : getHandlers()) {
                 handler.run(player, quest);
             }
@@ -35,7 +35,7 @@ public class QuestEvents {
 
         @FunctionalInterface
         public interface Handler {
-            void run(Player player, Quest<?> quest);
+            void run(Player player, Quest quest);
         }
     }
 }

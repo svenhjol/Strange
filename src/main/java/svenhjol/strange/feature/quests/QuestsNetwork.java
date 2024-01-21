@@ -174,7 +174,7 @@ public class QuestsNetwork {
             profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(buf.readUtf()));
         }
 
-        public static void send(ServerPlayer player, List<Quest<?>> quests, UUID villagerUuid, VillagerProfession profession) {
+        public static void send(ServerPlayer player, List<Quest> quests, UUID villagerUuid, VillagerProfession profession) {
             var message = new SyncVillagerQuests();
             message.quests = quests;
             message.villagerUuid = villagerUuid;
@@ -194,7 +194,7 @@ public class QuestsNetwork {
         description = "Send player quests to the client."
     )
     public static class SyncPlayerQuests extends SyncQuests {
-        public static void send(ServerPlayer player, List<Quest<?>> quests) {
+        public static void send(ServerPlayer player, List<Quest> quests) {
             var message = new SyncPlayerQuests();
             message.quests = quests;
 
@@ -239,7 +239,7 @@ public class QuestsNetwork {
         description = "Notify the client about the result of accepting the quest."
     )
     public static class NotifyAcceptQuestResult implements IPacketRequest {
-        private @Nullable Quest<?> quest;
+        private @Nullable Quest quest;
         private AcceptQuestResult result;
 
         private NotifyAcceptQuestResult() {}
@@ -265,7 +265,7 @@ public class QuestsNetwork {
             this.result = buf.readEnum(AcceptQuestResult.class);
         }
 
-        public @Nullable Quest<?> getQuest() {
+        public @Nullable Quest getQuest() {
             return quest;
         }
 
@@ -273,7 +273,7 @@ public class QuestsNetwork {
             return result;
         }
 
-        public static void send(ServerPlayer player, @Nullable Quest<?> quest, AcceptQuestResult result) {
+        public static void send(ServerPlayer player, @Nullable Quest quest, AcceptQuestResult result) {
             var message = new NotifyAcceptQuestResult();
             message.quest = quest;
             message.result = result;
@@ -287,7 +287,7 @@ public class QuestsNetwork {
         description = "Notify the client about the result of abandoning the quest."
     )
     public static class NotifyAbandonQuestResult implements IPacketRequest {
-        private @Nullable Quest<?> quest;
+        private @Nullable Quest quest;
         private AbandonQuestResult result;
 
         private NotifyAbandonQuestResult() {}
@@ -313,7 +313,7 @@ public class QuestsNetwork {
             this.result = buf.readEnum(AbandonQuestResult.class);
         }
 
-        public @Nullable Quest<?> getQuest() {
+        public @Nullable Quest getQuest() {
             return quest;
         }
 
@@ -321,7 +321,7 @@ public class QuestsNetwork {
             return result;
         }
 
-        public static void send(ServerPlayer player, @Nullable Quest<?> quest, AbandonQuestResult result) {
+        public static void send(ServerPlayer player, @Nullable Quest quest, AbandonQuestResult result) {
             var message = new NotifyAbandonQuestResult();
             message.quest = quest;
             message.result = result;
@@ -335,13 +335,13 @@ public class QuestsNetwork {
     static abstract class SyncQuests implements IPacketRequest {
         static final String QUESTS_TAG = "quests";
 
-        protected List<Quest<?>> quests = new ArrayList<>();
+        protected List<Quest> quests = new ArrayList<>();
 
         @Override
         public void encode(FriendlyByteBuf buf) {
             var tag = new CompoundTag();
             var list = new ListTag();
-            for (Quest<?> quest : quests) {
+            for (Quest quest : quests) {
                 var q = new CompoundTag();
                 quest.save(q);
                 list.add(q);
@@ -363,7 +363,7 @@ public class QuestsNetwork {
             }
         }
 
-        public List<Quest<?>> getQuests() {
+        public List<Quest> getQuests() {
             return quests;
         }
     }

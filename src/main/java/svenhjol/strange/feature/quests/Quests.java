@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,10 +13,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import svenhjol.charmony.api.event.EntityJoinEvent;
-import svenhjol.charmony.api.event.EntityKilledEvent;
-import svenhjol.charmony.api.event.PlayerTickEvent;
-import svenhjol.charmony.api.event.ServerStartEvent;
+import net.minecraft.world.level.storage.loot.LootDataManager;
+import net.minecraft.world.level.storage.loot.LootPool;
+import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 
 public class Quests extends CommonFeature {
     static final List<QuestDefinition> DEFINITIONS = new ArrayList<>();
-    public static final Map<UUID, List<Quest<?>>> PLAYER_QUESTS = new HashMap<>();
-    public static final Map<UUID, List<Quest<?>>> VILLAGER_QUESTS = new HashMap<>();
+    public static final Map<UUID, List<Quest>> PLAYER_QUESTS = new HashMap<>();
+    public static final Map<UUID, List<Quest>> VILLAGER_QUESTS = new HashMap<>();
     public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
     public static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
     static Supplier<SoundEvent> abandonSound;
@@ -59,6 +59,17 @@ public class Quests extends CommonFeature {
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
         EntityKilledEvent.INSTANCE.handle(this::handleEntityKilled);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+        LootTableModifyEvent.INSTANCE.handle(this::handleLootTableModify);
+    }
+
+    private Optional<LootPool.Builder> handleLootTableModify(LootDataManager manager, ResourceLocation id) {
+        for (Quest quest : getQuests()) {
+            var result = quest.lootTableModify(manager, id);
+            if (result.isPresent()) {
+                return result;
+            }
+        }
+        return Optional.empty();
     }
 
     private void handleEntityKilled(LivingEntity entity, DamageSource source) {
@@ -71,7 +82,7 @@ public class Quests extends CommonFeature {
         if (player instanceof ServerPlayer serverPlayer) {
             var uuid = serverPlayer.getUUID();
             if (PLAYER_QUESTS.containsKey(uuid)) {
-                for (Quest<?> quest : PLAYER_QUESTS.get(uuid)) {
+                for (Quest quest : PLAYER_QUESTS.get(uuid)) {
                     quest.tick(serverPlayer);
                 }
             }
@@ -87,7 +98,7 @@ public class Quests extends CommonFeature {
         SyncPlayerQuests.send(player, getQuests(player));
     }
 
-    public static void addQuest(ServerPlayer player, Quest<?> quest) {
+    public static void addQuest(ServerPlayer player, Quest quest) {
         PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
             .add(quest);
 
@@ -107,16 +118,28 @@ public class Quests extends CommonFeature {
         return VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0);
     }
 
-    public static void removeQuest(ServerPlayer player, Quest<?> quest) {
+    public static void removeQuest(ServerPlayer player, Quest quest) {
         PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
             .remove(quest);
     }
 
-    public static List<Quest<?>> getQuests(Player player) {
+    public static List<Quest> getQuests(Player player) {
         return PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of());
     }
 
-    public static Optional<Quest<?>> getQuest(Player player, String questId) {
+    public static List<Quest> getQuests(QuestType type) {
+        return getQuests().stream()
+            .filter(q -> q.type().equals(type))
+            .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public static List<Quest> getQuests() {
+        List<Quest> quests = new ArrayList<>();
+        PLAYER_QUESTS.values().forEach(quests::addAll);
+        return quests;
+    }
+
+    public static Optional<Quest> getQuest(Player player, String questId) {
         return getQuests(player)
             .stream().filter(q -> q.id().equals(questId))
             .findFirst();
@@ -169,7 +192,13 @@ public class Quests extends CommonFeature {
             return;
         }
 
-        var newQuests = QuestHelper.makeQuestsFromDefinitions(definitions, villagerUuid);
+        var server = serverPlayer.level().getServer();
+        if (server == null) {
+            throw new RuntimeException("Could not get server reference");
+        }
+
+        var manager = server.getResourceManager();
+        var newQuests = QuestHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
@@ -285,7 +314,7 @@ public class Quests extends CommonFeature {
 
         var matchesQuestGiver = satisfied.stream().filter(q -> q.villagerUuid().equals(villager.getUUID())).toList();
         if (!matchesQuestGiver.isEmpty()) {
-            for (Quest<?> quest : matchesQuestGiver) {
+            for (Quest quest : matchesQuestGiver) {
                 completeWithVillager(player, villager, quest);
             }
             return true;
@@ -293,7 +322,7 @@ public class Quests extends CommonFeature {
 
         var matchesProfession = satisfied.stream().filter(q -> q.villagerProfession().equals(villager.getVillagerData().getProfession())).toList();
         if (!matchesProfession.isEmpty()) {
-            for (Quest<?> quest : matchesProfession) {
+            for (Quest quest : matchesProfession) {
                 quest.villagerUuid = villager.getUUID();
                 completeWithVillager(player, villager, quest);
             }
@@ -303,7 +332,7 @@ public class Quests extends CommonFeature {
         return false;
     }
 
-    private static void completeWithVillager(ServerPlayer player, Villager villager, Quest<?> quest) {
+    private static void completeWithVillager(ServerPlayer player, Villager villager, Quest quest) {
         var level = (ServerLevel)player.level();
         var pos = player.blockPosition();
         var villagerUuid = villager.getUUID();

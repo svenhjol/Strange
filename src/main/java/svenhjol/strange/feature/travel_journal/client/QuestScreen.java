@@ -8,10 +8,10 @@ import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 
 public class QuestScreen extends BaseTravelJournalScreen {
-    protected Quest<?> quest;
-    protected BaseQuestRenderer<Quest<?>> renderer;
+    protected Quest quest;
+    protected BaseQuestRenderer<Quest> renderer;
 
-    public QuestScreen(Quest<?> quest) {
+    public QuestScreen(Quest quest) {
         super(QuestHelper.makeQuestTitle(quest));
         this.quest = quest;
         PageTracker.quest = quest;

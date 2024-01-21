@@ -27,7 +27,7 @@ public class QuestOffersScreen extends Screen {
         this.villagerLevel = villagerLevel;
 
         var quests = Quests.VILLAGER_QUESTS.getOrDefault(villagerUuid, List.of());
-        for (Quest<?> quest : quests) {
+        for (Quest quest : quests) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);
         }

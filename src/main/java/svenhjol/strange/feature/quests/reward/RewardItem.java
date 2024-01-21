@@ -12,13 +12,13 @@ public class RewardItem implements Reward {
     static final String ITEM_TAG = "item";
 
     public ItemStack item;
-    public Quest<?> quest;
+    public Quest quest;
 
-    public RewardItem(Quest<?> quest) {
+    public RewardItem(Quest quest) {
         this.quest = quest;
     }
 
-    public RewardItem(Quest<?> quest, ItemStack item) {
+    public RewardItem(Quest quest, ItemStack item) {
         this.quest = quest;
         this.item = item;
     }
