@@ -3,6 +3,9 @@ package svenhjol.strange.feature.quests.client;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest;
 
@@ -33,6 +36,29 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
 
         var xo = midX + xOffset;
         var yo = yOffset;
+
+        for (int i = 0; i < Math.min(3, quest.lootTables().size()); i++) {
+            var lootTable = quest.lootTables().get(i);
+
+            var sprite = QuestResources.LOOT_SPRITES.get(lootTable);
+            if (sprite != null) {
+                guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
+            } else {
+                guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo);
+            }
+
+            if (mouseX >= xo && mouseX <= xo + 16
+                && mouseY >= yo && mouseY <= yo + 16) {
+                var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
+                    niceLootTableName(lootTable));
+                guiGraphics.renderTooltip(font, component, xo, yo + 27);
+            }
+
+            xo += 17;
+        }
+
+        xo += 2;
+
         for (var requirement : quest.requirements()) {
             if (requirement instanceof ArtifactQuest.ArtifactItem i) {
                 Component label;
@@ -63,5 +89,10 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
                 guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), xo, yo + 20);
             }
         }
+    }
+
+    protected String niceLootTableName(ResourceLocation id) {
+        var path = id.getPath();
+        return TextHelper.featureName(path.substring(path.lastIndexOf("/") + 1));
     }
 }

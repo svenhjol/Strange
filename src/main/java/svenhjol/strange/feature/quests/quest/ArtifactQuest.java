@@ -35,6 +35,10 @@ public class ArtifactQuest extends Quest {
         return List.of(artifact);
     }
 
+    public List<ResourceLocation> lootTables() {
+        return lootTables;
+    }
+
     @Override
     public Optional<ItemStack> addToLootTable(ResourceLocation lootTableId, RandomSource random) {
         if (player == null) {

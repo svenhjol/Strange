@@ -34,6 +34,7 @@ public class QuestResources {
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();
     public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
     public static final Map<EntityType<?>, ResourceLocation> MOB_SPRITES = new HashMap<>();
+    public static final Map<ResourceLocation, ResourceLocation> LOOT_SPRITES = new HashMap<>();
     public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");
     public static final WidgetSprites APPRENTICE_SCROLL_BUTTON = makeButton("apprentice_scroll");
     public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");

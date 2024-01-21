@@ -14,6 +14,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.EntityHitResult;
 import svenhjol.charmony.api.event.EntityUseEvent;
 import svenhjol.charmony.api.event.PlayerLoginEvent;
@@ -62,6 +63,11 @@ public class QuestsClient extends ClientFeature {
             var id = BuiltInRegistries.ENTITY_TYPE.getKey(e);
             QuestResources.MOB_SPRITES.put(e, new ResourceLocation(id.getNamespace(), "mobs/" + id.getPath()));
         });
+
+        // Load all the loot sprites.
+        QuestResources.LOOT_SPRITES.clear();
+        BuiltInLootTables.all().forEach(
+            id -> QuestResources.LOOT_SPRITES.put(id, new ResourceLocation(id.getNamespace(), "loot/" + id.getPath())));
     }
 
     private void handlePlayerTick(Player player) {
