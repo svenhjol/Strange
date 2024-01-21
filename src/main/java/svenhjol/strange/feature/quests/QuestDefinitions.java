@@ -14,7 +14,7 @@ public class QuestDefinitions {
 
     static void fletcher() {
         Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("quest/novice_fletcher_gathers", 10)), List.of(Pair.of("quest/common_novice_rewards", 5), Pair.of("quest/uncommon_novice_rewards", 1)), false));
-        Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 2, List.of(Pair.of("quest/apprentice_fletcher_gathers", 15)), List.of(Pair.of("quest/common_apprentice_rewards", 6), Pair.of("quest/uncommon_apprentice_rewards", 2)), false));
+        Quests.registerDefinition(make(QuestType.ARTIFACT, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_artifact_loot_tables", 1)), List.of(Pair.of("quest/common_apprentice_rewards", 6), Pair.of("quest/uncommon_apprentice_rewards", 2)), false));
         Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("quest/novice_fletcher_gathers", 30)), List.of(Pair.of("quest/common_novice_rewards", 10), Pair.of("quest/uncommon_novice_rewards", 10)), true));
         Quests.registerDefinition(make(QuestType.HUNT, VillagerProfession.TOOLSMITH, 1, List.of(Pair.of("quest/novice_toolsmith_hunts", 5)), List.of(Pair.of("quest/common_novice_rewards", 5), Pair.of("quest/uncommon_novice_rewards", 1)), false));
     }
