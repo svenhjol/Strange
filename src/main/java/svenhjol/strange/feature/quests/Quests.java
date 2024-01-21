@@ -12,9 +12,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
@@ -32,6 +36,8 @@ public class Quests extends CommonFeature {
     public static final Map<UUID, List<Quest>> VILLAGER_QUESTS = new HashMap<>();
     public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
     public static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
+
+    static Supplier<LootItemFunctionType> lootFunction;
     static Supplier<SoundEvent> abandonSound;
     static Supplier<SoundEvent> acceptSound;
     static Supplier<SoundEvent> completeSound;
@@ -46,6 +52,9 @@ public class Quests extends CommonFeature {
 
         QuestDefinitions.init();
         QuestsNetwork.register(registry);
+
+        lootFunction = registry.lootFunctionType("quest",
+            () -> new LootItemFunctionType(QuestLootFunction.CODEC));
 
         abandonSound = registry.soundEvent("quest_abandon");
         acceptSound = registry.soundEvent("quest_accept");
@@ -63,13 +72,14 @@ public class Quests extends CommonFeature {
     }
 
     private Optional<LootPool.Builder> handleLootTableModify(LootDataManager manager, ResourceLocation id) {
-        for (Quest quest : getQuests()) {
-            var result = quest.lootTableModify(manager, id);
-            if (result.isPresent()) {
-                return result;
-            }
-        }
-        return Optional.empty();
+        var builder = LootPool.lootPool();
+
+        builder.setRolls(ConstantValue.exactly(1));
+        builder.add(LootItem.lootTableItem(Items.AIR)
+            .setWeight(1)
+            .apply(() -> new QuestLootFunction(id)));
+
+        return Optional.of(builder);
     }
 
     private void handleEntityKilled(LivingEntity entity, DamageSource source) {

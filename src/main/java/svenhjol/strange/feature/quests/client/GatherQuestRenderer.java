@@ -7,8 +7,6 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
-    public GatherQuestRenderer() {}
-
     @Override
     public int getPagedOfferHeight() {
         return super.getPagedOfferHeight();
@@ -29,9 +27,6 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
         return QuestResources.GATHER_REWARD_TEXT;
     }
 
-    /**
-     * Shared requirements renderer for paged and selected.
-     */
     protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 

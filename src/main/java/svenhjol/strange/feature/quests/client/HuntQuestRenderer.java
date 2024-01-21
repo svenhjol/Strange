@@ -12,8 +12,6 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.HuntQuest;
 
 public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
-    public HuntQuestRenderer() {}
-
     @Override
     public int getPagedOfferHeight() {
         return super.getPagedOfferHeight();
@@ -34,9 +32,6 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
         return QuestResources.HUNT_REWARD_TEXT;
     }
 
-    /**
-     * Shared requirements renderer for paged and selected.
-     */
     @Override
     protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;

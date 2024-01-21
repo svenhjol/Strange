@@ -20,8 +20,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.storage.loot.LootDataManager;
-import net.minecraft.world.level.storage.loot.LootPool;
 import org.apache.commons.lang3.RandomStringUtils;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.strange.feature.quests.reward.RewardItem;
@@ -227,7 +225,7 @@ public abstract class Quest {
         // no op
     }
 
-    public Optional<LootPool.Builder> lootTableModify(LootDataManager manger, ResourceLocation id) {
+    public Optional<ItemStack> addToLootTable(ResourceLocation lootTableId, RandomSource random) {
         return Optional.empty();
     }
 
