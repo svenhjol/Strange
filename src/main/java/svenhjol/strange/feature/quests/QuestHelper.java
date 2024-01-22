@@ -87,16 +87,26 @@ public class QuestHelper {
         return quests.size() >= Quests.maxPlayerQuests;
     }
 
-    public static Component makeVillagerTitle(VillagerProfession profession) {
+    public static Component makeVillagerOffersTitle(VillagerProfession profession) {
         var registry = BuiltInRegistries.VILLAGER_PROFESSION;
-        var key = registry.getKey(profession);
+        var professionKey = registry.getKey(profession);
         return TextHelper.translatable(QuestResources.QUEST_OFFERS_TITLE_KEY,
-            TextHelper.translatable("entity." + key.getNamespace() + ".villager." + key.getPath()));
+            TextHelper.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath()));
     }
 
     public static Component makeQuestTitle(Quest quest) {
-        return TextHelper.translatable(QuestResources.QUEST_TITLE_KEY,
+        return TextHelper.translatable(quest.isEpic() ? QuestResources.EPIC_QUEST_TITLE_KEY : QuestResources.QUEST_TITLE_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
+            quest.type().getTypeName());
+    }
+
+    public static Component makeQuestTitleWithProfession(Quest quest) {
+        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
+        var professionKey = registry.getKey(quest.villagerProfession());
+
+        return TextHelper.translatable(quest.isEpic() ? QuestResources.EPIC_QUEST_TITLE_WITH_PROFESSION_KEY : QuestResources.QUEST_TITLE_WITH_PROFESSION_KEY,
+            TextHelper.translatable("merchant.level." + quest.villagerLevel()),
+            TextHelper.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath()),
             quest.type().getTypeName());
     }
 }

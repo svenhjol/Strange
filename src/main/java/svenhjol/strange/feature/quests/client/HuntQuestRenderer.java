@@ -33,6 +33,11 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
     }
 
     @Override
+    public ItemStack getQuestIcon() {
+        return new ItemStack(Items.IRON_SWORD);
+    }
+
+    @Override
     protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 

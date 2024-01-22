@@ -31,10 +31,15 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
     }
 
     @Override
+    public ItemStack getQuestIcon() {
+        return new ItemStack(Items.SPYGLASS);
+    }
+
+    @Override
     protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 
-        var xo = midX + xOffset;
+        var xo = midX + xOffset + 1;
         var yo = yOffset;
 
         for (int i = 0; i < Math.min(3, quest.lootTables().size()); i++) {

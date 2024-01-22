@@ -4,13 +4,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.base.Mods;
+import svenhjol.charmony.feature.colored_glints.ColoredGlints;
 import svenhjol.charmony.helper.TagHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
@@ -156,11 +159,17 @@ public class ArtifactQuest extends Quest {
         private ArtifactItem() {}
 
         public ArtifactItem(ItemStack item) {
-            // Add the tag and enchantment to the item. TODO: custom name
             var questId = id();
             var random = RandomSource.create();
             addRandomEnchantment(item, random);
             item.getOrCreateTag().putString(CUSTOM_TAG, questId);
+
+            // Add custom name
+            addNamePrefix(item, random);
+
+            // Add random colored glint
+            var dyeColors = new ArrayList<>(Arrays.stream(DyeColor.values()).toList());
+            ColoredGlints.applyColoredGlint(item, dyeColors.get(random.nextInt(dyeColors.size())));
 
             this.item = item;
         }
@@ -255,6 +264,16 @@ public class ArtifactQuest extends Quest {
             Map<Enchantment, Integer> map = new HashMap<>();
             map.put(enchantment, enchantment.getMinLevel());
             EnchantmentHelper.setEnchantments(map, stack);
+        }
+
+        protected void addNamePrefix(ItemStack stack, RandomSource random) {
+            var prefixes = Arrays.stream(Component.translatable("gui.strange.descriptions.prefix").getString().split(",")).toList();
+
+            var prefix = prefixes.get(random.nextInt(prefixes.size()));
+            var name = stack.getItem().getName(stack);
+
+            var newName = Component.translatable("gui.strange.descriptions.prefixed_name", prefix, name);
+            stack.setHoverName(newName);
         }
     }
 }

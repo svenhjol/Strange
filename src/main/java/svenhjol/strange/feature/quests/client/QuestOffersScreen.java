@@ -21,7 +21,7 @@ public class QuestOffersScreen extends Screen {
     protected int midX;
 
     public QuestOffersScreen(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
-        super(QuestHelper.makeVillagerTitle(villagerProfession));
+        super(QuestHelper.makeVillagerOffersTitle(villagerProfession));
         this.villagerUuid = villagerUuid;
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;

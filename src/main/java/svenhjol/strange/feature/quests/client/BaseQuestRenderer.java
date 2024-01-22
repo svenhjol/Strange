@@ -29,6 +29,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     Button.OnPress onAccept;
     Button.OnPress onUpdate;
     Button.OnPress onAbandon;
+    Component questTitle;
+    Component questTitleWithProfession;
 
     public BaseQuestRenderer() {}
 
@@ -51,14 +53,15 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     }
 
     protected void offerTheme() {
-        titleColor = quest.isEpic() ? 0xffe0a0 : 0xffffff;
-        requirementColor = quest.isEpic() ? 0xdfc080 : 0xa0a0a0;
+        var isEpic = quest.isEpic();
+        titleColor = isEpic ? 0xffe0a0 : 0xffffff;
+        requirementColor = isEpic ? 0xdfc080 : 0xa0a0a0;
         satisfiedColor = 0xa0ffa0;
         rewardColor = 0xa0ffff;
-        requirementBackgroundColor = quest.isEpic() ? 0x24dfc080 : 0x24a0a0a0;
+        requirementBackgroundColor = isEpic ? 0x24dfc080 : 0x24a0a0a0;
         satisfiedBackgroundColor = 0x24a0ffa0;
         rewardBackgroundColor = 0x24a0ffff;
-        offerBorderColor = quest.isEpic() ? 0x40ffe080 : 0x40a0a0a0;
+        offerBorderColor = isEpic ? 0x40ffe080 : 0x40a0a0a0;
         showRemaining = false;
     }
 
@@ -76,6 +79,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     protected void init(Screen screen) {
         midX = screen.width / 2;
         renderedButtons = false;
+        questTitle = QuestHelper.makeQuestTitle(quest);
+        questTitleWithProfession = QuestHelper.makeQuestTitleWithProfession(quest);
     }
 
     public Q quest() {
@@ -98,8 +103,10 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
     public abstract Component getRewardText();
 
+    public abstract ItemStack getQuestIcon();
+
     public void renderPagedActive(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
-        guiGraphics.drawString(screen.font, QuestHelper.makeQuestTitle(quest), midX - 105, yOffset, titleColor, false);
+        guiGraphics.drawString(screen.font, questTitleWithProfession, midX - 105, yOffset, titleColor, false);
         renderRequirements(screen, guiGraphics, -105, yOffset + 12, mouseX, mouseY);
 
         if (!renderedButtons) {
@@ -135,9 +142,9 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        // Scroll icon and title
-        guiGraphics.blitSprite(QuestResources.LEVEL_TO_SCROLL.get(quest.villagerLevel()), midX + xOffset - 5, yOffset - 5, 16, 16);
-        guiGraphics.drawString(font, QuestHelper.makeQuestTitle(quest), midX + xOffset + 15, yOffset, titleColor, false);
+        // Quest icon and title
+        guiGraphics.renderFakeItem(getQuestIcon(), midX + xOffset - 5, yOffset - 5);
+        guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset, titleColor, false);
 
         // Box around the quest details
         guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, offerBorderColor);

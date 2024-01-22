@@ -3,6 +3,8 @@ package svenhjol.strange.feature.quests.client;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 
@@ -25,6 +27,11 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
     @Override
     public Component getRewardText() {
         return QuestResources.GATHER_REWARD_TEXT;
+    }
+
+    @Override
+    public ItemStack getQuestIcon() {
+        return new ItemStack(Items.BUNDLE);
     }
 
     protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
