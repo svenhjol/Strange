@@ -21,7 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.charmony.helper.TagHelper;
+import svenhjol.strange.data.LinkedItemList;
+import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
 
@@ -248,20 +249,21 @@ public abstract class Quest {
     protected void makeRewards(ResourceManager manager, QuestDefinition definition, RandomSource random) {
         var reward = definition.randomReward(random);
         var rewardItem = reward.getFirst();
-        var rewardSize = reward.getSecond();
-        List<ResourceLocation> values = new ArrayList<>();
+        var rewardAmount = reward.getSecond();
 
-        for (var item : TagHelper.getValues(itemRegistry(), itemTag(rewardItem))) {
-            values.add(itemRegistry().getKey(item));
+        // Populate the items.
+        var itemLists = ResourceListManager.entries(manager, "quests/reward");
+        var itemList = LinkedItemList.load(itemLists.getOrDefault(rewardItem, new LinkedList<>()));
+        if (itemList.isEmpty()) {
+            throw new RuntimeException("Reward item list is empty");
         }
 
-        Collections.shuffle(values);
+        Collections.shuffle(itemList);
+        var selection = Math.min(itemList.size(), MAX_REWARD_ITEMS);
 
-        var selection = Math.min(values.size(), MAX_REWARD_ITEMS);
         for (int i = 0; i < selection; i++) {
-            var itemId = values.get(i);
-            var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId),
-                random.nextIntBetweenInclusive(Math.max(1, rewardSize - 2), rewardSize));
+            var stack = new ItemStack(itemList.get(i),
+                random.nextIntBetweenInclusive(Math.max(1, rewardAmount - 2), rewardAmount));
 
             var allowTreasure = isEpic() || stack.is(Items.BOOK);
             var enchantChance = 0.2d * villagerLevel();
@@ -273,6 +275,7 @@ public abstract class Quest {
             rewardItems.add(new RewardItem(this, stack));
         }
 
+        // Populate XP.
         var xp = new RewardXp(this, definition.experience());
         rewardXp.add(xp);
     }

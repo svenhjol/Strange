@@ -34,7 +34,7 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
 
     @Override
     public ItemStack getQuestIcon() {
-        return new ItemStack(Items.IRON_SWORD);
+        return new ItemStack(Items.STONE_SWORD);
     }
 
     @Override

@@ -81,7 +81,7 @@
   "gui.strange.quests.quest_title_with_profession": "%s %s %s Quest",
   "gui.strange.quests.quests": "Quests",
   "gui.strange.quests.remaining": "%s/%s",
-  "gui.strange.quests.reward_levels": "XP levels: %s",
+  "gui.strange.quests.reward_levels": "Experience levels: %s",
   "gui.strange.quests.satisfied": "All requirements met!",
   "gui.strange.quests.too_many_quests": "You are trying to do too many quests at once!",
   "gui.strange.travel_journal.back": "Back",

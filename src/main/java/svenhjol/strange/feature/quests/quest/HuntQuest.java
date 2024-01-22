@@ -9,13 +9,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import svenhjol.charmony.helper.TagHelper;
+import svenhjol.strange.data.LinkedEntityTypeList;
+import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class HuntQuest extends Quest {
@@ -61,17 +63,19 @@ public class HuntQuest extends Quest {
         var requirement = definition.randomRequirement(random);
         var requiredEntity = requirement.getFirst();
         var requiredTotal = requirement.getSecond();
-        List<ResourceLocation> values = new ArrayList<>();
 
-        for (EntityType<?> entity : TagHelper.getValues(entityRegistry(), entityTag(requiredEntity))) {
-            values.add(entityRegistry().getKey(entity));
+        // Populate entities.
+        var entityLists = ResourceListManager.entries(manager, "quests/hunt");
+        var entityList = LinkedEntityTypeList.load(entityLists.getOrDefault(requiredEntity, new LinkedList<>()));
+        if (entityList.isEmpty()) {
+            throw new RuntimeException("Entity list is empty");
         }
 
-        Collections.shuffle(values);
-        var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
+        Collections.shuffle(entityList);
+        var selection = Math.min(entityList.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
-            var entity = entityRegistry().get(values.get(i));
+            var entity = entityList.get(i);
             targets.add(new HuntTarget(entity, requiredTotal / selection));
         }
     }

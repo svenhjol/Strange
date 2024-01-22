@@ -1,21 +1,21 @@
 package svenhjol.strange.feature.quests.quest;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import svenhjol.charmony.helper.TagHelper;
+import svenhjol.strange.data.LinkedItemList;
+import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GatherQuest extends Quest {
@@ -56,18 +56,19 @@ public class GatherQuest extends Quest {
         var requirement = definition.randomRequirement(random);
         var requiredItem = requirement.getFirst();
         var requiredAmount = requirement.getSecond();
-        List<ResourceLocation> values = new ArrayList<>();
 
-        for (var item : TagHelper.getValues(itemRegistry(), itemTag(requiredItem))) {
-            values.add(itemRegistry().getKey(item));
+        // Populate the items.
+        var itemLists = ResourceListManager.entries(manager, "quests/gather");
+        var itemList = LinkedItemList.load(itemLists.getOrDefault(requiredItem, new LinkedList<>()));
+        if (itemList.isEmpty()) {
+            throw new RuntimeException("Item list is empty");
         }
 
-        Collections.shuffle(values);
-
-        var selection = Math.min(values.size(), random.nextInt(MAX_SELECTION) + 1);
+        Collections.shuffle(itemList);
+        var selection = Math.min(itemList.size(), random.nextInt(MAX_SELECTION) + 1);
 
         for (var i = 0; i < selection; i++) {
-            var stack = new ItemStack(BuiltInRegistries.ITEM.get(values.get(i)));
+            var stack = new ItemStack(itemList.get(i));
             items.add(new GatherItem(stack, requiredAmount / selection));
         }
     }

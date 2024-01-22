@@ -4,6 +4,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class QuestHelper {
     public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
-            .filter(d -> d.profession() == profession)
+            .filter(d -> d.profession() == profession || d.profession() == VillagerProfession.NONE)
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
             .filter(d -> d.requiredLoyalty() <= Quests.getLoyalty(villagerUuid))
             .collect(Collectors.toCollection(ArrayList::new));
@@ -76,6 +77,29 @@ public class QuestHelper {
             .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public static String getVillagerLevelName(int villagerLevel) {
+        return switch (villagerLevel) {
+            case 1 -> "novice";
+            case 2 -> "apprentice";
+            case 3 -> "journeyman";
+            case 4 -> "expert";
+            case 5 -> "master";
+            default -> "any";
+        };
+    }
+
+    public static ResourceLocation getVillagerProfessionId(VillagerProfession villagerProfession) {
+        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
+        return registry.getKey(villagerProfession);
+    }
+
+    public static String getVillagerProfessionName(VillagerProfession villagerProfession) {
+        if (villagerProfession.equals(VillagerProfession.NONE)) {
+            return "villager";
+        }
+        return getVillagerProfessionId(villagerProfession).getPath();
+    }
+
     public static void throwItemsAtPlayer(Villager villager, Player player, List<ItemStack> items) {
         for (ItemStack stack : items) {
             BehaviorUtils.throwItem(villager, stack, player.position());
@@ -101,12 +125,10 @@ public class QuestHelper {
     }
 
     public static Component makeQuestTitleWithProfession(Quest quest) {
-        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
-        var professionKey = registry.getKey(quest.villagerProfession());
-
+        var professionId = getVillagerProfessionId(quest.villagerProfession());
         return TextHelper.translatable(quest.isEpic() ? QuestResources.EPIC_QUEST_TITLE_WITH_PROFESSION_KEY : QuestResources.QUEST_TITLE_WITH_PROFESSION_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
-            TextHelper.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath()),
+            TextHelper.translatable("entity." + professionId.getNamespace() + ".villager." + professionId.getPath()),
             quest.type().getTypeName());
     }
 }

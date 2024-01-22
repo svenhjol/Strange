@@ -13,10 +13,10 @@ public class QuestDefinitions {
     }
 
     static void fletcher() {
-        Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("quest/novice_fletcher_gathers", 10)), List.of(Pair.of("quest/common_novice_rewards", 5), Pair.of("quest/uncommon_novice_rewards", 1)), false));
-        Quests.registerDefinition(make(QuestType.ARTIFACT, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_artifact_loot_tables", 1)), List.of(Pair.of("quest/common_apprentice_rewards", 6), Pair.of("quest/uncommon_apprentice_rewards", 2)), false));
-        Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("quest/novice_fletcher_gathers", 30)), List.of(Pair.of("quest/common_novice_rewards", 10), Pair.of("quest/uncommon_novice_rewards", 10)), true));
-        Quests.registerDefinition(make(QuestType.HUNT, VillagerProfession.TOOLSMITH, 1, List.of(Pair.of("quest/novice_toolsmith_hunts", 5)), List.of(Pair.of("quest/common_novice_rewards", 5), Pair.of("quest/uncommon_novice_rewards", 1)), false));
+        Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_fletcher_gather", 10)), List.of(Pair.of("novice_common_reward", 5), Pair.of("novice_uncommon_reward", 1)), false));
+        Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_fletcher_gather", 30)), List.of(Pair.of("novice_common_reward", 10), Pair.of("novice_uncommon_reward", 10)), true));
+        Quests.registerDefinition(make(QuestType.ARTIFACT, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_fletcher_artifact_loot_tables", 1)), List.of(Pair.of("apprentice_common_reward", 6), Pair.of("apprentice_uncommon_reward", 2)), false));
+        Quests.registerDefinition(make(QuestType.HUNT, VillagerProfession.NONE, 1, List.of(Pair.of("novice_villager_hunt", 5)), List.of(Pair.of("novice_common_reward", 5), Pair.of("novice_uncommon_reward", 1)), false));
     }
 
     static QuestDefinition make(QuestType type, VillagerProfession profession, int level, List<Pair<String, Integer>> requirements, List<Pair<String, Integer>> rewards, boolean isEpic) {

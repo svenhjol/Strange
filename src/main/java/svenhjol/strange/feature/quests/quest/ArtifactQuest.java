@@ -8,19 +8,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.feature.colored_glints.ColoredGlints;
-import svenhjol.charmony.helper.TagHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
+import svenhjol.strange.data.LinkedItemList;
 import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.*;
@@ -28,7 +30,6 @@ import java.util.*;
 public class ArtifactQuest extends Quest {
     static final String ARTIFACT_TAG = "artifact";
     static final String LOOT_TABLES_TAG = "loot_tables";
-    static final ResourceLocation ARTIFACT_ITEMS = new ResourceLocation(Strange.ID, "quest/artifact/artifact_items");
 
     ArtifactItem artifact;
     final List<ResourceLocation> lootTables = new ArrayList<>();
@@ -79,7 +80,6 @@ public class ArtifactQuest extends Quest {
         // Populate the loot tables.
         var lootTableLists = ResourceListManager.entries(manager, "quests/artifact");
         var lootTableList = LinkedResourceList.load(lootTableLists.getOrDefault(requiredLootTable, new LinkedList<>()));
-
         if (lootTableList.isEmpty()) {
             throw new RuntimeException("Loot table list is empty");
         }
@@ -90,20 +90,25 @@ public class ArtifactQuest extends Quest {
         }
 
         // Populate the items.
-        List<ResourceLocation> itemValues = new ArrayList<>();
+        var defaultKey = makeArtifactItemsKey(0, VillagerProfession.NONE);
+        var customKey = makeArtifactItemsKey(villagerLevel(), villagerProfession());
 
-        for (var item : TagHelper.getValues(itemRegistry(), itemTag(ARTIFACT_ITEMS))) {
-            itemValues.add(itemRegistry().getKey(item));
+        var itemLists = ResourceListManager.entries(manager, "quests/artifact");
+        var itemList = LinkedItemList.load(itemLists.getOrDefault(customKey, new LinkedList<>()));
+
+        if (itemList.isEmpty()) {
+            itemList = LinkedItemList.load(itemLists.getOrDefault(defaultKey, new LinkedList<>()));
+            if (itemList.isEmpty()) {
+                throw new RuntimeException("Item list is empty");
+            }
+            log().debug(getClass(), "Using default artifact items: " + defaultKey);
+        } else {
+            log().debug(getClass(), "Using custom artifact items: " + customKey);
         }
 
-        if (itemValues.isEmpty()) {
-            throw new RuntimeException("Item list is empty");
-        }
-
-        // Select one of the items to be the artifact.
-        Collections.shuffle(itemValues);
-        var stack = new ItemStack(BuiltInRegistries.ITEM.get(itemValues.get(0)));
-        artifact = new ArtifactItem(stack);
+        Collections.shuffle(itemList);
+        var stack = new ItemStack(itemList.get(0));
+        artifact = new ArtifactItem(stack, random);
     }
 
     @Override
@@ -139,6 +144,12 @@ public class ArtifactQuest extends Quest {
         return Mods.common(Strange.ID).log();
     }
 
+    private ResourceLocation makeArtifactItemsKey(int villagerLevel, VillagerProfession villagerProfession) {
+        return new ResourceLocation(Strange.ID, QuestHelper.getVillagerLevelName(villagerLevel)
+            + "_" + QuestHelper.getVillagerProfessionName(villagerProfession)
+            + "_artifact_items");
+    }
+
     private boolean hasArtifact() {
         if (player == null) {
             return false;
@@ -158,9 +169,8 @@ public class ArtifactQuest extends Quest {
 
         private ArtifactItem() {}
 
-        public ArtifactItem(ItemStack item) {
+        public ArtifactItem(ItemStack item, RandomSource random) {
             var questId = id();
-            var random = RandomSource.create();
             addRandomEnchantment(item, random);
             item.getOrCreateTag().putString(CUSTOM_TAG, questId);
 
