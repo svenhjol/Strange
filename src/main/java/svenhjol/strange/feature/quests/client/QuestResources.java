@@ -13,10 +13,18 @@ import java.util.Map;
 
 public class QuestResources {
     public static final Component QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
+    public static final Component ARTIFACT_TEXT = TextHelper.translatable("gui.strange.quests.artifact");
+    public static final Component ARTIFACT_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.artifact_requirement");
+    public static final Component ARTIFACT_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.artifact_reward");
+    public static final Component GATHER_TEXT = TextHelper.translatable("gui.strange.quests.gather");
     public static final Component GATHER_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.gather_requirement");
     public static final Component GATHER_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.gather_reward");
+    public static final Component HUNT_TEXT = TextHelper.translatable("gui.strange.quests.hunt");
     public static final Component HUNT_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.hunt_requirement");
     public static final Component HUNT_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.hunt_reward");
+    public static final Component BATTLE_TEXT = TextHelper.translatable("gui.strange.quests.battle");
+    public static final Component BATTLE_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.battle_requirement");
+    public static final Component BATTLE_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.battle_reward");
     public static final Component QUEST_INFO_TEXT = TextHelper.translatable("gui.strange.quests.quest_info");
     public static final Component ACCEPT_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.accept_quest");
     public static final Component ABANDON_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.abandon_quest");

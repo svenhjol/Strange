@@ -2,7 +2,6 @@ package svenhjol.strange.feature.quests.quest;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
@@ -40,19 +39,19 @@ public class HuntQuest extends Quest {
     public void loadAdditional(CompoundTag tag) {
         targets.clear();
         var list = tag.getList(REQUIRED_KILLS_TAG, 10);
-        for (Tag t : list) {
-            var item = new HuntTarget();
-            item.load((CompoundTag)t);
-            targets.add(item);
+        for (var t : list) {
+            var target = new HuntTarget();
+            target.load((CompoundTag)t);
+            targets.add(target);
         }
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
         var list = new ListTag();
-        for (HuntTarget item : targets) {
+        for (var target : targets) {
             var t = new CompoundTag();
-            item.save(t);
+            target.save(t);
             list.add(t);
         }
         tag.put(REQUIRED_KILLS_TAG, list);
@@ -89,7 +88,7 @@ public class HuntQuest extends Quest {
         public int total;
         public int killed;
 
-        public HuntTarget() {}
+        private HuntTarget() {}
 
         public HuntTarget(EntityType<?> entity, int total) {
             this.entity = entity;
@@ -141,10 +140,6 @@ public class HuntQuest extends Quest {
 
         @Override
         public int remaining() {
-            if (player == null) {
-                return total;
-            }
-
             return Math.max(0, total - killed);
         }
     }

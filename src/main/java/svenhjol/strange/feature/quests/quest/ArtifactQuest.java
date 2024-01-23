@@ -10,6 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -90,20 +91,14 @@ public class ArtifactQuest extends Quest {
         }
 
         // Populate the items.
-        var defaultKey = makeArtifactItemsKey(0, VillagerProfession.NONE);
-        var customKey = makeArtifactItemsKey(villagerLevel(), villagerProfession());
+        var anyKey = makeItemsKey(0, VillagerProfession.NONE);
+        var levelKey = makeItemsKey(villagerLevel(), VillagerProfession.NONE);
+        var customKey = makeItemsKey(villagerLevel(), villagerProfession());
 
         var itemLists = ResourceListManager.entries(manager, "quests/artifact");
-        var itemList = LinkedItemList.load(itemLists.getOrDefault(customKey, new LinkedList<>()));
-
+        var itemList = tryLoad(itemLists, customKey, levelKey, anyKey);
         if (itemList.isEmpty()) {
-            itemList = LinkedItemList.load(itemLists.getOrDefault(defaultKey, new LinkedList<>()));
-            if (itemList.isEmpty()) {
-                throw new RuntimeException("Item list is empty");
-            }
-            log().debug(getClass(), "Using default artifact items: " + defaultKey);
-        } else {
-            log().debug(getClass(), "Using custom artifact items: " + customKey);
+            throw new RuntimeException("Item list is empty");
         }
 
         Collections.shuffle(itemList);
@@ -144,7 +139,18 @@ public class ArtifactQuest extends Quest {
         return Mods.common(Strange.ID).log();
     }
 
-    private ResourceLocation makeArtifactItemsKey(int villagerLevel, VillagerProfession villagerProfession) {
+    private LinkedList<Item> tryLoad(Map<ResourceLocation, LinkedList<ResourceLocation>> entries, ResourceLocation... keys) {
+        for (var key : keys) {
+            var list = LinkedItemList.load(entries.getOrDefault(key, new LinkedList<>()));
+            if (!list.isEmpty()) {
+                log().debug(getClass(), "Using list for key " + key);
+                return list;
+            }
+        }
+        return new LinkedList<>();
+    }
+
+    private ResourceLocation makeItemsKey(int villagerLevel, VillagerProfession villagerProfession) {
         return new ResourceLocation(Strange.ID, QuestHelper.getVillagerLevelName(villagerLevel)
             + "_" + QuestHelper.getVillagerProfessionName(villagerProfession)
             + "_artifact_items");

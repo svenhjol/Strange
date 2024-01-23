@@ -2,7 +2,6 @@ package svenhjol.strange.feature.quests.quest;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ public class GatherQuest extends Quest {
     public void loadAdditional(CompoundTag tag) {
         items.clear();
         var list = tag.getList(REQUIRED_ITEMS_TAG, 10);
-        for (Tag t : list) {
+        for (var t : list) {
             var item = new GatherItem();
             item.load((CompoundTag)t);
             items.add(item);

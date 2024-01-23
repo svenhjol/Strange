@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public interface Requirement {
@@ -29,6 +30,13 @@ public interface Requirement {
      * Run when any entity is killed by the quest player.
      */
     default void entityKilled(LivingEntity entity, DamageSource source) {
+        // no op
+    }
+
+    /**
+     * Run when any entity is removed from the world.
+     */
+    default void entityLeave(Entity entity) {
         // no op
     }
 

@@ -31,6 +31,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     Button.OnPress onAbandon;
     Component questTitle;
     Component questTitleWithProfession;
+    ItemStack questIcon;
 
     public BaseQuestRenderer() {}
 
@@ -81,6 +82,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         renderedButtons = false;
         questTitle = QuestHelper.makeQuestTitle(quest);
         questTitleWithProfession = QuestHelper.makeQuestTitleWithProfession(quest);
+        questIcon = getQuestIcon();
     }
 
     public Q quest() {
@@ -143,7 +145,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         if (player == null) return;
 
         // Quest icon and title
-        guiGraphics.renderFakeItem(getQuestIcon(), midX + xOffset - 5, yOffset - 5);
+        guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 5);
         guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset, titleColor, false);
 
         // Box around the quest details

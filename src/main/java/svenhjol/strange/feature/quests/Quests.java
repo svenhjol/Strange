@@ -67,6 +67,7 @@ public class Quests extends CommonFeature {
         ServerStartEvent.INSTANCE.handle(this::handleServerStart);
         EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
         EntityKilledEvent.INSTANCE.handle(this::handleEntityKilled);
+        EntityLeaveEvent.INSTANCE.handle(this::handleEntityLeave);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
         LootTableModifyEvent.INSTANCE.handle(this::handleLootTableModify);
     }
@@ -88,12 +89,26 @@ public class Quests extends CommonFeature {
         }
     }
 
+    private void handleEntityLeave(Entity entity, Level level) {
+        getQuests().forEach(q -> q.entityLeave(entity));
+    }
+
     private void handlePlayerTick(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             var uuid = serverPlayer.getUUID();
             if (PLAYER_QUESTS.containsKey(uuid)) {
-                for (Quest quest : PLAYER_QUESTS.get(uuid)) {
+                List<Quest> invalid = new ArrayList<>();
+                for (var quest : PLAYER_QUESTS.get(uuid)) {
                     quest.tick(serverPlayer);
+
+                    // If any quest became invalidated during its tick, remove it.
+                    if (!quest.inProgress()) {
+                        invalid.add(quest);
+                    }
+                }
+
+                if (!invalid.isEmpty()) {
+                    invalid.forEach(q -> removeQuest(serverPlayer, q));
                 }
             }
         }
@@ -113,6 +128,7 @@ public class Quests extends CommonFeature {
             .add(quest);
 
         quest.player = player;
+        syncQuests(player);
     }
 
     public static void increaseLoyalty(UUID villagerUuid, int amount) {
@@ -131,6 +147,8 @@ public class Quests extends CommonFeature {
     public static void removeQuest(ServerPlayer player, Quest quest) {
         PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
             .remove(quest);
+
+        syncQuests(player);
     }
 
     public static List<Quest> getQuests(Player player) {
@@ -268,7 +286,7 @@ public class Quests extends CommonFeature {
 
         // Add this quest to the player's quests.
         var quest = opt.get();
-        quest.start();
+        quest.start(serverPlayer);
 
         addQuest(serverPlayer, quest);
         syncQuests(serverPlayer);
@@ -358,7 +376,6 @@ public class Quests extends CommonFeature {
 
         quest.complete();
         removeQuest(player, quest);
-        syncQuests(player);
         increaseLoyalty(villagerUuid, 1);
     }
 

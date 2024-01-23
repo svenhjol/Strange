@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -203,7 +204,9 @@ public abstract class Quest {
         this.player = player;
     }
 
-    public void start() {
+    public void start(ServerPlayer player) {
+        this.player = player;
+
         if (status == Status.NOT_STARTED) {
             status = Status.STARTED;
         }
@@ -223,6 +226,10 @@ public abstract class Quest {
     }
 
     public void entityKilled(LivingEntity entity, DamageSource source) {
+        // no op
+    }
+
+    public void entityLeave(Entity entity) {
         // no op
     }
 

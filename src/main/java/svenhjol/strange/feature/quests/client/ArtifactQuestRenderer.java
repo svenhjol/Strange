@@ -22,12 +22,12 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
 
     @Override
     public Component getRequirementText() {
-        return TextHelper.translatable("gui.strange.quests.artifact_requirement");
+        return QuestResources.ARTIFACT_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return TextHelper.translatable("gui.strange.quests.artifact_reward");
+        return QuestResources.ARTIFACT_REWARD_TEXT;
     }
 
     @Override
