@@ -17,6 +17,7 @@ public class QuestDefinitions {
         Quests.registerDefinition(make(QuestType.GATHER, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_fletcher_gather", 30)), List.of(Pair.of("novice_common_reward", 10), Pair.of("novice_uncommon_reward", 10)), true));
         Quests.registerDefinition(make(QuestType.ARTIFACT, VillagerProfession.FLETCHER, 1, List.of(Pair.of("novice_fletcher_artifact_loot_tables", 1)), List.of(Pair.of("apprentice_common_reward", 6), Pair.of("apprentice_uncommon_reward", 2)), false));
         Quests.registerDefinition(make(QuestType.HUNT, VillagerProfession.NONE, 1, List.of(Pair.of("novice_villager_hunt", 5)), List.of(Pair.of("novice_common_reward", 5), Pair.of("novice_uncommon_reward", 1)), false));
+        Quests.registerDefinition(make(QuestType.BATTLE, VillagerProfession.WEAPONSMITH, 1, List.of(Pair.of("novice_villager_battle_mobs", 2)), List.of(Pair.of("novice_common_reward", 5)), false));
     }
 
     static QuestDefinition make(QuestType type, VillagerProfession profession, int level, List<Pair<String, Integer>> requirements, List<Pair<String, Integer>> rewards, boolean isEpic) {
