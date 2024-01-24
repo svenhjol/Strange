@@ -241,7 +241,7 @@ public abstract class Quest {
         this.id = makeId();
         this.type = definition.type();
         this.status = Status.NOT_STARTED;
-        this.epic = definition.isEpic();
+        this.epic = definition.epic();
         this.villagerProfession = definition.profession();
         this.villagerLevel = definition.level();
         this.villagerUuid = villagerUuid;
@@ -254,7 +254,7 @@ public abstract class Quest {
     protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random);
 
     protected void makeRewards(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var reward = definition.randomReward(random);
+        var reward = definition.pair(definition.rewards(), random);
         var rewardItem = reward.getFirst();
         var rewardAmount = reward.getSecond();
 

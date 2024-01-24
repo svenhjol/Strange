@@ -17,18 +17,16 @@ import net.minecraft.world.phys.AABB;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.client.QuestResources;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestHelper {
+    public static final Map<Integer, String> TIERS = new HashMap<>();
     public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
             .filter(d -> d.profession() == profession || d.profession() == VillagerProfession.NONE)
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
-            .filter(d -> d.requiredLoyalty() <= Quests.getLoyalty(villagerUuid))
+            .filter(d -> d.loyalty() <= Quests.getLoyalty(villagerUuid))
             .collect(Collectors.toCollection(ArrayList::new));
 
         if (definitions.isEmpty()) {
@@ -36,7 +34,7 @@ public class QuestHelper {
         }
 
         // Get epics separately.
-        var epics = definitions.stream().filter(QuestDefinition::isEpic).toList();
+        var epics = definitions.stream().filter(QuestDefinition::epic).toList();
 
         Util.shuffle(definitions, random);
         var sublist = definitions.subList(0, Math.min(definitions.size(), numberOfDefinitions));
@@ -46,7 +44,7 @@ public class QuestHelper {
         }
 
         // Replace one of the definitions with the epic.
-        if (!epics.isEmpty() && sublist.stream().noneMatch(QuestDefinition::isEpic)) {
+        if (!epics.isEmpty() && sublist.stream().noneMatch(QuestDefinition::epic)) {
             var epic = random.nextInt(epics.size());
             var index = random.nextInt(sublist.size());
             sublist.set(index, epics.get(epic));
@@ -58,7 +56,7 @@ public class QuestHelper {
     public static List<Quest> makeQuestsFromDefinitions(ResourceManager manager, List<QuestDefinition> definitions, UUID villagerUuid) {
         List<Quest> quests = new ArrayList<>();
 
-        for (QuestDefinition definition : definitions) {
+        for (var definition : definitions) {
             quests.add(Quest.create(manager, definition, villagerUuid));
         }
 
@@ -78,14 +76,7 @@ public class QuestHelper {
     }
 
     public static String getVillagerLevelName(int villagerLevel) {
-        return switch (villagerLevel) {
-            case 1 -> "novice";
-            case 2 -> "apprentice";
-            case 3 -> "journeyman";
-            case 4 -> "expert";
-            case 5 -> "master";
-            default -> "any";
-        };
+        return TIERS.getOrDefault(villagerLevel, "any");
     }
 
     public static ResourceLocation getVillagerProfessionId(VillagerProfession villagerProfession) {
@@ -130,5 +121,13 @@ public class QuestHelper {
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             TextHelper.translatable("entity." + professionId.getNamespace() + ".villager." + professionId.getPath()),
             quest.type().getTypeName());
+    }
+
+    static {
+        TIERS.put(1, "novice");
+        TIERS.put(2, "apprentice");
+        TIERS.put(3, "journeyman");
+        TIERS.put(4, "expert");
+        TIERS.put(5, "master");
     }
 }

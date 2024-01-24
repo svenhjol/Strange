@@ -52,7 +52,7 @@ public class GatherQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.randomRequirement(random);
+        var requirement = definition.pair(definition.gatherItems(), random);
         var requiredItem = requirement.getFirst();
         var requiredAmount = requirement.getSecond();
 

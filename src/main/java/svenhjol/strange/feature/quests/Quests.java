@@ -22,7 +22,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 
@@ -50,7 +49,6 @@ public class Quests extends CommonFeature {
     public void register() {
         var registry = mod().registry();
 
-        QuestDefinitions.init();
         QuestsNetwork.register(registry);
 
         lootFunction = registry.lootFunctionType("quest",
@@ -114,11 +112,6 @@ public class Quests extends CommonFeature {
         }
     }
 
-    public static void registerDefinition(QuestDefinition definition) {
-        Mods.common(Strange.ID).log().debug(Quests.class, "Registering definition " + definition);
-        DEFINITIONS.add(definition);
-    }
-
     public static void syncQuests(ServerPlayer player) {
         SyncPlayerQuests.send(player, getQuests(player));
     }
@@ -174,7 +167,32 @@ public class Quests extends CommonFeature {
     }
 
     private void handleServerStart(MinecraftServer server) {
+        DEFINITIONS.clear();
         PLAYER_QUESTS.clear();
+
+        var manager = server.getResourceManager();
+        for (var tier : QuestHelper.TIERS.values()) {
+            var resources = manager.listResources("quests/definition/" + tier, file -> file.getPath().endsWith(".json"));
+            for (var entry : resources.entrySet()) {
+                var id = entry.getKey();
+                var resource = entry.getValue();
+                var definition = QuestDefinition.deserialize(id.getNamespace(), resource);
+
+                // If the def requires specific charmony features, test they are enabled now and skip def if not.
+                var features = definition.enabledFeatures();
+
+                if (!features.isEmpty() && !features.stream().allMatch(
+                    f -> Mods.optionalCommon(f.getNamespace())
+                        .map(m -> m.loader().isEnabled(f.getPath()))
+                        .orElse(false))) {
+                    mod().log().debug(getClass(), "Definition " + id + " has missing or disabled features, skipping");
+                    continue;
+                }
+
+                DEFINITIONS.add(definition);
+                mod().log().debug(getClass(), "Registered quest definition " + id);
+            }
+        }
     }
 
     private void handleEntityJoin(Entity entity, Level level) {

@@ -1,0 +1,12 @@
+{
+  "type": "gather",
+  "profession": "fletcher",
+  "level": 2,
+  "gather_items": {
+    "apprentice_fletcher_gather_items": 15
+  },
+  "rewards": {
+    "apprentice_common_rewards": 6,
+    "apprentice_uncommon_rewards": 2
+  }
+}

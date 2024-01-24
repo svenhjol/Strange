@@ -1,0 +1,12 @@
+{
+  "type": "artifact",
+  "profession": "fletcher",
+  "level": 2,
+  "artifact_loot_tables": {
+    "apprentice_fletcher_artifact_loot_tables": 1
+  },
+  "rewards": {
+    "apprentice_common_rewards": 6,
+    "apprentice_uncommon_rewards": 2
+  }
+}

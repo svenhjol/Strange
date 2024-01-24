@@ -74,7 +74,7 @@ public class ArtifactQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.randomRequirement(random);
+        var requirement = definition.pair(definition.artifactLootTables(), random);
         var requiredLootTable = requirement.getFirst();
         var requiredAmount = requirement.getSecond();
 

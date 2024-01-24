@@ -59,7 +59,7 @@ public class HuntQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.randomRequirement(random);
+        var requirement = definition.pair(definition.huntMobs(), random);
         var requiredEntity = requirement.getFirst();
         var requiredTotal = requirement.getSecond();
 
