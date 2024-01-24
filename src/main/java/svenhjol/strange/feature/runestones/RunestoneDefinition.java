@@ -9,7 +9,7 @@ import net.minecraft.world.level.LevelAccessor;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public interface IRunestoneDefinition {
+public interface RunestoneDefinition {
     Supplier<RunestoneBlock> block();
 
     Optional<Location> getLocation(LevelAccessor level, BlockPos pos, RandomSource random);
