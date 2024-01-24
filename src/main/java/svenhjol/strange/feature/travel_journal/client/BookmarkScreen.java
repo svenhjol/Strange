@@ -5,9 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
@@ -17,6 +14,7 @@ import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.*;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestDeleteBookmark;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.io.File;
@@ -42,8 +40,8 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new TravelJournalButtons.CloseButton(midX + 5,220, b -> onClose()));
-        addRenderableWidget(new TravelJournalButtons.BackButton(midX - (TravelJournalButtons.BackButton.WIDTH + 5), 220, this::openBookmarks));
+        addRenderableWidget(new CloseButton(midX + 5,220, b -> onClose()));
+        addRenderableWidget(new BackButton(midX - (TravelJournalButtons.BackButton.WIDTH + 5), 220, this::openBookmarks));
 
         renderedButtons = false;
         hasPhoto = getScreenshotFile().exists();
@@ -102,14 +100,14 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
                 yoffset += 21;
             }
 
-            addRenderableWidget(new ChangeNameButton(midX - (ChangeNameButton.WIDTH / 2), yoffset, this::openChangeNameScreen));
+            addRenderableWidget(new ChangeNameButton(midX - (TravelJournalButtons.ChangeNameButton.WIDTH / 2), yoffset, this::openChangeNameScreen));
             yoffset += 21;
 
-            addRenderableWidget(new ChangeIconButton(midX - (ChangeIconButton.WIDTH / 2), yoffset, this::openChangeIconScreen));
+            addRenderableWidget(new ChangeIconButton(midX - (TravelJournalButtons.ChangeIconButton.WIDTH / 2), yoffset, this::openChangeIconScreen));
             yoffset += 21;
 
             if (hasPhoto && isNearby) {
-                addRenderableWidget(new TakeNewPhotoButton(midX - (TakeNewPhotoButton.WIDTH / 2), yoffset,
+                addRenderableWidget(new TakeNewPhotoButton(midX - (TravelJournalButtons.TakeNewPhotoButton.WIDTH / 2), yoffset,
                     b -> TravelJournalClient.initPhoto(bookmark)));
             }
         }
@@ -242,89 +240,5 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         }
 
         return minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
-    }
-
-    static class TakePhotoButton extends Button {
-        static int WIDTH = 100;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
-        public TakePhotoButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class TakeNewPhotoButton extends Button {
-        static int WIDTH = 100;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_NEW_PHOTO_BUTTON_TEXT;
-        public TakeNewPhotoButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class ChangeNameButton extends Button {
-        static int WIDTH = 100;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CHANGE_NAME_BUTTON_TEXT;
-        public ChangeNameButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class ChangeIconButton extends Button {
-        static int WIDTH = 100;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CHANGE_ICON_BUTTON_TEXT;
-        public ChangeIconButton(int x, int y, Button.OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    static class TakePhotoShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.PHOTO_BUTTON;
-        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
-
-        protected TakePhotoShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class SaveToBookmarkShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.SAVE_TO_BOOKMARK_BUTTON;
-        static Component TEXT = TravelJournalResources.SAVE_TO_BOOKMARK_BUTTON_TEXT;
-
-        protected SaveToBookmarkShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class SaveToMapShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.SAVE_TO_MAP_BUTTON;
-        static Component TEXT = TravelJournalResources.SAVE_TO_MAP_BUTTON_TEXT;
-
-        protected SaveToMapShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    static class DeleteShortcutButton extends ImageButton {
-        static int WIDTH = 20;
-        static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.TRASH_BUTTON;
-        static Component TEXT = TravelJournalResources.DELETE_BUTTON_TEXT;
-
-        protected DeleteShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
     }
 }

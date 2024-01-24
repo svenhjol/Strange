@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.*;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2), 220, b -> onClose()));
+        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2), 220, b -> onClose()));
         initShortcuts();
 
         renderedPaginationButtons = false;
@@ -61,7 +62,7 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
             var name = bookmark.name;
 
             if (!renderedEditButtons) {
-                addRenderableWidget(new TravelJournalButtons.EditButton(midX - 87, 39 + (y * 21), 190, b -> openBookmark(bookmark), TextHelper.literal(name)));
+                addRenderableWidget(new EditButton(midX - 87, 39 + (y * 21), 190, b -> openBookmark(bookmark), TextHelper.literal(name)));
             }
 
             guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 41 + (y * 21));
@@ -72,10 +73,10 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 185, b -> openBookmarks(page - 1)));
+                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> openBookmarks(page - 1)));
             }
             if (page < pages || index < bookmarks.size()) {
-                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 185, b -> openBookmarks(page + 1)));
+                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> openBookmarks(page + 1)));
             }
             renderedPaginationButtons = true;
         }
