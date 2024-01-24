@@ -10,20 +10,10 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestHelper;
 
 public class QuestButtons {
-    public static class AbandonButton extends Button {
-        static int WIDTH = 110;
-        static int HEIGHT = 20;
-        static Component TEXT = QuestResources.ABANDON_QUEST_BUTTON_TEXT;
-
-        public AbandonButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
     public static class AcceptButton extends Button {
         static int WIDTH = 70;
         static int HEIGHT = 20;
-        static Component TEXT = QuestResources.ACCEPT_QUEST_BUTTON_TEXT;
+        static Component TEXT = QuestResources.ACCEPT_BUTTON_TEXT;
 
         public AcceptButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
@@ -54,6 +44,18 @@ public class QuestButtons {
         public ScrollImageButton(WidgetSprites sprites, int x, int y, OnPress onPress, Component tooltip) {
             super(x, y, WIDTH, HEIGHT, sprites, onPress);
             setTooltip(Tooltip.create(tooltip));
+        }
+    }
+
+    public static class AbandonShortcutButton extends ImageButton {
+        static int WIDTH = 20;
+        static int HEIGHT = 18;
+        static WidgetSprites SPRITES = QuestResources.TRASH_BUTTON;
+        static Component TEXT = QuestResources.ABANDON_BUTTON_TEXT;
+
+        public AbandonShortcutButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 }

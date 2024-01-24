@@ -67,8 +67,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
             yoffset += lineHeight;
         }
 
-        yoffset += 70;
-        addRenderableWidget(new DeleteShortcutButton(midX + 120, yoffset, b -> delete()));
+        addRenderableWidget(new DeleteShortcutButton(midX + 120, 161, b -> delete()));
     }
 
     @Override

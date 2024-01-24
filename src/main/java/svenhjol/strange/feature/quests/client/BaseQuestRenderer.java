@@ -125,12 +125,6 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
         guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 80, titleColor, false);
         renderRewards(screen, guiGraphics, -105, 92, mouseX, mouseY);
-
-        if (!renderedButtons) {
-            var button = new QuestButtons.AbandonButton(midX - (QuestButtons.AbandonButton.WIDTH / 2), 170, onAbandon);
-            screen.addRenderableWidget(button);
-            renderedButtons = true;
-        }
     }
 
     /**

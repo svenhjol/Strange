@@ -26,8 +26,8 @@ public class QuestResources {
     public static final Component BATTLE_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.battle_requirement");
     public static final Component BATTLE_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.battle_reward");
     public static final Component QUEST_INFO_TEXT = TextHelper.translatable("gui.strange.quests.quest_info");
-    public static final Component ACCEPT_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.accept_quest");
-    public static final Component ABANDON_QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.abandon_quest");
+    public static final Component ACCEPT_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.accept");
+    public static final Component ABANDON_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.abandon");
     public static final ResourceLocation NOVICE_SCROLL = new ResourceLocation(Strange.ID, "scroll/novice_scroll");
     public static final ResourceLocation APPRENTICE_SCROLL = new ResourceLocation(Strange.ID, "scroll/apprentice_scroll");
     public static final ResourceLocation JOURNEYMAN_SCROLL = new ResourceLocation(Strange.ID, "scroll/journeyman_scroll");
@@ -51,6 +51,7 @@ public class QuestResources {
     public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");
     public static final WidgetSprites EXPERT_SCROLL_BUTTON = makeButton("expert_scroll");
     public static final WidgetSprites MASTER_SCROLL_BUTTON = makeButton("master_scroll");
+    public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
 
     static {
         LEVEL_TO_SCROLL.put(1, NOVICE_SCROLL);
