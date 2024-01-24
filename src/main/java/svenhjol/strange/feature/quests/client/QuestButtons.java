@@ -47,6 +47,18 @@ public class QuestButtons {
         }
     }
 
+    public static class AcceptImageButton extends ImageButton {
+        static int WIDTH = 20;
+        static int HEIGHT = 18;
+        static WidgetSprites SPRITES = QuestResources.ACCEPT_BUTTON;
+        static Component TEXT = QuestResources.ACCEPT_BUTTON_TEXT;
+
+        public AcceptImageButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
     public static class AbandonShortcutButton extends ImageButton {
         static int WIDTH = 20;
         static int HEIGHT = 18;

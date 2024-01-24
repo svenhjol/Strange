@@ -52,6 +52,7 @@ public class QuestResources {
     public static final WidgetSprites EXPERT_SCROLL_BUTTON = makeButton("expert_scroll");
     public static final WidgetSprites MASTER_SCROLL_BUTTON = makeButton("master_scroll");
     public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
+    public static final WidgetSprites ACCEPT_BUTTON = makeButton("accept");
 
     static {
         LEVEL_TO_SCROLL.put(1, NOVICE_SCROLL);

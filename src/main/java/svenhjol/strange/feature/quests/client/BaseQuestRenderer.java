@@ -158,7 +158,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         renderRewards(screen, guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var button = new QuestButtons.AcceptButton(midX + 83, yOffset + 26, onAccept);
+            var button = new QuestButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
