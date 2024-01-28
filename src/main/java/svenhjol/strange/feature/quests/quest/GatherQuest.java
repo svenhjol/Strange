@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GatherQuest extends Quest {
-    static final int MAX_SELECTION = 3;
     static final String REQUIRED_ITEMS_TAG = "required";
 
     final List<GatherItem> items = new ArrayList<>();
@@ -51,23 +50,25 @@ public class GatherQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
-        var requirement = definition.pair(definition.gatherItems(), random());
-        var requiredItem = requirement.getFirst();
-        var requiredAmount = requirement.getSecond();
+        var entries = ResourceListManager.entries(manager, "quests/gather");
 
         // Populate the items.
-        var itemLists = ResourceListManager.entries(manager, "quests/gather");
-        var itemList = LinkedItemList.load(itemLists.getOrDefault(requiredItem, new LinkedList<>()));
-        if (itemList.isEmpty()) {
+        var itemEntries = definition.pair(definition.gatherItems(), random());
+        var itemEntry = itemEntries.getFirst();
+        var itemAmount = itemEntries.getSecond();
+
+        var items = LinkedItemList.load(entries.getOrDefault(itemEntry, new LinkedList<>()));
+        if (items.isEmpty()) {
             throw new RuntimeException("Item list is empty");
         }
 
-        Collections.shuffle(itemList);
-        var selection = Math.min(itemList.size(), random().nextInt(MAX_SELECTION) + 1);
+        var maxSelection = Math.min(4, villagerLevel());
+        Collections.shuffle(items);
+        var selection = Math.min(items.size(), villagerLevel() + random().nextInt(maxSelection) + 1);
 
         for (var i = 0; i < selection; i++) {
-            var stack = new ItemStack(itemList.get(i));
-            items.add(new GatherItem(stack, requiredAmount / selection));
+            var stack = new ItemStack(items.get(i));
+            this.items.add(new GatherItem(stack, itemAmount / selection));
         }
     }
 
