@@ -29,6 +29,7 @@ import svenhjol.strange.feature.quests.Requirement;
 import java.util.*;
 
 public class ArtifactQuest extends Quest {
+    static final ResourceLocation DEFAULT_ARTIFACT_ITEMS = new ResourceLocation(Strange.ID, "default_artifact_items");
     static final String ARTIFACT_TAG = "artifact";
     static final String LOOT_TABLES_TAG = "loot_tables";
 
@@ -74,35 +75,42 @@ public class ArtifactQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
-        var requirement = definition.pair(definition.artifactLootTables(), random());
-        var requiredLootTable = requirement.getFirst();
-        var requiredAmount = requirement.getSecond();
+        var entries = ResourceListManager.entries(manager, "quests/artifact");
 
         // Populate the loot tables.
-        var lootTableLists = ResourceListManager.entries(manager, "quests/artifact");
-        var lootTableList = LinkedResourceList.load(lootTableLists.getOrDefault(requiredLootTable, new LinkedList<>()));
-        if (lootTableList.isEmpty()) {
+        var lootTableEntries = definition.pair(definition.artifactLootTables(), random());
+        var lootTableEntry = lootTableEntries.getFirst();
+        var lootTableAmount = lootTableEntries.getSecond();
+        var lootTables = LinkedResourceList.load(entries.getOrDefault(lootTableEntry, new LinkedList<>()));
+
+        if (lootTables.isEmpty()) {
             throw new RuntimeException("Loot table list is empty");
         }
 
-        Collections.shuffle(lootTableList);
-        for (var i = 0; i < Math.min(requiredAmount, lootTableList.size()); i++) {
-            lootTables.add(lootTableList.get(i));
+        Collections.shuffle(lootTables);
+        for (var i = 0; i < Math.min(lootTableAmount, lootTables.size()); i++) {
+            this.lootTables.add(lootTables.get(i));
         }
 
-        // Populate the items.
-        var anyKey = makeItemsKey(0, VillagerProfession.NONE);
-        var levelKey = makeItemsKey(villagerLevel(), VillagerProfession.NONE);
-        var customKey = makeItemsKey(villagerLevel(), villagerProfession());
+        // Populate the artifact items.
+        List<Item> defaultItems = LinkedItemList.load(entries.getOrDefault(DEFAULT_ARTIFACT_ITEMS, new LinkedList<>()));
+        List<Item> artifactItems = new ArrayList<>();
 
-        var itemLists = ResourceListManager.entries(manager, "quests/artifact");
-        var itemList = tryLoad(itemLists, customKey, levelKey, anyKey);
-        if (itemList.isEmpty()) {
-            throw new RuntimeException("Item list is empty");
+        // Artifact items defined in the definition.
+        for (var itemEntry : definition.artifactItems()) {
+            artifactItems.addAll(LinkedItemList.load(entries.getOrDefault(itemEntry, new LinkedList<>())));
         }
 
-        Collections.shuffle(itemList);
-        var stack = new ItemStack(itemList.get(0));
+        if (artifactItems.isEmpty()) {
+            if (defaultItems.isEmpty()) {
+                throw new RuntimeException("No custom or default items, cannot continue");
+            }
+            log().debug(getClass(), "Using default artifact items list");
+            artifactItems = defaultItems;
+        }
+
+        Collections.shuffle(artifactItems);
+        var stack = new ItemStack(artifactItems.get(0));
         artifact = new ArtifactItem(stack);
     }
 

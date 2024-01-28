@@ -269,17 +269,18 @@ public abstract class Quest {
     protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition);
 
     protected void makeRewards(ResourceManager manager, QuestDefinition definition) {
+        var entries = ResourceListManager.entries(manager, "quests/reward");
+
         // Populate the reward functions.
-        var rewardFunctionEntries = ResourceListManager.entries(manager, "quests/reward");
         List<String> rewardFunctionIds = new ArrayList<>();
 
         // Default reward functions.
-        var defaultIds = LinkedResourceList.load(rewardFunctionEntries.getOrDefault(DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
+        var defaultIds = LinkedResourceList.load(entries.getOrDefault(DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
         defaultIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
 
         // Reward functions defined in the definition.
         for (var functionEntry : definition.rewardFunctions()) {
-            var functionIds = LinkedResourceList.load(rewardFunctionEntries.getOrDefault(functionEntry, new LinkedList<>()));
+            var functionIds = LinkedResourceList.load(entries.getOrDefault(functionEntry, new LinkedList<>()));
             functionIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
         }
 
@@ -288,7 +289,7 @@ public abstract class Quest {
         var rewardItemEntry = rewardItemEntries.getFirst();
         var rewardItemAmount = rewardItemEntries.getSecond();
 
-        var rewardItems = LinkedItemList.load(rewardFunctionEntries.getOrDefault(rewardItemEntry, new LinkedList<>()));
+        var rewardItems = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
         if (rewardItems.isEmpty()) {
             throw new RuntimeException("Reward item list is empty");
         }
