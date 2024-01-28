@@ -12,10 +12,17 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class ResourceListManager {
+    private static final Map<String, Map<ResourceLocation, LinkedList<ResourceLocation>>> CACHED_ENTRIES = new HashMap<>();
+
     /**
      * Assemble map of resourcelocations -> lists.
      */
     public static Map<ResourceLocation, LinkedList<ResourceLocation>> entries(ResourceManager manager, String folder) {
+        var cached = CACHED_ENTRIES.get(folder);
+        if (cached != null && !cached.isEmpty()) {
+            return cached;
+        }
+
         Map<ResourceLocation, LinkedList<ResourceLocation>> map = new HashMap<>();
 
         var files = manager.listResources(folder, f -> f.getPath().endsWith(".json"));
@@ -65,7 +72,12 @@ public class ResourceListManager {
             }
         }
 
+        CACHED_ENTRIES.put(folder, map);
         return map;
+    }
+
+    public static void clearEntriesCache() {
+        CACHED_ENTRIES.clear();;
     }
 
     private static ILog log() {

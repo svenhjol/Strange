@@ -6,6 +6,7 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfigPlugin",
   "mixins": [
+    "core.MinecraftServerMixin",
     "enums.boat_type_enum.BoatTypeMixin",
     "piglin_pointing.PiglinAiMixin",
     "piglin_pointing.PiglinMixin",
