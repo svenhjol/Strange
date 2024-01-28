@@ -124,17 +124,16 @@ public class QuestsClient extends ClientFeature {
     }
 
     public static void handleSyncPlayerQuests(SyncPlayerQuests message, Player player) {
-        var uuid = player.getUUID();
         var quests = message.getQuests();
         log().debug(QuestsClient.class, "Received " + quests.size() + " player quests");
-        Quests.PLAYER_QUESTS.put(uuid, quests);
+        Quests.setPlayerQuests(player, quests);
     }
 
     public static void handleSyncVillagerQuests(SyncVillagerQuests message, Player player) {
         var uuid = message.getVillagerUuid();
         var quests = message.getQuests();
         log().debug(QuestsClient.class, "Received " + quests.size() + " quests for villager " + uuid);
-        Quests.VILLAGER_QUESTS.put(uuid, quests);
+        Quests.setVillagerQuests(villagerUuid, quests);
     }
 
     public static void handleNotifyVillagerQuestsResult(NotifyVillagerQuestsResult message, Player player) {
@@ -166,11 +165,11 @@ public class QuestsClient extends ClientFeature {
         var level = player.level();
         var pos = player.blockPosition();
 
-        var quests = Quests.getQuests(player);
+        var quests = Quests.getPlayerQuests(player);
         List<Villager> receivers = new ArrayList<>();
         List<Villager> questGivers = new ArrayList<>();
 
-        quests.forEach(quest -> {
+        quests.all().forEach(quest -> {
             if (quest.satisfied()) {
                 var opt = QuestHelper.getNearbyMatchingVillager(level, pos, quest.villagerUuid());
                 if (opt.isPresent() && !questGivers.contains(opt.get())) {

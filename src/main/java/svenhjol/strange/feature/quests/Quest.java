@@ -126,15 +126,15 @@ public abstract class Quest {
     }
 
 
-    public static <Q extends Quest> Q create(ResourceManager manager, QuestDefinition definition, UUID villagerUuid) {
+    public static Quest create(ResourceManager manager, QuestDefinition definition, UUID villagerUuid) {
         var type = definition.type();
 
-        var quest = type.<Q>makeQuest();
+        var quest = type.makeQuest();
         quest.make(manager, definition, villagerUuid);
         return quest;
     }
 
-    public static <Q extends Quest> Q load(CompoundTag tag) {
+    public static Quest load(CompoundTag tag) {
         var id = tag.getString(ID_TAG);
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
         var status = Status.valueOf(tag.getString(STATUS_TAG));
@@ -143,7 +143,7 @@ public abstract class Quest {
         var villagerLevel = tag.getInt(VILLAGER_LEVEL_TAG);
         var villagerUuid = tag.getUUID(VILLAGER_UUID);
 
-        var quest = type.<Q>makeQuest();
+        var quest = type.makeQuest();
         quest.id = id;
         quest.type = type;
         quest.status = status;

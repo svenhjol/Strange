@@ -26,8 +26,8 @@ public class QuestOffersScreen extends Screen {
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;
 
-        var quests = Quests.VILLAGER_QUESTS.getOrDefault(villagerUuid, List.of());
-        for (Quest quest : quests) {
+        var quests = Quests.getVillagerQuests(villagerUuid);
+        for (Quest quest : quests.all()) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);
         }

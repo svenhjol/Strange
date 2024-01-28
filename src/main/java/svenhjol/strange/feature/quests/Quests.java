@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -22,19 +23,23 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
+import svenhjol.charmony.event.PlayerLoadDataCallback;
+import svenhjol.charmony.event.PlayerSaveDataCallback;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Quests extends CommonFeature {
+    public static final String QUESTS_TAG = "quests";
     static final List<QuestDefinition> DEFINITIONS = new ArrayList<>();
-    public static final Map<UUID, List<Quest>> PLAYER_QUESTS = new HashMap<>();
-    public static final Map<UUID, List<Quest>> VILLAGER_QUESTS = new HashMap<>();
-    public static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
-    public static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
+    private static final Map<UUID, QuestList> PLAYER_QUESTS = new HashMap<>();
+    private static final Map<UUID, QuestList> VILLAGER_QUESTS = new HashMap<>();
+    private static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
+    private static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
 
     static Supplier<LootItemFunctionType> lootFunction;
     static Supplier<SoundEvent> abandonSound;
@@ -67,7 +72,26 @@ public class Quests extends CommonFeature {
         EntityKilledEvent.INSTANCE.handle(this::handleEntityKilled);
         EntityLeaveEvent.INSTANCE.handle(this::handleEntityLeave);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
+        PlayerLoadDataEvent.INSTANCE.handle(this::handlePlayerLoadData);
+        PlayerSaveDataEvent.INSTANCE.handle(this::handlePlayerSaveData);
         LootTableModifyEvent.INSTANCE.handle(this::handleLootTableModify);
+    }
+
+    private void handlePlayerSaveData(Player player, File file) {
+        var uuid = player.getUUID();
+        var tag = new CompoundTag();
+        var questsTag = getPlayerQuests(player).save();
+        tag.put(QUESTS_TAG, questsTag);
+
+        PlayerSaveDataCallback.writeFile(getDataFile(file, uuid), tag);
+    }
+
+    private void handlePlayerLoadData(Player player, File file) {
+        var uuid = player.getUUID();
+        var tag = PlayerLoadDataCallback.readFile(getDataFile(file, uuid));
+
+        var quests = QuestList.load(tag.getCompound(QUESTS_TAG));
+        PLAYER_QUESTS.put(uuid, quests);
     }
 
     private Optional<LootPool.Builder> handleLootTableModify(LootDataManager manager, ResourceLocation id) {
@@ -83,41 +107,38 @@ public class Quests extends CommonFeature {
 
     private void handleEntityKilled(LivingEntity entity, DamageSource source) {
         if (source.getEntity() instanceof Player player && !player.level().isClientSide) {
-            getQuests(player).forEach(q -> q.entityKilled(entity, source));
+            getPlayerQuests(player).all().forEach(q -> q.entityKilled(entity, source));
         }
     }
 
     private void handleEntityLeave(Entity entity, Level level) {
-        getQuests().forEach(q -> q.entityLeave(entity));
+        getAllPlayerQuests().forEach(q -> q.entityLeave(entity));
     }
 
     private void handlePlayerTick(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            var uuid = serverPlayer.getUUID();
-            if (PLAYER_QUESTS.containsKey(uuid)) {
-                List<Quest> invalid = new ArrayList<>();
-                for (var quest : PLAYER_QUESTS.get(uuid)) {
-                    quest.tick(serverPlayer);
+            List<Quest> invalid = new ArrayList<>();
+            for (var quest : getPlayerQuests(serverPlayer).all()) {
+                quest.tick(serverPlayer);
 
-                    // If any quest became invalidated during its tick, remove it.
-                    if (!quest.inProgress()) {
-                        invalid.add(quest);
-                    }
+                // If any quest became invalidated during its tick, remove it.
+                if (!quest.inProgress()) {
+                    invalid.add(quest);
                 }
+            }
 
-                if (!invalid.isEmpty()) {
-                    invalid.forEach(q -> removeQuest(serverPlayer, q));
-                }
+            if (!invalid.isEmpty()) {
+                invalid.forEach(q -> removeQuest(serverPlayer, q));
             }
         }
     }
 
     public static void syncQuests(ServerPlayer player) {
-        SyncPlayerQuests.send(player, getQuests(player));
+        SyncPlayerQuests.send(player, getPlayerQuests(player));
     }
 
     public static void addQuest(ServerPlayer player, Quest quest) {
-        PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
+        PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new QuestList())
             .add(quest);
 
         quest.player = player;
@@ -138,37 +159,46 @@ public class Quests extends CommonFeature {
     }
 
     public static void removeQuest(ServerPlayer player, Quest quest) {
-        PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new ArrayList<>())
+        PLAYER_QUESTS.computeIfAbsent(player.getUUID(), a -> new QuestList())
             .remove(quest);
 
         syncQuests(player);
     }
 
-    public static List<Quest> getQuests(Player player) {
-        return PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of());
+    public static void setPlayerQuests(Player player, QuestList quests) {
+        PLAYER_QUESTS.put(player.getUUID(), quests);
     }
 
-    public static List<Quest> getQuests(QuestType type) {
-        return getQuests().stream()
+    public static void setVillagerQuests(UUID villagerUuid, QuestList quests) {
+        VILLAGER_QUESTS.put(villagerUuid, quests);
+    }
+
+    public static QuestList getPlayerQuests(Player player) {
+        return PLAYER_QUESTS.getOrDefault(player.getUUID(), new QuestList());
+    }
+
+    public static QuestList getVillagerQuests(UUID villagerUuid) {
+        return VILLAGER_QUESTS.getOrDefault(villagerUuid, new QuestList());
+    }
+
+    public static List<Quest> getPlayerQuests(QuestType type) {
+        return getAllPlayerQuests().stream()
             .filter(q -> q.type().equals(type))
             .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static List<Quest> getQuests() {
+    public static List<Quest> getAllPlayerQuests() {
         List<Quest> quests = new ArrayList<>();
-        PLAYER_QUESTS.values().forEach(quests::addAll);
+        PLAYER_QUESTS.values().forEach(questList -> quests.addAll(questList.all()));
         return quests;
     }
 
-    public static Optional<Quest> getQuest(Player player, String questId) {
-        return getQuests(player)
-            .stream().filter(q -> q.id().equals(questId))
-            .findFirst();
+    public static Optional<Quest> getPlayerQuest(Player player, String questId) {
+        return getPlayerQuests(player).get(questId);
     }
 
     private void handleServerStart(MinecraftServer server) {
         DEFINITIONS.clear();
-        PLAYER_QUESTS.clear();
 
         var manager = server.getResourceManager();
         for (var tier : QuestHelper.TIERS.values()) {
@@ -201,6 +231,10 @@ public class Quests extends CommonFeature {
         }
     }
 
+    private File getDataFile(File playerDataDir, UUID uuid) {
+        return new File(playerDataDir + "/" + uuid.toString() + "_strange_quests.dat");
+    }
+
     public static void handleRequestVillagerQuests(RequestVillagerQuests message, Player player) {
         var ticksToRefresh = 80; // TODO: test value, refresh quests every 4 seconds
         var level = player.level();
@@ -221,16 +255,13 @@ public class Quests extends CommonFeature {
         var villagerProfession = villagerData.getProfession();
         var villagerLevel = villagerData.getLevel();
         var lastRefresh = VILLAGER_QUESTS_REFRESH.get(villagerUuid);
-        var quests = VILLAGER_QUESTS.getOrDefault(villagerUuid, new ArrayList<>());
+        var quests = VILLAGER_QUESTS.getOrDefault(villagerUuid, new QuestList());
 
         if (lastRefresh != null && gameTime - lastRefresh < ticksToRefresh) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.SUCCESS);
             SyncVillagerQuests.send(serverPlayer, quests, villagerUuid, villagerProfession);
             return;
         }
-
-        // Generate new quests for this villager
-        quests.clear();
 
         var definitions = QuestHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
@@ -270,7 +301,7 @@ public class Quests extends CommonFeature {
         }
 
         // Player already on this quest?
-        if (getQuest(serverPlayer, questId).isPresent()) {
+        if (getPlayerQuest(serverPlayer, questId).isPresent()) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.ALREADY_ON_QUEST);
             return;
         }
@@ -290,15 +321,15 @@ public class Quests extends CommonFeature {
         }
 
         // Check that the villager quest ID is valid.
-        var opt = villagerQuests.stream().filter(q -> q.id().equals(questId)).findFirst();
+        var opt = villagerQuests.all().stream().filter(q -> q.id().equals(questId)).findFirst();
         if (opt.isEmpty()) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.NO_QUEST);
             return;
         }
 
         // Remove this quest from the villager quests.
-        VILLAGER_QUESTS.put(villagerUuid, villagerQuests.stream().filter(q -> !q.id().equals(questId))
-            .collect(Collectors.toCollection(ArrayList::new)));
+        villagerQuests.remove(questId);
+        VILLAGER_QUESTS.put(villagerUuid, villagerQuests);
 
         level.playSound(null, serverPlayer.blockPosition(), acceptSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
@@ -318,7 +349,7 @@ public class Quests extends CommonFeature {
 
     public static void handleAbandonQuest(AbandonQuest message, Player player) {
         var serverPlayer = (ServerPlayer)player;
-        var quests = getQuests(player);
+        var quests = getPlayerQuests(player);
         var questId = message.getQuestId();
 
         // Player even has quests?
@@ -328,7 +359,7 @@ public class Quests extends CommonFeature {
         }
 
         // Player has this quest?
-        var opt = quests.stream().filter(q -> q.id.equals(questId)).findFirst();
+        var opt = quests.get(questId);
         if (opt.isEmpty()) {
             NotifyAbandonQuestResult.send(serverPlayer, null, AbandonQuestResult.NO_QUEST);
             return;
@@ -354,8 +385,8 @@ public class Quests extends CommonFeature {
      * If any player quests can be completed by the villager then run that action here.
      */
     public static boolean tryComplete(ServerPlayer player, Villager villager) {
-        var quests = getQuests(player);
-        var satisfied = quests.stream().filter(Quest::satisfied).toList();
+        var quests = getPlayerQuests(player);
+        var satisfied = quests.all().stream().filter(Quest::satisfied).toList();
         if (satisfied.isEmpty()) return false;
 
         var matchesQuestGiver = satisfied.stream().filter(q -> q.villagerUuid().equals(villager.getUUID())).toList();

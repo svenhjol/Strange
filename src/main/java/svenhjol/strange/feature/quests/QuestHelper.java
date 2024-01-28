@@ -53,8 +53,8 @@ public class QuestHelper {
         return sublist;
     }
 
-    public static List<Quest> makeQuestsFromDefinitions(ResourceManager manager, List<QuestDefinition> definitions, UUID villagerUuid) {
-        List<Quest> quests = new ArrayList<>();
+    public static QuestList makeQuestsFromDefinitions(ResourceManager manager, List<QuestDefinition> definitions, UUID villagerUuid) {
+        var quests = new QuestList();
 
         for (var definition : definitions) {
             quests.add(Quest.create(manager, definition, villagerUuid));
@@ -98,7 +98,7 @@ public class QuestHelper {
     }
 
     public static boolean hasMaxQuests(Player player) {
-        var quests = Quests.PLAYER_QUESTS.getOrDefault(player.getUUID(), List.of());
+        var quests = Quests.getPlayerQuests(player);
         return quests.size() >= Quests.maxPlayerQuests;
     }
 

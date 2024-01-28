@@ -21,8 +21,6 @@ import svenhjol.strange.feature.quests.Quests.AcceptQuestResult;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class QuestsNetwork {
@@ -174,7 +172,7 @@ public class QuestsNetwork {
             profession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(buf.readUtf()));
         }
 
-        public static void send(ServerPlayer player, List<Quest> quests, UUID villagerUuid, VillagerProfession profession) {
+        public static void send(ServerPlayer player, QuestList quests, UUID villagerUuid, VillagerProfession profession) {
             var message = new SyncVillagerQuests();
             message.quests = quests;
             message.villagerUuid = villagerUuid;
@@ -194,7 +192,7 @@ public class QuestsNetwork {
         description = "Send player quests to the client."
     )
     public static class SyncPlayerQuests extends SyncQuests {
-        public static void send(ServerPlayer player, List<Quest> quests) {
+        public static void send(ServerPlayer player, QuestList quests) {
             var message = new SyncPlayerQuests();
             message.quests = quests;
 
@@ -335,13 +333,13 @@ public class QuestsNetwork {
     static abstract class SyncQuests implements IPacketRequest {
         static final String QUESTS_TAG = "quests";
 
-        protected List<Quest> quests = new ArrayList<>();
+        protected QuestList quests;
 
         @Override
         public void encode(FriendlyByteBuf buf) {
             var tag = new CompoundTag();
             var list = new ListTag();
-            for (Quest quest : quests) {
+            for (Quest quest : quests.all()) {
                 var q = new CompoundTag();
                 quest.save(q);
                 list.add(q);
@@ -352,7 +350,7 @@ public class QuestsNetwork {
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            quests.clear();
+            quests = new QuestList();
             var tag = buf.readNbt();
             if (tag == null) return;
 
@@ -363,7 +361,7 @@ public class QuestsNetwork {
             }
         }
 
-        public List<Quest> getQuests() {
+        public QuestList getQuests() {
             return quests;
         }
     }

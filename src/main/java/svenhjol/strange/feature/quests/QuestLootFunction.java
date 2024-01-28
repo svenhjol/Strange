@@ -37,7 +37,7 @@ public class QuestLootFunction extends LootItemConditionalFunction {
         var random = context.getRandom();
 
         if (context.getParamOrNull(this.entityTarget.getParam()) instanceof Player player) {
-            for (var quest : Quests.getQuests(player)) {
+            for (var quest : Quests.getPlayerQuests(player).all()) {
                 var result = quest.addToLootTable(lootTableId, random);
                 if (result.isPresent()) {
                     return result.get();

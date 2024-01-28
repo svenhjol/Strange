@@ -3,6 +3,7 @@ package svenhjol.strange.feature.travel_journal.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestList;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
@@ -26,7 +27,7 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         this.page = page;
         PageTracker.Screen.QUESTS.set();
 
-        var quests = getQuests();
+        var quests = getQuests().all();
         for (Quest quest : quests) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);
@@ -92,13 +93,13 @@ public class QuestsScreen extends BaseTravelJournalScreen {
         }
     }
 
-    protected List<Quest> getQuests() {
+    protected QuestList getQuests() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
-            return List.of();
+            return new QuestList();
         }
 
-        return Quests.getQuests(minecraft.player);
+        return Quests.getPlayerQuests(minecraft.player);
     }
 
     protected void renderNoQuests(GuiGraphics guiGraphics) {
