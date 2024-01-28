@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class HuntQuest extends Quest {
-    static final int MAX_SELECTION = 3;
     static final String REQUIRED_KILLS_TAG = "required";
 
     final List<HuntTarget> targets = new ArrayList<>();
@@ -58,23 +57,25 @@ public class HuntQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
-        var requirement = definition.pair(definition.huntMobs(), random());
-        var requiredEntity = requirement.getFirst();
-        var requiredTotal = requirement.getSecond();
+        var entries = ResourceListManager.entries(manager, "quests/hunt");
 
-        // Populate entities.
-        var entityLists = ResourceListManager.entries(manager, "quests/hunt");
-        var entityList = LinkedEntityTypeList.load(entityLists.getOrDefault(requiredEntity, new LinkedList<>()));
-        if (entityList.isEmpty()) {
+        // Populate the mobs.
+        var mobEntries = definition.pair(definition.huntMobs(), random());
+        var mobEntry = mobEntries.getFirst();
+        var mobAmount = mobEntries.getSecond();
+
+        var targets = LinkedEntityTypeList.load(entries.getOrDefault(mobEntry, new LinkedList<>()));
+        if (targets.isEmpty()) {
             throw new RuntimeException("Entity list is empty");
         }
 
-        Collections.shuffle(entityList);
-        var selection = Math.min(entityList.size(), random().nextInt(MAX_SELECTION) + 1);
+        var maxSelection = Math.min(4, villagerLevel());
+        Collections.shuffle(targets);
+        var selection = Math.min(targets.size(), villagerLevel() + random().nextInt(maxSelection) + 1);
 
         for (int i = 0; i < selection; i++) {
-            var entity = entityList.get(i);
-            targets.add(new HuntTarget(entity, requiredTotal / selection));
+            var entity = targets.get(i);
+            this.targets.add(new HuntTarget(entity, mobAmount / selection));
         }
     }
 
