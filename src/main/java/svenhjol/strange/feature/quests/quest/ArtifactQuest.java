@@ -73,8 +73,8 @@ public class ArtifactQuest extends Quest {
     }
 
     @Override
-    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.pair(definition.artifactLootTables(), random);
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
+        var requirement = definition.pair(definition.artifactLootTables(), random());
         var requiredLootTable = requirement.getFirst();
         var requiredAmount = requirement.getSecond();
 
@@ -103,7 +103,7 @@ public class ArtifactQuest extends Quest {
 
         Collections.shuffle(itemList);
         var stack = new ItemStack(itemList.get(0));
-        artifact = new ArtifactItem(stack, random);
+        artifact = new ArtifactItem(stack);
     }
 
     @Override
@@ -175,17 +175,17 @@ public class ArtifactQuest extends Quest {
 
         private ArtifactItem() {}
 
-        public ArtifactItem(ItemStack item, RandomSource random) {
+        public ArtifactItem(ItemStack item) {
             var questId = id();
-            addRandomEnchantment(item, random);
+            addRandomEnchantment(item);
             item.getOrCreateTag().putString(CUSTOM_TAG, questId);
 
             // Add custom name
-            addNamePrefix(item, random);
+            addNamePrefix(item);
 
             // Add random colored glint
             var dyeColors = new ArrayList<>(Arrays.stream(DyeColor.values()).toList());
-            ColoredGlints.applyColoredGlint(item, dyeColors.get(random.nextInt(dyeColors.size())));
+            ColoredGlints.applyColoredGlint(item, dyeColors.get(random().nextInt(dyeColors.size())));
 
             this.item = item;
         }
@@ -274,18 +274,18 @@ public class ArtifactQuest extends Quest {
             tag.put(ITEM_TAG, itemTag);
         }
 
-        protected void addRandomEnchantment(ItemStack stack, RandomSource random) {
+        protected void addRandomEnchantment(ItemStack stack) {
             var enchantments = BuiltInRegistries.ENCHANTMENT.entrySet().stream().map(Map.Entry::getValue).toList();
-            var enchantment = enchantments.get(random.nextInt(enchantments.size()));
+            var enchantment = enchantments.get(random().nextInt(enchantments.size()));
             Map<Enchantment, Integer> map = new HashMap<>();
             map.put(enchantment, enchantment.getMinLevel());
             EnchantmentHelper.setEnchantments(map, stack);
         }
 
-        protected void addNamePrefix(ItemStack stack, RandomSource random) {
+        protected void addNamePrefix(ItemStack stack) {
             var prefixes = Arrays.stream(Component.translatable("gui.strange.descriptions.prefix").getString().split(",")).toList();
 
-            var prefix = prefixes.get(random.nextInt(prefixes.size()));
+            var prefix = prefixes.get(random().nextInt(prefixes.size()));
             var name = stack.getItem().getName(stack);
 
             var newName = Component.translatable("gui.strange.descriptions.prefixed_name", prefix, name);

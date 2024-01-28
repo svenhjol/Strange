@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -153,7 +152,7 @@ public class BattleQuest extends Quest {
     }
 
     @Override
-    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
         List<MobEffectInstance> effects = new ArrayList<>();
 
         // Populate default effects. The default effects are added to every battle mob.
@@ -163,7 +162,7 @@ public class BattleQuest extends Quest {
         populateEffects(effects, defaultEffectList);
 
         // Populate custom effects.
-        var customEffects = definition.pair(definition.battleEffects(), random);
+        var customEffects = definition.pair(definition.battleEffects(), random());
         var effect = customEffects.getFirst();
         var effectTotal = customEffects.getSecond();
 
@@ -175,13 +174,13 @@ public class BattleQuest extends Quest {
                 if (i < effectList.size()) {
                     populateEffects(effects, List.of(effectList.get(i)));
                 } else {
-                    populateEffects(effects, List.of(effectList.get(random.nextInt(effectList.size()))));
+                    populateEffects(effects, List.of(effectList.get(random().nextInt(effectList.size()))));
                 }
             }
         }
 
         // Populate entities.
-        var mobs = definition.pair(definition.battleMobs(), random);
+        var mobs = definition.pair(definition.battleMobs(), random());
         var mob = mobs.getFirst();
         var mobTotal = mobs.getSecond();
 
@@ -197,7 +196,7 @@ public class BattleQuest extends Quest {
             if (i < mobList.size()) {
                 entity = mobList.get(i);
             } else {
-                entity = mobList.get(random.nextInt(mobList.size()));
+                entity = mobList.get(random().nextInt(mobList.size()));
             }
             targets.add(new BattleTarget(entity, effects));
         }
@@ -247,8 +246,8 @@ public class BattleQuest extends Quest {
 
     private Optional<BlockPos> findRandomSpawnPos(EntityType<?> entity, ServerLevel level, BlockPos pos) {
         for (int i = 0; i < 20; i++) {
-            var x = pos.getX() + level.random.nextInt(24) - 8;
-            var z = pos.getZ() + level.random.nextInt(24) - 8;
+            var x = pos.getX() + random().nextInt(24) - 8;
+            var z = pos.getZ() + random().nextInt(24) - 8;
             var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
             var p = new BlockPos(x, y, z).below();
             var s = level.getBlockState(p);

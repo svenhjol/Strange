@@ -3,7 +3,6 @@ package svenhjol.strange.feature.quests.quest;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import svenhjol.strange.data.LinkedItemList;
@@ -51,8 +50,8 @@ public class GatherQuest extends Quest {
     }
 
     @Override
-    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.pair(definition.gatherItems(), random);
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
+        var requirement = definition.pair(definition.gatherItems(), random());
         var requiredItem = requirement.getFirst();
         var requiredAmount = requirement.getSecond();
 
@@ -64,7 +63,7 @@ public class GatherQuest extends Quest {
         }
 
         Collections.shuffle(itemList);
-        var selection = Math.min(itemList.size(), random.nextInt(MAX_SELECTION) + 1);
+        var selection = Math.min(itemList.size(), random().nextInt(MAX_SELECTION) + 1);
 
         for (var i = 0; i < selection; i++) {
             var stack = new ItemStack(itemList.get(i));

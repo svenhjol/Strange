@@ -9,18 +9,18 @@ import svenhjol.strange.feature.quests.Reward;
 import java.util.List;
 
 public class RewardItem implements Reward {
-    static final String ITEM_TAG = "item";
+    static final String STACK_TAG = "stack";
 
-    public ItemStack item;
+    public ItemStack stack;
     public Quest quest;
 
     public RewardItem(Quest quest) {
         this.quest = quest;
     }
 
-    public RewardItem(Quest quest, ItemStack item) {
+    public RewardItem(Quest quest, ItemStack stack) {
         this.quest = quest;
-        this.item = item;
+        this.stack = stack;
     }
 
     @Override
@@ -39,18 +39,18 @@ public class RewardItem implements Reward {
         if (player == null) return;
 
         QuestHelper.getNearbyMatchingVillager(player.level(), player.blockPosition(), quest.villagerUuid()).ifPresent(
-            villager -> QuestHelper.throwItemsAtPlayer(villager, player, List.of(item)));
+            villager -> QuestHelper.throwItemsAtPlayer(villager, player, List.of(stack)));
     }
 
     @Override
     public void load(CompoundTag tag) {
-        item = ItemStack.of(tag.getCompound(ITEM_TAG));
+        stack = ItemStack.of(tag.getCompound(STACK_TAG));
     }
 
     @Override
     public void save(CompoundTag tag) {
         var itemTag = new CompoundTag();
-        item.save(itemTag);
-        tag.put(ITEM_TAG, itemTag);
+        stack.save(itemTag);
+        tag.put(STACK_TAG, itemTag);
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,8 +57,8 @@ public class HuntQuest extends Quest {
     }
 
     @Override
-    protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.pair(definition.huntMobs(), random);
+    protected void makeRequirements(ResourceManager manager, QuestDefinition definition) {
+        var requirement = definition.pair(definition.huntMobs(), random());
         var requiredEntity = requirement.getFirst();
         var requiredTotal = requirement.getSecond();
 
@@ -71,7 +70,7 @@ public class HuntQuest extends Quest {
         }
 
         Collections.shuffle(entityList);
-        var selection = Math.min(entityList.size(), random.nextInt(MAX_SELECTION) + 1);
+        var selection = Math.min(entityList.size(), random().nextInt(MAX_SELECTION) + 1);
 
         for (int i = 0; i < selection; i++) {
             var entity = entityList.get(i);

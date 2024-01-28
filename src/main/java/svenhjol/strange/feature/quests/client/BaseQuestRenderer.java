@@ -176,17 +176,17 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var yo = yOffset;
         for (var reward : quest.rewards()) {
             if (reward instanceof RewardItem i) {
-                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.item.getCount());
+                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.stack.getCount());
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
                 var width = font.width(label);
 
                 guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, rewardBackgroundColor);
-                guiGraphics.renderFakeItem(i.item, xo + 7 + width, yo);
+                guiGraphics.renderFakeItem(i.stack, xo + 7 + width, yo);
 
                 if (mouseX >= xo && mouseX <= xo + 25 + width
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
-                    guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                    guiGraphics.renderTooltip(font, i.stack, xo, yo + 27);
                 }
                 xo += 27 + width;
             }

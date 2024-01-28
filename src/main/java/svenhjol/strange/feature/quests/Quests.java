@@ -27,6 +27,7 @@ import svenhjol.charmony.event.PlayerLoadDataCallback;
 import svenhjol.charmony.event.PlayerSaveDataCallback;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
+import svenhjol.strange.feature.quests.reward.RewardItemFunctions;
 
 import java.io.File;
 import java.util.*;
@@ -46,6 +47,8 @@ public class Quests extends CommonFeature {
     static Supplier<SoundEvent> acceptSound;
     static Supplier<SoundEvent> completeSound;
     static Supplier<SoundEvent> epicCompleteSound;
+
+    public static final RewardItemFunctions REWARD_ITEM_FUNCTIONS = new RewardItemFunctions();
 
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;

@@ -19,10 +19,10 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.RandomStringUtils;
+import svenhjol.strange.Strange;
 import svenhjol.strange.data.LinkedItemList;
+import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
@@ -32,6 +32,7 @@ import java.util.*;
 
 public abstract class Quest {
     static final int MAX_REWARD_ITEMS = 2; // TODO: hardcoded number of item rewards
+    static final ResourceLocation DEFAULT_REWARD_FUNCTIONS = new ResourceLocation(Strange.ID, "default_reward_functions");
     static final String ID_TAG = "id";
     static final String TYPE_TAG = "type";
     static final String STATUS_TAG = "status";
@@ -41,6 +42,7 @@ public abstract class Quest {
     static final String VILLAGER_UUID = "villager_uuid";
     static final String REWARD_ITEMS_TAG = "reward_items";
     static final String REWARD_XP_TAG = "reward_xp";
+    static final String RANDOM_SEED = "random_seed";
 
     protected @Nullable Player player;
 
@@ -54,6 +56,8 @@ public abstract class Quest {
     protected boolean epic;
     protected List<RewardItem> rewardItems = new ArrayList<>();
     protected List<RewardXp> rewardXp = new ArrayList<>();
+    protected RandomSource random;
+    protected long randomSeed;
 
     public String id() {
         return id;
@@ -69,6 +73,13 @@ public abstract class Quest {
 
     public boolean isEpic() {
         return epic;
+    }
+
+    public RandomSource random() {
+        if (random == null) {
+            random = RandomSource.create(randomSeed);
+        }
+        return random;
     }
 
     public abstract List<? extends Requirement> requirements();
@@ -142,6 +153,7 @@ public abstract class Quest {
         var villagerProfession = BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(tag.getString(VILLAGER_PROFESSION_TAG)));
         var villagerLevel = tag.getInt(VILLAGER_LEVEL_TAG);
         var villagerUuid = tag.getUUID(VILLAGER_UUID);
+        var randomSeed = tag.getLong(RANDOM_SEED);
 
         var quest = type.makeQuest();
         quest.id = id;
@@ -151,6 +163,7 @@ public abstract class Quest {
         quest.villagerProfession = villagerProfession;
         quest.villagerLevel = villagerLevel;
         quest.villagerUuid = villagerUuid;
+        quest.randomSeed = randomSeed;
 
         quest.rewardItems.clear();
         var list = tag.getList(REWARD_ITEMS_TAG, 10);
@@ -180,6 +193,7 @@ public abstract class Quest {
         tag.putString(VILLAGER_PROFESSION_TAG, BuiltInRegistries.VILLAGER_PROFESSION.getKey(this.villagerProfession).toString());
         tag.putInt(VILLAGER_LEVEL_TAG, villagerLevel);
         tag.putUUID(VILLAGER_UUID, villagerUuid);
+        tag.putLong(RANDOM_SEED, randomSeed);
 
         var list = new ListTag();
         for (RewardItem item : rewardItems) {
@@ -245,46 +259,59 @@ public abstract class Quest {
         this.villagerProfession = definition.profession();
         this.villagerLevel = definition.level();
         this.villagerUuid = villagerUuid;
+        this.randomSeed = RandomSource.create().nextLong();
+        this.random = RandomSource.create(randomSeed);
 
-        var random = RandomSource.create();
-        makeRequirements(manager, definition, random);
-        makeRewards(manager, definition, random);
+        makeRequirements(manager, definition);
+        makeRewards(manager, definition);
     }
 
-    protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random);
+    protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition);
 
-    protected void makeRewards(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var reward = definition.pair(definition.rewards(), random);
-        var rewardItem = reward.getFirst();
-        var rewardAmount = reward.getSecond();
+    protected void makeRewards(ResourceManager manager, QuestDefinition definition) {
+        // Populate the reward functions.
+        var rewardFunctionEntries = ResourceListManager.entries(manager, "quests/reward");
+        List<String> rewardFunctionIds = new ArrayList<>();
 
-        // Populate the items.
-        var itemLists = ResourceListManager.entries(manager, "quests/reward");
-        var itemList = LinkedItemList.load(itemLists.getOrDefault(rewardItem, new LinkedList<>()));
-        if (itemList.isEmpty()) {
+        // Default reward functions.
+        var defaultIds = LinkedResourceList.load(rewardFunctionEntries.getOrDefault(DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
+        defaultIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
+
+        // Reward functions defined in the definition.
+        for (var functionEntry : definition.rewardFunctions()) {
+            var functionIds = LinkedResourceList.load(rewardFunctionEntries.getOrDefault(functionEntry, new LinkedList<>()));
+            functionIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
+        }
+
+        // Populate the reward items.
+        var rewardItemEntries = definition.pair(definition.rewards(), random);
+        var rewardItemEntry = rewardItemEntries.getFirst();
+        var rewardItemAmount = rewardItemEntries.getSecond();
+
+        var rewardItems = LinkedItemList.load(rewardFunctionEntries.getOrDefault(rewardItemEntry, new LinkedList<>()));
+        if (rewardItems.isEmpty()) {
             throw new RuntimeException("Reward item list is empty");
         }
 
-        Collections.shuffle(itemList);
-        var selection = Math.min(itemList.size(), MAX_REWARD_ITEMS);
+        Collections.shuffle(rewardItems);
+        var selection = Math.min(rewardItems.size(), MAX_REWARD_ITEMS);
 
         for (int i = 0; i < selection; i++) {
-            var stack = new ItemStack(itemList.get(i),
-                random.nextIntBetweenInclusive(Math.max(1, rewardAmount - 2), rewardAmount));
+            var stack = new ItemStack(rewardItems.get(i),
+                random.nextIntBetweenInclusive(Math.max(1, rewardItemAmount - 2), rewardItemAmount));
 
-            var allowTreasure = isEpic() || stack.is(Items.BOOK);
-            var enchantChance = 0.2d * villagerLevel();
-
-            if (isEpic() || random.nextDouble() < enchantChance) {
-                EnchantmentHelper.enchantItem(random, stack, villagerLevel(), allowTreasure);
+            // Apply reward functions to the item.
+            var item = new RewardItem(this, stack);
+            for (var functionId : rewardFunctionIds) {
+                Quests.REWARD_ITEM_FUNCTIONS.byId(functionId).ifPresent(f -> f.apply(item));
             }
 
-            rewardItems.add(new RewardItem(this, stack));
+            this.rewardItems.add(item);
         }
 
         // Populate XP.
         var xp = new RewardXp(this, definition.experience());
-        rewardXp.add(xp);
+        this.rewardXp.add(xp);
     }
 
     protected String makeId() {
