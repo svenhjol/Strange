@@ -156,45 +156,50 @@ public class BattleQuest extends Quest {
 
     @Override
     protected void makeRequirements(ResourceManager manager, QuestDefinition definition, RandomSource random) {
-        var requirement = definition.pair(definition.battleMobs(), random);
-        var requiredEntity = requirement.getFirst();
-        var requiredTotal = requirement.getSecond();
-
-        // Populate effects.
-        var anyKey = makeEffectsKey(0, VillagerProfession.NONE);
-        var levelKey = makeEffectsKey(villagerLevel(), VillagerProfession.NONE);
-        var customKey = makeEffectsKey(villagerLevel(), villagerProfession());
-
-        var effectLists = ResourceListManager.entries(manager, "quests/battle");
-        var effectList = tryLoad(effectLists, customKey, levelKey, anyKey);
-        if (effectList.isEmpty()) {
-            throw new RuntimeException("Effect list is empty");
-        }
-
         List<MobEffectInstance> effects = new ArrayList<>();
-        for (var effectId : effectList) {
-            var effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
-            if (effect == null) continue;
 
-            var amplifier = Math.max(0, Math.min(3, villagerLevel() - 2));
-            effects.add(new MobEffectInstance(effect, 100000, amplifier)); // Some silly duration so it doesn't run out
+        // Populate default effects. The default effects are added to every battle mob.
+        var battleEntries = ResourceListManager.entries(manager, "quests/battle");
+        var defaultKey = new ResourceLocation(Strange.ID, "default_battle_effects");
+        var defaultEffectList = tryLoad(battleEntries, defaultKey);
+        populateEffects(effects, defaultEffectList);
+
+        // Populate custom effects.
+        var customEffects = definition.pair(definition.battleEffects(), random);
+        var effect = customEffects.getFirst();
+        var effectTotal = customEffects.getSecond();
+
+        var effectList = LinkedResourceList.load(battleEntries.getOrDefault(effect, new LinkedList<>()));
+        if (!effectList.isEmpty()) {
+            Collections.shuffle(effectList);
+
+            for (var i = 0; i < effectTotal; i++) {
+                if (i < effectList.size()) {
+                    populateEffects(effects, List.of(effectList.get(i)));
+                } else {
+                    populateEffects(effects, List.of(effectList.get(random.nextInt(effectList.size()))));
+                }
+            }
         }
 
         // Populate entities.
-        var entityLists = ResourceListManager.entries(manager, "quests/battle");
-        var entityList = LinkedEntityTypeList.load(entityLists.getOrDefault(requiredEntity, new LinkedList<>()));
-        if (entityList.isEmpty()) {
+        var mobs = definition.pair(definition.battleMobs(), random);
+        var mob = mobs.getFirst();
+        var mobTotal = mobs.getSecond();
+
+        var mobList = LinkedEntityTypeList.load(battleEntries.getOrDefault(mob, new LinkedList<>()));
+        if (mobList.isEmpty()) {
             throw new RuntimeException("Entity list is empty");
         }
 
-        Collections.shuffle(entityList);
+        Collections.shuffle(mobList);
 
-        for (int i = 0; i < requiredTotal; i++) {
+        for (int i = 0; i < mobTotal; i++) {
             EntityType<?> entity;
-            if (i < entityList.size()) {
-                entity = entityList.get(i);
+            if (i < mobList.size()) {
+                entity = mobList.get(i);
             } else {
-                entity = entityList.get(random.nextInt(entityList.size()));
+                entity = mobList.get(random.nextInt(mobList.size()));
             }
             targets.add(new BattleTarget(entity, effects));
         }
@@ -275,6 +280,16 @@ public class BattleQuest extends Quest {
         return new ResourceLocation(Strange.ID, QuestHelper.getVillagerLevelName(villagerLevel)
             + "_" + QuestHelper.getVillagerProfessionName(villagerProfession)
             + "_battle_effects");
+    }
+
+    private void populateEffects(List<MobEffectInstance> effects, List<ResourceLocation> list) {
+        for (var effectId : list) {
+            var effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
+            if (effect == null) continue;
+
+            var amplifier = Math.max(0, Math.min(3, villagerLevel() - 2));
+            effects.add(new MobEffectInstance(effect, 100000, amplifier)); // Some silly duration so it doesn't run out
+        }
     }
 
     public class BattleTarget implements Requirement {

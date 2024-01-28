@@ -29,7 +29,7 @@ public class QuestDefinition {
     private Map<String, Integer> gather_items = new HashMap<>();
     private Map<String, Integer> hunt_mobs = new HashMap<>();
     private Map<String, Integer> rewards = new HashMap<>();
-    private List<String> reward_modifiers = new ArrayList<>();
+    private List<String> reward_functions = new ArrayList<>();
 
     public static QuestDefinition deserialize(String namespace, Resource resource) {
         BufferedReader reader;
@@ -81,8 +81,8 @@ public class QuestDefinition {
         return convertMapsToPairs(rewards);
     }
 
-    public List<ResourceLocation> rewardModifiers() {
-        return reward_modifiers.stream().map(this::tryParse).toList();
+    public List<ResourceLocation> rewardFunctions() {
+        return reward_functions.stream().map(this::tryParse).toList();
     }
 
     public int experience() {

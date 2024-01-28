@@ -5,6 +5,9 @@
   "battle_mobs": {
     "novice_villager_battle_mobs": 2
   },
+  "battle_effects": {
+    "novice_villager_battle_effects": 1
+  },
   "rewards": {
     "novice_common_rewards": 5
   }
