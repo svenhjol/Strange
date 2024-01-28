@@ -62,9 +62,9 @@ public class GatherQuest extends Quest {
             throw new RuntimeException("Item list is empty");
         }
 
-        var maxSelection = Math.min(4, villagerLevel());
+        var maxSelection = Math.min(3, villagerLevel());
         Collections.shuffle(items);
-        var selection = Math.min(items.size(), villagerLevel() + random().nextInt(maxSelection) + 1);
+        var selection = Math.min(items.size(), villagerLevel() + random().nextInt(maxSelection + 1));
 
         for (var i = 0; i < selection; i++) {
             var stack = new ItemStack(items.get(i));

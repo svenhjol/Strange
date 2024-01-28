@@ -69,9 +69,9 @@ public class HuntQuest extends Quest {
             throw new RuntimeException("Entity list is empty");
         }
 
-        var maxSelection = Math.min(4, villagerLevel());
+        var maxSelection = Math.min(3, villagerLevel());
         Collections.shuffle(targets);
-        var selection = Math.min(targets.size(), villagerLevel() + random().nextInt(maxSelection) + 1);
+        var selection = Math.min(targets.size(), villagerLevel() + random().nextInt(maxSelection + 1));
 
         for (int i = 0; i < selection; i++) {
             var entity = targets.get(i);
