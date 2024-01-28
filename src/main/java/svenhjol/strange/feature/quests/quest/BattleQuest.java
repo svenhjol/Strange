@@ -14,7 +14,6 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -27,7 +26,6 @@ import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
-import svenhjol.strange.feature.quests.QuestHelper;
 import svenhjol.strange.feature.quests.Requirement;
 import svenhjol.strange.feature.quests.client.QuestResources;
 
@@ -274,12 +272,6 @@ public class BattleQuest extends Quest {
             }
         }
         return new LinkedList<>();
-    }
-
-    private ResourceLocation makeEffectsKey(int villagerLevel, VillagerProfession villagerProfession) {
-        return new ResourceLocation(Strange.ID, QuestHelper.getVillagerLevelName(villagerLevel)
-            + "_" + QuestHelper.getVillagerProfessionName(villagerProfession)
-            + "_battle_effects");
     }
 
     private void populateEffects(List<MobEffectInstance> effects, List<ResourceLocation> list) {
