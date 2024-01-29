@@ -1,12 +1,15 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.learned_runes.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.learned_runes.LearnedRunes;
 import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.TravelJournal;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 public class LearnedScreen extends BaseTravelJournalScreen {
@@ -48,7 +51,7 @@ public class LearnedScreen extends BaseTravelJournalScreen {
             return;
         }
 
-        var learned = TravelJournal.getLearned(minecraft.player).orElse(null);
+        var learned = LearnedRunes.getLearned(minecraft.player).orElse(null);
         if (learned == null) return;
 
         var locations = learned.getLocations();

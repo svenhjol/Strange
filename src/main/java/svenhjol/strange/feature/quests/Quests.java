@@ -208,7 +208,7 @@ public class Quests extends CommonFeature {
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
-        for (var tier : QuestHelper.TIERS.values()) {
+        for (var tier : QuestsHelper.TIERS.values()) {
             var resources = manager.listResources("quests/definition/" + tier, file -> file.getPath().endsWith(".json"));
             for (var entry : resources.entrySet()) {
                 var id = entry.getKey();
@@ -251,7 +251,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestsHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_VILLAGER);
             return;
@@ -270,7 +270,7 @@ public class Quests extends CommonFeature {
             return;
         }
 
-        var definitions = QuestHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
+        var definitions = QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_QUESTS_GENERATED);
             return;
@@ -282,7 +282,7 @@ public class Quests extends CommonFeature {
         }
 
         var manager = server.getResourceManager();
-        var newQuests = QuestHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
+        var newQuests = QuestsHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
@@ -302,7 +302,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Player at max quests?
-        if (QuestHelper.hasMaxQuests(player)) {
+        if (QuestsHelper.hasMaxQuests(player)) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.MAX_QUESTS);
             return;
         }
@@ -314,7 +314,7 @@ public class Quests extends CommonFeature {
         }
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestsHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.NO_VILLAGER);
             return;

@@ -1,13 +1,14 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestList;
 import svenhjol.strange.feature.quests.Quests;
-import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;

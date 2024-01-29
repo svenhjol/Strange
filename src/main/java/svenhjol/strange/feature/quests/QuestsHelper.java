@@ -20,7 +20,7 @@ import svenhjol.strange.feature.quests.client.QuestResources;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class QuestHelper {
+public class QuestsHelper {
     public static final Map<Integer, String> TIERS = new HashMap<>();
     public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()

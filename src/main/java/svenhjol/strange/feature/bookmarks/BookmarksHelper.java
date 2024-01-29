@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.bookmarks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,7 +12,7 @@ import svenhjol.strange.Strange;
 
 import java.util.Locale;
 
-public class TravelJournalHelper {
+public class BookmarksHelper {
     public static String randomId() {
         return Strange.ID + "_" + RandomStringUtils.randomAlphanumeric(6).toLowerCase(Locale.ROOT);
     }

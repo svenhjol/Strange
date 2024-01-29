@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.learned_runes;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Learned {
+public class LearnedList {
     public static final String LOCATIONS_TAG = "locations";
     private List<Location> locations = new ArrayList<>();
 
@@ -34,8 +34,8 @@ public class Learned {
         return tag;
     }
 
-    public static Learned load(CompoundTag tag) {
-        var learned = new Learned();
+    public static LearnedList load(CompoundTag tag) {
+        var learned = new LearnedList();
         var list = tag.getList(LOCATIONS_TAG, 10);
         learned.locations = list.stream()
             .map(t -> Location.load((CompoundTag)t))

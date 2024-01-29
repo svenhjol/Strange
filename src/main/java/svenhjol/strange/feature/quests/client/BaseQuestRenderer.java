@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestHelper;
+import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
 
@@ -95,8 +95,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         this.screenType = screenType;
         midX = screen.width / 2;
         renderedButtons = false;
-        questTitle = QuestHelper.makeQuestTitle(quest);
-        questTitleWithProfession = QuestHelper.makeQuestTitleWithProfession(quest);
+        questTitle = QuestsHelper.makeQuestTitle(quest);
+        questTitleWithProfession = QuestsHelper.makeQuestTitleWithProfession(quest);
         questIcon = getQuestIcon();
     }
 

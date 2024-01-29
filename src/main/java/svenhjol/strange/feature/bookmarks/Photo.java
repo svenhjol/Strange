@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.bookmarks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -68,7 +68,7 @@ public class Photo {
             bookmark.id + ".png",
             minecraft.getMainRenderTarget(),
             component -> {
-                minecraft.player.playSound(TravelJournal.photoSound.get(), 1.0f, 1.0f);
+                minecraft.player.playSound(Bookmarks.photoSound.get(), 1.0f, 1.0f);
                 Mods.client(Strange.ID).log().debug(getClass(), "Photo taken");
                 finish();
             }

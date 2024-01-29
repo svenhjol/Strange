@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.bookmarks.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,8 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.travel_journal.*;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestDeleteBookmark;
+import svenhjol.strange.feature.bookmarks.*;
+import svenhjol.strange.feature.travel_journal.PageTracker;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
 import svenhjol.strange.helper.GuiHelper;
 
@@ -79,7 +81,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
 
         int yoffset = 36;
 
-        if (TravelJournal.showCoordinates) {
+        if (Bookmarks.showCoordinates) {
             renderCoords(guiGraphics, yoffset);
             yoffset += 16;
         } else {
@@ -95,7 +97,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         if (!renderedButtons) {
             if (!hasPhoto && isNearby) {
                 addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yoffset,
-                    b -> TravelJournalClient.initPhoto(bookmark)));
+                    b -> BookmarksClient.initPhoto(bookmark)));
                 yoffset += 21;
             }
 
@@ -107,7 +109,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
 
             if (hasPhoto && isNearby) {
                 addRenderableWidget(new TakeNewPhotoButton(midX - (TravelJournalButtons.TakeNewPhotoButton.WIDTH / 2), yoffset,
-                    b -> TravelJournalClient.initPhoto(bookmark)));
+                    b -> BookmarksClient.initPhoto(bookmark)));
             }
         }
 
@@ -117,13 +119,13 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     protected void renderCoords(GuiGraphics guiGraphics, int y) {
         var pos = bookmark.pos;
         var dim = bookmark.dim;
-        var str = TravelJournalHelper.getNiceDimensionName(dim) + ": " + TravelJournalHelper.getNiceCoordinates(pos);
+        var str = BookmarksHelper.getNiceDimensionName(dim) + ": " + BookmarksHelper.getNiceCoordinates(pos);
         GuiHelper.drawCenteredString(guiGraphics, font, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
     protected void renderDimensionName(GuiGraphics guiGraphics, int y) {
         var dim = bookmark.dim;
-        var str = TravelJournalHelper.getNiceDimensionName(dim);
+        var str = BookmarksHelper.getNiceDimensionName(dim);
         GuiHelper.drawCenteredString(guiGraphics, font, Component.literal(str), midX, y, 0x8a8785, false);
     }
 
@@ -177,11 +179,11 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (TravelJournal.showCoordinates
+        if (Bookmarks.showCoordinates
             && mouseX > midX - 100 && mouseX < midX + 100
             && mouseY > 36 && mouseY < 46) {
             var minecraft = Minecraft.getInstance();
-            String formattedPos = TravelJournalHelper.getNiceCoordinates(bookmark.pos);
+            String formattedPos = BookmarksHelper.getNiceCoordinates(bookmark.pos);
             String chatMessage;
 
             if (minecraft.player != null && minecraft.player.getAbilities().instabuild) {
@@ -210,7 +212,7 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     }
 
     protected void delete() {
-        RequestDeleteBookmark.send(bookmark);
+        BookmarksNetwork.RequestDeleteBookmark.send(bookmark);
     }
 
     protected boolean isNearby() {

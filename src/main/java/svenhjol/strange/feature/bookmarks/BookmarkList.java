@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.bookmarks;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Bookmarks {
+public class BookmarkList {
     public static final String BOOKMARKS_TAG = "bookmarks";
     private List<Bookmark> bookmarks = new ArrayList<>();
 
@@ -64,8 +64,8 @@ public class Bookmarks {
         return tag;
     }
 
-    public static Bookmarks load(CompoundTag tag) {
-        var bookmarks = new Bookmarks();
+    public static BookmarkList load(CompoundTag tag) {
+        var bookmarks = new BookmarkList();
         var list = tag.getList(BOOKMARKS_TAG, 10);
 
         bookmarks.bookmarks = list.stream()

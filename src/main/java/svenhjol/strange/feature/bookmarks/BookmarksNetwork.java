@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.bookmarks;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -17,27 +17,23 @@ import svenhjol.charmony.iface.ICommonRegistry;
 import svenhjol.charmony.iface.IPacketRequest;
 import svenhjol.charmony.iface.IServerNetwork;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.travel_journal.Bookmarks.AddBookmarkResult;
-import svenhjol.strange.feature.travel_journal.Bookmarks.DeleteBookmarkResult;
-import svenhjol.strange.feature.travel_journal.Bookmarks.UpdateBookmarkResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TravelJournalNetwork {
+public class BookmarksNetwork {
     public static void register(ICommonRegistry registry) {
-        registry.packet(new SyncLearned(), () -> TravelJournalClient::handleSyncLearned);
-        registry.packet(new SyncBookmarks(), () -> TravelJournalClient::handleSyncBookmarks);
-        registry.packet(new NotifyAddBookmarkResult(), () -> TravelJournalClient::handleNotifyNewBookmarkResult);
-        registry.packet(new NotifyUpdateBookmarkResult(), () -> TravelJournalClient::handleNotifyUpdateBookmarkResult);
-        registry.packet(new NotifyDeleteBookmarkResult(), () -> TravelJournalClient::handleNotifyDeleteBookmarkResult);
-        registry.packet(new SendNewBookmark(), () -> TravelJournalClient::handleNewBookmark);
-        registry.packet(new SendChangedBookmark(), () -> TravelJournalClient::handleChangedBookmark);
-        registry.packet(new SendItemIcons(), () -> TravelJournalClient::handleSendItemIcons);
-        registry.packet(new RequestChangeBookmark(), () -> TravelJournal::handleRequestChangeBookmark);
-        registry.packet(new RequestDeleteBookmark(), () -> TravelJournal::handleRequestDeleteBookmark);
-        registry.packet(new RequestNewBookmark(), () -> TravelJournal::handleRequestNewBookmark);
-        registry.packet(new RequestItemIcons(), () -> TravelJournal::handleRequestItemIcons);
+        registry.packet(new SyncBookmarks(), () -> BookmarksClient::handleSyncBookmarks);
+        registry.packet(new NotifyAddBookmarkResult(), () -> BookmarksClient::handleNotifyNewBookmarkResult);
+        registry.packet(new NotifyUpdateBookmarkResult(), () -> BookmarksClient::handleNotifyUpdateBookmarkResult);
+        registry.packet(new NotifyDeleteBookmarkResult(), () -> BookmarksClient::handleNotifyDeleteBookmarkResult);
+        registry.packet(new SendNewBookmark(), () -> BookmarksClient::handleNewBookmark);
+        registry.packet(new SendChangedBookmark(), () -> BookmarksClient::handleChangedBookmark);
+        registry.packet(new SendItemIcons(), () -> BookmarksClient::handleSendItemIcons);
+        registry.packet(new RequestChangeBookmark(), () -> Bookmarks::handleRequestChangeBookmark);
+        registry.packet(new RequestDeleteBookmark(), () -> Bookmarks::handleRequestDeleteBookmark);
+        registry.packet(new RequestNewBookmark(), () -> Bookmarks::handleRequestNewBookmark);
+        registry.packet(new RequestItemIcons(), () -> Bookmarks::handleRequestItemIcons);
     }
 
     static IServerNetwork serverSender() {
@@ -49,49 +45,12 @@ public class TravelJournalNetwork {
     }
 
     @Packet(
-        id = "strange:sync_learned",
-        direction = PacketDirection.SERVER_TO_CLIENT,
-        description = "Synchronise all learned items to the client."
-    )
-    public static class SyncLearned implements IPacketRequest {
-        private Learned learned;
-
-        private SyncLearned() {}
-
-        @Override
-        public void encode(FriendlyByteBuf buf) {
-            var tag = learned.save();
-            buf.writeNbt(tag);
-        }
-
-        @Override
-        public void decode(FriendlyByteBuf buf) {
-            var tag = buf.readNbt();
-            if (tag != null) {
-                learned = Learned.load(tag);
-            } else {
-                throw new RuntimeException("Server did not sync learned data");
-            }
-        }
-
-        public Learned getLearned() {
-            return learned;
-        }
-
-        public static void send(ServerPlayer player, Learned learned) {
-            var message = new SyncLearned();
-            message.learned = learned;
-            serverSender().send(message, player);
-        }
-    }
-
-    @Packet(
         id = "strange:sync_bookmarks",
         direction = PacketDirection.SERVER_TO_CLIENT,
         description = "Synchronise all bookmarks to the client."
     )
     public static class SyncBookmarks implements IPacketRequest {
-        private Bookmarks bookmarks;
+        private BookmarkList bookmarks;
 
         private SyncBookmarks() {}
 
@@ -105,17 +64,17 @@ public class TravelJournalNetwork {
         public void decode(FriendlyByteBuf buf) {
             var tag = buf.readNbt();
             if (tag != null) {
-                bookmarks = Bookmarks.load(tag);
+                bookmarks = BookmarkList.load(tag);
             } else {
                 throw new RuntimeException("Server did not sync bookmarks data");
             }
         }
 
-        public Bookmarks getBookmarks() {
+        public BookmarkList getBookmarks() {
             return bookmarks;
         }
 
-        public static void send(ServerPlayer player, Bookmarks bookmarks) {
+        public static void send(ServerPlayer player, BookmarkList bookmarks) {
             var message = new SyncBookmarks();
             message.bookmarks = bookmarks;
             serverSender().send(message, player);
@@ -128,7 +87,7 @@ public class TravelJournalNetwork {
         description = "Notify the client about the result of the bookmark creation."
     )
     public static class NotifyAddBookmarkResult implements IPacketRequest {
-        private AddBookmarkResult result;
+        private BookmarkList.AddBookmarkResult result;
 
         private NotifyAddBookmarkResult() {}
 
@@ -139,14 +98,14 @@ public class TravelJournalNetwork {
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            this.result = buf.readEnum(AddBookmarkResult.class);
+            this.result = buf.readEnum(BookmarkList.AddBookmarkResult.class);
         }
 
-        public AddBookmarkResult getResult() {
+        public BookmarkList.AddBookmarkResult getResult() {
             return result;
         }
 
-        public static void send(ServerPlayer player, AddBookmarkResult result) {
+        public static void send(ServerPlayer player, BookmarkList.AddBookmarkResult result) {
             var message = new NotifyAddBookmarkResult();
             message.result = result;
             serverSender().send(message, player);
@@ -159,7 +118,7 @@ public class TravelJournalNetwork {
         description = "Notify the client about the result of the bookmark update."
     )
     public static class NotifyUpdateBookmarkResult implements IPacketRequest {
-        private UpdateBookmarkResult result;
+        private BookmarkList.UpdateBookmarkResult result;
 
         private NotifyUpdateBookmarkResult() {}
 
@@ -170,14 +129,14 @@ public class TravelJournalNetwork {
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            this.result = buf.readEnum(UpdateBookmarkResult.class);
+            this.result = buf.readEnum(BookmarkList.UpdateBookmarkResult.class);
         }
 
-        public UpdateBookmarkResult getResult() {
+        public BookmarkList.UpdateBookmarkResult getResult() {
             return result;
         }
 
-        public static void send(ServerPlayer player, UpdateBookmarkResult result) {
+        public static void send(ServerPlayer player, BookmarkList.UpdateBookmarkResult result) {
             var message = new NotifyUpdateBookmarkResult();
             message.result = result;
             serverSender().send(message, player);
@@ -190,7 +149,7 @@ public class TravelJournalNetwork {
         description = "Notify the client about the result of the bookmark delete."
     )
     public static class NotifyDeleteBookmarkResult implements IPacketRequest {
-        private DeleteBookmarkResult result;
+        private BookmarkList.DeleteBookmarkResult result;
 
         private NotifyDeleteBookmarkResult() {}
 
@@ -201,14 +160,14 @@ public class TravelJournalNetwork {
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            this.result = buf.readEnum(DeleteBookmarkResult.class);
+            this.result = buf.readEnum(BookmarkList.DeleteBookmarkResult.class);
         }
 
-        public DeleteBookmarkResult getResult() {
+        public BookmarkList.DeleteBookmarkResult getResult() {
             return result;
         }
 
-        public static void send(ServerPlayer player, DeleteBookmarkResult result) {
+        public static void send(ServerPlayer player, BookmarkList.DeleteBookmarkResult result) {
             var message = new NotifyDeleteBookmarkResult();
             message.result = result;
             serverSender().send(message, player);

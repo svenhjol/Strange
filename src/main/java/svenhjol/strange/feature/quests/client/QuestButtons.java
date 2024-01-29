@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.QuestHelper;
+import svenhjol.strange.feature.quests.QuestsHelper;
 
 public class QuestButtons {
     public static class AcceptButton extends Button {
@@ -20,7 +20,7 @@ public class QuestButtons {
 
             // If player is at max quests, disable the button and show a tooltip.
             var player = Minecraft.getInstance().player;
-            if (player != null && QuestHelper.hasMaxQuests(player)) {
+            if (player != null && QuestsHelper.hasMaxQuests(player)) {
                 active = false;
                 setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
             }

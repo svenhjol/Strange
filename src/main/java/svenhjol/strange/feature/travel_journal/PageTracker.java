@@ -1,7 +1,13 @@
 package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.client.Minecraft;
+import svenhjol.strange.feature.bookmarks.Bookmark;
+import svenhjol.strange.feature.bookmarks.client.BookmarkScreen;
+import svenhjol.strange.feature.bookmarks.client.BookmarksScreen;
+import svenhjol.strange.feature.learned_runes.client.LearnedScreen;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.client.QuestScreen;
+import svenhjol.strange.feature.quests.client.QuestsScreen;
 import svenhjol.strange.feature.travel_journal.client.*;
 
 import java.util.function.Supplier;

@@ -1,13 +1,16 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.bookmarks.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import svenhjol.strange.feature.travel_journal.Bookmark;
-import svenhjol.strange.feature.travel_journal.TravelJournalClient;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestItemIcons;
+import svenhjol.strange.feature.bookmarks.Bookmark;
+import svenhjol.strange.feature.bookmarks.BookmarksClient;
+import svenhjol.strange.feature.bookmarks.BookmarksNetwork;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 
 public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;
@@ -23,7 +26,7 @@ public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
         super.init();
 
         // Ask the server for an updated list of item icons.
-        RequestItemIcons.send();
+        BookmarksNetwork.RequestItemIcons.send();
 
         addRenderableWidget(new TravelJournalButtons.CancelButton(midX - (TravelJournalButtons.CancelButton.WIDTH / 2), 220, this::back));
     }
@@ -32,7 +35,7 @@ public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
 
-        var icons = TravelJournalClient.BOOKMARK_ICONS;
+        var icons = BookmarksClient.BOOKMARK_ICONS;
         var currentIcon = BuiltInRegistries.ITEM.get(updatedBookmark.item);
         int index = 0;
 
@@ -64,7 +67,7 @@ public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        var icons = TravelJournalClient.BOOKMARK_ICONS;
+        var icons = BookmarksClient.BOOKMARK_ICONS;
         int index = 0;
 
         for (int y = 0; y < 10; y++) {
@@ -91,7 +94,7 @@ public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     }
 
     protected void save() {
-        TravelJournalClient.changeBookmark(updatedBookmark);
+        BookmarksClient.changeBookmark(updatedBookmark);
     }
 
     protected void back(Button button) {

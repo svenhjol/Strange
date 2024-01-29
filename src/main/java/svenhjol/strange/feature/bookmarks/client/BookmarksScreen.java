@@ -1,12 +1,17 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.bookmarks.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.bookmarks.Bookmark;
+import svenhjol.strange.feature.bookmarks.Bookmarks;
+import svenhjol.strange.feature.bookmarks.BookmarksClient;
 import svenhjol.strange.feature.travel_journal.*;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 
 import java.util.List;
 
@@ -50,7 +55,7 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
         var index = (page - 1) * perPage;
 
         if (bookmarks.isEmpty() && !renderedEditButtons) {
-            addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH / 2), 45, b -> TravelJournalClient.makeNewBookmark()));
+            addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH / 2), 45, b -> BookmarksClient.makeNewBookmark()));
         }
 
         for (var y = 0; y < rows; y++) {
@@ -88,7 +93,7 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
             return List.of();
         }
 
-        var bookmarksHolder = TravelJournal.getBookmarks(minecraft.player).orElse(null);
+        var bookmarksHolder = Bookmarks.getBookmarks(minecraft.player).orElse(null);
         if (bookmarksHolder == null) {
             return List.of();
         }

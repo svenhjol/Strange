@@ -1,12 +1,12 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestHelper;
+import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.QuestsNetwork.AbandonQuest;
-import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.quests.client.QuestButtons.AbandonShortcutButton;
 import svenhjol.strange.feature.travel_journal.PageTracker;
+import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.BackButton;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
 
@@ -15,7 +15,7 @@ public class QuestScreen extends BaseTravelJournalScreen {
     protected BaseQuestRenderer<Quest> renderer;
 
     public QuestScreen(Quest quest) {
-        super(QuestHelper.makeQuestTitle(quest));
+        super(QuestsHelper.makeQuestTitle(quest));
         this.quest = quest;
         PageTracker.quest = quest;
         PageTracker.Screen.QUEST.set();

@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.travel_journal;
+package svenhjol.strange.feature.bookmarks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +22,7 @@ public class Bookmark {
     public ResourceLocation item;
 
     public Bookmark(String name, BlockPos pos, ResourceLocation dim) {
-        this(TravelJournalHelper.randomId(), name, pos, dim, TravelJournalHelper.defaultItem(dim));
+        this(BookmarksHelper.randomId(), name, pos, dim, BookmarksHelper.defaultItem(dim));
     }
 
     public Bookmark(String id, String name, BlockPos pos, ResourceLocation dim,
@@ -70,11 +70,11 @@ public class Bookmark {
     }
 
     public static Bookmark playerDefault(Player player) {
-        var biomeName = TextHelper.translatable(TravelJournalHelper.getPlayerBiomeLocaleKey(player));
+        var biomeName = TextHelper.translatable(BookmarksHelper.getPlayerBiomeLocaleKey(player));
         var bookmarkName = TextHelper.translatable(
             "gui.strange.travel_journal.bookmarks.default_name", biomeName).getString();
 
-        var dimension = TravelJournalHelper.getPlayerDimension(player);
+        var dimension = BookmarksHelper.getPlayerDimension(player);
         return new Bookmark(bookmarkName, player.blockPosition(), dimension);
     }
 
