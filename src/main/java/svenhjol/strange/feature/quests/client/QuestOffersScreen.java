@@ -36,16 +36,12 @@ public class QuestOffersScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
         midX = width / 2;
-        var yOffset = 40;
 
-        for (BaseQuestRenderer<?> renderer : renderers) {
+        for (var renderer : renderers) {
             var quest = renderer.quest();
-            renderer.initPagedOffer(this,
-                b -> AcceptQuest.send(quest.villagerUuid(), quest.id()),
-                yOffset);
-            yOffset += renderer.getPagedOfferHeight();
+            renderer.setAcceptAction(b -> AcceptQuest.send(quest.villagerUuid(), quest.id()));
+            renderer.initPagedOffer(this);
         }
     }
 
@@ -57,7 +53,7 @@ public class QuestOffersScreen extends Screen {
         var yOffset = 30;
         for (int i = 0; i < renderers.size(); i++) {
             var renderer = renderers.get(i);
-            renderer.renderPagedOffer(this, guiGraphics, yOffset, mouseX, mouseY);
+            renderer.renderPagedOffer(guiGraphics, yOffset, mouseX, mouseY);
             yOffset += renderer.getPagedOfferHeight();
         }
     }

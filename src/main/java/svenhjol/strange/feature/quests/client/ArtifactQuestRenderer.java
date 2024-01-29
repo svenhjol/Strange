@@ -1,13 +1,13 @@
 package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest;
+import svenhjol.strange.feature.quests.quest.ArtifactQuest.ArtifactItem;
 
 public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
     @Override
@@ -36,7 +36,7 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
     }
 
     @Override
-    protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
+    protected void renderRequirements(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 
         var xo = midX + xOffset + 1;
@@ -65,7 +65,7 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
         xo += 2;
 
         for (var requirement : quest.requirements()) {
-            if (requirement instanceof ArtifactQuest.ArtifactItem i) {
+            if (requirement instanceof ArtifactItem i) {
                 Component label;
                 if (showRemaining) {
                     label = TextHelper.translatable("gui.strange.quests.remaining", Math.max(0, i.total() - i.remaining()), i.total());
@@ -83,17 +83,12 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
                 }
+
                 xo += 27 + width;
             }
         }
 
-        if (quest.satisfied()) {
-            guiGraphics.blitSprite(QuestResources.TICK, xo + 2, yo + 3, 9, 9);
-            if (mouseX >= xo + 2 && mouseX <= xo + 11
-                && mouseY >= yo + 3 && mouseY <= yo + 12) {
-                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), xo, yo + 20);
-            }
-        }
+        renderSatisfied(guiGraphics, xo, yo, mouseX, mouseY);
     }
 
     protected String niceLootTableName(ResourceLocation id) {

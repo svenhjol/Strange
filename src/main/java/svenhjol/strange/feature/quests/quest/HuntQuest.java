@@ -11,6 +11,7 @@ import svenhjol.strange.data.LinkedEntityTypeList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
@@ -69,9 +70,8 @@ public class HuntQuest extends Quest {
             throw new RuntimeException("Entity list is empty");
         }
 
-        var maxSelection = Math.min(3, villagerLevel());
         Collections.shuffle(targets);
-        var selection = Math.min(targets.size(), villagerLevel() + random().nextInt(maxSelection + 1));
+        var selection = Math.min(Math.min(Quests.maxQuestRequirements, targets.size()), villagerLevel() + random().nextInt(2));
 
         for (int i = 0; i < selection; i++) {
             var entity = targets.get(i);

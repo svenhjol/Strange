@@ -146,14 +146,16 @@ public class QuestsClient extends ClientFeature {
     public static void handleAcceptQuestResult(NotifyAcceptQuestResult message, Player player) {
         if (message.getResult().equals(Quests.AcceptQuestResult.SUCCESS)) {
             // Fire AcceptQuestEvent on the client side.
-            QuestEvents.ACCEPT_QUEST.invoke(player, message.getQuest());
+            Quests.getPlayerQuest(player, message.getQuestId()).ifPresent(
+                quest -> QuestEvents.ACCEPT_QUEST.invoke(player, quest));
         }
     }
 
     public static void handleAbandonQuestResult(NotifyAbandonQuestResult message, Player player) {
         if (message.getResult().equals(Quests.AbandonQuestResult.SUCCESS)) {
             // Fire AbandonQuestEvent on the client side.
-            QuestEvents.ABANDON_QUEST.invoke(player, message.getQuest());
+            Quests.getPlayerQuest(player, message.getQuestId()).ifPresent(
+                quest -> QuestEvents.ABANDON_QUEST.invoke(player, quest));
         }
     }
 

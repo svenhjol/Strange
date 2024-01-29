@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.feature.colored_glints.ColoredGlints;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.BattleQuest;
+import svenhjol.strange.feature.quests.quest.BattleQuest.BattleTarget;
 
 public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
     @Override
@@ -35,13 +35,14 @@ public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
     }
 
     @Override
-    protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
+    protected void renderRequirements(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 
         var xo = midX + xOffset;
         var yo = yOffset;
+
         for (var requirement : quest.requirements()) {
-            if (requirement instanceof BattleQuest.BattleTarget i) {
+            if (requirement instanceof BattleTarget i) {
                 Component label;
                 if (showRemaining) {
                     label = TextHelper.translatable("gui.strange.quests.remaining", Math.max(0, i.total() - i.remaining()), i.total());
@@ -70,16 +71,11 @@ public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, TextHelper.translatable("entity." + entityId.getNamespace() + "." + entityId.getPath()), xo, yo + 27);
                 }
+
                 xo += 27 + width;
             }
         }
 
-        if (quest.satisfied()) {
-            guiGraphics.blitSprite(QuestResources.TICK, xo + 2, yo + 3, 9, 9);
-            if (mouseX >= xo + 2 && mouseX <= xo + 11
-                && mouseY >= yo + 3 && mouseY <= yo + 12) {
-                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), xo, yo + 20);
-            }
-        }
+        renderSatisfied(guiGraphics, xo, yo, mouseX, mouseY);
     }
 }

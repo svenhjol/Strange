@@ -15,6 +15,7 @@ import svenhjol.strange.feature.quests.reward.RewardXp;
 
 public abstract class BaseQuestRenderer<Q extends Quest> {
     Q quest;
+    ScreenType screenType;
     boolean renderedButtons = false;
     int midX;
     int titleColor;
@@ -32,25 +33,38 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     Component questTitle;
     Component questTitleWithProfession;
     ItemStack questIcon;
+    Screen screen;
 
     public BaseQuestRenderer() {}
 
-    public void initPagedOffer(Screen screen, Button.OnPress onAccept, int yOffset) {
-        init(screen);
-        offerTheme();
+    public void setAcceptAction(Button.OnPress onAccept) {
         this.onAccept = onAccept;
     }
 
-    public void initPagedActive(Screen screen, Button.OnPress onUpdate, int yOffset) {
-        init(screen);
-        activeTheme();
+    public void setUpdateAction(Button.OnPress onUpdate) {
         this.onUpdate = onUpdate;
     }
 
-    public void initSelectedActive(Screen screen, Button.OnPress onAbandon) {
-        init(screen);
-        activeTheme();
+    public void setAbandonAction(Button.OnPress onAbandon) {
         this.onAbandon = onAbandon;
+    }
+
+    public void initPagedOffer(Screen screen) {
+        init(ScreenType.PAGED_OFFER, screen);
+        offerTheme();
+        this.screen = screen;
+    }
+
+    public void initPagedActive(Screen screen) {
+        init(ScreenType.PAGED_ACTIVE, screen);
+        activeTheme();
+        this.screen = screen;
+    }
+
+    public void initSelectedActive(Screen screen) {
+        init(ScreenType.SELECTED_ACTIVE, screen);
+        activeTheme();
+        this.screen = screen;
     }
 
     protected void offerTheme() {
@@ -77,7 +91,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         showRemaining = true;
     }
 
-    protected void init(Screen screen) {
+    protected void init(ScreenType screenType, Screen screen) {
+        this.screenType = screenType;
         midX = screen.width / 2;
         renderedButtons = false;
         questTitle = QuestHelper.makeQuestTitle(quest);
@@ -107,9 +122,9 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
     public abstract ItemStack getQuestIcon();
 
-    public void renderPagedActive(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void renderPagedActive(GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
         guiGraphics.drawString(screen.font, questTitleWithProfession, midX - 105, yOffset, titleColor, false);
-        renderRequirements(screen, guiGraphics, -105, yOffset + 12, mouseX, mouseY);
+        renderRequirements(guiGraphics, -105, yOffset + 12, mouseX, mouseY);
 
         if (!renderedButtons) {
             var sprites = QuestResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
@@ -119,18 +134,18 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         }
     }
 
-    public void renderSelectedActive(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderSelectedActive(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(screen.font, getRequirementText(), midX - 105, 40, titleColor, false);
-        renderRequirements(screen, guiGraphics, -105, 52, mouseX, mouseY);
+        renderRequirements(guiGraphics, -105, 52, mouseX, mouseY);
 
         guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 80, titleColor, false);
-        renderRewards(screen, guiGraphics, -105, 92, mouseX, mouseY);
+        renderRewards(guiGraphics, -105, 92, mouseX, mouseY);
     }
 
     /**
      * Render for each quest on an offered view (e.g. QuestOffersScreen).
      */
-    public void renderPagedOffer(Screen screen, GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
+    public void renderPagedOffer(GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
         var midX = screen.width / 2;
         var font = screen.font;
         var xOffset = -155;
@@ -154,8 +169,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         // Calculate the width of the reward/requirement text and start rendering images from there.
         var xt = Math.max(font.width(getRequirementText()), font.width(getRewardText()));
 
-        renderRequirements(screen, guiGraphics, -155 + xt + 14, yOffset + 18, mouseX, mouseY);
-        renderRewards(screen, guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
+        renderRequirements(guiGraphics, -155 + xt + 14, yOffset + 18, mouseX, mouseY);
+        renderRewards(guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
             var button = new QuestButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
@@ -164,16 +179,14 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         }
     }
 
-    protected abstract void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY);
+    protected abstract void renderRequirements(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY);
 
-    /**
-     * Shared rewards renderer.
-     */
-    protected void renderRewards(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
+    protected void renderRewards(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 
         var xo = midX + xOffset;
         var yo = yOffset;
+
         for (var reward : quest.rewards()) {
             if (reward instanceof RewardItem i) {
                 var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.stack.getCount());
@@ -188,8 +201,10 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, i.stack, xo, yo + 27);
                 }
+
                 xo += 27 + width;
             }
+
             if (reward instanceof RewardXp i) {
                 var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.total);
 
@@ -203,8 +218,27 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.REWARD_LEVELS_KEY, i.total), xo, yo + 27);
                 }
+
                 xo += 27 + width;
             }
         }
+    }
+
+    protected void renderSatisfied(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+        var font = screen.font;
+
+        if (quest.satisfied()) {
+            guiGraphics.blitSprite(QuestResources.TICK, x + 2, y + 3, 9, 9);
+            if (mouseX >= x + 2 && mouseX <= x + 11
+                && mouseY >= y + 3 && mouseY <= y + 12) {
+                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), x, y + 20);
+            }
+        }
+    }
+
+    public enum ScreenType {
+        PAGED_OFFER,
+        PAGED_ACTIVE,
+        SELECTED_ACTIVE;
     }
 }

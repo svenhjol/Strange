@@ -21,10 +21,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.data.LinkedItemList;
 import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
-import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestDefinition;
-import svenhjol.strange.feature.quests.QuestHelper;
-import svenhjol.strange.feature.quests.Requirement;
+import svenhjol.strange.feature.quests.*;
 
 import java.util.*;
 
@@ -88,7 +85,7 @@ public class ArtifactQuest extends Quest {
         }
 
         Collections.shuffle(lootTables);
-        for (var i = 0; i < Math.min(lootTableAmount, lootTables.size()); i++) {
+        for (var i = 0; i < Math.min(Math.min(Quests.maxQuestRequirements, lootTableAmount), lootTables.size()); i++) {
             this.lootTables.add(lootTables.get(i));
         }
 

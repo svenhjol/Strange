@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.Strange;
 import svenhjol.strange.data.LinkedItemList;
 import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
@@ -31,8 +30,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class Quest {
-    static final int MAX_REWARD_ITEMS = 2; // TODO: hardcoded number of item rewards
-    static final ResourceLocation DEFAULT_REWARD_FUNCTIONS = new ResourceLocation(Strange.ID, "default_reward_functions");
     static final String ID_TAG = "id";
     static final String TYPE_TAG = "type";
     static final String STATUS_TAG = "status";
@@ -275,7 +272,7 @@ public abstract class Quest {
         List<String> rewardFunctionIds = new ArrayList<>();
 
         // Default reward functions.
-        var defaultIds = LinkedResourceList.load(entries.getOrDefault(DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
+        var defaultIds = LinkedResourceList.load(entries.getOrDefault(Quests.DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
         defaultIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
 
         // Reward functions defined in the definition.
@@ -285,20 +282,24 @@ public abstract class Quest {
         }
 
         // Populate the reward items.
-        var rewardItemEntries = definition.pair(definition.rewards(), random);
-        var rewardItemEntry = rewardItemEntries.getFirst();
-        var rewardItemAmount = rewardItemEntries.getSecond();
+        var definitionRewards = definition.rewards();
+        Collections.shuffle(definitionRewards);
 
-        var rewardItems = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
-        if (rewardItems.isEmpty()) {
-            throw new RuntimeException("Reward item list is empty");
-        }
+        var maxSelection = Math.min(Math.min(Quests.maxQuestRewards, villagerLevel() + 1), definitionRewards.size());
+        for (int i = 0; i < maxSelection; i++) {
+            var rewardItemEntries = definitionRewards.get(i);
+            var rewardItemEntry = rewardItemEntries.getFirst();
+            var rewardItemAmount = rewardItemEntries.getSecond();
 
-        Collections.shuffle(rewardItems);
-        var selection = Math.min(rewardItems.size(), MAX_REWARD_ITEMS);
+            var rewardItems = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
+            if (rewardItems.isEmpty()) {
+                continue;
+            }
 
-        for (int i = 0; i < selection; i++) {
-            var stack = new ItemStack(rewardItems.get(i),
+            Collections.shuffle(rewardItems);
+            var rewardItem = rewardItems.get(0);
+
+            var stack = new ItemStack(rewardItem,
                 random.nextIntBetweenInclusive(Math.max(1, rewardItemAmount - 2), rewardItemAmount));
 
             // Apply reward functions to the item.

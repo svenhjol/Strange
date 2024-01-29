@@ -25,6 +25,7 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.event.PlayerLoadDataCallback;
 import svenhjol.charmony.event.PlayerSaveDataCallback;
+import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.reward.RewardItemFunctions;
@@ -48,8 +49,11 @@ public class Quests extends CommonFeature {
     static Supplier<SoundEvent> completeSound;
     static Supplier<SoundEvent> epicCompleteSound;
 
+    public static final ResourceLocation DEFAULT_REWARD_FUNCTIONS = new ResourceLocation(Strange.ID, "default_reward_functions");
     public static final RewardItemFunctions REWARD_ITEM_FUNCTIONS = new RewardItemFunctions();
 
+    public static int maxQuestRequirements = 4;
+    public static int maxQuestRewards = 4;
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
 
@@ -347,7 +351,7 @@ public class Quests extends CommonFeature {
         QuestEvents.ACCEPT_QUEST.invoke(player, quest);
 
         // Update the client with the result.
-        NotifyAcceptQuestResult.send(serverPlayer, quest, AcceptQuestResult.SUCCESS);
+        NotifyAcceptQuestResult.send(serverPlayer, quest.id(), AcceptQuestResult.SUCCESS);
     }
 
     public static void handleAbandonQuest(AbandonQuest message, Player player) {
@@ -380,7 +384,7 @@ public class Quests extends CommonFeature {
         removeQuest(serverPlayer, quest);
 
         // Update the client with the result.
-        NotifyAbandonQuestResult.send(serverPlayer, quest, AbandonQuestResult.SUCCESS);
+        NotifyAbandonQuestResult.send(serverPlayer, quest.id(), AbandonQuestResult.SUCCESS);
     }
 
     /**

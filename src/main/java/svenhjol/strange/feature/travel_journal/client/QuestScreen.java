@@ -27,7 +27,8 @@ public class QuestScreen extends BaseTravelJournalScreen {
         super.init();
         addRenderableWidget(new CloseButton(midX + 5,220, b -> onClose()));
         addRenderableWidget(new BackButton(midX - (BackButton.WIDTH + 5), 220, this::openQuests));
-        renderer.initSelectedActive(this, b -> abandon());
+        renderer.setAbandonAction(b -> abandon());
+        renderer.initSelectedActive(this);
         initShortcuts();
     }
 
@@ -40,7 +41,7 @@ public class QuestScreen extends BaseTravelJournalScreen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderer.renderSelectedActive(this, guiGraphics, mouseX, mouseY);
+        renderer.renderSelectedActive(guiGraphics, mouseX, mouseY);
     }
 
     protected void abandon() {

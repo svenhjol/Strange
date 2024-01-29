@@ -25,6 +25,7 @@ import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.Requirement;
 import svenhjol.strange.feature.quests.client.QuestResources;
 
@@ -156,9 +157,9 @@ public class BattleQuest extends Quest {
         List<MobEffectInstance> effects = new ArrayList<>();
 
         // Populate default effects. The default effects are added to every battle mob.
-        var battleEntries = ResourceListManager.entries(manager, "quests/battle");
+        var entries = ResourceListManager.entries(manager, "quests/battle");
         var defaultKey = new ResourceLocation(Strange.ID, "default_battle_effects");
-        var defaultEffectList = tryLoad(battleEntries, defaultKey);
+        var defaultEffectList = tryLoad(entries, defaultKey);
         populateEffects(effects, defaultEffectList);
 
         // Populate custom effects.
@@ -166,7 +167,7 @@ public class BattleQuest extends Quest {
         var effect = customEffects.getFirst();
         var effectTotal = customEffects.getSecond();
 
-        var effectList = LinkedResourceList.load(battleEntries.getOrDefault(effect, new LinkedList<>()));
+        var effectList = LinkedResourceList.load(entries.getOrDefault(effect, new LinkedList<>()));
         if (!effectList.isEmpty()) {
             Collections.shuffle(effectList);
 
@@ -184,14 +185,14 @@ public class BattleQuest extends Quest {
         var mob = mobs.getFirst();
         var mobTotal = mobs.getSecond();
 
-        var mobList = LinkedEntityTypeList.load(battleEntries.getOrDefault(mob, new LinkedList<>()));
+        var mobList = LinkedEntityTypeList.load(entries.getOrDefault(mob, new LinkedList<>()));
         if (mobList.isEmpty()) {
             throw new RuntimeException("Entity list is empty");
         }
 
         Collections.shuffle(mobList);
 
-        for (int i = 0; i < mobTotal; i++) {
+        for (int i = 0; i < Math.min(Quests.maxQuestRequirements, mobTotal); i++) {
             EntityType<?> entity;
             if (i < mobList.size()) {
                 entity = mobList.get(i);

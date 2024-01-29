@@ -71,7 +71,7 @@ public class QuestHelper {
     public static List<Villager> getNearbyMatchingProfessions(Level level, BlockPos pos, VillagerProfession profession) {
         var nearby = level.getEntitiesOfClass(Villager.class, new AABB(pos).inflate(8.0d));
         return nearby.stream()
-            .filter(e -> e.getVillagerData().getProfession().equals(profession))
+            .filter(e -> e.getVillagerData().getProfession().equals(profession) || e.getVillagerData().getProfession().equals(VillagerProfession.NONE))
             .collect(Collectors.toCollection(ArrayList::new));
     }
 

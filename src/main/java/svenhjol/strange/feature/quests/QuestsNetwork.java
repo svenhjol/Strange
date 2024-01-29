@@ -20,7 +20,6 @@ import svenhjol.strange.feature.quests.Quests.AbandonQuestResult;
 import svenhjol.strange.feature.quests.Quests.AcceptQuestResult;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class QuestsNetwork {
@@ -237,43 +236,34 @@ public class QuestsNetwork {
         description = "Notify the client about the result of accepting the quest."
     )
     public static class NotifyAcceptQuestResult implements IPacketRequest {
-        private @Nullable Quest quest;
+        private String questId;
         private AcceptQuestResult result;
 
         private NotifyAcceptQuestResult() {}
 
         @Override
         public void encode(FriendlyByteBuf buf) {
-            if (quest != null) {
-                var questTag = new CompoundTag();
-                quest.save(questTag);
-                buf.writeNbt(questTag);
-            }
-
+            buf.writeUtf(questId);
             buf.writeEnum(result);
         }
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            var questTag = buf.readNbt();
-            if (questTag != null) {
-                this.quest = Quest.load(questTag);
-            }
-
+            this.questId = buf.readUtf();
             this.result = buf.readEnum(AcceptQuestResult.class);
         }
 
-        public @Nullable Quest getQuest() {
-            return quest;
+        public String getQuestId() {
+            return questId;
         }
 
         public AcceptQuestResult getResult() {
             return result;
         }
 
-        public static void send(ServerPlayer player, @Nullable Quest quest, AcceptQuestResult result) {
+        public static void send(ServerPlayer player, String questId, AcceptQuestResult result) {
             var message = new NotifyAcceptQuestResult();
-            message.quest = quest;
+            message.questId = questId;
             message.result = result;
             serverSender().send(message, player);
         }
@@ -285,43 +275,35 @@ public class QuestsNetwork {
         description = "Notify the client about the result of abandoning the quest."
     )
     public static class NotifyAbandonQuestResult implements IPacketRequest {
-        private @Nullable Quest quest;
+        private String questId;
         private AbandonQuestResult result;
 
         private NotifyAbandonQuestResult() {}
 
         @Override
         public void encode(FriendlyByteBuf buf) {
-            if (quest != null) {
-                var questTag = new CompoundTag();
-                quest.save(questTag);
-                buf.writeNbt(questTag);
-            }
-
+            buf.writeUtf(questId);
             buf.writeEnum(result);
         }
 
         @Override
         public void decode(FriendlyByteBuf buf) {
-            var questTag = buf.readNbt();
-            if (questTag != null) {
-                this.quest = Quest.load(questTag);
-            }
-
+            this.questId = buf.readUtf();
             this.result = buf.readEnum(AbandonQuestResult.class);
         }
 
-        public @Nullable Quest getQuest() {
-            return quest;
+
+        public String getQuestId() {
+            return questId;
         }
 
         public AbandonQuestResult getResult() {
             return result;
         }
 
-        public static void send(ServerPlayer player, @Nullable Quest quest, AbandonQuestResult result) {
+        public static void send(ServerPlayer player, String questId, AbandonQuestResult result) {
             var message = new NotifyAbandonQuestResult();
-            message.quest = quest;
+            message.questId = questId;
             message.result = result;
             serverSender().send(message, player);
         }

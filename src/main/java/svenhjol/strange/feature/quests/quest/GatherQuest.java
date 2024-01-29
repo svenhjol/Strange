@@ -9,6 +9,7 @@ import svenhjol.strange.data.LinkedItemList;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.ArrayList;
@@ -62,9 +63,8 @@ public class GatherQuest extends Quest {
             throw new RuntimeException("Item list is empty");
         }
 
-        var maxSelection = Math.min(3, villagerLevel());
         Collections.shuffle(items);
-        var selection = Math.min(items.size(), villagerLevel() + random().nextInt(maxSelection + 1));
+        var selection = Math.min(Math.min(Quests.maxQuestRequirements, items.size()), villagerLevel() + random.nextInt(2));
 
         for (var i = 0; i < selection; i++) {
             var stack = new ItemStack(items.get(i));

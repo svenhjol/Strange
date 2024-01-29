@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.quests.client;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +9,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.quest.HuntQuest;
+import svenhjol.strange.feature.quests.quest.HuntQuest.HuntTarget;
 
 public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
     @Override
@@ -38,13 +38,14 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
     }
 
     @Override
-    protected void renderRequirements(Screen screen, GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
+    protected void renderRequirements(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
 
         var xo = midX + xOffset;
         var yo = yOffset;
+
         for (var requirement : quest.requirements()) {
-            if (requirement instanceof HuntQuest.HuntTarget i) {
+            if (requirement instanceof HuntTarget i) {
                 Component label;
                 if (showRemaining) {
                     label = TextHelper.translatable("gui.strange.quests.remaining", Math.max(0, i.total() - i.remaining()), i.total());
@@ -73,16 +74,11 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
                     guiGraphics.renderTooltip(font, TextHelper.translatable("entity." + entityId.getNamespace() + "." + entityId.getPath()), xo, yo + 27);
                 }
+
                 xo += 27 + width;
             }
         }
 
-        if (quest.satisfied()) {
-            guiGraphics.blitSprite(QuestResources.TICK, xo + 2, yo + 3, 9, 9);
-            if (mouseX >= xo + 2 && mouseX <= xo + 11
-                && mouseY >= yo + 3 && mouseY <= yo + 12) {
-                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), xo, yo + 20);
-            }
-        }
+        renderSatisfied(guiGraphics, xo, yo, mouseX, mouseY);
     }
 }

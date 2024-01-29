@@ -37,13 +37,10 @@ public class QuestsScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        var yOffset = 40;
 
         for (BaseQuestRenderer<?> renderer : renderers) {
-            renderer.initPagedActive(this,
-                b -> Minecraft.getInstance().setScreen(new QuestScreen(renderer.quest())),
-                yOffset);
-            yOffset += renderer.getPagedActiveHeight();
+            renderer.setUpdateAction(b -> Minecraft.getInstance().setScreen(new QuestScreen(renderer.quest())));
+            renderer.initPagedActive(this);
         }
 
         addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2), 220, b -> onClose()));
@@ -60,11 +57,10 @@ public class QuestsScreen extends BaseTravelJournalScreen {
 
     protected void renderQuests(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         var rows = 3;
-        var perPage = rows;
         var yOffset = 40;
 
-        var pages = renderers.size() / perPage;
-        var index = (page - 1) * perPage;
+        var pages = renderers.size() / rows;
+        var index = (page - 1) * rows;
 
         if (renderers.isEmpty()) {
             renderNoQuests(guiGraphics);
@@ -76,7 +72,7 @@ public class QuestsScreen extends BaseTravelJournalScreen {
             }
 
             var renderer = renderers.get(index);
-            renderer.renderPagedActive(this, guiGraphics, yOffset, mouseX, mouseY);
+            renderer.renderPagedActive(guiGraphics, yOffset, mouseX, mouseY);
             yOffset += renderer.getPagedActiveHeight();
 
             index++;
