@@ -275,6 +275,9 @@ public abstract class Quest {
 
     protected void makeRewards(ResourceManager manager, QuestDefinition definition) {
         var entries = ResourceListManager.entries(manager, "quests/reward");
+        var sampleSize = 4; // Number of items to fetch from each reward entry
+        var additionalChance = 0.2d; // Chance of reward size being increased by one
+        List<RewardItem> sampleItems = new ArrayList<>();
 
         // Populate the reward functions.
         List<String> rewardFunctionIds = new ArrayList<>();
@@ -290,34 +293,39 @@ public abstract class Quest {
         }
 
         // Populate the reward items.
-        var definitionRewards = definition.rewards();
-        Collections.shuffle(definitionRewards);
-
-        var maxSelection = Math.min(Math.min(Quests.maxQuestRewards, villagerLevel() + 1), definitionRewards.size());
-        for (int i = 0; i < maxSelection; i++) {
-            var rewardItemEntries = definitionRewards.get(i);
+        for (var rewardItemEntries : definition.rewards()) {
             var rewardItemEntry = rewardItemEntries.getFirst();
             var rewardItemAmount = rewardItemEntries.getSecond();
 
-            var rewardItems = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
-            if (rewardItems.isEmpty()) {
+            var items = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
+            if (items.isEmpty()) {
                 continue;
             }
 
-            Collections.shuffle(rewardItems);
-            var rewardItem = rewardItems.get(0);
+            Collections.shuffle(items);
 
-            var stack = new ItemStack(rewardItem,
-                random.nextIntBetweenInclusive(Math.max(1, rewardItemAmount - 2), rewardItemAmount));
+            // Get a selection of items.
+            for (int i = 0; i < Math.min(sampleSize, items.size()); i++) {
+                var rewardItem = items.get(i);
 
-            // Apply reward functions to the item.
-            var item = new RewardItem(this, stack);
-            for (var functionId : rewardFunctionIds) {
-                Quests.REWARD_ITEM_FUNCTIONS.byId(functionId).ifPresent(f -> f.apply(item));
+                var stack = new ItemStack(rewardItem,
+                    random.nextIntBetweenInclusive(Math.max(1, rewardItemAmount - 2), rewardItemAmount));
+
+                // Apply reward functions to the item.
+                var item = new RewardItem(this, stack);
+                for (var functionId : rewardFunctionIds) {
+                    Quests.REWARD_ITEM_FUNCTIONS.byId(functionId).ifPresent(f -> f.apply(item));
+                }
+
+                sampleItems.add(item);
             }
-
-            this.rewardItems.add(item);
         }
+
+        Collections.shuffle(sampleItems);
+
+        // Get a subselection of the sampleItems. The sublist size is the same as villager level with chance for +1.
+        var amount = Math.min(definition.level() + (random.nextDouble() < additionalChance ? 1 : 0), Quests.maxQuestRewards);
+        this.rewardItems = sampleItems.subList(0, Math.min(amount, sampleItems.size()));
 
         // Populate XP.
         var xp = new RewardXp(this, definition.experience());

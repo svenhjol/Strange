@@ -50,7 +50,7 @@ public class Quests extends CommonFeature {
     public static final RewardItemFunctions REWARD_ITEM_FUNCTIONS = new RewardItemFunctions();
 
     public static int maxQuestRequirements = 4;
-    public static int maxQuestRewards = 4;
+    public static int maxQuestRewards = 5;
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
 
