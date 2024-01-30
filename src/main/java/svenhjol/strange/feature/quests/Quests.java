@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
-import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
@@ -206,12 +205,7 @@ public class Quests extends CommonFeature {
                 var definition = QuestDefinition.deserialize(id.getNamespace(), resource);
 
                 // If the def requires specific charmony features, test they are enabled now and skip def if not.
-                var features = definition.enabledFeatures();
-
-                if (!features.isEmpty() && !features.stream().allMatch(
-                    f -> Mods.optionalCommon(f.getNamespace())
-                        .map(m -> m.loader().isEnabled(f.getPath()))
-                        .orElse(false))) {
+                if (!QuestsHelper.hasRequiredFeatures(definition.requiredFeatures())) {
                     mod().log().debug(getClass(), "Definition " + id + " has missing or disabled features, skipping");
                     continue;
                 }

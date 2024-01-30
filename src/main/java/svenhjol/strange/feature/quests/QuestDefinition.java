@@ -21,7 +21,7 @@ public class QuestDefinition {
     private int loyalty = 0;
     private String profession;
     private String type;
-    private List<String> enabled_features = new ArrayList<>();
+    private List<String> required_features = new ArrayList<>();
     private List<String> artifact_items = new ArrayList<>();
     private Map<String, Integer> artifact_loot_tables = new HashMap<>();
     private Map<String, Integer> battle_effects = new HashMap<>();
@@ -49,8 +49,8 @@ public class QuestDefinition {
         return list.get(random.nextInt(list.size()));
     }
 
-    public List<ResourceLocation> enabledFeatures() {
-        return enabled_features.stream().map(this::tryParse).toList();
+    public List<ResourceLocation> requiredFeatures() {
+        return required_features.stream().map(this::tryParse).toList();
     }
 
     public List<ResourceLocation> artifactItems() {
