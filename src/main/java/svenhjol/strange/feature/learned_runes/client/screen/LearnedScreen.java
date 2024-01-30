@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.learned_runes.LearnedRunes;
 import svenhjol.strange.feature.learned_runes.LearnedRunesClient;
-import svenhjol.strange.feature.learned_runes.client.LearnedRunesResources;
+import svenhjol.strange.feature.learned_runes.LearnedRunesResources;
 import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
@@ -25,7 +25,7 @@ public class LearnedScreen extends TravelJournalScreen {
         super(LearnedRunesResources.LEARNED_TITLE);
         this.page = page;
 
-        PageTracker.set(this.getClass());
+        PageTracker.set(() -> new LearnedScreen(page));
     }
 
     @Override

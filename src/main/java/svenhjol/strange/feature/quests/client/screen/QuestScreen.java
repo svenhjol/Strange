@@ -20,10 +20,11 @@ public class QuestScreen extends TravelJournalScreen {
 
     public QuestScreen(Quest quest) {
         super(QuestsHelper.makeQuestTitle(quest));
-        this.quest = quest;
-        renderer = quest.type().makeRenderer(quest);
 
-        PageTracker.set(() -> this);
+        this.quest = quest;
+        this.renderer = quest.type().makeRenderer(quest);
+
+        PageTracker.set(() -> new QuestScreen(quest));
     }
 
     @Override
@@ -31,8 +32,11 @@ public class QuestScreen extends TravelJournalScreen {
         super.init();
         addRenderableWidget(new CloseButton(midX + 5,220, b -> onClose()));
         addRenderableWidget(new BackButton(midX - (BackButton.WIDTH + 5), 220, QuestsClient::openQuestsScreen));
+
         renderer.setAbandonAction(b -> abandon());
         renderer.initSelectedActive(this);
+
+        updateQuest();
         initShortcuts();
     }
 
@@ -54,6 +58,20 @@ public class QuestScreen extends TravelJournalScreen {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player != null && !Quests.getPlayerQuests(minecraft.player).exists(this.quest)) {
             minecraft.setScreen(new QuestsScreen());
+        }
+    }
+
+    /**
+     * Update the quest from the player's most recently synced set.
+     * This prevents quest data from going stale between screen views.
+     */
+    protected void updateQuest() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            Quests.getPlayerQuest(minecraft.player, quest.id()).ifPresent(q -> {
+                this.quest = q;
+                this.renderer.setQuest(q);
+            });
         }
     }
 

@@ -121,6 +121,7 @@ public class HuntQuest extends Quest {
         public void entityKilled(LivingEntity entity, DamageSource source) {
             if (entity.getType().equals(this.entity)) {
                 this.killed++;
+                setDirty(true);
             }
         }
 

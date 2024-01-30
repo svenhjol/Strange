@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest.ArtifactItem;
 

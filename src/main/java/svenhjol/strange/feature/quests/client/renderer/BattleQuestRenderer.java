@@ -12,7 +12,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.feature.colored_glints.ColoredGlints;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.quest.BattleQuest;
 import svenhjol.strange.feature.quests.quest.BattleQuest.BattleTarget;
 

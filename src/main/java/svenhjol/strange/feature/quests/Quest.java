@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -53,8 +52,9 @@ public abstract class Quest {
     protected boolean epic;
     protected List<RewardItem> rewardItems = new ArrayList<>();
     protected List<RewardXp> rewardXp = new ArrayList<>();
-    protected RandomSource random;
     protected long randomSeed;
+    protected RandomSource random; // transient
+    protected boolean dirty; // transient
 
     public String id() {
         return id;
@@ -70,6 +70,14 @@ public abstract class Quest {
 
     public boolean isEpic() {
         return epic;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean flag) {
+        this.dirty = flag;
     }
 
     public RandomSource random() {
@@ -211,11 +219,11 @@ public abstract class Quest {
         saveAdditional(tag);
     }
 
-    public void tick(ServerPlayer player) {
+    public void tick(Player player) {
         this.player = player;
     }
 
-    public void start(ServerPlayer player) {
+    public void start(Player player) {
         this.player = player;
 
         if (status == Status.NOT_STARTED) {

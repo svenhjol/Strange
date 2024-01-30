@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {

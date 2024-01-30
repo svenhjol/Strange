@@ -111,9 +111,16 @@ public class Quests extends CommonFeature {
             for (var quest : getPlayerQuests(serverPlayer).all()) {
                 quest.tick(serverPlayer);
 
-                // If any quest became invalidated during its tick, remove it.
+                // If any quest became invalidated during its tick then remove it
                 if (!quest.inProgress()) {
                     invalid.add(quest);
+                }
+
+                // If any quest needs to be updated on the client then sync
+                if (quest.isDirty()) {
+                    quest.setDirty(false);
+                    // TODO: efficiency - handle single quest update rather than all of them
+                    syncQuests(serverPlayer);
                 }
             }
 

@@ -11,7 +11,7 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
+import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
 public abstract class TravelJournalScreen extends Screen {

@@ -27,7 +27,7 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.Requirement;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 
 import java.util.*;
 
@@ -52,9 +52,12 @@ public class BattleQuest extends Quest {
     }
 
     @Override
-    public void tick(ServerPlayer player) {
+    public void tick(Player player) {
         super.tick(player);
-        var level = player.level();
+
+        if (player.level().isClientSide()) return;
+        var serverPlayer = (ServerPlayer)player;
+        var serverLevel = (ServerLevel)serverPlayer.level();
 
         ticks++;
 
@@ -64,11 +67,11 @@ public class BattleQuest extends Quest {
             return;
         }
 
-        if (ticks > 100 && !hasSpawned && isInVillage(player)) {
+        if (ticks > 100 && !hasSpawned && isInVillage(serverPlayer)) {
             for (var target : targets) {
                 var result = target.trySpawn();
                 if (!result) {
-                    cleanup(id(), player);
+                    cleanup(id(), serverPlayer);
 
                     // Invalidate this quest.
                     cancel();
@@ -76,19 +79,19 @@ public class BattleQuest extends Quest {
                 }
             }
             hasSpawned = true;
-            for (var mob : getQuestMobs(id(), player)) {
+            for (var mob : getQuestMobs(id(), serverPlayer)) {
                 maxHealth += mob.getMaxHealth();
             }
             health = maxHealth;
         }
 
         if (hasSpawned) {
-            startEffects(player);
+            startEffects(serverPlayer);
 
             // Sample rather than check every tick.
-            if (level.getGameTime() % 10 == 0) {
+            if (serverLevel.getGameTime() % 10 == 0) {
                 health = 0f;
-                for (var mob : getQuestMobs(id(), player)) {
+                for (var mob : getQuestMobs(id(), serverPlayer)) {
                     health += mob.getHealth();
                 }
             }
@@ -401,6 +404,7 @@ public class BattleQuest extends Quest {
                 var tags = entity.getTags();
                 if (tags.contains(UID_PREFIX + uid)) {
                     this.killed = true;
+                    setDirty(true);
                 }
             }
         }

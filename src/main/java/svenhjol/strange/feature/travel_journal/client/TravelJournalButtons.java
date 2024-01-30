@@ -5,8 +5,16 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
+import svenhjol.charmony.base.Mods;
+import svenhjol.strange.Strange;
+import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class TravelJournalButtons {
+    public static final WidgetSprites HOME_BUTTON = makeButton("home");
+    public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
+    public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
+    public static final WidgetSprites PREVIOUS_PAGE_BUTTON = makeButton("previous_page");
+
     public static class CloseButton extends Button {
         public static int WIDTH = 110;
         public static int HEIGHT = 20;
@@ -58,7 +66,7 @@ public class TravelJournalButtons {
     public static class HomeShortcutButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.HOME_BUTTON;
+        static WidgetSprites SPRITES = HOME_BUTTON;
         static Component TEXT = TravelJournalResources.HOME_BUTTON_TEXT;
 
         public HomeShortcutButton(int x, int y, OnPress onPress) {
@@ -70,7 +78,7 @@ public class TravelJournalButtons {
     public static class NextPageButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 19;
-        static WidgetSprites SPRITES = TravelJournalResources.NEXT_PAGE_BUTTON;
+        static WidgetSprites SPRITES = NEXT_PAGE_BUTTON;
         static Component TEXT = TravelJournalResources.NEXT_PAGE_BUTTON_TEXT;
 
         public NextPageButton(int x, int y, OnPress onPress) {
@@ -82,7 +90,7 @@ public class TravelJournalButtons {
     public static class PreviousPageButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 19;
-        static WidgetSprites SPRITES = TravelJournalResources.PREVIOUS_PAGE_BUTTON;
+        static WidgetSprites SPRITES = PREVIOUS_PAGE_BUTTON;
         static Component TEXT = TravelJournalResources.PREVIOUS_PAGE_BUTTON_TEXT;
 
         public PreviousPageButton(int x, int y, OnPress onPress) {
@@ -94,12 +102,20 @@ public class TravelJournalButtons {
     public static class DeleteShortcutButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.TRASH_BUTTON;
+        static WidgetSprites SPRITES = TRASH_BUTTON;
         static Component TEXT = TravelJournalResources.DELETE_BUTTON_TEXT;
 
         public DeleteShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }
+    }
+
+    static WidgetSprites makeButton(String name) {
+        var instance = Mods.client(Strange.ID);
+
+        return new WidgetSprites(
+            instance.id("widget/travel_journal/" + name + "_button"),
+            instance.id("widget/travel_journal/" + name + "_button_highlighted"));
     }
 }

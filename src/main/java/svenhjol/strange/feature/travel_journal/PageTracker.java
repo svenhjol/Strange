@@ -8,30 +8,15 @@ import java.util.function.Supplier;
 
 public class PageTracker {
     private static Supplier<TravelJournalScreen> screen;
-    private static Class<? extends TravelJournalScreen> clazz;
 
     public static void set(Supplier<TravelJournalScreen> screen) {
         PageTracker.screen = screen;
-        PageTracker.clazz = null;
     }
-
-    public static void set(Class<? extends TravelJournalScreen> clazz) {
-        PageTracker.clazz = clazz;
-        PageTracker.screen = null;
-    }
-
     public static void open() {
         var minecraft = Minecraft.getInstance();
 
-        if (clazz != null) {
-            // Create a new instance of the last screen
-            try {
-                minecraft.setScreen(clazz.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                minecraft.setScreen(new HomeScreen());
-            }
-        } else if (screen != null) {
-            // Restore the previous screen state completely
+        if (screen != null) {
+            // Restore the screen state from the supplier
             minecraft.setScreen(screen.get());
         } else {
             // Default to opening the home screen

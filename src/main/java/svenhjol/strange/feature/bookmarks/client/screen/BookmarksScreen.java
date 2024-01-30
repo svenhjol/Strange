@@ -9,7 +9,7 @@ import svenhjol.strange.feature.bookmarks.Bookmarks;
 import svenhjol.strange.feature.bookmarks.BookmarksClient;
 import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.NewBookmarkButton;
 import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.NewWhenEmptyButton;
-import svenhjol.strange.feature.bookmarks.client.BookmarksResources;
+import svenhjol.strange.feature.bookmarks.BookmarksResources;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.EditButton;
@@ -30,7 +30,7 @@ public class BookmarksScreen extends TravelJournalScreen {
         super(BookmarksResources.BOOKMARKS_TITLE);
         this.page = page;
 
-        PageTracker.set(this.getClass());
+        PageTracker.set(() -> new BookmarksScreen(page));
     }
 
     @Override

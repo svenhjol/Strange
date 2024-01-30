@@ -37,9 +37,8 @@ public class BookmarkScreen extends TravelJournalScreen {
 
     public BookmarkScreen(Bookmark bookmark) {
         super(TextHelper.literal(bookmark.name));
-        this.bookmark = bookmark.copy();
-
-        PageTracker.set(() -> this);
+        setBookmark(bookmark);
+        PageTracker.set(() -> new BookmarkScreen(bookmark));
     }
 
     @Override
@@ -56,6 +55,7 @@ public class BookmarkScreen extends TravelJournalScreen {
         hasPaper = hasPaper();
         isNearby = isNearby();
 
+        updateBookmark();
         initShortcuts();
     }
 
@@ -254,6 +254,21 @@ public class BookmarkScreen extends TravelJournalScreen {
         }
 
         return minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
+    }
+
+    /**
+     * Update the bookmark from the player's most recently synced set.
+     * This prevents bookmark data from going stale between screen views.
+     */
+    protected void updateBookmark() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            Bookmarks.getBookmarks(minecraft.player).get(bookmark.id).ifPresent(this::setBookmark);
+        }
+    }
+
+    protected void setBookmark(Bookmark bookmark) {
+        this.bookmark = bookmark.copy();
     }
 
     protected void checkValid() {

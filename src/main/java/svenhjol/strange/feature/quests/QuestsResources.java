@@ -1,10 +1,8 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests;
 
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.Strange;
 
@@ -46,17 +44,8 @@ public class QuestsResources {
     public static final String REWARD_LEVELS_KEY = "gui.strange.quests.reward_levels";
     public static final String SATISFIED_KEY = "gui.strange.quests.satisfied";
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();
-    public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
     public static final Map<EntityType<?>, ResourceLocation> MOB_SPRITES = new HashMap<>();
     public static final Map<ResourceLocation, ResourceLocation> LOOT_SPRITES = new HashMap<>();
-    public static final WidgetSprites QUESTS_BUTTON = makeButton("quests");
-    public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");
-    public static final WidgetSprites APPRENTICE_SCROLL_BUTTON = makeButton("apprentice_scroll");
-    public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");
-    public static final WidgetSprites EXPERT_SCROLL_BUTTON = makeButton("expert_scroll");
-    public static final WidgetSprites MASTER_SCROLL_BUTTON = makeButton("master_scroll");
-    public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
-    public static final WidgetSprites ACCEPT_BUTTON = makeButton("accept");
 
     static {
         LEVEL_TO_SCROLL.put(1, NOVICE_SCROLL);
@@ -64,19 +53,5 @@ public class QuestsResources {
         LEVEL_TO_SCROLL.put(3, JOURNEYMAN_SCROLL);
         LEVEL_TO_SCROLL.put(4, EXPERT_SCROLL);
         LEVEL_TO_SCROLL.put(5, MASTER_SCROLL);
-
-        LEVEL_TO_SCROLL_BUTTON.put(1, NOVICE_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(2, APPRENTICE_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(3, JOURNEYMAN_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(4, EXPERT_SCROLL_BUTTON);
-        LEVEL_TO_SCROLL_BUTTON.put(5, MASTER_SCROLL_BUTTON);
-    }
-
-    static WidgetSprites makeButton(String name) {
-        var instance = Mods.client(Strange.ID);
-
-        return new WidgetSprites(
-            instance.id("widget/quests/" + name + "_button"),
-            instance.id("widget/quests/" + name + "_button_highlighted"));
     }
 }

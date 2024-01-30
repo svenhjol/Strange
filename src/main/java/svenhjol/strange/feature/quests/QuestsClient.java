@@ -16,8 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.EntityHitResult;
+import svenhjol.charmony.api.event.ClientStartEvent;
 import svenhjol.charmony.api.event.EntityUseEvent;
-import svenhjol.charmony.api.event.PlayerLoginEvent;
 import svenhjol.charmony.api.event.PlayerTickEvent;
 import svenhjol.charmony.api.event.ScreenSetupEvent;
 import svenhjol.charmony.base.Mods;
@@ -29,8 +29,9 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
-import svenhjol.strange.feature.quests.client.*;
-import svenhjol.strange.feature.quests.client.QuestsButtons.*;
+import svenhjol.strange.feature.quests.client.QuestsButtons.QuestsButton;
+import svenhjol.strange.feature.quests.client.QuestsButtons.QuestsShortcutButton;
+import svenhjol.strange.feature.quests.client.QuestsButtons.VillagerQuestsButton;
 import svenhjol.strange.feature.quests.client.screen.QuestOffersScreen;
 import svenhjol.strange.feature.quests.client.screen.QuestScreen;
 import svenhjol.strange.feature.quests.client.screen.QuestsScreen;
@@ -53,10 +54,10 @@ public class QuestsClient extends ClientFeature {
 
     @Override
     public void runWhenEnabled() {
+        ClientStartEvent.INSTANCE.handle(this::handleClientStart);
         ScreenSetupEvent.INSTANCE.handle(this::handleScreenSetup);
         EntityUseEvent.INSTANCE.handle(this::handleEntityUse);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
-        PlayerLoginEvent.INSTANCE.handle(this::handlePlayerLogin);
         QuestEvents.ACCEPT_QUEST.handle(this::handleAcceptQuest);
         QuestEvents.ABANDON_QUEST.handle(this::handleAbandonQuest);
 
@@ -66,6 +67,7 @@ public class QuestsClient extends ClientFeature {
         TravelJournalClient.registerHomeButton(
             (x, y) -> new QuestsButton(x - (QuestsButton.WIDTH / 2), y, QuestsClient::openQuestsScreen));
     }
+
 
     private void handleAbandonQuest(Player player, Quest quest) {
         if (!player.level().isClientSide) return;
@@ -86,7 +88,7 @@ public class QuestsClient extends ClientFeature {
         }
     }
 
-    private void handlePlayerLogin(Player player) {
+    private void handleClientStart(Minecraft minecraft) {
         // Load all the mob sprites.
         QuestsResources.MOB_SPRITES.clear();
         BuiltInRegistries.ENTITY_TYPE.forEach(e -> {
@@ -101,7 +103,17 @@ public class QuestsClient extends ClientFeature {
     }
 
     private void handlePlayerTick(Player player) {
-        if (player.level().isClientSide && player.level().getGameTime() % 15 == 0) {
+        if (!player.level().isClientSide) {
+            return;
+        }
+
+        // Tick all quests on the client
+        for (var quest : Quests.getPlayerQuests(player).all()) {
+            quest.tick(player);
+        }
+
+        // Check for nearby villager receivers
+        if (player.level().getGameTime() % 15 == 0) {
             showInterestedVillagers(player);
         }
     }

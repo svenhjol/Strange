@@ -3,7 +3,7 @@ package svenhjol.strange.feature.travel_journal.client.screen;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
+import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
 public class HomeScreen extends TravelJournalScreen {
     public HomeScreen() {

@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.feature.bookmarks.Bookmark;
 import svenhjol.strange.feature.bookmarks.BookmarksClient;
 import svenhjol.strange.feature.bookmarks.BookmarksNetwork;
-import svenhjol.strange.feature.bookmarks.client.BookmarksResources;
+import svenhjol.strange.feature.bookmarks.BookmarksResources;
 import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
 

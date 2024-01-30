@@ -58,6 +58,9 @@ public class Bookmarks extends CommonFeature {
 
         if (result == BookmarkList.AddBookmarkResult.SUCCESS) {
             // Send the new bookmark to the client.
+            syncBookmarks(serverPlayer);
+
+            // Send the new bookmark back to the client.
             SendNewBookmark.send(serverPlayer, newBookmark);
         }
     }

@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.quest.HuntQuest;
 import svenhjol.strange.feature.quests.quest.HuntQuest.HuntTarget;
 

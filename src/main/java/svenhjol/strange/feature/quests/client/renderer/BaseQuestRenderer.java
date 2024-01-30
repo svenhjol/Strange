@@ -11,7 +11,7 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.client.QuestsButtons;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
 
@@ -129,7 +129,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         renderRequirements(guiGraphics, -105, yOffset + 12, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var sprites = QuestsResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
+            var sprites = QuestsButtons.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
             var button = new QuestsButtons.ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestsResources.QUEST_INFO_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;

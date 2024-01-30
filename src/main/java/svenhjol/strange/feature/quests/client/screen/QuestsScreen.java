@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.*;
 import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
-import svenhjol.strange.feature.quests.client.QuestsResources;
+import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
@@ -34,7 +34,7 @@ public class QuestsScreen extends TravelJournalScreen {
             renderers.add(renderer);
         }
 
-        PageTracker.set(this.getClass());
+        PageTracker.set(QuestsScreen::new);
     }
 
     @Override
