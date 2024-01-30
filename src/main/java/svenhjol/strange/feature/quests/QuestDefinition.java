@@ -16,7 +16,6 @@ import java.util.*;
 public class QuestDefinition {
     private String namespace = "minecraft";
     private boolean epic = false;
-    private int experience = 1;
     private int level = 1;
     private int loyalty = 0;
     private String profession;
@@ -30,6 +29,7 @@ public class QuestDefinition {
     private Map<String, Integer> hunt_mobs = new HashMap<>();
     private Map<String, Integer> rewards = new HashMap<>();
     private List<String> reward_functions = new ArrayList<>();
+    private int reward_experience = 1;
 
     public static QuestDefinition deserialize(String namespace, Resource resource) {
         BufferedReader reader;
@@ -85,8 +85,8 @@ public class QuestDefinition {
         return reward_functions.stream().map(this::tryParse).toList();
     }
 
-    public int experience() {
-        return experience;
+    public int rewardExperience() {
+        return reward_experience;
     }
 
     public boolean epic() {

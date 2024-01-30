@@ -328,7 +328,7 @@ public abstract class Quest {
         this.rewardItems = sampleItems.subList(0, Math.min(amount, sampleItems.size()));
 
         // Populate XP.
-        var xp = new RewardXp(this, definition.experience());
+        var xp = new RewardXp(this, definition.rewardExperience());
         this.rewardXp.add(xp);
     }
 
