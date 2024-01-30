@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.travel_journal.TravelJournal;
+import svenhjol.strange.feature.learned_runes.LearnedRunes;
 
 public class RunestoneHudRenderer {
     static final int MAX_FADE_TICKS = 200;
@@ -130,8 +130,7 @@ public class RunestoneHudRenderer {
                 this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
                 // If the player has learned the runes for this destination, show the name with a "?" at the end.
-                var learned = TravelJournal.getLearned(player);
-                var hasLearned = learned.isPresent() && learned.get().hasLearned(runestone.location);
+                var hasLearned = LearnedRunes.getLearned(player).hasLearned(runestone.location);
 
                 if (hasLearned) {
                     this.name = TextHelper.translatable("gui.strange.runestone.unsure", TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.location)));

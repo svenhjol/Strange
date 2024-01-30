@@ -156,8 +156,8 @@ public class ArtifactQuest extends Quest {
     }
 
     private ResourceLocation makeItemsKey(int villagerLevel, VillagerProfession villagerProfession) {
-        return new ResourceLocation(Strange.ID, QuestHelper.getVillagerLevelName(villagerLevel)
-            + "_" + QuestHelper.getVillagerProfessionName(villagerProfession)
+        return new ResourceLocation(Strange.ID, QuestsHelper.getVillagerLevelName(villagerLevel)
+            + "_" + QuestsHelper.getVillagerProfessionName(villagerProfession)
             + "_artifact_items");
     }
 

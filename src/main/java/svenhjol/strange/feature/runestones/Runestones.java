@@ -20,8 +20,7 @@ import svenhjol.charmony.api.event.ServerStartEvent;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.travel_journal.TravelJournal;
-import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.SyncLearned;
+import svenhjol.strange.feature.learned_runes.LearnedRunes;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -163,10 +162,7 @@ public class Runestones extends CommonFeature {
         runestone.discovered = player.getScoreboardName();
         runestone.setChanged();
 
-        TravelJournal.getLearned(player).ifPresent(learned -> {
-            learned.learn(runestone.location);
-            SyncLearned.send(player, learned);
-        });
+        LearnedRunes.learn(player, runestone.location);
 
         var teleport = new RunestoneTeleport(player, runestone);
         Runestones.TELEPORTS.put(player.getUUID(), teleport);

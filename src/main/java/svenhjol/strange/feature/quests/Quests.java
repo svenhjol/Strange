@@ -1,6 +1,5 @@
 package svenhjol.strange.feature.quests;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -23,14 +22,12 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.charmony.event.PlayerLoadDataCallback;
-import svenhjol.charmony.event.PlayerSaveDataCallback;
 import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.reward.RewardItemFunctions;
+import svenhjol.strange.feature.travel_journal.TravelJournal;
 
-import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -75,30 +72,16 @@ public class Quests extends CommonFeature {
     @Override
     public void runWhenEnabled() {
         ServerStartEvent.INSTANCE.handle(this::handleServerStart);
-        EntityJoinEvent.INSTANCE.handle(this::handleEntityJoin);
         EntityKilledEvent.INSTANCE.handle(this::handleEntityKilled);
         EntityLeaveEvent.INSTANCE.handle(this::handleEntityLeave);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
-        PlayerLoadDataEvent.INSTANCE.handle(this::handlePlayerLoadData);
-        PlayerSaveDataEvent.INSTANCE.handle(this::handlePlayerSaveData);
         LootTableModifyEvent.INSTANCE.handle(this::handleLootTableModify);
-    }
 
-    private void handlePlayerSaveData(Player player, File file) {
-        var uuid = player.getUUID();
-        var tag = new CompoundTag();
-        var questsTag = getPlayerQuests(player).save();
-        tag.put(QUESTS_TAG, questsTag);
+        TravelJournal.registerPlayerDataSource(
+            (player, tag) -> PLAYER_QUESTS.put(player.getUUID(), QuestList.load(tag.getCompound(QUESTS_TAG))),
+            (player, tag) -> tag.put(QUESTS_TAG, getPlayerQuests(player).save()));
 
-        PlayerSaveDataCallback.writeFile(getDataFile(file, uuid), tag);
-    }
-
-    private void handlePlayerLoadData(Player player, File file) {
-        var uuid = player.getUUID();
-        var tag = PlayerLoadDataCallback.readFile(getDataFile(file, uuid));
-
-        var quests = QuestList.load(tag.getCompound(QUESTS_TAG));
-        PLAYER_QUESTS.put(uuid, quests);
+        TravelJournal.registerSyncHandler(Quests::syncQuests);
     }
 
     private Optional<LootPool.Builder> handleLootTableModify(LootDataManager manager, ResourceLocation id) {
@@ -208,7 +191,7 @@ public class Quests extends CommonFeature {
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
-        for (var tier : QuestHelper.TIERS.values()) {
+        for (var tier : QuestsHelper.TIERS.values()) {
             var resources = manager.listResources("quests/definition/" + tier, file -> file.getPath().endsWith(".json"));
             for (var entry : resources.entrySet()) {
                 var id = entry.getKey();
@@ -232,16 +215,6 @@ public class Quests extends CommonFeature {
         }
     }
 
-    private void handleEntityJoin(Entity entity, Level level) {
-        if (entity instanceof ServerPlayer player) {
-            syncQuests(player);
-        }
-    }
-
-    private File getDataFile(File playerDataDir, UUID uuid) {
-        return new File(playerDataDir + "/" + uuid.toString() + "_strange_quests.dat");
-    }
-
     public static void handleRequestVillagerQuests(RequestVillagerQuests message, Player player) {
         var ticksToRefresh = 80; // TODO: test value, refresh quests every 4 seconds
         var level = player.level();
@@ -251,7 +224,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestsHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_VILLAGER);
             return;
@@ -270,7 +243,7 @@ public class Quests extends CommonFeature {
             return;
         }
 
-        var definitions = QuestHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
+        var definitions = QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_QUESTS_GENERATED);
             return;
@@ -282,7 +255,7 @@ public class Quests extends CommonFeature {
         }
 
         var manager = server.getResourceManager();
-        var newQuests = QuestHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
+        var newQuests = QuestsHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
@@ -302,7 +275,7 @@ public class Quests extends CommonFeature {
         var serverPlayer = (ServerPlayer)player;
 
         // Player at max quests?
-        if (QuestHelper.hasMaxQuests(player)) {
+        if (QuestsHelper.hasMaxQuests(player)) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.MAX_QUESTS);
             return;
         }
@@ -314,7 +287,7 @@ public class Quests extends CommonFeature {
         }
 
         // Is villager nearby?
-        var nearby = QuestHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
+        var nearby = QuestsHelper.getNearbyMatchingVillager(level, player.blockPosition(), villagerUuid);
         if (nearby.isEmpty()) {
             NotifyAcceptQuestResult.send(serverPlayer, null, AcceptQuestResult.NO_VILLAGER);
             return;
@@ -343,9 +316,7 @@ public class Quests extends CommonFeature {
         // Add this quest to the player's quests.
         var quest = opt.get();
         quest.start(serverPlayer);
-
         addQuest(serverPlayer, quest);
-        syncQuests(serverPlayer);
 
         // Fire the AcceptQuestEvent on the server side.
         QuestEvents.ACCEPT_QUEST.invoke(player, quest);

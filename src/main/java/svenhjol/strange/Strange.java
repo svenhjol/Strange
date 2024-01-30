@@ -5,10 +5,12 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.charmony.common.CommonMod;
 import svenhjol.strange.feature.ambient_music_discs.AmbientMusicDiscs;
+import svenhjol.strange.feature.bookmarks.Bookmarks;
 import svenhjol.strange.feature.casks.Casks;
 import svenhjol.strange.feature.cooking_pots.CookingPots;
 import svenhjol.strange.feature.core.Core;
 import svenhjol.strange.feature.ebony_wood.EbonyWood;
+import svenhjol.strange.feature.learned_runes.LearnedRunes;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointing;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.raid_horns.RaidHorns;
@@ -34,10 +36,12 @@ public class Strange extends CommonMod {
     public List<Class<? extends CommonFeature>> features() {
         return List.of(
             AmbientMusicDiscs.class,
+            Bookmarks.class,
             Casks.class,
             CookingPots.class,
             Core.class,
             EbonyWood.class,
+            LearnedRunes.class,
             PiglinPointing.class,
             Quests.class,
             RaidHorns.class,

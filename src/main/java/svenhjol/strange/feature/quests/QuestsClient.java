@@ -29,16 +29,19 @@ import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.Quests.VillagerQuestsResult;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
-import svenhjol.strange.feature.quests.client.QuestButtons.QuestsButton;
-import svenhjol.strange.feature.quests.client.QuestOffersScreen;
-import svenhjol.strange.feature.quests.client.QuestResources;
+import svenhjol.strange.feature.quests.client.*;
+import svenhjol.strange.feature.quests.client.QuestsButtons.*;
+import svenhjol.strange.feature.quests.client.screen.QuestOffersScreen;
+import svenhjol.strange.feature.quests.client.screen.QuestScreen;
+import svenhjol.strange.feature.quests.client.screen.QuestsScreen;
+import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class QuestsClient extends ClientFeature {
-    static Button questsButton;
+    static Button villagerQuestsButton;
     static UUID villagerUuid;
     static VillagerProfession villagerProfession;
     static int villagerLevel;
@@ -54,20 +57,47 @@ public class QuestsClient extends ClientFeature {
         EntityUseEvent.INSTANCE.handle(this::handleEntityUse);
         PlayerTickEvent.INSTANCE.handle(this::handlePlayerTick);
         PlayerLoginEvent.INSTANCE.handle(this::handlePlayerLogin);
+        QuestEvents.ACCEPT_QUEST.handle(this::handleAcceptQuest);
+        QuestEvents.ABANDON_QUEST.handle(this::handleAbandonQuest);
+
+        TravelJournalClient.registerShortcut(
+            (x, y) -> new QuestsShortcutButton(x, y, QuestsClient::openQuestsScreen));
+
+        TravelJournalClient.registerHomeButton(
+            (x, y) -> new QuestsButton(x - (QuestsButton.WIDTH / 2), y, QuestsClient::openQuestsScreen));
+    }
+
+    private void handleAbandonQuest(Player player, Quest quest) {
+        if (!player.level().isClientSide) return;
+        var minecraft = Minecraft.getInstance();
+
+        if (minecraft.screen instanceof QuestScreen) {
+            minecraft.setScreen(new QuestsScreen());
+        }
+    }
+
+    private void handleAcceptQuest(Player player, Quest quest) {
+        if (!player.level().isClientSide) return;
+        var minecraft = Minecraft.getInstance();
+
+        if (minecraft.screen instanceof QuestOffersScreen) {
+            // TODO: toast
+            minecraft.setScreen(null);
+        }
     }
 
     private void handlePlayerLogin(Player player) {
         // Load all the mob sprites.
-        QuestResources.MOB_SPRITES.clear();
+        QuestsResources.MOB_SPRITES.clear();
         BuiltInRegistries.ENTITY_TYPE.forEach(e -> {
             var id = BuiltInRegistries.ENTITY_TYPE.getKey(e);
-            QuestResources.MOB_SPRITES.put(e, new ResourceLocation(id.getNamespace(), "mobs/" + id.getPath()));
+            QuestsResources.MOB_SPRITES.put(e, new ResourceLocation(id.getNamespace(), "mobs/" + id.getPath()));
         });
 
         // Load all the loot sprites.
-        QuestResources.LOOT_SPRITES.clear();
+        QuestsResources.LOOT_SPRITES.clear();
         BuiltInLootTables.all().forEach(
-            id -> QuestResources.LOOT_SPRITES.put(id, new ResourceLocation(id.getNamespace(), "loot/" + id.getPath())));
+            id -> QuestsResources.LOOT_SPRITES.put(id, new ResourceLocation(id.getNamespace(), "loot/" + id.getPath())));
     }
 
     private void handlePlayerTick(Player player) {
@@ -110,13 +140,13 @@ public class QuestsClient extends ClientFeature {
 
         RequestVillagerQuests.send(villagerUuid);
 
-        questsButton = new QuestsButton(midX - (QuestsButton.WIDTH / 2), midY + 92, b -> {
+        villagerQuestsButton = new VillagerQuestsButton(midX - (VillagerQuestsButton.WIDTH / 2), midY + 92, b -> {
             screen.onClose();
             openQuestOffers(villagerUuid, villagerProfession, villagerLevel);
         });
-        questsButton.active = false;
+        villagerQuestsButton.active = false;
 
-        ScreenHelper.addRenderableWidget(merchantScreen, questsButton);
+        ScreenHelper.addRenderableWidget(merchantScreen, villagerQuestsButton);
     }
 
     protected void openQuestOffers(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
@@ -139,7 +169,7 @@ public class QuestsClient extends ClientFeature {
     public static void handleNotifyVillagerQuestsResult(NotifyVillagerQuestsResult message, Player player) {
         var result = message.getResult();
         if (result == VillagerQuestsResult.SUCCESS) {
-            questsButton.active = true;
+            villagerQuestsButton.active = true;
         }
     }
 
@@ -159,6 +189,14 @@ public class QuestsClient extends ClientFeature {
         }
     }
 
+    public static void openQuestsScreen(Button button) {
+        Minecraft.getInstance().setScreen(new QuestsScreen());
+    }
+
+    public static void openQuestsScreen(int page) {
+        Minecraft.getInstance().setScreen(new QuestsScreen(page));
+    }
+
     public static ILog log() {
         return Mods.client(Strange.ID).log();
     }
@@ -173,12 +211,12 @@ public class QuestsClient extends ClientFeature {
 
         quests.all().forEach(quest -> {
             if (quest.satisfied()) {
-                var opt = QuestHelper.getNearbyMatchingVillager(level, pos, quest.villagerUuid());
+                var opt = QuestsHelper.getNearbyMatchingVillager(level, pos, quest.villagerUuid());
                 if (opt.isPresent() && !questGivers.contains(opt.get())) {
                     questGivers.add(opt.get());
                 }
 
-                var matching = QuestHelper.getNearbyMatchingProfessions(level, pos, quest.villagerProfession());
+                var matching = QuestsHelper.getNearbyMatchingProfessions(level, pos, quest.villagerProfession());
                 for (Villager matched : matching) {
                     if (!matched.getUUID().equals(quest.villagerUuid()) && !receivers.contains(matched)) {
                         receivers.add(matched);

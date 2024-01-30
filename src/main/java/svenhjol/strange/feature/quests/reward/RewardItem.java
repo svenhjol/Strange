@@ -3,7 +3,7 @@ package svenhjol.strange.feature.quests.reward;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestHelper;
+import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.Reward;
 
 import java.util.List;
@@ -38,8 +38,8 @@ public class RewardItem implements Reward {
         var player = quest.player();
         if (player == null) return;
 
-        QuestHelper.getNearbyMatchingVillager(player.level(), player.blockPosition(), quest.villagerUuid()).ifPresent(
-            villager -> QuestHelper.throwItemsAtPlayer(villager, player, List.of(stack)));
+        QuestsHelper.getNearbyMatchingVillager(player.level(), player.blockPosition(), quest.villagerUuid()).ifPresent(
+            villager -> QuestsHelper.throwItemsAtPlayer(villager, player, List.of(stack)));
     }
 
     @Override
