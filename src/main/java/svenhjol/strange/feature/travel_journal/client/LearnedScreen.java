@@ -7,9 +7,9 @@ import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
+import svenhjol.strange.helper.GuiHelper;
 
-public class LearnedScreen extends BaseScreen {
+public class LearnedScreen extends BaseTravelJournalScreen {
     boolean renderedPaginationButtons = false;
     int page;
 
@@ -26,7 +26,7 @@ public class LearnedScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),220, b -> onClose()));
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2),220, b -> onClose()));
         initShortcuts();
 
         renderedPaginationButtons = false;
@@ -79,10 +79,10 @@ public class LearnedScreen extends BaseScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
+                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
             }
             if (page < pages || index < locations.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
+                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
             }
 
             renderedPaginationButtons = true;
@@ -90,7 +90,7 @@ public class LearnedScreen extends BaseScreen {
     }
 
     protected void renderNoLocations(GuiGraphics guiGraphics) {
-        drawCenteredString(guiGraphics, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
         guiGraphics.drawWordWrap(font, TravelJournalResources.NO_LEARNED_LOCATIONS_BODY_TEXT, midX - 100, 63, 200, 0x8f8785);
     }
 }

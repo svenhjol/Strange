@@ -15,6 +15,11 @@ accessible method net/minecraft/world/entity/ai/memory/MemoryModuleType register
 accessible field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
 mutable field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
 
+# Quests
+accessible field net/minecraft/world/inventory/MerchantMenu trader Lnet/minecraft/world/item/trading/Merchant;
+accessible field net/minecraft/client/gui/screens/Screen font Lnet/minecraft/client/gui/Font;
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+
 # Raid horns
 accessible field net/minecraft/server/level/ServerLevel customSpawners Ljava/util/List;
 accessible field net/minecraft/world/level/levelgen/PatrolSpawner nextTick I

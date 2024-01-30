@@ -8,9 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.RequestItemIcons;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class ChangeBookmarkIconScreen extends BaseScreen {
+public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected ChangeBookmarkIconScreen(Bookmark bookmark) {
@@ -26,7 +25,7 @@ public class ChangeBookmarkIconScreen extends BaseScreen {
         // Ask the server for an updated list of item icons.
         RequestItemIcons.send();
 
-        addRenderableWidget(new CancelButton(midX - (CancelButton.WIDTH / 2), 220, this::back));
+        addRenderableWidget(new TravelJournalButtons.CancelButton(midX - (TravelJournalButtons.CancelButton.WIDTH / 2), 220, this::back));
     }
 
     @Override

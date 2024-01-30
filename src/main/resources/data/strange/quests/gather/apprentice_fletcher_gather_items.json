@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "feather",
+    "string",
+    "oak_planks",
+    "birch_planks",
+    "torch",
+    "raw_copper",
+    "white_wool"
+  ]
+}

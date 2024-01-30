@@ -3,13 +3,11 @@ package svenhjol.strange.feature.travel_journal.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
-import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.Bookmark;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class ChangeBookmarkNameScreen extends BaseScreen {
+public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected EditBox nameEditBox;
@@ -24,8 +22,8 @@ public class ChangeBookmarkNameScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new SaveButton(midX + 5,220, b -> save()));
-        addRenderableWidget(new CancelButton(midX - (CancelButton.WIDTH + 5), 220, b -> back()));
+        addRenderableWidget(new TravelJournalButtons.SaveButton(midX + 5,220, b -> save()));
+        addRenderableWidget(new TravelJournalButtons.CancelButton(midX - (TravelJournalButtons.CancelButton.WIDTH + 5), 220, b -> back()));
 
         nameEditBox = new EditBox(font, midX - 74, 38, 148, 12,
             TextHelper.translatable("gui.strange.travel_journal.edit_name"));

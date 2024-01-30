@@ -6,10 +6,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.travel_journal.*;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
 
 import java.util.List;
 
-public class BookmarksScreen extends BaseScreen {
+public class BookmarksScreen extends BaseTravelJournalScreen {
     int page;
     boolean renderedPaginationButtons = false;
     boolean renderedEditButtons = false;

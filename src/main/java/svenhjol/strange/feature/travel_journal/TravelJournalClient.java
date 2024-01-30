@@ -13,9 +13,14 @@ import svenhjol.charmony.api.event.ClientTickEvent;
 import svenhjol.charmony.api.event.HudRenderEvent;
 import svenhjol.charmony.api.event.KeyPressEvent;
 import svenhjol.strange.Strange;
+import svenhjol.strange.event.QuestEvents;
+import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.client.QuestOffersScreen;
 import svenhjol.strange.feature.travel_journal.TravelJournalNetwork.*;
 import svenhjol.strange.feature.travel_journal.client.BookmarkScreen;
 import svenhjol.strange.feature.travel_journal.client.BookmarksScreen;
+import svenhjol.strange.feature.travel_journal.client.QuestScreen;
+import svenhjol.strange.feature.travel_journal.client.QuestsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +53,28 @@ public class TravelJournalClient extends ClientFeature {
         KeyPressEvent.INSTANCE.handle(this::handleKeyPress);
         ClientTickEvent.INSTANCE.handle(this::handleClientTick);
         HudRenderEvent.INSTANCE.handle(this::handleHudRender);
+        QuestEvents.ACCEPT_QUEST.handle(this::handleAcceptQuest);
+        QuestEvents.ABANDON_QUEST.handle(this::handleAbandonQuest);
+    }
+
+    private void handleAbandonQuest(Player player, Quest quest) {
+        if (!player.level().isClientSide) return;
+        var minecraft = Minecraft.getInstance();
+
+        if (minecraft.screen instanceof QuestScreen) {
+            PageTracker.quest = null;
+            minecraft.setScreen(new QuestsScreen());
+        }
+    }
+
+    private void handleAcceptQuest(Player player, Quest quest) {
+        if (!player.level().isClientSide) return;
+        var minecraft = Minecraft.getInstance();
+
+        if (minecraft.screen instanceof QuestOffersScreen) {
+            // TODO: toast
+            minecraft.setScreen(null);
+        }
     }
 
     private void handleHudRender(GuiGraphics guiGraphics, float tickDelta) {

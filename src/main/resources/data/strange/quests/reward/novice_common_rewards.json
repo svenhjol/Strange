@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "apple",
+    "potato",
+    "bread",
+    "wheat",
+    "carrot",
+    "beef",
+    "chicken",
+    "mutton",
+    "porkchop",
+    "cod",
+    "rabbit",
+    "oak_log",
+    "spruce_log",
+    "birch_log"
+  ]
+}

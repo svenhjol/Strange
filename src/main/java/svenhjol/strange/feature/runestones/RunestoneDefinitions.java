@@ -20,7 +20,7 @@ public class RunestoneDefinitions {
         var stoneCirclesEnabled = loader.isEnabled(StoneCircles.class);
 
         // Stone runestone.
-        Runestones.registerDefinition(new IRunestoneDefinition() {
+        Runestones.registerDefinition(new RunestoneDefinition() {
             @Override
             public Supplier<RunestoneBlock> block() {
                 return Runestones.stoneBlock;
@@ -62,7 +62,7 @@ public class RunestoneDefinitions {
         });
 
         // Blackstone runestone.
-        Runestones.registerDefinition(new IRunestoneDefinition() {
+        Runestones.registerDefinition(new RunestoneDefinition() {
             @Override
             public Supplier<RunestoneBlock> block() {
                 return Runestones.blackstoneBlock;
@@ -95,7 +95,7 @@ public class RunestoneDefinitions {
         });
 
         // Obsidian runestone.
-        Runestones.registerDefinition(new IRunestoneDefinition() {
+        Runestones.registerDefinition(new RunestoneDefinition() {
             @Override
             public Supplier<RunestoneBlock> block() {
                 return Runestones.obsidianBlock;

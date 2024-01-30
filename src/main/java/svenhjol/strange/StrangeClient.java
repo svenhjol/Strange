@@ -7,6 +7,7 @@ import svenhjol.strange.feature.casks.CasksClient;
 import svenhjol.strange.feature.cooking_pots.CookingPotsClient;
 import svenhjol.strange.feature.ebony_wood.EbonyWoodClient;
 import svenhjol.strange.feature.piglin_pointing.PiglinPointingClient;
+import svenhjol.strange.feature.quests.QuestsClient;
 import svenhjol.strange.feature.raid_horns.RaidHornsClient;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
@@ -29,6 +30,7 @@ public class StrangeClient extends ClientMod {
             CookingPotsClient.class,
             EbonyWoodClient.class,
             PiglinPointingClient.class,
+            QuestsClient.class,
             RaidHornsClient.class,
             RunestonesClient.class,
             TravelJournalClient.class,

@@ -34,8 +34,8 @@ public class Runestones extends CommonFeature {
     public static Supplier<RunestoneBlock> blackstoneBlock;
     public static Supplier<RunestoneBlock> obsidianBlock;
     static Supplier<BlockEntityType<RunestoneBlockEntity>> blockEntity;
-    static final List<IRunestoneDefinition> DEFINITIONS = new ArrayList<>();
-    static final Map<RunestoneBlock, IRunestoneDefinition> BLOCK_DEFINITIONS = new HashMap<>();
+    static final List<RunestoneDefinition> DEFINITIONS = new ArrayList<>();
+    static final Map<RunestoneBlock, RunestoneDefinition> BLOCK_DEFINITIONS = new HashMap<>();
     static final List<Supplier<RunestoneBlock.BlockItem>> BLOCK_ITEMS = new LinkedList<>();
     static final Map<UUID, RunestoneTeleport> TELEPORTS = new HashMap<>();
     static Supplier<SoundEvent> travelSound;
@@ -189,7 +189,7 @@ public class Runestones extends CommonFeature {
      * Register a runestone definition. This is required for runestone behavior to function correctly.
      * Adds the definition block reference to the runestone block entity.
      */
-    public static void registerDefinition(IRunestoneDefinition definition) {
+    public static void registerDefinition(RunestoneDefinition definition) {
         var registry = Mods.common(Strange.ID).registry();
 
         DEFINITIONS.add(definition);

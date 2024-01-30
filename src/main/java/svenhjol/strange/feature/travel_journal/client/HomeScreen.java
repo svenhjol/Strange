@@ -4,11 +4,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.base.Mods;
 import svenhjol.strange.Strange;
+import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.TravelJournalResources;
 
-public class HomeScreen extends BaseScreen {
+public class HomeScreen extends BaseTravelJournalScreen {
     public HomeScreen() {
         super(TravelJournalResources.HOME_TITLE);
         PageTracker.Screen.HOME.set();
@@ -17,17 +17,24 @@ public class HomeScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        int yoffset = 45;
+        var yOffset = 45;
+        var lineHeight = 24;
+        var loader = Mods.common(Strange.ID).loader();
 
-        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), yoffset, this::openBookmarks));
-        yoffset += 24;
+        addRenderableWidget(new BookmarksButton(midX - (BookmarksButton.WIDTH / 2), yOffset, this::openBookmarks));
+        yOffset += lineHeight;
 
-        if (Mods.common(Strange.ID).loader().isEnabled(Runestones.class)) {
-            addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), yoffset, this::openLearned));
-            yoffset += 24;
+        if (loader.isEnabled(Runestones.class)) {
+            addRenderableWidget(new LearnedButton(midX - (LearnedButton.WIDTH / 2), yOffset, this::openLearned));
+            yOffset += lineHeight;
         }
 
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2),220, b -> onClose()));
+        if (loader.isEnabled(Quests.class)) {
+            addRenderableWidget(new QuestsButton(midX - (QuestsButton.WIDTH / 2), yOffset, this::openQuests));
+            yOffset += lineHeight;
+        }
+
+        addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2),220, b -> onClose()));
 
         initShortcuts();
     }
@@ -48,6 +55,16 @@ public class HomeScreen extends BaseScreen {
         static Component TEXT = TravelJournalResources.BOOKMARKS_BUTTON_TEXT;
 
         protected BookmarksButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    static class QuestsButton extends Button {
+        static int WIDTH = 100;
+        static int HEIGHT = 20;
+        static Component TEXT = TravelJournalResources.QUESTS_BUTTON_TEXT;
+
+        protected QuestsButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
