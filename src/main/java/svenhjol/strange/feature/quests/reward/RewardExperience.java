@@ -6,16 +6,16 @@ import net.minecraft.sounds.SoundSource;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.Reward;
 
-public class RewardXp implements Reward {
+public class RewardExperience implements Reward {
     static final String TOTAL_TAG = "total";
     public int total;
     public Quest quest;
 
-    public RewardXp(Quest quest) {
+    public RewardExperience(Quest quest) {
         this.quest = quest;
     }
 
-    public RewardXp(Quest quest, int total) {
+    public RewardExperience(Quest quest, int total) {
         this.quest = quest;
         this.total = total;
     }

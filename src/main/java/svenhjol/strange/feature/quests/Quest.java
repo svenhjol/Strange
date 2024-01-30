@@ -19,11 +19,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.RandomStringUtils;
-import svenhjol.strange.data.LinkedItemList;
-import svenhjol.strange.data.LinkedResourceList;
-import svenhjol.strange.data.ResourceListManager;
+import svenhjol.strange.feature.quests.reward.DefaultRewards;
 import svenhjol.strange.feature.quests.reward.RewardItem;
-import svenhjol.strange.feature.quests.reward.RewardXp;
+import svenhjol.strange.feature.quests.reward.RewardExperience;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -51,7 +49,7 @@ public abstract class Quest {
     protected UUID villagerUuid;
     protected boolean epic;
     protected List<RewardItem> rewardItems = new ArrayList<>();
-    protected List<RewardXp> rewardXp = new ArrayList<>();
+    protected List<RewardExperience> rewardExperience = new ArrayList<>();
     protected long randomSeed;
     protected RandomSource random; // transient
     protected boolean dirty; // transient
@@ -100,8 +98,8 @@ public abstract class Quest {
         return rewardItems;
     }
 
-    public List<? extends RewardXp> rewardXp() {
-        return rewardXp;
+    public List<? extends RewardExperience> rewardXp() {
+        return rewardExperience;
     }
 
     public boolean satisfied() {
@@ -131,7 +129,6 @@ public abstract class Quest {
     public TagKey<Item> itemTag(ResourceLocation id) {
         return TagKey.create(Registries.ITEM, id);
     }
-
 
     public Registry<EntityType<?>> entityRegistry() {
         return BuiltInRegistries.ENTITY_TYPE;
@@ -178,12 +175,12 @@ public abstract class Quest {
             quest.rewardItems.add(item);
         }
 
-        quest.rewardXp.clear();
+        quest.rewardExperience.clear();
         list = tag.getList(REWARD_XP_TAG, 10);
         for (Tag t : list) {
-            var xp = new RewardXp(quest);
+            var xp = new RewardExperience(quest);
             xp.load((CompoundTag)t);
-            quest.rewardXp.add(xp);
+            quest.rewardExperience.add(xp);
         }
 
         quest.loadAdditional(tag);
@@ -209,7 +206,7 @@ public abstract class Quest {
         tag.put(REWARD_ITEMS_TAG, list);
 
         list = new ListTag();
-        for (RewardXp xp : rewardXp) {
+        for (RewardExperience xp : rewardExperience) {
             var t = new CompoundTag();
             xp.save(t);
             list.add(t);
@@ -274,62 +271,9 @@ public abstract class Quest {
     protected abstract void makeRequirements(ResourceManager manager, QuestDefinition definition);
 
     protected void makeRewards(ResourceManager manager, QuestDefinition definition) {
-        var entries = ResourceListManager.entries(manager, "quests/reward");
-        var sampleSize = 4; // Number of items to fetch from each reward entry
-        var additionalChance = 0.2d; // Chance of reward size being increased by one
-        List<RewardItem> sampleItems = new ArrayList<>();
-
-        // Populate the reward functions.
-        List<String> rewardFunctionIds = new ArrayList<>();
-
-        // Default reward functions.
-        var defaultIds = LinkedResourceList.load(entries.getOrDefault(Quests.DEFAULT_REWARD_FUNCTIONS, new LinkedList<>()));
-        defaultIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
-
-        // Reward functions defined in the definition.
-        for (var functionEntry : definition.rewardFunctions()) {
-            var functionIds = LinkedResourceList.load(entries.getOrDefault(functionEntry, new LinkedList<>()));
-            functionIds.forEach(id -> rewardFunctionIds.add(id.getPath()));
-        }
-
-        // Populate the reward items.
-        for (var rewardItemEntries : definition.rewards()) {
-            var rewardItemEntry = rewardItemEntries.getFirst();
-            var rewardItemAmount = rewardItemEntries.getSecond();
-
-            var items = LinkedItemList.load(entries.getOrDefault(rewardItemEntry, new LinkedList<>()));
-            if (items.isEmpty()) {
-                continue;
-            }
-
-            Collections.shuffle(items);
-
-            // Get a selection of items.
-            for (int i = 0; i < Math.min(sampleSize, items.size()); i++) {
-                var rewardItem = items.get(i);
-
-                var stack = new ItemStack(rewardItem,
-                    random.nextIntBetweenInclusive(Math.max(1, rewardItemAmount - 2), rewardItemAmount));
-
-                // Apply reward functions to the item.
-                var item = new RewardItem(this, stack);
-                for (var functionId : rewardFunctionIds) {
-                    Quests.REWARD_ITEM_FUNCTIONS.byId(functionId).ifPresent(f -> f.apply(item));
-                }
-
-                sampleItems.add(item);
-            }
-        }
-
-        Collections.shuffle(sampleItems);
-
-        // Get a subselection of the sampleItems. The sublist size is the same as villager level with chance for +1.
-        var amount = Math.min(definition.level() + (random.nextDouble() < additionalChance ? 1 : 0), Quests.maxQuestRewards);
-        this.rewardItems = sampleItems.subList(0, Math.min(amount, sampleItems.size()));
-
-        // Populate XP.
-        var xp = new RewardXp(this, definition.rewardExperience());
-        this.rewardXp.add(xp);
+        var rewards = new DefaultRewards(this, manager, definition);
+        this.rewardItems = rewards.items();
+        this.rewardExperience = rewards.experience();
     }
 
     protected String makeId() {

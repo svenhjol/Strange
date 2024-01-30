@@ -13,7 +13,7 @@ import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.client.QuestsButtons;
 import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.reward.RewardItem;
-import svenhjol.strange.feature.quests.reward.RewardXp;
+import svenhjol.strange.feature.quests.reward.RewardExperience;
 
 public abstract class BaseQuestRenderer<Q extends Quest> {
     Q quest;
@@ -171,8 +171,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         // Calculate the width of the reward/requirement text and start rendering images from there.
         var xt = Math.max(font.width(getRequirementText()), font.width(getRewardText()));
 
-        renderRequirements(guiGraphics, -155 + xt + 14, yOffset + 18, mouseX, mouseY);
-        renderRewards(guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
+        renderRequirements(guiGraphics, -155 + xt + 8, yOffset + 18, mouseX, mouseY);
+        renderRewards(guiGraphics, -155 + xt + 8, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
             var button = new QuestsButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
@@ -190,6 +190,11 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var yo = yOffset;
 
         for (var reward : quest.rewards()) {
+            if (xo > 200) {
+                xo = midX + xOffset;
+                yo += 20;
+            }
+
             if (reward instanceof RewardItem i) {
                 var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.stack.getCount());
 
@@ -207,7 +212,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
                 xo += 27 + width;
             }
 
-            if (reward instanceof RewardXp i) {
+            if (reward instanceof RewardExperience i) {
                 var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.total);
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
