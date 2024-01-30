@@ -26,6 +26,7 @@ import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.reward.RewardItemFunctions;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
+import svenhjol.strange.helper.DataHelper;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -205,7 +206,7 @@ public class Quests extends CommonFeature {
                 var definition = QuestDefinition.deserialize(id.getNamespace(), resource);
 
                 // If the def requires specific charmony features, test they are enabled now and skip def if not.
-                if (!QuestsHelper.hasRequiredFeatures(definition.requiredFeatures())) {
+                if (!DataHelper.hasRequiredFeatures(definition.requiredFeatures())) {
                     mod().log().debug(getClass(), "Definition " + id + " has missing or disabled features, skipping");
                     continue;
                 }

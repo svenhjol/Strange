@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.TextHelper;
 
 import java.util.*;
@@ -121,13 +120,6 @@ public class QuestsHelper {
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             TextHelper.translatable("entity." + professionId.getNamespace() + ".villager." + professionId.getPath()),
             quest.type().getTypeName());
-    }
-
-    public static boolean hasRequiredFeatures(List<ResourceLocation> features) {
-        return !features.isEmpty() && !features.stream().allMatch(
-            f -> Mods.optionalCommon(f.getNamespace())
-                .map(m -> m.loader().isEnabled(f.getPath()))
-                .orElse(false));
     }
 
     static {

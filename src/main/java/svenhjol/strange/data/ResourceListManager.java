@@ -6,6 +6,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
+import svenhjol.strange.helper.DataHelper;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,34 +40,40 @@ public class ResourceListManager {
 
             try {
                 var definition = ResourceListDefinition.deserialize(resource);
-                var entries = definition.getValues().stream().map(ResourceLocation::new).toList();
+                var values = definition.values();
+                var features = definition.requiredFeatures();
 
-                if (definition.shouldReplace()) {
+                if (!DataHelper.hasRequiredFeatures(features)) {
+                    log().debug(ResourceListManager.class, "Entry " + id + " has missing or disabled features, skipping");
+                    continue;
+                }
+
+                if (definition.replace()) {
                     map.put(id, new LinkedList<>());
                 }
 
                 var list = map.computeIfAbsent(id, m -> new LinkedList<>());
 
-                if (definition.shouldInterpolate()) {
+                if (definition.interpolate()) {
                     // Interpolate the new entries into the existing list.
                     var existing = new LinkedList<>(list);
                     list.clear();
 
-                    var biggest = Math.max(entries.size(), existing.size());
+                    var biggest = Math.max(values.size(), existing.size());
                     for (int i = 0; i < biggest; i++) {
                         if (i < existing.size()) {
                             list.add(existing.get(i));
                         }
-                        if (i < entries.size()) {
-                            list.add(entries.get(i));
+                        if (i < values.size()) {
+                            list.add(values.get(i));
                         }
                     }
                 } else {
                     // Append the new entries to the existing list.
-                    list.addAll(entries);
+                    list.addAll(values);
                 }
 
-                log().debug(ResourceListManager.class, "Added " + entries.size() + " new entries to " + id);
+                log().debug(ResourceListManager.class, "Added " + values.size() + " new values to " + id);
             } catch (Exception e) {
                 log().warn(ResourceListManager.class, "Could not load resource list definition from " + key + ": " + e.getMessage());
             }
