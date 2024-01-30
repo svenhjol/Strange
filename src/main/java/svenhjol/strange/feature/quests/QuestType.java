@@ -2,7 +2,7 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.*;
+import svenhjol.strange.feature.quests.client.renderer.*;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 import svenhjol.strange.feature.quests.quest.HuntQuest;
@@ -15,25 +15,25 @@ public enum QuestType {
     GATHER(GatherQuest.class, GatherQuestRenderer.class, TextHelper.translatable("gui.strange.quests.gather")),
     HUNT(HuntQuest.class, HuntQuestRenderer.class, TextHelper.translatable("gui.strange.quests.hunt"));
 
-    final Class<? extends Quest> questClass;
-    final Class<? extends BaseQuestRenderer<? extends Quest>> questRenderer;
-    final Component questTypeName;
+    final Class<? extends Quest> clazz;
+    final Class<? extends BaseQuestRenderer<? extends Quest>> renderer;
+    final Component typeName; // TODO: deprecated
 
     QuestType(
-        Class<? extends Quest> questClass,
-        Class<? extends BaseQuestRenderer<? extends Quest>> questRenderer,
-        Component questTypeName
+        Class<? extends Quest> clazz,
+        Class<? extends BaseQuestRenderer<? extends Quest>> renderer,
+        Component typeName
     ) {
-        this.questClass = questClass;
-        this.questRenderer = questRenderer;
-        this.questTypeName = questTypeName;
+        this.clazz = clazz;
+        this.renderer = renderer;
+        this.typeName = typeName;
     }
 
     public <Q extends Quest> Q makeQuest() {
         Q quest;
 
         try {
-            quest = (Q) questClass.getDeclaredConstructor().newInstance();
+            quest = (Q) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Cannot create quest");
         }
@@ -45,7 +45,7 @@ public enum QuestType {
         R renderer;
 
         try {
-            renderer = (R) questRenderer.getDeclaredConstructor().newInstance();
+            renderer = (R) this.renderer.getDeclaredConstructor().newInstance();
             renderer.setQuest(quest);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create renderer");
@@ -55,6 +55,6 @@ public enum QuestType {
     }
 
     public Component getTypeName() {
-        return questTypeName;
+        return typeName;
     }
 }

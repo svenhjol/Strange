@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.renderer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.quests.quest.HuntQuest;
 import svenhjol.strange.feature.quests.quest.HuntQuest.HuntTarget;
 
@@ -24,12 +25,12 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
 
     @Override
     public Component getRequirementText() {
-        return QuestResources.HUNT_REQUIREMENT_TEXT;
+        return QuestsResources.HUNT_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return QuestResources.HUNT_REWARD_TEXT;
+        return QuestsResources.HUNT_REWARD_TEXT;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
 
                 guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, i.satisfied() ? satisfiedBackgroundColor : requirementBackgroundColor);
 
-                var sprite = QuestResources.MOB_SPRITES.get(i.entity);
+                var sprite = QuestsResources.MOB_SPRITES.get(i.entity);
                 if (sprite != null) {
                     guiGraphics.blitSprite(sprite, xo + 7 + width, yo, 16, 16);
                 } else {

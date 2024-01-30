@@ -2,21 +2,23 @@ package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.gui.components.Button;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charmony.api.event.KeyPressEvent;
 import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.strange.event.QuestEvents;
-import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.client.QuestOffersScreen;
-import svenhjol.strange.feature.quests.client.QuestScreen;
-import svenhjol.strange.feature.quests.client.QuestsScreen;
+import svenhjol.strange.feature.travel_journal.client.screen.HomeScreen;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class TravelJournalClient extends ClientFeature {
     static Supplier<String> openJournalKey;
+
+    public static final List<BiFunction<Integer, Integer, Button>> HOME_BUTTONS = new ArrayList<>();
+    public static final List<BiFunction<Integer, Integer, Button>> SHORTCUTS = new ArrayList<>();
 
     @Override
     public Class<? extends CommonFeature> commonFeature() {
@@ -34,28 +36,18 @@ public class TravelJournalClient extends ClientFeature {
     @Override
     public void runWhenEnabled() {
         KeyPressEvent.INSTANCE.handle(this::handleKeyPress);
-        QuestEvents.ACCEPT_QUEST.handle(this::handleAcceptQuest);
-        QuestEvents.ABANDON_QUEST.handle(this::handleAbandonQuest);
     }
 
-    private void handleAbandonQuest(Player player, Quest quest) {
-        if (!player.level().isClientSide) return;
-        var minecraft = Minecraft.getInstance();
-
-        if (minecraft.screen instanceof QuestScreen) {
-            PageTracker.quest = null;
-            minecraft.setScreen(new QuestsScreen());
-        }
+    public static void registerHomeButton(BiFunction<Integer, Integer, Button> button) {
+        HOME_BUTTONS.add(button);
     }
 
-    private void handleAcceptQuest(Player player, Quest quest) {
-        if (!player.level().isClientSide) return;
-        var minecraft = Minecraft.getInstance();
+    public static void registerShortcut(BiFunction<Integer, Integer, Button> shortcut) {
+        SHORTCUTS.add(shortcut);
+    }
 
-        if (minecraft.screen instanceof QuestOffersScreen) {
-            // TODO: toast
-            minecraft.setScreen(null);
-        }
+    public static void openHomeScreen(Button button) {
+        Minecraft.getInstance().setScreen(new HomeScreen());
     }
 
     private void handleKeyPress(String id) {
@@ -75,11 +67,7 @@ public class TravelJournalClient extends ClientFeature {
             return;
         }
 
-        if (PageTracker.screen == null) {
-            PageTracker.Screen.HOME.open();
-        } else {
-            PageTracker.screen.open();
-        }
+        PageTracker.open();
 
         if (minecraft.player != null) {
             minecraft.player.playSound(TravelJournal.interactSound.get(), 0.5f, 1.0f);

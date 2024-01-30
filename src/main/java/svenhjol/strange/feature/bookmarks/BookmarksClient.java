@@ -3,6 +3,7 @@ package svenhjol.strange.feature.bookmarks;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import org.lwjgl.glfw.GLFW;
@@ -14,8 +15,10 @@ import svenhjol.charmony.client.ClientFeature;
 import svenhjol.charmony.common.CommonFeature;
 import svenhjol.strange.Strange;
 import svenhjol.strange.feature.bookmarks.BookmarksNetwork.*;
-import svenhjol.strange.feature.bookmarks.client.BookmarkScreen;
-import svenhjol.strange.feature.bookmarks.client.BookmarksScreen;
+import svenhjol.strange.feature.bookmarks.client.screen.BookmarkScreen;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.BookmarksButton;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.BookmarksShortcutButton;
+import svenhjol.strange.feature.bookmarks.client.screen.BookmarksScreen;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 
 import java.util.ArrayList;
@@ -46,6 +49,12 @@ public class BookmarksClient extends ClientFeature {
         KeyPressEvent.INSTANCE.handle(this::handleKeyPress);
         ClientTickEvent.INSTANCE.handle(this::handleClientTick);
         HudRenderEvent.INSTANCE.handle(this::handleHudRender);
+
+        TravelJournalClient.registerShortcut(
+            (x, y) -> new BookmarksShortcutButton(x, y, BookmarksClient::openBookmarksScreen));
+
+        TravelJournalClient.registerHomeButton(
+            (x, y) -> new BookmarksButton(x - (BookmarksButton.WIDTH / 2), y, BookmarksClient::openBookmarksScreen));
     }
 
     private void handleKeyPress(String id) {
@@ -137,6 +146,14 @@ public class BookmarksClient extends ClientFeature {
     public static void initPhoto(Bookmark bookmark) {
         photo = new Photo(bookmark);
         Minecraft.getInstance().setScreen(null);
+    }
+
+    public static void openBookmarksScreen(Button button) {
+        Minecraft.getInstance().setScreen(new BookmarksScreen());
+    }
+
+    public static void openBookmarksScreen(int page) {
+        Minecraft.getInstance().setScreen(new BookmarksScreen(page));
     }
 
     private static void logDebugMessage(String message) {

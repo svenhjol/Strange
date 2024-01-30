@@ -1,21 +1,23 @@
-package svenhjol.strange.feature.bookmarks.client;
+package svenhjol.strange.feature.bookmarks.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.bookmarks.Bookmark;
+import svenhjol.strange.feature.bookmarks.BookmarkList;
 import svenhjol.strange.feature.bookmarks.Bookmarks;
 import svenhjol.strange.feature.bookmarks.BookmarksClient;
-import svenhjol.strange.feature.travel_journal.*;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.NewBookmarkButton;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.NewWhenEmptyButton;
+import svenhjol.strange.feature.bookmarks.client.BookmarksResources;
+import svenhjol.strange.feature.travel_journal.PageTracker;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.EditButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.NextPageButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.PreviousPageButton;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 
-import java.util.List;
-
-public class BookmarksScreen extends BaseTravelJournalScreen {
+public class BookmarksScreen extends TravelJournalScreen {
     int page;
     boolean renderedPaginationButtons = false;
     boolean renderedEditButtons = false;
@@ -25,15 +27,21 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
     }
 
     public BookmarksScreen(int page) {
-        super(TravelJournalResources.BOOKMARKS_TITLE);
+        super(BookmarksResources.BOOKMARKS_TITLE);
         this.page = page;
-        PageTracker.Screen.BOOKMARKS.set();
+
+        PageTracker.set(this.getClass());
     }
 
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new CloseButton(midX - (CloseButton.WIDTH / 2), 220, b -> onClose()));
+
+        // Add footer buttons
+        addRenderableWidget(new CloseButton(midX + 5, 220, b -> onClose()));
+        addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH + 5), 220,
+            b -> BookmarksClient.makeNewBookmark()));
+
         initShortcuts();
 
         renderedPaginationButtons = false;
@@ -48,14 +56,13 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
 
     protected void renderBookmarks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         var rows = 7;
-        var perPage = rows;
 
-        var bookmarks = getBookmarks();
-        var pages = bookmarks.size() / perPage;
-        var index = (page - 1) * perPage;
+        var bookmarks = getBookmarks().all();
+        var pages = bookmarks.size() / rows;
+        var index = (page - 1) * rows;
 
         if (bookmarks.isEmpty() && !renderedEditButtons) {
-            addRenderableWidget(new NewBookmarkButton(midX - (NewBookmarkButton.WIDTH / 2), 45, b -> BookmarksClient.makeNewBookmark()));
+            addRenderableWidget(new NewWhenEmptyButton(midX - (NewWhenEmptyButton.WIDTH / 2), 45, b -> BookmarksClient.makeNewBookmark()));
         }
 
         for (var y = 0; y < rows; y++) {
@@ -78,40 +85,26 @@ public class BookmarksScreen extends BaseTravelJournalScreen {
 
         if (!renderedPaginationButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> openBookmarks(page - 1)));
+                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> BookmarksClient.openBookmarksScreen(page - 1)));
             }
             if (page < pages || index < bookmarks.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> openBookmarks(page + 1)));
+                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> BookmarksClient.openBookmarksScreen(page + 1)));
             }
             renderedPaginationButtons = true;
         }
     }
 
-    protected List<Bookmark> getBookmarks() {
+    protected BookmarkList getBookmarks() {
         var minecraft = Minecraft.getInstance();
-        if (minecraft.player == null) {
-            return List.of();
+
+        if (minecraft.player != null) {
+            return Bookmarks.getBookmarks(minecraft.player);
         }
 
-        var bookmarksHolder = Bookmarks.getBookmarks(minecraft.player).orElse(null);
-        if (bookmarksHolder == null) {
-            return List.of();
-        }
-
-        return bookmarksHolder.getBookmarks();
+        return new BookmarkList();
     }
 
     protected void openBookmark(Bookmark bookmark) {
         Minecraft.getInstance().setScreen(new BookmarkScreen(bookmark));
-    }
-
-    static class NewBookmarkButton extends Button {
-        static int WIDTH = 100;
-        static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.NEW_BOOKMARK_BUTTON_TEXT;
-
-        protected NewBookmarkButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
     }
 }

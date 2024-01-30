@@ -1,43 +1,41 @@
 package svenhjol.strange.feature.travel_journal;
 
 import net.minecraft.client.Minecraft;
-import svenhjol.strange.feature.bookmarks.Bookmark;
-import svenhjol.strange.feature.bookmarks.client.BookmarkScreen;
-import svenhjol.strange.feature.bookmarks.client.BookmarksScreen;
-import svenhjol.strange.feature.learned_runes.client.LearnedScreen;
-import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.client.QuestScreen;
-import svenhjol.strange.feature.quests.client.QuestsScreen;
-import svenhjol.strange.feature.travel_journal.client.*;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.screen.HomeScreen;
 
 import java.util.function.Supplier;
 
 public class PageTracker {
-    public static Screen screen;
-    public static Bookmark bookmark;
-    public static Quest quest;
+    private static Supplier<TravelJournalScreen> screen;
+    private static Class<? extends TravelJournalScreen> clazz;
 
-    public enum Screen {
-        HOME(HomeScreen::new),
-        BOOKMARKS(BookmarksScreen::new),
-        BOOKMARK(() -> bookmark == null ? new BookmarksScreen() : new BookmarkScreen(bookmark)),
-        LEARNED(LearnedScreen::new),
-        QUESTS(QuestsScreen::new),
-        QUEST(() -> quest == null || quest.finished() ? new QuestsScreen() : new QuestScreen(quest));
+    public static void set(Supplier<TravelJournalScreen> screen) {
+        PageTracker.screen = screen;
+        PageTracker.clazz = null;
+    }
 
-        private final Supplier<BaseTravelJournalScreen> screen;
+    public static void set(Class<? extends TravelJournalScreen> clazz) {
+        PageTracker.clazz = clazz;
+        PageTracker.screen = null;
+    }
 
-        Screen(Supplier<BaseTravelJournalScreen> screen) {
-            this.screen = screen;
-        }
+    public static void open() {
+        var minecraft = Minecraft.getInstance();
 
-        public void set() {
-            PageTracker.screen = this;
-        }
-
-        public void open() {
-            var minecraft = Minecraft.getInstance();
+        if (clazz != null) {
+            // Create a new instance of the last screen
+            try {
+                minecraft.setScreen(clazz.getDeclaredConstructor().newInstance());
+            } catch (Exception e) {
+                minecraft.setScreen(new HomeScreen());
+            }
+        } else if (screen != null) {
+            // Restore the previous screen state completely
             minecraft.setScreen(screen.get());
+        } else {
+            // Default to opening the home screen
+            minecraft.setScreen(new HomeScreen());
         }
     }
 }

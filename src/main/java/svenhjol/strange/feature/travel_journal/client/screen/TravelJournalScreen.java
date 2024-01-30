@@ -1,28 +1,25 @@
-package svenhjol.strange.feature.travel_journal.client;
+package svenhjol.strange.feature.travel_journal.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
-import svenhjol.strange.feature.bookmarks.client.BookmarksScreen;
-import svenhjol.strange.feature.learned_runes.client.LearnedScreen;
-import svenhjol.strange.feature.quests.Quests;
-import svenhjol.strange.feature.quests.client.QuestsScreen;
-import svenhjol.strange.feature.runestones.Runestones;
 import svenhjol.strange.feature.travel_journal.TravelJournal;
+import svenhjol.strange.feature.travel_journal.TravelJournalClient;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
-public abstract class BaseTravelJournalScreen extends Screen {
+public abstract class TravelJournalScreen extends Screen {
     protected int midX;
     protected int backgroundWidth;
     protected int backgroundHeight;
 
-    protected BaseTravelJournalScreen(Component component) {
+    protected TravelJournalScreen(Component component) {
         super(component);
     }
 
@@ -40,53 +37,20 @@ public abstract class BaseTravelJournalScreen extends Screen {
     }
 
     protected void initShortcuts() {
-        var yOffset = 30;
+        var xo = midX + 120;
+        var yo = 30;
         var lineHeight = 17;
-        var loader = Mods.common(Strange.ID).loader();
 
-        addRenderableWidget(new TravelJournalButtons.HomeShortcutButton(midX + 120, yOffset, this::openHome));
-        yOffset += lineHeight;
+        // Shortcut to home always visible.
+        addRenderableWidget(new TravelJournalButtons.HomeShortcutButton(xo, yo,
+            TravelJournalClient::openHomeScreen));
+        yo += lineHeight;
 
-        addRenderableWidget(new TravelJournalButtons.BookmarksShortcutButton(midX + 120, yOffset, this::openBookmarks));
-        yOffset += lineHeight;
-
-        if (loader.isEnabled(Runestones.class)) {
-            addRenderableWidget(new TravelJournalButtons.LearnedShortcutButton(midX + 120, yOffset, this::openLearned));
-            yOffset += lineHeight;
+        // Iterate over registered shortcuts.
+        for (var shortcut : TravelJournalClient.SHORTCUTS) {
+            addRenderableWidget(shortcut.apply(xo, yo));
+            yo += lineHeight;
         }
-
-        if (loader.isEnabled(Quests.class)) {
-            addRenderableWidget(new TravelJournalButtons.QuestsShortcutButton(midX + 120, yOffset, this::openQuests));
-            yOffset += lineHeight;
-        }
-    }
-
-    protected void openHome(Button button) {
-        Minecraft.getInstance().setScreen(new HomeScreen());
-    }
-
-    protected void openBookmarks(Button button) {
-        Minecraft.getInstance().setScreen(new BookmarksScreen());
-    }
-
-    protected void openBookmarks(int page) {
-        Minecraft.getInstance().setScreen(new BookmarksScreen(page));
-    }
-
-    protected void openQuests(Button button) {
-        Minecraft.getInstance().setScreen(new QuestsScreen());
-    }
-
-    protected void openQuests(int page) {
-        Minecraft.getInstance().setScreen(new QuestsScreen(page));
-    }
-
-    protected void openLearned(Button button) {
-        this.openLearned(1);
-    }
-
-    protected void openLearned(int page) {
-        Minecraft.getInstance().setScreen(new LearnedScreen(page));
     }
 
     @Override

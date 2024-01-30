@@ -13,7 +13,6 @@ import svenhjol.strange.feature.travel_journal.TravelJournal;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -29,56 +28,56 @@ public class Bookmarks extends CommonFeature {
         BookmarksNetwork.register(registry);
 
         photoSound = registry.soundEvent("travel_journal_photo");
+    }
 
+    @Override
+    public void runWhenEnabled() {
         TravelJournal.registerPlayerDataSource(
             (player, tag) -> BOOKMARKS.put(player.getUUID(), BookmarkList.load(tag.getCompound(BOOKMARKS_TAG))),
-            (player, tag) -> getBookmarks(player).ifPresent(bookmarks -> tag.put(BOOKMARKS_TAG, bookmarks.save())));
+            (player, tag) -> tag.put(BOOKMARKS_TAG, getBookmarks(player).save()));
 
         TravelJournal.registerSyncHandler(Bookmarks::syncBookmarks);
     }
 
-    public static Optional<BookmarkList> getBookmarks(Player player) {
-        return Optional.ofNullable(BOOKMARKS.get(player.getUUID()));
+    public static BookmarkList getBookmarks(Player player) {
+        return BOOKMARKS.getOrDefault(player.getUUID(), new BookmarkList());
     }
 
     public static void syncBookmarks(ServerPlayer player) {
-        getBookmarks(player).ifPresent(
-            bookmarks -> SyncBookmarks.send(player, bookmarks));
+        SyncBookmarks.send(player, getBookmarks(player));
     }
 
     public static void handleRequestNewBookmark(RequestNewBookmark message, Player player) {
-        getBookmarks(player).ifPresent(bookmarks -> {
-            var serverPlayer = (ServerPlayer)player;
-            var newBookmark = Bookmark.playerDefault(player);
-            var result = bookmarks.add(newBookmark);
+        var bookmarks = getBookmarks(player);
+        var serverPlayer = (ServerPlayer)player;
+        var newBookmark = Bookmark.playerDefault(player);
+        var result = bookmarks.add(newBookmark);
 
-            // Always update the client with the result of the bookmark creation.
-            NotifyAddBookmarkResult.send(serverPlayer, result);
+        // Always update the client with the result of the bookmark creation.
+        NotifyAddBookmarkResult.send(serverPlayer, result);
 
-            if (result == BookmarkList.AddBookmarkResult.SUCCESS) {
-                // Send the new bookmark to the client.
-                SendNewBookmark.send(serverPlayer, newBookmark);
-            }
-        });
+        if (result == BookmarkList.AddBookmarkResult.SUCCESS) {
+            // Send the new bookmark to the client.
+            SendNewBookmark.send(serverPlayer, newBookmark);
+        }
     }
 
     public static void handleRequestChangeBookmark(RequestChangeBookmark message, Player player) {
-        getBookmarks(player).ifPresent(bookmarks -> {
-            var bookmark = message.getBookmark();
-            var serverPlayer = (ServerPlayer)player;
-            var result = bookmarks.update(bookmark);
+        var bookmarks = getBookmarks(player);
+        var bookmark = message.getBookmark();
+        var serverPlayer = (ServerPlayer)player;
+        var result = bookmarks.update(bookmark);
 
-            // Always update the client with the result of the bookmark update.
-            NotifyUpdateBookmarkResult.send(serverPlayer, result);
+        // Always update the client with the result of the bookmark update.
+        NotifyUpdateBookmarkResult.send(serverPlayer, result);
 
-            if (result == BookmarkList.UpdateBookmarkResult.SUCCESS) {
-                // Sync the new state with the client.
-                syncBookmarks(serverPlayer);
+        if (result == BookmarkList.UpdateBookmarkResult.SUCCESS) {
+            // Sync the new state with the client.
+            syncBookmarks(serverPlayer);
 
-                // Send the updated bookmark back to the client.
-                SendChangedBookmark.send(serverPlayer, bookmark);
-            }
-        });
+            // Send the updated bookmark back to the client.
+            SendChangedBookmark.send(serverPlayer, bookmark);
+        }
     }
 
     public static void handleRequestItemIcons(RequestItemIcons message, Player player) {
@@ -91,17 +90,16 @@ public class Bookmarks extends CommonFeature {
     }
 
     public static void handleRequestDeleteBookmark(RequestDeleteBookmark message, Player player) {
-        getBookmarks(player).ifPresent(bookmarks -> {
-            var serverPlayer = (ServerPlayer)player;
-            var result = bookmarks.delete(message.getBookmark());
+        var bookmarks = getBookmarks(player);
+        var serverPlayer = (ServerPlayer)player;
+        var result = bookmarks.delete(message.getBookmark());
 
-            if (result == BookmarkList.DeleteBookmarkResult.SUCCESS) {
-                // Sync the new state with the client.
-                syncBookmarks(serverPlayer);
-            }
+        if (result == BookmarkList.DeleteBookmarkResult.SUCCESS) {
+            // Sync the new state with the client.
+            syncBookmarks(serverPlayer);
+        }
 
-            // Always update the client with the result of the bookmark deletion.
-            NotifyDeleteBookmarkResult.send(serverPlayer, result);
-        });
+        // Always update the client with the result of the bookmark deletion.
+        NotifyDeleteBookmarkResult.send(serverPlayer, result);
     }
 }

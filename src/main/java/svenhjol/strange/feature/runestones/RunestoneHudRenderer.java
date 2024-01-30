@@ -130,8 +130,7 @@ public class RunestoneHudRenderer {
                 this.discovered = TextHelper.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
                 // If the player has learned the runes for this destination, show the name with a "?" at the end.
-                var learned = LearnedRunes.getLearned(player);
-                var hasLearned = learned.isPresent() && learned.get().hasLearned(runestone.location);
+                var hasLearned = LearnedRunes.getLearned(player).hasLearned(runestone.location);
 
                 if (hasLearned) {
                     this.name = TextHelper.translatable("gui.strange.runestone.unsure", TextHelper.translatable(RunestoneHelper.getLocaleKey(runestone.location)));

@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.renderer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest;
 import svenhjol.strange.feature.quests.quest.ArtifactQuest.ArtifactItem;
 
@@ -22,12 +23,12 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
 
     @Override
     public Component getRequirementText() {
-        return QuestResources.ARTIFACT_REQUIREMENT_TEXT;
+        return QuestsResources.ARTIFACT_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return QuestResources.ARTIFACT_REWARD_TEXT;
+        return QuestsResources.ARTIFACT_REWARD_TEXT;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
         for (int i = 0; i < Math.min(3, quest.lootTables().size()); i++) {
             var lootTable = quest.lootTables().get(i);
 
-            var sprite = QuestResources.LOOT_SPRITES.get(lootTable);
+            var sprite = QuestsResources.LOOT_SPRITES.get(lootTable);
             if (sprite != null) {
                 guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
             } else {

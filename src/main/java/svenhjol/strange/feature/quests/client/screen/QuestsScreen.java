@@ -1,20 +1,21 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.QuestList;
-import svenhjol.strange.feature.quests.Quests;
+import svenhjol.strange.feature.quests.*;
+import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.NextPageButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.PreviousPageButton;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestsScreen extends BaseTravelJournalScreen {
+public class QuestsScreen extends TravelJournalScreen {
     int page;
     boolean renderedButtons = false;
     List<BaseQuestRenderer<?>> renderers = new ArrayList<>();
@@ -24,15 +25,16 @@ public class QuestsScreen extends BaseTravelJournalScreen {
     }
 
     public QuestsScreen(int page) {
-        super(TravelJournalResources.QUESTS_TITLE);
+        super(QuestsResources.QUESTS_TITLE);
         this.page = page;
-        PageTracker.Screen.QUESTS.set();
 
         var quests = getQuests().all();
         for (Quest quest : quests) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);
         }
+
+        PageTracker.set(this.getClass());
     }
 
     @Override
@@ -81,10 +83,12 @@ public class QuestsScreen extends BaseTravelJournalScreen {
 
         if (!renderedButtons) {
             if (page > 1) {
-                addRenderableWidget(new PreviousPageButton(midX - 30, 185, b -> openQuests(page - 1)));
+                addRenderableWidget(new PreviousPageButton(midX - 30, 185,
+                    b -> QuestsClient.openQuestsScreen(page - 1)));
             }
             if (page < pages || index < renderers.size()) {
-                addRenderableWidget(new NextPageButton(midX + 10, 185, b -> openQuests(page + 1)));
+                addRenderableWidget(new NextPageButton(midX + 10, 185,
+                    b -> QuestsClient.openQuestsScreen(page + 1)));
             }
             renderedButtons = true;
         }
@@ -100,6 +104,6 @@ public class QuestsScreen extends BaseTravelJournalScreen {
     }
 
     protected void renderNoQuests(GuiGraphics guiGraphics) {
-        GuiHelper.drawCenteredString(guiGraphics, font, TravelJournalResources.NO_QUESTS_TEXT, midX, 50, 0x2f2725, false);
+        GuiHelper.drawCenteredString(guiGraphics, font, QuestsResources.NO_QUESTS_TEXT, midX, 50, 0x2f2725, false);
     }
 }

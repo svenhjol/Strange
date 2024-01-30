@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -7,6 +7,7 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
+import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;

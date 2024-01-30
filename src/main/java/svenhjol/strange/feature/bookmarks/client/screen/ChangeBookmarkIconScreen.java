@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.bookmarks.client;
+package svenhjol.strange.feature.bookmarks.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,15 +8,15 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.feature.bookmarks.Bookmark;
 import svenhjol.strange.feature.bookmarks.BookmarksClient;
 import svenhjol.strange.feature.bookmarks.BookmarksNetwork;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.bookmarks.client.BookmarksResources;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 
-public class ChangeBookmarkIconScreen extends BaseTravelJournalScreen {
+public class ChangeBookmarkIconScreen extends TravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected ChangeBookmarkIconScreen(Bookmark bookmark) {
-        super(TravelJournalResources.CHANGE_ICON_TITLE);
+        super(BookmarksResources.CHANGE_ICON_TITLE);
         this.originalBookmark = bookmark;
         this.updatedBookmark = bookmark.copy();
     }

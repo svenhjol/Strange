@@ -12,12 +12,16 @@ public class BookmarkList {
     public static final String BOOKMARKS_TAG = "bookmarks";
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    public List<Bookmark> getBookmarks() {
+    public List<Bookmark> all() {
         return bookmarks;
     }
 
     public Optional<Bookmark> get(String id) {
         return bookmarks.stream().filter(b -> b.id.equals(id)).findFirst();
+    }
+
+    public boolean exists(Bookmark bookmark) {
+        return get(bookmark.id).isPresent();
     }
 
     public AddBookmarkResult add(Bookmark bookmark) {

@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.renderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,6 +10,8 @@ import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
+import svenhjol.strange.feature.quests.client.QuestsButtons;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardXp;
 
@@ -127,8 +129,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         renderRequirements(guiGraphics, -105, yOffset + 12, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var sprites = QuestResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
-            var button = new QuestButtons.ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestResources.QUEST_INFO_TEXT);
+            var sprites = QuestsResources.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
+            var button = new QuestsButtons.ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestsResources.QUEST_INFO_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
@@ -173,7 +175,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         renderRewards(guiGraphics, -155 + xt + 14, yOffset + 38, mouseX, mouseY);
 
         if (!renderedButtons) {
-            var button = new QuestButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
+            var button = new QuestsButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
@@ -189,7 +191,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
         for (var reward : quest.rewards()) {
             if (reward instanceof RewardItem i) {
-                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.stack.getCount());
+                var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.stack.getCount());
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
                 var width = font.width(label);
@@ -206,7 +208,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
             }
 
             if (reward instanceof RewardXp i) {
-                var label = TextHelper.translatable(QuestResources.AMOUNT_KEY, i.total);
+                var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.total);
 
                 guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
                 var width = font.width(label);
@@ -216,7 +218,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
                 if (mouseX >= xo && mouseX <= xo + 25 + width
                     && mouseY >= yo - 1 && mouseY <= yo + 17) {
-                    guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.REWARD_LEVELS_KEY, i.total), xo, yo + 27);
+                    guiGraphics.renderTooltip(font, TextHelper.translatable(QuestsResources.REWARD_LEVELS_KEY, i.total), xo, yo + 27);
                 }
 
                 xo += 27 + width;
@@ -228,10 +230,10 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var font = screen.font;
 
         if (quest.satisfied()) {
-            guiGraphics.blitSprite(QuestResources.TICK, x + 2, y + 3, 9, 9);
+            guiGraphics.blitSprite(QuestsResources.TICK, x + 2, y + 3, 9, 9);
             if (mouseX >= x + 2 && mouseX <= x + 11
                 && mouseY >= y + 3 && mouseY <= y + 12) {
-                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestResources.SATISFIED_KEY), x, y + 20);
+                guiGraphics.renderTooltip(font, TextHelper.translatable(QuestsResources.SATISFIED_KEY), x, y + 20);
             }
         }
     }

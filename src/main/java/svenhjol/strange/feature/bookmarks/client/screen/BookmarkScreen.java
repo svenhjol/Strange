@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.bookmarks.client;
+package svenhjol.strange.feature.bookmarks.client.screen;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -13,17 +13,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.bookmarks.*;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons;
+import svenhjol.strange.feature.bookmarks.client.BookmarksButtons.*;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.BackButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.DeleteShortcutButton;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 
-public class BookmarkScreen extends BaseTravelJournalScreen {
+public class BookmarkScreen extends TravelJournalScreen {
     protected Bookmark bookmark;
     protected boolean hasPhoto;
     protected boolean hasMap;
@@ -35,15 +38,17 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     public BookmarkScreen(Bookmark bookmark) {
         super(TextHelper.literal(bookmark.name));
         this.bookmark = bookmark.copy();
-        PageTracker.bookmark = bookmark;
-        PageTracker.Screen.BOOKMARK.set();
+
+        PageTracker.set(() -> this);
     }
 
     @Override
     protected void init() {
         super.init();
+
+        // Add footer buttons
         addRenderableWidget(new CloseButton(midX + 5,220, b -> onClose()));
-        addRenderableWidget(new BackButton(midX - (TravelJournalButtons.BackButton.WIDTH + 5), 220, this::openBookmarks));
+        addRenderableWidget(new BackButton(midX - (BackButton.WIDTH + 5), 220, BookmarksClient::openBookmarksScreen));
 
         renderedButtons = false;
         hasPhoto = getScreenshotFile().exists();
@@ -57,16 +62,16 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
     @Override
     protected void initShortcuts() {
         super.initShortcuts();
-        int yoffset = 91;
+        int yo = 91;
         int lineHeight = 17;
 
         if (hasMap) {
-            addRenderableWidget(new SaveToMapShortcutButton(midX + 120, yoffset, b -> {}));
-            yoffset += lineHeight;
+            addRenderableWidget(new SaveToMapShortcutButton(midX + 120, yo, b -> {}));
+            yo += lineHeight;
         }
+
         if (hasPaper) {
-            addRenderableWidget(new SaveToBookmarkShortcutButton(midX + 120, yoffset, b -> {}));
-            yoffset += lineHeight;
+            addRenderableWidget(new SaveToBookmarkShortcutButton(midX + 120, yo, b -> {}));
         }
 
         addRenderableWidget(new DeleteShortcutButton(midX + 120, 161, b -> delete()));
@@ -79,36 +84,44 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         // Item in top left.
         guiGraphics.renderItem(bookmark.getItemStack(), midX - 108, 20);
 
-        int yoffset = 36;
+        int yo = 36;
 
         if (Bookmarks.showCoordinates) {
-            renderCoords(guiGraphics, yoffset);
-            yoffset += 16;
+            renderCoords(guiGraphics, yo);
+            yo += 16;
         } else {
-            renderDimensionName(guiGraphics, yoffset);
-            yoffset += 16;
+            renderDimensionName(guiGraphics, yo);
+            yo += 16;
         }
 
         if (hasPhoto) {
-            renderPhoto(guiGraphics, (int)(yoffset * 2.4));
-            yoffset += 83;
+            renderPhoto(guiGraphics, (int)(yo * 2.4));
+            yo += 83;
         }
 
+        renderButtons(yo);
+        checkValid();
+    }
+
+    /**
+     * Only run the first time round the render loop
+     */
+    protected void renderButtons(int yo) {
         if (!renderedButtons) {
             if (!hasPhoto && isNearby) {
-                addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yoffset,
+                addRenderableWidget(new TakePhotoButton(midX - (TakePhotoButton.WIDTH / 2), yo,
                     b -> BookmarksClient.initPhoto(bookmark)));
-                yoffset += 21;
+                yo += 21;
             }
 
-            addRenderableWidget(new ChangeNameButton(midX - (TravelJournalButtons.ChangeNameButton.WIDTH / 2), yoffset, this::openChangeNameScreen));
-            yoffset += 21;
+            addRenderableWidget(new ChangeNameButton(midX - (ChangeNameButton.WIDTH / 2), yo, this::openChangeNameScreen));
+            yo += 21;
 
-            addRenderableWidget(new ChangeIconButton(midX - (TravelJournalButtons.ChangeIconButton.WIDTH / 2), yoffset, this::openChangeIconScreen));
-            yoffset += 21;
+            addRenderableWidget(new ChangeIconButton(midX - (BookmarksButtons.ChangeIconButton.WIDTH / 2), yo, this::openChangeIconScreen));
+            yo += 21;
 
             if (hasPhoto && isNearby) {
-                addRenderableWidget(new TakeNewPhotoButton(midX - (TravelJournalButtons.TakeNewPhotoButton.WIDTH / 2), yoffset,
+                addRenderableWidget(new TakeNewPhotoButton(midX - (TakeNewPhotoButton.WIDTH / 2), yo,
                     b -> BookmarksClient.initPhoto(bookmark)));
             }
         }
@@ -241,5 +254,12 @@ public class BookmarkScreen extends BaseTravelJournalScreen {
         }
 
         return minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
+    }
+
+    protected void checkValid() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.player != null && !Bookmarks.getBookmarks(minecraft.player).exists(this.bookmark)) {
+            minecraft.setScreen(new BookmarksScreen());
+        }
     }
 }

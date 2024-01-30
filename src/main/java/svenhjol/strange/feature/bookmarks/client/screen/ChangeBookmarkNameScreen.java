@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.bookmarks.client;
+package svenhjol.strange.feature.bookmarks.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -6,18 +6,18 @@ import net.minecraft.client.gui.components.EditBox;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.bookmarks.Bookmark;
 import svenhjol.strange.feature.bookmarks.BookmarksClient;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
+import svenhjol.strange.feature.bookmarks.client.BookmarksResources;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.*;
 
-public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
+public class ChangeBookmarkNameScreen extends TravelJournalScreen {
     protected Bookmark originalBookmark;
     protected Bookmark updatedBookmark;
     protected EditBox nameEditBox;
     protected int doubleClickTicks = 0;
 
     public ChangeBookmarkNameScreen(Bookmark bookmark) {
-        super(TravelJournalResources.CHANGE_NAME_TITLE);
+        super(BookmarksResources.CHANGE_NAME_TITLE);
         this.originalBookmark = bookmark;
         this.updatedBookmark = bookmark.copy();
     }
@@ -25,8 +25,8 @@ public class ChangeBookmarkNameScreen extends BaseTravelJournalScreen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new TravelJournalButtons.SaveButton(midX + 5,220, b -> save()));
-        addRenderableWidget(new TravelJournalButtons.CancelButton(midX - (TravelJournalButtons.CancelButton.WIDTH + 5), 220, b -> back()));
+        addRenderableWidget(new SaveButton(midX + 5,220, b -> save()));
+        addRenderableWidget(new CancelButton(midX - (CancelButton.WIDTH + 5), 220, b -> back()));
 
         nameEditBox = new EditBox(font, midX - 74, 38, 148, 12,
             TextHelper.translatable("gui.strange.travel_journal.edit_name"));

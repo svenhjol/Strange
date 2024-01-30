@@ -9,7 +9,6 @@ import svenhjol.strange.feature.travel_journal.TravelJournal;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public class LearnedRunes extends CommonFeature {
@@ -20,27 +19,28 @@ public class LearnedRunes extends CommonFeature {
     public void register() {
         var registry = mod().registry();
         LearnedRunesNetwork.register(registry);
+    }
 
+    @Override
+    public void runWhenEnabled() {
         TravelJournal.registerPlayerDataSource(
             (player, tag) -> LEARNED.put(player.getUUID(), LearnedList.load(tag.getCompound(LEARNED_TAG))),
-            (player, tag) -> getLearned(player).ifPresent(learned -> tag.put(LEARNED_TAG, learned.save())));
+            (player, tag) -> tag.put(LEARNED_TAG, getLearned(player).save()));
 
         TravelJournal.registerSyncHandler(LearnedRunes::syncLearned);
     }
 
     public static void learn(ServerPlayer player, Location location) {
-        getLearned(player).ifPresent(learned -> {
-            learned.learn(location);
-            SyncLearned.send(player, learned);
-        });
+        var learned = getLearned(player);
+        learned.learn(location);
+        SyncLearned.send(player, learned);
     }
 
-    public static Optional<LearnedList> getLearned(Player player) {
-        return Optional.ofNullable(LEARNED.get(player.getUUID()));
+    public static LearnedList getLearned(Player player) {
+        return LEARNED.getOrDefault(player.getUUID(), new LearnedList());
     }
 
     public static void syncLearned(ServerPlayer player) {
-        getLearned(player).ifPresent(
-            learned -> SyncLearned.send(player, learned));
+        SyncLearned.send(player, getLearned(player));
     }
 }

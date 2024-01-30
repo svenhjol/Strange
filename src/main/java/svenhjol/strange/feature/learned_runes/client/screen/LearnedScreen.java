@@ -1,19 +1,20 @@
-package svenhjol.strange.feature.learned_runes.client;
+package svenhjol.strange.feature.learned_runes.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.learned_runes.LearnedRunes;
+import svenhjol.strange.feature.learned_runes.LearnedRunesClient;
+import svenhjol.strange.feature.learned_runes.client.LearnedRunesResources;
 import svenhjol.strange.feature.runestones.RunestoneHelper;
 import svenhjol.strange.feature.runestones.RunestonesClient;
 import svenhjol.strange.feature.travel_journal.PageTracker;
-import svenhjol.strange.feature.travel_journal.client.BaseTravelJournalScreen;
+import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons;
-import svenhjol.strange.feature.travel_journal.client.TravelJournalResources;
 import svenhjol.strange.helper.GuiHelper;
 
-public class LearnedScreen extends BaseTravelJournalScreen {
-    boolean renderedPaginationButtons = false;
+public class LearnedScreen extends TravelJournalScreen {
+    boolean renderedButtons = false;
     int page;
 
     public LearnedScreen() {
@@ -21,9 +22,10 @@ public class LearnedScreen extends BaseTravelJournalScreen {
     }
 
     public LearnedScreen(int page) {
-        super(TravelJournalResources.LEARNED_TITLE);
+        super(LearnedRunesResources.LEARNED_TITLE);
         this.page = page;
-        PageTracker.Screen.LEARNED.set();
+
+        PageTracker.set(this.getClass());
     }
 
     @Override
@@ -32,7 +34,7 @@ public class LearnedScreen extends BaseTravelJournalScreen {
         addRenderableWidget(new TravelJournalButtons.CloseButton(midX - (TravelJournalButtons.CloseButton.WIDTH / 2),220, b -> onClose()));
         initShortcuts();
 
-        renderedPaginationButtons = false;
+        renderedButtons = false;
     }
 
     @Override
@@ -51,10 +53,9 @@ public class LearnedScreen extends BaseTravelJournalScreen {
             return;
         }
 
-        var learned = LearnedRunes.getLearned(minecraft.player).orElse(null);
-        if (learned == null) return;
+        var learned = LearnedRunes.getLearned(minecraft.player);
 
-        var locations = learned.getLocations();
+        var locations = learned.all();
         var pages = locations.size() / perPage;
         var index = (page - 1) * perPage;
 
@@ -80,20 +81,20 @@ public class LearnedScreen extends BaseTravelJournalScreen {
             }
         }
 
-        if (!renderedPaginationButtons) {
+        if (!renderedButtons) {
             if (page > 1) {
-                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 75, b -> openLearned(page - 1)));
+                addRenderableWidget(new TravelJournalButtons.PreviousPageButton(midX - 30, 75, b -> LearnedRunesClient.openLearnedScreen(page - 1)));
             }
             if (page < pages || index < locations.size()) {
-                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 75, b -> openLearned(page + 1)));
+                addRenderableWidget(new TravelJournalButtons.NextPageButton(midX + 10, 75, b -> LearnedRunesClient.openLearnedScreen(page + 1)));
             }
 
-            renderedPaginationButtons = true;
+            renderedButtons = true;
         }
     }
 
     protected void renderNoLocations(GuiGraphics guiGraphics) {
-        GuiHelper.drawCenteredString(guiGraphics, font, TravelJournalResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
-        guiGraphics.drawWordWrap(font, TravelJournalResources.NO_LEARNED_LOCATIONS_BODY_TEXT, midX - 100, 63, 200, 0x8f8785);
+        GuiHelper.drawCenteredString(guiGraphics, font, LearnedRunesResources.NO_LEARNED_LOCATIONS_HEADING_TEXT, midX, 50, 0x2f2725, false);
+        guiGraphics.drawWordWrap(font, LearnedRunesResources.NO_LEARNED_LOCATIONS_BODY_TEXT, midX - 100, 63, 200, 0x8f8785);
     }
 }

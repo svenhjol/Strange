@@ -67,42 +67,6 @@ public class TravelJournalButtons {
         }
     }
 
-    public static class BookmarksShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.BOOKMARKS_BUTTON;
-        static Component TEXT = TravelJournalResources.BOOKMARKS_BUTTON_TEXT;
-
-        public BookmarksShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class LearnedShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.LEARNED_BUTTON;
-        static Component TEXT = TravelJournalResources.LEARNED_BUTTON_TEXT;
-
-        public LearnedShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class QuestsShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.QUESTS_BUTTON;
-        static Component TEXT = TravelJournalResources.QUESTS_BUTTON_TEXT;
-
-        public QuestsShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
     public static class NextPageButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 19;
@@ -122,78 +86,6 @@ public class TravelJournalButtons {
         static Component TEXT = TravelJournalResources.PREVIOUS_PAGE_BUTTON_TEXT;
 
         public PreviousPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class TakePhotoButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
-        public TakePhotoButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class TakeNewPhotoButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.TAKE_NEW_PHOTO_BUTTON_TEXT;
-        public TakeNewPhotoButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class ChangeNameButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CHANGE_NAME_BUTTON_TEXT;
-        public ChangeNameButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class ChangeIconButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = TravelJournalResources.CHANGE_ICON_BUTTON_TEXT;
-        public ChangeIconButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class TakePhotoShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.PHOTO_BUTTON;
-        static Component TEXT = TravelJournalResources.TAKE_PHOTO_BUTTON_TEXT;
-
-        public TakePhotoShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class SaveToBookmarkShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.SAVE_TO_BOOKMARK_BUTTON;
-        static Component TEXT = TravelJournalResources.SAVE_TO_BOOKMARK_BUTTON_TEXT;
-
-        public SaveToBookmarkShortcutButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class SaveToMapShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TravelJournalResources.SAVE_TO_MAP_BUTTON;
-        static Component TEXT = TravelJournalResources.SAVE_TO_MAP_BUTTON_TEXT;
-
-        public SaveToMapShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }

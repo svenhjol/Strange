@@ -27,7 +27,7 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.Requirement;
-import svenhjol.strange.feature.quests.client.QuestResources;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 
 import java.util.*;
 
@@ -211,7 +211,7 @@ public class BattleQuest extends Quest {
 
     private void startEffects(ServerPlayer player) {
         if (bossEvent == null) {
-            bossEvent = (ServerBossEvent) new ServerBossEvent(QuestResources.BATTLE_TEXT, BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.PROGRESS)
+            bossEvent = (ServerBossEvent) new ServerBossEvent(QuestsResources.BATTLE_TEXT, BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.PROGRESS)
                 .setDarkenScreen(true);
 
             bossEvent.addPlayer(player);

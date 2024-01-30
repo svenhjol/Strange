@@ -46,6 +46,10 @@ public class QuestList {
         return quests.isEmpty();
     }
 
+    public boolean exists(Quest quest) {
+        return get(quest.id()).isPresent();
+    }
+
     public CompoundTag save() {
         var tag = new CompoundTag();
         var list = new ListTag();

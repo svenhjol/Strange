@@ -18,7 +18,7 @@ public class LearnedList {
         }
     }
 
-    public List<Location> getLocations() {
+    public List<Location> all() {
         return locations;
     }
 

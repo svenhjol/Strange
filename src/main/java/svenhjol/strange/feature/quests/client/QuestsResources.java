@@ -11,8 +11,11 @@ import svenhjol.strange.Strange;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QuestResources {
-    public static final Component QUEST_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
+public class QuestsResources {
+    public static final Component QUESTS_TITLE = TextHelper.translatable("gui.strange.quests.quests");
+    public static final Component QUESTS_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
+    public static final Component NO_QUESTS_TEXT = TextHelper.translatable("gui.strange.quests.no_quests");
+    public static final Component VILLAGER_QUESTS_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.villager_quests");
     public static final Component ARTIFACT_TEXT = TextHelper.translatable("gui.strange.quests.artifact");
     public static final Component ARTIFACT_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.artifact_requirement");
     public static final Component ARTIFACT_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.artifact_reward");
@@ -46,6 +49,7 @@ public class QuestResources {
     public static final Map<Integer, WidgetSprites> LEVEL_TO_SCROLL_BUTTON = new HashMap<>();
     public static final Map<EntityType<?>, ResourceLocation> MOB_SPRITES = new HashMap<>();
     public static final Map<ResourceLocation, ResourceLocation> LOOT_SPRITES = new HashMap<>();
+    public static final WidgetSprites QUESTS_BUTTON = makeButton("quests");
     public static final WidgetSprites NOVICE_SCROLL_BUTTON = makeButton("novice_scroll");
     public static final WidgetSprites APPRENTICE_SCROLL_BUTTON = makeButton("apprentice_scroll");
     public static final WidgetSprites JOURNEYMAN_SCROLL_BUTTON = makeButton("journeyman_scroll");

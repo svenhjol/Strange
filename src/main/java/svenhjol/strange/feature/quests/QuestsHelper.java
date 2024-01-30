@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.QuestResources;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -105,19 +105,19 @@ public class QuestsHelper {
     public static Component makeVillagerOffersTitle(VillagerProfession profession) {
         var registry = BuiltInRegistries.VILLAGER_PROFESSION;
         var professionKey = registry.getKey(profession);
-        return TextHelper.translatable(QuestResources.QUEST_OFFERS_TITLE_KEY,
+        return TextHelper.translatable(QuestsResources.QUEST_OFFERS_TITLE_KEY,
             TextHelper.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath()));
     }
 
     public static Component makeQuestTitle(Quest quest) {
-        return TextHelper.translatable(quest.isEpic() ? QuestResources.EPIC_QUEST_TITLE_KEY : QuestResources.QUEST_TITLE_KEY,
+        return TextHelper.translatable(quest.isEpic() ? QuestsResources.EPIC_QUEST_TITLE_KEY : QuestsResources.QUEST_TITLE_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             quest.type().getTypeName());
     }
 
     public static Component makeQuestTitleWithProfession(Quest quest) {
         var professionId = getVillagerProfessionId(quest.villagerProfession());
-        return TextHelper.translatable(quest.isEpic() ? QuestResources.EPIC_QUEST_TITLE_WITH_PROFESSION_KEY : QuestResources.QUEST_TITLE_WITH_PROFESSION_KEY,
+        return TextHelper.translatable(quest.isEpic() ? QuestsResources.EPIC_QUEST_TITLE_WITH_PROFESSION_KEY : QuestsResources.QUEST_TITLE_WITH_PROFESSION_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
             TextHelper.translatable("entity." + professionId.getNamespace() + ".villager." + professionId.getPath()),
             quest.type().getTypeName());

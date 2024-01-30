@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.renderer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,18 +12,19 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
 import svenhjol.charmony.feature.colored_glints.ColoredGlints;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.quests.quest.BattleQuest;
 import svenhjol.strange.feature.quests.quest.BattleQuest.BattleTarget;
 
 public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
     @Override
     public Component getRequirementText() {
-        return QuestResources.BATTLE_REQUIREMENT_TEXT;
+        return QuestsResources.BATTLE_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return QuestResources.BATTLE_REWARD_TEXT;
+        return QuestsResources.BATTLE_REWARD_TEXT;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
 
                 guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, i.satisfied() ? satisfiedBackgroundColor : requirementBackgroundColor);
 
-                var sprite = QuestResources.MOB_SPRITES.get(i.entity);
+                var sprite = QuestsResources.MOB_SPRITES.get(i.entity);
                 if (sprite != null) {
                     guiGraphics.blitSprite(sprite, xo + 7 + width, yo, 16, 16);
                 } else {

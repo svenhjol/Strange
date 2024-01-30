@@ -1,10 +1,11 @@
-package svenhjol.strange.feature.quests.client;
+package svenhjol.strange.feature.quests.client.renderer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
+import svenhjol.strange.feature.quests.client.QuestsResources;
 import svenhjol.strange.feature.quests.quest.GatherQuest;
 
 public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
@@ -20,12 +21,12 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
 
     @Override
     public Component getRequirementText() {
-        return QuestResources.GATHER_REQUIREMENT_TEXT;
+        return QuestsResources.GATHER_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return QuestResources.GATHER_REWARD_TEXT;
+        return QuestsResources.GATHER_REWARD_TEXT;
     }
 
     @Override

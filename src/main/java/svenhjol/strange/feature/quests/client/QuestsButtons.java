@@ -9,30 +9,35 @@ import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestsHelper;
 
-public class QuestButtons {
-    public static class AcceptButton extends Button {
-        static int WIDTH = 70;
-        static int HEIGHT = 20;
-        static Component TEXT = QuestResources.ACCEPT_BUTTON_TEXT;
+public class QuestsButtons {
+    public static class QuestsShortcutButton extends ImageButton {
+        public static int WIDTH = 20;
+        public static int HEIGHT = 18;
+        static WidgetSprites SPRITES = QuestsResources.QUESTS_BUTTON;
+        static Component TEXT = QuestsResources.QUESTS_BUTTON_TEXT;
 
-        public AcceptButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-
-            // If player is at max quests, disable the button and show a tooltip.
-            var player = Minecraft.getInstance().player;
-            if (player != null && QuestsHelper.hasMaxQuests(player)) {
-                active = false;
-                setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
-            }
+        public QuestsShortcutButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
     public static class QuestsButton extends Button {
+        public static int WIDTH = 100;
+        public static int HEIGHT = 20;
+        static Component TEXT = QuestsResources.QUESTS_BUTTON_TEXT;
+
+        public QuestsButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    public static class VillagerQuestsButton extends Button {
         public static int WIDTH = 110;
         public static int HEIGHT = 20;
 
-        static Component TEXT = QuestResources.QUEST_BUTTON_TEXT;
-        public QuestsButton(int x, int y, OnPress onPress) {
+        static Component TEXT = QuestsResources.VILLAGER_QUESTS_BUTTON_TEXT;
+        public VillagerQuestsButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
@@ -50,11 +55,20 @@ public class QuestButtons {
     public static class AcceptImageButton extends ImageButton {
         static int WIDTH = 20;
         static int HEIGHT = 18;
-        static WidgetSprites SPRITES = QuestResources.ACCEPT_BUTTON;
-        static Component TEXT = QuestResources.ACCEPT_BUTTON_TEXT;
+        static WidgetSprites SPRITES = QuestsResources.ACCEPT_BUTTON;
+        static Component TEXT = QuestsResources.ACCEPT_BUTTON_TEXT;
 
         public AcceptImageButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+
+            // If player is at max quests, disable the button and show a tooltip.
+            var player = Minecraft.getInstance().player;
+            if (player != null && QuestsHelper.hasMaxQuests(player)) {
+                active = false;
+                setTooltip(Tooltip.create(TextHelper.translatable("gui.strange.quests.too_many_quests")));
+                return;
+            }
+
             setTooltip(Tooltip.create(TEXT));
         }
     }
@@ -62,8 +76,8 @@ public class QuestButtons {
     public static class AbandonShortcutButton extends ImageButton {
         static int WIDTH = 20;
         static int HEIGHT = 18;
-        static WidgetSprites SPRITES = QuestResources.TRASH_BUTTON;
-        static Component TEXT = QuestResources.ABANDON_BUTTON_TEXT;
+        static WidgetSprites SPRITES = QuestsResources.TRASH_BUTTON;
+        static Component TEXT = QuestsResources.ABANDON_BUTTON_TEXT;
 
         public AbandonShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
