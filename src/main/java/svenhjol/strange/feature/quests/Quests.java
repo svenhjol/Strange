@@ -320,6 +320,9 @@ public class Quests extends CommonFeature {
 
         level.playSound(null, serverPlayer.blockPosition(), acceptSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
+        // When the player accepts an epic, reset the villager's loyalty.
+        resetLoyalty(villagerUuid);
+
         // Add this quest to the player's quests.
         var quest = opt.get();
         quest.start(serverPlayer);
@@ -403,7 +406,6 @@ public class Quests extends CommonFeature {
 
         if (quest.isEpic()) {
             level.playSound(null, pos, epicCompleteSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-            resetLoyalty(villagerUuid);
         } else {
             level.playSound(null, pos, completeSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
         }
