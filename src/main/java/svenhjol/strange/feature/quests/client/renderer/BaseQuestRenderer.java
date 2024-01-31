@@ -190,11 +190,6 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var yo = yOffset;
 
         for (var reward : quest.rewards()) {
-            if (screenType.equals(ScreenType.SELECTED_ACTIVE) && xo > 200) {
-                xo = midX + xOffset;
-                yo += 20;
-            }
-
             if (reward instanceof RewardItem i) {
                 var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.stack.getCount());
 
