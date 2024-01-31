@@ -10,10 +10,10 @@ import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
-import svenhjol.strange.feature.quests.client.QuestsButtons;
 import svenhjol.strange.feature.quests.QuestsResources;
-import svenhjol.strange.feature.quests.reward.RewardItem;
+import svenhjol.strange.feature.quests.client.QuestsButtons;
 import svenhjol.strange.feature.quests.reward.RewardExperience;
+import svenhjol.strange.feature.quests.reward.RewardItem;
 
 public abstract class BaseQuestRenderer<Q extends Quest> {
     Q quest;

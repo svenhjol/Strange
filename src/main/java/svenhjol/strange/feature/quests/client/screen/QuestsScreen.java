@@ -100,7 +100,7 @@ public class QuestsScreen extends TravelJournalScreen {
             return new QuestList();
         }
 
-        return Quests.getPlayerQuests(minecraft.player);
+        return QuestsClient.getPlayerQuests(minecraft.player);
     }
 
     protected void renderNoQuests(GuiGraphics guiGraphics) {

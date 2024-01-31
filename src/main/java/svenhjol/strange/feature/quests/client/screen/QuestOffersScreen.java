@@ -4,8 +4,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import svenhjol.strange.feature.quests.Quest;
+import svenhjol.strange.feature.quests.QuestsClient;
 import svenhjol.strange.feature.quests.QuestsHelper;
-import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
 import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
 import svenhjol.strange.helper.GuiHelper;
@@ -27,7 +27,7 @@ public class QuestOffersScreen extends Screen {
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;
 
-        var quests = Quests.getVillagerQuests(villagerUuid);
+        var quests = QuestsClient.getVillagerQuests(villagerUuid);
         for (Quest quest : quests.all()) {
             var renderer = quest.type().makeRenderer(quest);
             renderers.add(renderer);

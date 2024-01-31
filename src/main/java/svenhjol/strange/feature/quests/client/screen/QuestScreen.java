@@ -3,7 +3,6 @@ package svenhjol.strange.feature.quests.client.screen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.Quest;
-import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.QuestsClient;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.QuestsNetwork.AbandonQuest;
@@ -56,7 +55,7 @@ public class QuestScreen extends TravelJournalScreen {
 
     protected void checkValid() {
         var minecraft = Minecraft.getInstance();
-        if (minecraft.player != null && !Quests.getPlayerQuests(minecraft.player).exists(this.quest)) {
+        if (minecraft.player != null && !QuestsClient.getPlayerQuests(minecraft.player).exists(this.quest)) {
             minecraft.setScreen(new QuestsScreen());
         }
     }
@@ -68,7 +67,7 @@ public class QuestScreen extends TravelJournalScreen {
     protected void updateQuest() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.player != null) {
-            Quests.getPlayerQuest(minecraft.player, quest.id()).ifPresent(q -> {
+            QuestsClient.getPlayerQuest(minecraft.player, quest.id()).ifPresent(q -> {
                 this.quest = q;
                 this.renderer.setQuest(q);
             });

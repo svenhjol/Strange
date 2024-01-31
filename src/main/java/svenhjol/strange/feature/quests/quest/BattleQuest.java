@@ -55,7 +55,10 @@ public class BattleQuest extends Quest {
     public void tick(Player player) {
         super.tick(player);
 
-        if (player.level().isClientSide()) return;
+        if (player.level().isClientSide()) {
+            return;
+        }
+
         var serverPlayer = (ServerPlayer)player;
         var serverLevel = (ServerLevel)serverPlayer.level();
 

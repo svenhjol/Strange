@@ -37,11 +37,11 @@ import svenhjol.strange.feature.quests.client.screen.QuestScreen;
 import svenhjol.strange.feature.quests.client.screen.QuestsScreen;
 import svenhjol.strange.feature.travel_journal.TravelJournalClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class QuestsClient extends ClientFeature {
+    private static final Map<UUID, QuestList> PLAYER_QUESTS = new HashMap<>();
+    private static final Map<UUID, QuestList> VILLAGER_QUESTS = new HashMap<>();
     static Button villagerQuestsButton;
     static UUID villagerUuid;
     static VillagerProfession villagerProfession;
@@ -68,6 +68,25 @@ public class QuestsClient extends ClientFeature {
             (x, y) -> new QuestsButton(x - (QuestsButton.WIDTH / 2), y, QuestsClient::openQuestsScreen));
     }
 
+    public static void setPlayerQuests(Player player, QuestList quests) {
+        PLAYER_QUESTS.put(player.getUUID(), quests);
+    }
+
+    public static void setVillagerQuests(UUID villagerUuid, QuestList quests) {
+        VILLAGER_QUESTS.put(villagerUuid, quests);
+    }
+
+    public static QuestList getPlayerQuests(Player player) {
+        return PLAYER_QUESTS.getOrDefault(player.getUUID(), new QuestList());
+    }
+
+    public static QuestList getVillagerQuests(UUID villagerUuid) {
+        return VILLAGER_QUESTS.getOrDefault(villagerUuid, new QuestList());
+    }
+
+    public static Optional<Quest> getPlayerQuest(Player player, String questId) {
+        return getPlayerQuests(player).get(questId);
+    }
 
     private void handleAbandonQuest(Player player, Quest quest) {
         if (!player.level().isClientSide) return;
@@ -108,7 +127,7 @@ public class QuestsClient extends ClientFeature {
         }
 
         // Tick all quests on the client
-        for (var quest : Quests.getPlayerQuests(player).all()) {
+        for (var quest : getPlayerQuests(player).all()) {
             quest.tick(player);
         }
 
@@ -168,14 +187,14 @@ public class QuestsClient extends ClientFeature {
     public static void handleSyncPlayerQuests(SyncPlayerQuests message, Player player) {
         var quests = message.getQuests();
         log().debug(QuestsClient.class, "Received " + quests.size() + " player quests");
-        Quests.setPlayerQuests(player, quests);
+        setPlayerQuests(player, quests);
     }
 
     public static void handleSyncVillagerQuests(SyncVillagerQuests message, Player player) {
         var uuid = message.getVillagerUuid();
         var quests = message.getQuests();
         log().debug(QuestsClient.class, "Received " + quests.size() + " quests for villager " + uuid);
-        Quests.setVillagerQuests(villagerUuid, quests);
+        setVillagerQuests(villagerUuid, quests);
     }
 
     public static void handleNotifyVillagerQuestsResult(NotifyVillagerQuestsResult message, Player player) {
@@ -188,7 +207,7 @@ public class QuestsClient extends ClientFeature {
     public static void handleAcceptQuestResult(NotifyAcceptQuestResult message, Player player) {
         if (message.getResult().equals(Quests.AcceptQuestResult.SUCCESS)) {
             // Fire AcceptQuestEvent on the client side.
-            Quests.getPlayerQuest(player, message.getQuestId()).ifPresent(
+            getPlayerQuest(player, message.getQuestId()).ifPresent(
                 quest -> QuestEvents.ACCEPT_QUEST.invoke(player, quest));
         }
     }
@@ -196,7 +215,7 @@ public class QuestsClient extends ClientFeature {
     public static void handleAbandonQuestResult(NotifyAbandonQuestResult message, Player player) {
         if (message.getResult().equals(Quests.AbandonQuestResult.SUCCESS)) {
             // Fire AbandonQuestEvent on the client side.
-            Quests.getPlayerQuest(player, message.getQuestId()).ifPresent(
+            getPlayerQuest(player, message.getQuestId()).ifPresent(
                 quest -> QuestEvents.ABANDON_QUEST.invoke(player, quest));
         }
     }
@@ -217,7 +236,7 @@ public class QuestsClient extends ClientFeature {
         var level = player.level();
         var pos = player.blockPosition();
 
-        var quests = Quests.getPlayerQuests(player);
+        var quests = getPlayerQuests(player);
         List<Villager> receivers = new ArrayList<>();
         List<Villager> questGivers = new ArrayList<>();
 

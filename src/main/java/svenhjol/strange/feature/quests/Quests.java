@@ -30,7 +30,6 @@ import svenhjol.strange.helper.DataHelper;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class Quests extends CommonFeature {
     public static final String QUESTS_TAG = "quests";
@@ -162,26 +161,8 @@ public class Quests extends CommonFeature {
         syncQuests(player);
     }
 
-    public static void setPlayerQuests(Player player, QuestList quests) {
-        PLAYER_QUESTS.put(player.getUUID(), quests);
-    }
-
-    public static void setVillagerQuests(UUID villagerUuid, QuestList quests) {
-        VILLAGER_QUESTS.put(villagerUuid, quests);
-    }
-
     public static QuestList getPlayerQuests(Player player) {
         return PLAYER_QUESTS.getOrDefault(player.getUUID(), new QuestList());
-    }
-
-    public static QuestList getVillagerQuests(UUID villagerUuid) {
-        return VILLAGER_QUESTS.getOrDefault(villagerUuid, new QuestList());
-    }
-
-    public static List<Quest> getPlayerQuests(QuestType type) {
-        return getAllPlayerQuests().stream()
-            .filter(q -> q.type().equals(type))
-            .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public static List<Quest> getAllPlayerQuests() {
