@@ -190,7 +190,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var yo = yOffset;
 
         for (var reward : quest.rewards()) {
-            if (xo > 200) {
+            if (screenType.equals(ScreenType.SELECTED_ACTIVE) && xo > 200) {
                 xo = midX + xOffset;
                 yo += 20;
             }
