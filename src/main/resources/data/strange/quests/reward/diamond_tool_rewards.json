@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "diamond_hoe",
+    "diamond_axe",
+    "diamond_pickaxe",
+    "diamond_sword",
+    "diamond_shovel"
+  ]
+}

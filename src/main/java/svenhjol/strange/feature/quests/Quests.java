@@ -21,7 +21,6 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import svenhjol.charmony.api.event.*;
 import svenhjol.charmony.common.CommonFeature;
-import svenhjol.strange.Strange;
 import svenhjol.strange.event.QuestEvents;
 import svenhjol.strange.feature.quests.QuestsNetwork.*;
 import svenhjol.strange.feature.quests.reward.RewardItemFunctions;
@@ -45,13 +44,14 @@ public class Quests extends CommonFeature {
     static Supplier<SoundEvent> completeSound;
     static Supplier<SoundEvent> epicCompleteSound;
 
-    public static final ResourceLocation DEFAULT_REWARD_FUNCTIONS = new ResourceLocation(Strange.ID, "default_reward_functions");
     public static final RewardItemFunctions REWARD_ITEM_FUNCTIONS = new RewardItemFunctions();
 
     public static int maxQuestRequirements = 4;
     public static int maxQuestRewards = 5;
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
+    public static boolean allowLowerVillagerLevels = true;
+    public static boolean loyaltyIncreasesWhenVillagerLevelMatches = true;
 
     @Override
     public void register() {
@@ -179,12 +179,15 @@ public class Quests extends CommonFeature {
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
+
         for (var tier : QuestsHelper.TIERS.values()) {
             var resources = manager.listResources("quests/definition/" + tier, file -> file.getPath().endsWith(".json"));
+
             for (var entry : resources.entrySet()) {
                 var id = entry.getKey();
+                var namespace = id.getNamespace();
                 var resource = entry.getValue();
-                var definition = QuestDefinition.deserialize(id.getNamespace(), resource);
+                var definition = QuestDefinition.deserialize(namespace, manager, resource);
 
                 // If the def requires specific charmony features, test they are enabled now and skip def if not.
                 if (!DataHelper.hasRequiredFeatures(definition.requiredFeatures())) {
@@ -226,7 +229,8 @@ public class Quests extends CommonFeature {
             return;
         }
 
-        var definitions = QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests, random);
+        var minLevel = allowLowerVillagerLevels ? 1 : villagerLevel;
+        var definitions = QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, minLevel, villagerLevel, maxVillagerQuests, random);
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_QUESTS_GENERATED);
             return;
@@ -237,8 +241,7 @@ public class Quests extends CommonFeature {
             throw new RuntimeException("Could not get server reference");
         }
 
-        var manager = server.getResourceManager();
-        var newQuests = QuestsHelper.makeQuestsFromDefinitions(manager, definitions, villagerUuid);
+        var newQuests = QuestsHelper.makeQuestsFromDefinitions(definitions, villagerUuid);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
@@ -296,13 +299,15 @@ public class Quests extends CommonFeature {
 
         level.playSound(null, serverPlayer.blockPosition(), acceptSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
-        // When the player accepts an epic, reset the villager's loyalty.
-        resetLoyalty(villagerUuid);
-
         // Add this quest to the player's quests.
         var quest = opt.get();
         quest.start(serverPlayer);
         addQuest(serverPlayer, quest);
+
+        // When the player accepts a quest with loyalty greater than 1, reset the loyalty.
+        if (quest.loyalty() > 1) {
+            resetLoyalty(villagerUuid);
+        }
 
         // Fire the AcceptQuestEvent on the server side.
         QuestEvents.ACCEPT_QUEST.invoke(player, quest);
@@ -355,15 +360,18 @@ public class Quests extends CommonFeature {
 
         var matchesQuestGiver = satisfied.stream().filter(q -> q.villagerUuid().equals(villager.getUUID())).toList();
         if (!matchesQuestGiver.isEmpty()) {
-            for (Quest quest : matchesQuestGiver) {
+            for (var quest : matchesQuestGiver) {
                 completeWithVillager(player, villager, quest);
             }
             return true;
         }
 
-        var matchesProfession = satisfied.stream().filter(q -> q.villagerProfession().equals(villager.getVillagerData().getProfession())).toList();
+        var matchesProfession = satisfied.stream()
+            .filter(q -> QuestsHelper.isValidProfession(villager.getVillagerData().getProfession(), q.villagerProfessions()))
+            .toList();
+
         if (!matchesProfession.isEmpty()) {
-            for (Quest quest : matchesProfession) {
+            for (var quest : matchesProfession) {
                 quest.villagerUuid = villager.getUUID();
                 completeWithVillager(player, villager, quest);
             }
@@ -377,6 +385,7 @@ public class Quests extends CommonFeature {
         var level = (ServerLevel)player.level();
         var pos = player.blockPosition();
         var villagerUuid = villager.getUUID();
+        var villagerLevel = villager.getVillagerData().getLevel();
 
         level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 1.0f, 1.0f);
 
@@ -388,7 +397,10 @@ public class Quests extends CommonFeature {
 
         quest.complete();
         removeQuest(player, quest);
-        increaseLoyalty(villagerUuid, 1);
+
+        if (!loyaltyIncreasesWhenVillagerLevelMatches || (villagerLevel == quest.villagerLevel())) {
+            increaseLoyalty(villagerUuid, 1);
+        }
     }
 
     public enum VillagerQuestsResult {

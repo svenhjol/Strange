@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -36,7 +37,17 @@ public class QuestLootFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         var random = context.getRandom();
 
-        if (context.getParamOrNull(this.entityTarget.getParam()) instanceof Player player) {
+        Player player = null;
+        var entityParam = context.getParamOrNull(this.entityTarget.getParam());
+
+        if (entityParam instanceof Player p) {
+            player = p;
+        }
+        if (entityParam instanceof FishingHook f) {
+            player = f.getPlayerOwner();
+        }
+
+        if (player != null) {
             for (var quest : Quests.getPlayerQuests(player).all()) {
                 var result = quest.addToLootTable(lootTableId, random);
                 if (result.isPresent()) {

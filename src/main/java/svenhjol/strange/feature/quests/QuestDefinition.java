@@ -5,33 +5,45 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import svenhjol.strange.feature.quests.artifact.ArtifactDefinition;
+import svenhjol.strange.feature.quests.battle.BattleDefinition;
+import svenhjol.strange.feature.quests.gather.GatherDefinition;
+import svenhjol.strange.feature.quests.hunt.HuntDefinition;
+import svenhjol.strange.feature.quests.reward.RewardItemDefinition;
+import svenhjol.strange.feature.quests.reward.RewardItemFunctionDefinition;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection"})
 public class QuestDefinition {
     private String namespace = "minecraft";
+    private ResourceManager manager; // Transient
+    private RandomSource random; // Transient
+    private long seed;
     private boolean epic = false;
     private int level = 1;
     private int loyalty = 0;
-    private String profession;
     private String type;
+    private List<String> professions = new ArrayList<>();
     private List<String> required_features = new ArrayList<>();
-    private List<String> artifact_items = new ArrayList<>();
-    private Map<String, Integer> artifact_loot_tables = new HashMap<>();
-    private Map<String, Integer> battle_effects = new HashMap<>();
-    private Map<String, Integer> battle_mobs = new HashMap<>();
-    private Map<String, Integer> gather_items = new HashMap<>();
-    private Map<String, Integer> hunt_mobs = new HashMap<>();
-    private Map<String, Integer> rewards = new HashMap<>();
-    private List<String> reward_functions = new ArrayList<>();
+    private List<Map<String, Object>> artifact = new ArrayList<>();
+    private List<Map<String, Object>> battle = new ArrayList<>();
+    private List<Map<String, Object>> gather = new ArrayList<>();
+    private List<Map<String, Object>> hunt = new ArrayList<>();
+    private List<Map<String, Object>> reward_items = new ArrayList<>();
+    private List<Map<String, Object>> reward_item_functions = new ArrayList<>();
     private int reward_experience = 1;
 
-    public static QuestDefinition deserialize(String namespace, Resource resource) {
+    public static QuestDefinition deserialize(String namespace, ResourceManager manager, Resource resource) {
         BufferedReader reader;
 
         try {
@@ -41,8 +53,32 @@ public class QuestDefinition {
         }
 
         var def = new Gson().fromJson(reader, QuestDefinition.class);
+
         def.namespace = namespace;
+        def.manager = manager;
+        def.seed = RandomSource.create().nextLong();
+        def.random = RandomSource.create(def.seed);
+
         return def;
+    }
+
+    public String namespace() {
+        return namespace;
+    }
+
+    public ResourceManager manager() {
+        return manager;
+    }
+
+    public long seed() {
+        return seed;
+    }
+
+    public RandomSource random() {
+        if (random == null) {
+            random = RandomSource.create(seed);
+        }
+        return random;
     }
 
     public Pair<ResourceLocation, Integer> pair(List<Pair<ResourceLocation, Integer>> list, RandomSource random) {
@@ -53,40 +89,44 @@ public class QuestDefinition {
         return required_features.stream().map(this::tryParse).toList();
     }
 
-    public List<ResourceLocation> artifactItems() {
-        return artifact_items.stream().map(this::tryParse).toList();
+    public DefinitionList<ArtifactDefinition> artifact() {
+        return artifact.stream()
+            .map(m -> new ArtifactDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
-    public List<Pair<ResourceLocation, Integer>> artifactLootTables() {
-        return convertMapsToPairs(artifact_loot_tables);
+    public DefinitionList<BattleDefinition> battle() {
+        return battle.stream()
+            .map(m -> new BattleDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
-    public List<Pair<ResourceLocation, Integer>> battleEffects() {
-        return convertMapsToPairs(battle_effects);
+    public DefinitionList<GatherDefinition> gather() {
+        return gather.stream()
+            .map(m -> new GatherDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
-    public List<Pair<ResourceLocation, Integer>> battleMobs() {
-        return convertMapsToPairs(battle_mobs);
+    public DefinitionList<HuntDefinition> hunt() {
+        return hunt.stream()
+            .map(m -> new HuntDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
-    public List<Pair<ResourceLocation, Integer>> gatherItems() {
-        return convertMapsToPairs(gather_items);
+    public DefinitionList<RewardItemDefinition> rewardItems() {
+        return reward_items.stream()
+            .map(m -> new RewardItemDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
-    public List<Pair<ResourceLocation, Integer>> huntMobs() {
-        return convertMapsToPairs(hunt_mobs);
-    }
-
-    public List<Pair<ResourceLocation, Integer>> rewards() {
-        return convertMapsToPairs(rewards);
-    }
-
-    public List<ResourceLocation> rewardFunctions() {
-        return reward_functions.stream().map(this::tryParse).toList();
+    public DefinitionList<RewardItemFunctionDefinition> rewardItemFunctions() {
+        return reward_item_functions.stream()
+            .map(m -> new RewardItemFunctionDefinition(this).fromMap(m))
+            .collect(Collectors.toCollection(DefinitionList::new));
     }
 
     public int rewardExperience() {
-        return reward_experience;
+        return reward_experience == 1 ? level() * level() : reward_experience;
     }
 
     public boolean epic() {
@@ -101,12 +141,18 @@ public class QuestDefinition {
         return loyalty;
     }
 
-    public VillagerProfession profession() {
-        if (profession == null) {
-            return VillagerProfession.NONE;
+    public List<VillagerProfession> professions() {
+        List<VillagerProfession> out = new ArrayList<>();
+
+        for (var id : professions) {
+            if (id.equals("villager") || id.equals("none") || id.equals("any")) {
+                out.add(VillagerProfession.NONE);
+            } else {
+                out.add(BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(id)));
+            }
         }
 
-        return BuiltInRegistries.VILLAGER_PROFESSION.get(ResourceLocation.tryParse(profession));
+        return out;
     }
 
     public QuestType type() {
@@ -115,14 +161,6 @@ public class QuestDefinition {
         }
 
         return QuestType.valueOf(type.toUpperCase(Locale.ROOT));
-    }
-
-    private List<Pair<ResourceLocation, Integer>> convertMapsToPairs(Map<String, Integer> list) {
-        List<Pair<ResourceLocation, Integer>> pairs = new ArrayList<>();
-        for (var entry : list.entrySet()) {
-            pairs.add(Pair.of(tryParse(entry.getKey()), entry.getValue()));
-        }
-        return pairs;
     }
 
     private ResourceLocation tryParse(String id) {

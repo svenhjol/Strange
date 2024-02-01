@@ -7,7 +7,7 @@ import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsClient;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.QuestsNetwork.AcceptQuest;
-import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
+import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.helper.GuiHelper;
 
 import java.util.ArrayList;

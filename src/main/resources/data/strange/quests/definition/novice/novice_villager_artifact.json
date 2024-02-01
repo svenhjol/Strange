@@ -1,0 +1,24 @@
+{
+  "type": "artifact",
+  "level": 1,
+  "professions": [
+    "farmer"
+  ],
+  "artifact": [
+    {
+      "list": "fishing_loot_tables",
+      "amount": 2,
+      "method": "and"
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emerald_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "chainmail_armor_rewards",
+      "amount": 2
+    }
+  ]
+}

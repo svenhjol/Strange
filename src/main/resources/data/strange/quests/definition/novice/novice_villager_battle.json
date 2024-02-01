@@ -1,0 +1,20 @@
+{
+  "type": "battle",
+  "level": 1,
+  "battle": [
+    {
+      "list": "common_hostile_mobs",
+      "amount": 2
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emerald_rewards",
+      "amount": "4-7"
+    },
+    {
+      "list": "iron_armor_rewards",
+      "amount": 2
+    }
+  ]
+}

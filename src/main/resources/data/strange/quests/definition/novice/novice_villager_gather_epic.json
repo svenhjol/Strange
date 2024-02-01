@@ -1,0 +1,23 @@
+{
+  "type": "gather",
+  "level": 1,
+  "loyalty": 5,
+  "epic": true,
+  "gather": [
+    {
+      "list": "starter_items",
+      "amount": 20
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "iron_armor_rewards",
+      "amount": 2
+    }
+  ],
+  "reward_experience": 5
+}

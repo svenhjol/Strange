@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "sentry_armor_trim_smithing_template",
+    "dune_armor_trim_smithing_template",
+    "coast_armor_trim_smithing_template",
+    "wild_armor_trim_smithing_template",
+    "ward_armor_trim_smithing_template",
+    "eye_armor_trim_smithing_template",
+    "vex_armor_trim_smithing_template",
+    "tide_armor_trim_smithing_template",
+    "snout_armor_trim_smithing_template",
+    "rib_armor_trim_smithing_template",
+    "spire_armor_trim_smithing_template",
+    "wayfinder_armor_trim_smithing_template",
+    "shaper_armor_trim_smithing_template",
+    "silence_armor_trim_smithing_template",
+    "raiser_armor_trim_smithing_template",
+    "host_armor_trim_smithing_template"
+  ]
+}

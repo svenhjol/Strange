@@ -1,0 +1,48 @@
+{
+  "type": "artifact",
+  "level": 3,
+  "loyalty": 3,
+  "artifact": [
+    {
+      "list": "shipwreck_loot_tables",
+      "amount": 2,
+      "method": "and",
+      "chance": 1.0
+    },
+    {
+      "list": "fishing_loot_tables",
+      "amount": 2,
+      "method": "and",
+      "chance": 0.5
+    }
+  ],
+  "reward_items": [
+    {
+      "loot_table": "minecraft:chest/simple_dungeon",
+      "amount": 10
+    },
+    {
+      "list": "iron_tool_rewards",
+      "amount": 3
+    },
+    {
+      "list": "iron_armor_rewards",
+      "amount": 3
+    },
+    {
+      "list": "diamond_rewards",
+      "amount": 6,
+      "chance": 0.25
+    },
+    {
+      "list": "diamond_tool_rewards",
+      "amount": 1,
+      "chance": 0.25
+    },
+    {
+      "list": "diamond_armor_rewards",
+      "amount": 1,
+      "chance": 0.25
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+package svenhjol.strange.feature.quests.reward;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import svenhjol.strange.data.LinkedItemList;
+import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.BaseDefinition;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
+    public ResourceLocation list;
+    public ResourceLocation lootTable;
+    public int amount;
+    public double weight = -1;
+    public double chance = 1.0d;
+
+    public RewardItemDefinition(QuestDefinition definition) {
+        super(definition);
+    }
+
+    @Override
+    public RewardItemDefinition fromMap(Map<String, Object> map) {
+        for (var entry : map.entrySet()) {
+            var key = entry.getKey();
+            var val = entry.getValue();
+
+            switch (key) {
+                case "list": {
+                    this.list = parseResourceLocation(val);
+                    break;
+                }
+                case "loot_table": {
+                    this.lootTable = parseResourceLocation(val);
+                    break;
+                }
+                case "amount": {
+                    this.amount = parseInteger(val);
+                    break;
+                }
+                case "weight": {
+                    this.weight = parseInteger(val);
+                    break;
+                }
+                case "chance": {
+                    this.chance = parseDouble(val);
+                    break;
+                }
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    protected String dataDir() {
+        return "quests/reward";
+    }
+
+    public List<RewardItem> items() {
+        var max = 4;
+        List<ItemStack> out = new ArrayList<>();
+        List<Item> sublist = new ArrayList<>();
+
+        if (random().nextDouble() > chance) {
+            return List.of();
+        }
+
+        // TODO: loot tables
+
+        var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
+        if (items.isEmpty()) {
+            throw new RuntimeException("Item list is empty");
+        }
+
+        if (weight < 0) {
+            sublist.addAll(items.subset(max, random()));
+        } else {
+            sublist.addAll(items.subset(max, weight, 0.1d, random()));
+        }
+
+        for (var item : sublist) {
+            var size = random().nextIntBetweenInclusive(Math.max(1, amount - 2), amount + 1);
+            out.add(new ItemStack(item, size));
+        }
+
+        return out.stream().map(RewardItem::new).toList();
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "spruce_door",
+    "birch_door",
+    "jungle_door",
+    "acacia_door",
+    "cherry_door",
+    "dark_oak_door",
+    "oak_door",
+    "mangrove_door",
+    "bamboo_door",
+    "warped_door",
+    "crimson_door"
+  ]
+}

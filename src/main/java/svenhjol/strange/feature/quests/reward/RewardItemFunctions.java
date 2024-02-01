@@ -1,11 +1,10 @@
 package svenhjol.strange.feature.quests.reward;
 
-import svenhjol.strange.feature.quests.reward.reward_item_function.EnchantBookByLevel;
-import svenhjol.strange.feature.quests.reward.reward_item_function.EnchantItemByLevel;
+import svenhjol.strange.feature.quests.reward.function.EnchantBook;
+import svenhjol.strange.feature.quests.reward.function.EnchantItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class RewardItemFunctions {
     List<RewardItemFunction> functions = new ArrayList<>();
@@ -14,15 +13,17 @@ public class RewardItemFunctions {
         populate();
     }
 
-    public Optional<RewardItemFunction> byId(String id) {
-        return functions.stream().filter(f -> f.id().equals(id)).findFirst();
+    public RewardItemFunction byId(String id, RewardItemFunctionParameters parameters) {
+        return functions.stream().filter(f -> f.id().equals(id))
+            .findFirst().orElseThrow()
+            .withParameters(parameters);
     }
 
     /**
      * Add custom functions to this list. Populated when server starts.
      */
     void populate() {
-        functions.add(new EnchantBookByLevel());
-        functions.add(new EnchantItemByLevel());
+        functions.add(new EnchantBook());
+        functions.add(new EnchantItem());
     }
 }

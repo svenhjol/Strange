@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "saddle",
+    "golden_apple",
+    "music_disc_13",
+    "music_disc_cat",
+    "name_tag",
+    "golden_horse_armor",
+    "iron_horse_armor",
+    "book",
+    "coal",
+    "wheat",
+    "bucket",
+    "iron_ingot",
+    "gold_ingot",
+    "rotten_flesh",
+    "string",
+    "gunpowder",
+    "bone",
+    "beetroot_seeds",
+    "pumpkin_seeds",
+    "melon_seeds"
+  ]
+}

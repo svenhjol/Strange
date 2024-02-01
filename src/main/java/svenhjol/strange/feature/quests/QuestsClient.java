@@ -247,8 +247,8 @@ public class QuestsClient extends ClientFeature {
                     questGivers.add(opt.get());
                 }
 
-                var matching = QuestsHelper.getNearbyMatchingProfessions(level, pos, quest.villagerProfession());
-                for (Villager matched : matching) {
+                var matching = QuestsHelper.getNearbyMatchingProfessions(level, pos, quest.villagerProfessions());
+                for (var matched : matching) {
                     if (!matched.getUUID().equals(quest.villagerUuid()) && !receivers.contains(matched)) {
                         receivers.add(matched);
                     }

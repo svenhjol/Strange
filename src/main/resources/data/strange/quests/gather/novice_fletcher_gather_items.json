@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "stick",
     "string",
     "charcoal",
-    "feather"
+    "feather",
+    "flint"
   ]
 }

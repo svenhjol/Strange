@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "andesite",
+    "diorite",
+    "granite",
+    "flint",
+    "coal",
+    "clay"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "iron_block",
+    "gold_block",
+    "copper_block"
+  ]
+}

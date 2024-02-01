@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "baked_potato",
+    "cooked_beef",
+    "cooked_chicken",
+    "cooked_mutton",
+    "cooked_porkchop",
+    "cooked_cod",
+    "cooked_salmon",
+    "cooked_rabbit"
+  ]
+}

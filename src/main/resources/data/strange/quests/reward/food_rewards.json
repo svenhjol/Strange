@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "sweet_berries",
+    "glow_berries",
+    "apple",
+    "potato",
+    "bread",
+    "wheat",
+    "carrot",
+    "beef",
+    "chicken",
+    "mutton",
+    "porkchop",
+    "cod",
+    "salmon",
+    "rabbit",
+    "mushroom_stew",
+    "beetroot_stew"
+  ]
+}

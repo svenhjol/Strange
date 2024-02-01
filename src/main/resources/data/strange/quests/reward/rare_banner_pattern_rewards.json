@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "flower_banner_pattern",
+    "creeper_banner_pattern",
+    "skull_banner_pattern",
+    "mojang_banner_pattern",
+    "globe_banner_pattern",
+    "piglin_banner_pattern"
+  ]
+}

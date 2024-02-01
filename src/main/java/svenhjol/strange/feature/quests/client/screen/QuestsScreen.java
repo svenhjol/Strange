@@ -3,7 +3,7 @@ package svenhjol.strange.feature.quests.client.screen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import svenhjol.strange.feature.quests.*;
-import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
+import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.screen.TravelJournalScreen;

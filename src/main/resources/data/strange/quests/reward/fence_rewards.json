@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "spruce_fence",
+    "birch_fence",
+    "jungle_fence",
+    "acacia_fence",
+    "cherry_fence",
+    "dark_oak_fence",
+    "oak_fence",
+    "mangrove_fence",
+    "bamboo_fence",
+    "warped_fence",
+    "crimson_fence"
+  ]
+}

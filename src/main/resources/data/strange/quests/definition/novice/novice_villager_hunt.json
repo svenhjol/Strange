@@ -1,0 +1,22 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "hunt": [
+    {
+      "list": "common_hostile_mobs",
+      "amount": 3
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "leather_armor_rewards",
+      "amount": 2,
+      "chance": 1.0
+    },
+    {
+      "list": "stone_tool_rewards",
+      "amount": 2,
+      "chance": 1.0
+    }
+  ]
+}

@@ -2,11 +2,15 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.client.renderer.*;
-import svenhjol.strange.feature.quests.quest.ArtifactQuest;
-import svenhjol.strange.feature.quests.quest.GatherQuest;
-import svenhjol.strange.feature.quests.quest.HuntQuest;
-import svenhjol.strange.feature.quests.quest.BattleQuest;
+import svenhjol.strange.feature.quests.artifact.ArtifactQuestRenderer;
+import svenhjol.strange.feature.quests.battle.BattleQuestRenderer;
+import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
+import svenhjol.strange.feature.quests.artifact.ArtifactQuest;
+import svenhjol.strange.feature.quests.gather.GatherQuestRenderer;
+import svenhjol.strange.feature.quests.hunt.HuntQuestRenderer;
+import svenhjol.strange.feature.quests.gather.GatherQuest;
+import svenhjol.strange.feature.quests.hunt.HuntQuest;
+import svenhjol.strange.feature.quests.battle.BattleQuest;
 
 @SuppressWarnings("unchecked")
 public enum QuestType {

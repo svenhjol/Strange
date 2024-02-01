@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "dirt",
+    "sand",
+    "stick",
+    "wheat_seeds",
+    "cobblestone"
+  ]
+}

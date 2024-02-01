@@ -20,17 +20,17 @@ public interface WeightedList<T> {
         return shuffled.subList(0, Math.min(amount, size));
     }
 
-    default List<T> subset(int amount, float weight, float nudge, RandomSource random) {
+    default List<T> subset(int amount, double weight, double nudge, RandomSource random) {
         List<T> items = new LinkedList<>();
         for (int i = 0; i < amount; i++) {
             random.nextFloat();
-            getWeighted(weight, nudge, random).ifPresent(items::add);
+            weighted(weight, nudge, random).ifPresent(items::add);
         }
         var shuffled = Util.toShuffledList(items.stream(), random);
         return shuffled;
     }
 
-    default List<T> subset(int min, int max, float weight, float nudge, RandomSource random) {
+    default List<T> subset(int min, int max, double weight, double nudge, RandomSource random) {
         var amount = (int) Math.max(min, Math.min(max, Math.ceil(max * Math.min(1.0F, weight))));
         return subset(amount, weight, nudge, random);
     }
@@ -39,22 +39,26 @@ public interface WeightedList<T> {
      * Get a single element from the list at the given weight.
      * Nudge is a random mutiplier added to or subtracted from the weight.
      */
-    default Optional<T> getWeighted(float weight, float nudge, RandomSource random) {
+    default Optional<T> weighted(double weight, double nudge, RandomSource random) {
         var values = values();
-        if (values.isEmpty()) return Optional.empty();
+        if (values.isEmpty()) {
+            return Optional.empty();
+        }
 
         var size = values.size();
         var weighted = size * weight;
         nudge *= random.nextFloat();
         weighted += random.nextBoolean() ? nudge : -nudge;
-        var index = Math.max(0, Math.min(size - 1, Math.round(weighted)));
+        var index = (int)Math.max(0, Math.min(size - 1, Math.round(weighted)));
 
         return Optional.of(values.get(index));
     }
 
-    default Optional<T> getRandom(RandomSource random) {
+    default Optional<T> random(RandomSource random) {
         var values = values();
-        if (values.isEmpty()) return Optional.empty();
+        if (values.isEmpty()) {
+            return Optional.empty();
+        }
 
         var size = values.size();
         return Optional.of(values.get(random.nextInt(size)));

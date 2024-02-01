@@ -4,8 +4,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.Villager;
@@ -23,7 +21,7 @@ public class QuestsHelper {
     public static final Map<Integer, String> TIERS = new HashMap<>();
     public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
-            .filter(d -> d.profession() == profession || d.profession() == VillagerProfession.NONE)
+            .filter(d -> d.professions().contains(profession) || d.professions().contains(VillagerProfession.NONE) || d.professions().isEmpty())
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
             .filter(d -> d.loyalty() <= Quests.getLoyalty(villagerUuid))
             .collect(Collectors.toCollection(ArrayList::new));
@@ -52,11 +50,11 @@ public class QuestsHelper {
         return sublist;
     }
 
-    public static QuestList makeQuestsFromDefinitions(ResourceManager manager, List<QuestDefinition> definitions, UUID villagerUuid) {
+    public static QuestList makeQuestsFromDefinitions(List<QuestDefinition> definitions, UUID villagerUuid) {
         var quests = new QuestList();
 
         for (var definition : definitions) {
-            quests.add(Quest.create(manager, definition, villagerUuid));
+            quests.add(Quest.create(definition, villagerUuid));
         }
 
         return quests;
@@ -67,27 +65,17 @@ public class QuestsHelper {
         return nearby.stream().filter(e -> e.getUUID().equals(villagerUuid)).findFirst();
     }
 
-    public static List<Villager> getNearbyMatchingProfessions(Level level, BlockPos pos, VillagerProfession profession) {
+    public static List<Villager> getNearbyMatchingProfessions(Level level, BlockPos pos, List<VillagerProfession> professions) {
         var nearby = level.getEntitiesOfClass(Villager.class, new AABB(pos).inflate(8.0d));
         return nearby.stream()
-            .filter(e -> e.getVillagerData().getProfession().equals(profession) || e.getVillagerData().getProfession().equals(VillagerProfession.NONE))
+            .filter(e -> isValidProfession(e.getVillagerData().getProfession(), professions))
             .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static String getVillagerLevelName(int villagerLevel) {
-        return TIERS.getOrDefault(villagerLevel, "any");
-    }
-
-    public static ResourceLocation getVillagerProfessionId(VillagerProfession villagerProfession) {
-        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
-        return registry.getKey(villagerProfession);
-    }
-
-    public static String getVillagerProfessionName(VillagerProfession villagerProfession) {
-        if (villagerProfession.equals(VillagerProfession.NONE)) {
-            return "villager";
-        }
-        return getVillagerProfessionId(villagerProfession).getPath();
+    public static boolean isValidProfession(VillagerProfession profession, List<VillagerProfession> validProfessions) {
+        return validProfessions.isEmpty()
+            ||validProfessions.contains(profession)
+            ||validProfessions.contains(VillagerProfession.NONE);
     }
 
     public static void throwItemsAtPlayer(Villager villager, Player player, List<ItemStack> items) {
@@ -111,14 +99,6 @@ public class QuestsHelper {
     public static Component makeQuestTitle(Quest quest) {
         return TextHelper.translatable(quest.isEpic() ? QuestsResources.EPIC_QUEST_TITLE_KEY : QuestsResources.QUEST_TITLE_KEY,
             TextHelper.translatable("merchant.level." + quest.villagerLevel()),
-            quest.type().getTypeName());
-    }
-
-    public static Component makeQuestTitleWithProfession(Quest quest) {
-        var professionId = getVillagerProfessionId(quest.villagerProfession());
-        return TextHelper.translatable(quest.isEpic() ? QuestsResources.EPIC_QUEST_TITLE_WITH_PROFESSION_KEY : QuestsResources.QUEST_TITLE_WITH_PROFESSION_KEY,
-            TextHelper.translatable("merchant.level." + quest.villagerLevel()),
-            TextHelper.translatable("entity." + professionId.getNamespace() + ".villager." + professionId.getPath()),
             quest.type().getTypeName());
     }
 

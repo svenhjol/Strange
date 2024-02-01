@@ -7,7 +7,7 @@ import svenhjol.strange.feature.quests.QuestsClient;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.QuestsNetwork.AbandonQuest;
 import svenhjol.strange.feature.quests.client.QuestsButtons.AbandonShortcutButton;
-import svenhjol.strange.feature.quests.client.renderer.BaseQuestRenderer;
+import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.travel_journal.PageTracker;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.BackButton;
 import svenhjol.strange.feature.travel_journal.client.TravelJournalButtons.CloseButton;

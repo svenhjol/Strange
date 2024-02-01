@@ -14,13 +14,15 @@ public class RewardItem implements Reward {
     public ItemStack stack;
     public Quest quest;
 
-    public RewardItem(Quest quest) {
-        this.quest = quest;
+    public RewardItem() {
     }
 
-    public RewardItem(Quest quest, ItemStack stack) {
-        this.quest = quest;
+    public RewardItem(ItemStack stack) {
         this.stack = stack;
+    }
+
+    public void setQuest(Quest quest) {
+        this.quest = quest;
     }
 
     @Override
@@ -35,6 +37,8 @@ public class RewardItem implements Reward {
 
     @Override
     public void complete() {
+        if (quest == null) return;
+
         var player = quest.player();
         if (player == null) return;
 

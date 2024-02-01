@@ -1,0 +1,16 @@
+{
+  "type": "gather",
+  "level": 1,
+  "gather": [
+    {
+      "list": "starter_items",
+      "amount": 10
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "bed_rewards",
+      "amount": 1
+    }
+  ]
+}

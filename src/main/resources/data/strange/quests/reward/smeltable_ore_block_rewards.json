@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "gold_ore",
+    "deepslate_gold_ore",
+    "iron_ore",
+    "deepslate_iron_ore",
+    "copper_ore",
+    "deepslate_copper_ore"
+  ]
+}

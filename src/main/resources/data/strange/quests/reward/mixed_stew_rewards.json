@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "required_features": [
+    "strange:cooking_pots"
+  ],
+  "values": [
+    "mixed_stew"
+  ]
+}
