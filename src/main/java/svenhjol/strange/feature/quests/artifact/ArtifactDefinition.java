@@ -9,14 +9,12 @@ import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Quests;
 import svenhjol.strange.feature.quests.BaseDefinition;
-import svenhjol.strange.feature.quests.artifact.ArtifactQuest.Method;
 
 import java.util.*;
 
 public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
     static final ResourceLocation DEFAULT_ARTIFACT_ITEMS = new ResourceLocation(Strange.ID, "default_artifact_items");
     private ResourceLocation list;
-    private Method method = Method.AND;
     private int amount = 1;
     private double chance = 1.0d;
     private List<ResourceLocation> items = new ArrayList<>();
@@ -41,10 +39,6 @@ public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
                     this.amount = parseInteger(val);
                     break;
                 }
-                case "method": {
-                    this.method = Method.valueOf(((String)val).toUpperCase(Locale.ROOT));
-                    break;
-                }
                 case "items": {
                     this.items = parseResourceLocationList(val);
                     break;
@@ -62,10 +56,6 @@ public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
     @Override
     protected String dataDir() {
         return "quests/artifact";
-    }
-
-    public Method method() {
-        return method;
     }
 
     public double chance() {
@@ -99,11 +89,7 @@ public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
 
         Util.shuffle(lootTables, random());
 
-        int max = switch (method) {
-            case AND -> Math.min(Math.min(Quests.maxQuestRequirements, amount), lootTables.size());
-            case OR -> 1;
-        };
-
+        var max = Math.min(Math.min(Quests.maxQuestRequirements, amount), lootTables.size());
         for (int i = 0; i < max; i++) {
             out.add(lootTables.get(i));
         }

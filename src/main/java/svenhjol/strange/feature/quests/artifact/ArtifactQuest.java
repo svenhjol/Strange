@@ -24,10 +24,8 @@ import java.util.*;
 public class ArtifactQuest extends Quest {
     static final String ARTIFACT_TAG = "artifact";
     static final String LOOT_TABLES_TAG = "loot_tables";
-    static final String METHOD_TAG = "method";
 
     ArtifactItem artifact;
-    Method method;
     List<ResourceLocation> lootTables = new ArrayList<>();
 
     @Override
@@ -45,17 +43,10 @@ public class ArtifactQuest extends Quest {
             return Optional.empty();
         }
 
-        if (inProgress() && !lootTables.isEmpty()) {
+        if (!artifact.discovered && inProgress() && !lootTables.isEmpty()) {
             for (var lootTable : lootTables) {
                 if (lootTable.equals(lootTableId)) {
-                    // Check if the player is already carrying the artifact.
-                    if (hasArtifact()) {
-                        log().debug(getClass(), "Player already has the artifact, skipping artifact loot generation");
-                        return Optional.empty();
-                    }
-
-                    var chance = 1.0d - villagerLevel() * 0.1d;
-                    if (random.nextDouble() < chance) {
+                    if (random.nextDouble() < artifact.chance) {
                         log().debug(getClass(), "Adding the artifact to the loot pool");
                         return Optional.of(artifact.item.copy());
                     } else {
@@ -71,15 +62,12 @@ public class ArtifactQuest extends Quest {
     protected void makeRequirements(QuestDefinition definition) {
         var artifact = definition.artifact().take(random());
 
-        this.method = artifact.method();
         this.lootTables = artifact.lootTables();
         this.artifact = new ArtifactItem(artifact.item(), artifact.chance());
     }
 
     @Override
     public void loadAdditional(CompoundTag tag) {
-        method = Method.valueOf(tag.getString(METHOD_TAG).toUpperCase(Locale.ROOT));
-
         var artifactTag = tag.getCompound(ARTIFACT_TAG);
         var item = new ArtifactItem();
         item.load(artifactTag);
@@ -95,8 +83,6 @@ public class ArtifactQuest extends Quest {
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.putString(METHOD_TAG, method.name());
-
         var artifactTag = new CompoundTag();
         artifact.save(artifactTag);
         tag.put(ARTIFACT_TAG, artifactTag);
@@ -113,24 +99,15 @@ public class ArtifactQuest extends Quest {
         return Mods.common(Strange.ID).log();
     }
 
-    private boolean hasArtifact() {
-        if (player == null) {
-            return false;
-        }
-
-        return player.getInventory().items.stream().anyMatch(i -> {
-            var tag = i.getTag();
-            return tag != null && tag.getString(ArtifactItem.CUSTOM_TAG).equals(id());
-        });
-    }
-
     public class ArtifactItem implements Requirement {
         static final String ITEM_TAG = "item";
         static final String CUSTOM_TAG = "strange_artifact";
         static final String CHANCE_TAG = "chance";
+        static final String DISCOVERED_TAG = "discovered";
 
         public ItemStack item;
         public double chance;
+        public boolean discovered;
 
         private ArtifactItem() {}
 
@@ -148,11 +125,16 @@ public class ArtifactQuest extends Quest {
 
             this.item = item;
             this.chance = chance;
+            this.discovered = false;
         }
 
         @Override
         public boolean satisfied() {
-            return remaining() == 0;
+            var satisfied = remaining() == 0;
+            if (satisfied && !discovered) {
+                discovered = true;
+            }
+            return satisfied;
         }
 
         @Override
@@ -226,6 +208,7 @@ public class ArtifactQuest extends Quest {
         public void load(CompoundTag tag) {
             item = ItemStack.of(tag.getCompound(ITEM_TAG));
             chance = tag.getDouble(CHANCE_TAG);
+            discovered = tag.getBoolean(DISCOVERED_TAG);
         }
 
         @Override
@@ -234,6 +217,7 @@ public class ArtifactQuest extends Quest {
             item.save(itemTag);
             tag.put(ITEM_TAG, itemTag);
             tag.putDouble(CHANCE_TAG, chance);
+            tag.putBoolean(DISCOVERED_TAG, discovered);
         }
 
         protected void addRandomEnchantment(ItemStack stack) {
@@ -253,10 +237,5 @@ public class ArtifactQuest extends Quest {
             var newName = Component.translatable("gui.strange.descriptions.prefixed_name", prefix, name);
             stack.setHoverName(newName);
         }
-    }
-
-    public enum Method {
-        AND,
-        OR
     }
 }

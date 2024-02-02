@@ -8,7 +8,7 @@
     {
       "list": "fishing_loot_tables",
       "amount": 2,
-      "method": "and"
+      "chance": 0.75
     }
   ],
   "reward_items": [
