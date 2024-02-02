@@ -201,7 +201,17 @@ public class Quests extends CommonFeature {
         }
     }
 
-    public static void handleRequestVillagerQuests(RequestVillagerQuests message, Player player) {
+    /**
+     * Client requests the loyalty of the given villager UUID.
+     */
+    public static void handleRequestVillagerLoyalty(QuestsNetwork.RequestVillagerLoyalty message, Player player) {
+        var villagerUuid = message.getVillagerUuid();
+        var loyalty = getLoyalty(villagerUuid);
+        var serverPlayer = (ServerPlayer)player;
+        QuestsNetwork.SyncVillagerLoyalty.send(serverPlayer, villagerUuid, loyalty);
+    }
+
+    public static void handleRequestVillagerQuests(QuestsNetwork.RequestVillagerQuests message, Player player) {
         var ticksToRefresh = 80; // TODO: test value, refresh quests every 4 seconds
         var level = player.level();
         var random = level.getRandom();

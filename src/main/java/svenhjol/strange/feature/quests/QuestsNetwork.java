@@ -29,8 +29,10 @@ public class QuestsNetwork {
         registry.packet(new NotifyAbandonQuestResult(), () -> QuestsClient::handleAbandonQuestResult);
         registry.packet(new SyncPlayerQuests(), () -> QuestsClient::handleSyncPlayerQuests);
         registry.packet(new SyncVillagerQuests(), () -> QuestsClient::handleSyncVillagerQuests);
+        registry.packet(new SyncVillagerLoyalty(), () -> QuestsClient::handleSyncVillagerLoyalty);
         registry.packet(new RequestVillagerQuests(), () -> Quests::handleRequestVillagerQuests);
         registry.packet(new RequestPlayerQuests(), () -> Quests::handleRequestPlayerQuests);
+        registry.packet(new RequestVillagerLoyalty(), () -> Quests::handleRequestVillagerLoyalty);
         registry.packet(new AcceptQuest(), () -> Quests::handleAcceptQuest);
         registry.packet(new AbandonQuest(), () -> Quests::handleAbandonQuest);
     }
@@ -75,6 +77,37 @@ public class QuestsNetwork {
 
         public static void send() {
             clientSender().send(new RequestPlayerQuests());
+        }
+    }
+
+    @Packet(
+        id = "strange:request_villager_loyalty",
+        direction = PacketDirection.CLIENT_TO_SERVER,
+        description = "Sent from the client to request the server to send the loyalty for the given villager UUID."
+    )
+    public static class RequestVillagerLoyalty implements IPacketRequest {
+        private UUID villagerUuid;
+
+        private RequestVillagerLoyalty() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUUID(villagerUuid);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            villagerUuid = buf.readUUID();
+        }
+
+        public UUID getVillagerUuid() {
+            return villagerUuid;
+        }
+
+        public static void send(UUID villagerUuid) {
+            var message = new RequestVillagerLoyalty();
+            message.villagerUuid = villagerUuid;
+            clientSender().send(message);
         }
     }
 
@@ -145,6 +178,45 @@ public class QuestsNetwork {
             var message = new AbandonQuest();
             message.questId = questId;
             clientSender().send(message);
+        }
+    }
+
+    @Packet(
+        id = "strange:sync_villager_loyalty",
+        direction = PacketDirection.SERVER_TO_CLIENT,
+        description = "Send villager loyalty to the client."
+    )
+    public static class SyncVillagerLoyalty implements IPacketRequest {
+        private UUID villagerUuid;
+        private int loyalty;
+
+        private SyncVillagerLoyalty() {}
+
+        @Override
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUUID(villagerUuid);
+            buf.writeInt(loyalty);
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf) {
+            villagerUuid = buf.readUUID();
+            loyalty = buf.readInt();
+        }
+
+        public UUID getVillagerUuid() {
+            return villagerUuid;
+        }
+
+        public int getLoyalty() {
+            return loyalty;
+        }
+
+        public static void send(ServerPlayer player, UUID villagerUuid, int loyalty) {
+            var message = new SyncVillagerLoyalty();
+            message.villagerUuid = villagerUuid;
+            message.loyalty = loyalty;
+            serverSender().send(message, player);
         }
     }
 

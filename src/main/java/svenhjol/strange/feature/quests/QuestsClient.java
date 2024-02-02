@@ -42,6 +42,7 @@ import java.util.*;
 public class QuestsClient extends ClientFeature {
     private static final Map<UUID, QuestList> PLAYER_QUESTS = new HashMap<>();
     private static final Map<UUID, QuestList> VILLAGER_QUESTS = new HashMap<>();
+    private static final Map<UUID, Integer> VILLAGER_LOYALTY = new HashMap<>();
     static Button villagerQuestsButton;
     static UUID villagerUuid;
     static VillagerProfession villagerProfession;
@@ -170,6 +171,7 @@ public class QuestsClient extends ClientFeature {
         var midY = merchantScreen.height / 2;
 
         RequestVillagerQuests.send(villagerUuid);
+        RequestVillagerLoyalty.send(villagerUuid);
 
         villagerQuestsButton = new VillagerQuestsButton(midX - (VillagerQuestsButton.WIDTH / 2), midY + 92, b -> {
             screen.onClose();
@@ -195,6 +197,12 @@ public class QuestsClient extends ClientFeature {
         var quests = message.getQuests();
         log().debug(QuestsClient.class, "Received " + quests.size() + " quests for villager " + uuid);
         setVillagerQuests(villagerUuid, quests);
+    }
+
+    public static void handleSyncVillagerLoyalty(SyncVillagerLoyalty message, Player player) {
+        var villagerUuid = message.getVillagerUuid();
+        var loyalty = message.getLoyalty();
+        VILLAGER_LOYALTY.put(villagerUuid, loyalty);
     }
 
     public static void handleNotifyVillagerQuestsResult(NotifyVillagerQuestsResult message, Player player) {
